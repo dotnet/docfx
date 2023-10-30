@@ -889,6 +889,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "_key": "obj/api/BuildFromVBSourceCode.BaseClass1.yml",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

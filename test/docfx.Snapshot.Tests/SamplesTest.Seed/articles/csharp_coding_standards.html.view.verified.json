@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"c-coding-standards\" sourcefile=\"articles/csharp_coding_standards.md\" sourcestartlinenumber=\"2\">C# Coding Standards</h1>",
   "title": "C# Coding Standards",
   "wordCount": 1242.0,

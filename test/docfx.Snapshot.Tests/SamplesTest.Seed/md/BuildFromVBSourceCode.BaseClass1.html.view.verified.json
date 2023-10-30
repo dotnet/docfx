@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromVBSourceCode_BaseClass1\" sourcefile=\"obj/md/BuildFromVBSourceCode.BaseClass1.md\" sourcestartlinenumber=\"1\"> Class BaseClass1</h1>",
   "title": " Class BaseClass1",
   "wordCount": 40.0,

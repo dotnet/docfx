@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"MRef\" sourcefile=\"obj/md/MRef.md\" sourcestartlinenumber=\"1\"> Namespace MRef</h1>",
   "title": " Namespace MRef",
   "wordCount": 2.0,

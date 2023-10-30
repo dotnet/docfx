@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Class1_Test_1\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"1\"> Class Class1.Test&lt;T&gt;</h1>",
   "title": " Class Class1.Test<T>",
   "wordCount": 25.0,

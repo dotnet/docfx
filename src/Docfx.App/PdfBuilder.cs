@@ -6,9 +6,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Docfx.Build;
 using Docfx.Plugins;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Spectre.Console;
@@ -18,6 +20,8 @@ using UglyToad.PdfPig.Actions;
 using UglyToad.PdfPig.Outline;
 using UglyToad.PdfPig.Outline.Destinations;
 using UglyToad.PdfPig.Writer;
+
+using static Docfx.Build.HtmlTemplate;
 
 #nullable enable
 
@@ -34,6 +38,7 @@ static class PdfBuilder
         public bool pdf { get; init; }
         public string? pdfFileName { get; init; }
         public string? pdfCoverPage { get; init; }
+        public bool pdfTocPage { get; init; }
     }
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
@@ -47,8 +52,8 @@ static class PdfBuilder
 
     public static async Task CreatePdf(string outputFolder)
     {
-        var pdfTocs = GetPdfTocs().ToArray();
-        if (pdfTocs.Length == 0)
+        var pdfTocs = GetPdfTocs().ToDictionary(p => p.url, p => p.toc);
+        if (pdfTocs.Count == 0)
             return;
 
         AnsiConsole.Status().Start("Installing Chromium...", _ => Program.Main(new[] { "install", "chromium" }));
@@ -58,10 +63,14 @@ static class PdfBuilder
         builder.Logging.ClearProviders();
         builder.WebHost.UseUrls("http://127.0.0.1:0");
 
+        Uri? baseUrl = null;
+
         using var app = builder.Build();
         app.UseServe(outputFolder);
+        app.MapGet("/_pdftoc/{*id}", (string id) => Results.Content(TocHtmlTemplate(new Uri(baseUrl!, id), pdfTocs[id]).ToString(), "text/html"));
         await app.StartAsync();
-        var baseUrl = new Uri(app.Urls.First());
+
+        baseUrl = new Uri(app.Urls.First());
 
         using var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync();
@@ -73,7 +82,7 @@ static class PdfBuilder
             await CreatePdf(browser, new(baseUrl, url), toc, outputPath);
         }
 
-        IEnumerable<(string, Outline)> GetPdfTocs()
+        IEnumerable<(string url, Outline toc)> GetPdfTocs()
         {
             var manifestPath = Path.Combine(outputFolder, "manifest.json");
             var manifest = Newtonsoft.Json.JsonConvert.DeserializeObject<Manifest>(File.ReadAllText(manifestPath));
@@ -139,6 +148,13 @@ static class PdfBuilder
                 var url = new Uri(outlineUrl, outline.pdfCoverPage);
                 if (url.Host == outlineUrl.Host)
                     yield return (GetFilePath(url), url, new() { href = outline.pdfCoverPage });
+            }
+
+            if (outline.pdfTocPage)
+            {
+                var href = $"/_pdftoc{outlineUrl.AbsolutePath}";
+                var url = new Uri(outlineUrl, href);
+                yield return (GetFilePath(url), url, new() { href = href });
             }
 
             if (!string.IsNullOrEmpty(outline.href))
@@ -229,7 +245,7 @@ static class PdfBuilder
                     AnsiConsole.MarkupLine($"[yellow]Failed to resolve named dest: {name}[/]");
                 }
 
-                return new GoToAction(new(pageNumbers[pages[0].node], ExplicitDestinationType.XyzCoordinates, ExplicitDestinationCoordinates.Empty));
+                return new GoToAction(new(pageNumbers[pages[0].node], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty));
             }
         }
 
@@ -249,7 +265,7 @@ static class PdfBuilder
                 {
                     yield return new DocumentBookmarkNode(
                         item.name, level,
-                        new(nextPageNumber, ExplicitDestinationType.XyzCoordinates, ExplicitDestinationCoordinates.Empty),
+                        new(nextPageNumber, ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
                         CreateBookmarks(item.items, level + 1).ToArray());
                     continue;
                 }
@@ -268,11 +284,31 @@ static class PdfBuilder
                     nextPageNumber = nextPageNumbers[item];
                     yield return new DocumentBookmarkNode(
                         item.name, level,
-                        new(pageNumbers[item], ExplicitDestinationType.XyzCoordinates, ExplicitDestinationCoordinates.Empty),
+                        new(pageNumbers[item], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
                         CreateBookmarks(item.items, level + 1).ToArray());
                 }
             }
         }
+    }
+
+    static HtmlTemplate TocHtmlTemplate(Uri baseUrl, Outline node)
+    {
+        return Html($"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <link rel="stylesheet" href="/public/docfx.min.css">
+              <link rel="stylesheet" href="/public/main.css">
+            </head>
+            <body class="pdftoc">
+            <h1>Table of Contents</h1>
+            <ul>{node.items?.Select(TocNode)}</ul>
+            </body>
+            </html>
+            """);
+
+        HtmlTemplate TocNode(Outline node) => string.IsNullOrEmpty(node.name) ? default :
+            Html($"<li><a href='{(string.IsNullOrEmpty(node.href) ? null : new Uri(baseUrl, node.href))}'>{node.name}</a>{(node.items?.Length > 0 ? Html($"<ul>{node.items.Select(TocNode)}</ul>") : null)}</li>");
     }
 
     /// <summary>

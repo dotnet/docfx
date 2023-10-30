@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Inheritdoc_Issue8129\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue8129.md\" sourcestartlinenumber=\"1\"> Struct Inheritdoc.Issue8129</h1>",
   "title": " Struct Inheritdoc.Issue8129",
   "wordCount": 25.0,
