@@ -73,3 +73,9 @@ article {
     display: none;
   }
 }
+
+@media print {
+  @page {
+    margin: .4in;
+  }
+}

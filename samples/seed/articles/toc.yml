@@ -1,4 +1,5 @@
 ﻿pdfFileName: seed.pdf
+pdfCoverPage: ../pdf.html
 items:
 - name: Getting Started
   href: docfx_getting_started.md
