@@ -57,7 +57,7 @@ static class PdfBuilder
         if (pdfTocs.Count == 0)
             return;
 
-        var pdfPageNumbers = new ConcurrentDictionary<string, (int offset, Dictionary<Outline, int> pageNumbers)>();
+        var pdfPageNumbers = new ConcurrentDictionary<string, Dictionary<Outline, int>>();
 
         AnsiConsole.Status().Start("Installing Chromium...", _ => Program.Main(new[] { "install", "chromium" }));
         AnsiConsole.MarkupLine("[green]Chromium installed.[/]");
@@ -82,7 +82,7 @@ static class PdfBuilder
         {
             var outputPath = Path.Combine(outputFolder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
 
-            await CreatePdf(browser, new(baseUrl, url), toc, outputPath, (offset, pageNumbers) => pdfPageNumbers[url] = (offset, pageNumbers));
+            await CreatePdf(browser, new(baseUrl, url), toc, outputPath, pageNumbers => pdfPageNumbers[url] = pageNumbers);
         }
 
         IEnumerable<(string url, Outline toc)> GetPdfTocs()
@@ -109,12 +109,12 @@ static class PdfBuilder
 
         IResult TocPage(string url)
         {
-            var (offset, pageNumbers) = pdfPageNumbers.TryGetValue(url, out var x) ? x : default;
-            return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], offset, pageNumbers).ToString(), "text/html");
+            var pageNumbers = pdfPageNumbers.TryGetValue(url, out var x) ? x : default;
+            return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], pageNumbers).ToString(), "text/html");
         }
     }
 
-    static async Task CreatePdf(IBrowser browser, Uri outlineUrl, Outline outline, string outputPath, Action<int, Dictionary<Outline, int>> updatePageNumbers)
+    static async Task CreatePdf(IBrowser browser, Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
         Directory.CreateDirectory(tempDirectory);
@@ -225,7 +225,7 @@ static class PdfBuilder
                 if (url.AbsolutePath.StartsWith("/_pdftoc/"))
                 {
                     // Refresh TOC page numbers
-                    updatePageNumbers(nextPageNumbers[node] - 1, pageNumbers);
+                    updatePageNumbers(pageNumbers);
                     await CapturePdf(path, url);
                 }
 
@@ -312,7 +312,7 @@ static class PdfBuilder
         }
     }
 
-    static HtmlTemplate TocHtmlTemplate(Uri baseUrl, Outline node, int offset, Dictionary<Outline, int>? pageNumbers)
+    static HtmlTemplate TocHtmlTemplate(Uri baseUrl, Outline node, Dictionary<Outline, int>? pageNumbers)
     {
         return Html($"""
             <!DOCTYPE html>
@@ -334,7 +334,7 @@ static class PdfBuilder
               {(string.IsNullOrEmpty(node.href) ? node.name : Html(
                   $"""
                   <a href='{(string.IsNullOrEmpty(node.href) ? null : new Uri(baseUrl, node.href))}'>{node.name}
-                  {(pageNumbers?.TryGetValue(node, out var n) is true ? Html($"<span class='spacer'></span> <span class='page-number'>{n - offset}</span>") : null)}
+                  {(pageNumbers?.TryGetValue(node, out var n) is true ? Html($"<span class='spacer'></span> <span class='page-number'>{n}</span>") : null)}
                   </a>
                   """))}
               {(node.items?.Length > 0 ? Html($"<ul>{node.items.Select(TocNode)}</ul>") : null)}
