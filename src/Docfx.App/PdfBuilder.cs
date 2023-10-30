@@ -33,8 +33,7 @@ static class PdfBuilder
 
         public bool pdf { get; init; }
         public string? pdfFileName { get; init; }
-        public string? pdfMargin { get; init; }
-        public bool pdfPrintBackground { get; init; }
+        public string? pdfCoverPage { get; init; }
     }
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
@@ -111,7 +110,6 @@ static class PdfBuilder
         var pageNumbers = new Dictionary<Outline, int>();
         var nextPageNumbers = new Dictionary<Outline, int>();
         var nextPageNumber = 1;
-        var margin = outline.pdfMargin ?? "0.4in";
 
         await AnsiConsole.Progress().Columns(new SpinnerColumn(), new TaskDescriptionColumn { Alignment = Justify.Left }).StartAsync(async c =>
         {
@@ -119,16 +117,15 @@ static class PdfBuilder
             {
                 var task = c.AddTask(item.url.PathAndQuery);
                 var page = await browser.NewPageAsync();
-                await page.GotoAsync(item.url.ToString());
+                var response = await page.GotoAsync(item.url.ToString());
+                if (response is null || !response.Ok)
+                    throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {item.url}");
+
                 await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
                 await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-                var bytes = await page.PdfAsync(new()
-                {
-                    PrintBackground = outline.pdfPrintBackground,
-                    Margin = new() { Bottom = margin, Top = margin, Left = margin, Right = margin },
-                });
+                var bytes = await page.PdfAsync();
                 File.WriteAllBytes(item.path, bytes);
-                task.Value = task.MaxValue;
+                task.StopTask();
             });
         });
 
@@ -137,21 +134,33 @@ static class PdfBuilder
 
         IEnumerable<(string path, Uri url, Outline node)> GetPages(Outline outline)
         {
+            if (!string.IsNullOrEmpty(outline.pdfCoverPage))
+            {
+                var url = new Uri(outlineUrl, outline.pdfCoverPage);
+                if (url.Host == outlineUrl.Host)
+                    yield return (GetFilePath(url), url, new() { href = outline.pdfCoverPage });
+            }
+
             if (!string.IsNullOrEmpty(outline.href))
             {
                 var url = new Uri(outlineUrl, outline.href);
                 if (url.Host == outlineUrl.Host)
-                {
-                    var id = Convert.ToHexString(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(url.ToString()))).Substring(0, 6).ToLower();
-                    var name = Regex.Replace(url.PathAndQuery, "\\W", "-").Trim('-');
-                    yield return (Path.Combine(tempDirectory, $"{name}-{id}.pdf"), url, outline);
-                }
+                    yield return (GetFilePath(url), url, outline);
             }
 
             if (outline.items != null)
+            {
                 foreach (var item in outline.items)
                     foreach (var url in GetPages(item))
                         yield return url;
+            }
+        }
+
+        string GetFilePath(Uri url)
+        {
+            var id = Convert.ToHexString(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(url.ToString()))).Substring(0, 6).ToLower();
+            var name = Regex.Replace(url.PathAndQuery, "\\W", "-").Trim('-');
+            return Path.Combine(tempDirectory, $"{name}-{id}.pdf");
         }
 
         void MergePdf()
@@ -254,11 +263,14 @@ static class PdfBuilder
                     continue;
                 }
 
-                nextPageNumber = nextPageNumbers[item];
-                yield return new DocumentBookmarkNode(
-                    item.name, level,
-                    new(pageNumbers[item], ExplicitDestinationType.XyzCoordinates, ExplicitDestinationCoordinates.Empty),
-                    CreateBookmarks(item.items, level + 1).ToArray());
+                if (!string.IsNullOrEmpty(item.name))
+                {
+                    nextPageNumber = nextPageNumbers[item];
+                    yield return new DocumentBookmarkNode(
+                        item.name, level,
+                        new(pageNumbers[item], ExplicitDestinationType.XyzCoordinates, ExplicitDestinationCoordinates.Empty),
+                        CreateBookmarks(item.items, level + 1).ToArray());
+                }
             }
         }
     }

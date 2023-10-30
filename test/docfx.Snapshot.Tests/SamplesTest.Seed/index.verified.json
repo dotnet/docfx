@@ -809,6 +809,11 @@
     "title": "Namespace MRef | docfx seed website",
     "keywords": "Namespace MRef Namespaces MRef.Demo"
   },
+  "pdf.html": {
+    "href": "pdf.html",
+    "title": "DOCFX PDF SAMPLE | docfx seed website",
+    "keywords": "@media print { @page { margin: 0 !important; } body { -webkit-print-color-adjust: exact; -moz-print-color-adjust: exact; -ms-print-color-adjust: exact; print-color-adjust: exact; } } DOCFX PDF SAMPLE"
+  },
   "restapi/contacts.html": {
     "href": "restapi/contacts.html",
     "title": "Contacts | docfx seed website",
