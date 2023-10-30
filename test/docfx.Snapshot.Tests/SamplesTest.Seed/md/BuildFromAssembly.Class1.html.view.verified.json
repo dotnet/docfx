@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromAssembly_Class1\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"1\"> Class Class1</h1>",
   "title": " Class Class1",
   "wordCount": 39.0,

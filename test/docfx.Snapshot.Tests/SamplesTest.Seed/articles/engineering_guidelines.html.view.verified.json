@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"engineering-guidelines\" sourcefile=\"articles/engineering_guidelines.md\" sourcestartlinenumber=\"2\">Engineering Guidelines</h1>",
   "title": "Engineering Guidelines",
   "wordCount": 521.0,

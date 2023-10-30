@@ -11,5 +11,6 @@
       "topicHref": "contacts.html"
     }
   ],
-  "pdf": true
+  "pdf": true,
+  "pdfTocPage": true
 }

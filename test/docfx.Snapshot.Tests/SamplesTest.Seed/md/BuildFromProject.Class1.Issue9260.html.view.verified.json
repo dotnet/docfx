@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Class1_Issue9260\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"1\"> Enum Class1.Issue9260</h1>",
   "title": " Enum Class1.Issue9260",
   "wordCount": 69.0,

@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_FakeDelegate_1\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"1\"> Delegate FakeDelegate&lt;T&gt;</h1>",
   "title": " Delegate FakeDelegate<T>",
   "wordCount": 43.0,

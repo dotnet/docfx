@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"getting-started-with-docfx\" sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"2\">Getting Started with <code sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"2\">docfx</code></h1>",
   "title": "Getting Started with docfx",
   "wordCount": 189.0,

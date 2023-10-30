@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromCSharpSourceCode\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.md\" sourcestartlinenumber=\"1\"> Namespace BuildFromCSharpSourceCode</h1>",
   "title": " Namespace BuildFromCSharpSourceCode",
   "wordCount": 2.0,

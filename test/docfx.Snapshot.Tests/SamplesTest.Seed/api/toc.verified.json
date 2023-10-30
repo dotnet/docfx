@@ -335,5 +335,6 @@
     }
   ],
   "memberLayout": "SamePage",
-  "pdf": true
+  "pdf": true,
+  "pdfTocPage": true
 }

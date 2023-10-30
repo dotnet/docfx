@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_CatException_1\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"1\"> Class CatException&lt;T&gt;</h1>",
   "title": " Class CatException<T>",
   "wordCount": 45.0,

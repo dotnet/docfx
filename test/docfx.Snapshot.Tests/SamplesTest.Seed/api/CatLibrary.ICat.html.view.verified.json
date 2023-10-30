@@ -664,6 +664,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "_key": "obj/api/CatLibrary.ICat.yml",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

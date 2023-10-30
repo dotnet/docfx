@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_IAnimal\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"1\"> Interface IAnimal</h1>",
   "title": " Interface IAnimal",
   "wordCount": 96.0,

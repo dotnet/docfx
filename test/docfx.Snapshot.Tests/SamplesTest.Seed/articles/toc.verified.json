@@ -37,5 +37,6 @@
   ],
   "pdfFileName": "seed.pdf",
   "pdfCoverPage": "../pdf.html",
-  "pdf": true
+  "pdf": true,
+  "pdfTocPage": true
 }

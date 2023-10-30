@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_TomFromBaseClass\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"1\"> Class TomFromBaseClass</h1>",
   "title": " Class TomFromBaseClass",
   "wordCount": 47.0,

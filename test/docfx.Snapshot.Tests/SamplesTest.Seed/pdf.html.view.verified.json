@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "",
   "title": "DOCFX PDF SAMPLE",
   "wordCount": 3.0,

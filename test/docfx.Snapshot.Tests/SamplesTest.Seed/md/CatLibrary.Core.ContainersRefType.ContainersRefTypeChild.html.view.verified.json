@@ -24,6 +24,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_Core_ContainersRefType_ContainersRefTypeChild\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.md\" sourcestartlinenumber=\"1\"> Class ContainersRefType.ContainersRefTypeChild</h1>",
   "title": " Class ContainersRefType.ContainersRefTypeChild",
   "wordCount": 22.0,

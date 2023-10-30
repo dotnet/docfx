@@ -69,6 +69,7 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "pdf": true,
+  "pdfTocPage": true,
   "_key": "articles/toc.yml",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
