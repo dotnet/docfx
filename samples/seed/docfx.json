@@ -81,7 +81,8 @@
       "_appTitle": "docfx seed website",
       "_appName": "Seed",
       "_enableSearch": true,
-      "pdf": true
+      "pdf": true,
+      "pdfTocPage": true
     },
     "output": "_site",
     "exportViewModel": true,
