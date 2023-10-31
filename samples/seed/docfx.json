@@ -92,30 +92,5 @@
         "TODO": "alert alert-secondary"
       }
     }
-  },
-  "pdf": {
-    "content": [
-      {
-        "files": [ "obj/api/*.yml" ],
-        "exclude": [ "**/toc.yml" ]
-      },
-      {
-        "files": [ "articles/**/*.md", "*.md", "restapi/**" ]
-      },
-      {
-        "files": [ "pdf/toc.yml" ]
-      }
-    ],
-    "resource": [
-      {
-        "files": [ "articles/images/**"]
-      }
-    ],
-    "overwrite": "specs/*.md",
-    "wkhtmltopdf": {
-      "filePath": "C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe",
-      "additionalArguments": "--enable-local-file-access"
-    },
-    "output": "_site_pdf"
   }
 }
