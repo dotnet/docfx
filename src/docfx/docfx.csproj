@@ -11,9 +11,12 @@
     <None Include="../../THIRD-PARTY-NOTICES.TXT" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
   </ItemGroup>
 
-  <!-- Custom target to merge docfx templates to TargetFramework independent folder.
-       By default, docfx templates is packed to `tools/$(TargetFramework)/any/templates/*`.
-       This target rewrite PackagePath and template files are placed at `templates/*` directory. -->
+  <!-- Custom target to merge large docfx dependencies to TargetFramework independent folder.
+       By default, these files are packed to `tools/$(TargetFramework)/any/*`.
+       This target rewrite:
+       - templates to the `/templates` directory.
+       - .playwright to the `/tools/.playwright` directory.
+  -->
   <Target Name="RewriteDocfxTemplateFiles" AfterTargets="PackTool">
     <PropertyGroup>
       <!-- Select first element of TargetFrameworks as template source (e.g. `net6.0` is selected when TargetFrameworks `net6.0;net7.0;net8.0`) -->
@@ -24,11 +27,16 @@
       <TfmSpecificPackageFile Update="@(TfmSpecificPackageFile)"
                               Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/templates/'))"
                               PackagePath="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').Replace('tools/$(TargetFramework)/any/',''))"/>
+      <TfmSpecificPackageFile Update="@(TfmSpecificPackageFile)"
+                              Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/.playwright/'))"
+                              PackagePath="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').Replace('$(TargetFramework)/any/',''))"/>
     </ItemGroup>
     <!-- If TargetFramework is not selected version. Remove template files from package. -->
     <ItemGroup Condition="'$(TargetFramework)' != '$(DocfxTemplateSourceTargetFramework)'">
       <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)"
                               Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/templates/'))"/>
+      <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)"
+                              Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/.playwright/'))"/>
     </ItemGroup>
   </Target>
 
