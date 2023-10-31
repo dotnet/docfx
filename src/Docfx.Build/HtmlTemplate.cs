@@ -29,6 +29,7 @@ struct HtmlTemplate
                 null => null,
                 HtmlTemplate template => template._html,
                 IEnumerable<HtmlTemplate> items => string.Concat(items.Select(i => Render(i))),
+                IEnumerable<HtmlTemplate?> items => string.Concat(items.Select(i => Render(i))),
                 _ => WebUtility.HtmlEncode(value.ToString()),
             };
         }
