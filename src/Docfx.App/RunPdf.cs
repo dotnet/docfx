@@ -20,6 +20,12 @@ internal static class RunPdf
     /// </summary>
     public static void Exec(PdfJsonConfig config, BuildOptions buildOptions, string configDirectory, string outputDirectory = null)
     {
+        Logger.LogWarning($"""
+            PDF on wkhtmltopdf is deprecated and will be removed in future release. Please use the new Chromium-based PDF instead. 
+            
+            See https://dotnet.github.io/docfx/docs/pdf.html for instructions on the new PDF engine.
+            """);
+
         EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory));
         // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
         var baseDirectory = EnvironmentContext.BaseDirectory;
