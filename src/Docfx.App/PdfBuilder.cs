@@ -3,10 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using Docfx.Build;
 using Docfx.Plugins;
 using Microsoft.AspNetCore.Builder;
@@ -78,12 +75,17 @@ static class PdfBuilder
         using var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync();
 
-        foreach (var (url, toc) in pdfTocs)
+        await AnsiConsole.Progress().StartAsync(async progress =>
         {
-            var outputPath = Path.Combine(outputFolder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
-
-            await CreatePdf(browser, new(baseUrl, url), toc, outputPath, pageNumbers => pdfPageNumbers[url] = pageNumbers);
-        }
+            await Parallel.ForEachAsync(pdfTocs, async (item, _) =>
+            {
+                var (url, toc) = item;
+                var task = progress.AddTask(url);
+                var outputPath = Path.Combine(outputFolder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
+                await CreatePdf(browser, task, new(baseUrl, url), toc, outputPath, pageNumbers => pdfPageNumbers[url] = pageNumbers);
+                task.StopTask();
+            });
+        });
 
         IEnumerable<(string url, Outline toc)> GetPdfTocs()
         {
@@ -114,7 +116,7 @@ static class PdfBuilder
         }
     }
 
-    static async Task CreatePdf(IBrowser browser, Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
+    static async Task CreatePdf(IBrowser browser, ProgressTask task, Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
         Directory.CreateDirectory(tempDirectory);
@@ -125,24 +127,36 @@ static class PdfBuilder
 
         var pagesByNode = pages.ToDictionary(p => p.node);
         var pagesByUrl = new Dictionary<Uri, List<(Outline node, NamedDestinations namedDests)>>();
+        var pageBytes = new Dictionary<Outline, byte[]>();
         var pageNumbers = new Dictionary<Outline, int>();
         var nextPageNumbers = new Dictionary<Outline, int>();
+        var pageNumber = 1;
         var nextPageNumber = 1;
 
-        await AnsiConsole.Progress().Columns(new SpinnerColumn(), new TaskDescriptionColumn { Alignment = Justify.Left }).StartAsync(async c =>
+        // Make progress at 99% before merge PDF
+        task.MaxValue = pages.Length + (pages.Length / 99.0);
+        foreach (var (url, node) in pages)
         {
-            await Parallel.ForEachAsync(pages, async (item, CancellationToken) =>
-            {
-                var task = c.AddTask(item.url.PathAndQuery);
-                await CapturePdf(item.path, item.url);
-                task.StopTask();
-            });
-        });
+            var bytes = await CapturePdf(url, pageNumber);
+            pageBytes[node] = bytes;
 
-        await AnsiConsole.Status().StartAsync("Creating PDF...", _ => MergePdf());
-        AnsiConsole.MarkupLine($"[green]PDF saved to {outputPath}[/]");
+            using var document = PdfDocument.Open(bytes);
 
-        async Task CapturePdf(string path, Uri url)
+            var key = CleanUrl(url);
+            if (!pagesByUrl.TryGetValue(key, out var dests))
+                pagesByUrl[key] = dests = new();
+            dests.Add((node, document.Structure.Catalog.NamedDestinations));
+
+            pageNumbers[node] = pageNumber;
+            pageNumber = document.NumberOfPages + 1;
+            nextPageNumbers[node] = pageNumber;
+            task.Value++;
+        }
+
+        await MergePdf();
+        task.Value = task.MaxValue;
+
+        async Task<byte[]> CapturePdf(Uri url, int startPageNumber)
         {
             var page = await browser.NewPageAsync();
             var response = await page.GotoAsync(url.ToString());
@@ -150,32 +164,39 @@ static class PdfBuilder
                 throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
 
             await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
+            await page.AddScriptTagAsync(new() { Content = InsertHiddenPageScript(startPageNumber - 1) });
             await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-            var bytes = await page.PdfAsync();
-            File.WriteAllBytes(path, bytes);
+            var bytes = await page.PdfAsync(new()
+            {
+                HeaderTemplate = "<span></span>",
+                FooterTemplate = "<div style='width: 100%; font-size: 10px; padding: 0 40px'></span><span class='pageNumber' style='float: right'></span></div>",
+                DisplayHeaderFooter = !IsTocPage(url),
+            });
+
+            return bytes;
         }
 
-        IEnumerable<(string path, Uri url, Outline node)> GetPages(Outline outline)
+        IEnumerable<(Uri url, Outline node)> GetPages(Outline outline)
         {
             if (!string.IsNullOrEmpty(outline.pdfCoverPage))
             {
                 var url = new Uri(outlineUrl, outline.pdfCoverPage);
                 if (url.Host == outlineUrl.Host)
-                    yield return (GetFilePath(url), url, new() { href = outline.pdfCoverPage });
+                    yield return (url, new() { href = outline.pdfCoverPage });
             }
 
             if (outline.pdfTocPage)
             {
                 var href = $"/_pdftoc{outlineUrl.AbsolutePath}";
                 var url = new Uri(outlineUrl, href);
-                yield return (GetFilePath(url), url, new() { href = href });
+                yield return (url, new() { href = href });
             }
 
             if (!string.IsNullOrEmpty(outline.href))
             {
                 var url = new Uri(outlineUrl, outline.href);
                 if (url.Host == outlineUrl.Host)
-                    yield return (GetFilePath(url), url, outline);
+                    yield return (url, outline);
             }
 
             if (outline.items != null)
@@ -184,13 +205,6 @@ static class PdfBuilder
                     foreach (var url in GetPages(item))
                         yield return url;
             }
-        }
-
-        string GetFilePath(Uri url)
-        {
-            var id = Convert.ToHexString(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(url.ToString()))).Substring(0, 6).ToLower();
-            var name = Regex.Replace(url.PathAndQuery, "\\W", "-").Trim('-');
-            return Path.Combine(tempDirectory, $"{name}-{id}.pdf");
         }
 
         async Task MergePdf()
@@ -203,46 +217,34 @@ static class PdfBuilder
                 Producer = $"docfx ({typeof(PdfBuilder).Assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version})",
             };
 
-            // Calculate page number
-            var pageNumber = 1;
-            foreach (var (path, url, node) in pages)
+            var startPageNumber = 1;
+            foreach (var (url, node) in pages)
             {
-                using var document = PdfDocument.Open(path);
+                var bytes = pageBytes[node];
 
-                var key = CleanUrl(url);
-                if (!pagesByUrl.TryGetValue(key, out var dests))
-                    pagesByUrl[key] = dests = new();
-                dests.Add((node, document.Structure.Catalog.NamedDestinations));
-
-                pageNumbers[node] = pageNumber;
-                pageNumber += document.NumberOfPages;
-                nextPageNumbers[node] = pageNumber;
-            }
-
-            // Copy pages
-            foreach (var (path, url, node) in pages)
-            {
-                if (url.AbsolutePath.StartsWith("/_pdftoc/"))
+                if (IsTocPage(url))
                 {
                     // Refresh TOC page numbers
                     updatePageNumbers(pageNumbers);
-                    await CapturePdf(path, url);
+                    bytes = await CapturePdf(url, startPageNumber);
                 }
 
-                var basePageNumber = pageNumbers[node] - 1;
-                using var document = PdfDocument.Open(path);
-                for (var i = 1; i <= document.NumberOfPages; i++)
-                    builder.AddPage(document, i, a => CopyLink(a, basePageNumber));
+                using var document = PdfDocument.Open(bytes);
+                for (var i = startPageNumber; i <= document.NumberOfPages; i++)
+                {
+                    builder.AddPage(document, i, CopyLink);
+                }
+                startPageNumber = document.NumberOfPages + 1;
             }
 
             builder.Bookmarks = new(CreateBookmarks(outline.items).ToArray());
         }
 
-        PdfAction CopyLink(PdfAction action, int basePageNumber)
+        PdfAction CopyLink(PdfAction action)
         {
             return action switch
             {
-                GoToAction link => new GoToAction(new(basePageNumber + link.Destination.PageNumber, link.Destination.Type, link.Destination.Coordinates)),
+                GoToAction link => new GoToAction(new(link.Destination.PageNumber, link.Destination.Type, link.Destination.Coordinates)),
                 UriAction url => HandleUriAction(url),
                 _ => action,
             };
@@ -259,21 +261,18 @@ static class PdfBuilder
                     {
                         if (namedDests.TryGet(name, out var dest) && dest is not null)
                         {
-                            return new GoToAction(new(pageNumbers[node] + dest.PageNumber - 1, dest.Type, dest.Coordinates));
+                            return new GoToAction(dest);
                         }
                     }
-
-                    AnsiConsole.MarkupLine($"[yellow]Failed to resolve named dest: {name}[/]");
                 }
 
                 return new GoToAction(new(pageNumbers[pages[0].node], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty));
             }
         }
 
-        static Uri CleanUrl(Uri url)
-        {
-            return new UriBuilder(url) { Query = null, Fragment = null }.Uri;
-        }
+        static Uri CleanUrl(Uri url) => new UriBuilder(url) { Query = null, Fragment = null }.Uri;
+
+        static bool IsTocPage(Uri url) => url.AbsolutePath.StartsWith("/_pdftoc/");
 
         IEnumerable<BookmarkNode> CreateBookmarks(Outline[]? items, int level = 0)
         {
@@ -355,5 +354,20 @@ static class PdfBuilder
             document.body.appendChild(a)
           }
         })
+        """;
+
+    /// <summary>
+    /// Hack PDF start page number by inserting hidden pages
+    /// https://github.com/puppeteer/puppeteer/issues/3383#issuecomment-428613372
+    /// </summary>
+    static string InsertHiddenPageScript(int n) =>
+        $$"""
+        window.pageStart = {{n}};
+        const pages = Array.from({length: window.pageStart}).map(() => {
+        	const page = document.createElement('div');
+        	page.style = "page-break-after: always; visibility: hidden;";
+        	return page;
+        });
+        document.body.prepend(...pages);
         """;
 }
