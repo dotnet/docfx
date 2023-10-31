@@ -251,8 +251,18 @@ static class PdfBuilder
 
             PdfAction HandleUriAction(UriAction url)
             {
-                if (!Uri.TryCreate(url.Uri, UriKind.Absolute, out var uri) || !pagesByUrl.TryGetValue(CleanUrl(uri), out var pages))
+                if (!Uri.TryCreate(url.Uri, UriKind.Absolute, out var uri))
                     return url;
+
+                if (!pagesByUrl.TryGetValue(CleanUrl(uri), out var pages))
+                {
+                    if (uri.Host == outlineUrl.Host && uri.Port == outlineUrl.Port)
+                    {
+                        // It is likely a 404 link if we are here
+                        return new UriAction("");
+                    }
+                    return url;
+                }
 
                 if (!string.IsNullOrEmpty(uri.Fragment) && uri.Fragment.Length > 1)
                 {
