@@ -54,16 +54,14 @@ static class PdfBuilder
         if (pdfTocs.Count == 0)
             return;
 
-        var pdfPageNumbers = new ConcurrentDictionary<string, Dictionary<Outline, int>>();
-
-        AnsiConsole.Status().Start("Installing Chromium...", _ => Program.Main(new[] { "install", "chromium" }));
-        AnsiConsole.MarkupLine("[green]Chromium installed.[/]");
+        Program.Main(new[] { "install", "chromium" });
 
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
         builder.WebHost.UseUrls("http://127.0.0.1:0");
 
         Uri? baseUrl = null;
+        var pdfPageNumbers = new ConcurrentDictionary<string, Dictionary<Outline, int>>();
 
         using var app = builder.Build();
         app.UseServe(outputFolder);
