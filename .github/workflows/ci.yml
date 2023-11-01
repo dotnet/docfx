@@ -45,9 +45,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
 
     - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- docs/docfx.json
-
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- metadata samples/seed/docfx.json
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- build samples/seed/docfx.json --output docs/_site/seed
+    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
 
     - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'
