@@ -133,6 +133,8 @@ static class PdfBuilder
         var pageNumber = 1;
         var nextPageNumber = 1;
 
+        var page = await browser.NewPageAsync(new() { UserAgent = "docfx/pdf" });
+
         // Make progress at 99% before merge PDF
         task.MaxValue = pages.Length + (pages.Length / 99.0);
         foreach (var (url, node) in pages)
@@ -158,14 +160,14 @@ static class PdfBuilder
 
         async Task<byte[]> CapturePdf(Uri url, int startPageNumber)
         {
-            var page = await browser.NewPageAsync();
             var response = await page.GotoAsync(url.ToString());
             if (response is null || !response.Ok)
                 throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
 
             await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
             await page.AddScriptTagAsync(new() { Content = InsertHiddenPageScript(startPageNumber - 1) });
-            await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+            await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
+            await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
             var bytes = await page.PdfAsync(new()
             {
                 HeaderTemplate = "<span></span>",

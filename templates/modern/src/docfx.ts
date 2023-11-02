@@ -25,15 +25,22 @@ declare global {
 async function init() {
   window.docfx = window.docfx || {}
 
-  initTheme()
-
-  await Promise.all([
-    enableSearch(),
-    renderInThisArticle(),
-    renderMarkdown(),
-    renderNav(),
-    highlight()
-  ])
+  const pdfmode = navigator.userAgent.indexOf('docfx/pdf') >= 0
+  if (pdfmode) {
+    await Promise.all([
+      renderMarkdown(),
+      highlight()
+    ])
+  } else {
+    await Promise.all([
+      initTheme(),
+      enableSearch(),
+      renderInThisArticle(),
+      renderMarkdown(),
+      renderNav(),
+      highlight()
+    ])
+  }
 
   window.docfx.ready = true
 
