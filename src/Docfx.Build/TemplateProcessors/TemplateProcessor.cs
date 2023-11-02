@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Concurrent;
-
+using System.Diagnostics;
 using Docfx.Common;
 using Docfx.Plugins;
 
@@ -107,26 +107,45 @@ public class TemplateProcessor : IDisposable
     {
         foreach (var resourceInfo in templateBundles.SelectMany(s => s.Resources).Distinct())
         {
+            var resourceKey = resourceInfo.ResourceKey;
+
             try
             {
-                using var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey);
-                CopyTemplateResource(stream, outputDirectory, resourceInfo.ResourceKey);
+                using var stream = _resourceProvider.GetResourceStream(resourceKey);
+
+                if (stream is FileStream fileStream)
+                {
+                    CopyTemplateResourceFile(new FileInfo(fileStream.Name), outputDirectory, resourceKey);
+                }
+                else
+                {
+                    CopyTemplateResourceStream(stream, outputDirectory, resourceKey);
+                }
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Info, $"Unable to get relative resource for {resourceInfo.ResourceKey}: {e.Message}");
+                Logger.Log(LogLevel.Info, $"Unable to get relative resource for {resourceKey}: {e.Message}");
             }
         }
     }
 
-    private static void CopyTemplateResource(Stream stream, string outputDirectory, string filePath)
+    /// <summary>
+    /// Copy template resource from stream.
+    /// </summary>
+    private static void CopyTemplateResourceStream(Stream stream, string outputDirectory, string filePath)
     {
         if (stream != null)
         {
             var path = Path.Combine(outputDirectory, filePath);
             Directory.CreateDirectory(Path.GetFullPath(Path.GetDirectoryName(path)));
 
-            using (var writer = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
+            using (var writer = new FileStream(path, new FileStreamOptions
+            {
+                Mode = FileMode.Create,
+                Access = FileAccess.Write,
+                Share = FileShare.None,
+                PreallocationSize = stream.Length,
+            }))
             {
                 stream.CopyTo(writer);
             }
@@ -136,6 +155,35 @@ public class TemplateProcessor : IDisposable
         else
         {
             Logger.Log(LogLevel.Info, $"Unable to get relative resource for {filePath}");
+        }
+    }
+
+    /// <summary>
+    /// Copy template resource as file.
+    /// </summary>
+    private static void CopyTemplateResourceFile(FileInfo inputFileInfo, string outputDirectory, string filePath)
+    {
+        Debug.Assert(inputFileInfo.Exists);
+
+        var path = Path.Combine(outputDirectory, filePath);
+        var outputFileInfo = new FileInfo(path);
+        outputFileInfo.Directory.Create();
+
+        bool isOverwrite = outputFileInfo.Exists;
+
+        // Skip file copy if following condition met.
+        bool skipFileCopy = isOverwrite                                                        // Output file is already exists.
+                         && inputFileInfo.Length == outputFileInfo.Length                      // File's lengths are identical.
+                         && inputFileInfo.LastWriteTimeUtc == outputFileInfo.LastWriteTimeUtc; // File's LastWriteTimeUtc are identical.
+        if (skipFileCopy)
+        {
+            Logger.Log(LogLevel.Verbose, $"Skipped resource {filePath} that template dependants on to {outputFileInfo.FullName}");
+            return;
+        }
+        else
+        {
+            File.Copy(inputFileInfo.FullName, outputFileInfo.FullName, isOverwrite); // Use `File.Copy` API to preserve LastWriteTime.
+            Logger.Log(LogLevel.Verbose, $"Saved resource {filePath} that template dependants on to {outputFileInfo.FullName}");
         }
     }
 
