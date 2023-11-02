@@ -370,12 +370,13 @@ static class PdfBuilder
     /// </summary>
     static string InsertHiddenPageScript(int n) =>
         $$"""
-        window.pageStart = {{n}};
+        window.pageStart = {{n}}
         const pages = Array.from({length: window.pageStart}).map(() => {
-        	const page = document.createElement('div');
-        	page.style = "page-break-after: always; visibility: hidden;";
-        	return page;
+          const page = document.createElement('div')
+          page.innerText = 'placeholder'
+          page.style = "page-break-after: always; visibility: hidden;"
+          return page
         });
-        document.body.prepend(...pages);
+        document.body.prepend(...pages)
         """;
 }

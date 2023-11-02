@@ -1033,3 +1033,9 @@ div.embeddedvideo iframe {
     font-weight: bold;
     margin-top: 2em;
 }
+
+@media print {
+  @page {
+    margin: .4in;
+  }
+}
