@@ -35,8 +35,8 @@ static class PdfBuilder
 
         public bool pdf { get; init; }
         public string? pdfFileName { get; init; }
-        public string? pdfCoverPage { get; init; }
         public bool pdfTocPage { get; init; }
+        public string? pdfCoverPage { get; init; }
     }
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
@@ -54,16 +54,14 @@ static class PdfBuilder
         if (pdfTocs.Count == 0)
             return;
 
-        var pdfPageNumbers = new ConcurrentDictionary<string, Dictionary<Outline, int>>();
-
-        AnsiConsole.Status().Start("Installing Chromium...", _ => Program.Main(new[] { "install", "chromium" }));
-        AnsiConsole.MarkupLine("[green]Chromium installed.[/]");
+        Program.Main(new[] { "install", "chromium" });
 
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
         builder.WebHost.UseUrls("http://127.0.0.1:0");
 
         Uri? baseUrl = null;
+        var pdfPageNumbers = new ConcurrentDictionary<string, Dictionary<Outline, int>>();
 
         using var app = builder.Build();
         app.UseServe(outputFolder);
@@ -182,16 +180,14 @@ static class PdfBuilder
         {
             if (!string.IsNullOrEmpty(outline.pdfCoverPage))
             {
-                var url = new Uri(outlineUrl, outline.pdfCoverPage);
-                if (url.Host == outlineUrl.Host)
-                    yield return (url, new() { href = outline.pdfCoverPage });
+                var href = $"/{outline.pdfCoverPage}";
+                yield return (new(outlineUrl, href), new() { href = href });
             }
 
             if (outline.pdfTocPage)
             {
                 var href = $"/_pdftoc{outlineUrl.AbsolutePath}";
-                var url = new Uri(outlineUrl, href);
-                yield return (url, new() { href = href });
+                yield return (new(outlineUrl, href), new() { href = href });
             }
 
             if (!string.IsNullOrEmpty(outline.href))

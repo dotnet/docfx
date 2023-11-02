@@ -1,42 +1,100 @@
 # Create PDF Files
 
-Docfx produces PDF files based on the TOC structure.
+Docfx can build PDF files from articles and API documentations.
 
-## Install wkhtmltopdf
+## Enable PDF
 
-To build PDF files, first install `wkhtmltopdf` by downloading the latest binary from the [official site](https://wkhtmltopdf.org/downloads.html) or install using chocolatey: `choco install wkhtmltopdf`.
+To enable PDF for the whole site:
 
-Make sure the `wkhtmltopdf` command is added to `PATH` environment variable and is available in the terminal.
-
-## PDF Config
-
-Add a `pdf` section in `docfx.json`:
+1. Set the `pdf` global metadata to `true` in `docfx.json`:
 
 ```json
 {
-	"pdf": {
-		"content": [
-			{
-				"files": [ "**/*.{md,yml}" ]
-			}
-		],
-		"wkhtmltopdf": {
-			"additionalArguments": "--enable-local-file-access"
+	"build": {
+		"globalMetadata": {
+			"pdf": true
 		}
 	}
 }
 ```
 
-Most of the config options are the same as `build` config. The `wkhtmltopdf` config contains additional details to control `wkhtmltopdf` behavior:
-- `filePath`: Path to `wkhtmltopdf.exe`.
-- `additionalArguments`: Additional command line arguments passed to `wkhtmltopdf`. Usually needs `--enable-local-file-access` to allow access to local files.
+2. Run `docfx build` command to build the site. This command produces a site with a "Download PDF" button.
 
-Running `docfx` command againt the above configuration produces a PDF file for every TOC included in the `content` property. The PDF files are placed under the `_site_pdf` folder based on the TOC name.
+3. Run `docfx pdf` command to build the PDF files. This command creates a `toc.pdf` file for every TOC in the output directory.
 
-See [this sample](https://github.com/dotnet/docfx/tree/main/samples/seed) on an example PDF config.
+PDF can also be configured per TOC directly in `toc.yml` files:
 
-## Add Cover Page
+```yaml
+pdf: true
+items:
+- name: Getting Started
+  href: getting-started.md
+```
 
-A cover page is the first PDF page before the TOC page.
+In case the TOC file is auto-generated, use [file metadata](./config.md#metadata) to configure PDF per TOC file:
 
-To add a cover page, add a `cover.md` file alongside `toc.yml`. The content of `cover.md` will be rendered as the PDF cover page.
+```json
+{
+	"build": {
+		"fileMetadata": {
+			"pdf": {
+				"api/**/toc.yml": true
+			}
+		}
+	}
+}
+```
+
+## PDF Metadata
+
+These metadata applies to TOC files that controls behaviors of PDF generation.
+
+### `pdf`
+
+Indicates whether to generate PDF and shows the "Download PDF" button on the site.
+
+### `pdfFileName`
+
+Sets the PDF output file name. The default value is `toc.pdf`.
+
+### `pdfTocPage`
+
+Indicates whether to include a "Table of Contents" pages at the beginning.
+
+### `pdfCoverPage`
+
+A path to an HTML page relative to output root. The HTML page will be inserted at the beginning of the PDF file as cover page.
+
+## Customize PDF Pages
+
+PDF rendering uses the same HTML site template. To customize PDF page styles, use the [CSS print media](https://developer.mozilla.org/en-US/docs/Web/Guide/Printing):
+
+```css
+@media print {
+  /* All your print styles go here */
+}
+```
+
+To preview PDF rendering result, print the HTML page in the web browser, or set _"Emulate CSS media type"_ to *print* in the rendering tab of browser developer tools.
+
+### Customize Cover Page
+
+The site template adds a default margin and removes background graphics for pages in print mode. Use `@page { margin: 0 }` to remove the default margin and use `print-color-adjust: exact` to keep background graphics for cover pages.
+
+See [this example](https://raw.githubusercontent.com/dotnet/docfx/main/samples/seed/pdf.md) on a PDF cover page that fills the whole page with background graphics:
+
+![Alt text](./media/pdf-cover-page.png)
+
+### Customize TOC Page
+ 
+When `pdfTocPage` is `true`, a Table of Content page is inserted at the beginning of the PDF file.
+
+![Alt text](media/pdf-toc-page.png)
+
+You can customize the PDF page using the following CSS selectors:
+
+- `.pdftoc h1`: The "Table of Contents" heading.
+- `.pdftoc ul`: The TOC list.
+- `.pdftoc li`: The TOC list item.
+- `.pdftoc .page-number`: Page number.
+- `.pdftoc .spacer`: The dots between title and page number.
