@@ -2,6 +2,14 @@
   // Uncomment next line to enable intellisense.
   // "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/launchsettings.json",
   "profiles": {
+    // Run `docfx init` command.
+    "docfx init": {
+      "commandName": "Project",
+      "commandLineArgs": "init --output bin/init",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
     // Run `docfx build` command.
     "docfx build": {
       "commandName": "Project",
