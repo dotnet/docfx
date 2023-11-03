@@ -31,6 +31,7 @@ partial class DotnetApiCatalog
         var symbolUrlKind = config.OutputFormat is MetadataOutputFormat.Markdown ? SymbolUrlKind.Markdown : SymbolUrlKind.Html;
         var toc = CreateToc(assemblies, config, options);
         var allSymbols = EnumerateToc(toc).SelectMany(node => node.symbols).ToList();
+        var allNamespaceSymbols = allSymbols.Where(i => i.symbol.Kind is SymbolKind.Namespace).ToHashSet();
         allSymbols.Sort((a, b) => a.symbol.Name.CompareTo(b.symbol.Name));
 
         Parallel.ForEach(EnumerateToc(toc), n => SaveTocNode(n.id, n.symbols));
@@ -164,6 +165,7 @@ partial class DotnetApiCatalog
                 {
                     var items = symbols
                         .SelectMany(n => ((INamespaceSymbol)n.symbol).GetNamespaceMembers().Select(symbol => (symbol, n.compilation)))
+                        .Where(n => allNamespaceSymbols.Contains(n))
                         .DistinctBy(n => n.symbol.Name)
                         .OrderBy(n => n.symbol.Name)
                         .ToList();
