@@ -2,6 +2,9 @@
 
 Docfx can build PDF files from articles and API documentations.
 
+> [!NOTE]
+> This article applies to docfx 2.73.0 or greater
+
 ## Enable PDF
 
 To enable PDF for the whole site:
@@ -10,11 +13,11 @@ To enable PDF for the whole site:
 
 ```json
 {
-	"build": {
-		"globalMetadata": {
-			"pdf": true
-		}
-	}
+  "build": {
+    "globalMetadata": {
+      "pdf": true
+    }
+  }
 }
 ```
 
@@ -35,13 +38,13 @@ In case the TOC file is auto-generated, use [file metadata](./config.md#metadata
 
 ```json
 {
-	"build": {
-		"fileMetadata": {
-			"pdf": {
-				"api/**/toc.yml": true
-			}
-		}
-	}
+  "build": {
+    "fileMetadata": {
+      "pdf": {
+        "api/**/toc.yml": true
+      }
+    }
+  }
 }
 ```
 
