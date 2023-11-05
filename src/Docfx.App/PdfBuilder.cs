@@ -71,16 +71,23 @@ static class PdfBuilder
         baseUrl = new Uri(app.Urls.First());
 
         using var playwright = await Playwright.CreateAsync();
-        var browser = await playwright.Chromium.LaunchAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync();
 
         await AnsiConsole.Progress().StartAsync(async progress =>
         {
             await Parallel.ForEachAsync(pdfTocs, async (item, _) =>
             {
                 var (url, toc) = item;
-                var task = progress.AddTask(url);
-                var outputPath = Path.Combine(outputFolder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
-                await CreatePdf(browser, task, new(baseUrl, url), toc, outputPath, pageNumbers => pdfPageNumbers[url] = pageNumbers);
+                var outputName = Path.Combine(Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
+                var task = progress.AddTask(outputName);
+                var outputPath = Path.Combine(outputFolder, outputName);
+
+                await using var context = await browser.NewContextAsync(new() { UserAgent = "docfx/pdf" });
+
+                var page = await context.NewPageAsync();
+                await CreatePdf(page, task, new(baseUrl, url), toc, outputPath, pageNumbers => pdfPageNumbers[url] = pageNumbers);
+                await page.CloseAsync();
+
                 task.Value = task.MaxValue;
                 task.StopTask();
             });
@@ -115,7 +122,7 @@ static class PdfBuilder
         }
     }
 
-    static async Task CreatePdf(IBrowser browser, ProgressTask task, Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
+    static async Task CreatePdf(IPage page, ProgressTask task, Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
         Directory.CreateDirectory(tempDirectory);
@@ -130,13 +137,13 @@ static class PdfBuilder
         var pageNumbers = new Dictionary<Outline, int>();
         var numberOfPages = 0;
 
-        var page = await browser.NewPageAsync(new() { UserAgent = "docfx/pdf" });
-
         // Make progress at 99% before merge PDF
         task.MaxValue = pages.Length + (pages.Length / 99.0);
         foreach (var (url, node) in pages)
         {
             var bytes = await CapturePdf(url, numberOfPages);
+            task.Value++;
+
             if (bytes is null)
                 continue;
 
@@ -152,7 +159,6 @@ static class PdfBuilder
             pageBytes[node] = (numberOfPages + 1, bytes);
             pageNumbers[node] = numberOfPages + 1;
             numberOfPages = document.NumberOfPages;
-            task.Value++;
         }
 
         if (numberOfPages is 0)
@@ -170,7 +176,7 @@ static class PdfBuilder
 
         async Task<byte[]?> CapturePdf(Uri url, int insertPageCount)
         {
-            var response = await page.GotoAsync(url.ToString());
+            var response = await page.GotoAsync(url.ToString(), new() { WaitUntil = WaitUntilState.DOMContentLoaded });
             if (response?.Status is 404)
                 return null;
 
@@ -179,7 +185,6 @@ static class PdfBuilder
 
             await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
             await page.AddScriptTagAsync(new() { Content = InsertHiddenPageScript(insertPageCount) });
-            await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
             await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
             var bytes = await page.PdfAsync(new()
             {
