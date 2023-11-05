@@ -81,6 +81,7 @@ static class PdfBuilder
                 var task = progress.AddTask(url);
                 var outputPath = Path.Combine(outputFolder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
                 await CreatePdf(browser, task, new(baseUrl, url), toc, outputPath, pageNumbers => pdfPageNumbers[url] = pageNumbers);
+                task.Value = task.MaxValue;
                 task.StopTask();
             });
         });
@@ -125,11 +126,9 @@ static class PdfBuilder
 
         var pagesByNode = pages.ToDictionary(p => p.node);
         var pagesByUrl = new Dictionary<Uri, List<(Outline node, NamedDestinations namedDests)>>();
-        var pageBytes = new Dictionary<Outline, byte[]>();
+        var pageBytes = new Dictionary<Outline, (int startPageNumber, byte[] bytes)>();
         var pageNumbers = new Dictionary<Outline, int>();
-        var nextPageNumbers = new Dictionary<Outline, int>();
-        var pageNumber = 1;
-        var nextPageNumber = 1;
+        var numberOfPages = 0;
 
         var page = await browser.NewPageAsync(new() { UserAgent = "docfx/pdf" });
 
@@ -137,33 +136,49 @@ static class PdfBuilder
         task.MaxValue = pages.Length + (pages.Length / 99.0);
         foreach (var (url, node) in pages)
         {
-            var bytes = await CapturePdf(url, pageNumber);
-            pageBytes[node] = bytes;
+            var bytes = await CapturePdf(url, numberOfPages);
+            if (bytes is null)
+                continue;
 
             using var document = PdfDocument.Open(bytes);
+            if (document.NumberOfPages is 0)
+                continue;
 
             var key = CleanUrl(url);
             if (!pagesByUrl.TryGetValue(key, out var dests))
                 pagesByUrl[key] = dests = new();
             dests.Add((node, document.Structure.Catalog.NamedDestinations));
 
-            pageNumbers[node] = pageNumber;
-            pageNumber = document.NumberOfPages + 1;
-            nextPageNumbers[node] = pageNumber;
+            pageBytes[node] = (numberOfPages + 1, bytes);
+            pageNumbers[node] = numberOfPages + 1;
+            numberOfPages = document.NumberOfPages;
             task.Value++;
         }
 
-        await MergePdf();
-        task.Value = task.MaxValue;
+        if (numberOfPages is 0)
+            return;
 
-        async Task<byte[]> CapturePdf(Uri url, int startPageNumber)
+        var producer = $"docfx ({typeof(PdfBuilder).Assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version})";
+
+        using var output = File.Create(outputPath);
+        using var builder = new PdfDocumentBuilder(output);
+
+        builder.DocumentInformation = new() { Producer = producer };
+        builder.Bookmarks = CreateBookmarks(outline.items);
+
+        await MergePdf();
+
+        async Task<byte[]?> CapturePdf(Uri url, int insertPageCount)
         {
             var response = await page.GotoAsync(url.ToString());
+            if (response?.Status is 404)
+                return null;
+
             if (response is null || !response.Ok)
                 throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
 
             await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
-            await page.AddScriptTagAsync(new() { Content = InsertHiddenPageScript(startPageNumber - 1) });
+            await page.AddScriptTagAsync(new() { Content = InsertHiddenPageScript(insertPageCount) });
             await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
             await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
             var bytes = await page.PdfAsync(new()
@@ -207,24 +222,17 @@ static class PdfBuilder
 
         async Task MergePdf()
         {
-            using var output = File.Create(outputPath);
-            using var builder = new PdfDocumentBuilder(output);
-
-            builder.DocumentInformation = new()
-            {
-                Producer = $"docfx ({typeof(PdfBuilder).Assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version})",
-            };
-
-            var startPageNumber = 1;
             foreach (var (url, node) in pages)
             {
-                var bytes = pageBytes[node];
+                if (!pageBytes.TryGetValue(node, out var item))
+                    continue;
 
+                var (startPageNumber, bytes) = item;
                 if (IsTocPage(url))
                 {
                     // Refresh TOC page numbers
                     updatePageNumbers(pageNumbers);
-                    bytes = await CapturePdf(url, startPageNumber);
+                    bytes = await CapturePdf(url, startPageNumber - 1);
                 }
 
                 using var document = PdfDocument.Open(bytes);
@@ -232,10 +240,7 @@ static class PdfBuilder
                 {
                     builder.AddPage(document, i, CopyLink);
                 }
-                startPageNumber = document.NumberOfPages + 1;
             }
-
-            builder.Bookmarks = new(CreateBookmarks(outline.items).ToArray());
         }
 
         PdfAction CopyLink(PdfAction action)
@@ -282,38 +287,57 @@ static class PdfBuilder
 
         static bool IsTocPage(Uri url) => url.AbsolutePath.StartsWith("/_pdftoc/");
 
-        IEnumerable<BookmarkNode> CreateBookmarks(Outline[]? items, int level = 0)
+        Bookmarks CreateBookmarks(Outline[]? items)
         {
-            if (items is null)
-                yield break;
+            var nextPageNumber = 1;
+            var nextPageNumbers = new Dictionary<Outline, int>();
 
-            foreach (var item in items)
+            foreach (var (_, node) in pages)
             {
-                if (string.IsNullOrEmpty(item.href))
-                {
-                    yield return new DocumentBookmarkNode(
-                        item.name, level,
-                        new(nextPageNumber, ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
-                        CreateBookmarks(item.items, level + 1).ToArray());
-                    continue;
-                }
+                if (pageNumbers.TryGetValue(node, out var pageNumber))
+                    nextPageNumber = Math.Min(numberOfPages, pageNumber + 1);
+                else
+                    nextPageNumbers[node] = nextPageNumber;
+            }
 
-                if (!pagesByNode.TryGetValue(item, out var page))
-                {
-                    yield return new UriBookmarkNode(
-                        item.name, level,
-                        new Uri(outlineUrl, item.href).ToString(),
-                        CreateBookmarks(item.items, level + 1).ToArray());
-                    continue;
-                }
+            return new(CreateBookmarksCore(items, 0).ToArray());
 
-                if (!string.IsNullOrEmpty(item.name))
+            IEnumerable<BookmarkNode> CreateBookmarksCore(Outline[]? items, int level)
+            {
+                if (items is null)
+                    yield break;
+
+                foreach (var item in items)
                 {
-                    nextPageNumber = nextPageNumbers[item];
-                    yield return new DocumentBookmarkNode(
-                        item.name, level,
-                        new(pageNumbers[item], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
-                        CreateBookmarks(item.items, level + 1).ToArray());
+                    if (string.IsNullOrEmpty(item.name))
+                        continue;
+
+                    if (string.IsNullOrEmpty(item.href))
+                    {
+                        yield return new DocumentBookmarkNode(
+                            item.name, level,
+                            new(nextPageNumber, ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
+                            CreateBookmarksCore(item.items, level + 1).ToArray());
+                        continue;
+                    }
+
+                    if (!pagesByNode.TryGetValue(item, out var page))
+                    {
+                        yield return new UriBookmarkNode(
+                            item.name, level,
+                            new Uri(outlineUrl, item.href).ToString(),
+                            CreateBookmarksCore(item.items, level + 1).ToArray());
+                        continue;
+                    }
+
+                    if (pageNumbers.TryGetValue(item, out var pageNumber) ||
+                        nextPageNumbers.TryGetValue(item, out pageNumber))
+                    {
+                        yield return new DocumentBookmarkNode(
+                            item.name, level,
+                            new(pageNumber, ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
+                            CreateBookmarksCore(item.items, level + 1).ToArray());
+                    }
                 }
             }
         }
