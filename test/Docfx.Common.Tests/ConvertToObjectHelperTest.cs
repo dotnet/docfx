@@ -64,7 +64,7 @@ public class ConvertToObjectHelperTest
         a["key1"] = a;
 
         dynamic converted = ConvertToObjectHelper.ConvertToDynamic(a);
-        Assert.Equal(converted.key1, converted);
+        Assert.Same(converted.key1, converted);
         Assert.Equal("value", converted.key1.key);
 
         Dictionary<string, object> obj = ConvertToObjectHelper.ConvertExpandoObjectToObject(converted);
