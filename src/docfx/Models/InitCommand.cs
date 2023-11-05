@@ -86,17 +86,6 @@ class InitCommand : Command<InitCommandOptions>
                   href: {docsLocation}/
                 """,
 
-            ["api/toc.yml"] = dotnetApi ?
-                $"""
-                - name: API Reference
-                  href: api.md
-                """ : null,
-
-            ["api/api.md"] = dotnetApi ?
-                $"""
-                # API Reference
-                """ : null,
-
             ["index.md"] =
                 """
                 ---

@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Docfx.Tests;
 
+[Collection("docfx STA")]
 public static class CommandLineTest
 {
     [Fact]
