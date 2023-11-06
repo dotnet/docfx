@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Spectre.Console" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
     <ProjectReference Include="..\Docfx.YamlSerialization\Docfx.YamlSerialization.csproj" />
   </ItemGroup>

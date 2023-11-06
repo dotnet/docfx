@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using Spectre.Console;
 
 namespace Docfx.Common;
 
@@ -156,23 +157,19 @@ public static class Logger
     public static void PrintSummary()
     {
         if (_errorCount > 0)
-        {
-            ConsoleUtility.WriteLine($"\n\nBuild failed.\n", ConsoleColor.Red);
-        }
+            AnsiConsole.MarkupLine("\n\n[red]Build failed.[/]\n");
         else if (_warningCount > 0)
-        {
-            ConsoleUtility.WriteLine($"\n\nBuild succeeded with warning.\n", ConsoleColor.Yellow);
-        }
+            AnsiConsole.MarkupLine("\n\n[yellow]Build succeeded with warning.[/]\n");
         else
-        {
-            ConsoleUtility.WriteLine("\n\nBuild succeeded.\n", ConsoleColor.Green);
-        }
+            AnsiConsole.MarkupLine("\n\n[green]Build succeeded.[/]\n");
 
-        ConsoleUtility.WriteLine($"    {_warningCount} warning(s)", _warningCount > 0 ? ConsoleColor.Yellow : ConsoleColor.White);
-        ConsoleUtility.WriteLine($"    {_errorCount} error(s)\n", _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White);
+        AnsiConsole.Foreground = _warningCount > 0 ? ConsoleColor.Yellow : ConsoleColor.White;
+        AnsiConsole.WriteLine($"    {_warningCount} warning(s)");
+        AnsiConsole.Foreground = _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White;
+        AnsiConsole.WriteLine($"    {_errorCount} error(s)\n");
     }
 
-        private class LogItem : ILogItem
+    class LogItem : ILogItem
     {
         public string File { get; set; }
 
