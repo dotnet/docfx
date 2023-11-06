@@ -15,6 +15,7 @@ using Spectre.Console;
 
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Actions;
+using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Outline;
 using UglyToad.PdfPig.Outline.Destinations;
 using UglyToad.PdfPig.Writer;
@@ -72,6 +73,9 @@ static class PdfBuilder
 
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync();
+        await using var context = await browser.NewContextAsync(new() { UserAgent = "docfx/pdf" });
+        using var pageLimiter = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
+        var pagePool = new ConcurrentBag<IPage>();
 
         await AnsiConsole.Progress().StartAsync(async progress =>
         {
@@ -82,11 +86,9 @@ static class PdfBuilder
                 var task = progress.AddTask(outputName);
                 var outputPath = Path.Combine(outputFolder, outputName);
 
-                await using var context = await browser.NewContextAsync(new() { UserAgent = "docfx/pdf" });
-
-                var page = await context.NewPageAsync();
-                await CreatePdf(page, task, new(baseUrl, url), toc, outputPath, pageNumbers => pdfPageNumbers[url] = pageNumbers);
-                await page.CloseAsync();
+                await CreatePdf(
+                    PrintPdf, task, new(baseUrl, url), toc, outputPath,
+                    pageNumbers => pdfPageNumbers[url] = pageNumbers);
 
                 task.Value = task.MaxValue;
                 task.StopTask();
@@ -120,9 +122,37 @@ static class PdfBuilder
             var pageNumbers = pdfPageNumbers.TryGetValue(url, out var x) ? x : default;
             return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], pageNumbers).ToString(), "text/html");
         }
+
+        async Task<byte[]?> PrintPdf(Uri url)
+        {
+            await pageLimiter.WaitAsync();
+            var page = pagePool.TryTake(out var pooled) ? pooled : await context.NewPageAsync();
+
+            try
+            {
+                var response = await page.GotoAsync(url.ToString(), new() { WaitUntil = WaitUntilState.DOMContentLoaded });
+                if (response?.Status is 404)
+                    return null;
+
+                if (response is null || !response.Ok)
+                    throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
+
+                await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
+                await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
+
+                return await page.PdfAsync();
+            }
+            finally
+            {
+                pagePool.Add(page);
+                pageLimiter.Release();
+            }
+        }
     }
 
-    static async Task CreatePdf(IPage page, ProgressTask task, Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
+    static async Task CreatePdf(
+        Func<Uri, Task<byte[]?>> printPdf, ProgressTask task,
+        Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
         Directory.CreateDirectory(tempDirectory);
@@ -131,20 +161,30 @@ static class PdfBuilder
         if (pages.Length == 0)
             return;
 
-        var pagesByNode = pages.ToDictionary(p => p.node);
-        var pagesByUrl = new Dictionary<Uri, List<(Outline node, NamedDestinations namedDests)>>();
-        var pageBytes = new Dictionary<Outline, (int startPageNumber, byte[] bytes)>();
-        var pageNumbers = new Dictionary<Outline, int>();
-        var numberOfPages = 0;
+        var pageBytes = new Dictionary<Outline, byte[]>();
 
         // Make progress at 99% before merge PDF
         task.MaxValue = pages.Length + (pages.Length / 99.0);
+
+        await Parallel.ForEachAsync(pages, async (item, _) =>
+        {
+            var (url, node) = item;
+            if (await printPdf(url) is { } bytes)
+            {
+                lock (pageBytes)
+                    pageBytes[node] = bytes;
+            }
+            task.Increment(1);
+        });
+
+        var pagesByNode = pages.ToDictionary(p => p.node);
+        var pagesByUrl = new Dictionary<Uri, List<(Outline node, NamedDestinations namedDests)>>();
+        var pageNumbers = new Dictionary<Outline, int>();
+        var numberOfPages = 0;
+
         foreach (var (url, node) in pages)
         {
-            var bytes = await CapturePdf(url, numberOfPages);
-            task.Value++;
-
-            if (bytes is null)
+            if (!pageBytes.TryGetValue(node, out var bytes))
                 continue;
 
             using var document = PdfDocument.Open(bytes);
@@ -156,9 +196,9 @@ static class PdfBuilder
                 pagesByUrl[key] = dests = new();
             dests.Add((node, document.Structure.Catalog.NamedDestinations));
 
-            pageBytes[node] = (numberOfPages + 1, bytes);
+            pageBytes[node] = bytes;
             pageNumbers[node] = numberOfPages + 1;
-            numberOfPages = document.NumberOfPages;
+            numberOfPages += document.NumberOfPages;
         }
 
         if (numberOfPages is 0)
@@ -173,28 +213,6 @@ static class PdfBuilder
         builder.Bookmarks = CreateBookmarks(outline.items);
 
         await MergePdf();
-
-        async Task<byte[]?> CapturePdf(Uri url, int insertPageCount)
-        {
-            var response = await page.GotoAsync(url.ToString(), new() { WaitUntil = WaitUntilState.DOMContentLoaded });
-            if (response?.Status is 404)
-                return null;
-
-            if (response is null || !response.Ok)
-                throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
-
-            await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
-            await page.AddScriptTagAsync(new() { Content = InsertHiddenPageScript(insertPageCount) });
-            await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
-            var bytes = await page.PdfAsync(new()
-            {
-                HeaderTemplate = "<span></span>",
-                FooterTemplate = "<div style='width: 100%; font-size: 10px; padding: 0 40px'></span><span class='pageNumber' style='float: right'></span></div>",
-                DisplayHeaderFooter = !IsTocPage(url),
-            });
-
-            return bytes;
-        }
 
         IEnumerable<(Uri url, Outline node)> GetPages(Outline outline)
         {
@@ -227,32 +245,58 @@ static class PdfBuilder
 
         async Task MergePdf()
         {
+            var pageNumber = 0;
+            var font = builder.AddStandard14Font(UglyToad.PdfPig.Fonts.Standard14Fonts.Standard14Font.Helvetica);
+
             foreach (var (url, node) in pages)
             {
-                if (!pageBytes.TryGetValue(node, out var item))
+                if (!pageBytes.TryGetValue(node, out var bytes))
                     continue;
 
-                var (startPageNumber, bytes) = item;
-                if (IsTocPage(url))
+                var isTocPage = IsTocPage(url);
+                if (isTocPage)
                 {
                     // Refresh TOC page numbers
                     updatePageNumbers(pageNumbers);
-                    bytes = await CapturePdf(url, startPageNumber - 1);
+                    bytes = await printPdf(url);
                 }
 
                 using var document = PdfDocument.Open(bytes);
-                for (var i = startPageNumber; i <= document.NumberOfPages; i++)
+                for (var i = 1; i <= document.NumberOfPages; i++)
                 {
-                    builder.AddPage(document, i, CopyLink);
+                    pageNumber++;
+                    var pageBuilder = builder.AddPage(document, i, x => CopyLink(node, x));
+
+                    if (isTocPage)
+                        continue;
+
+                    // Draw page number before PDF content to
+                    //  1. Allow backgrounds in PDF content to cover page numbers.
+                    //  2. Use the default PDF rendering transformation matrix because chromium resets the matrix.
+                    pageBuilder.SelectContentStream(0);
+                    pageBuilder.NewContentStreamBefore();
+
+                    DrawPageNumber(pageBuilder, document.GetPage(i), pageNumber);
                 }
+            }
+
+            void DrawPageNumber(PdfPageBuilder pageBuilder, Page page, int pageNumber)
+            {
+                const int FontSize = 10;
+                const int Margin = 10;
+
+                var text = $"{pageNumber}";
+                var letters = pageBuilder.MeasureText(text, FontSize, new(0, 0), font);
+                var width = letters[^1].GlyphRectangle.Right;
+                pageBuilder.AddText(text, FontSize, new(page.Width - width - Margin, Margin), font);
             }
         }
 
-        PdfAction CopyLink(PdfAction action)
+        PdfAction CopyLink(Outline node, PdfAction action)
         {
             return action switch
             {
-                GoToAction link => new GoToAction(new(link.Destination.PageNumber, link.Destination.Type, link.Destination.Coordinates)),
+                GoToAction link => new GoToAction(new(pageNumbers[node] - 1 + link.Destination.PageNumber, link.Destination.Type, link.Destination.Coordinates)),
                 UriAction url => HandleUriAction(url),
                 _ => action,
             };
@@ -279,7 +323,7 @@ static class PdfBuilder
                     {
                         if (namedDests.TryGet(name, out var dest) && dest is not null)
                         {
-                            return new GoToAction(dest);
+                            return new GoToAction(new(pageNumbers[node] - 1 + dest.PageNumber, dest.Type, dest.Coordinates));
                         }
                     }
                 }
@@ -326,7 +370,7 @@ static class PdfBuilder
                         continue;
                     }
 
-                    if (!pagesByNode.TryGetValue(item, out var page))
+                    if (!pagesByNode.TryGetValue(item, out var pageBuilder))
                     {
                         yield return new UriBookmarkNode(
                             item.name, level,
@@ -391,21 +435,5 @@ static class PdfBuilder
             document.body.appendChild(a)
           }
         })
-        """;
-
-    /// <summary>
-    /// Hack PDF start page number by inserting hidden pages
-    /// https://github.com/puppeteer/puppeteer/issues/3383#issuecomment-428613372
-    /// </summary>
-    static string InsertHiddenPageScript(int n) =>
-        $$"""
-        window.pageStart = {{n}}
-        const pages = Array.from({length: window.pageStart}).map(() => {
-          const page = document.createElement('div')
-          page.innerText = 'placeholder'
-          page.style = "page-break-after: always; visibility: hidden;"
-          return page
-        });
-        document.body.prepend(...pages)
         """;
 }
