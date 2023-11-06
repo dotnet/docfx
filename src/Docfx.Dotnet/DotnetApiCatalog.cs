@@ -101,7 +101,6 @@ public static partial class DotnetApiCatalog
 
                 case MetadataOutputFormat.ApiPage:
 #if NET7_0_OR_GREATER
-                    Logger.LogWarning($"ApiPage output format is experimental.");
                     var serializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
                     CreatePages(WriteYaml, assemblies, config, options);
 
