@@ -3,6 +3,7 @@
 
 using System.Text;
 using Docfx.Plugins;
+using Spectre.Console;
 
 namespace Docfx.Common;
 
@@ -16,7 +17,14 @@ public sealed class ConsoleLogListener : ILoggerListener
         if (level < LogLevelThreshold)
             return;
 
-        var consoleColor = GetConsoleColor(level);
+        var consoleColor = level switch
+        {
+            LogLevel.Verbose => ConsoleColor.Gray,
+            LogLevel.Info => ConsoleColor.White,
+            LogLevel.Suggestion => ConsoleColor.Blue,
+            LogLevel.Warning => ConsoleColor.Yellow,
+            LogLevel.Error => ConsoleColor.Red,
+        };
 
         var message = new StringBuilder();
         if (!string.IsNullOrEmpty(item.File))
@@ -44,7 +52,8 @@ public sealed class ConsoleLogListener : ILoggerListener
 
         message.Append(item.Message);
 
-        ConsoleUtility.WriteLine(message.ToString(), consoleColor);
+        AnsiConsole.Foreground = consoleColor;
+        AnsiConsole.WriteLine($"{message}");
     }
 
     public void Dispose()
@@ -53,18 +62,5 @@ public sealed class ConsoleLogListener : ILoggerListener
 
     public void Flush()
     {
-    }
-
-    private static ConsoleColor GetConsoleColor(LogLevel level)
-    {
-        return level switch
-        {
-            LogLevel.Verbose => ConsoleColor.Gray,
-            LogLevel.Info => ConsoleColor.White,
-            LogLevel.Suggestion => ConsoleColor.Blue,
-            LogLevel.Warning => ConsoleColor.Yellow,
-            LogLevel.Error => ConsoleColor.Red,
-            _ => throw new NotSupportedException(level.ToString()),
-        };
     }
 }
