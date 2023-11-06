@@ -8,7 +8,7 @@
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.1.1.7464" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
     <PackageVersion Include="Jint" Version="3.0.0-beta-2054" />
-    <PackageVersion Include="JsonSchema.Net" Version="5.3.0" />
+    <PackageVersion Include="JsonSchema.Net" Version="5.3.1" />
     <PackageVersion Include="Markdig" Version="0.33.0" />
     <!-- "17.3.2" is the latest compatible version for .NET 6 -->
     <PackageVersion Include="Microsoft.Build" Version="[17.3.2]" Condition="'$(TargetFramework)' == 'net6.0'" />
