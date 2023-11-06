@@ -15,7 +15,7 @@ internal static class DocumentBuilderWrapper
 {
     private static readonly Assembly[] s_pluginAssemblies = LoadPluginAssemblies(AppContext.BaseDirectory).ToArray();
 
-    public static void BuildDocument(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory, string templateDirectory)
+    public static void BuildDocument(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, string baseDirectory, string outputDirectory, string templateDirectory)
     {
         var postProcessorNames = config.PostProcessors.ToImmutableArray();
         var metadata = config.GlobalMetadata?.ToImmutableDictionary();
@@ -37,11 +37,9 @@ internal static class DocumentBuilderWrapper
         var pluginAssemblies = templateManager.GetTemplateDirectories().Select(d => Path.Combine(d, "plugins")).SelectMany(LoadPluginAssemblies);
 
         using var builder = new DocumentBuilder(s_pluginAssemblies.Concat(pluginAssemblies), postProcessorNames);
-        using (new PerformanceScope("building documents", LogLevel.Info))
-        {
-            var parameters = ConfigToParameter(config, options, templateManager, baseDirectory, outputDirectory, templateDirectory);
-            builder.Build(parameters, outputDirectory);
-        }
+
+        var parameters = ConfigToParameter(config, options, templateManager, baseDirectory, outputDirectory, templateDirectory);
+        builder.Build(parameters, outputDirectory);
     }
 
     private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
@@ -122,118 +120,115 @@ internal static class DocumentBuilderWrapper
 
     private static List<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, string baseDirectory, string outputDirectory, string templateDir)
     {
-        using (new PerformanceScope("GenerateParameters"))
+        var result = new List<DocumentBuildParameters>();
+
+        var parameters = new DocumentBuildParameters
         {
-            var result = new List<DocumentBuildParameters>();
+            OutputBaseDir = outputDirectory,
+            SitemapOptions = config.Sitemap,
+            DisableGitFeatures = config.DisableGitFeatures,
+            ConfigureMarkdig = options.ConfigureMarkdig,
+            Metadata = GetGlobalMetadata(config),
+            FileMetadata = GetFileMetadata(baseDirectory, config),
+        };
 
-            var parameters = new DocumentBuildParameters
-            {
-                OutputBaseDir = outputDirectory,
-                SitemapOptions = config.Sitemap,
-                DisableGitFeatures = config.DisableGitFeatures,
-                ConfigureMarkdig = options.ConfigureMarkdig,
-                Metadata = GetGlobalMetadata(config),
-                FileMetadata = GetFileMetadata(baseDirectory, config),
-            };
+        if (config.PostProcessors != null)
+        {
+            parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
+        }
+        if (config.Xref != null)
+        {
+            parameters.XRefMaps = config.Xref.ToImmutableArray();
+        }
 
-            if (config.PostProcessors != null)
+        string outputFolderForDebugFiles = null;
+        if (!string.IsNullOrEmpty(config.DebugOutput))
+        {
+            outputFolderForDebugFiles = Path.Combine(baseDirectory, config.DebugOutput);
+        }
+
+        var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory, outputFolderForDebugFiles, config.Debug ?? false)
+        {
+            TransformDocument = config.DryRun != true,
+        };
+
+        applyTemplateSettings.RawModelExportSettings.Export = config.ExportRawModel == true;
+        if (!string.IsNullOrEmpty(config.RawModelOutputFolder))
+        {
+            applyTemplateSettings.RawModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.RawModelOutputFolder);
+        }
+
+        applyTemplateSettings.ViewModelExportSettings.Export = config.ExportViewModel == true;
+        if (!string.IsNullOrEmpty(config.ViewModelOutputFolder))
+        {
+            applyTemplateSettings.ViewModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.ViewModelOutputFolder);
+        }
+
+        parameters.ApplyTemplateSettings = applyTemplateSettings;
+        parameters.TemplateManager = templateManager;
+
+        if (config.MaxParallelism == null || config.MaxParallelism.Value <= 0)
+        {
+            parameters.MaxParallelism = Environment.ProcessorCount;
+        }
+        else
+        {
+            parameters.MaxParallelism = config.MaxParallelism.Value;
+            ThreadPool.GetMinThreads(out int wt, out int cpt);
+            if (wt < parameters.MaxParallelism)
             {
-                parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
+                ThreadPool.SetMinThreads(parameters.MaxParallelism, cpt);
             }
-            if (config.Xref != null)
-            {
-                parameters.XRefMaps = config.Xref.ToImmutableArray();
-            }
+        }
 
-            string outputFolderForDebugFiles = null;
-            if (!string.IsNullOrEmpty(config.DebugOutput))
-            {
-                outputFolderForDebugFiles = Path.Combine(baseDirectory, config.DebugOutput);
-            }
+        if (config.MarkdownEngineProperties != null)
+        {
+            parameters.MarkdownEngineParameters = config.MarkdownEngineProperties;
+        }
+        if (config.CustomLinkResolver != null)
+        {
+            parameters.CustomLinkResolver = config.CustomLinkResolver;
+        }
 
-            var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory, outputFolderForDebugFiles, config.Debug ?? false)
-            {
-                TransformDocument = config.DryRun != true,
-            };
+        parameters.TemplateDir = templateDir;
 
-            applyTemplateSettings.RawModelExportSettings.Export = config.ExportRawModel == true;
-            if (!string.IsNullOrEmpty(config.RawModelOutputFolder))
-            {
-                applyTemplateSettings.RawModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.RawModelOutputFolder);
-            }
+        var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
 
-            applyTemplateSettings.ViewModelExportSettings.Export = config.ExportViewModel == true;
-            if (!string.IsNullOrEmpty(config.ViewModelOutputFolder))
-            {
-                applyTemplateSettings.ViewModelExportSettings.OutputFolder = Path.Combine(baseDirectory, config.ViewModelOutputFolder);
-            }
+        if (config.KeepFileLink)
+        {
+            parameters.KeepFileLink = true;
+        }
 
-            parameters.ApplyTemplateSettings = applyTemplateSettings;
-            parameters.TemplateManager = templateManager;
-
-            if (config.MaxParallelism == null || config.MaxParallelism.Value <= 0)
+        foreach (var pair in fileMappingParametersDictionary)
+        {
+            var p = parameters.Clone();
+            if (!string.IsNullOrEmpty(pair.Key))
             {
-                parameters.MaxParallelism = Environment.ProcessorCount;
-            }
-            else
-            {
-                parameters.MaxParallelism = config.MaxParallelism.Value;
-                ThreadPool.GetMinThreads(out int wt, out int cpt);
-                if (wt < parameters.MaxParallelism)
+                p.GroupInfo = new GroupInfo
                 {
-                    ThreadPool.SetMinThreads(parameters.MaxParallelism, cpt);
-                }
-            }
-
-            if (config.MarkdownEngineProperties != null)
-            {
-                parameters.MarkdownEngineParameters = config.MarkdownEngineProperties;
-            }
-            if (config.CustomLinkResolver != null)
-            {
-                parameters.CustomLinkResolver = config.CustomLinkResolver;
-            }
-
-            parameters.TemplateDir = templateDir;
-
-            var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
-
-            if (config.KeepFileLink)
-            {
-                parameters.KeepFileLink = true;
-            }
-
-            foreach (var pair in fileMappingParametersDictionary)
-            {
-                var p = parameters.Clone();
-                if (!string.IsNullOrEmpty(pair.Key))
+                    Name = pair.Key,
+                };
+                if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                 {
-                    p.GroupInfo = new GroupInfo
+                    p.GroupInfo.Destination = gi.Destination;
+                    p.GroupInfo.Metadata = gi.Metadata;
+                    if (!string.IsNullOrEmpty(gi.Destination))
                     {
-                        Name = pair.Key,
-                    };
-                    if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
-                    {
-                        p.GroupInfo.Destination = gi.Destination;
-                        p.GroupInfo.Metadata = gi.Metadata;
-                        if (!string.IsNullOrEmpty(gi.Destination))
-                        {
-                            p.VersionDir = gi.Destination;
-                        }
+                        p.VersionDir = gi.Destination;
                     }
                 }
-                p.Files = GetFileCollectionFromFileMapping(
-                    baseDirectory,
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Content)),
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
-                p.VersionName = pair.Key;
-                p.RootTocPath = pair.Value.RootTocPath;
-                result.Add(p);
             }
-
-            return result;
+            p.Files = GetFileCollectionFromFileMapping(
+                baseDirectory,
+                GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Content)),
+                GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
+                GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
+            p.VersionName = pair.Key;
+            p.RootTocPath = pair.Value.RootTocPath;
+            result.Add(p);
         }
+
+        return result;
     }
 
     private static ImmutableDictionary<string, object> GetGlobalMetadata(BuildJsonConfig config)

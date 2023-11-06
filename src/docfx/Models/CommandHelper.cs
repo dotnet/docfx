@@ -40,8 +40,6 @@ internal class CommandHelper
 
         Logger.WarningsAsErrors = options.WarningsAsErrors;
 
-        using var _ = new PerformanceScope(string.Empty, LogLevel.Info);
-
         run();
 
         Logger.Flush();

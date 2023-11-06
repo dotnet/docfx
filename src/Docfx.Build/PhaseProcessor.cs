@@ -13,7 +13,7 @@ internal class PhaseProcessor
     {
         foreach (var h in Handlers)
         {
-            using (new LoggerPhaseScope(h.Name, LogLevel.Verbose))
+            using (new LoggerPhaseScope(h.Name))
             {
                 h.Handle(hostServices, maxParallelism);
             }

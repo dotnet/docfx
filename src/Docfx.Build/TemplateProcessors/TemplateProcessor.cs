@@ -72,7 +72,7 @@ public class TemplateProcessor : IDisposable
 
     internal List<ManifestItem> Process(List<InternalManifestItem> manifest, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
     {
-        using (new LoggerPhaseScope("Apply Templates", LogLevel.Verbose))
+        using (new LoggerPhaseScope("Apply Templates"))
         {
             globals ??= Tokens.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
             settings ??= _context?.ApplyTemplateSettings;

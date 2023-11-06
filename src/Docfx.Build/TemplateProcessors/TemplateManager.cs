@@ -78,7 +78,7 @@ public class TemplateManager
 
     public void ProcessTheme(string outputDirectory, bool overwrite)
     {
-        using (new LoggerPhaseScope("Apply Theme", LogLevel.Verbose))
+        using (new LoggerPhaseScope("Apply Theme"))
         {
             if (_themes != null && _themes.Count > 0)
             {
@@ -102,7 +102,7 @@ public class TemplateManager
 
         bool isEmpty = true;
 
-        using (new LoggerPhaseScope("ExportResourceFiles", LogLevel.Verbose))
+        using (new LoggerPhaseScope("ExportResourceFiles"))
         {
             using var templateResource = CreateTemplateResource(resourceNames);
             if (templateResource.IsEmpty)

@@ -54,10 +54,10 @@ internal class LinkPhaseHandler : IPhaseHandler
         hostServices.RunAll(
             hostService =>
             {
-                using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
+                using (new LoggerPhaseScope(hostService.Processor.Name))
                 {
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
-                    using (new LoggerPhaseScope("Postbuild", LogLevel.Verbose))
+                    using (new LoggerPhaseScope("Postbuild"))
                     {
                         Postbuild(hostService);
                     }
@@ -71,7 +71,7 @@ internal class LinkPhaseHandler : IPhaseHandler
         _manifestWithContext = new List<ManifestItemWithContext>();
         foreach (var hostService in hostServices)
         {
-            using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
+            using (new LoggerPhaseScope(hostService.Processor.Name))
             {
                 _manifestWithContext.AddRange(ExportManifest(hostService));
             }
@@ -81,7 +81,7 @@ internal class LinkPhaseHandler : IPhaseHandler
     private IEnumerable<ManifestItemWithContext> ExportManifest(HostService hostService)
     {
         var manifestItems = new List<ManifestItemWithContext>();
-        using (new LoggerPhaseScope("Save", LogLevel.Verbose))
+        using (new LoggerPhaseScope("Save"))
         {
             hostService.Models.RunAll(m =>
             {
@@ -226,7 +226,7 @@ internal class LinkPhaseHandler : IPhaseHandler
             buildStep =>
             {
                 Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postbuilding...");
-                using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose))
+                using (new LoggerPhaseScope(buildStep.Name))
                 {
                     buildStep.Postbuild(hostService.Models, hostService);
                 }

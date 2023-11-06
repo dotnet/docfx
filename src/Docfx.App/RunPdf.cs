@@ -75,7 +75,7 @@ internal static class RunPdf
         var converter = new ConvertWrapper(options);
         try
         {
-            using (new LoggerPhaseScope("PDF", LogLevel.Info))
+            using (new LoggerPhaseScope("PDF"))
             {
                 Logger.LogInfo("Start generating PDF files...");
                 converter.Convert();

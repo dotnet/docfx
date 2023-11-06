@@ -23,8 +23,6 @@ internal static class RunBuild
             config.Template = new ListWithStringFallback { Constants.DefaultTemplateName };
         }
 
-        var templateManager = new TemplateManager(config.Template, config.Theme, configDirectory);
-
         var baseDirectory = Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory);
         var outputFolder = Path.GetFullPath(Path.Combine(
             string.IsNullOrEmpty(outputDirectory) ? Path.Combine(baseDirectory, config.Output ?? "") : outputDirectory,
@@ -35,7 +33,9 @@ internal static class RunBuild
 
         try
         {
-            DocumentBuilderWrapper.BuildDocument(config, options, templateManager, baseDirectory, outputFolder, null, null);
+            var templateManager = new TemplateManager(config.Template, config.Theme, configDirectory);
+
+            DocumentBuilderWrapper.BuildDocument(config, options, templateManager, baseDirectory, outputFolder, null);
 
             templateManager.ProcessTheme(outputFolder, true);
         }

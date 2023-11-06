@@ -42,10 +42,7 @@ partial class DotnetApiCatalog
             return;
         }
 
-        using (new PerformanceScope("ResolveAndExport"))
-        {
-            ResolveAndExportYamlMetadata(allMembers, allReferences);
-        }
+        ResolveAndExportYamlMetadata(allMembers, allReferences);
 
         void ResolveAndExportYamlMetadata(
         Dictionary<string, MetadataItem> allMembers, Dictionary<string, ReferenceItem> allReferences)

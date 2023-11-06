@@ -6,18 +6,8 @@ namespace Docfx.Common;
 public sealed class LoggerPhaseScope : IDisposable
 {
     private readonly string _originPhaseName;
-    private readonly PerformanceScope _performanceScope;
 
     public LoggerPhaseScope(string phaseName)
-        : this(phaseName, null, null) { }
-
-    public LoggerPhaseScope(string phaseName, LogLevel perfLogLevel)
-        : this(phaseName, (LogLevel?)perfLogLevel, null) { }
-
-    public LoggerPhaseScope(string phaseName, LogLevel perfLogLevel, AggregatedPerformanceScope aggregatedPerformanceLogger)
-        : this(phaseName, (LogLevel?)perfLogLevel, aggregatedPerformanceLogger) { }
-
-    private LoggerPhaseScope(string phaseName, LogLevel? perfLogLevel, AggregatedPerformanceScope aggregatedPerformanceLogger)
     {
         if (string.IsNullOrWhiteSpace(phaseName))
         {
@@ -27,20 +17,6 @@ public sealed class LoggerPhaseScope : IDisposable
         _originPhaseName = GetPhaseName();
         phaseName = _originPhaseName == null ? phaseName : _originPhaseName + "." + phaseName;
         SetPhaseName(phaseName);
-        if (perfLogLevel != null)
-        {
-            _performanceScope = new PerformanceScope("Scope:" + phaseName, perfLogLevel.Value, aggregatedPerformanceLogger);
-        }
-    }
-
-    private LoggerPhaseScope(CapturedLoggerPhaseScope captured, LogLevel? perfLogLevel)
-    {
-        _originPhaseName = GetPhaseName();
-        SetPhaseName(captured.PhaseName);
-        if (perfLogLevel != null)
-        {
-            _performanceScope = new PerformanceScope("Scope:" + captured.PhaseName, perfLogLevel.Value);
-        }
     }
 
     public static T WithScope<T>(string phaseName, Func<T> func)
@@ -51,17 +27,8 @@ public sealed class LoggerPhaseScope : IDisposable
         }
     }
 
-    public static T WithScope<T>(string phaseName, LogLevel perfLogLevel, Func<T> func)
-    {
-        using (new LoggerPhaseScope(phaseName, perfLogLevel))
-        {
-            return func();
-        }
-    }
-
     public void Dispose()
     {
-        _performanceScope?.Dispose();
         SetPhaseName(_originPhaseName);
     }
 
@@ -73,35 +40,5 @@ public sealed class LoggerPhaseScope : IDisposable
     private void SetPhaseName(string phaseName)
     {
         LogicalCallContext.SetData(nameof(LoggerPhaseScope), phaseName);
-    }
-
-    public static object Capture()
-    {
-        return new CapturedLoggerPhaseScope();
-    }
-
-    public static LoggerPhaseScope Restore(object captured) =>
-        Restore(captured, null);
-
-    public static LoggerPhaseScope Restore(object captured, LogLevel perfLogLevel) =>
-        Restore(captured, (LogLevel?)perfLogLevel);
-
-    private static LoggerPhaseScope Restore(object captured, LogLevel? perfLogLevel)
-    {
-        if (captured is not CapturedLoggerPhaseScope capturedScope)
-        {
-            return null;
-        }
-        return new LoggerPhaseScope(capturedScope, perfLogLevel);
-    }
-
-    private sealed class CapturedLoggerPhaseScope
-    {
-        public CapturedLoggerPhaseScope()
-        {
-            PhaseName = GetPhaseName();
-        }
-
-        public string PhaseName { get; }
     }
 }

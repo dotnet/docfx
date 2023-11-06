@@ -15,11 +15,11 @@ internal class PostProcessorsHandler : IPostProcessorsHandler
         ArgumentNullException.ThrowIfNull(manifest);
         ArgumentNullException.ThrowIfNull(outputFolder);
 
-        using (new LoggerPhaseScope("HandlePostProcessors", LogLevel.Verbose))
+        using (new LoggerPhaseScope("HandlePostProcessors"))
         {
             foreach (var postProcessor in postProcessors)
             {
-                using (new LoggerPhaseScope($"Processing {postProcessor.ContractName}", LogLevel.Verbose))
+                using (new LoggerPhaseScope($"Processing {postProcessor.ContractName}"))
                 {
                     manifest = postProcessor.Processor.Process(manifest, outputFolder);
                     if (manifest == null)

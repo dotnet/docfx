@@ -28,7 +28,7 @@ public class DocumentBuilder : IDisposable
     public DocumentBuilder(IEnumerable<Assembly> assemblies, ImmutableArray<string> postProcessorNames)
     {
         Logger.LogVerbose("Loading plug-ins and post-processors...");
-        using (new LoggerPhaseScope("ImportPlugins", LogLevel.Verbose))
+        using (new LoggerPhaseScope("ImportPlugins"))
         {
             var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
             assemblyList.Add(typeof(DocumentBuilder).Assembly);
@@ -149,7 +149,7 @@ public class DocumentBuilder : IDisposable
                     code: SuggestionCodes.Build.EmptyInputContents);
             }
 
-            using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
+            using (new LoggerPhaseScope("Postprocess"))
             {
                 var generatedManifest = ManifestUtility.MergeManifest(manifests);
                 generatedManifest.Sitemap = parameters.FirstOrDefault()?.SitemapOptions;
@@ -161,46 +161,35 @@ public class DocumentBuilder : IDisposable
                     .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
                     .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
                     .Create();
-                using (new PerformanceScope("Process"))
-                {
-                    _postProcessorsManager.Process(generatedManifest, outputDirectory);
-                }
 
-                using (new PerformanceScope("Dereference"))
+                _postProcessorsManager.Process(generatedManifest, outputDirectory);
+
+                if (parameters[0].KeepFileLink)
                 {
-                    if (parameters[0].KeepFileLink)
+                    var count = (from f in generatedManifest.Files
+                                 from o in f.Output
+                                 select o.Value into v
+                                 where v.LinkToPath != null
+                                 select v).Count();
+                    if (count > 0)
                     {
-                        var count = (from f in generatedManifest.Files
-                                     from o in f.Output
-                                     select o.Value into v
-                                     where v.LinkToPath != null
-                                     select v).Count();
-                        if (count > 0)
-                        {
-                            Logger.LogInfo($"Skip dereferencing {count} files.");
-                        }
-                    }
-                    else
-                    {
-                        generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
+                        Logger.LogInfo($"Skip dereferencing {count} files.");
                     }
                 }
-
-                using (new PerformanceScope("SaveManifest"))
+                else
                 {
-                    // Save to manifest.json
-                    EnvironmentContext.FileAbstractLayerImpl =
-                        FileAbstractLayerBuilder.Default
-                        .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
-                        .WriteToRealFileSystem(parameters[0].OutputBaseDir)
-                        .Create();
-                    SaveManifest(generatedManifest);
+                    generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
                 }
 
-                using (new PerformanceScope("Cleanup"))
-                {
-                    EnvironmentContext.FileAbstractLayerImpl = null;
-                }
+                // Save to manifest.json
+                EnvironmentContext.FileAbstractLayerImpl =
+                    FileAbstractLayerBuilder.Default
+                    .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
+                    .WriteToRealFileSystem(parameters[0].OutputBaseDir)
+                    .Create();
+                SaveManifest(generatedManifest);
+
+                EnvironmentContext.FileAbstractLayerImpl = null;
             }
         }
         finally

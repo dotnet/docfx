@@ -58,7 +58,7 @@ class SingleDocumentBuilder : IDisposable
         }
         parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
-        using (new LoggerPhaseScope(PhaseName, LogLevel.Verbose))
+        using (new LoggerPhaseScope(PhaseName))
         {
             Directory.CreateDirectory(parameters.OutputBaseDir);
 
@@ -72,7 +72,7 @@ class SingleDocumentBuilder : IDisposable
             {
                 using var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
                                               ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
-                using (new LoggerPhaseScope("Prepare", LogLevel.Verbose))
+                using (new LoggerPhaseScope("Prepare"))
                 {
                     Prepare(
                         context,
@@ -80,7 +80,7 @@ class SingleDocumentBuilder : IDisposable
                         out hostServiceCreator,
                         out phaseProcessor);
                 }
-                using (new LoggerPhaseScope("Load", LogLevel.Verbose))
+                using (new LoggerPhaseScope("Load"))
                 {
                     hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
                 }
@@ -160,7 +160,6 @@ class SingleDocumentBuilder : IDisposable
                     where item != null && item.Any(s => s.Type != DocumentType.Overwrite) // when normal file exists then processing is needed
                     select LoggerPhaseScope.WithScope(
                         processor.Name,
-                        LogLevel.Verbose,
                         () => creator.CreateHostService(
                             parameters,
                             templateProcessor,
@@ -202,10 +201,10 @@ class SingleDocumentBuilder : IDisposable
         var xrefMap = new XRefMap
         {
             References = (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
-             select new XRefSpec(xref)
-             {
-                 Href = context.UpdateHref(xref.Href, RelativePath.WorkingFolder)
-             }).ToList(),
+                          select new XRefSpec(xref)
+                          {
+                              Href = context.UpdateHref(xref.Href, RelativePath.WorkingFolder)
+                          }).ToList(),
         };
         xrefMap.Sort();
         string xrefMapFileNameWithVersion = GetXrefMapFileNameWithGroup(parameters);
@@ -232,13 +231,10 @@ class SingleDocumentBuilder : IDisposable
 
     public void Dispose()
     {
-        using (new PerformanceScope("DisposeDocumentProcessors"))
+        foreach (var processor in Processors)
         {
-            foreach (var processor in Processors)
-            {
-                Logger.LogVerbose($"Disposing processor {processor.Name} ...");
-                (processor as IDisposable)?.Dispose();
-            }
+            Logger.LogVerbose($"Disposing processor {processor.Name} ...");
+            (processor as IDisposable)?.Dispose();
         }
     }
 }

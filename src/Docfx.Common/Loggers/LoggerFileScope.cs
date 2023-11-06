@@ -31,23 +31,4 @@ public sealed class LoggerFileScope : IDisposable
     {
         LogicalCallContext.SetData(nameof(LoggerFileScope), fileName);
     }
-
-    public static object Capture()
-    {
-        return new CapturedLoggerFileScope();
-    }
-
-    public static LoggerFileScope Restore(object captured)
-    {
-        if (captured is not CapturedLoggerFileScope capturedScope)
-        {
-            return null;
-        }
-        return new LoggerFileScope(capturedScope.FileName);
-    }
-
-    private sealed class CapturedLoggerFileScope
-    {
-        public string FileName { get; } = GetFileName();
-    }
 }
