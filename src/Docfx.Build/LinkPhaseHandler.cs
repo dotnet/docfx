@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 
 using Docfx.Common;
@@ -8,230 +9,153 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
 
-internal class LinkPhaseHandler : IPhaseHandler
+static class LinkPhaseHandler
 {
-    public string Name => nameof(LinkPhaseHandler);
-
-    public BuildPhase Phase => BuildPhase.Link;
-
-    public DocumentBuildContext Context { get; }
-
-    public TemplateProcessor TemplateProcessor { get; }
-
-    private List<ManifestItemWithContext> _manifestWithContext;
-
-    public LinkPhaseHandler(DocumentBuildContext context, TemplateProcessor templateProcessor)
+    public static void Handle(List<HostService> hostServices, DocumentBuildContext context, TemplateProcessor templateProcessor)
     {
-        Context = context;
-        TemplateProcessor = templateProcessor;
-    }
+        var manifest = new ConcurrentBag<ManifestItemWithContext>();
 
-    public void Handle(List<HostService> hostServices, int maxParallelism)
-    {
-        PostbuildAndSave(hostServices, maxParallelism);
-        ProcessManifest(hostServices, maxParallelism);
-    }
-
-    public void PostbuildAndSave(List<HostService> hostServices, int maxParallelism)
-    {
-        Postbuild(hostServices, maxParallelism);
-        Save(hostServices, maxParallelism);
-    }
-
-    public void ProcessManifest(List<HostService> hostServices, int maxParallelism)
-    {
-        if (Context != null)
-        {
-            var manifestProcessor = new ManifestProcessor(_manifestWithContext, Context, TemplateProcessor);
-            manifestProcessor.Process();
-        }
-    }
-
-    #region Private Methods
-
-    private static void Postbuild(List<HostService> hostServices, int maxParallelism)
-    {
-        hostServices.RunAll(
-            hostService =>
-            {
-                using (new LoggerPhaseScope(hostService.Processor.Name))
-                {
-                    Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
-                    using (new LoggerPhaseScope("Postbuild"))
-                    {
-                        Postbuild(hostService);
-                    }
-                }
-            },
-            maxParallelism);
-    }
-
-    private void Save(List<HostService> hostServices, int maxParallelism)
-    {
-        _manifestWithContext = new List<ManifestItemWithContext>();
         foreach (var hostService in hostServices)
         {
-            using (new LoggerPhaseScope(hostService.Processor.Name))
+            foreach (var model in hostService.Models)
+                Save(hostService, model);
+        }
+
+        if (context != null)
+        {
+            var manifestProcessor = new ManifestProcessor(manifest.ToList(), context, templateProcessor);
+            manifestProcessor.Process();
+        }
+
+        void Save(HostService hostService, FileModel m)
+        {
+            if (m.Type is DocumentType.Overwrite)
+                return;
+
+            using var _ = new LoggerFileScope(m.LocalPathFromRoot);
+
+            m.BaseDir = context.BuildOutputFolder;
+            if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
             {
-                _manifestWithContext.AddRange(ExportManifest(hostService));
+                m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
+            }
+            m.File = Path.Combine(context.VersionFolder ?? string.Empty, m.File);
+
+            if (hostService.Processor.Save(m) is { } result)
+            {
+                string extension = string.Empty;
+                if (hostService.Template != null)
+                {
+                    if (hostService.Template.TryGetFileExtension(result.DocumentType, out extension))
+                    {
+                        m.File = result.FileWithoutExtension + extension;
+                    }
+                }
+
+                var item = HandleSaveResult(hostService, m, result);
+                item.Extension = extension;
+
+                manifest.Add(new ManifestItemWithContext(item, m, hostService.Processor, hostService.Template?.GetTemplateBundle(result.DocumentType)));
             }
         }
-    }
 
-    private IEnumerable<ManifestItemWithContext> ExportManifest(HostService hostService)
-    {
-        var manifestItems = new List<ManifestItemWithContext>();
-        using (new LoggerPhaseScope("Save"))
+        InternalManifestItem HandleSaveResult(
+            HostService hostService,
+            FileModel model,
+            SaveResult result)
         {
-            hostService.Models.RunAll(m =>
+            context.SetFilePath(model.Key, ((RelativePath)model.File).GetPathFromWorkingFolder());
+            DocumentException.RunAll(
+                () => CheckFileLink(model, hostService, result),
+                () => HandleUids(result),
+                () => RegisterXRefSpec(result));
+
+            return GetManifestItem(model, result);
+        }
+
+        void CheckFileLink(FileModel model, HostService hostService, SaveResult result)
+        {
+            result.LinkToFiles.RunAll(fileLink =>
             {
-                if (m.Type != DocumentType.Overwrite)
+                if (!hostService.SourceFiles.ContainsKey(fileLink))
                 {
-                    using (new LoggerFileScope(m.LocalPathFromRoot))
+                    if (context.ApplyTemplateSettings.HrefGenerator != null)
                     {
-                        Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Saving...");
-                        m.BaseDir = Context.BuildOutputFolder;
-                        if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
+                        var path = ((RelativePath)fileLink).RemoveWorkingFolder() - ((RelativePath)model.OriginalFileAndType.File);
+                        var fli = new FileLinkInfo
                         {
-                            m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
-                        }
-                        m.File = Path.Combine(Context.VersionFolder ?? string.Empty, m.File);
-                        var result = hostService.Processor.Save(m);
-                        if (result != null)
+                            FromFileInSource = model.OriginalFileAndType.File,
+                            FromFileInDest = model.File,
+                            ToFileInSource = ((RelativePath)fileLink).RemoveWorkingFolder().ToString(),
+                            FileLinkInSource = path,
+                            GroupInfo = context.GroupInfo,
+                            Href = path.UrlEncode()
+                        };
+
+                        if (context.ApplyTemplateSettings.HrefGenerator.GenerateHref(fli) != fli.Href)
                         {
-                            string extension = string.Empty;
-                            if (hostService.Template != null)
-                            {
-                                if (hostService.Template.TryGetFileExtension(result.DocumentType, out extension))
-                                {
-                                    m.File = result.FileWithoutExtension + extension;
-                                }
-                            }
-
-                            var item = HandleSaveResult(hostService, m, result);
-                            item.Extension = extension;
-
-                            manifestItems.Add(new ManifestItemWithContext(item, m, hostService.Processor, hostService.Template?.GetTemplateBundle(result.DocumentType)));
+                            return; // if HrefGenerator returns new href. Skip InvalidFileLink check.
                         }
+                    }
+                    if (result.FileLinkSources.TryGetValue(fileLink, out ImmutableList<LinkSourceInfo> list))
+                    {
+                        foreach (var fileLinkSourceFile in list)
+                        {
+                            Logger.LogWarning(
+                                $"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).",
+                                null,
+                                fileLinkSourceFile.SourceFile,
+                                fileLinkSourceFile.LineNumber.ToString(),
+                                WarningCodes.Build.InvalidFileLink);
+                        }
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"Invalid file link:({fileLink}).", code: WarningCodes.Build.InvalidFileLink);
                     }
                 }
             });
         }
-        return manifestItems;
-    }
 
-    private InternalManifestItem HandleSaveResult(
-        HostService hostService,
-        FileModel model,
-        SaveResult result)
-    {
-        Context.SetFilePath(model.Key, ((RelativePath)model.File).GetPathFromWorkingFolder());
-        DocumentException.RunAll(
-            () => CheckFileLink(model, hostService, result),
-            () => HandleUids(result),
-            () => RegisterXRefSpec(result));
-
-        return GetManifestItem(model, result);
-    }
-
-    private void CheckFileLink(FileModel model, HostService hostService, SaveResult result)
-    {
-        result.LinkToFiles.RunAll(fileLink =>
+        void HandleUids(SaveResult result)
         {
-            if (!hostService.SourceFiles.ContainsKey(fileLink))
+            if (result.LinkToUids.Count > 0)
             {
-                if (Context.ApplyTemplateSettings.HrefGenerator != null)
-                {
-                    var path = ((RelativePath)fileLink).RemoveWorkingFolder() - ((RelativePath)model.OriginalFileAndType.File);
-                    var fli = new FileLinkInfo
-                    {
-                        FromFileInSource = model.OriginalFileAndType.File,
-                        FromFileInDest = model.File,
-                        ToFileInSource = ((RelativePath)fileLink).RemoveWorkingFolder().ToString(),
-                        FileLinkInSource = path,
-                        GroupInfo = Context.GroupInfo,
-                        Href = path.UrlEncode()
-                    };
-
-                    if (Context.ApplyTemplateSettings.HrefGenerator.GenerateHref(fli) != fli.Href)
-                    {
-                        return; // if HrefGenerator returns new href. Skip InvalidFileLink check.
-                    }
-                }
-                if (result.FileLinkSources.TryGetValue(fileLink, out ImmutableList<LinkSourceInfo> list))
-                {
-                    foreach (var fileLinkSourceFile in list)
-                    {
-                        Logger.LogWarning(
-                            $"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).",
-                            null,
-                            fileLinkSourceFile.SourceFile,
-                            fileLinkSourceFile.LineNumber.ToString(),
-                            WarningCodes.Build.InvalidFileLink);
-                    }
-                }
-                else
-                {
-                    Logger.LogWarning($"Invalid file link:({fileLink}).", code: WarningCodes.Build.InvalidFileLink);
-                }
-            }
-        });
-    }
-
-    private void HandleUids(SaveResult result)
-    {
-        if (result.LinkToUids.Count > 0)
-        {
-            Context.XRef.UnionWith(result.LinkToUids.Where(s => s != null));
-        }
-    }
-
-    private void RegisterXRefSpec(SaveResult result)
-    {
-        foreach (var spec in result.XRefSpecs)
-        {
-            if (!string.IsNullOrWhiteSpace(spec?.Uid))
-            {
-                Context.RegisterInternalXrefSpec(spec);
+                context.XRef.UnionWith(result.LinkToUids.Where(s => s != null));
             }
         }
-        foreach (var spec in result.ExternalXRefSpecs)
+
+        void RegisterXRefSpec(SaveResult result)
         {
-            if (!string.IsNullOrWhiteSpace(spec?.Uid))
+            foreach (var spec in result.XRefSpecs)
             {
-                Context.ReportExternalXRefSpec(spec);
+                if (!string.IsNullOrWhiteSpace(spec?.Uid))
+                {
+                    context.RegisterInternalXrefSpec(spec);
+                }
+            }
+            foreach (var spec in result.ExternalXRefSpecs)
+            {
+                if (!string.IsNullOrWhiteSpace(spec?.Uid))
+                {
+                    context.ReportExternalXRefSpec(spec);
+                }
             }
         }
-    }
 
-    private static InternalManifestItem GetManifestItem(FileModel model, SaveResult result)
-    {
-        return new InternalManifestItem
+        static InternalManifestItem GetManifestItem(FileModel model, SaveResult result)
         {
-            DocumentType = result.DocumentType,
-            FileWithoutExtension = result.FileWithoutExtension,
-            ResourceFile = result.ResourceFile,
-            Key = model.Key,
-            LocalPathFromRoot = model.LocalPathFromRoot,
-            Content = model.Content,
-            InputFolder = model.OriginalFileAndType.BaseDir,
-            Metadata = new Dictionary<string, object>((IDictionary<string, object>)model.ManifestProperties),
-        };
-    }
-
-    private static void Postbuild(HostService hostService)
-    {
-        BuildPhaseUtility.RunBuildSteps(
-            hostService.Processor.BuildSteps,
-            buildStep =>
+            return new InternalManifestItem
             {
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postbuilding...");
-                using (new LoggerPhaseScope(buildStep.Name))
-                {
-                    buildStep.Postbuild(hostService.Models, hostService);
-                }
-            });
+                DocumentType = result.DocumentType,
+                FileWithoutExtension = result.FileWithoutExtension,
+                ResourceFile = result.ResourceFile,
+                Key = model.Key,
+                LocalPathFromRoot = model.LocalPathFromRoot,
+                Content = model.Content,
+                InputFolder = model.OriginalFileAndType.BaseDir,
+                Metadata = new Dictionary<string, object>((IDictionary<string, object>)model.ManifestProperties),
+            };
+        }
     }
-
-    #endregion
 }

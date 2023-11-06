@@ -5,107 +5,60 @@ using System.Collections.Immutable;
 
 using Docfx.Common;
 using Docfx.Plugins;
+using Spectre.Console;
 
 namespace Docfx.Build.Engine;
 
-internal class CompilePhaseHandler : IPhaseHandler
+static class CompilePhaseHandler
 {
-    private readonly List<TreeItemRestructure> _restructions = new();
-
-    public string Name => nameof(CompilePhaseHandler);
-
-    public BuildPhase Phase => BuildPhase.Compile;
-
-    public DocumentBuildContext Context { get; }
-
-    public List<TreeItemRestructure> Restructions => _restructions;
-
-    public CompilePhaseHandler(DocumentBuildContext context)
+    public static void Handle(List<HostService> hostServices, DocumentBuildContext context)
     {
-        Context = context;
-    }
-
-    public void Handle(List<HostService> hostServices, int maxParallelism)
-    {
-        Prepare(hostServices, maxParallelism);
-        hostServices.RunAll(hostService =>
+        if (context is not null)
         {
-            using (new LoggerPhaseScope(hostService.Processor.Name))
-            {
-                var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
-                Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
-                using (new LoggerPhaseScope("Prebuild"))
-                {
-                    Prebuild(hostService);
-                }
-
-                // Register all the delegates to handler
-                if (hostService.TableOfContentRestructions != null)
-                {
-                    lock (_restructions)
-                    {
-                        _restructions.AddRange(hostService.TableOfContentRestructions);
-                    }
-                }
-            }
-        }, maxParallelism);
-
-        DistributeTocRestructions(hostServices);
-
-        foreach (var hostService in hostServices)
-        {
-            using (new LoggerPhaseScope(hostService.Processor.Name))
-            {
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
-                using (new LoggerPhaseScope("Build"))
-                {
-                    BuildArticle(hostService, maxParallelism);
-                }
-            }
-        }
-    }
-
-    #region Private Methods
-
-    private void Prepare(List<HostService> hostServices, int maxParallelism)
-    {
-        if (Context == null)
-        {
-            return;
-        }
-        foreach (var hostService in hostServices)
-        {
-            hostService.SourceFiles = Context.AllSourceFiles;
-            hostService.Models.RunAll(
-                m =>
-                {
-                    m.LocalPathFromRoot ??= StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
-                },
-                maxParallelism);
-        }
-    }
-
-    private void DistributeTocRestructions(List<HostService> hostServices)
-    {
-        if (_restructions.Count > 0)
-        {
-            var restructions = _restructions.ToImmutableList();
-            // Distribute delegates to all the hostServices
             foreach (var hostService in hostServices)
             {
-                hostService.TableOfContentRestructions = restructions;
+                hostService.SourceFiles = context.AllSourceFiles;
+                foreach (var m in hostService.Models)
+                    m.LocalPathFromRoot ??= StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
             }
         }
+
+        AnsiConsole.Progress().Start(progress =>
+        {
+            // Prebuild
+            Parallel.ForEach(hostServices, Prebuild);
+
+            // Update TOC
+            var tocRestructions = hostServices.Where(h => h.TableOfContentRestructions is not null).SelectMany(h => h.TableOfContentRestructions).ToImmutableList();
+            foreach (var hostService in hostServices)
+            {
+                hostService.TableOfContentRestructions = tocRestructions;
+            }
+
+            // Build
+            var task = progress.AddTask("Build");
+            task.MaxValue = hostServices.Sum(s => s.Models.Count);
+            foreach (var hostService in hostServices)
+            {
+                Parallel.ForEach(hostService.Models, m =>
+                {
+                    using var _ = new LoggerFileScope(m.LocalPathFromRoot);
+                    RunBuildSteps(hostService.Processor.BuildSteps, step => step.Build(m, hostService));
+                    task.Increment(1);
+                });
+            }
+
+            // Postbuild
+            Parallel.ForEach(hostServices, Postbuild);
+        });
     }
 
     private static void Prebuild(HostService hostService)
     {
-        BuildPhaseUtility.RunBuildSteps(
+        RunBuildSteps(
             hostService.Processor.BuildSteps,
             buildStep =>
             {
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Prebuilding...");
                 using (new LoggerPhaseScope(buildStep.Name))
                 {
                     var models = buildStep.Prebuild(hostService.Models, hostService);
@@ -118,36 +71,27 @@ internal class CompilePhaseHandler : IPhaseHandler
             });
     }
 
-    private static void BuildArticle(HostService hostService, int maxParallelism)
+    private static void Postbuild(HostService hostService)
     {
-        hostService.Models.RunAll(
-            m =>
+        RunBuildSteps(
+            hostService.Processor.BuildSteps,
+            buildStep =>
             {
-                using (new LoggerFileScope(m.LocalPathFromRoot))
+                using (new LoggerPhaseScope(buildStep.Name))
                 {
-                    Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
-                    BuildPhaseUtility.RunBuildSteps(
-                        hostService.Processor.BuildSteps,
-                        buildStep =>
-                        {
-                            Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
-                            using (new LoggerPhaseScope(buildStep.Name))
-                            {
-                                try
-                                {
-                                    buildStep.Build(m, hostService);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.LogError($"Trouble processing file - {m.FileAndType.FullPath}, with error - {ex.Message}");
-                                    throw;
-                                }
-                            }
-                        });
+                    buildStep.Postbuild(hostService.Models, hostService);
                 }
-            },
-            maxParallelism);
+            });
     }
 
-    #endregion
+    private static void RunBuildSteps(IEnumerable<IDocumentBuildStep> buildSteps, Action<IDocumentBuildStep> action)
+    {
+        if (buildSteps != null)
+        {
+            foreach (var buildStep in buildSteps.OrderBy(step => step.BuildOrder))
+            {
+                action(buildStep);
+            }
+        }
+    }
 }

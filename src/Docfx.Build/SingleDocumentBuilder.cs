@@ -3,7 +3,6 @@
 
 using System.Collections.Immutable;
 using Docfx.Common;
-using Docfx.MarkdigEngine;
 using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
@@ -28,15 +27,17 @@ class SingleDocumentBuilder : IDisposable
             null,
             processor,
             parameters.Files.EnumerateFiles());
-        var phaseProcessor = new PhaseProcessor
+
+        using (new LoggerPhaseScope(nameof(CompilePhaseHandler)))
         {
-            Handlers =
-                {
-                    new CompilePhaseHandler(null),
-                    new LinkPhaseHandler(null, null),
-                }
-        };
-        phaseProcessor.Process(new List<HostService> { hostService }, parameters.MaxParallelism);
+            CompilePhaseHandler.Handle(new() { hostService }, null);
+        }
+
+        using (new LoggerPhaseScope(nameof(LinkPhaseHandler)))
+        {
+            LinkPhaseHandler.Handle(new() { hostService }, null, null);
+        }
+
         return hostService.Models;
     }
 
@@ -58,67 +59,61 @@ class SingleDocumentBuilder : IDisposable
         }
         parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
-        using (new LoggerPhaseScope(PhaseName))
+        using var _ = new LoggerPhaseScope(PhaseName);
+        Directory.CreateDirectory(parameters.OutputBaseDir);
+
+        var context = new DocumentBuildContext(parameters);
+
+        // Start building document...
+        List<HostService> hostServices = null;
+
+        try
         {
-            Directory.CreateDirectory(parameters.OutputBaseDir);
+            using var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
+                                          ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
 
-            var context = new DocumentBuildContext(parameters);
-
-            // Start building document...
-            List<HostService> hostServices = null;
-            IHostServiceCreator hostServiceCreator = null;
-            PhaseProcessor phaseProcessor = null;
-            try
+            var hostServiceCreator = new HostServiceCreator(context);
+            using (new LoggerPhaseScope("Load"))
             {
-                using var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
-                                              ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
-                using (new LoggerPhaseScope("Prepare"))
-                {
-                    Prepare(
-                        context,
-                        templateProcessor,
-                        out hostServiceCreator,
-                        out phaseProcessor);
-                }
-                using (new LoggerPhaseScope("Load"))
-                {
-                    hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
-                }
-
-                templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
-
-                BuildCore(phaseProcessor, hostServices, context);
-
-                var manifest = new Manifest(context.ManifestItems.Where(m => m.Output?.Count > 0))
-                {
-                    Xrefmap = ExportXRefMap(parameters, context),
-                    SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
-                };
-                manifest.Groups = new List<ManifestGroupInfo>
-                {
-                    new(parameters.GroupInfo)
-                    {
-                        XRefmap = (string)manifest.Xrefmap
-                    }
-                };
-                return manifest;
+                hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
             }
-            finally
+
+            templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
+
+            using (new LoggerPhaseScope(nameof(CompilePhaseHandler)))
             {
-                if (hostServices != null)
+                CompilePhaseHandler.Handle(hostServices, context);
+            }
+
+            using (new LoggerPhaseScope(nameof(LinkPhaseHandler)))
+            {
+                LinkPhaseHandler.Handle(hostServices, context, templateProcessor);
+            }
+
+            var manifest = new Manifest(context.ManifestItems.Where(m => m.Output?.Count > 0))
+            {
+                Xrefmap = ExportXRefMap(parameters, context),
+                SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
+            };
+            manifest.Groups = new()
+            {
+                new(parameters.GroupInfo)
                 {
-                    foreach (var item in hostServices)
-                    {
-                        item.Dispose();
-                    }
+                    XRefmap = (string)manifest.Xrefmap
+                }
+            };
+            return manifest;
+        }
+        finally
+        {
+            if (hostServices != null)
+            {
+                foreach (var item in hostServices)
+                {
+                    item.Dispose();
                 }
             }
         }
-    }
-
-    private static void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
-    {
-        phaseProcessor.Process(hostServices, context.MaxParallelism);
     }
 
     private List<HostService> GetInnerContexts(
@@ -175,23 +170,6 @@ class SingleDocumentBuilder : IDisposable
         }
     }
 
-    private static void Prepare(
-        DocumentBuildContext context,
-        TemplateProcessor templateProcessor,
-        out IHostServiceCreator hostServiceCreator,
-        out PhaseProcessor phaseProcessor)
-    {
-        hostServiceCreator = new HostServiceCreator(context);
-        phaseProcessor = new PhaseProcessor
-        {
-            Handlers =
-                {
-                    new CompilePhaseHandler(context),
-                    new LinkPhaseHandler(context, templateProcessor),
-                }
-        };
-    }
-
     /// <summary>
     /// Export xref map file.
     /// </summary>
@@ -212,7 +190,6 @@ class SingleDocumentBuilder : IDisposable
             Path.GetFullPath(Environment.ExpandEnvironmentVariables(Path.Combine(parameters.OutputBaseDir, xrefMapFileNameWithVersion))),
             xrefMap,
             YamlMime.XRefMap);
-        Logger.LogInfo("XRef map exported.");
         return xrefMapFileNameWithVersion;
     }
 

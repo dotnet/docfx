@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using Docfx.Common;
 using Docfx.Plugins;
+using Spectre.Console;
 
 namespace Docfx.Build.Engine;
 
@@ -72,23 +73,19 @@ public class TemplateProcessor : IDisposable
 
     internal List<ManifestItem> Process(List<InternalManifestItem> manifest, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
     {
-        using (new LoggerPhaseScope("Apply Templates"))
+        globals ??= Tokens.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
+        settings ??= _context?.ApplyTemplateSettings;
+
+        var documentTypes = new HashSet<string>(manifest.Select(s => s.DocumentType));
+        var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null).OrderBy(s => s);
+        if (notSupportedDocumentTypes.Any())
         {
-            globals ??= Tokens.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
-            settings ??= _context?.ApplyTemplateSettings;
-
-            Logger.LogInfo($"Applying templates to {manifest.Count} model(s)...");
-            var documentTypes = new HashSet<string>(manifest.Select(s => s.DocumentType));
-            var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null).OrderBy(s => s);
-            if (notSupportedDocumentTypes.Any())
-            {
-                Logger.LogWarning(
-                    $"There is no template processing document type(s): {StringExtension.ToDelimitedString(notSupportedDocumentTypes)}",
-                    code: WarningCodes.Build.UnknownContentTypeForTemplate);
-            }
-
-            return ProcessCore(manifest, settings, globals);
+            Logger.LogWarning(
+                $"There is no template processing document type(s): {StringExtension.ToDelimitedString(notSupportedDocumentTypes)}",
+                code: WarningCodes.Build.UnknownContentTypeForTemplate);
         }
+
+        return ProcessCore(manifest, settings, globals);
     }
 
     public void CopyTemplateResources(ApplyTemplateSettings settings)
@@ -191,17 +188,21 @@ public class TemplateProcessor : IDisposable
     {
         var manifest = new ConcurrentBag<ManifestItem>();
         var transformer = new TemplateModelTransformer(_context, _templateCollection, settings, globals);
-        items.RunAll(
-            item =>
-            {
-                using (new LoggerFileScope(item.LocalPathFromRoot))
-                {
-                    manifest.Add(transformer.Transform(item));
-                }
-            },
-            _maxParallelism);
-        return manifest.ToList();
 
+        AnsiConsole.Progress().Start(progress =>
+        {
+            var task = progress.AddTask("Apply Templates");
+            task.MaxValue = items.Count;
+
+            Parallel.ForEach(items, item =>
+            {
+                using var _ = new LoggerFileScope(item.LocalPathFromRoot);
+                manifest.Add(transformer.Transform(item));
+                task.Increment(1);
+            });
+        });
+
+        return manifest.ToList();
     }
 
     public void Dispose()

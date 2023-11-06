@@ -54,7 +54,6 @@ public class ExtractSearchIndex : IPostProcessor
             return manifest;
         }
 
-        Logger.LogInfo($"Extracting index data from {htmlFiles.Count} html files");
         foreach (var relativePath in htmlFiles)
         {
             var filePath = Path.Combine(outputFolder, relativePath);

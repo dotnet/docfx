@@ -187,7 +187,8 @@ public class DocumentBuilder : IDisposable
                     .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
                     .WriteToRealFileSystem(parameters[0].OutputBaseDir)
                     .Create();
-                SaveManifest(generatedManifest);
+                    
+                JsonUtility.Serialize(Constants.ManifestFileName, generatedManifest, Formatting.Indented);
 
                 EnvironmentContext.FileAbstractLayerImpl = null;
             }
@@ -250,12 +251,6 @@ public class DocumentBuilder : IDisposable
                 Tokens = resource is null ? null : TemplateProcessorUtility.LoadTokens(resource)?.ToImmutableDictionary(),
             },
             parameters.ConfigureMarkdig);
-    }
-
-    private static void SaveManifest(Manifest manifest)
-    {
-        JsonUtility.Serialize(Constants.ManifestFileName, manifest, Formatting.Indented);
-        Logger.LogInfo($"Manifest file saved to {Constants.ManifestFileName}.");
     }
 
     public void Dispose()
