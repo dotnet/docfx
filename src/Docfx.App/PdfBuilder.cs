@@ -339,17 +339,32 @@ static class PdfBuilder
         Bookmarks CreateBookmarks(Outline[]? items)
         {
             var nextPageNumber = 1;
-            var nextPageNumbers = new Dictionary<Outline, int>();
+            var numbers = new Dictionary<Outline, int>();
 
-            foreach (var (_, node) in pages)
+            foreach (var node in Enumerate(items).Reverse())
             {
                 if (pageNumbers.TryGetValue(node, out var pageNumber))
-                    nextPageNumber = Math.Min(numberOfPages, pageNumber + 1);
+                    nextPageNumber = Math.Min(numberOfPages, pageNumber);
                 else
-                    nextPageNumbers[node] = nextPageNumber;
+                    pageNumber = nextPageNumber;
+                numbers[node] = pageNumber;
             }
 
             return new(CreateBookmarksCore(items, 0).ToArray());
+
+            IEnumerable<Outline> Enumerate(Outline[]? items)
+            {
+                if (items is null)
+                    yield break;
+
+                foreach (var item in items)
+                {
+                    yield return item;
+
+                    foreach (var child in Enumerate(item.items))
+                        yield return child;
+                }
+            }
 
             IEnumerable<BookmarkNode> CreateBookmarksCore(Outline[]? items, int level)
             {
@@ -365,7 +380,7 @@ static class PdfBuilder
                     {
                         yield return new DocumentBookmarkNode(
                             item.name, level,
-                            new(nextPageNumber, ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
+                            new(numbers[item], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
                             CreateBookmarksCore(item.items, level + 1).ToArray());
                         continue;
                     }
@@ -379,14 +394,10 @@ static class PdfBuilder
                         continue;
                     }
 
-                    if (pageNumbers.TryGetValue(item, out var pageNumber) ||
-                        nextPageNumbers.TryGetValue(item, out pageNumber))
-                    {
-                        yield return new DocumentBookmarkNode(
-                            item.name, level,
-                            new(pageNumber, ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
-                            CreateBookmarksCore(item.items, level + 1).ToArray());
-                    }
+                    yield return new DocumentBookmarkNode(
+                        item.name, level,
+                        new(numbers[item], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
+                        CreateBookmarksCore(item.items, level + 1).ToArray());
                 }
             }
         }

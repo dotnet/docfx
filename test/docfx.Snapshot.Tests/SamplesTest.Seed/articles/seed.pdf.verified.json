@@ -230,7 +230,7 @@
           "Title": "Section 1",
           "Children": [],
           "Destination": {
-            "PageNumber": 15,
+            "PageNumber": 5,
             "Type": 2,
             "Coordinates": {
               "Top": 0
@@ -261,7 +261,7 @@
         }
       ],
       "Destination": {
-        "PageNumber": 15,
+        "PageNumber": 5,
         "Type": 2,
         "Coordinates": {
           "Top": 0
