@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace Docfx;
@@ -16,6 +17,13 @@ internal class Program
         {
             config.SetApplicationName("docfx");
             config.UseStrictParsing();
+            config.SetExceptionHandler(e =>
+            {
+                if (e is CommandAppException cae && cae.Pretty is { } pretty)
+                    AnsiConsole.Write(pretty);
+                else
+                    AnsiConsole.WriteException(e, ExceptionFormats.ShortenEverything);
+            });
 
             config.AddCommand<InitCommand>("init");
             config.AddCommand<BuildCommand>("build");
