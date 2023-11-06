@@ -8,11 +8,16 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Docfx.Common;
 using Docfx.Dotnet;
 using ImageMagick;
 using Microsoft.Playwright;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Actions;
+using UglyToad.PdfPig.Annotations;
+using UglyToad.PdfPig.Outline;
 
 namespace Docfx.Tests;
 
@@ -65,17 +70,58 @@ public class SamplesTest
         if (Debugger.IsAttached)
         {
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-            Assert.Equal(0, Program.Main(new[] { "metadata", $"{samplePath}/docfx.json" }));
-            Assert.Equal(0, Program.Main(new[] { "build", $"{samplePath}/docfx.json" }));
+            Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json" }));
         }
         else
         {
             var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-            Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
-            Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
+            Assert.Equal(0, Exec(docfxPath, $"{samplePath}/docfx.json"));
         }
 
+        Parallel.ForEach(Directory.EnumerateFiles($"{samplePath}/_site", "*.pdf", SearchOption.AllDirectories), PdfToJson);
+
         await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+
+        void PdfToJson(string path)
+        {
+            using var document = PdfDocument.Open(path);
+
+            var pdf = new
+            {
+                document.NumberOfPages,
+                Pages = document.GetPages().Select(p => new
+                {
+                    p.Number,
+                    p.NumberOfImages,
+                    p.Text,
+                    Links = p.ExperimentalAccess.GetAnnotations().Select(ToLink).ToArray(),
+                }).ToArray(),
+                Bookmarks = document.TryGetBookmarks(out var bookmarks) ? ToBookmarks(bookmarks.Roots) : null,
+            };
+
+            var json = JsonSerializer.Serialize(pdf, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+            });
+
+            File.WriteAllText(Path.ChangeExtension(path, ".pdf.json"), json);
+
+            object ToLink(Annotation a) => a.Action switch
+            {
+                GoToAction g => new { Goto = g.Destination },
+                UriAction u => new { u.Uri },
+            };
+
+            object ToBookmarks(IEnumerable<BookmarkNode> nodes)
+            {
+                return nodes.Select(node => node switch
+                {
+                    DocumentBookmarkNode d => (object)new { node.Title, Children = ToBookmarks(node.Children), d.Destination },
+                    UriBookmarkNode d => new { node.Title, Children = ToBookmarks(node.Children), d.Uri },
+                }).ToArray();
+            }
+        }
     }
 
     [SnapshotFact]
