@@ -20,7 +20,7 @@ internal static class DocumentBuilderWrapper
         var postProcessorNames = config.PostProcessors.ToImmutableArray();
         var metadata = config.GlobalMetadata?.ToImmutableDictionary();
 
-        // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
+        // Ensure "_enableSearch" adds the right post processor
         if (metadata != null && metadata.TryGetValue("_enableSearch", out object value))
         {
             if (value is bool isSearchable && isSearchable && !postProcessorNames.Contains("ExtractSearchIndex"))

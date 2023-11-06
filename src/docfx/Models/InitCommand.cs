@@ -60,9 +60,9 @@ class InitCommand : Command<InitCommandOptions>
                 {
                     _appName = name,
                     _appTitle = name,
+                    _enableSearch = search,
                     pdf,
-                },
-                postProcessors = search ? new[] { "ExtractSearchIndex" } : null,
+                }
             }
         };
 
