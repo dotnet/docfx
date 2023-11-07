@@ -3,7 +3,6 @@
 
 using System.Collections.Immutable;
 using Docfx.Common;
-using Docfx.MarkdigEngine;
 using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
@@ -27,15 +26,9 @@ class SingleDocumentBuilder : IDisposable
             null,
             processor,
             parameters.Files.EnumerateFiles());
-        var phaseProcessor = new PhaseProcessor
-        {
-            Handlers =
-                {
-                    new CompilePhaseHandler(null),
-                    new LinkPhaseHandler(null, null),
-                }
-        };
-        phaseProcessor.Process(new List<HostService> { hostService }, parameters.MaxParallelism);
+
+        new CompilePhaseHandler(null).Handle(new List<HostService> { hostService }, parameters.MaxParallelism);
+        new LinkPhaseHandler(null, null).Handle(new List<HostService> { hostService }, parameters.MaxParallelism);
         return hostService.Models;
     }
 
@@ -64,22 +57,18 @@ class SingleDocumentBuilder : IDisposable
         // Start building document...
         List<HostService> hostServices = null;
         IHostServiceCreator hostServiceCreator = null;
-        PhaseProcessor phaseProcessor = null;
         try
         {
             using var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
                                           ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
 
-            Prepare(
-                context,
-                templateProcessor,
-                out hostServiceCreator,
-                out phaseProcessor);
+            hostServiceCreator = new HostServiceCreator(context);
             hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
 
             templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
 
-            BuildCore(phaseProcessor, hostServices, context);
+            new CompilePhaseHandler(context).Handle(hostServices, parameters.MaxParallelism);
+            new LinkPhaseHandler(context, templateProcessor).Handle(hostServices, parameters.MaxParallelism);
 
             var manifest = new Manifest(context.ManifestItems.Where(m => m.Output?.Count > 0))
             {
@@ -105,11 +94,6 @@ class SingleDocumentBuilder : IDisposable
                 }
             }
         }
-    }
-
-    private static void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
-    {
-        phaseProcessor.Process(hostServices, context.MaxParallelism);
     }
 
     private List<HostService> GetInnerContexts(
@@ -161,23 +145,6 @@ class SingleDocumentBuilder : IDisposable
         {
             throw ex.GetBaseException();
         }
-    }
-
-    private static void Prepare(
-        DocumentBuildContext context,
-        TemplateProcessor templateProcessor,
-        out IHostServiceCreator hostServiceCreator,
-        out PhaseProcessor phaseProcessor)
-    {
-        hostServiceCreator = new HostServiceCreator(context);
-        phaseProcessor = new PhaseProcessor
-        {
-            Handlers =
-                {
-                    new CompilePhaseHandler(context),
-                    new LinkPhaseHandler(context, templateProcessor),
-                }
-        };
     }
 
     /// <summary>

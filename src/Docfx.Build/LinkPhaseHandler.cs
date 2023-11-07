@@ -8,7 +8,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
 
-internal class LinkPhaseHandler : IPhaseHandler
+internal class LinkPhaseHandler
 {
     public DocumentBuildContext Context { get; }
 
@@ -24,36 +24,13 @@ internal class LinkPhaseHandler : IPhaseHandler
 
     public void Handle(List<HostService> hostServices, int maxParallelism)
     {
-        PostbuildAndSave(hostServices, maxParallelism);
-        ProcessManifest(hostServices, maxParallelism);
-    }
-
-    public void PostbuildAndSave(List<HostService> hostServices, int maxParallelism)
-    {
-        Postbuild(hostServices, maxParallelism);
         Save(hostServices, maxParallelism);
-    }
 
-    public void ProcessManifest(List<HostService> hostServices, int maxParallelism)
-    {
         if (Context != null)
         {
             var manifestProcessor = new ManifestProcessor(_manifestWithContext, Context, TemplateProcessor);
             manifestProcessor.Process();
         }
-    }
-
-    #region Private Methods
-
-    private static void Postbuild(List<HostService> hostServices, int maxParallelism)
-    {
-        hostServices.RunAll(
-            hostService =>
-            {
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
-                Postbuild(hostService);
-            },
-            maxParallelism);
     }
 
     private void Save(List<HostService> hostServices, int maxParallelism)
@@ -202,17 +179,4 @@ internal class LinkPhaseHandler : IPhaseHandler
             Metadata = new Dictionary<string, object>((IDictionary<string, object>)model.ManifestProperties),
         };
     }
-
-    private static void Postbuild(HostService hostService)
-    {
-        BuildPhaseUtility.RunBuildSteps(
-            hostService.Processor.BuildSteps,
-            buildStep =>
-            {
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postbuilding...");
-                buildStep.Postbuild(hostService.Models, hostService);
-            });
-    }
-
-    #endregion
 }

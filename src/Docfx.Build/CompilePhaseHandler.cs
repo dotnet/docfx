@@ -8,7 +8,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
 
-internal class CompilePhaseHandler : IPhaseHandler
+internal class CompilePhaseHandler
 {
     private readonly List<TreeItemRestructure> _restructions = new();
 
@@ -46,11 +46,11 @@ internal class CompilePhaseHandler : IPhaseHandler
         foreach (var hostService in hostServices)
         {
             Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
-            BuildArticle(hostService, maxParallelism);
+            Build(hostService, maxParallelism);
         }
-    }
 
-    #region Private Methods
+        hostServices.RunAll(Postbuild, maxParallelism);
+    }
 
     private void Prepare(List<HostService> hostServices, int maxParallelism)
     {
@@ -85,7 +85,7 @@ internal class CompilePhaseHandler : IPhaseHandler
 
     private static void Prebuild(HostService hostService)
     {
-        BuildPhaseUtility.RunBuildSteps(
+        RunBuildSteps(
             hostService.Processor.BuildSteps,
             buildStep =>
             {
@@ -99,7 +99,7 @@ internal class CompilePhaseHandler : IPhaseHandler
             });
     }
 
-    private static void BuildArticle(HostService hostService, int maxParallelism)
+    private static void Build(HostService hostService, int maxParallelism)
     {
         hostService.Models.RunAll(
             m =>
@@ -107,7 +107,7 @@ internal class CompilePhaseHandler : IPhaseHandler
                 using (new LoggerFileScope(m.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
-                    BuildPhaseUtility.RunBuildSteps(
+                    RunBuildSteps(
                         hostService.Processor.BuildSteps,
                         buildStep =>
                         {
@@ -127,5 +127,25 @@ internal class CompilePhaseHandler : IPhaseHandler
             maxParallelism);
     }
 
-    #endregion
+    private static void Postbuild(HostService hostService)
+    {
+        RunBuildSteps(
+            hostService.Processor.BuildSteps,
+            buildStep =>
+            {
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postbuilding...");
+                buildStep.Postbuild(hostService.Models, hostService);
+            });
+    }
+
+    private static void RunBuildSteps(IEnumerable<IDocumentBuildStep> buildSteps, Action<IDocumentBuildStep> action)
+    {
+        if (buildSteps != null)
+        {
+            foreach (var buildStep in buildSteps.OrderBy(step => step.BuildOrder))
+            {
+                action(buildStep);
+            }
+        }
+    }
 }
