@@ -6,13 +6,13 @@ using System.Composition.Hosting;
 using Docfx.Common;
 using Docfx.Exceptions;
 using Docfx.Plugins;
+using Spectre.Console;
 
 namespace Docfx.Build.Engine;
 
 internal class PostProcessorsManager : IDisposable
 {
     private readonly List<PostProcessor> _postProcessors;
-    private readonly IPostProcessorsHandler _postProcessorsHandler;
 
     public PostProcessorsManager(CompositionHost container, ImmutableArray<string> postProcessorNames)
     {
@@ -20,7 +20,6 @@ internal class PostProcessorsManager : IDisposable
         ArgumentNullException.ThrowIfNull(postProcessorNames);
 
         _postProcessors = GetPostProcessor(container, postProcessorNames);
-        _postProcessorsHandler = new PostProcessorsHandler();
     }
 
     public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
@@ -39,7 +38,14 @@ internal class PostProcessorsManager : IDisposable
 
     public void Process(Manifest manifest, string outputFolder)
     {
-        _postProcessorsHandler.Handle(_postProcessors, manifest, outputFolder);
+        foreach (var postProcessor in _postProcessors)
+        {
+            manifest = postProcessor.Processor.Process(manifest, outputFolder) ??
+                throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null manifest");
+
+            // To make sure post processor won't generate duplicate output files
+            ManifestUtility.RemoveDuplicateOutputFiles(manifest.Files);
+        }
     }
 
     private static List<PostProcessor> GetPostProcessor(CompositionHost container, ImmutableArray<string> processors)
