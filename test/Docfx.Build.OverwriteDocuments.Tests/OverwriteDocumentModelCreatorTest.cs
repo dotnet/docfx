@@ -12,7 +12,7 @@ namespace Docfx.Build.OverwriteDocuments.Tests;
 
 public class OverwriteDocumentModelCreatorTest
 {
-    private readonly TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("overwrite_document_model_creator");
+    private readonly TestLoggerListener _listener = new();
 
     [Fact]
     public void YamlCodeBlockTest()
@@ -98,10 +98,7 @@ definitions:
         Logger.RegisterListener(_listener);
         try
         {
-            using (new LoggerPhaseScope("overwrite_document_model_creator"))
-            {
-                contentsMetadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
-            }
+            contentsMetadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
         }
         finally
         {
@@ -154,10 +151,7 @@ definitions:
         Logger.RegisterListener(_listener);
         try
         {
-            using (new LoggerPhaseScope("overwrite_document_model_creator"))
-            {
-                metadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(yamlMetadata, contents);
-            }
+            metadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(yamlMetadata, contents);
         }
         finally
         {

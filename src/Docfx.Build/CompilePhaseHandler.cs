@@ -59,14 +59,11 @@ static class CompilePhaseHandler
             hostService.Processor.BuildSteps,
             buildStep =>
             {
-                using (new LoggerPhaseScope(buildStep.Name))
+                var models = buildStep.Prebuild(hostService.Models, hostService);
+                if (!ReferenceEquals(models, hostService.Models))
                 {
-                    var models = buildStep.Prebuild(hostService.Models, hostService);
-                    if (!ReferenceEquals(models, hostService.Models))
-                    {
-                        Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Reloading models...");
-                        hostService.Reload(models);
-                    }
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Reloading models...");
+                    hostService.Reload(models);
                 }
             });
     }
@@ -77,10 +74,7 @@ static class CompilePhaseHandler
             hostService.Processor.BuildSteps,
             buildStep =>
             {
-                using (new LoggerPhaseScope(buildStep.Name))
-                {
-                    buildStep.Postbuild(hostService.Models, hostService);
-                }
+                buildStep.Postbuild(hostService.Models, hostService);
             });
     }
 

@@ -41,11 +41,8 @@ public class ReportLoggerListenerTest : TestBase
         CreateFilesOrFolders(_repoRoot, files);
         var listener = new ReportLogListener(logFilePath, _repoRoot, Path.Combine(_repoRoot, "B/Root/"));
         Logger.RegisterListener(listener);
-        using (new LoggerPhaseScope("ReportLoggerListenerTest"))
-        {
-            Logger.LogInfo("Test file path1", file: "~/C.cs");
-            Logger.LogInfo("Test file path2", file: "D/E.md");
-        }
+        Logger.LogInfo("Test file path1", file: "~/C.cs");
+        Logger.LogInfo("Test file path2", file: "D/E.md");
         Logger.UnregisterListener(listener);
         var lines = File.ReadAllLines(logFilePath);
         var reportItems = (from line in lines

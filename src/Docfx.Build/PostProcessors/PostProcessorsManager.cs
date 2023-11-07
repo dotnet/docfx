@@ -27,13 +27,10 @@ internal class PostProcessorsManager : IDisposable
         var updatedMetadata = metadata;
         foreach (var postProcessor in _postProcessors)
         {
-            using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}"))
+            updatedMetadata = postProcessor.Processor.PrepareMetadata(updatedMetadata);
+            if (updatedMetadata == null)
             {
-                updatedMetadata = postProcessor.Processor.PrepareMetadata(updatedMetadata);
-                if (updatedMetadata == null)
-                {
-                    throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null metadata");
-                }
+                throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null metadata");
             }
         }
         return updatedMetadata;

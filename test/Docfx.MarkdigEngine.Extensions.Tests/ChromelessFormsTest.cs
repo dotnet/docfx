@@ -7,8 +7,6 @@ namespace Docfx.MarkdigEngine.Tests;
 
 public class ChromelessFormsTest
 {
-    public static string LoggerPhase = "ChromelessForms";
-
     [Fact]
     public void ChromelessFormsTestWithoutModel()
     {

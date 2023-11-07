@@ -20,7 +20,7 @@ public class TemplateRendererLoaderUnitTest : TestBase
     [Fact]
     public void TestLoaderWhenNoFileExists()
     {
-        using var listener = new TestListenerScope("NoTemplate");
+        using var listener = new TestListenerScope();
         var renderers = LoadAllRenderers();
         Assert.Empty(listener.Items);
         Assert.Empty(renderers);
@@ -47,7 +47,7 @@ public class TemplateRendererLoaderUnitTest : TestBase
     {
         var file1 = CreateFile("a.tmpl", "{{name}}", _inputFolder);
 
-        using var listener = new TestListenerScope("TestLoaderWithValidInput");
+        using var listener = new TestListenerScope();
         var renderers = LoadAllRenderers();
 
         Assert.Empty(listener.Items);
@@ -68,7 +68,7 @@ public class TemplateRendererLoaderUnitTest : TestBase
         var path = "a.tmpl";
         var file1 = CreateFile(path, "{{name}}", _inputFolder);
 
-        using var listener = new TestListenerScope("TestLoaderWithValidInput");
+        using var listener = new TestListenerScope();
         var renderer = Load(path);
 
         Assert.Empty(listener.Items);

@@ -11,7 +11,6 @@ namespace Docfx.Build.Engine;
 
 class SingleDocumentBuilder : IDisposable
 {
-    private const string PhaseName = "Build Document";
     private const string XRefMapFileName = "xrefmap.yml";
 
     public IEnumerable<IDocumentProcessor> Processors { get; set; }
@@ -28,15 +27,8 @@ class SingleDocumentBuilder : IDisposable
             processor,
             parameters.Files.EnumerateFiles());
 
-        using (new LoggerPhaseScope(nameof(CompilePhaseHandler)))
-        {
-            CompilePhaseHandler.Handle(new() { hostService }, null);
-        }
-
-        using (new LoggerPhaseScope(nameof(LinkPhaseHandler)))
-        {
-            LinkPhaseHandler.Handle(new() { hostService }, null, null);
-        }
+        CompilePhaseHandler.Handle(new() { hostService }, null);
+        LinkPhaseHandler.Handle(new() { hostService }, null, null);
 
         return hostService.Models;
     }
@@ -59,36 +51,24 @@ class SingleDocumentBuilder : IDisposable
         }
         parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
-        using var _ = new LoggerPhaseScope(PhaseName);
         Directory.CreateDirectory(parameters.OutputBaseDir);
 
         var context = new DocumentBuildContext(parameters);
 
         // Start building document...
         List<HostService> hostServices = null;
-
         try
         {
             using var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
                                           ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
 
             var hostServiceCreator = new HostServiceCreator(context);
-            using (new LoggerPhaseScope("Load"))
-            {
-                hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
-            }
+            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
 
             templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
 
-            using (new LoggerPhaseScope(nameof(CompilePhaseHandler)))
-            {
-                CompilePhaseHandler.Handle(hostServices, context);
-            }
-
-            using (new LoggerPhaseScope(nameof(LinkPhaseHandler)))
-            {
-                LinkPhaseHandler.Handle(hostServices, context, templateProcessor);
-            }
+            CompilePhaseHandler.Handle(hostServices, context);
+            LinkPhaseHandler.Handle(hostServices, context, templateProcessor);
 
             var manifest = new Manifest(context.ManifestItems.Where(m => m.Output?.Count > 0))
             {
@@ -153,16 +133,13 @@ class SingleDocumentBuilder : IDisposable
                     join item in toHandleItems.AsParallel() on processor equals item.Key into g
                     from item in g.DefaultIfEmpty()
                     where item != null && item.Any(s => s.Type != DocumentType.Overwrite) // when normal file exists then processing is needed
-                    select LoggerPhaseScope.WithScope(
-                        processor.Name,
-                        () => creator.CreateHostService(
+                    select creator.CreateHostService(
                             parameters,
                             templateProcessor,
                             markdownService,
                             MetadataValidators,
                             processor,
-                            item)
-                            )).ToList();
+                            item)).ToList();
         }
         catch (AggregateException ex)
         {

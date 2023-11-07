@@ -33,34 +33,19 @@ internal class ManifestProcessor
 
     public void Process()
     {
-        using (new LoggerPhaseScope("UpdateContext"))
-        {
-            UpdateContext();
-        }
+        UpdateContext();
 
         // Afterwards, m.Item.Model.Content is always IDictionary
-        using (new LoggerPhaseScope("NormalizeToObject"))
-        {
-            NormalizeToObject();
-        }
+        NormalizeToObject();
 
         // Run getOptions from Template and feed options back to context
         // Template can feed back xref map, actually, the anchor # location can only be determined in template
-        using (new LoggerPhaseScope("FeedOptions"))
-        {
-            FeedOptions();
-        }
+        FeedOptions();
 
-        using (new LoggerPhaseScope("UpdateHref"))
-        {
-            UpdateHref();
-        }
+        UpdateHref();
 
         // Afterwards, m.Item.Model.Content is always IDictionary
-        using (new LoggerPhaseScope("ApplySystemMetadata"))
-        {
-            ApplySystemMetadata();
-        }
+        ApplySystemMetadata();
 
         foreach (var item in ProcessTemplate())
         {

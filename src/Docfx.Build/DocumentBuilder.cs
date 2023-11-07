@@ -28,13 +28,10 @@ public class DocumentBuilder : IDisposable
     public DocumentBuilder(IEnumerable<Assembly> assemblies, ImmutableArray<string> postProcessorNames)
     {
         Logger.LogVerbose("Loading plug-ins and post-processors...");
-        using (new LoggerPhaseScope("ImportPlugins"))
-        {
-            var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
-            assemblyList.Add(typeof(DocumentBuilder).Assembly);
-            _container = CompositionContainer.GetContainer(assemblyList);
-            _container.SatisfyImports(this);
-        }
+        var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
+        assemblyList.Add(typeof(DocumentBuilder).Assembly);
+        _container = CompositionContainer.GetContainer(assemblyList);
+        _container.SatisfyImports(this);
         _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames);
     }
 
@@ -125,15 +122,12 @@ public class DocumentBuilder : IDisposable
                         Logger.LogInfo($"Start building for version: {parameter.VersionName}");
                     }
 
-                    using (new LoggerPhaseScope("BuildCore"))
+                    using var builder = new SingleDocumentBuilder
                     {
-                        using var builder = new SingleDocumentBuilder
-                        {
-                            MetadataValidators = MetadataValidators.ToList(),
-                            Processors = Processors,
-                        };
-                        manifests.Add(builder.Build(parameter, markdownService));
-                    }
+                        MetadataValidators = MetadataValidators.ToList(),
+                        Processors = Processors,
+                    };
+                    manifests.Add(builder.Build(parameter, markdownService));
                 }
             }
             if (noContentFound)
@@ -149,49 +143,46 @@ public class DocumentBuilder : IDisposable
                     code: SuggestionCodes.Build.EmptyInputContents);
             }
 
-            using (new LoggerPhaseScope("Postprocess"))
+            var generatedManifest = ManifestUtility.MergeManifest(manifests);
+            generatedManifest.Sitemap = parameters.FirstOrDefault()?.SitemapOptions;
+            ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+            ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
+
+            EnvironmentContext.FileAbstractLayerImpl =
+                FileAbstractLayerBuilder.Default
+                .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
+                .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
+                .Create();
+
+            _postProcessorsManager.Process(generatedManifest, outputDirectory);
+
+            if (parameters[0].KeepFileLink)
             {
-                var generatedManifest = ManifestUtility.MergeManifest(manifests);
-                generatedManifest.Sitemap = parameters.FirstOrDefault()?.SitemapOptions;
-                ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-                ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
-
-                EnvironmentContext.FileAbstractLayerImpl =
-                    FileAbstractLayerBuilder.Default
-                    .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
-                    .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
-                    .Create();
-
-                _postProcessorsManager.Process(generatedManifest, outputDirectory);
-
-                if (parameters[0].KeepFileLink)
+                var count = (from f in generatedManifest.Files
+                             from o in f.Output
+                             select o.Value into v
+                             where v.LinkToPath != null
+                             select v).Count();
+                if (count > 0)
                 {
-                    var count = (from f in generatedManifest.Files
-                                 from o in f.Output
-                                 select o.Value into v
-                                 where v.LinkToPath != null
-                                 select v).Count();
-                    if (count > 0)
-                    {
-                        Logger.LogInfo($"Skip dereferencing {count} files.");
-                    }
+                    Logger.LogInfo($"Skip dereferencing {count} files.");
                 }
-                else
-                {
-                    generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
-                }
-
-                // Save to manifest.json
-                EnvironmentContext.FileAbstractLayerImpl =
-                    FileAbstractLayerBuilder.Default
-                    .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
-                    .WriteToRealFileSystem(parameters[0].OutputBaseDir)
-                    .Create();
-                    
-                JsonUtility.Serialize(Constants.ManifestFileName, generatedManifest, Formatting.Indented);
-
-                EnvironmentContext.FileAbstractLayerImpl = null;
             }
+            else
+            {
+                generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
+            }
+
+            // Save to manifest.json
+            EnvironmentContext.FileAbstractLayerImpl =
+                FileAbstractLayerBuilder.Default
+                .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
+                .WriteToRealFileSystem(parameters[0].OutputBaseDir)
+                .Create();
+
+            JsonUtility.Serialize(Constants.ManifestFileName, generatedManifest, Formatting.Indented);
+
+            EnvironmentContext.FileAbstractLayerImpl = null;
         }
         finally
         {
@@ -200,41 +191,38 @@ public class DocumentBuilder : IDisposable
 
         List<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
         {
-            using (new LoggerPhaseScope(nameof(LoadSchemaDrivenDocumentProcessors)))
+            var result = new List<IDocumentProcessor>();
+
+            using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
             {
-                var result = new List<IDocumentProcessor>();
-
-                using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
+                if (resource == null || resource.IsEmpty)
                 {
-                    if (resource == null || resource.IsEmpty)
-                    {
-                        return result;
-                    }
-
-                    foreach (var pair in resource.GetResources(@"^schemas/.*\.schema\.json"))
-                    {
-                        var fileName = Path.GetFileName(pair.Path);
-
-                        using (new LoggerFileScope(fileName))
-                        {
-                            var schema = DocumentSchema.Load(pair.Content, fileName.Remove(fileName.Length - ".schema.json".Length));
-                            var sdp = new SchemaDrivenDocumentProcessor(
-                                schema,
-                                new CompositionContainer(CompositionContainer.DefaultContainer),
-                                markdownService);
-                            Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
-                            result.Add(sdp);
-                        }
-                    }
+                    return result;
                 }
 
-                if (result.Count > 0)
+                foreach (var pair in resource.GetResources(@"^schemas/.*\.schema\.json"))
                 {
-                    Logger.LogInfo($"{result.Count} schema driven document processor plug-in(s) loaded.");
-                    Processors = Processors.Union(result);
+                    var fileName = Path.GetFileName(pair.Path);
+
+                    using (new LoggerFileScope(fileName))
+                    {
+                        var schema = DocumentSchema.Load(pair.Content, fileName.Remove(fileName.Length - ".schema.json".Length));
+                        var sdp = new SchemaDrivenDocumentProcessor(
+                            schema,
+                            new CompositionContainer(CompositionContainer.DefaultContainer),
+                            markdownService);
+                        Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                        result.Add(sdp);
+                    }
                 }
-                return result;
             }
+
+            if (result.Count > 0)
+            {
+                Logger.LogInfo($"{result.Count} schema driven document processor plug-in(s) loaded.");
+                Processors = Processors.Union(result);
+            }
+            return result;
         }
     }
 

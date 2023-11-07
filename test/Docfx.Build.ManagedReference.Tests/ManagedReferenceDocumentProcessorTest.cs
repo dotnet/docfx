@@ -218,32 +218,21 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
         files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
         files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.invalid.ref.md" });
 
-        var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(ProcessMrefWithInvalidCrossReferenceShouldWarn), LogLevel.Info);
-        try
-        {
-            Logger.RegisterListener(listener);
+        using var listener = new TestListenerScope(LogLevel.Info);
 
-            using (new LoggerPhaseScope(nameof(ProcessMrefWithInvalidCrossReferenceShouldWarn)))
-            {
-                BuildDocument(files);
-            }
+        BuildDocument(files);
 
-            var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
-            Assert.Single(warnings);
-            var warning = warnings.Single();
-            Assert.Equal("2 invalid cross reference(s) \"<xref:invalidXref1>\", \"<xref:invalidXref2>\".", warning.Message);
-            Assert.Equal("TestData/mref/System.String.yml", warning.File);
+        var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
+        Assert.Single(warnings);
+        var warning = warnings.Single();
+        Assert.Equal("2 invalid cross reference(s) \"<xref:invalidXref1>\", \"<xref:invalidXref2>\".", warning.Message);
+        Assert.Equal("TestData/mref/System.String.yml", warning.File);
 
-            var infos = listener.GetItemsByLogLevel(LogLevel.Info).Where(i => i.Message.Contains("Details for invalid cross reference(s)")).ToList();
-            Assert.Single(infos);
-            Assert.Equal("Details for invalid cross reference(s): \"<xref:invalidXref1>\" in line 6, \"<xref:invalidXref2>\" in line 8", infos[0].Message);
-            Assert.Equal("TestData/overwrite/mref.overwrite.invalid.ref.md", infos[0].File);
-            Assert.Null(infos[0].Line);
-        }
-        finally
-        {
-            Logger.UnregisterListener(listener);
-        }
+        var infos = listener.GetItemsByLogLevel(LogLevel.Info).Where(i => i.Message.Contains("Details for invalid cross reference(s)")).ToList();
+        Assert.Single(infos);
+        Assert.Equal("Details for invalid cross reference(s): \"<xref:invalidXref1>\" in line 6, \"<xref:invalidXref2>\" in line 8", infos[0].Message);
+        Assert.Equal("TestData/overwrite/mref.overwrite.invalid.ref.md", infos[0].File);
+        Assert.Null(infos[0].Line);
     }
 
     [Fact]
@@ -308,29 +297,17 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
         var file = new FileAndType(Directory.GetCurrentDirectory(), fileWithNoContent, DocumentType.Article);
         var processor = new ManagedReferenceDocumentProcessor();
 
-        var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(LoadArticleWithEmptyFileShouldWarnAndReturnNull), LogLevel.Info);
-        try
-        {
-            Logger.RegisterListener(listener);
+        using var listener = new TestListenerScope();
 
-            FileModel actualFileModel;
-            using (new LoggerPhaseScope(nameof(LoadArticleWithEmptyFileShouldWarnAndReturnNull)))
-            {
-                actualFileModel = processor.Load(file, null);
-            }
+        var actualFileModel = processor.Load(file, null);
 
-            var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
-            Assert.Single(warnings);
-            var warning = warnings.Single();
-            Assert.Equal("Please add `YamlMime` as the first line of file, e.g.: `### YamlMime:ManagedReference`, otherwise the file will be not treated as ManagedReference source file in near future.", warning.Message);
-            Assert.Equal(fileWithNoContent, warning.File);
+        var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
+        Assert.Single(warnings);
+        var warning = warnings.Single();
+        Assert.Equal("Please add `YamlMime` as the first line of file, e.g.: `### YamlMime:ManagedReference`, otherwise the file will be not treated as ManagedReference source file in near future.", warning.Message);
+        Assert.Equal(fileWithNoContent, warning.File);
 
-            Assert.Null(actualFileModel);
-        }
-        finally
-        {
-            Logger.UnregisterListener(listener);
-        }
+        Assert.Null(actualFileModel);
     }
 
     private void BuildDocument(FileCollection files)
