@@ -32,7 +32,6 @@ public sealed class ReportLogListener : ILoggerListener
 
         var level = item.LogLevel;
         var message = item.Message;
-        var phase = item.Phase;
         var file = item.File;
         var line = item.Line;
         if (level < LogLevelThreshold) return;
@@ -41,7 +40,6 @@ public sealed class ReportLogListener : ILoggerListener
         {
             Severity = GetSeverity(level),
             Message = message,
-            Source = phase,
             File = TransformFile(file),
             Line = line,
             DateTime = DateTime.UtcNow,
@@ -104,10 +102,6 @@ public sealed class ReportLogListener : ILoggerListener
         [JsonProperty("message")]
         [JsonPropertyName("message")]
         public string Message { get; set; }
-
-        [JsonProperty("source")]
-        [JsonPropertyName("source")]
-        public string Source { get; set; }
 
         [JsonProperty("file")]
         [JsonPropertyName("file")]

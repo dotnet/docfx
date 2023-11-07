@@ -83,7 +83,7 @@ public partial class TemplateManagerUnitTest
         // Arrange
         var templates = new List<string> { "default" };
         var manager = new TemplateManager(templates, null, null);
-        var listener = CreateTestLoggerListener();
+        var listener = new TestLoggerListener();
         Logger.RegisterListener(listener);
 
         try
@@ -106,8 +106,6 @@ public partial class TemplateManagerUnitTest
             DisableDotNetToolMode();
         }
     }
-
-    private static TestLoggerListener CreateTestLoggerListener() => TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(PhaseNameForFilter, LogLevel.Warning);
 
     private static void EnableDotNetToolMode() => AppContext.SetSwitch(Switches.DotnetToolMode, true);
     private static void DisableDotNetToolMode() => AppContext.SetSwitch(Switches.DotnetToolMode, false); // There is no API to clear switch.

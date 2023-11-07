@@ -50,7 +50,7 @@ public class SchemaDrivenProcessorTest : TestBase
     [Fact]
     public void TestRef()
     {
-        using var listener = new TestListenerScope("TestRef");
+        using var listener = new TestListenerScope();
         var schemaFile = CreateFile("template/schemas/general.test.schema.json", File.ReadAllText("TestData/schemas/general.test.schema.json"), _templateFolder);
         var templateFile = CreateFile("template/General.html.tmpl", @"{{#items}}
 {{#aggregatedExceptions}}
@@ -122,7 +122,7 @@ items:
     [Fact]
     public void TestXrefResolver()
     {
-        using var listener = new TestListenerScope("TestXrefResolver");
+        using var listener = new TestListenerScope();
         // arrange
         var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
         var templateXref = CreateFile(
@@ -172,7 +172,7 @@ This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></
     [Fact]
     public void TestXrefResolverShouldWarnWithEmptyUidReference()
     {
-        using var listener = new TestListenerScope(nameof(TestXrefResolverShouldWarnWithEmptyUidReference));
+        using var listener = new TestListenerScope();
         // arrange
         var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
         var inputFileName = "inputs/CatLibrary.ICat.yml";
@@ -191,7 +191,7 @@ This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></
     [Fact]
     public void TestValidMetadataReferenceWithIncremental()
     {
-        using var listener = new TestListenerScope("TestGeneralFeaturesInSDP");
+        using var listener = new TestListenerScope();
         var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
 {
   ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
@@ -288,7 +288,7 @@ title: Web Apps Documentation
     public void TestInvalidSchemaDefinition()
     {
         // Json.NET schema has limitation of 1000 calls per hour
-        using var listener = new TestListenerScope("TestInvalidMetadataReference");
+        using var listener = new TestListenerScope();
         var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
 {
   ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
@@ -319,7 +319,7 @@ metadata: Web Apps Documentation
     [Fact]
     public void TestInvalidObjectAgainstSchema()
     {
-        using var listener = new TestListenerScope("TestInvalidMetadataReference");
+        using var listener = new TestListenerScope();
         var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
 {
   ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
@@ -351,7 +351,7 @@ metadata: Web Apps Documentation
     [Fact]
     public void TestInvalidMetadataReference()
     {
-        using var listener = new TestListenerScope("TestGeneralFeaturesInSDP");
+        using var listener = new TestListenerScope();
         var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
 {
   ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",

@@ -777,7 +777,7 @@ exports.getOptions = function (){
 
     private void Init(string phaseName)
     {
-        Listener = TestLoggerListener.CreateLoggerListenerWithPhaseEndFilter("BuildConceptualDocument");
+        Listener = new();
         Logger.RegisterListener(Listener);
     }
 

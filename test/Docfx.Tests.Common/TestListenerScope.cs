@@ -5,24 +5,37 @@ using Docfx.Common;
 
 namespace Docfx.Tests.Common;
 
-public class TestListenerScope : IDisposable
+public class TestListenerScope : ILoggerListener, IDisposable
 {
-    private readonly TestLoggerListener _listener;
-    private readonly LoggerPhaseScope _scope;
+    private static AsyncLocal<List<ILogItem>> s_items = new();
 
-    public TestListenerScope(string phaseName)
+    public List<ILogItem> Items => s_items.Value;
+
+    public TestListenerScope()
     {
-        _listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(phaseName);
-        Logger.RegisterListener(_listener);
-        _scope = new LoggerPhaseScope(phaseName);
+        s_items.Value = new();
+        Logger.RegisterListener(this);
+    }
+
+    public void Flush() { }
+
+    public void WriteLine(ILogItem item)
+    {
+        if (item.LogLevel >= LogLevel.Warning)
+            s_items.Value.Add(item);
+    }
+
+    public IEnumerable<ILogItem> GetItemsByLogLevel(LogLevel logLevel)
+    {
+        return Items.Where(i => i.LogLevel == logLevel);
     }
 
     public void Dispose()
     {
-        _scope.Dispose();
-        Logger.UnregisterListener(_listener);
-        _listener.Dispose();
+        if (s_items.Value is not null)
+        {
+            s_items.Value = null;
+            Logger.UnregisterListener(this);
+        }
     }
-
-    public List<ILogItem> Items => _listener.Items;
 }

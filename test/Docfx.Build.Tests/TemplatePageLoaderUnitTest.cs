@@ -20,7 +20,7 @@ public class TemplatePageLoaderUnitTest : TestBase
     [Fact]
     public void TestLoaderWhenNoFileExists()
     {
-        using var listener = new TestListenerScope("NoTemplate");
+        using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
         Assert.Empty(listener.Items);
         Assert.Empty(templates);
@@ -47,7 +47,7 @@ public class TemplatePageLoaderUnitTest : TestBase
     {
         var file1 = CreateFile("a.tmpl", string.Empty, _inputFolder);
 
-        using var listener = new TestListenerScope("TestLoaderWhenRendererExists");
+        using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
 
         Assert.Empty(listener.Items);
@@ -70,7 +70,7 @@ public class TemplatePageLoaderUnitTest : TestBase
         var file1 = CreateFile("a.primary.tmpl", string.Empty, _inputFolder);
         var file2 = CreateFile("a.primary.js", "exports.transform = function(){}", _inputFolder);
 
-        using var listener = new TestListenerScope("TestLoaderWhenPreprocessorExists");
+        using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
 
         Assert.Empty(listener.Items);
@@ -95,7 +95,7 @@ public class TemplatePageLoaderUnitTest : TestBase
     {
         var file1 = CreateFile("a.ext.TMPL.js", "exports.transform = function(){}", _inputFolder);
 
-        using var listener = new TestListenerScope("TestLoaderWhenStandalonePreprocessorExists");
+        using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
 
         Assert.Empty(listener.Items);
