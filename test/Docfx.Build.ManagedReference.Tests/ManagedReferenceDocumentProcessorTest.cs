@@ -218,7 +218,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
         files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
         files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.invalid.ref.md" });
 
-        using var listener = new TestListenerScope();
+        using var listener = new TestListenerScope(LogLevel.Info);
 
         using (new LoggerPhaseScope(nameof(ProcessMrefWithInvalidCrossReferenceShouldWarn)))
         {
