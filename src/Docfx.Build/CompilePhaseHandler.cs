@@ -13,21 +13,15 @@ static class CompilePhaseHandler
 {
     public static void Handle(List<HostService> hostServices, DocumentBuildContext context)
     {
-        if (context is not null)
+        // Prebuild
+        AnsiConsole.Status().Start("Prebuild", _ =>
         {
-            foreach (var hostService in hostServices)
-            {
-                hostService.SourceFiles = context.AllSourceFiles;
-                foreach (var m in hostService.Models)
-                    m.LocalPathFromRoot ??= StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
-            }
-        }
-
-        AnsiConsole.Progress().Start(progress =>
-        {
-            // Prebuild
+            Prepare();
             Parallel.ForEach(hostServices, Prebuild);
+        });
 
+        new Progress(AnsiConsole.Console) { AutoClear = true }.Start(progress =>
+        {
             // Update TOC
             var tocRestructions = hostServices.Where(h => h.TableOfContentRestructions is not null).SelectMany(h => h.TableOfContentRestructions).ToImmutableList();
             foreach (var hostService in hostServices)
@@ -47,10 +41,23 @@ static class CompilePhaseHandler
                     task.Increment(1);
                 });
             }
-
-            // Postbuild
-            Parallel.ForEach(hostServices, Postbuild);
         });
+
+        // Postbuild
+        AnsiConsole.Status().Start("Postbuild", _ => Parallel.ForEach(hostServices, Postbuild));
+
+        void Prepare()
+        {
+            if (context is not null)
+            {
+                foreach (var hostService in hostServices)
+                {
+                    hostService.SourceFiles = context.AllSourceFiles;
+                    foreach (var m in hostService.Models)
+                        m.LocalPathFromRoot ??= StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
+                }
+            }
+        }
     }
 
     private static void Prebuild(HostService hostService)

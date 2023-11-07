@@ -65,7 +65,7 @@ internal class PostProcessorsManager : IDisposable
                     ContractName = processor,
                     Processor = p
                 });
-                Logger.LogInfo($"Post processor {processor} loaded.");
+                Logger.LogVerbose($"Post processor {processor} loaded.");
             }
             else
             {

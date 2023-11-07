@@ -4,6 +4,7 @@
 using System.Collections.Immutable;
 using System.Composition;
 using System.Composition.Hosting;
+using System.Net.Sockets;
 using System.Reflection;
 using Docfx.Build.SchemaDriven;
 using Docfx.Common;
@@ -27,7 +28,6 @@ public class DocumentBuilder : IDisposable
 
     public DocumentBuilder(IEnumerable<Assembly> assemblies, ImmutableArray<string> postProcessorNames)
     {
-        Logger.LogVerbose("Loading plug-ins and post-processors...");
         var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
         assemblyList.Add(typeof(DocumentBuilder).Assembly);
         _container = CompositionContainer.GetContainer(assemblyList);
@@ -43,7 +43,6 @@ public class DocumentBuilder : IDisposable
     public void Build(IList<DocumentBuildParameters> parameters, string outputDirectory)
     {
         ArgumentNullException.ThrowIfNull(parameters);
-
         if (parameters.Count == 0)
         {
             throw new ArgumentException("Parameters are empty.", nameof(parameters));
@@ -58,7 +57,7 @@ public class DocumentBuilder : IDisposable
         Processors = Processors.Append(new ApiPage.ApiPageDocumentProcessor(markdownService));
 #endif
 
-        Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
+        Logger.LogVerbose($"{Processors.Count()} plug-in(s) loaded.");
         foreach (var processor in Processors)
         {
             Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");

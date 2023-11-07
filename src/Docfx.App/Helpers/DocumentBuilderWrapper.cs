@@ -8,13 +8,12 @@ using System.Reflection.PortableExecutable;
 using Docfx.Build.Engine;
 using Docfx.Common;
 using Docfx.Plugins;
+using Spectre.Console;
 
 namespace Docfx;
 
 internal static class DocumentBuilderWrapper
 {
-    private static readonly Assembly[] s_pluginAssemblies = LoadPluginAssemblies(AppContext.BaseDirectory).ToArray();
-
     public static void BuildDocument(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, string baseDirectory, string outputDirectory, string templateDirectory)
     {
         var postProcessorNames = config.PostProcessors.ToImmutableArray();
@@ -34,12 +33,19 @@ internal static class DocumentBuilderWrapper
             postProcessorNames = postProcessorNames.Add("SitemapGenerator");
         }
 
-        var pluginAssemblies = templateManager.GetTemplateDirectories().Select(d => Path.Combine(d, "plugins")).SelectMany(LoadPluginAssemblies);
-
-        using var builder = new DocumentBuilder(s_pluginAssemblies.Concat(pluginAssemblies), postProcessorNames);
-
+        using var builder = CreateDocumentBuilder();
         var parameters = ConfigToParameter(config, options, templateManager, baseDirectory, outputDirectory, templateDirectory);
+        AnsiConsole.WriteLine("ggo");
         builder.Build(parameters, outputDirectory);
+
+        DocumentBuilder CreateDocumentBuilder() => AnsiConsole.Status().Start("Loading plugins", _ =>
+        {
+            var pluginAssemblies = templateManager.GetTemplateDirectories().Select(d => Path.Combine(d, "plugins"))
+                    .Prepend(AppContext.BaseDirectory)
+                    .SelectMany(LoadPluginAssemblies).ToArray();
+
+            return new DocumentBuilder(pluginAssemblies, postProcessorNames);
+        });
     }
 
     private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
@@ -47,7 +53,7 @@ internal static class DocumentBuilderWrapper
         if (!Directory.Exists(pluginDirectory))
             yield break;
 
-        Logger.LogInfo($"Searching custom plugins in directory {pluginDirectory}...");
+        Logger.LogVerbose($"Searching custom plugins in directory {pluginDirectory}...");
 
         foreach (string assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
         {
