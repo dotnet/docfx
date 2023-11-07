@@ -78,13 +78,10 @@ public class TemplateManager
 
     public void ProcessTheme(string outputDirectory, bool overwrite)
     {
-        using (new LoggerPhaseScope("Apply Theme"))
+        if (_themes != null && _themes.Count > 0)
         {
-            if (_themes != null && _themes.Count > 0)
-            {
-                TryExportResourceFiles(_themes, outputDirectory, overwrite);
-                Logger.LogInfo($"Theme(s) {_themes.ToDelimitedString()} applied.");
-            }
+            TryExportResourceFiles(_themes, outputDirectory, overwrite);
+            Logger.LogInfo($"Theme(s) {_themes.ToDelimitedString()} applied.");
         }
     }
 
@@ -102,26 +99,23 @@ public class TemplateManager
 
         bool isEmpty = true;
 
-        using (new LoggerPhaseScope("ExportResourceFiles"))
+        using var templateResource = CreateTemplateResource(resourceNames);
+        if (templateResource.IsEmpty)
         {
-            using var templateResource = CreateTemplateResource(resourceNames);
-            if (templateResource.IsEmpty)
-            {
-                Logger.Log(LogLevel.Warning, $"No resource found for [{StringExtension.ToDelimitedString(resourceNames)}].");
-            }
-            else
-            {
-                foreach (var pair in templateResource.GetResourceStreams(regexFilter))
-                {
-                    var outputPath = Path.Combine(outputDirectory, pair.Key);
-                    CopyResource(pair.Value, outputPath, overwrite);
-                    Logger.Log(LogLevel.Verbose, $"File {pair.Key} copied to {outputPath}.");
-                    isEmpty = false;
-                }
-            }
-
-            return !isEmpty;
+            Logger.Log(LogLevel.Warning, $"No resource found for [{StringExtension.ToDelimitedString(resourceNames)}].");
         }
+        else
+        {
+            foreach (var pair in templateResource.GetResourceStreams(regexFilter))
+            {
+                var outputPath = Path.Combine(outputDirectory, pair.Key);
+                CopyResource(pair.Value, outputPath, overwrite);
+                Logger.Log(LogLevel.Verbose, $"File {pair.Key} copied to {outputPath}.");
+                isEmpty = false;
+            }
+        }
+
+        return !isEmpty;
     }
 
     private static void CopyResource(Stream stream, string filePath, bool overwrite)

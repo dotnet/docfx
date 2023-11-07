@@ -178,10 +178,7 @@ public class RestApiDocumentProcessorTest : TestBase
         var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter("InvalidInputFile");
         Logger.RegisterListener(listener);
 
-        using (new LoggerPhaseScope(nameof(RestApiDocumentProcessorTest)))
-        {
-            BuildDocument(files);
-        }
+        BuildDocument(files);
 
         Assert.NotNull(listener.Items);
         Assert.Single(listener.Items);
@@ -196,10 +193,7 @@ public class RestApiDocumentProcessorTest : TestBase
         var listener = TestLoggerListener.CreateLoggerListenerWithCodeFilter("InvalidInputFile");
         Logger.RegisterListener(listener);
 
-        using (new LoggerPhaseScope(nameof(RestApiDocumentProcessorTest)))
-        {
-            BuildDocument(files);
-        }
+        BuildDocument(files);
 
         Assert.NotNull(listener.Items);
         Assert.Single(listener.Items);

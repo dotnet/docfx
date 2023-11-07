@@ -237,10 +237,8 @@ title: Web Apps Documentation
 
         FileCollection files = new(_defaultFiles);
         files.Add(DocumentType.Article, new[] { inputFile1, inputFile2, dependentMarkdown }, _inputFolder);
-        using (new LoggerPhaseScope("FirstRound"))
-        {
-            BuildDocument(files);
-        }
+
+        BuildDocument(files);
 
         Assert.Equal(4, listener.Items.Count);
         Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): MetadataReferenceTest,Toc")));
@@ -265,10 +263,7 @@ title: Web Apps Documentation
 
         // change dependent markdown
         UpdateFile("toc.md", new string[] { "# Updated" }, _inputFolder);
-        using (new LoggerPhaseScope("SecondRound"))
-        {
-            BuildDocument(files);
-        }
+        BuildDocument(files);
 
         rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 

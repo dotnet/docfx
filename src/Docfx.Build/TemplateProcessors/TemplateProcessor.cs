@@ -72,23 +72,20 @@ public class TemplateProcessor : IDisposable
 
     internal List<ManifestItem> Process(List<InternalManifestItem> manifest, ApplyTemplateSettings settings, IDictionary<string, object> globals = null)
     {
-        using (new LoggerPhaseScope("Apply Templates"))
+        globals ??= Tokens.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
+        settings ??= _context?.ApplyTemplateSettings;
+
+        Logger.LogInfo($"Applying templates to {manifest.Count} model(s)...");
+        var documentTypes = new HashSet<string>(manifest.Select(s => s.DocumentType));
+        var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null).OrderBy(s => s);
+        if (notSupportedDocumentTypes.Any())
         {
-            globals ??= Tokens.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
-            settings ??= _context?.ApplyTemplateSettings;
-
-            Logger.LogInfo($"Applying templates to {manifest.Count} model(s)...");
-            var documentTypes = new HashSet<string>(manifest.Select(s => s.DocumentType));
-            var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null).OrderBy(s => s);
-            if (notSupportedDocumentTypes.Any())
-            {
-                Logger.LogWarning(
-                    $"There is no template processing document type(s): {StringExtension.ToDelimitedString(notSupportedDocumentTypes)}",
-                    code: WarningCodes.Build.UnknownContentTypeForTemplate);
-            }
-
-            return ProcessCore(manifest, settings, globals);
+            Logger.LogWarning(
+                $"There is no template processing document type(s): {StringExtension.ToDelimitedString(notSupportedDocumentTypes)}",
+                code: WarningCodes.Build.UnknownContentTypeForTemplate);
         }
+
+        return ProcessCore(manifest, settings, globals);
     }
 
     public void CopyTemplateResources(ApplyTemplateSettings settings)

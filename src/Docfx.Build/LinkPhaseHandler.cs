@@ -10,10 +10,6 @@ namespace Docfx.Build.Engine;
 
 internal class LinkPhaseHandler : IPhaseHandler
 {
-    public string Name => nameof(LinkPhaseHandler);
-
-    public BuildPhase Phase => BuildPhase.Link;
-
     public DocumentBuildContext Context { get; }
 
     public TemplateProcessor TemplateProcessor { get; }
@@ -54,14 +50,8 @@ internal class LinkPhaseHandler : IPhaseHandler
         hostServices.RunAll(
             hostService =>
             {
-                using (new LoggerPhaseScope(hostService.Processor.Name))
-                {
-                    Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
-                    using (new LoggerPhaseScope("Postbuild"))
-                    {
-                        Postbuild(hostService);
-                    }
-                }
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
+                Postbuild(hostService);
             },
             maxParallelism);
     }
@@ -71,52 +61,46 @@ internal class LinkPhaseHandler : IPhaseHandler
         _manifestWithContext = new List<ManifestItemWithContext>();
         foreach (var hostService in hostServices)
         {
-            using (new LoggerPhaseScope(hostService.Processor.Name))
-            {
-                _manifestWithContext.AddRange(ExportManifest(hostService));
-            }
+            _manifestWithContext.AddRange(ExportManifest(hostService));
         }
     }
 
     private IEnumerable<ManifestItemWithContext> ExportManifest(HostService hostService)
     {
         var manifestItems = new List<ManifestItemWithContext>();
-        using (new LoggerPhaseScope("Save"))
+        hostService.Models.RunAll(m =>
         {
-            hostService.Models.RunAll(m =>
+            if (m.Type != DocumentType.Overwrite)
             {
-                if (m.Type != DocumentType.Overwrite)
+                using (new LoggerFileScope(m.LocalPathFromRoot))
                 {
-                    using (new LoggerFileScope(m.LocalPathFromRoot))
+                    Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Saving...");
+                    m.BaseDir = Context.BuildOutputFolder;
+                    if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
                     {
-                        Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Saving...");
-                        m.BaseDir = Context.BuildOutputFolder;
-                        if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
+                        m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
+                    }
+                    m.File = Path.Combine(Context.VersionFolder ?? string.Empty, m.File);
+                    var result = hostService.Processor.Save(m);
+                    if (result != null)
+                    {
+                        string extension = string.Empty;
+                        if (hostService.Template != null)
                         {
-                            m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
-                        }
-                        m.File = Path.Combine(Context.VersionFolder ?? string.Empty, m.File);
-                        var result = hostService.Processor.Save(m);
-                        if (result != null)
-                        {
-                            string extension = string.Empty;
-                            if (hostService.Template != null)
+                            if (hostService.Template.TryGetFileExtension(result.DocumentType, out extension))
                             {
-                                if (hostService.Template.TryGetFileExtension(result.DocumentType, out extension))
-                                {
-                                    m.File = result.FileWithoutExtension + extension;
-                                }
+                                m.File = result.FileWithoutExtension + extension;
                             }
-
-                            var item = HandleSaveResult(hostService, m, result);
-                            item.Extension = extension;
-
-                            manifestItems.Add(new ManifestItemWithContext(item, m, hostService.Processor, hostService.Template?.GetTemplateBundle(result.DocumentType)));
                         }
+
+                        var item = HandleSaveResult(hostService, m, result);
+                        item.Extension = extension;
+
+                        manifestItems.Add(new ManifestItemWithContext(item, m, hostService.Processor, hostService.Template?.GetTemplateBundle(result.DocumentType)));
                     }
                 }
-            });
-        }
+            }
+        });
         return manifestItems;
     }
 
@@ -226,10 +210,7 @@ internal class LinkPhaseHandler : IPhaseHandler
             buildStep =>
             {
                 Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postbuilding...");
-                using (new LoggerPhaseScope(buildStep.Name))
-                {
-                    buildStep.Postbuild(hostService.Models, hostService);
-                }
+                buildStep.Postbuild(hostService.Models, hostService);
             });
     }
 

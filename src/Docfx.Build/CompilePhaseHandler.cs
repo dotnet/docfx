@@ -12,10 +12,6 @@ internal class CompilePhaseHandler : IPhaseHandler
 {
     private readonly List<TreeItemRestructure> _restructions = new();
 
-    public string Name => nameof(CompilePhaseHandler);
-
-    public BuildPhase Phase => BuildPhase.Compile;
-
     public DocumentBuildContext Context { get; }
 
     public List<TreeItemRestructure> Restructions => _restructions;
@@ -30,23 +26,17 @@ internal class CompilePhaseHandler : IPhaseHandler
         Prepare(hostServices, maxParallelism);
         hostServices.RunAll(hostService =>
         {
-            using (new LoggerPhaseScope(hostService.Processor.Name))
-            {
-                var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
-                Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
-                using (new LoggerPhaseScope("Prebuild"))
-                {
-                    Prebuild(hostService);
-                }
+            var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
+            Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
+            Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
+            Prebuild(hostService);
 
-                // Register all the delegates to handler
-                if (hostService.TableOfContentRestructions != null)
+            // Register all the delegates to handler
+            if (hostService.TableOfContentRestructions != null)
+            {
+                lock (_restructions)
                 {
-                    lock (_restructions)
-                    {
-                        _restructions.AddRange(hostService.TableOfContentRestructions);
-                    }
+                    _restructions.AddRange(hostService.TableOfContentRestructions);
                 }
             }
         }, maxParallelism);
@@ -55,14 +45,8 @@ internal class CompilePhaseHandler : IPhaseHandler
 
         foreach (var hostService in hostServices)
         {
-            using (new LoggerPhaseScope(hostService.Processor.Name))
-            {
-                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
-                using (new LoggerPhaseScope("Build"))
-                {
-                    BuildArticle(hostService, maxParallelism);
-                }
-            }
+            Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
+            BuildArticle(hostService, maxParallelism);
         }
     }
 
@@ -106,14 +90,11 @@ internal class CompilePhaseHandler : IPhaseHandler
             buildStep =>
             {
                 Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Prebuilding...");
-                using (new LoggerPhaseScope(buildStep.Name))
+                var models = buildStep.Prebuild(hostService.Models, hostService);
+                if (!ReferenceEquals(models, hostService.Models))
                 {
-                    var models = buildStep.Prebuild(hostService.Models, hostService);
-                    if (!ReferenceEquals(models, hostService.Models))
-                    {
-                        Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Reloading models...");
-                        hostService.Reload(models);
-                    }
+                    Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Reloading models...");
+                    hostService.Reload(models);
                 }
             });
     }
@@ -131,17 +112,14 @@ internal class CompilePhaseHandler : IPhaseHandler
                         buildStep =>
                         {
                             Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
-                            using (new LoggerPhaseScope(buildStep.Name))
+                            try
                             {
-                                try
-                                {
-                                    buildStep.Build(m, hostService);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.LogError($"Trouble processing file - {m.FileAndType.FullPath}, with error - {ex.Message}");
-                                    throw;
-                                }
+                                buildStep.Build(m, hostService);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError($"Trouble processing file - {m.FileAndType.FullPath}, with error - {ex.Message}");
+                                throw;
                             }
                         });
                 }

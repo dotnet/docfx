@@ -11,7 +11,7 @@ public sealed class LoggerFileScope : IDisposable
     {
         if (string.IsNullOrWhiteSpace(fileName))
         {
-            throw new ArgumentException("Phase name cannot be null or white space.", nameof(fileName));
+            throw new ArgumentException("File name cannot be null or white space.", nameof(fileName));
         }
         _originFileName = GetFileName();
         SetFileName(fileName);

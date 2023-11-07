@@ -15,22 +15,16 @@ internal class PostProcessorsHandler : IPostProcessorsHandler
         ArgumentNullException.ThrowIfNull(manifest);
         ArgumentNullException.ThrowIfNull(outputFolder);
 
-        using (new LoggerPhaseScope("HandlePostProcessors"))
+        foreach (var postProcessor in postProcessors)
         {
-            foreach (var postProcessor in postProcessors)
+            manifest = postProcessor.Processor.Process(manifest, outputFolder);
+            if (manifest == null)
             {
-                using (new LoggerPhaseScope($"Processing {postProcessor.ContractName}"))
-                {
-                    manifest = postProcessor.Processor.Process(manifest, outputFolder);
-                    if (manifest == null)
-                    {
-                        throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null manifest");
-                    }
-
-                    // To make sure post processor won't generate duplicate output files
-                    ManifestUtility.RemoveDuplicateOutputFiles(manifest.Files);
-                }
+                throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null manifest");
             }
+
+            // To make sure post processor won't generate duplicate output files
+            ManifestUtility.RemoveDuplicateOutputFiles(manifest.Files);
         }
     }
 }

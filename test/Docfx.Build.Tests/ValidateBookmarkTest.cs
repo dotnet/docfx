@@ -60,13 +60,10 @@ public class ValidateBookmarkTest : TestBase
         Logger.RegisterListener(_listener);
         try
         {
-            using (new LoggerPhaseScope("validate_bookmark"))
+            new HtmlPostProcessor
             {
-                new HtmlPostProcessor
-                {
-                    Handlers = { new ValidateBookmark() }
-                }.Process(manifest, _outputFolder);
-            }
+                Handlers = { new ValidateBookmark() }
+            }.Process(manifest, _outputFolder);
         }
         finally
         {
@@ -107,13 +104,10 @@ public class ValidateBookmarkTest : TestBase
         Logger.RegisterListener(_listener);
         try
         {
-            using (new LoggerPhaseScope("validate_bookmark"))
+            new HtmlPostProcessor
             {
-                new HtmlPostProcessor
-                {
-                    Handlers = { new ValidateBookmark() }
-                }.Process(manifest, _outputFolder);
-            }
+                Handlers = { new ValidateBookmark() }
+            }.Process(manifest, _outputFolder);
         }
         finally
         {

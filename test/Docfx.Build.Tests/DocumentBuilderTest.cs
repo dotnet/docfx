@@ -150,25 +150,21 @@ public class DocumentBuilderTest : TestBase
         files.Add(DocumentType.Resource, new[] { resourceFile });
         #endregion
 
-        Init("Markdown style");
+        Init();
         try
         {
-            using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
-            {
-                var applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
-                applyTemplateSettings.RawModelExportSettings.Export = true;
-                applyTemplateSettings.HrefGenerator = new AbbrHrefGenerator();
+            var applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
+            applyTemplateSettings.RawModelExportSettings.Export = true;
+            applyTemplateSettings.HrefGenerator = new AbbrHrefGenerator();
 
-                BuildDocument(
-                    files,
-                    new Dictionary<string, object>
-                    {
-                        ["meta"] = "Hello world!",
-                    },
-                    applyTemplateSettings: applyTemplateSettings,
-                    templateFolder: _templateFolder);
-
-            }
+            BuildDocument(
+                files,
+                new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                },
+                applyTemplateSettings: applyTemplateSettings,
+                templateFolder: _templateFolder);
 
             {
                 // check toc.
@@ -560,17 +556,13 @@ exports.getOptions = function (){
 
         try
         {
-            using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
-            {
-                BuildDocument(
-                    files,
-                    new Dictionary<string, object>
-                    {
-                        ["meta"] = "Hello world!",
-                    },
-                    templateFolder: _templateFolder);
-
-            }
+            BuildDocument(
+                files,
+                new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                },
+                templateFolder: _templateFolder);
 
             {
                 // check toc.
@@ -660,13 +652,11 @@ exports.getOptions = function (){
         files.Add(DocumentType.Article, new[] { conceptualFile }, Path.Combine(_inputFolder, "a"), ".");
         #endregion
 
-        using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
-        {
-            BuildDocument(
-                files,
-                new Dictionary<string, object>(),
-                templateFolder: _templateFolder);
-        }
+        BuildDocument(
+            files,
+            new Dictionary<string, object>(),
+            templateFolder: _templateFolder);
+
         {
             // check conceptual.
             var conceptualOutputPath = Path.Combine(_outputFolder, "a.html");
@@ -719,14 +709,11 @@ exports.getOptions = function (){
         files.Add(DocumentType.Article, new[] { conceptualFileWithFileMapping }, _inputFolder, subDir);
         #endregion
 
-        using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
-        {
-            BuildDocument(
-                files,
-                new Dictionary<string, object>(),
-                templateFolder: _templateFolder,
-                versionDir: versionDir);
-        }
+        BuildDocument(
+            files,
+            new Dictionary<string, object>(),
+            templateFolder: _templateFolder,
+            versionDir: versionDir);
 
         var conceptualOutputPath = Path.Combine(_outputFolder, versionDir, Path.ChangeExtension("a.md", RawModelFileExtension));
         Assert.True(File.Exists(conceptualOutputPath));
@@ -775,7 +762,7 @@ exports.getOptions = function (){
         yield return typeof(DocumentBuilderTest).Assembly;
     }
 
-    private void Init(string phaseName)
+    private void Init()
     {
         Listener = new();
         Logger.RegisterListener(Listener);

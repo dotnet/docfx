@@ -130,27 +130,25 @@ public class HtmlToPdfConverter
                 Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : (" " + arguments)),
             }
         };
-        using (new LoggerPhaseScope(Constants.PdfCommandName))
+
+        Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} ({arguments})");
+        process.Start();
+        if (_htmlToPdfOptions.IsReadArgsFromStdin)
         {
-            Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} ({arguments})");
-            process.Start();
-            if (_htmlToPdfOptions.IsReadArgsFromStdin)
-            {
-                using var standardInput = process.StandardInput;
-                standardInput.AutoFlush = true;
-                standardInput.Write(arguments);
-            }
-            if (_htmlToPdfOptions.IsOutputToStdout)
-            {
-                using (var standardOutput = process.StandardOutput)
-                {
-                    standardOutput.BaseStream.CopyTo(stream);
-                }
-                if (stream.CanSeek)
-                    Logger.LogVerbose($"got {process.StartInfo.FileName} output {stream.Length}Bytes");
-            }
-            process.WaitForExit(TimeoutInMilliseconds);
+            using var standardInput = process.StandardInput;
+            standardInput.AutoFlush = true;
+            standardInput.Write(arguments);
         }
+        if (_htmlToPdfOptions.IsOutputToStdout)
+        {
+            using (var standardOutput = process.StandardOutput)
+            {
+                standardOutput.BaseStream.CopyTo(stream);
+            }
+            if (stream.CanSeek)
+                Logger.LogVerbose($"got {process.StartInfo.FileName} output {stream.Length}Bytes");
+        }
+        process.WaitForExit(TimeoutInMilliseconds);
     }
 
     private void ConvertToStream(string arguments, Stream stream)

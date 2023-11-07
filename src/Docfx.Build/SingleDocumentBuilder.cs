@@ -12,7 +12,6 @@ namespace Docfx.Build.Engine;
 
 class SingleDocumentBuilder : IDisposable
 {
-    private const string PhaseName = "Build Document";
     private const string XRefMapFileName = "xrefmap.yml";
 
     public IEnumerable<IDocumentProcessor> Processors { get; set; }
@@ -58,59 +57,51 @@ class SingleDocumentBuilder : IDisposable
         }
         parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
-        using (new LoggerPhaseScope(PhaseName))
+        Directory.CreateDirectory(parameters.OutputBaseDir);
+
+        var context = new DocumentBuildContext(parameters);
+
+        // Start building document...
+        List<HostService> hostServices = null;
+        IHostServiceCreator hostServiceCreator = null;
+        PhaseProcessor phaseProcessor = null;
+        try
         {
-            Directory.CreateDirectory(parameters.OutputBaseDir);
+            using var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
+                                          ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
 
-            var context = new DocumentBuildContext(parameters);
+            Prepare(
+                context,
+                templateProcessor,
+                out hostServiceCreator,
+                out phaseProcessor);
+            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
 
-            // Start building document...
-            List<HostService> hostServices = null;
-            IHostServiceCreator hostServiceCreator = null;
-            PhaseProcessor phaseProcessor = null;
-            try
+            templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
+
+            BuildCore(phaseProcessor, hostServices, context);
+
+            var manifest = new Manifest(context.ManifestItems.Where(m => m.Output?.Count > 0))
             {
-                using var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
-                                              ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
-                using (new LoggerPhaseScope("Prepare"))
-                {
-                    Prepare(
-                        context,
-                        templateProcessor,
-                        out hostServiceCreator,
-                        out phaseProcessor);
-                }
-                using (new LoggerPhaseScope("Load"))
-                {
-                    hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
-                }
-
-                templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
-
-                BuildCore(phaseProcessor, hostServices, context);
-
-                var manifest = new Manifest(context.ManifestItems.Where(m => m.Output?.Count > 0))
-                {
-                    Xrefmap = ExportXRefMap(parameters, context),
-                    SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
-                };
-                manifest.Groups = new List<ManifestGroupInfo>
+                Xrefmap = ExportXRefMap(parameters, context),
+                SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
+            };
+            manifest.Groups = new List<ManifestGroupInfo>
                 {
                     new(parameters.GroupInfo)
                     {
                         XRefmap = (string)manifest.Xrefmap
                     }
                 };
-                return manifest;
-            }
-            finally
+            return manifest;
+        }
+        finally
+        {
+            if (hostServices != null)
             {
-                if (hostServices != null)
+                foreach (var item in hostServices)
                 {
-                    foreach (var item in hostServices)
-                    {
-                        item.Dispose();
-                    }
+                    item.Dispose();
                 }
             }
         }
@@ -158,16 +149,13 @@ class SingleDocumentBuilder : IDisposable
                     join item in toHandleItems.AsParallel() on processor equals item.Key into g
                     from item in g.DefaultIfEmpty()
                     where item != null && item.Any(s => s.Type != DocumentType.Overwrite) // when normal file exists then processing is needed
-                    select LoggerPhaseScope.WithScope(
-                        processor.Name,
-                        () => creator.CreateHostService(
+                    select creator.CreateHostService(
                             parameters,
                             templateProcessor,
                             markdownService,
                             MetadataValidators,
                             processor,
-                            item)
-                            )).ToList();
+                            item)).ToList();
         }
         catch (AggregateException ex)
         {

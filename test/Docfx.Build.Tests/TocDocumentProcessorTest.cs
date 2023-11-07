@@ -569,10 +569,8 @@ items:
 
         var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(new List<string> { WarningCodes.Build.InvalidTocInclude });
         Logger.RegisterListener(listener);
-        using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
-        {
-            BuildDocument(files);
-        }
+
+        BuildDocument(files);
         Logger.UnregisterListener(listener);
 
         Assert.Single(listener.Items);
@@ -595,10 +593,7 @@ items:
 
         var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(new List<string> { WarningCodes.Build.InvalidTocInclude });
         Logger.RegisterListener(listener);
-        using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
-        {
-            BuildDocument(files);
-        }
+        BuildDocument(files);
         Logger.UnregisterListener(listener);
 
         Assert.Single(listener.Items);
@@ -812,10 +807,7 @@ items:
         var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
             new List<string> { WarningCodes.Build.InvalidFileLink, WarningCodes.Build.UidNotFound });
         Logger.RegisterListener(listener);
-        using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
-        {
-            BuildDocument(files);
-        }
+        BuildDocument(files);
         Logger.UnregisterListener(listener);
 
         // Assert
@@ -843,10 +835,7 @@ items:
         var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
             new List<string> { WarningCodes.Build.InvalidFileLink });
         Logger.RegisterListener(listener);
-        using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
-        {
-            BuildDocument(files);
-        }
+        BuildDocument(files);
         Logger.UnregisterListener(listener);
 
         // Assert
@@ -868,10 +857,7 @@ items:
         var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
             new List<string> { WarningCodes.Build.InvalidFileLink });
         Logger.RegisterListener(listener);
-        using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
-        {
-            BuildDocument(files);
-        }
+        BuildDocument(files);
         Logger.UnregisterListener(listener);
 
         // Assert

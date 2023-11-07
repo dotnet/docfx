@@ -7,8 +7,6 @@ namespace Docfx.Build.Engine;
 
 public class XRefArchiveBuilder
 {
-    private const string PhaseName = "Archive";
-
     private readonly object _syncRoot = new();
     private readonly XRefMapDownloader _downloader = new();
 
@@ -20,7 +18,6 @@ public class XRefArchiveBuilder
         {
             throw new ArgumentException("Relative path is not allowed.", nameof(uri));
         }
-        using (new LoggerPhaseScope(PhaseName))
         using (new LoggerFileScope(outputFile))
         {
             Logger.LogInfo("Creating xref archive file...");

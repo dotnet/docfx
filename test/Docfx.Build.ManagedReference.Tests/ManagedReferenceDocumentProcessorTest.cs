@@ -220,10 +220,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
 
         using var listener = new TestListenerScope(LogLevel.Info);
 
-        using (new LoggerPhaseScope(nameof(ProcessMrefWithInvalidCrossReferenceShouldWarn)))
-        {
-            BuildDocument(files);
-        }
+        BuildDocument(files);
 
         var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
         Assert.Single(warnings);
@@ -302,11 +299,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
 
         using var listener = new TestListenerScope();
 
-        FileModel actualFileModel;
-        using (new LoggerPhaseScope(nameof(LoadArticleWithEmptyFileShouldWarnAndReturnNull)))
-        {
-            actualFileModel = processor.Load(file, null);
-        }
+        var actualFileModel = processor.Load(file, null);
 
         var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
         Assert.Single(warnings);

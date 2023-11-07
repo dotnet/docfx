@@ -58,22 +58,19 @@ public static partial class DotnetApiCatalog
 
         try
         {
-            using (new LoggerPhaseScope("ExtractMetadata"))
+            string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
+
+            EnvironmentContext.SetBaseDirectory(configDirectory);
+
+            foreach (var item in config)
             {
-                string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
+                VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
+                EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
 
-                EnvironmentContext.SetBaseDirectory(configDirectory);
-
-                foreach (var item in config)
-                {
-                    VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
-                    EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
-
-                    await Build(ConvertConfig(item, configDirectory, outputDirectory), options);
-                }
-
-                VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
+                await Build(ConvertConfig(item, configDirectory, outputDirectory), options);
             }
+
+            VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
         }
         finally
         {

@@ -14,8 +14,6 @@ namespace Docfx;
 
 internal class MetadataMerger
 {
-    public const string PhaseName = "Merge Metadata";
-
     private readonly Dictionary<string, Dictionary<string, object>> _metaTable = new();
     private readonly Dictionary<string, Dictionary<string, object>> _propTable = new();
 
@@ -33,14 +31,11 @@ internal class MetadataMerger
         }
         parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
-        using (new LoggerPhaseScope(PhaseName))
-        {
             Directory.CreateDirectory(parameters.OutputBaseDir);
             Logger.LogInfo("Start merge metadata...");
             MergePageViewModel(parameters);
             MergeToc(parameters);
             Logger.LogInfo("Merge metadata completed.");
-        }
     }
 
     private void MergePageViewModel(MetadataMergeParameters parameters)

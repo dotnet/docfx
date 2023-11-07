@@ -11,8 +11,6 @@ namespace Docfx.Build.Engine.Tests;
 
 public partial class TemplateManagerUnitTest
 {
-    private const string PhaseNameForFilter = nameof(TemplateManagerUnitTest);
-
     private static readonly string ExpectedDotnetToolTemplatesDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../../../templates")).FullName;
     private static readonly string ExpectedDotNetToolDefaultTemplateDir = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "../../../templates", "default")).FullName;
 
@@ -50,15 +48,12 @@ public partial class TemplateManagerUnitTest
             EnableDotNetToolMode();
             CreateEmptyTemplatesDir();
 
-            using (new LoggerPhaseScope(PhaseNameForFilter))
-            {
-                // Act
-                var results = manager.GetTemplateDirectories().ToArray();
+            // Act
+            var results = manager.GetTemplateDirectories().ToArray();
 
-                // Assert
-                results.Should().HaveCount(1);
-                results[0].Should().Be(ExpectedDotNetToolDefaultTemplateDir);
-            }
+            // Assert
+            results.Should().HaveCount(1);
+            results[0].Should().Be(ExpectedDotNetToolDefaultTemplateDir);
         }
         finally
         {
@@ -92,7 +87,6 @@ public partial class TemplateManagerUnitTest
             // CreateEmptyTemplatesDir(); // Don't create directory here.
 
             // Act
-            using var scope = new LoggerPhaseScope(PhaseNameForFilter);
             var results = manager.GetTemplateDirectories().ToArray();
 
             // Assert
