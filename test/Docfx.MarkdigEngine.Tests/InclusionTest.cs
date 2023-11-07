@@ -166,7 +166,7 @@ This is a file A included by another file.
         TestUtility.WriteToFile("r/a.md", refa);
         TestUtility.WriteToFile("r/b.md", refb);
 
-        var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("CircularReferenceTest");
+        var listener = new TestLoggerListener();
         Logger.RegisterListener(listener);
         using (new LoggerPhaseScope("CircularReferenceTest"))
         {

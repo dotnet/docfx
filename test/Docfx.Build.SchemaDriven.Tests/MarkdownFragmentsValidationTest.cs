@@ -22,7 +22,7 @@ public class MarkdownFragmentsValidationTest : TestBase
     private TemplateManager _templateManager;
     private FileCollection _files;
 
-    private TestLoggerListener _listener;
+    private TestLoggerListener _listener = new();
     private string _rawModelFilePath;
 
     private const string RawModelFileExtension = ".raw.json";
@@ -38,7 +38,6 @@ public class MarkdownFragmentsValidationTest : TestBase
 
         _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
 
-        _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
         _rawModelFilePath = GetRawModelFilePath("FragmentsValidation.yml");
 
         var schemaFile = CreateFile("template/schemas/fragments.validation.schema.json", File.ReadAllText("TestData/schemas/fragments.validation.schema.json"), _templateFolder);

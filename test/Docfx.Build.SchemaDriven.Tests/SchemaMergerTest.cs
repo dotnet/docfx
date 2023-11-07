@@ -43,7 +43,7 @@ public class SchemaMergerTest : TestBase
     [Fact]
     public void TestSchemaOverwriteWithGeneralMergeTypes()
     {
-        using var listener = new TestListenerScope("TestSchemaOverwriteWithGeneralMergeTypes");
+        using var listener = new TestListenerScope();
         var schema = new Dictionary<string, object>
         {
             ["type"] = "object",
@@ -290,7 +290,7 @@ Overwrite with content
     [Fact]
     public void TestSchemaOverwriteWithGeneralSchemaOptions()
     {
-        using var listener = new TestListenerScope("TestSchemaOverwriteWithGeneralSchemaOptions");
+        using var listener = new TestListenerScope();
         var templateFile = CreateFile("template/testmerger2.html.tmpl", @"<xref uid=""{{xref}}""/>", _templateFolder);
         var schema = new Dictionary<string, object>
         {

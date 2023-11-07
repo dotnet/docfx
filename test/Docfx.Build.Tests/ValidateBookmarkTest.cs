@@ -13,7 +13,7 @@ namespace Docfx.Build.Engine.Tests;
 public class ValidateBookmarkTest : TestBase
 {
     private readonly string _outputFolder;
-    private readonly TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("validate_bookmark.ValidateBookmark");
+    private readonly TestLoggerListener _listener = new();
 
     public ValidateBookmarkTest()
     {

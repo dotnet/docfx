@@ -20,7 +20,7 @@ public class TemplatePreprocessorLoaderUnitTest : TestBase
     [Fact]
     public void TestLoaderWithValidInput()
     {
-        using var listener = new TestListenerScope("TestLoaderWhenStandalonePreprocessorExists");
+        using var listener = new TestListenerScope();
         var preprocessor = Load("a.ext.TMPL.js", "exports.transform = function(model) { return model; }");
 
         Assert.Empty(listener.Items);

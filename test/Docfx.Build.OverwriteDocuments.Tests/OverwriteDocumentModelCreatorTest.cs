@@ -12,7 +12,7 @@ namespace Docfx.Build.OverwriteDocuments.Tests;
 
 public class OverwriteDocumentModelCreatorTest
 {
-    private readonly TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("overwrite_document_model_creator");
+    private readonly TestLoggerListener _listener = new();
 
     [Fact]
     public void YamlCodeBlockTest()

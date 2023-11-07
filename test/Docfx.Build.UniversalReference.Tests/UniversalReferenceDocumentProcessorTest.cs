@@ -173,7 +173,7 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
         var files = new FileCollection(Directory.GetCurrentDirectory());
         files.Add(DocumentType.Article, fileNames.Select(f => $"{YmlDataDirectory}/{f}"), TestDataDirectory);
 
-        using var listener = new TestListenerScope(nameof(UniversalReferenceDocumentProcessorTest));
+        using var listener = new TestListenerScope();
         BuildDocument(files);
         Assert.NotNull(listener.Items);
         Assert.Equal(2, listener.Items.Count);

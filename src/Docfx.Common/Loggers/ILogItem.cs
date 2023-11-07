@@ -7,7 +7,6 @@ public interface ILogItem
 {
     LogLevel LogLevel { get; }
     string Message { get; }
-    string Phase { get; }
     string File { get; }
     string Line { get; }
     string Code { get; }

@@ -94,7 +94,6 @@ public static class Logger
             LogLevel = level,
             Message = message,
             Code = code,
-            Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
         });
     }
 
@@ -107,7 +106,6 @@ public static class Logger
             LogLevel = level,
             Message = message,
             Code = code,
-            Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
         };
     }
 
@@ -172,7 +170,7 @@ public static class Logger
         ConsoleUtility.WriteLine($"    {_errorCount} error(s)\n", _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White);
     }
 
-        private class LogItem : ILogItem
+    private class LogItem : ILogItem
     {
         public string File { get; set; }
 
@@ -181,8 +179,6 @@ public static class Logger
         public LogLevel LogLevel { get; set; }
 
         public string Message { get; set; }
-
-        public string Phase { get; set; }
 
         public string Code { get; set; }
     }
