@@ -161,7 +161,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\seed\\dotnet\\vb\\Class1.vb",
+              "path": "samples/seed/dotnet/vb/Class1.vb",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -177,7 +177,7 @@
           "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">This is a <em sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">Value</em> type</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_ValueClass.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.ValueClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\seed\\dotnet\\vb\\Class1.vb/#L14",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L14",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -300,7 +300,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\seed\\dotnet\\vb\\Class1.vb",
+              "path": "samples/seed/dotnet/vb/Class1.vb",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -375,7 +375,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_Keyword.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.Keyword%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\seed\\dotnet\\vb\\Class1.vb/#L16",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L16",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -547,7 +547,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\seed\\dotnet\\vb\\Class1.vb",
+              "path": "samples/seed/dotnet/vb/Class1.vb",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -607,7 +607,7 @@
           "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">This is a <em sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">Function</em></p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_Value_System_String_.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.Value(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\seed\\dotnet\\vb\\Class1.vb/#L37",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L37",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -769,7 +769,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\seed\\dotnet\\vb\\Class1.vb",
+              "path": "samples/seed/dotnet/vb/Class1.vb",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -872,7 +872,7 @@
           "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">What is <strong sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">Sub</strong>?</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\seed\\dotnet\\vb\\Class1.vb/#L26",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L26",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -921,7 +921,7 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples\\seed\\dotnet\\vb\\Class1.vb",
+      "path": "samples/seed/dotnet/vb/Class1.vb",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -1503,7 +1503,7 @@
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\seed\\dotnet\\vb\\Class1.vb/#L6",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L6",
   "remarks": "",
   "conceptual": "",
   "implements": "",

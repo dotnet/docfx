@@ -121,7 +121,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\seed\\dotnet\\project\\Project\\Class1.cs",
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -184,7 +184,7 @@
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.IIssue8948.yml\" sourcestartlinenumber=\"1\">Does nothing with generic type <code class=\"typeparamref\">T</code>.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_IIssue8948_DoNothing__1.md&value=---%0Auid%3A%20BuildFromProject.Class1.IIssue8948.DoNothing%60%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\seed\\dotnet\\project\\Project\\Class1.cs/#L139",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L139",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -233,7 +233,7 @@
   "type": "interface",
   "source": {
     "remote": {
-      "path": "samples\\seed\\dotnet\\project\\Project\\Class1.cs",
+      "path": "samples/seed/dotnet/project/Project/Class1.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -321,7 +321,7 @@
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_IIssue8948.md&value=---%0Auid%3A%20BuildFromProject.Class1.IIssue8948%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\seed\\dotnet\\project\\Project\\Class1.cs/#L133",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L133",
   "summary": "",
   "remarks": "",
   "conceptual": "",

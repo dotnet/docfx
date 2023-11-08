@@ -115,7 +115,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp8.cs",
+              "path": "samples/csharp/src/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -177,7 +177,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DisposableRefStructs_Dispose.md&value=---%0Auid%3A%20CSharp8.DisposableRefStructs.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp8.cs/#L57",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L57",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -247,7 +247,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp8.cs",
+              "path": "samples/csharp/src/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -309,7 +309,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DisposableRefStructs_DoSomething.md&value=---%0Auid%3A%20CSharp8.DisposableRefStructs.DoSomething%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp8.cs/#L61",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L61",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -359,7 +359,7 @@
   "type": "struct",
   "source": {
     "remote": {
-      "path": "samples\\csharp\\src\\CSharp8.cs",
+      "path": "samples/csharp/src/CSharp8.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -845,7 +845,7 @@
   },
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DisposableRefStructs.md&value=---%0Auid%3A%20CSharp8.DisposableRefStructs%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp8.cs/#L55",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L55",
   "summary": "",
   "remarks": "",
   "conceptual": "",
