@@ -60,7 +60,11 @@ jobs:
         path: /tmp/coredump*
 
   snapshot:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
     permissions:
       contents: write
     steps:
@@ -80,7 +84,7 @@ jobs:
     - uses: stefanzweifel/git-auto-commit-action@v5
       if: github.event_name == 'pull_request'
       with:
-        commit_message: 'test(snapshot): update snapshots for ${{ github.sha }}'
+        commit_message: 'test(snapshot): update snapshots ${{ github.sha }} for ${{ matrix.os }}'
 
   publish-docs:
     if: github.ref == 'refs/heads/main'
