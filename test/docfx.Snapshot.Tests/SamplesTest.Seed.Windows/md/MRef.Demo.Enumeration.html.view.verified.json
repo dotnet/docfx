@@ -3,7 +3,7 @@
   "type": "Conceptual",
   "source": {
     "remote": {
-      "path": "samples\\seed\\obj\\md\\MRef.Demo.Enumeration.md",
+      "path": "samples/seed/obj/md/MRef.Demo.Enumeration.md",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -13,7 +13,7 @@
   "path": "obj/md/MRef.Demo.Enumeration.md",
   "documentation": {
     "remote": {
-      "path": "samples\\seed\\obj\\md\\MRef.Demo.Enumeration.md",
+      "path": "samples/seed/obj/md/MRef.Demo.Enumeration.md",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -38,5 +38,5 @@
   "_tocPath": "md/toc.html",
   "_tocRel": "toc.html",
   "_disableToc": false,
-  "docurl": "https://github.com/dotnet/docfx/blob/main/samples\\seed\\obj\\md\\MRef.Demo.Enumeration.md/#L1"
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/MRef.Demo.Enumeration.md/#L1"
 }

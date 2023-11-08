@@ -255,7 +255,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -317,7 +317,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount__ctor_System_String_System_String_System_Decimal_.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.%23ctor(System.String%2CSystem.String%2CSystem.Decimal)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L21",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L21",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -441,7 +441,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -503,7 +503,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount_CurrentBalance.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L23",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L23",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -628,7 +628,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -690,7 +690,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount_Deposit_System_Decimal_.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.Deposit(System.Decimal)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L25",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L25",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -806,7 +806,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -912,7 +912,7 @@
           "summary": "<p sourcefile=\"api/CSharp12.PrimaryConstructors.CheckAccount.yml\" sourcestartlinenumber=\"1\">Returns a string that represents the current object.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount_ToString.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L47",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L47",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -1029,7 +1029,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -1091,7 +1091,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount_Withdrawal_System_Decimal_.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(System.Decimal)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L34",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L34",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -1141,7 +1141,7 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples\\csharp\\src\\CSharp12.cs",
+      "path": "samples/csharp/src/CSharp12.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -1830,7 +1830,7 @@
   },
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L21",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L21",
   "summary": "",
   "remarks": "",
   "conceptual": "",

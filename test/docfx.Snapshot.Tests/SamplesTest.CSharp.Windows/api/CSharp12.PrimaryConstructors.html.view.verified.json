@@ -87,7 +87,7 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples\\csharp\\src\\CSharp12.cs",
+      "path": "samples/csharp/src/CSharp12.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -674,7 +674,7 @@
   },
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L5",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L5",
   "summary": "",
   "remarks": "",
   "conceptual": "",

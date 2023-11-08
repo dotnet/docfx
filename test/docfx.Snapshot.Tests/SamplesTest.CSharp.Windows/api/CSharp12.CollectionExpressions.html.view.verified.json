@@ -161,7 +161,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -179,7 +179,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_CollectionExpressions_a.md&value=---%0Auid%3A%20CSharp12.CollectionExpressions.a%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L53",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L53",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -295,7 +295,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -313,7 +313,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_CollectionExpressions_twoD.md&value=---%0Auid%3A%20CSharp12.CollectionExpressions.twoD%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L57",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L57",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -438,7 +438,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -500,7 +500,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_CollectionExpressions_b.md&value=---%0Auid%3A%20CSharp12.CollectionExpressions.b%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L55",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L55",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -550,7 +550,7 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples\\csharp\\src\\CSharp12.cs",
+      "path": "samples/csharp/src/CSharp12.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -1137,7 +1137,7 @@
   },
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_CollectionExpressions.md&value=---%0Auid%3A%20CSharp12.CollectionExpressions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L51",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L51",
   "summary": "",
   "remarks": "",
   "conceptual": "",

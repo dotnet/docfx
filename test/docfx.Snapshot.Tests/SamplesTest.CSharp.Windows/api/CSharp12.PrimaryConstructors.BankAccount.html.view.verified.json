@@ -209,7 +209,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -271,7 +271,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_BankAccount__ctor_System_String_System_String_.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.BankAccount.%23ctor(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L13",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L13",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -395,7 +395,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -457,7 +457,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_BankAccount_AccountID.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.BankAccount.AccountID%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L15",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L15",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -574,7 +574,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -636,7 +636,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_BankAccount_Owner.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.BankAccount.Owner%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L16",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L16",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -759,7 +759,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp12.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -865,7 +865,7 @@
           "summary": "<p sourcefile=\"api/CSharp12.PrimaryConstructors.BankAccount.yml\" sourcestartlinenumber=\"1\">Returns a string that represents the current object.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_BankAccount_ToString.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.BankAccount.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L18",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L18",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -914,7 +914,7 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples\\csharp\\src\\CSharp12.cs",
+      "path": "samples/csharp/src/CSharp12.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -1470,7 +1470,7 @@
   },
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_BankAccount.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.BankAccount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp12.cs/#L13",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L13",
   "summary": "",
   "remarks": "",
   "conceptual": "",
