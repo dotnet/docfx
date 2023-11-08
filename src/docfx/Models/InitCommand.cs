@@ -50,7 +50,7 @@ class InitCommand : Command<InitCommandOptions>
                 {
                     new { files = new[] { "**/*.{md,yml}" }, exclude = new[] { "_site/**" } }
                 },
-                resources = new[]
+                resource = new[]
                 {
                     new { files = new[] { "images/**" } }
                 },
