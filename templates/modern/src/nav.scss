@@ -143,6 +143,12 @@
   }
 }
 
+@include color-mode(dark) {
+  .affix .link-secondary {
+    color: var(--bs-secondary-text-emphasis);
+  }
+}
+
 .contribution {
   margin-top: 2rem;
 
