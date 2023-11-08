@@ -1,0 +1,4296 @@
+﻿{
+  "NumberOfPages": 75,
+  "Pages": [
+    {
+      "Number": 1,
+      "Text": "Table of ContentsBuildFromAssembly3ClassesClass14BuildFromCSharpSourceCode5ClassesCSharp6BuildFromProject7Issue85408A9ClassesA10B11ClassesB12ClassesClass113Class1.Issue866518Class1.Issue8696Attribute20Class1.Issue894822Class1.Test<T>23Inheritdoc24Inheritdoc.Issue636625Inheritdoc.Issue6366.Class1<T>26Inheritdoc.Issue6366.Class227Inheritdoc.Issue703528Inheritdoc.Issue748429Inheritdoc.Issue810131StructsInheritdoc.Issue812933InterfacesClass1.IIssue894834IInheritdoc35EnumsClass1.Issue926036BuildFromVBSourceCode37ClassesBaseClass138Class139",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 3,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 4,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 5,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 6,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 8,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 9,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 10,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 11,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 12,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 13,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 18,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 20,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 22,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 23,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 24,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 25,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 26,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 27,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 28,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 29,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 31,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 33,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 34,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 35,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 36,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 37,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 38,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 39,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 2,
+      "Text": "CatLibrary41Core43ClassesContainersRefType.ContainersRefTypeChild44ExplicitLayoutClass45Issue23146StructsContainersRefType47InterfacesContainersRefType.ContainersRefTypeChildInterface49EnumsContainersRefType.ColorType50DelegatesContainersRefType.ContainersRefTypeDelegate51ClassesCat<T, K>52CatException<T>59Complex<T, J>60ICatExtension61Tom63TomFromBaseClass65InterfacesIAnimal66ICat68DelegatesFakeDelegate<T>69MRefDelegate<K, T, L>70MRefNormalDelegate71MRef72Demo73Enumeration74EnumsColorType75",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 44,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 45,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 46,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 47,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 49,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 50,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 51,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 52,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 59,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 60,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 61,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 63,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 65,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 66,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 68,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 69,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 70,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 71,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 72,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 73,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 74,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 75,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 3,
+      "Text": "3Namespace BuildFromAssemblyClassesClass1This is a test class.",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 4,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 4,
+      "Text": "4Class Class1Namespace: BuildFromAssemblyAssembly: BuildFromAssembly.dllThis is a test class.Inheritanceobject\uF1C5 ← Class1Inherited Membersobject.GetType()\uF1C5, object.MemberwiseClone()\uF1C5, object.ToString()\uF1C5, object.Equals(object?)\uF1C5,object.Equals(object?, object?)\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5ConstructorsClass1()MethodsHelloWorld()Hello World.public class Class1public Class1()public static void HelloWorld()",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Goto": {
+            "PageNumber": 3,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 4,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 5,
+      "Text": "5Namespace BuildFromCSharpSourceCodeClassesCSharp",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 6,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 6,
+      "Text": "6Class CSharpNamespace: BuildFromCSharpSourceCodeInheritanceobject\uF1C5 ← CSharpInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsMain(string[])Parametersargs string\uF1C5[]public class CSharppublic static void Main(string[] args)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Goto": {
+            "PageNumber": 5,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 6,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 7,
+      "Text": "7Namespace BuildFromProjectNamespacesBuildFromProject.Issue8540ClassesInheritdoc.Issue6366.Class1<T>Class1Inheritdoc.Issue6366.Class2InheritdocInheritdoc.Issue6366Inheritdoc.Issue7035Inheritdoc.Issue7484This is a test class to have something for DocFX to document.Inheritdoc.Issue8101Class1.Issue8665Class1.Issue8696AttributeClass1.Issue8948Class1.Test<T>StructsInheritdoc.Issue8129InterfacesIInheritdocClass1.IIssue8948EnumsClass1.Issue9260",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 8,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 26,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 13,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 27,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 24,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 25,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 28,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 29,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 31,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 18,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 20,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 22,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 23,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 33,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 35,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 34,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 36,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 8,
+      "Text": "8Namespace BuildFromProject.Issue8540NamespacesBuildFromProject.Issue8540.ABuildFromProject.Issue8540.B",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 9,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 11,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 9,
+      "Text": "9Namespace BuildFromProject.Issue8540.AClassesA",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 10,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 10,
+      "Text": "10Class ANamespace: BuildFromProject.Issue8540.AAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← AInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5public class A",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 9,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 10,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 11,
+      "Text": "11Namespace BuildFromProject.Issue8540.BClassesB",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 12,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 12,
+      "Text": "12Class BNamespace: BuildFromProject.Issue8540.BAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← BInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5public class B",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 11,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 12,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 13,
+      "Text": "13Class Class1Namespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Class1ImplementsIClass1Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsIssue1651()Pricing models are used to calculate theoretical option values1Black Scholes2Black763Black76Fut4Equity Tree5Variance Swap6Dividend ForecastIssue1887()IConfiguration related helper and extension routines.Issue2623()public class Class1 : IClass1public void Issue1651()public void Issue1887()",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 13,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 14,
+      "Text": "14ExamplesRemarksFor example:Issue2723()RemarksInline <angle brackets>.link\uF1C5public void Issue2623()MyClass myClass = new MyClass();void Update(){    myClass.Execute();}MyClass myClass = new MyClass();void Update(){    myClass.Execute();}public void Issue2723()NOTEThis is a <note>. & \" '\uF431for (var i = 0; i > 10; i++) // & \" 'var range = new Range<int> { Min = 0, Max = 10 };",
+      "Links": [
+        {
+          "Uri": "https://www.github.com/"
+        }
+      ]
+    },
+    {
+      "Number": 15,
+      "Text": "15Issue4017()ExamplesRemarksIssue4392()Remarks@\"\\\\?\\\" @\"\\\\?\\\"Issue7484()var range = new Range<int> { Min = 0, Max = 10 };public void Issue4017()public void HookMessageDeleted(BaseSocketClient client){    client.MessageDeleted += HandleMessageDelete;}public Task HandleMessageDelete(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel{    // check if the message exists in cache; if not, we cannot report what was removed    if (!cachedMessage.HasValue) return;    var message = cachedMessage.Value;    Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the cha        + Environment.NewLine        + message.Content);    return Task.CompletedTask;}void Update(){    myClass.Execute();}public void Issue4392()",
+      "Links": []
+    },
+    {
+      "Number": 16,
+      "Text": "16RemarksThere's really no reason to not believe that this class can test things.TermDescriptionA TermA DescriptionBee TermBee DescriptionIssue8764<T>()Type ParametersTIssue896()TestSee AlsoClass1.Test<T>, Class1Issue9216()Calculates the determinant of a 3-dimensional matrix:Returns the smallest value:public void Issue7484()public void Issue8764<T>() where T : unmanagedpublic void Issue896()",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 13,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 23,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 13,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 17,
+      "Text": "17Returnsdouble\uF1C5XmlCommentIncludeTag()This method should do something...RemarksThis is remarks.public static double Issue9216()public void XmlCommentIncludeTag()",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.double"
+        }
+      ]
+    },
+    {
+      "Number": 18,
+      "Text": "18Class Class1.Issue8665Namespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Class1.Issue8665Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5ConstructorsIssue8665()Issue8665(int)Parametersfoo int\uF1C5Issue8665(int, char)Parametersfoo int\uF1C5bar char\uF1C5Issue8665(int, char, string)public class Class1.Issue8665public Issue8665()public Issue8665(int foo)public Issue8665(int foo, char bar)public Issue8665(int foo, char bar, string baz)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 18,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 19,
+      "Text": "19Parametersfoo int\uF1C5bar char\uF1C5baz string\uF1C5PropertiesBarProperty Valuechar\uF1C5BazProperty Valuestring\uF1C5FooProperty Valueint\uF1C5public char Bar { get; }public string Baz { get; }public int Foo { get; }",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        }
+      ]
+    },
+    {
+      "Number": 20,
+      "Text": "20Class Class1.Issue8696AttributeNamespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Attribute\uF1C5 ← Class1.Issue8696AttributeInherited MembersAttribute.Equals(object?)\uF1C5, Attribute.GetCustomAttribute(Assembly, Type)\uF1C5,Attribute.GetCustomAttribute(Assembly, Type, bool)\uF1C5, Attribute.GetCustomAttribute(MemberInfo, Type)\uF1C5, Attribute.GetCustomAttribute(MemberInfo, Type, bool)\uF1C5, Attribute.GetCustomAttribute(Module,Type)\uF1C5, Attribute.GetCustomAttribute(Module, Type, bool)\uF1C5,Attribute.GetCustomAttribute(ParameterInfo, Type)\uF1C5, Attribute.GetCustomAttribute(ParameterInfo, Type,bool)\uF1C5, Attribute.GetCustomAttributes(Assembly)\uF1C5, Attribute.GetCustomAttributes(Assembly, bool)\uF1C5,Attribute.GetCustomAttributes(Assembly, Type)\uF1C5, Attribute.GetCustomAttributes(Assembly, Type, bool)\uF1C5, Attribute.GetCustomAttributes(MemberInfo)\uF1C5, Attribute.GetCustomAttributes(MemberInfo, bool)\uF1C5,Attribute.GetCustomAttributes(MemberInfo, Type)\uF1C5, Attribute.GetCustomAttributes(MemberInfo, Type,bool)\uF1C5, Attribute.GetCustomAttributes(Module)\uF1C5, Attribute.GetCustomAttributes(Module, bool)\uF1C5,Attribute.GetCustomAttributes(Module, Type)\uF1C5, Attribute.GetCustomAttributes(Module, Type, bool)\uF1C5,Attribute.GetCustomAttributes(ParameterInfo)\uF1C5, Attribute.GetCustomAttributes(ParameterInfo, bool)\uF1C5,Attribute.GetCustomAttributes(ParameterInfo, Type)\uF1C5, Attribute.GetCustomAttributes(ParameterInfo,Type, bool)\uF1C5, Attribute.GetHashCode()\uF1C5, Attribute.IsDefaultAttribute()\uF1C5, Attribute.IsDefined(Assembly,Type)\uF1C5, Attribute.IsDefined(Assembly, Type, bool)\uF1C5, Attribute.IsDefined(MemberInfo, Type)\uF1C5,Attribute.IsDefined(MemberInfo, Type, bool)\uF1C5, Attribute.IsDefined(Module, Type)\uF1C5,Attribute.IsDefined(Module, Type, bool)\uF1C5, Attribute.IsDefined(ParameterInfo, Type)\uF1C5,Attribute.IsDefined(ParameterInfo, Type, bool)\uF1C5, Attribute.Match(object?)\uF1C5, Attribute.TypeId\uF1C5,object.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5ConstructorsIssue8696Attribute(string?, int, int, string[]?, bool, Type?)Parameterspublic class Class1.Issue8696Attribute : Attribute[Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, null, false, null)public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, str",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.equals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefaultattribute"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.match"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.typeid"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 20,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 21,
+      "Text": "21description string\uF1C5?boundsMin int\uF1C5boundsMax int\uF1C5validGameModes string\uF1C5[]?hasMultipleSelections bool\uF1C5enumType Type\uF1C5?",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.type"
+        }
+      ]
+    },
+    {
+      "Number": 22,
+      "Text": "22Class Class1.Issue8948Namespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Class1.Issue8948ImplementsClass1.IIssue8948Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsDoNothing<T>()Does nothing with generic type T.Type ParametersTA generic type.public class Class1.Issue8948 : Class1.IIssue8948public void DoNothing<T>()",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 22,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 34,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 23,
+      "Text": "23Class Class1.Test<T>Namespace: BuildFromProjectAssembly: BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 ← Class1.Test<T>Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5public class Class1.Test<T>",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 23,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 24,
+      "Text": "24Class InheritdocNamespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← InheritdocImplementsIInheritdoc, IDisposable\uF1C5Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsDispose()Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.Issue7628()This method should do something...Issue7629()This method should do something...public class Inheritdoc : IInheritdoc, IDisposablepublic void Dispose()public void Issue7628()public void Issue7629()",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.idisposable"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 24,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 35,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 25,
+      "Text": "25Class Inheritdoc.Issue6366Namespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Inheritdoc.Issue6366Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5public class Inheritdoc.Issue6366",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 25,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 26,
+      "Text": "26Class Inheritdoc.Issue6366.Class1<T>Namespace: BuildFromProjectAssembly: BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 ← Inheritdoc.Issue6366.Class1<T>Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsTestMethod1(T, int)This text inherited.Parametersparm1 TThis text NOT inherited.parm2 int\uF1C5This text inherited.ReturnsTThis text inherited.public abstract class Inheritdoc.Issue6366.Class1<T>public abstract T TestMethod1(T parm1, int parm2)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 26,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 27,
+      "Text": "27Class Inheritdoc.Issue6366.Class2Namespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Inheritdoc.Issue6366.Class1<bool> ← Inheritdoc.Issue6366.Class2Inherited MembersInheritdoc.Issue6366.Class1<bool>.TestMethod1(bool, int), object.Equals(object?)\uF1C5,object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5, object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsTestMethod1(bool, int)This text inherited.Parametersparm1 bool\uF1C5This text NOT inherited.parm2 int\uF1C5This text inherited.Returnsbool\uF1C5This text inherited.public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool>public override bool TestMethod1(bool parm1, int parm2)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 26,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 27,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 26,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 412.74997
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 28,
+      "Text": "28Class Inheritdoc.Issue7035Namespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Inheritdoc.Issue7035Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsA()B()public class Inheritdoc.Issue7035public void A()public void B()",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 28,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 29,
+      "Text": "29Class Inheritdoc.Issue7484Namespace: BuildFromProjectAssembly: BuildFromProject.dllThis is a test class to have something for DocFX to document.Inheritanceobject\uF1C5 ← Inheritdoc.Issue7484Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5RemarksWe're going to talk about things now.BoolReturningMethod(bool)Simple method to generate docs for.DoDadA string that could have something.ConstructorsIssue7484()This is a constructor to document.PropertiesDoDadA string that could have something.Property Valuepublic class Inheritdoc.Issue7484public Issue7484()public string DoDad { get; }",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 29,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Uri": ""
+        },
+        {
+          "Uri": ""
+        }
+      ]
+    },
+    {
+      "Number": 30,
+      "Text": "30string\uF1C5MethodsBoolReturningMethod(bool)Simple method to generate docs for.Parameterssource bool\uF1C5A meaningless boolean value, much like most questions in the world.Returnsbool\uF1C5An exactly equivalently meaningless boolean value, much like most answers in the world.RemarksI'd like to take a moment to thank all of those who helped me get to a place where I can writedocumentation like this.public bool BoolReturningMethod(bool source)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        }
+      ]
+    },
+    {
+      "Number": 31,
+      "Text": "31Class Inheritdoc.Issue8101Namespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Inheritdoc.Issue8101Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsTween(float, float, float, Action<float>)Create a new tween.Parametersfrom float\uF1C5The starting value.to float\uF1C5The end value.duration float\uF1C5Total tween duration in seconds.onChange Action\uF1C5<float\uF1C5>A callback that will be invoked every time the tween value changes.Returnsobject\uF1C5public class Inheritdoc.Issue8101public static object Tween(float from, float to, float duration, Action<float> onChange)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.action-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 31,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 32,
+      "Text": "32The newly created tween instance.Tween(int, int, float, Action<int>)Create a new tween.Parametersfrom int\uF1C5The starting value.to int\uF1C5The end value.duration float\uF1C5Total tween duration in seconds.onChange Action\uF1C5<int\uF1C5>A callback that will be invoked every time the tween value changes.Returnsobject\uF1C5The newly created tween instance.public static object Tween(int from, int to, float duration, Action<int> onChange)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.action-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        }
+      ]
+    },
+    {
+      "Number": 33,
+      "Text": "33Struct Inheritdoc.Issue8129Namespace: BuildFromProjectAssembly: BuildFromProject.dllInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5ConstructorsIssue8129(string)Parametersfoo string\uF1C5public struct Inheritdoc.Issue8129public Issue8129(string foo)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 34,
+      "Text": "34Interface Class1.IIssue8948Namespace: BuildFromProjectAssembly: BuildFromProject.dllMethodsDoNothing<T>()Does nothing with generic type T.Type ParametersTA generic type.public interface Class1.IIssue8948void DoNothing<T>()",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 35,
+      "Text": "35Interface IInheritdocNamespace: BuildFromProjectAssembly: BuildFromProject.dllMethodsIssue7629()This method should do something...public interface IInheritdocvoid Issue7629()",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 36,
+      "Text": "36Enum Class1.Issue9260Namespace: BuildFromProjectAssembly: BuildFromProject.dllFieldsValue = 0This is a regular enum value.This is a remarks section. Very important remarks about Value go here.OldAndUnusedValue = 1This is old and unused. You shouldn't use it anymore.Don't use this, seriously! Use Value instead.OldAndUnusedValue2 = 2This is old and unused. You shouldn't use it anymore.Don't use this, seriously! Use Value instead.public enum Class1.Issue9260",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 7,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 37,
+      "Text": "37Namespace BuildFromVBSourceCodeClassesBaseClass1This is the BaseClassClass1This is summary from vb class...",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 38,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 39,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 38,
+      "Text": "38Class BaseClass1Namespace: BuildFromVBSourceCodeThis is the BaseClassInheritanceobject\uF1C5 ← BaseClass1DerivedClass1Inherited Membersobject.Equals(object)\uF1C5, object.Equals(object, object)\uF1C5, object.Finalize()\uF1C5, object.GetHashCode()\uF1C5,object.GetType()\uF1C5, object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object, object)\uF1C5,object.ToString()\uF1C5MethodsWithDeclarationKeyword(Class1)Parameterskeyword Class1ReturnsDateTime\uF1C5public abstract class BaseClass1public abstract DateTime WithDeclarationKeyword(Class1 keyword)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.finalize"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
+        },
+        {
+          "Goto": {
+            "PageNumber": 37,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 38,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 39,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 39,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 39,
+      "Text": "39Class Class1Namespace: BuildFromVBSourceCodeThis is summary from vb class...Inheritanceobject\uF1C5 ← BaseClass1 ← Class1Inherited MembersBaseClass1.WithDeclarationKeyword(Class1), object.Equals(object)\uF1C5, object.Equals(object, object)\uF1C5,object.Finalize()\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5, object.MemberwiseClone()\uF1C5,object.ReferenceEquals(object, object)\uF1C5, object.ToString()\uF1C5FieldsValueClassThis is a Value typeField ValueClass1PropertiesKeywordProperty ValueClass1MethodsValue(string)public class Class1 : BaseClass1public Class1 ValueClass[Obsolete(\"This member is obsolete.\", true)]public Class1 Keyword { get; }",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.finalize"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 37,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 38,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 39,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 38,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 382.74997
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 39,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 39,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 40,
+      "Text": "40This is a FunctionParametersname string\uF1C5Name as the String valueReturnsint\uF1C5Returns AhoooWithDeclarationKeyword(Class1)What is Sub?Parameterskeyword Class1ReturnsDateTime\uF1C5public int Value(string name)public override DateTime WithDeclarationKeyword(Class1 keyword)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
+        },
+        {
+          "Goto": {
+            "PageNumber": 39,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 41,
+      "Text": "41Namespace CatLibraryNamespacesCatLibrary.CoreClassesCat<T, K>Here's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see the remarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classCatException<T>Complex<T, J>ICatExtensionIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classTomTom class is only inherit from Object. Not any member inside itself.TomFromBaseClassTomFromBaseClass inherits from @InterfacesIAnimalThis is basic interface of all animal.ICatCat's interface",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 52,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Uri": ""
+        },
+        {
+          "Goto": {
+            "PageNumber": 59,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 60,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 61,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 63,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 65,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 66,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 68,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 42,
+      "Text": "42DelegatesFakeDelegate<T>Fake delegateMRefDelegate<K, T, L>Generic delegate with many constrains.MRefNormalDelegateDelegate in the namespace",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 69,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 70,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 71,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 43,
+      "Text": "43Namespace CatLibrary.CoreClassesContainersRefType.ContainersRefTypeChildExplicitLayoutClassIssue231Issue231StructsContainersRefTypeStruct ContainersRefTypeInterfacesContainersRefType.ContainersRefTypeChildInterfaceEnumsContainersRefType.ColorTypeEnumeration ColorTypeDelegatesContainersRefType.ContainersRefTypeDelegateDelegate ContainersRefTypeDelegate",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 44,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 45,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 46,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 46,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 47,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 49,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 50,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 51,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 44,
+      "Text": "44Class ContainersRefType.ContainersRefTypeChildNamespace: CatLibrary.CoreAssembly: CatLibrary.Core.dllInheritanceobject\uF1C5 ← ContainersRefType.ContainersRefTypeChildInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5public class ContainersRefType.ContainersRefTypeChild",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 44,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 45,
+      "Text": "45Class ExplicitLayoutClassNamespace: CatLibrary.CoreAssembly: CatLibrary.Core.dllInheritanceobject\uF1C5 ← ExplicitLayoutClassInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5public class ExplicitLayoutClass",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 45,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 46,
+      "Text": "46Class Issue231Namespace: CatLibrary.CoreAssembly: CatLibrary.dll, CatLibrary.Core.dllInheritanceobject\uF1C5 ← Issue231Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsBar(ContainersRefType)Parametersc ContainersRefTypeFoo(ContainersRefType)Parametersc ContainersRefTypepublic static class Issue231public static void Bar(this ContainersRefType c)public static void Foo(this ContainersRefType c)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 46,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 47,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 47,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 47,
+      "Text": "47Struct ContainersRefTypeNamespace: CatLibrary.CoreAssembly: CatLibrary.Core.dllStruct ContainersRefTypeInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5Extension MethodsIssue231.Bar(ContainersRefType), Issue231.Foo(ContainersRefType)FieldsColorCountColorCountField Valuelong\uF1C5PropertiesGetColorCountGetColorCountProperty Valuelong\uF1C5Methodspublic struct ContainersRefTypepublic long ColorCountpublic long GetColorCount { get; }",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Goto": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 46,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 468.99997
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 46,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 335.49997
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 48,
+      "Text": "48ContainersRefTypeNonRefMethod(params object[])ContainersRefTypeNonRefMethodarrayParametersparmsArray object\uF1C5[]Returnsint\uF1C5ContainersRefTypeEventHandlerEvent TypeEventHandler\uF1C5public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)public event EventHandler ContainersRefTypeEventHandler",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
+        }
+      ]
+    },
+    {
+      "Number": 49,
+      "Text": "49Interface ContainersRefType.ContainersRefTypeChildInterfaceNamespace: CatLibrary.CoreAssembly: CatLibrary.Core.dllpublic interface ContainersRefType.ContainersRefTypeChildInterface",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 50,
+      "Text": "50Enum ContainersRefType.ColorTypeNamespace: CatLibrary.CoreAssembly: CatLibrary.Core.dllEnumeration ColorTypeFieldsRed = 0redBlue = 1blueYellow = 2yellowpublic enum ContainersRefType.ColorType",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 51,
+      "Text": "51Delegate ContainersRefType.ContainersRefTypeDelegateNamespace: CatLibrary.CoreAssembly: CatLibrary.Core.dllDelegate ContainersRefTypeDelegatepublic delegate void ContainersRefType.ContainersRefTypeDelegate()",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 52,
+      "Text": "52Class Cat<T, K>Namespace: CatLibraryAssembly: CatLibrary.dllHere's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see the remarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classType ParametersTThis type should be class and can new instance.KThis type is a struct type, class type can't be used for this parameter.Inheritanceobject\uF1C5 ← Cat<T, K>ImplementsICat, IAnimalInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5Extension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType), ICatExtension.Sleep(ICat, long)Examples[Serializable][Obsolete]public class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Uri": ""
+        },
+        {
+          "Goto": {
+            "PageNumber": 52,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 68,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 66,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 61,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 378.99997
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 61,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 125.5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 53,
+      "Text": "53Here's example of how to create an instance of this class. As T is limited with class and K is limited withstruct.As you see, here we bring in pointer so we need to add unsafe keyword.RemarksHere's all the content you can see in this class.ConstructorsCat()Default constructor.Cat(T)Constructor with one generic parameter.ParametersownType TThis parameter type defined by class.Cat(string, out int, string, bool)It's a complex constructor. The parameter will have some attributes.Parametersvar a = new Cat(object, int)();int catNumber = new int();unsafe{    a.GetFeetLength(catNumber);}public Cat()public Cat(T ownType)public Cat(string nickName, out int age, string realName, bool isHealthy)",
+      "Links": []
+    },
+    {
+      "Number": 54,
+      "Text": "54nickName string\uF1C5it's string type.age int\uF1C5It's an out and ref parameter.realName string\uF1C5It's an out paramter.isHealthy bool\uF1C5It's an in parameter.FieldsisHealthyField with attribute.Field Valuebool\uF1C5PropertiesAgeHint cat's age.Property Valueint\uF1C5Name[ContextStatic][NonSerialized][Obsolete]public bool isHealthy[Obsolete]protected int Age { get; set; }",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        }
+      ]
+    },
+    {
+      "Number": 55,
+      "Text": "55EII property.Property Valuestring\uF1C5this[string]This is index property of Cat. You can see that the visibility is different between get and set method.Property Valueint\uF1C5MethodsCalculateFood(DateTime)It's a method with complex return type.Parametersdate DateTime\uF1C5Date time to now.ReturnsDictionary\uF1C5<string\uF1C5, List\uF1C5<int\uF1C5>>It's a relationship map of different kind food.Equals(object)Override the method of Object.Equals(object obj).public string Name { get; }public int this[string a] { protected get; set; }public Dictionary<string, List<int>> CalculateFood(DateTime date)public override bool Equals(object obj)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        }
+      ]
+    },
+    {
+      "Number": 56,
+      "Text": "56Parametersobj object\uF1C5Can pass any class type.Returnsbool\uF1C5The return value tell you whehter the compare operation is successful.GetTailLength(int*, params object[])It's an unsafe method. As you see, catName is a pointer, so we need to add unsafe keyword.ParameterscatName int\uF1C5*Thie represent for cat name length.parameters object\uF1C5[]Optional parameters.Returnslong\uF1C5Return cat tail's length.Jump(T, K, ref bool)This method have attribute above it.ParametersownType TType come from class define.public long GetTailLength(int* catName, params object[] parameters)[Conditional(\"Debug\")]public void Jump(T ownType, K anotherOwnType, ref bool cheat)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        }
+      ]
+    },
+    {
+      "Number": 57,
+      "Text": "57anotherOwnType KType come from class define.cheat bool\uF1C5Hint whether this cat has cheat mode.ExceptionsArgumentException\uF1C5This is an argument exceptionownEatEat event of this catEvent TypeEventHandler\uF1C5Operatorsoperator +(Cat<T, K>, int)Addition operator of this class.Parameterslsr Cat<T, K>..rsr int\uF1C5~~Returnsint\uF1C5[Obsolete(\"This _event handler_ is deprecated.\")]public event EventHandler ownEatpublic static int operator +(Cat<T, K> lsr, int rsr)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Goto": {
+            "PageNumber": 52,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 58,
+      "Text": "58Result with int type.explicit operator Tom(Cat<T, K>)Expilicit operator of this class.It means this cat can evolve to change to Tom. Tom and Jerry.Parameterssrc Cat<T, K>Instance of this class.ReturnsTomAdvanced class type of cat.operator -(Cat<T, K>, int)Similar with operaotr +, refer to that topic.Parameterslsr Cat<T, K>rsr int\uF1C5Returnsint\uF1C5public static explicit operator Tom(Cat<T, K> src)public static int operator -(Cat<T, K> lsr, int rsr)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Goto": {
+            "PageNumber": 52,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 63,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 52,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 59,
+      "Text": "59Class CatException<T>Namespace: CatLibraryAssembly: CatLibrary.dllType ParametersTInheritanceobject\uF1C5 ← Exception\uF1C5 ← CatException<T>ImplementsISerializable\uF1C5Inherited MembersException.GetBaseException()\uF1C5, Exception.GetObjectData(SerializationInfo, StreamingContext)\uF1C5,Exception.GetType()\uF1C5, Exception.ToString()\uF1C5, Exception.Data\uF1C5, Exception.HelpLink\uF1C5, Exception.HResult\uF1C5, Exception.InnerException\uF1C5, Exception.Message\uF1C5, Exception.Source\uF1C5, Exception.StackTrace\uF1C5,Exception.TargetSite\uF1C5, Exception.SerializeObjectState\uF1C5, object.Equals(object?)\uF1C5, object.Equals(object?,object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5, object.MemberwiseClone()\uF1C5,object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5public class CatException<T> : Exception, ISerializable",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 59,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 60,
+      "Text": "60Class Complex<T, J>Namespace: CatLibraryAssembly: CatLibrary.dllType ParametersTJInheritanceobject\uF1C5 ← Complex<T, J>Inherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5public class Complex<T, J>",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 60,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 61,
+      "Text": "61Class ICatExtensionNamespace: CatLibraryAssembly: CatLibrary.dllIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classInheritanceobject\uF1C5 ← ICatExtensionInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsPlay(ICat, ColorType)Extension method to let cat playParametersicat ICatCattoy ContainersRefType.ColorTypeSomething to playSleep(ICat, long)Extension method hint that how long the cat can sleep.public static class ICatExtensionpublic static void Play(this ICat icat, ContainersRefType.ColorType toy)public static void Sleep(this ICat icat, long hours)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 61,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 68,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 47,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 50,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 62,
+      "Text": "62Parametersicat ICatThe type will be extended.hours long\uF1C5The length of sleep.",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Goto": {
+            "PageNumber": 68,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 63,
+      "Text": "63Class TomNamespace: CatLibraryAssembly: CatLibrary.dllTom class is only inherit from Object. Not any member inside itself.Inheritanceobject\uF1C5 ← TomDerivedTomFromBaseClassInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsTomMethod(Complex<TomFromBaseClass, TomFromBaseClass>,Tuple<string, Tom>)This is a Tom Method with complex type as returnParametersa Complex<TomFromBaseClass, TomFromBaseClass>A complex inputb Tuple\uF1C5<string\uF1C5, Tom>Another complex inputReturnsComplex<string\uF1C5, TomFromBaseClass>Complex TomFromBaseClasspublic class Tompublic Complex<string, TomFromBaseClass> TomMethod(Complex<TomFromBaseClass, TomFromBaseClass> ",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.tuple-2"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 63,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 65,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 60,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 65,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 65,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 63,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 60,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 65,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Uri": ""
+        }
+      ]
+    },
+    {
+      "Number": 64,
+      "Text": "64ExceptionsNotImplementedException\uF1C5This is not implementedArgumentException\uF1C5This is the exception to be thrown when implementedCatException<T>This is the exception in current documentation",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.notimplementedexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+        },
+        {
+          "Goto": {
+            "PageNumber": 59,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 65,
+      "Text": "65Class TomFromBaseClassNamespace: CatLibraryAssembly: CatLibrary.dllTomFromBaseClass inherits from @Inheritanceobject\uF1C5 ← Tom ← TomFromBaseClassInherited MembersTom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>),object.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5ConstructorsTomFromBaseClass(int)This is a #ctor with parameterParametersk int\uF1C5public class TomFromBaseClass : Tompublic TomFromBaseClass(int k)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 63,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 65,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 63,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 382.74997
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 66,
+      "Text": "66Interface IAnimalNamespace: CatLibraryAssembly: CatLibrary.dllThis is basic interface of all animal.PropertiesNameName of Animal.Property Valuestring\uF1C5this[int]Return specific number animal's name.Property Valuestring\uF1C5MethodsEat()Animal's eat method.Eat<Tool>(Tool)Overload method of eat. This define the animal eat by which tool.public interface IAnimalstring Name { get; }string this[int index] { get; }void Eat()",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 67,
+      "Text": "67Parameterstool ToolTool name.Type ParametersToolIt's a class type.Eat(string)Feed the animal with some foodParametersfood string\uF1C5Food to eatvoid Eat<Tool>(Tool tool) where Tool : classvoid Eat(string food)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        }
+      ]
+    },
+    {
+      "Number": 68,
+      "Text": "68Interface ICatNamespace: CatLibraryAssembly: CatLibrary.dllCat's interfaceImplementsIAnimalExtension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType), ICatExtension.Sleep(ICat, long)eateat event of cat. Every cat must implement this event.Event TypeEventHandler\uF1C5public interface ICat : IAnimalevent EventHandler eat",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 66,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 61,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 378.99997
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 61,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 125.5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 69,
+      "Text": "69Delegate FakeDelegate<T>Namespace: CatLibraryAssembly: CatLibrary.dllFake delegateParametersnum long\uF1C5Fake paraname string\uF1C5Fake parascores object\uF1C5[]Optional Parameter.Returnsint\uF1C5Return a fake number to confuse you.Type ParametersTFake parapublic delegate int FakeDelegate<T>(long num, string name, params object[] scores)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 70,
+      "Text": "70Delegate MRefDelegate<K, T, L>Namespace: CatLibraryAssembly: CatLibrary.dllGeneric delegate with many constrains.Parametersk KType K.t TType T.l LType L.Type ParametersKGeneric K.TGeneric T.LGeneric L.public delegate void MRefDelegate<K, T, L>(K k, T t, L l) where K : class, IComparable where T ",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 71,
+      "Text": "71Delegate MRefNormalDelegateNamespace: CatLibraryAssembly: CatLibrary.dllDelegate in the namespaceParameterspics List\uF1C5<string\uF1C5>a name list of pictures.name string\uF1C5give out the needed name.public delegate void MRefNormalDelegate(List<string> pics, out string name)",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Goto": {
+            "PageNumber": 41,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 72,
+      "Text": "72Namespace MRefNamespacesMRef.Demo",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 73,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 73,
+      "Text": "73Namespace MRef.DemoNamespacesMRef.Demo.Enumeration",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 74,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 74,
+      "Text": "74Namespace MRef.Demo.EnumerationEnumsColorTypeEnumeration ColorType",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 75,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 75,
+      "Text": "75Enum ColorTypeNamespace: MRef.Demo.EnumerationAssembly: CatLibrary.dllEnumeration ColorTypeFieldsRed = 0this color is redBlue = 1blue like riverYellow = 2yellow comes from desertRemarksRed/Blue/Yellow can become all color you want.See Alsoobject\uF1C5public enum ColorType",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Goto": {
+            "PageNumber": 74,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "Bookmarks": [
+    {
+      "Title": "BuildFromAssembly",
+      "Children": [
+        {
+          "Title": "Classes",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 4,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Class1",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 4,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ],
+      "Destination": {
+        "PageNumber": 3,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    },
+    {
+      "Title": "BuildFromCSharpSourceCode",
+      "Children": [
+        {
+          "Title": "Classes",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 6,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "CSharp",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 6,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ],
+      "Destination": {
+        "PageNumber": 5,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    },
+    {
+      "Title": "BuildFromProject",
+      "Children": [
+        {
+          "Title": "Issue8540",
+          "Children": [
+            {
+              "Title": "A",
+              "Children": [
+                {
+                  "Title": "Classes",
+                  "Children": [],
+                  "Destination": {
+                    "PageNumber": 10,
+                    "Type": 2,
+                    "Coordinates": {
+                      "Top": 0
+                    }
+                  }
+                },
+                {
+                  "Title": "A",
+                  "Children": [],
+                  "Destination": {
+                    "PageNumber": 10,
+                    "Type": 2,
+                    "Coordinates": {
+                      "Top": 0
+                    }
+                  }
+                }
+              ],
+              "Destination": {
+                "PageNumber": 9,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "B",
+              "Children": [
+                {
+                  "Title": "Classes",
+                  "Children": [],
+                  "Destination": {
+                    "PageNumber": 12,
+                    "Type": 2,
+                    "Coordinates": {
+                      "Top": 0
+                    }
+                  }
+                },
+                {
+                  "Title": "B",
+                  "Children": [],
+                  "Destination": {
+                    "PageNumber": 12,
+                    "Type": 2,
+                    "Coordinates": {
+                      "Top": 0
+                    }
+                  }
+                }
+              ],
+              "Destination": {
+                "PageNumber": 11,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            }
+          ],
+          "Destination": {
+            "PageNumber": 8,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Classes",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 13,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Class1",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 13,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Class1.Issue8665",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 18,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Class1.Issue8696Attribute",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 20,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Class1.Issue8948",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 22,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Class1.Test<T>",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 23,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Inheritdoc",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 24,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Inheritdoc.Issue6366",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 25,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Inheritdoc.Issue6366.Class1<T>",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 26,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Inheritdoc.Issue6366.Class2",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 27,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Inheritdoc.Issue7035",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 28,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Inheritdoc.Issue7484",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 29,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Inheritdoc.Issue8101",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 31,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Structs",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 33,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Inheritdoc.Issue8129",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 33,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Interfaces",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 34,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Class1.IIssue8948",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 34,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "IInheritdoc",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 35,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Enums",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 36,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Class1.Issue9260",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 36,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ],
+      "Destination": {
+        "PageNumber": 7,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    },
+    {
+      "Title": "BuildFromVBSourceCode",
+      "Children": [
+        {
+          "Title": "Classes",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 38,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "BaseClass1",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 38,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Class1",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 39,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ],
+      "Destination": {
+        "PageNumber": 37,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    },
+    {
+      "Title": "CatLibrary",
+      "Children": [
+        {
+          "Title": "Core",
+          "Children": [
+            {
+              "Title": "Classes",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 44,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "ContainersRefType.ContainersRefTypeChild",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 44,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "ExplicitLayoutClass",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 45,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "Issue231",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 46,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "Structs",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 47,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "ContainersRefType",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 47,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "Interfaces",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 49,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "ContainersRefType.ContainersRefTypeChildInterface",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 49,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "Enums",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 50,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "ContainersRefType.ColorType",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 50,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "Delegates",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 51,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            },
+            {
+              "Title": "ContainersRefType.ContainersRefTypeDelegate",
+              "Children": [],
+              "Destination": {
+                "PageNumber": 51,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            }
+          ],
+          "Destination": {
+            "PageNumber": 43,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Classes",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 52,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Cat<T, K>",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 52,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "CatException<T>",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 59,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Complex<T, J>",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 60,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "ICatExtension",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 61,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Tom",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 63,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "TomFromBaseClass",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 65,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Interfaces",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 66,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "IAnimal",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 66,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "ICat",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 68,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "Delegates",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 69,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "FakeDelegate<T>",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 69,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "MRefDelegate<K, T, L>",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 70,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Title": "MRefNormalDelegate",
+          "Children": [],
+          "Destination": {
+            "PageNumber": 71,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ],
+      "Destination": {
+        "PageNumber": 41,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    },
+    {
+      "Title": "MRef",
+      "Children": [
+        {
+          "Title": "Demo",
+          "Children": [
+            {
+              "Title": "Enumeration",
+              "Children": [
+                {
+                  "Title": "Enums",
+                  "Children": [],
+                  "Destination": {
+                    "PageNumber": 75,
+                    "Type": 2,
+                    "Coordinates": {
+                      "Top": 0
+                    }
+                  }
+                },
+                {
+                  "Title": "ColorType",
+                  "Children": [],
+                  "Destination": {
+                    "PageNumber": 75,
+                    "Type": 2,
+                    "Coordinates": {
+                      "Top": 0
+                    }
+                  }
+                }
+              ],
+              "Destination": {
+                "PageNumber": 74,
+                "Type": 2,
+                "Coordinates": {
+                  "Top": 0
+                }
+              }
+            }
+          ],
+          "Destination": {
+            "PageNumber": 73,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ],
+      "Destination": {
+        "PageNumber": 72,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    }
+  ]
+}

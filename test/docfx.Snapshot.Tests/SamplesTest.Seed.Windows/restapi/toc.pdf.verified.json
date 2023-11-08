@@ -1,0 +1,373 @@
+﻿{
+  "NumberOfPages": 26,
+  "Pages": [
+    {
+      "Number": 1,
+      "Text": "Table of ContentsPet Store API2Contacts API17",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 2,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 17,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 2,
+      "Text": "2Swagger PetstoreDescribe APIs in Pet StorepetDescription for pet tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.UpdatePetUpdate an existing petRequestParametersPOST /petPUT /pet",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 450.25031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 3,
+      "Text": "3NameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Pet not found405Validation exceptionFindPetsByStatusFinds Pets by statusMultiple status values can be provided with comma separated stringsRequestParametersNameTypeDefaultNotes*statusStatus values that need to be considered for filterResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid status valueFindPetsByTagsGET /pet/findByStatus?status",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 450.25031
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 450.25031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 4,
+      "Text": "4Finds Pets by tagsMuliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.RequestParametersNameTypeDefaultNotes*tagsTags to filter byResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid tag valueDeletePetDeletes a petRequestParametersNameTypeDefaultNotesapi_key*petIdPet id to deleteResponsesGET /pet/findByTags?tagsDELETE /pet/{petId}",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 450.25031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 5,
+      "Text": "5Status CodeTypeDescriptionSamples400Invalid ID supplied404Pet not foundGetPetByIdFind pet by IDReturns a single petRequestParametersNameTypeDefaultNotes*petIdID of pet to returnResponsesStatus CodeTypeDescriptionSamples200Petsuccessful operation400Invalid ID supplied404Pet not foundUpdatePetWithFormUpdates a pet in the store with form dataRequestGET /pet/{petId}POST /pet/{petId}",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 450.25031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 6,
+      "Text": "6ParametersNameTypeDefaultNotes*petIdID of pet that needs to be updatednameUpdated name of the petstatusUpdated status of the petResponsesStatus CodeTypeDescriptionSamples405Invalid inputUploadFileuploads an imageRequestParametersNameTypeDefaultNotes*petIdID of pet to updateadditionalMetadataAdditional data to pass to serverfilefile to uploadResponsesStatus CodeTypeDescriptionSamples200ApiResponsesuccessful operationPOST /pet/{petId}/uploadImage",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 629.50031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 7,
+      "Text": "7storeAccess to Petstore ordersAdditional description for store tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.GetInventoryReturns pet inventories by statusReturns a map of status codes to quantitiesRequestResponsesPOST /petGET /store/inventory",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 450.25031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 8,
+      "Text": "8Status CodeTypeDescriptionSamples200objectsuccessful operationPlaceOrderPlace an order for a petRequestParametersNameTypeDefaultNotes*bodyOrderorder placed for purchasing the petResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid OrderDeleteOrderDelete purchase order by IDFor valid response try integer IDs with positive integer value. Negative or non-integer values willgenerate API errorsRequestParametersPOST /store/orderDELETE /store/order/{orderId}",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 465.25031
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 465.25031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 9,
+      "Text": "9NameTypeDefaultNotes*orderIdID of the order that needs to be deletedResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Order not foundGetOrderByIdFind purchase order by IDFor valid response try integer IDs with value >= 1 and <= 10. Other values will generated exceptionsRequestParametersNameTypeDefaultNotes*orderIdID of pet that needs to be fetchedResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid ID supplied404Order not founduserGET /store/order/{orderId}",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 465.25031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 10,
+      "Text": "10Operations about userCreateUserCreate userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*bodyUserCreated user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationCreateUsersWithArrayInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationPOST /userPOST /user/createWithArray",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 196.75031
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 196.75031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 11,
+      "Text": "11Status CodeTypeDescriptionSamplesCreateUsersWithListInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationLoginUserLogs user into the systemRequestParametersNameTypeDefaultNotes*usernameThe user name for login*passwordThe password for login in clear textResponsesPOST /user/createWithListGET /user/login?username&password",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 196.75031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 12,
+      "Text": "12Status CodeTypeDescriptionSamples200stringsuccessful operation400Invalid username/password suppliedLogoutUserLogs out current logged in user sessionRequestResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationDeleteUserDelete userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*usernameThe name that needs to be deletedResponsesStatus CodeTypeDescriptionSamples400Invalid username suppliedGET /user/logoutDELETE /user/{username}",
+      "Links": []
+    },
+    {
+      "Number": 13,
+      "Text": "13Status CodeTypeDescriptionSamples404User not foundGetUserByNameGet user by user nameRequestParametersNameTypeDefaultNotes*usernameThe name that needs to be fetched. Use user1 for testing.ResponsesStatus CodeTypeDescriptionSamples200Usersuccessful operation400Invalid username supplied404User not foundOther APIsUpdateUserUpdated userThis can only be done by the logged in user.RequestParametersGET /user/{username}PUT /user/{username}",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 196.75031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 14,
+      "Text": "14NameTypeDefaultNotes*usernamename that need to be updated*bodyUserUpdated user objectResponsesStatus CodeTypeDescriptionSamples400Invalid user supplied404User not foundDefinitionsPetNameTypeNotescategoryCategory[]idinteger (int64)namestringphotoUrlsarraystatusstringpet status in the storetagsTag[]CategoryNameTypeNotesidinteger (int64)namestring",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 196.75031
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 181.75031
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 763.00031
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 15,
+      "Text": "15TagNameTypeNotesidinteger (int64)namestringApiResponseNameTypeNotescodeinteger (int32)messagestringtypestringOrderNameTypeNotescompletebooleanidinteger (int64)petIdinteger (int64)quantityinteger (int32)shipDatestring (date-time)statusstringOrder StatusUserNameTypeNotesemailstringfirstNamestringidinteger (int64)",
+      "Links": []
+    },
+    {
+      "Number": 16,
+      "Text": "16NameTypeNoteslastNamestringpasswordstringphonestringuserStatusinteger (int32)User StatususernamestringSee AlsosSee other REST APIs:Contacts API",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 17,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 17,
+      "Text": "17ContactsGet ContactsYou can get a collection of contacts from your tenant.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*api-version1.6The version of the Graph API to target. Beginning with version 1.5, theapi-version string is represented in major.minor format. Prior releaseswere represented as date strings: '2013-11-08' and '2013-04-05'.Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Theresults arereturned intheresponsebody.Mime type: application/jsonGet Contact By IdGet a contact by using the object ID.Required scope: Contacts.Read or Contacts.WriteGET /contacts?api-version{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$me  \"value\": [    {      \"odata.type\": \"Microsoft.DirectoryServices.Contact\",      \"objectType\": \"Contact\",      \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",      \"deletionTimestamp\": null,      \"city\": null,",
+      "Links": []
+    },
+    {
+      "Number": 18,
+      "Text": "18RequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6Specifies the version of the Graph API to target. Beginningwith version 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Thecontact isreturned intheresponsebody.Mime type: application/jsonUpdate ContactChange a contact's properties.Required scope: Contacts.WriteRequestGET /contacts/{object_id}?api-version{  \"odata.metadata\": \"https://graph.windows.net/graphdir1.onmicros  \"odata.type\": \"Microsoft.DirectoryServices.Contact\",  \"objectType\": \"Contact\",  \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",  \"deletionTimestamp\": null,  \"city\": null,  \"companyName\": null,  \"country\": null,PATCH /contacts/{object_id}?api-version",
+      "Links": []
+    },
+    {
+      "Number": 19,
+      "Text": "19ParametersNameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.bodyparamcontactthis is request body, not real parameterResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success. No response body is returned.Delete ContactDelete a contact.Required scope: Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.api-version1.6Specifies the version of the Graph API to target. Beginningwith version 1.5, the api-version string is represented inDELETE /contacts/{object_id}[?api-version]",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 25,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 465.99985
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 20,
+      "Text": "20NameTypeDefaultNotesmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success.Get Contact Manager LinkGet a link to the contact's manager.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. AMime type: application/jsonGET /contacts/{object_id}/$links/manager?api-version",
+      "Links": []
+    },
+    {
+      "Number": 21,
+      "Text": "21StatusCodeTypeDescriptionSampleslink to thecontact'smanager isreturned.404Not Found.Therequestedresourcewas notfound. Thiscan occur ifthemanagerproperty isnotcurrentlyset for thespecifiedcontact. Itcan alsohave othercauses, forexample, abaddomain. Acode andassociatedmessage isreturnedwith theerror.Mime type: application/jsonUpdate Contact ManagerUpdate the contact's manager{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$me  \"url\": \"https://graph.windows.net/myorganization/directoryObjec}{  \"odata.error\": {    \"code\": \"Request_ResourceNotFound\",    \"message\": {      \"lang\": \"en\",      \"value\": \"Resource not found for the segment 'manager'.\"    }  }}",
+      "Links": []
+    },
+    {
+      "Number": 22,
+      "Text": "22Required scope: Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.*bodyparamThe request body contains a single property thatspecifies the URL of the user or contact to add asmanager.ResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success. No response body is returned.Delete Contact Manager By IdDelete the contact's manager.Required scope: Contacts.WriteRequestParametersPUT /contacts/{object_id}/$links/manager?api-versionDELETE /contacts/{object_id}/$links/manager?api-version",
+      "Links": []
+    },
+    {
+      "Number": 23,
+      "Text": "23NameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success. N response body is returned.Get Contact Direct Reports LinksGet a links to the contact's direct reports.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesGET /contacts/{object_id}/$links/directReports?api-version",
+      "Links": []
+    },
+    {
+      "Number": 24,
+      "Text": "24StatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One ormore directreports arereturned.Mime type: application/jsonGet Contact MemberOf LinksGet a links to the contact's direct group and directory role memberships.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.Responses{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$me  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/directoryO    }  ]}GET /contacts/{object_id}/$links/memberOf?api-version",
+      "Links": []
+    },
+    {
+      "Number": 25,
+      "Text": "25StatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One ormoregroupsand/ordirectoryroles arereturned.Mime type: application/jsonDefinitionsContactNameTypeNotesobjectTypestringobjectIdstringdeletionTimestampstring (date-time)citystringcountrystringdepartmentstringdirSyncEnabledbooleandisplayNamestringfacsimileTelephoneNumberstringgivenNamestringjobTitlestringlastDirSyncTimestring (date-time){  \"odata.metadata\": \"https://graph.windows.net/myorganization/$me  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/directoryO    }  ]}",
+      "Links": []
+    },
+    {
+      "Number": 26,
+      "Text": "26NameTypeNotesmailstringmailNicknamestringmobilestringphysicalDeliveryOfficeNamestringpostalCodestringprovisioningErrorsProvisioningError[]proxyAddressesarraysipProxyAddressstringstatestringstreetAddressstringsurnamestringtelephoneNumberstringthumbnailPhotostringProvisioningErrorNameTypeNoteserrorDetailstringresolvedbooleanserviceInstancestringtimestampstring (date-time)",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 26,
+            "Coordinates": {
+              "Left": 29.000002,
+              "Top": 319.74985
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "Bookmarks": [
+    {
+      "Title": "Pet Store API",
+      "Children": [],
+      "Destination": {
+        "PageNumber": 2,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    },
+    {
+      "Title": "Contacts API",
+      "Children": [],
+      "Destination": {
+        "PageNumber": 17,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    }
+  ]
+}
