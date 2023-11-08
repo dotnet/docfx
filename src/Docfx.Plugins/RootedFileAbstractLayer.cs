@@ -58,9 +58,6 @@ public class RootedFileAbstractLayer : IFileAbstractLayer
         }
     }
 
-    public ImmutableDictionary<string, string> GetProperties(string file) =>
-        Path.IsPathRooted(file) ? ImmutableDictionary<string, string>.Empty : _impl.GetProperties(file);
-
     public string GetPhysicalPath(string file) =>
         Path.IsPathRooted(file) ? file : _impl.GetPhysicalPath(file);
 

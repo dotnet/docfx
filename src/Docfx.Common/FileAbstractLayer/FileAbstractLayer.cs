@@ -115,9 +115,6 @@ public class FileAbstractLayer : IFileAbstractLayer, IDisposable
     public void Copy(string sourceFileName, string destFileName) =>
         Copy((RelativePath)sourceFileName, (RelativePath)destFileName);
 
-    public ImmutableDictionary<string, string> GetProperties(string file) =>
-        GetProperties((RelativePath)file);
-
     public string GetPhysicalPath(string file) =>
         GetPhysicalPath((RelativePath)file);
 
