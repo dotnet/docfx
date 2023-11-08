@@ -7,7 +7,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.TableOfContents;
 
-internal static class TocRestructureUtility
+static class TocRestructureUtility
 {
     public static void Restructure(TocItemViewModel toc, IList<TreeItemRestructure> restructures)
     {

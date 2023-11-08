@@ -10,7 +10,7 @@ using Spectre.Console;
 
 namespace Docfx.Build.Engine;
 
-internal class PostProcessorsManager : IDisposable
+class PostProcessorsManager : IDisposable
 {
     private readonly List<PostProcessor> _postProcessors;
 

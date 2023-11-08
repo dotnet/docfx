@@ -6,7 +6,7 @@ using Docfx.DataContracts.Common;
 
 namespace Docfx.Build.TableOfContents;
 
-internal static class Utility
+static class Utility
 {
     public static bool IsSupportedFile(string file)
     {

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Docfx.Build.Engine;
 
-public class SearchIndexItem
+class SearchIndexItem
 {
     [JsonProperty("href")]
     [JsonPropertyName("href")]

@@ -7,7 +7,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.TableOfContents;
 
-internal sealed class TocResolver
+class TocResolver
 {
     private readonly Dictionary<string, TocItemInfo> _collection;
     private readonly Dictionary<FileAndType, TocItemInfo> _notInProjectTocCache = new();

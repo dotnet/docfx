@@ -3,7 +3,7 @@
 
 namespace Docfx.Build.TableOfContents;
 
-internal enum HrefType
+enum HrefType
 {
     AbsolutePath,
     RelativeFile,

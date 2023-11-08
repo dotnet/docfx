@@ -12,7 +12,7 @@ using Docfx.Plugins;
 namespace Docfx.Build.TableOfContents;
 
 [Export(typeof(IDocumentProcessor))]
-public class TocDocumentProcessor : DisposableDocumentProcessor
+class TocDocumentProcessor : DisposableDocumentProcessor
 {
     private static readonly char[] QueryStringOrAnchor = new[] { '#', '?' };
 

@@ -11,7 +11,7 @@ using EnvironmentVariables = Docfx.DataContracts.Common.Constants.EnvironmentVar
 
 namespace Docfx.Build.Engine;
 
-internal sealed class HtmlPostProcessor : IPostProcessor
+sealed class HtmlPostProcessor : IPostProcessor
 {
     public List<IHtmlDocumentHandler> Handlers { get; } = new List<IHtmlDocumentHandler>();
 

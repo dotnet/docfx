@@ -9,7 +9,7 @@ using HtmlAgilityPack;
 
 namespace Docfx.Build.Engine;
 
-public sealed class ValidateBookmark : HtmlDocumentHandler
+sealed class ValidateBookmark : HtmlDocumentHandler
 {
     private static readonly string XPathTemplate = "//*/@{0}";
     private static readonly HashSet<string> WhiteList = new() { "top" };

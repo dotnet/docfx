@@ -11,7 +11,7 @@ using HtmlAgilityPack;
 namespace Docfx.Build.ConceptualDocuments;
 
 [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-public class CountWord : BaseDocumentBuildStep
+class CountWord : BaseDocumentBuildStep
 {
     public override string Name => nameof(CountWord);
 

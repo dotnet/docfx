@@ -10,7 +10,7 @@ namespace Docfx.Common;
 
 #pragma warning disable CS0612 // Type or member is obsolete
 
-public static class ManifestUtility
+static class ManifestUtility
 {
     public static void RemoveDuplicateOutputFiles(ManifestItemCollection manifestItems)
     {

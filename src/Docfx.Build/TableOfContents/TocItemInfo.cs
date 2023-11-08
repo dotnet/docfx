@@ -6,7 +6,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.TableOfContents;
 
-internal sealed class TocItemInfo
+class TocItemInfo
 {
     public TocItemViewModel Content { get; set; }
     public FileAndType File { get; }
