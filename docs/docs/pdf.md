@@ -3,7 +3,7 @@
 Docfx can build PDF files from articles and API documentations.
 
 > [!NOTE]
-> This article applies to docfx 2.73.0 or greater
+> This article applies to docfx 2.73.0 or greater and the modern site template.
 
 ## Enable PDF
 
@@ -66,7 +66,11 @@ Indicates whether to include a "Table of Contents" pages at the beginning.
 
 ### `pdfCoverPage`
 
-A path to an HTML page relative to output root. The HTML page will be inserted at the beginning of the PDF file as cover page.
+A path to an HTML page relative to the root of the output directory. The HTML page will be inserted at the beginning of the PDF file as cover page.
+
+> [!NOTE]
+> For the cover page to appear in PDF, it needs to be included in build.
+> For instance, if `cover.md` is outputted to `_site/cover.html`, you should set `pdfCoverPage` to `cover.html`.
 
 ## Customize PDF Pages
 
