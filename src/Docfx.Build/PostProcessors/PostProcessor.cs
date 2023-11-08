@@ -5,7 +5,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
 
-internal sealed class PostProcessor
+sealed class PostProcessor
 {
     public string ContractName { get; set; }
 

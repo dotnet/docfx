@@ -3,7 +3,7 @@
 
 namespace Docfx.Build.ConceptualDocuments;
 
-public class SeparatedHtmlInfo
+class SeparatedHtmlInfo
 {
     public string Title { get; set; }
 

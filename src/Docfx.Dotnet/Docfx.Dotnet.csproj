@@ -33,7 +33,6 @@
     <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
     <PackageReference Include="OneOf" />
     <PackageReference Include="OneOf.SourceGenerator" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" />
     <PackageReference Include="Markdig" />
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" />

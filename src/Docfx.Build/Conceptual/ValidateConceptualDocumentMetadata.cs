@@ -11,7 +11,7 @@ using Docfx.Plugins;
 namespace Docfx.Build.ConceptualDocuments;
 
 [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-public class ValidateConceptualDocumentMetadata : BaseDocumentBuildStep
+class ValidateConceptualDocumentMetadata : BaseDocumentBuildStep
 {
     private const string ConceptualKey = Constants.PropertyName.Conceptual;
 

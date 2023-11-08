@@ -12,7 +12,7 @@ using Docfx.Plugins;
 namespace Docfx.Build.ConceptualDocuments;
 
 [Export(typeof(IDocumentProcessor))]
-public class ConceptualDocumentProcessor : DisposableDocumentProcessor
+class ConceptualDocumentProcessor : DisposableDocumentProcessor
 {
     #region Fields
 

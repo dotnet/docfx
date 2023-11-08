@@ -9,7 +9,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.TableOfContents;
 
-public static class TocHelper
+static class TocHelper
 {
     private static readonly YamlDeserializerWithFallback _deserializer =
         YamlDeserializerWithFallback.Create<TocViewModel>()

@@ -10,7 +10,7 @@ using Docfx.Plugins;
 namespace Docfx.Common;
 
 [Export(typeof(ICompositionContainer))]
-public class CompositionContainer : ICompositionContainer
+class CompositionContainer : ICompositionContainer
 {
     public static CompositionHost DefaultContainer { get; private set; }
 

@@ -6,7 +6,7 @@ using HtmlAgilityPack;
 
 namespace Docfx.Build.Engine;
 
-public sealed class RemoveDebugInfo : HtmlDocumentHandler
+class RemoveDebugInfo : HtmlDocumentHandler
 {
     private readonly string[] DebugInfoAttributes =
     {

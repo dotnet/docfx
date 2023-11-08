@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 namespace Docfx.Build.Engine;
 
 [Export(nameof(ExtractSearchIndex), typeof(IPostProcessor))]
-public class ExtractSearchIndex : IPostProcessor
+class ExtractSearchIndex : IPostProcessor
 {
     private static readonly Regex s_regexWhiteSpace = new(@"\s+", RegexOptions.Compiled);
     private static readonly HashSet<string> s_htmlInlineTags = new(StringComparer.OrdinalIgnoreCase)

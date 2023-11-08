@@ -10,7 +10,7 @@ using Docfx.Plugins;
 namespace Docfx.Build.ResourceFiles;
 
 [Export(typeof(IDocumentProcessor))]
-public class ResourceDocumentProcessor : DisposableDocumentProcessor
+class ResourceDocumentProcessor : DisposableDocumentProcessor
 {
     [ImportMany]
     public IEnumerable<IResourceFileConfig> Configs { get; set; }

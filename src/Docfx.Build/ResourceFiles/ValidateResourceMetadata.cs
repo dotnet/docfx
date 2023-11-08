@@ -9,7 +9,7 @@ using Docfx.Plugins;
 namespace Docfx.Build.ResourceFiles;
 
 [Export(nameof(ResourceDocumentProcessor), typeof(IDocumentBuildStep))]
-public class ValidateResourceMetadata : BaseDocumentBuildStep
+class ValidateResourceMetadata : BaseDocumentBuildStep
 {
     public override string Name => nameof(ValidateResourceMetadata);
 

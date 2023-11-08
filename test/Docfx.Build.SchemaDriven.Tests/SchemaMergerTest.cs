@@ -386,7 +386,7 @@ Nice
     private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
     {
         yield return typeof(SchemaDrivenDocumentProcessor).Assembly;
-        yield return typeof(TocDocumentProcessor).Assembly;
+        yield return typeof(DocumentBuilder).Assembly;
     }
 
     private string GetRawModelFilePath(string fileName)

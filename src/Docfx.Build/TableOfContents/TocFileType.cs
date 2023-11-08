@@ -3,7 +3,7 @@
 
 namespace Docfx.Build.TableOfContents;
 
-internal enum TocFileType
+enum TocFileType
 {
     None,
     Markdown,

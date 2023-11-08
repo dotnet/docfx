@@ -12,7 +12,7 @@ using Docfx.Plugins;
 namespace Docfx.Build.ConceptualDocuments;
 
 [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-public class BuildConceptualDocument : BaseDocumentBuildStep
+class BuildConceptualDocument : BaseDocumentBuildStep
 {
     private const string ConceptualKey = Constants.PropertyName.Conceptual;
     private const string DocumentTypeKey = "documentType";

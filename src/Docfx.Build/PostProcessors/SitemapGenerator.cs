@@ -13,7 +13,7 @@ using Docfx.Plugins;
 namespace Docfx.Build.Engine;
 
 [Export(nameof(SitemapGenerator), typeof(IPostProcessor))]
-public class SitemapGenerator : IPostProcessor
+class SitemapGenerator : IPostProcessor
 {
     private static readonly XNamespace Namespace = "http://www.sitemaps.org/schemas/sitemap/0.9"; // lgtm [cs/non-https-url]
     private const string HtmlExtension = ".html";

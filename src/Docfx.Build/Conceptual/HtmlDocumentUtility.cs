@@ -6,7 +6,7 @@ using HtmlAgilityPack;
 
 namespace Docfx.Build.ConceptualDocuments;
 
-public static class HtmlDocumentUtility
+static class HtmlDocumentUtility
 {
     public static SeparatedHtmlInfo SeparateHtml(string contentHtml)
     {

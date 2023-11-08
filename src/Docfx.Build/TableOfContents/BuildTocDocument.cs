@@ -13,7 +13,7 @@ using Docfx.Plugins;
 namespace Docfx.Build.TableOfContents;
 
 [Export(nameof(TocDocumentProcessor), typeof(IDocumentBuildStep))]
-public class BuildTocDocument : BaseDocumentBuildStep
+class BuildTocDocument : BaseDocumentBuildStep
 {
     public override string Name => nameof(BuildTocDocument);
 
