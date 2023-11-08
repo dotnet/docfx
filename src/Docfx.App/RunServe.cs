@@ -98,18 +98,18 @@ internal static class RunServe
 
         try
         {
-            Manifest manifest = JsonUtility.Deserialize<Manifest>(manifestPath);
+            relativePath = relativePath.Replace('\\', '/'); // Normalize path.
+            var manifest = JsonUtility.Deserialize<Manifest>(manifestPath);
 
             // Try to find output html file (html->html)
-            OutputFileInfo outputFileInfo = manifest.FindOutputFileInfo(relativePath);
-            if (outputFileInfo != null)
-                return outputFileInfo.RelativePath;
-
-            // Try to resolve output HTML file. (md->html)
-            relativePath = relativePath.Replace('\\', '/'); // Normalize path.
-            var manifestFile = manifest.Files
-                                       .Where(x => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(x.SourceRelativePath, relativePath))
-                                       .FirstOrDefault(x => x.Output.TryGetValue(".html", out outputFileInfo));
+            var outputFileInfo = manifest.Files.SelectMany(f => f.Output.Values).FirstOrDefault(f => f.RelativePath == relativePath);
+            if (outputFileInfo is null)
+            {
+                // Try to resolve output HTML file. (md->html)
+                manifest.Files
+                    .FirstOrDefault(x => x.SourceRelativePath == relativePath)
+                    ?.Output.TryGetValue(".html", out outputFileInfo);
+            }
 
             if (outputFileInfo != null)
             {

@@ -12,7 +12,7 @@ namespace Docfx.Common;
 
 static class ManifestUtility
 {
-    public static void RemoveDuplicateOutputFiles(ManifestItemCollection manifestItems)
+    public static void RemoveDuplicateOutputFiles(List<ManifestItem> manifestItems)
     {
         ArgumentNullException.ThrowIfNull(manifestItems);
 
@@ -59,7 +59,7 @@ static class ManifestUtility
         };
     }
 
-    public static void ApplyLogCodes(ManifestItemCollection manifestItems, ConcurrentDictionary<string, ImmutableHashSet<string>> codes)
+    public static void ApplyLogCodes(List<ManifestItem> manifestItems, ConcurrentDictionary<string, ImmutableHashSet<string>> codes)
     {
         ArgumentNullException.ThrowIfNull(manifestItems);
         ArgumentNullException.ThrowIfNull(codes);

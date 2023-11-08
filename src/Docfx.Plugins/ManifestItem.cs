@@ -18,7 +18,7 @@ public class ManifestItem
 
     [JsonProperty("output")]
     [JsonPropertyName("output")]
-    public OutputFileCollection Output { get; } = new OutputFileCollection();
+    public Dictionary<string, OutputFileInfo> Output { get; } = new();
 
     [JsonProperty("version")]
     [JsonPropertyName("version")]

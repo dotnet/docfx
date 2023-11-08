@@ -179,7 +179,9 @@ public class DocumentBuilder : IDisposable
                 .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
                 .WriteToRealFileSystem(parameters[0].OutputBaseDir)
                 .Create();
-            SaveManifest(generatedManifest);
+
+            generatedManifest.Files.Sort((a, b) => (a.SourceRelativePath ?? "").CompareTo(b.SourceRelativePath ?? ""));
+            JsonUtility.Serialize("manifest.json", generatedManifest, Formatting.Indented);
 
             EnvironmentContext.FileAbstractLayerImpl = null;
         }
@@ -236,12 +238,6 @@ public class DocumentBuilder : IDisposable
                 Tokens = resource is null ? null : TemplateProcessorUtility.LoadTokens(resource)?.ToImmutableDictionary(),
             },
             parameters.ConfigureMarkdig);
-    }
-
-    private static void SaveManifest(Manifest manifest)
-    {
-        JsonUtility.Serialize(Constants.ManifestFileName, manifest, Formatting.Indented);
-        Logger.LogInfo($"Manifest file saved to {Constants.ManifestFileName}.");
     }
 
     public void Dispose()

@@ -5,10 +5,6 @@ namespace Docfx.Plugins;
 
 public interface IFileAbstractLayer
 {
-    bool CanRead { get; }
-
-    bool CanWrite { get; }
-
     IEnumerable<string> GetAllInputFiles();
 
     bool Exists(string file);
@@ -21,5 +17,5 @@ public interface IFileAbstractLayer
 
     string GetPhysicalPath(string file);
 
-    IEnumerable<string> GetExpectedPhysicalPath(string file);
+    string GetExpectedPhysicalPath(string file);
 }

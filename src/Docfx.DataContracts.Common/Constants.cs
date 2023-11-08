@@ -10,7 +10,6 @@ namespace Docfx.DataContracts.Common;
 public static class Constants
 {
     public const string ConfigFileName = "docfx.json";
-    public const string ManifestFileName = "manifest.json";
     public const string YamlExtension = ".yml";
     public const string ContentPlaceholder = "*content";
     public const string PrefixSeparator = ".";

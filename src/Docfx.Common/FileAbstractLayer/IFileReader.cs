@@ -24,5 +24,5 @@ public interface IFileReader
     /// </summary>
     /// <param name="file">Logical file path.</param>
     /// <returns>Expected physical paths.</returns>
-    IEnumerable<string> GetExpectedPhysicalPath(RelativePath file);
+    string GetExpectedPhysicalPath(RelativePath file);
 }

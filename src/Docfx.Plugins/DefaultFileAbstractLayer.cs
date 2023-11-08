@@ -7,10 +7,6 @@ namespace Docfx.Plugins;
 
 public class DefaultFileAbstractLayer : IFileAbstractLayer
 {
-    public bool CanRead => true;
-
-    public bool CanWrite => true;
-
     public IEnumerable<string> GetAllInputFiles()
     {
         var folder = Path.GetFullPath(GetPhysicalPath("."));
@@ -61,6 +57,6 @@ public class DefaultFileAbstractLayer : IFileAbstractLayer
             Environment.ExpandEnvironmentVariables(EnvironmentContext.OutputDirectory),
             file);
 
-    public IEnumerable<string> GetExpectedPhysicalPath(string file) =>
-        new[] { Path.Combine(EnvironmentContext.OutputDirectory, file) };
+    public string GetExpectedPhysicalPath(string file) =>
+        Path.Combine(EnvironmentContext.OutputDirectory, file);
 }

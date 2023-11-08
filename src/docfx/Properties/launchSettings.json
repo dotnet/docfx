@@ -29,7 +29,7 @@
     // Run `docfx serve` command and launch browser.
     "docfx serve": {
       "commandName": "Project",
-      "commandLineArgs": "serve ../../samples/seed/_site --open-browser",
+      "commandLineArgs": "serve ../../samples/seed/_site --open-file articles/markdown.html --open-browser",
       "workingDirectory": ".",
       "environmentVariables": {
       }

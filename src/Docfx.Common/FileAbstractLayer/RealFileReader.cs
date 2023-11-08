@@ -5,6 +5,7 @@ namespace Docfx.Common;
 
 public class RealFileReader : IFileReader
 {
+    private readonly string _inputFolder;
     private readonly string _expandedInputFolder;
 
     public RealFileReader(string inputFolder)
@@ -22,12 +23,8 @@ public class RealFileReader : IFileReader
         {
             inputFolder += "/";
         }
-        InputFolder = inputFolder;
+        _inputFolder = inputFolder;
     }
-
-    public string InputFolder { get; }
-
-    #region IFileReader Members
 
     public PathMapping? FindFile(RelativePath file)
     {
@@ -36,7 +33,7 @@ public class RealFileReader : IFileReader
         {
             return null;
         }
-        return new PathMapping(file, Path.Combine(InputFolder, file.RemoveWorkingFolder()));
+        return new PathMapping(file, Path.Combine(_inputFolder, file.RemoveWorkingFolder()));
     }
 
     public IEnumerable<RelativePath> EnumerateFiles()
@@ -46,8 +43,6 @@ public class RealFileReader : IFileReader
                select ((RelativePath)f.Substring(length)).GetPathFromWorkingFolder();
     }
 
-    public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
-        new[] { Path.Combine(InputFolder, file.RemoveWorkingFolder().ToString()) };
-
-    #endregion
+    public string GetExpectedPhysicalPath(RelativePath file) =>
+        Path.Combine(_inputFolder, file.RemoveWorkingFolder().ToString());
 }

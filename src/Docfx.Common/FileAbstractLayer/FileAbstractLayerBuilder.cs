@@ -44,10 +44,6 @@ public class FileAbstractLayerBuilder
     {
         ArgumentNullException.ThrowIfNull(fal);
 
-        if (!fal.CanWrite)
-        {
-            throw new ArgumentException("FileAbstractLayer cannot write.", nameof(fal));
-        }
         return new FileAbstractLayerBuilder(fal.Writer.CreateReader(), _writer);
     }
 
