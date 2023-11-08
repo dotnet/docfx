@@ -35,7 +35,7 @@ public static class YamlUtility
 
     public static void Serialize(string path, object graph, string comments)
     {
-        using var writer = EnvironmentContext.FileAbstractLayer.CreateText(path);
+        using var writer = new StreamWriter(EnvironmentContext.FileAbstractLayer.Create(path));
         Serialize(writer, graph, comments);
     }
 

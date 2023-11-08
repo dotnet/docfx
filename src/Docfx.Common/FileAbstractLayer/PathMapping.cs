@@ -14,17 +14,9 @@ public readonly struct PathMapping
 
         LogicalPath = logicalPath.GetPathFromWorkingFolder();
         PhysicalPath = physicalPath;
-        AllowMoveOut = false;
-        Properties = ImmutableDictionary<string, string>.Empty;
     }
 
     public RelativePath LogicalPath { get; }
 
     public string PhysicalPath { get; }
-
-    public bool IsFolder => LogicalPath.FileName == string.Empty;
-
-    public bool AllowMoveOut { get; }
-
-    public ImmutableDictionary<string, string> Properties { get; init; }
 }

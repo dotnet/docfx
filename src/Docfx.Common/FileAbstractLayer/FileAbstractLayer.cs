@@ -79,14 +79,6 @@ public class FileAbstractLayer : IFileAbstractLayer, IDisposable
         Writer.Copy(FindPhysicalPath(sourceFileName), destFileName);
     }
 
-    public ImmutableDictionary<string, string> GetProperties(RelativePath file)
-    {
-        ArgumentNullException.ThrowIfNull(file);
-
-        EnsureNotDisposed();
-        return FindPhysicalPath(file).Properties;
-    }
-
     public string GetPhysicalPath(RelativePath file)
     {
         ArgumentNullException.ThrowIfNull(file);

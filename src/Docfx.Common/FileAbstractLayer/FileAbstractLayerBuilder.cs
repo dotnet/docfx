@@ -1,8 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Immutable;
-
 using Docfx.Plugins;
 
 namespace Docfx.Common;
@@ -19,15 +17,11 @@ public class FileAbstractLayerBuilder
         _writer = writer;
     }
 
-    public FileAbstractLayerBuilder ReadFromRealFileSystem(string folder) =>
-        ReadFromRealFileSystem(folder, ImmutableDictionary<string, string>.Empty);
-
-    public FileAbstractLayerBuilder ReadFromRealFileSystem(string folder, ImmutableDictionary<string, string> properties)
+    public FileAbstractLayerBuilder ReadFromRealFileSystem(string folder)
     {
         ArgumentNullException.ThrowIfNull(folder);
-        ArgumentNullException.ThrowIfNull(properties);
 
-        return new FileAbstractLayerBuilder(new RealFileReader(folder, properties), _writer);
+        return new FileAbstractLayerBuilder(new RealFileReader(folder), _writer);
     }
 
     public FileAbstractLayerBuilder ReadFromManifest(Manifest manifest, string manifestFolder)

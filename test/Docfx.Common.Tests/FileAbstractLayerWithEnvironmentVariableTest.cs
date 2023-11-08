@@ -1,7 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Immutable;
 using Docfx.Tests.Common;
 using Xunit;
 
@@ -100,23 +99,5 @@ public class FileAbstractLayerWithEnvironmentVariableTest : TestBase
         Assert.Equal("😄", File.ReadAllText(Path.Combine(input, "temp.txt")));
         Environment.SetEnvironmentVariable("input", null);
         Environment.SetEnvironmentVariable("output", null);
-    }
-
-    [Fact]
-    public void TestFileAbstractLayerWithRealImplementsShouldGetPropertiesCorrectly()
-    {
-        var input = GetRandomFolder();
-        Environment.SetEnvironmentVariable("input", input);
-        File.WriteAllText(Path.Combine(input, "temp.txt"), "👍");
-        var fal = FileAbstractLayerBuilder.Default
-            .ReadFromRealFileSystem(
-                "%input%",
-                ImmutableDictionary<string, string>.Empty.Add("test", "true"))
-            .Create();
-        Assert.True(fal.Exists("temp.txt"));
-        Assert.Equal("true", fal.GetProperties("temp.txt")["test"]);
-        Assert.True(fal.HasProperty("temp.txt", "test"));
-        Assert.Equal("true", fal.GetProperty("temp.txt", "test"));
-        Environment.SetEnvironmentVariable("input", null);
     }
 }

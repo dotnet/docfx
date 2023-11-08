@@ -88,20 +88,4 @@ public class FileAbstractLayerTest : TestBase
         Assert.True(File.Exists(Path.Combine(output, "copy.txt")));
         Assert.Equal("😄", File.ReadAllText(Path.Combine(input, "temp.txt")));
     }
-
-    [Fact]
-    public void TestFileAbstractLayerWithRealImplementsShouldGetPropertiesCorrectly()
-    {
-        var input = GetRandomFolder();
-        File.WriteAllText(Path.Combine(input, "temp.txt"), "👍");
-        var fal = FileAbstractLayerBuilder.Default
-            .ReadFromRealFileSystem(
-                input,
-                ImmutableDictionary<string, string>.Empty.Add("test", "true"))
-            .Create();
-        Assert.True(fal.Exists("temp.txt"));
-        Assert.Equal("true", fal.GetProperties("temp.txt")["test"]);
-        Assert.True(fal.HasProperty("temp.txt", "test"));
-        Assert.Equal("true", fal.GetProperty("temp.txt", "test"));
-    }
 }
