@@ -45,7 +45,7 @@ Specifies an array of resource files to include in the project. Supports [File M
 ```json
 {
   "build": {
-    "resources": ["**/*.png"]
+    "resource": ["**/*.png"]
   }
 }
 ```
