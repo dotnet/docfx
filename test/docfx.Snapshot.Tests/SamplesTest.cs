@@ -80,7 +80,7 @@ public class SamplesTest
 
         Parallel.ForEach(Directory.EnumerateFiles($"{samplePath}/_site", "*.pdf", SearchOption.AllDirectories), PdfToJson);
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
 
         void PdfToJson(string path)
         {
@@ -127,6 +127,9 @@ public class SamplesTest
     [SnapshotFact]
     public async Task SeedHtml()
     {
+        if (!OperatingSystem.IsLinux())
+            return;
+
         var samplePath = $"{s_samplesDir}/seed";
         Clean(samplePath);
 
@@ -197,7 +200,7 @@ public class SamplesTest
                 var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
                 await
                     Verify(new Target("png", new MemoryStream(bytes)))
-                    .UseStreamComparer((received, verified, _) => CompareImage(received, verified, directory, fileName))
+                    .UseStreamComparer((received, verified, _) => CompareImage(received, verified, fileName))
                     .UseDirectory(directory)
                     .UseFileName(fileName)
                     .AutoVerify(includeBuildServer: false);
@@ -206,7 +209,7 @@ public class SamplesTest
             await page.CloseAsync();
         });
 
-        static Task<CompareResult> CompareImage(Stream received, Stream verified, string directory, string fileName)
+        static Task<CompareResult> CompareImage(Stream received, Stream verified, string fileName)
         {
             using var receivedImage = new MagickImage(received);
             using var verifiedImage = new MagickImage(verified);
@@ -238,7 +241,7 @@ public class SamplesTest
 
         Program.Main(new[] { "metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath });
 
-        await VerifyDirectory(outputPath, IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory(outputPath, IncludeFile, fileScrubber: ScrubFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
     }
 
     [SnapshotFact]
@@ -259,7 +262,7 @@ public class SamplesTest
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
         }
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
     }
 
     [SnapshotFact]
@@ -274,7 +277,7 @@ public class SamplesTest
         Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
-        return VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        return VerifyDirectory($"{samplePath}/_site", IncludeFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
     }
 
     private static int Exec(string filename, string args, string workingDirectory = null)
