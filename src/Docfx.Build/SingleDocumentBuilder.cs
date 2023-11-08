@@ -55,44 +55,30 @@ class SingleDocumentBuilder : IDisposable
         var context = new DocumentBuildContext(parameters);
 
         // Start building document...
-        List<HostService> hostServices = null;
-        try
-        {
-            var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
+        var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
                 ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
 
-            var hostServiceCreator = new HostServiceCreator(context);
-            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
+        var hostServiceCreator = new HostServiceCreator(context);
+        var hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
 
-            templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
+        templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
 
-            new CompilePhaseHandler(context).Handle(hostServices, parameters.MaxParallelism);
-            new LinkPhaseHandler(context, templateProcessor).Handle(hostServices, parameters.MaxParallelism);
+        new CompilePhaseHandler(context).Handle(hostServices, parameters.MaxParallelism);
+        new LinkPhaseHandler(context, templateProcessor).Handle(hostServices, parameters.MaxParallelism);
 
-            var manifest = new Manifest(context.ManifestItems.Where(m => m.Output?.Count > 0))
-            {
-                Xrefmap = ExportXRefMap(parameters, context),
-                SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
-            };
-            manifest.Groups = new List<ManifestGroupInfo>
+        var manifest = new Manifest(context.ManifestItems.Where(m => m.Output?.Count > 0))
+        {
+            Xrefmap = ExportXRefMap(parameters, context),
+            SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
+        };
+        manifest.Groups = new List<ManifestGroupInfo>
                 {
                     new(parameters.GroupInfo)
                     {
                         XRefmap = (string)manifest.Xrefmap
                     }
                 };
-            return manifest;
-        }
-        finally
-        {
-            if (hostServices != null)
-            {
-                foreach (var item in hostServices)
-                {
-                    item.Dispose();
-                }
-            }
-        }
+        return manifest;
     }
 
     private List<HostService> GetInnerContexts(

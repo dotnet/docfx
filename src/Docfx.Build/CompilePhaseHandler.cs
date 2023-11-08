@@ -129,6 +129,8 @@ internal class CompilePhaseHandler
 
     private static void Postbuild(HostService hostService)
     {
+        hostService.Reload(hostService.Models);
+
         RunBuildSteps(
             hostService.Processor.BuildSteps,
             buildStep =>

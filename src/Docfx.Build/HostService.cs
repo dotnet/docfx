@@ -10,15 +10,9 @@ using Docfx.Plugins;
 namespace Docfx.Build.Engine;
 
 [Export(typeof(IHostService))]
-internal sealed class HostService : IHostService, IDisposable
+class HostService : IHostService
 {
-    #region Fields
-    private readonly object _syncRoot = new();
-    private readonly object _tocSyncRoot = new();
-    private readonly Dictionary<string, List<FileModel>> _uidIndex = new();
-    #endregion
-
-    #region Properties
+    private Dictionary<string, List<FileModel>> _uidIndex = new();
 
     public TemplateProcessor Template { get; set; }
 
@@ -27,8 +21,6 @@ internal sealed class HostService : IHostService, IDisposable
     public ImmutableDictionary<string, FileAndType> SourceFiles { get; set; }
 
     public ImmutableList<string> InvalidSourceFiles { get; set; }
-
-    public Dictionary<FileAndType, FileAndType> FileMap { get; } = new Dictionary<FileAndType, FileAndType>();
 
     public IMarkdownService MarkdownService { get; set; }
 
@@ -42,22 +34,14 @@ internal sealed class HostService : IHostService, IDisposable
 
     public GroupInfo GroupInfo { get; }
 
-    #endregion
-
-    #region Constructors
-
-    public HostService(string baseDir, IEnumerable<FileModel> models, string versionName = null, string versionDir = null, GroupInfo groupInfo = null)
+    public HostService(IEnumerable<FileModel> models, string versionName = null, string versionDir = null, GroupInfo groupInfo = null)
     {
         VersionName = versionName;
         VersionOutputFolder = versionDir;
         GroupInfo = groupInfo;
 
-        LoadCore(models);
+        Reload(models);
     }
-
-    #endregion
-
-    #region IHostService Members
 
     public IDocumentProcessor Processor { get; set; }
 
@@ -72,24 +56,16 @@ internal sealed class HostService : IHostService, IDisposable
 
     public ImmutableHashSet<string> GetAllUids()
     {
-        lock (_syncRoot)
-        {
-            return _uidIndex.Keys.ToImmutableHashSet();
-        }
+        return _uidIndex.Keys.ToImmutableHashSet();
     }
 
     public ImmutableList<FileModel> LookupByUid(string uid)
     {
-        ArgumentNullException.ThrowIfNull(uid);
-
-        lock (_syncRoot)
+        if (_uidIndex.TryGetValue(uid, out List<FileModel> result))
         {
-            if (_uidIndex.TryGetValue(uid, out List<FileModel> result))
-            {
-                return result.ToImmutableList();
-            }
-            return ImmutableList<FileModel>.Empty;
+            return result.ToImmutableList();
         }
+        return ImmutableList<FileModel>.Empty;
     }
 
     public MarkupResult Markup(string markdown, FileAndType ft)
@@ -174,109 +150,13 @@ internal sealed class HostService : IHostService, IDisposable
         Logger.LogError(message, file: file, line: line);
     }
 
-    #endregion
-
-    #region IDisposable Members
-
-    public void Dispose()
-    {
-        foreach (var m in Models)
-        {
-            m.FileOrBaseDirChanged -= HandleFileOrBaseDirChanged;
-            m.UidsChanged -= HandleUidsChanged;
-        }
-    }
-
-    #endregion
-
     public void Reload(IEnumerable<FileModel> models)
     {
-        lock (_syncRoot)
-        {
-            LoadCore(models);
-        }
-    }
-
-    #region Private Methods
-
-    private void LoadCore(IEnumerable<FileModel> models)
-    {
-        EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
-        EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> uidsChangedHandler = HandleUidsChanged;
-        if (Models != null)
-        {
-            foreach (var m in Models)
-            {
-                m.FileOrBaseDirChanged -= fileOrBaseDirChangedHandler;
-                m.UidsChanged -= uidsChangedHandler;
-            }
-        }
         Models = models.ToImmutableList();
-        _uidIndex.Clear();
-        FileMap.Clear();
-        foreach (var m in Models)
-        {
-            m.FileOrBaseDirChanged += fileOrBaseDirChangedHandler;
-            m.UidsChanged += uidsChangedHandler;
-            foreach (var uid in m.Uids.Select(s => s.Name).Distinct())
-            {
-                if (!_uidIndex.TryGetValue(uid, out List<FileModel> list))
-                {
-                    list = new List<FileModel>();
-                    _uidIndex.Add(uid, list);
-                }
-                list.Add(m);
-            }
-            if (m.Type != DocumentType.Overwrite)
-            {
-                FileMap[m.FileAndType] = m.FileAndType;
-            }
-        }
-    }
 
-    private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<UidDefinition>> e)
-    {
-        if (sender is not FileModel m)
-        {
-            return;
-        }
-        lock (_syncRoot)
-        {
-            var common = e.Original.Select(s => s.Name).Intersect(e.Current.Select(s => s.Name)).ToList();
-            foreach (var added in e.Current.Select(s => s.Name).Except(common))
-            {
-                if (!_uidIndex.TryGetValue(added, out List<FileModel> list))
-                {
-                    list = new List<FileModel>();
-                    _uidIndex.Add(added, list);
-                }
-                list.Add(m);
-            }
-            foreach (var removed in e.Original.Select(s => s.Name).Except(common))
-            {
-                if (_uidIndex.TryGetValue(removed, out List<FileModel> list))
-                {
-                    list.Remove(m);
-                    if (list.Count == 0)
-                    {
-                        _uidIndex.Remove(removed);
-                    }
-                }
-            }
-        }
+        _uidIndex = (
+            from m in models
+            from uid in m.Uids.Select(s => s.Name).Distinct()
+            group m by uid).ToDictionary(g => g.Key, g => g.ToList());
     }
-
-    private void HandleFileOrBaseDirChanged(object sender, EventArgs e)
-    {
-        if (sender is not FileModel m)
-        {
-            return;
-        }
-        lock (_syncRoot)
-        {
-            FileMap[m.OriginalFileAndType] = m.FileAndType;
-        }
-    }
-
-    #endregion
 }

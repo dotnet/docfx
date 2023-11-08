@@ -26,7 +26,7 @@ This is unit test!";
         var fileName = "ut_ReadMarkdownAsOverwrite.md";
         var fullPath = Path.Combine(baseDir, fileName);
         File.WriteAllText(fullPath, content);
-        var host = new HostService(null, Enumerable.Empty<FileModel>())
+        var host = new HostService(Enumerable.Empty<FileModel>())
         {
             MarkdownService = new MarkdigMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
             SourceFiles = ImmutableDictionary.Create<string, FileAndType>()

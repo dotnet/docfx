@@ -295,7 +295,7 @@ public class ModelAttributeHandlerTest
     {
         return new HandleModelAttributesContext
         {
-            Host = new HostService(null, Enumerable.Empty<FileModel>())
+            Host = new HostService(Enumerable.Empty<FileModel>())
             {
                 MarkdownService = new MarkdigMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
                 SourceFiles = new Dictionary<string, FileAndType>

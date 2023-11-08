@@ -28,7 +28,6 @@ class HostServiceCreator
     {
         var (models, invalidFiles) = LoadModels(files, parameters, processor);
         var hostService = new HostService(
-            parameters.Files.DefaultBaseDir,
             models,
             parameters.VersionName,
             parameters.VersionDir,
