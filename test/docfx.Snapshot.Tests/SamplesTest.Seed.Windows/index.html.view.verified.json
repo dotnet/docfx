@@ -3,7 +3,7 @@
   "type": "Conceptual",
   "source": {
     "remote": {
-      "path": "samples\\seed\\index.md",
+      "path": "samples/seed/index.md",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -13,7 +13,7 @@
   "path": "index.md",
   "documentation": {
     "remote": {
-      "path": "samples\\seed\\index.md",
+      "path": "samples/seed/index.md",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -42,5 +42,5 @@
   "_tocPath": "toc.html",
   "_tocRel": "toc.html",
   "_disableToc": true,
-  "docurl": "https://github.com/dotnet/docfx/blob/main/samples\\seed\\index.md/#L1"
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/index.md/#L1"
 }

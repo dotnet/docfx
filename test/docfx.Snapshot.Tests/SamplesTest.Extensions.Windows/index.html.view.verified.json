@@ -3,7 +3,7 @@
   "type": "Conceptual",
   "source": {
     "remote": {
-      "path": "samples\\extensions\\index.md",
+      "path": "samples/extensions/index.md",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -13,7 +13,7 @@
   "path": "index.md",
   "documentation": {
     "remote": {
-      "path": "samples\\extensions\\index.md",
+      "path": "samples/extensions/index.md",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -117,5 +117,5 @@
     "_shared": {}
   },
   "_disableToc": true,
-  "docurl": "https://github.com/dotnet/docfx/blob/main/samples\\extensions\\index.md/#L1"
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/extensions/index.md/#L1"
 }

@@ -209,7 +209,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp9.cs",
+              "path": "samples/csharp/src/CSharp9.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -271,7 +271,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Person__ctor_System_String_System_String_.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Person.%23ctor(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp9.cs/#L10",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L10",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -395,7 +395,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp9.cs",
+              "path": "samples/csharp/src/CSharp9.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -457,7 +457,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Person_FirstName.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Person.FirstName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp9.cs/#L10",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L10",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -574,7 +574,7 @@
           },
           "source": {
             "remote": {
-              "path": "samples\\csharp\\src\\CSharp9.cs",
+              "path": "samples/csharp/src/CSharp9.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
@@ -636,7 +636,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Person_LastName.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Person.LastName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp9.cs/#L10",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L10",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -686,7 +686,7 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples\\csharp\\src\\CSharp9.cs",
+      "path": "samples/csharp/src/CSharp9.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -1337,7 +1337,7 @@
   },
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Person.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Person%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples\\csharp\\src\\CSharp9.cs/#L10",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L10",
   "summary": "",
   "remarks": "",
   "conceptual": "",
