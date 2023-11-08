@@ -10,7 +10,7 @@ public class TemplatePageLoader
     private readonly RendererLoader _rendererLoader;
     private readonly PreprocessorLoader _preprocessorLoader;
 
-    public TemplatePageLoader(IResourceFileReader reader, DocumentBuildContext context, int maxParallelism)
+    public TemplatePageLoader(ResourceFileReader reader, DocumentBuildContext context, int maxParallelism)
     {
         _rendererLoader = new RendererLoader(reader, maxParallelism);
         _preprocessorLoader = new PreprocessorLoader(reader, context, maxParallelism);

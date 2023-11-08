@@ -31,14 +31,6 @@ public sealed class CompositeResourceReader : ResourceFileReader, IEnumerable<Re
         return null;
     }
 
-    protected override void Dispose(bool disposing)
-    {
-        foreach (var reader in _readers)
-            reader.Dispose();
-
-        base.Dispose(disposing);
-    }
-
     public IEnumerator<ResourceFileReader> GetEnumerator() => ((IEnumerable<ResourceFileReader>)_readers).GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => _readers.GetEnumerator();

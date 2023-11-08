@@ -7,7 +7,7 @@ public class TemplateCollection : Dictionary<string, TemplateBundle>
 {
     private readonly TemplateBundle _defaultTemplate = null;
 
-    public IResourceFileReader Reader { get; }
+    public ResourceFileReader Reader { get; }
 
     public int MaxParallelism { get; }
 

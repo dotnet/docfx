@@ -9,7 +9,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
 
-internal class HostServiceCreator : IHostServiceCreator
+class HostServiceCreator
 {
     private readonly DocumentBuildContext _context;
 

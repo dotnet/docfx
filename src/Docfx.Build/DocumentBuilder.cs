@@ -192,27 +192,25 @@ public class DocumentBuilder : IDisposable
         {
             var result = new List<IDocumentProcessor>();
 
-            using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
+            var resource = parameter?.TemplateManager?.CreateTemplateResource();
+            if (resource == null || resource.IsEmpty)
             {
-                if (resource == null || resource.IsEmpty)
-                {
-                    return result;
-                }
+                return result;
+            }
 
-                foreach (var pair in resource.GetResources(@"^schemas/.*\.schema\.json"))
-                {
-                    var fileName = Path.GetFileName(pair.Path);
+            foreach (var pair in resource.GetResources(@"^schemas/.*\.schema\.json"))
+            {
+                var fileName = Path.GetFileName(pair.Path);
 
-                    using (new LoggerFileScope(fileName))
-                    {
-                        var schema = DocumentSchema.Load(pair.Content, fileName.Remove(fileName.Length - ".schema.json".Length));
-                        var sdp = new SchemaDrivenDocumentProcessor(
-                            schema,
-                            new CompositionContainer(CompositionContainer.DefaultContainer),
-                            markdownService);
-                        Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
-                        result.Add(sdp);
-                    }
+                using (new LoggerFileScope(fileName))
+                {
+                    var schema = DocumentSchema.Load(pair.Content, fileName.Remove(fileName.Length - ".schema.json".Length));
+                    var sdp = new SchemaDrivenDocumentProcessor(
+                        schema,
+                        new CompositionContainer(CompositionContainer.DefaultContainer),
+                        markdownService);
+                    Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                    result.Add(sdp);
                 }
             }
 
@@ -227,7 +225,7 @@ public class DocumentBuilder : IDisposable
 
     private static MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters)
     {
-        using var resource = parameters.TemplateManager?.CreateTemplateResource();
+        var resource = parameters.TemplateManager?.CreateTemplateResource();
 
         return new MarkdigMarkdownService(
             new MarkdownServiceParameters

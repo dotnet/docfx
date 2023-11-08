@@ -16,15 +16,12 @@ public sealed class ValidateBookmark : HtmlDocumentHandler
     /// <summary>
     /// bookmarks mapping from output file -> bookmarks
     /// </summary>
-    private readonly OSPlatformSensitiveDictionary<HashSet<string>> _registeredBookmarks =
-        new();
+    private readonly Dictionary<string, HashSet<string>> _registeredBookmarks = new(FilePathComparer.OSPlatformSensitiveStringComparer);
     /// <summary>
     /// file mapping from output file -> src file
     /// </summary>
-    private readonly OSPlatformSensitiveDictionary<string> _fileMapping =
-        new();
-    private readonly OSPlatformSensitiveDictionary<List<LinkItem>> _linksWithBookmark =
-        new();
+    private readonly Dictionary<string, string> _fileMapping = new(FilePathComparer.OSPlatformSensitiveStringComparer);
+    private readonly Dictionary<string, List<LinkItem>> _linksWithBookmark = new(FilePathComparer.OSPlatformSensitiveStringComparer);
 
     #region IHtmlDocumentHandler members
 

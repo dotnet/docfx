@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Docfx.Build.Engine;
 
-public abstract class ResourceFileReader : IResourceFileReader, IDisposable
+public abstract class ResourceFileReader
 {
     public abstract string Name { get; }
 
@@ -54,24 +54,6 @@ public abstract class ResourceFileReader : IResourceFileReader, IDisposable
     }
 
     public abstract Stream GetResourceStream(string name);
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-    }
-
-    /// <summary>
-    /// Override Object.Finalize by defining a destructor
-    /// </summary>
-    ~ResourceFileReader()
-    {
-        Dispose(false);
-    }
 
     protected static string GetString(Stream stream)
     {

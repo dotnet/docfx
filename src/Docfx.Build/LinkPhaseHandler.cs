@@ -87,10 +87,10 @@ internal class LinkPhaseHandler
         SaveResult result)
     {
         Context.SetFilePath(model.Key, ((RelativePath)model.File).GetPathFromWorkingFolder());
-        DocumentException.RunAll(
-            () => CheckFileLink(model, hostService, result),
-            () => HandleUids(result),
-            () => RegisterXRefSpec(result));
+
+        CheckFileLink(model, hostService, result);
+        HandleUids(result);
+        RegisterXRefSpec(result);
 
         return GetManifestItem(model, result);
     }

@@ -27,23 +27,6 @@ public static class StringExtension
         return string.Join(delimiter, input);
     }
 
-    public static string GetNormalizedFullPathKey(this IEnumerable<string> list)
-    {
-        if (list == null) return null;
-
-        // make sure the order consistent
-        var normalizedPaths = GetNormalizedFullPathList(list);
-        return normalizedPaths.ToDelimitedString();
-    }
-
-    public static IEnumerable<string> GetNormalizedFullPathList(this IEnumerable<string> paths)
-    {
-        if (paths == null) return null;
-        return (from p in paths
-                where !string.IsNullOrEmpty(p)
-                select ToNormalizedFullPath(p)).Distinct().OrderBy(s => s);
-    }
-
     /// <summary>
     /// Should not convert path to lower case as under Linux/Unix, path is case sensitive
     /// Also, Website URL should be case sensitive consider the server might be running under Linux/Unix

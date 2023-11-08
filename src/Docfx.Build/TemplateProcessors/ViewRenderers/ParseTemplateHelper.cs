@@ -11,7 +11,7 @@ internal static class ParseTemplateHelper
 {
     private static readonly Regex IsRegexPatternRegex = new(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
 
-    public static string ExpandMasterPage(IResourceFileReader reader, ResourceInfo info, Regex masterRegex, Regex bodyRegex)
+    public static string ExpandMasterPage(ResourceFileReader reader, ResourceInfo info, Regex masterRegex, Regex bodyRegex)
     {
         var template = info.Content;
         var path = info.Path;
@@ -39,7 +39,7 @@ internal static class ParseTemplateHelper
         return template;
     }
 
-    private static IEnumerable<string> ExtractMasterPageResourceName(IResourceFileReader reader, ResourceInfo info, Regex masterRegex)
+    private static IEnumerable<string> ExtractMasterPageResourceName(ResourceFileReader reader, ResourceInfo info, Regex masterRegex)
     {
         var template = info.Content;
         var path = info.Path;
@@ -60,7 +60,7 @@ internal static class ParseTemplateHelper
     /// </summary>
     /// <param name="file"></param>
     /// <returns></returns>
-    public static IEnumerable<string> GetResourceName(string file, string templateName, IResourceFileReader reader)
+    public static IEnumerable<string> GetResourceName(string file, string templateName, ResourceFileReader reader)
     {
         if (string.IsNullOrWhiteSpace(file) || file == "./")
         {

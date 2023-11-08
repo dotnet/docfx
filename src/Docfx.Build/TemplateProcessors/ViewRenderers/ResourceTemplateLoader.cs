@@ -10,9 +10,9 @@ internal sealed class ResourceTemplateLoader : IStubbleLoader
 {
     private const string PartialTemplateExtension = ".tmpl.partial";
     private readonly ConcurrentDictionary<string, string> _templateCache = new();
-    private readonly IResourceFileReader _reader;
+    private readonly ResourceFileReader _reader;
 
-    public ResourceTemplateLoader(IResourceFileReader reader)
+    public ResourceTemplateLoader(ResourceFileReader reader)
     {
         _reader = reader;
     }

@@ -56,13 +56,12 @@ class SingleDocumentBuilder : IDisposable
 
         // Start building document...
         List<HostService> hostServices = null;
-        IHostServiceCreator hostServiceCreator = null;
         try
         {
-            using var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
-                                          ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
+            var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
+                ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
 
-            hostServiceCreator = new HostServiceCreator(context);
+            var hostServiceCreator = new HostServiceCreator(context);
             hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
 
             templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
@@ -100,7 +99,7 @@ class SingleDocumentBuilder : IDisposable
         DocumentBuildParameters parameters,
         IEnumerable<IDocumentProcessor> processors,
         TemplateProcessor templateProcessor,
-        IHostServiceCreator creator,
+        HostServiceCreator creator,
         IMarkdownService markdownService)
     {
         var files = (from file in parameters.Files.EnumerateFiles().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)

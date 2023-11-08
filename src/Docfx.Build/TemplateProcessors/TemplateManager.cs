@@ -99,7 +99,7 @@ public class TemplateManager
 
         bool isEmpty = true;
 
-        using var templateResource = CreateTemplateResource(resourceNames);
+        var templateResource = CreateTemplateResource(resourceNames);
         if (templateResource.IsEmpty)
         {
             Logger.Log(LogLevel.Warning, $"No resource found for [{StringExtension.ToDelimitedString(resourceNames)}].");

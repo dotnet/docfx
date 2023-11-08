@@ -9,10 +9,10 @@ namespace Docfx.Build.Engine;
 
 public class RendererLoader
 {
-    private readonly IResourceFileReader _reader;
+    private readonly ResourceFileReader _reader;
     private readonly int _maxParallelism;
 
-    public RendererLoader(IResourceFileReader reader, int maxParallelism)
+    public RendererLoader(ResourceFileReader reader, int maxParallelism)
     {
         _reader = reader;
         _maxParallelism = maxParallelism;

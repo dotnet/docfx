@@ -5,6 +5,7 @@ namespace Docfx.Common;
 
 public sealed class LoggerFileScope : IDisposable
 {
+    private static readonly AsyncLocal<string> t_fileName = new();
     private readonly string _originFileName;
 
     public LoggerFileScope(string fileName)
@@ -22,13 +23,7 @@ public sealed class LoggerFileScope : IDisposable
         SetFileName(_originFileName);
     }
 
-    internal static string GetFileName()
-    {
-        return LogicalCallContext.GetData(nameof(LoggerFileScope)) as string;
-    }
+    internal static string GetFileName() => t_fileName.Value;
 
-    private static void SetFileName(string fileName)
-    {
-        LogicalCallContext.SetData(nameof(LoggerFileScope), fileName);
-    }
+    private static void SetFileName(string fileName) => t_fileName.Value = fileName;
 }

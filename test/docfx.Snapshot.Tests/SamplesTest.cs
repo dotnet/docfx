@@ -151,7 +151,7 @@ public class SamplesTest
         var browser = await playwright.Chromium.LaunchAsync();
         var htmlUrls = new ConcurrentDictionary<string, string>();
 
-        await s_viewports.ForEachInParallelAsync(async viewport =>
+        await Parallel.ForEachAsync(s_viewports, async (viewport, _) =>
         {
             var (width, height, theme, fullPage) = viewport;
             var isMobile = width < 500;

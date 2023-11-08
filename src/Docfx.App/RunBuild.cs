@@ -6,8 +6,6 @@ using Docfx.Plugins;
 
 namespace Docfx;
 
-#pragma warning disable CS0618 // Type or member is obsolete
-
 /// <summary>
 /// Helper class to build document.
 /// </summary>
@@ -20,7 +18,7 @@ internal static class RunBuild
     {
         if (config.Template == null || config.Template.Count == 0)
         {
-            config.Template = new ListWithStringFallback { Constants.DefaultTemplateName };
+            config.Template = new ListWithStringFallback { "default" };
         }
 
         var baseDirectory = Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory);

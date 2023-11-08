@@ -71,7 +71,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
 
     private Func<object, object> _getOptionsFunc;
 
-    public TemplateJintPreprocessor(IResourceFileReader resourceCollection, ResourceInfo scriptResource, DocumentBuildContext context, string name = null)
+    public TemplateJintPreprocessor(ResourceFileReader resourceCollection, ResourceInfo scriptResource, DocumentBuildContext context, string name = null)
     {
         if (!string.IsNullOrWhiteSpace(scriptResource.Content))
         {
@@ -112,7 +112,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
         return model;
     }
 
-    private Jint.Engine SetupEngine(IResourceFileReader resourceCollection, ResourceInfo scriptResource, DocumentBuildContext context)
+    private Jint.Engine SetupEngine(ResourceFileReader resourceCollection, ResourceInfo scriptResource, DocumentBuildContext context)
     {
         var rootPath = (RelativePath)scriptResource.Path;
         var engineCache = new Dictionary<string, Jint.Engine>();

@@ -8,7 +8,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
 
-public class TemplateProcessor : IDisposable
+public class TemplateProcessor
 {
     private readonly ResourceFileReader _resourceProvider;
     private readonly TemplateCollection _templateCollection;
@@ -199,10 +199,5 @@ public class TemplateProcessor : IDisposable
             _maxParallelism);
         return manifest.ToList();
 
-    }
-
-    public void Dispose()
-    {
-        _resourceProvider?.Dispose();
     }
 }

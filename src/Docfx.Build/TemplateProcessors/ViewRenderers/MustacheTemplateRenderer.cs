@@ -15,11 +15,11 @@ internal class MustacheTemplateRenderer : ITemplateRenderer
     private static readonly Regex MasterPageRegex = new(@"{{\s*!\s*master\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex MasterPageBodyRegex = new(@"{{\s*!\s*body\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    private readonly IResourceFileReader _reader;
+    private readonly ResourceFileReader _reader;
     private readonly IStubbleRenderer _renderer;
     private readonly string _template;
 
-    public MustacheTemplateRenderer(IResourceFileReader reader, ResourceInfo info, string name = null)
+    public MustacheTemplateRenderer(ResourceFileReader reader, ResourceInfo info, string name = null)
     {
         ArgumentNullException.ThrowIfNull(info);
         ArgumentNullException.ThrowIfNull(info.Content);

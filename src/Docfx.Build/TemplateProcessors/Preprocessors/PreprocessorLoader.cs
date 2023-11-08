@@ -9,11 +9,11 @@ namespace Docfx.Build.Engine;
 
 public class PreprocessorLoader
 {
-    private readonly IResourceFileReader _reader;
+    private readonly ResourceFileReader _reader;
     private readonly int _maxParallelism;
     private readonly DocumentBuildContext _context;
 
-    public PreprocessorLoader(IResourceFileReader reader, DocumentBuildContext context, int maxParallelism)
+    public PreprocessorLoader(ResourceFileReader reader, DocumentBuildContext context, int maxParallelism)
     {
         _reader = reader;
         _maxParallelism = maxParallelism;
