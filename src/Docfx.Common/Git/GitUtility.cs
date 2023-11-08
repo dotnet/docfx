@@ -42,7 +42,7 @@ public static class GitUtility
         {
             Repo = repo.url,
             Branch = repo.branch,
-            Path = Path.GetRelativePath(repo.path, filePath),
+            Path = Path.GetRelativePath(repo.path, filePath).Replace('\\', '/'),
         };
     }
 
