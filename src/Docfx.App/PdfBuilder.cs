@@ -74,6 +74,12 @@ static class PdfBuilder
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync();
         await using var context = await browser.NewContextAsync(new() { UserAgent = "docfx/pdf" });
+
+        if (Environment.GetEnvironmentVariable("DOCFX_PDF_TIMEOUT") is { } timeout)
+        {
+            context.SetDefaultTimeout(int.Parse(timeout));
+        }
+
         using var pageLimiter = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
         var pagePool = new ConcurrentBag<IPage>();
 
