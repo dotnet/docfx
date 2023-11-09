@@ -18,3 +18,7 @@ Used to override git branch name.
 
 Used to disable CRL check.
 This setting is intended to be used on offline environment.
+
+## `DOCFX_PDF_TIMEOUT`
+
+Maximum time in milliseconds to override the default [Playwright timeout](https://playwright.dev/docs/api/class-browsercontext#browser-context-set-default-timeout) for PDF generation.
