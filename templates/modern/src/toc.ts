@@ -3,7 +3,7 @@
 
 import { TemplateResult, html, render } from 'lit-html'
 import { classMap } from 'lit-html/directives/class-map.js'
-import { breakWordLit, meta, isExternalHref, loc } from './helper'
+import { breakWordLit, meta, isExternalHref, loc, isSameURL } from './helper'
 
 export type TocNode = {
   name: string
@@ -66,7 +66,7 @@ export async function renderToc(): Promise<TocNode[]> {
     if (node.href) {
       const url = new URL(node.href, tocUrl)
       node.href = url.href
-      active = isExternalHref(url) ? false : normalizeUrlPath(url) === normalizeUrlPath(window.location)
+      active = isExternalHref(url) ? false : isSameURL(url, window.location)
       if (active) {
         if (node.items) {
           node.expanded = true
@@ -155,10 +155,6 @@ export async function renderToc(): Promise<TocNode[]> {
 
   function renderDownloadPdf(): TemplateResult {
     return pdf ? html`<div class="py-2 mb-md-4"><a class="pdf-link" href="${new URL(pdfFileName || 'toc.pdf', tocUrl)}">${loc('downloadPdf')}</a></div>` : null
-  }
-
-  function normalizeUrlPath(url: { pathname: string }): string {
-    return url.pathname.replace(/\/index\.html$/gi, '/')
   }
 }
 
