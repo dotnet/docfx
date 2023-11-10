@@ -1,7 +1,9 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics;
 using Docfx.Build.Engine;
+using Docfx.Common;
 using Docfx.Plugins;
 
 namespace Docfx;
@@ -16,6 +18,7 @@ internal static class RunBuild
     /// </summary>
     public static string Exec(BuildJsonConfig config, BuildOptions options, string configDirectory, string outputDirectory = null)
     {
+        var stopwatch = Stopwatch.StartNew();
         if (config.Template == null || config.Template.Count == 0)
         {
             config.Template = new ListWithStringFallback { "default" };
@@ -42,6 +45,7 @@ internal static class RunBuild
             EnvironmentContext.Clean();
         }
 
+        Logger.LogVerbose($"Build done in {stopwatch.Elapsed}");
         return outputFolder;
     }
 }

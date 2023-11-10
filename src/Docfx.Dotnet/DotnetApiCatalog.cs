@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics;
 using System.Text.Json;
 using Docfx.Common;
 using Docfx.Exceptions;
@@ -54,6 +55,8 @@ public static partial class DotnetApiCatalog
 
     internal static async Task Exec(MetadataJsonConfig config, DotnetApiOptions options, string configDirectory, string outputDirectory = null)
     {
+        var stopwatch = Stopwatch.StartNew();
+
         EnsureMSBuildLocator();
 
         try
@@ -76,6 +79,8 @@ public static partial class DotnetApiCatalog
         {
             EnvironmentContext.Clean();
         }
+
+        Logger.LogVerbose($".NET API done in {stopwatch.Elapsed}");
 
         async Task Build(ExtractMetadataConfig config, DotnetApiOptions options)
         {

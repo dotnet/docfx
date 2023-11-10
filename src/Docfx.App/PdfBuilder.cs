@@ -2,9 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
 using Docfx.Build;
+using Docfx.Common;
 using Docfx.Plugins;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +53,7 @@ static class PdfBuilder
 
     public static async Task CreatePdf(string outputFolder)
     {
+        var stopwatch = Stopwatch.StartNew();
         var pdfTocs = GetPdfTocs().ToDictionary(p => p.url, p => p.toc);
         if (pdfTocs.Count == 0)
             return;
@@ -100,6 +103,8 @@ static class PdfBuilder
                 task.StopTask();
             });
         });
+
+        Logger.LogVerbose($"PDF done in {stopwatch.Elapsed}");
 
         IEnumerable<(string url, Outline toc)> GetPdfTocs()
         {
