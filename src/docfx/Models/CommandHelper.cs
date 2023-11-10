@@ -25,17 +25,18 @@ internal class CommandHelper
         var consoleLogListener = new ConsoleLogListener();
         Logger.RegisterListener(consoleLogListener);
 
-        var buildOption = options as BuildCommandOptions;
-        var root = Path.GetDirectoryName(buildOption?.ConfigFile ?? Directory.GetCurrentDirectory());
-
         if (!string.IsNullOrWhiteSpace(options.LogFilePath))
         {
-            Logger.RegisterListener(new ReportLogListener(options.LogFilePath, options.RepoRoot ?? string.Empty, root));
+            Logger.RegisterListener(new ReportLogListener(options.LogFilePath));
         }
 
         if (options.LogLevel.HasValue)
         {
             Logger.LogLevelThreshold = options.LogLevel.Value;
+        }
+        else if (options.Verbose)
+        {
+            Logger.LogLevelThreshold = LogLevel.Verbose;
         }
 
         Logger.WarningsAsErrors = options.WarningsAsErrors;
