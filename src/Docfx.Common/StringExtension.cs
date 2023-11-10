@@ -13,8 +13,7 @@ public static class StringExtension
 
     public static string BackSlashToForwardSlash(this string input)
     {
-        if (string.IsNullOrEmpty(input)) return null;
-        return input.Replace('\\', '/');
+        return input?.Replace('\\', '/');
     }
 
     public static string ToDelimitedString(this IEnumerable<string> input, string delimiter = ",")

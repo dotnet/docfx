@@ -14,8 +14,6 @@ namespace Docfx.Build.ConceptualDocuments;
 [Export(typeof(IDocumentProcessor))]
 class ConceptualDocumentProcessor : DisposableDocumentProcessor
 {
-    #region Fields
-
     private readonly string[] SystemKeys = {
         "conceptual",
         "type",
@@ -27,17 +25,9 @@ class ConceptualDocumentProcessor : DisposableDocumentProcessor
         "wordCount"
     };
 
-    #endregion
-
-    #region Constructors
-
     public ConceptualDocumentProcessor()
     {
     }
-
-    #endregion
-
-    #region IDocumentProcessor Members
 
     [ImportMany(nameof(ConceptualDocumentProcessor))]
     public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
@@ -121,6 +111,4 @@ class ConceptualDocumentProcessor : DisposableDocumentProcessor
 
         return result;
     }
-
-    #endregion
 }

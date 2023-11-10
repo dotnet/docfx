@@ -7,7 +7,6 @@ using System.Composition.Hosting;
 using System.Reflection;
 using Docfx.Build.SchemaDriven;
 using Docfx.Common;
-using Docfx.DataContracts.Common;
 using Docfx.MarkdigEngine;
 using Docfx.Plugins;
 using Newtonsoft.Json;
@@ -49,9 +48,6 @@ public class DocumentBuilder : IDisposable
             throw new ArgumentException("Parameters are empty.", nameof(parameters));
         }
 
-        var logCodesLogListener = new LogCodesLogListener();
-        Logger.RegisterListener(logCodesLogListener);
-
         var markdownService = CreateMarkdigMarkdownService(parameters[0]);
 
 #if NET7_0_OR_GREATER
@@ -67,128 +63,120 @@ public class DocumentBuilder : IDisposable
         // Load schema driven processor from template
         LoadSchemaDrivenDocumentProcessors(parameters[0]);
 
-        try
+        var manifests = new List<Manifest>();
+        if (parameters.All(p => p.Files.Count == 0))
         {
-            var manifests = new List<Manifest>();
-            if (parameters.All(p => p.Files.Count == 0))
+            Logger.LogSuggestion(
+                "No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
+                code: SuggestionCodes.Build.EmptyInputFiles);
+        }
+
+        var noContentFound = true;
+        var emptyContentGroups = new List<string>();
+        foreach (var parameter in parameters)
+        {
+            if (parameter.CustomLinkResolver != null)
             {
-                Logger.LogSuggestion(
-                    "No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
-                    code: SuggestionCodes.Build.EmptyInputFiles);
-            }
-
-            var noContentFound = true;
-            var emptyContentGroups = new List<string>();
-            foreach (var parameter in parameters)
-            {
-                if (parameter.CustomLinkResolver != null)
+                if (_container.TryGetExport(parameter.CustomLinkResolver, out ICustomHrefGenerator chg))
                 {
-                    if (_container.TryGetExport(parameter.CustomLinkResolver, out ICustomHrefGenerator chg))
-                    {
-                        parameter.ApplyTemplateSettings.HrefGenerator = chg;
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
-                    }
-                }
-                FileAbstractLayerBuilder falBuilder = FileAbstractLayerBuilder.Default
-                        .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                        .WriteToRealFileSystem(parameter.OutputBaseDir);
-
-                EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
-
-                if (parameter.Files.Count == 0)
-                {
-                    manifests.Add(new Manifest() { SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory) });
+                    parameter.ApplyTemplateSettings.HrefGenerator = chg;
                 }
                 else
                 {
-                    if (!parameter.Files.EnumerateFiles().Any(s => s.Type == DocumentType.Article))
-                    {
-                        if (!string.IsNullOrEmpty(parameter.GroupInfo?.Name))
-                        {
-                            emptyContentGroups.Add(parameter.GroupInfo.Name);
-                        }
-                    }
-                    else
-                    {
-                        noContentFound = false;
-                    }
-
-                    parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
-                    if (!string.IsNullOrEmpty(parameter.VersionName))
-                    {
-                        Logger.LogInfo($"Start building for version: {parameter.VersionName}");
-                    }
-
-                    using var builder = new SingleDocumentBuilder
-                    {
-                        MetadataValidators = MetadataValidators.ToList(),
-                        Processors = Processors,
-                    };
-                    manifests.Add(builder.Build(parameter, markdownService));
+                    Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
                 }
             }
-            if (noContentFound)
+            FileAbstractLayerBuilder falBuilder = FileAbstractLayerBuilder.Default
+                    .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                    .WriteToRealFileSystem(parameter.OutputBaseDir);
+
+            EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
+
+            if (parameter.Files.Count == 0)
             {
-                Logger.LogSuggestion(
-                    "No content file found. Please make sure the content section of docfx.json is correctly configured.",
-                    code: SuggestionCodes.Build.EmptyInputContents);
-            }
-            else if (emptyContentGroups.Count > 0)
-            {
-                Logger.LogSuggestion(
-                    $"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.",
-                    code: SuggestionCodes.Build.EmptyInputContents);
-            }
-
-            var generatedManifest = ManifestUtility.MergeManifest(manifests);
-            generatedManifest.Sitemap = parameters.FirstOrDefault()?.SitemapOptions;
-            ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-            ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
-
-            EnvironmentContext.FileAbstractLayerImpl =
-                FileAbstractLayerBuilder.Default
-                .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
-                .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
-                .Create();
-
-            _postProcessorsManager.Process(generatedManifest, outputDirectory);
-
-            if (parameters[0].KeepFileLink)
-            {
-                var count = (from f in generatedManifest.Files
-                             from o in f.Output
-                             select o.Value into v
-                             where v.LinkToPath != null
-                             select v).Count();
-                if (count > 0)
-                {
-                    Logger.LogInfo($"Skip dereferencing {count} files.");
-                }
+                manifests.Add(new Manifest() { SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory) });
             }
             else
             {
-                generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
+                if (!parameter.Files.EnumerateFiles().Any(s => s.Type == DocumentType.Article))
+                {
+                    if (!string.IsNullOrEmpty(parameter.GroupInfo?.Name))
+                    {
+                        emptyContentGroups.Add(parameter.GroupInfo.Name);
+                    }
+                }
+                else
+                {
+                    noContentFound = false;
+                }
+
+                parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
+                if (!string.IsNullOrEmpty(parameter.VersionName))
+                {
+                    Logger.LogInfo($"Start building for version: {parameter.VersionName}");
+                }
+
+                using var builder = new SingleDocumentBuilder
+                {
+                    MetadataValidators = MetadataValidators.ToList(),
+                    Processors = Processors,
+                };
+                manifests.Add(builder.Build(parameter, markdownService));
             }
-
-            // Save to manifest.json
-            EnvironmentContext.FileAbstractLayerImpl =
-                FileAbstractLayerBuilder.Default
-                .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
-                .WriteToRealFileSystem(parameters[0].OutputBaseDir)
-                .Create();
-
-            generatedManifest.Files.Sort((a, b) => (a.SourceRelativePath ?? "").CompareTo(b.SourceRelativePath ?? ""));
-            JsonUtility.Serialize("manifest.json", generatedManifest, Formatting.Indented);
-
-            EnvironmentContext.FileAbstractLayerImpl = null;
         }
-        finally
+        if (noContentFound)
         {
-            Logger.UnregisterListener(logCodesLogListener);
+            Logger.LogSuggestion(
+                "No content file found. Please make sure the content section of docfx.json is correctly configured.",
+                code: SuggestionCodes.Build.EmptyInputContents);
         }
+        else if (emptyContentGroups.Count > 0)
+        {
+            Logger.LogSuggestion(
+                $"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.",
+                code: SuggestionCodes.Build.EmptyInputContents);
+        }
+
+        var generatedManifest = ManifestUtility.MergeManifest(manifests);
+        generatedManifest.Sitemap = parameters.FirstOrDefault()?.SitemapOptions;
+        ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+
+        EnvironmentContext.FileAbstractLayerImpl =
+            FileAbstractLayerBuilder.Default
+            .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
+            .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
+            .Create();
+
+        _postProcessorsManager.Process(generatedManifest, outputDirectory);
+
+        if (parameters[0].KeepFileLink)
+        {
+            var count = (from f in generatedManifest.Files
+                         from o in f.Output
+                         select o.Value into v
+                         where v.LinkToPath != null
+                         select v).Count();
+            if (count > 0)
+            {
+                Logger.LogInfo($"Skip dereferencing {count} files.");
+            }
+        }
+        else
+        {
+            generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
+        }
+
+        // Save to manifest.json
+        EnvironmentContext.FileAbstractLayerImpl =
+            FileAbstractLayerBuilder.Default
+            .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
+            .WriteToRealFileSystem(parameters[0].OutputBaseDir)
+            .Create();
+
+        generatedManifest.Files.Sort((a, b) => (a.SourceRelativePath ?? "").CompareTo(b.SourceRelativePath ?? ""));
+        JsonUtility.Serialize("manifest.json", generatedManifest, Formatting.Indented);
+
+        EnvironmentContext.FileAbstractLayerImpl = null;
 
         List<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
         {
