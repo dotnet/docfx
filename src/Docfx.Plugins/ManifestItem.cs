@@ -28,16 +28,7 @@ public class ManifestItem
     [JsonPropertyName("group")]
     public string Group { get; set; }
 
-    [JsonProperty("log_codes")]
-    [JsonPropertyName("log_codes")]
-    public ICollection<string> LogCodes;
-
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
-
-    public ManifestItem Clone()
-    {
-        return (ManifestItem)MemberwiseClone();
-    }
 }

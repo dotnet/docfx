@@ -58,18 +58,4 @@ static class ManifestUtility
             Groups = manifestGroupInfos.Count > 0 ? manifestGroupInfos : null,
         };
     }
-
-    public static void ApplyLogCodes(List<ManifestItem> manifestItems, ConcurrentDictionary<string, ImmutableHashSet<string>> codes)
-    {
-        ArgumentNullException.ThrowIfNull(manifestItems);
-        ArgumentNullException.ThrowIfNull(codes);
-
-        foreach (var item in manifestItems)
-        {
-            if (codes.TryGetValue(item.SourceRelativePath, out var value))
-            {
-                item.LogCodes = value;
-            }
-        }
-    }
 }

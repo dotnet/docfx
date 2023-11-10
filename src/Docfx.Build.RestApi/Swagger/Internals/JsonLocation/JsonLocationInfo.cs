@@ -13,7 +13,7 @@ internal class JsonLocationInfo
 
     public JsonLocationInfo(string swaggerPath, string jsonLocation)
     {
-        FilePath = PathUtility.NormalizePath(swaggerPath);
+        FilePath = Path.GetFullPath(swaggerPath).Replace('\\', '/');
         JsonLocation = jsonLocation;
     }
 
