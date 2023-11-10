@@ -74,3 +74,17 @@ export function breakWordLit(text: string): TemplateResult {
 export function isExternalHref(url: URL): boolean {
   return url.hostname !== window.location.hostname || url.protocol !== window.location.protocol
 }
+
+/**
+ * Determines if two URLs should be considered the same.
+ */
+export function isSameURL(a: { pathname: string }, b: { pathname: string }): boolean {
+  return normalizeUrlPath(a) === normalizeUrlPath(b)
+
+  function normalizeUrlPath(url: { pathname: string }): string {
+    return url.pathname
+      .replace(/\/index\.html$/gi, '/')
+      .replace(/\.html$/gi, '')
+      .replace(/\/$/gi, '')
+  }
+}
