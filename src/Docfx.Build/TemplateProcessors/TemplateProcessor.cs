@@ -177,13 +177,11 @@ public class TemplateProcessor : IDisposable
                          && inputFileInfo.LastWriteTimeUtc == outputFileInfo.LastWriteTimeUtc; // File's LastWriteTimeUtc are identical.
         if (skipFileCopy)
         {
-            Logger.Log(LogLevel.Verbose, $"Skipped resource {filePath} that template dependants on to {outputFileInfo.FullName}");
             return;
         }
         else
         {
             File.Copy(inputFileInfo.FullName, outputFileInfo.FullName, isOverwrite); // Use `File.Copy` API to preserve LastWriteTime.
-            Logger.Log(LogLevel.Verbose, $"Saved resource {filePath} that template dependants on to {outputFileInfo.FullName}");
         }
     }
 
