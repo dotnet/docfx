@@ -194,11 +194,6 @@ internal static class DocumentBuilderWrapper
 
         var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
 
-        if (config.KeepFileLink)
-        {
-            parameters.KeepFileLink = true;
-        }
-
         foreach (var pair in fileMappingParametersDictionary)
         {
             var p = parameters.Clone();

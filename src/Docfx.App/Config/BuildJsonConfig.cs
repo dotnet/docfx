@@ -219,14 +219,6 @@ internal class BuildJsonConfig
     public Dictionary<string, GroupConfig> Groups { get; set; }
 
     /// <summary>
-    /// If set to true, docfx does not dereference (aka. copy) file to the output folder.
-    /// Instead, it saves a link_to_path property inside manifest.json to indicate the physical location of that file.
-    /// </summary>
-    [JsonProperty("keepFileLink")]
-    [JsonPropertyName("keepFileLink")]
-    public bool KeepFileLink { get; set; }
-
-    /// <summary>
     /// Specifies the options for the sitemap.xml file.
     /// </summary>
     [JsonProperty("sitemap")]
