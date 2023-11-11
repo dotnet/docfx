@@ -38,6 +38,9 @@ export type DocfxOptions = {
   /** A list of [lunr languages](https://github.com/MihaiValentin/lunr-languages#readme) such as fr, es for full text search */
   lunrLanguages?: string[],
 
+  /** Hooks to app start event */
+  start?: () => void,
+
   /** Configures [hightlight.js](https://highlightjs.org/) */
   configureHljs?: (hljs: HLJSApi) => void,
 }

@@ -14,7 +14,10 @@ export default {
     }
   ],
   lunrLanguages: ['en', 'ru'],
-  configureHljs: function (hljs) {
+  start() {
+    console.log('started');
+  },
+  configureHljs (hljs) {
     hljs.registerLanguage('bicep', bicep);
   },
 }
