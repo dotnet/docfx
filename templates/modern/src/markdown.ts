@@ -15,9 +15,9 @@ export async function renderMarkdown() {
   renderLinks()
   renderTabs()
   renderCodeCopy()
-  renderClickableImage()
 
   await Promise.all([
+    renderClickableImage(),
     renderMath(),
     renderMermaid()
   ])
@@ -94,7 +94,8 @@ function renderWordBreaks() {
  * Make images in articles clickable by wrapping the image in an anchor tag.
  * The image is clickable only if its size is larger than 200x200 and it is not already been wrapped in an anchor tag.
  */
-function renderClickableImage() {
+async function renderClickableImage() {
+  const { showLightbox } = await options()
   const MIN_CLICKABLE_IMAGE_SIZE = 200
   const imageLinks = Array.from(document.querySelectorAll<HTMLImageElement>('article a img[src]'))
 
@@ -119,6 +120,10 @@ function renderClickableImage() {
     }
 
     function shouldMakeClickable(): boolean {
+      if (showLightbox) {
+        return showLightbox(img)
+      }
+
       return img.naturalWidth > MIN_CLICKABLE_IMAGE_SIZE &&
         img.naturalHeight > MIN_CLICKABLE_IMAGE_SIZE &&
         !imageLinks.includes(img)

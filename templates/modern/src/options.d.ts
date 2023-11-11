@@ -43,4 +43,7 @@ export type DocfxOptions = {
 
   /** Configures [hightlight.js](https://highlightjs.org/) */
   configureHljs?: (hljs: HLJSApi) => void,
+
+  /** Specifies if an image should show as lightbox when clicked. */
+  showLightbox?: (image: HTMLImageElement) => boolean,
 }
