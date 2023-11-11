@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 import 'bootstrap'
+import { options } from './helper'
 import { highlight } from './highlight'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
@@ -24,6 +25,9 @@ declare global {
 
 async function init() {
   window.docfx = window.docfx || {}
+
+  const { start } = await options()
+  start?.()
 
   const pdfmode = navigator.userAgent.indexOf('docfx/pdf') >= 0
   if (pdfmode) {
