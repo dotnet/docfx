@@ -97,10 +97,6 @@ internal class BuildCommandOptions : LogOptions
     [TypeConverter(typeof(ArrayOptionConverter))]
     public IEnumerable<string> PostProcessors { get; set; }
 
-    [Description("If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a link_to_path property inside manifest.json to indicate the physical location of that file.")]
-    [CommandOption("--keepFileLink")]
-    public bool KeepFileLink { get; set; }
-
     [Description("Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
     [CommandOption("--disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }

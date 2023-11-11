@@ -88,7 +88,6 @@ internal class BuildCommand : Command<BuildCommandOptions>
 
         SetGlobalMetadataFromCommandLineArgs();
 
-        config.KeepFileLink |= options.KeepFileLink;
         config.DisableGitFeatures |= options.DisableGitFeatures;
 
         void SetGlobalMetadataFromCommandLineArgs()

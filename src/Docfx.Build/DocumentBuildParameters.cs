@@ -43,8 +43,6 @@ public class DocumentBuildParameters
 
     public string CustomLinkResolver { get; set; }
 
-    public bool KeepFileLink { get; set; }
-
     public SitemapOptions SitemapOptions { get; set; }
 
     public bool DisableGitFeatures { get; set; }

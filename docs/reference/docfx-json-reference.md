@@ -185,10 +185,6 @@ Sets the max parallelism. Setting 0 (default) is the same as setting to the coun
 
 Sets the parameters for the markdown engine, value is a JSON object.
 
-### `keepFileLink`
-
-If set to true, docfx does not dereference (i.e., copy) the file to the output folder, instead, it saves a `link_to_path` property inside `manifest.json` to indicate the physical location of that file. A file link will be created by incremental build and copy resource file.
-
 ### `sitemap`
 
 Specifies the options for generating [sitemap.xml](https://www.sitemaps.org/protocol.html) file:

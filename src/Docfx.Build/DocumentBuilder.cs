@@ -149,22 +149,7 @@ public class DocumentBuilder : IDisposable
 
         _postProcessorsManager.Process(generatedManifest, outputDirectory);
 
-        if (parameters[0].KeepFileLink)
-        {
-            var count = (from f in generatedManifest.Files
-                         from o in f.Output
-                         select o.Value into v
-                         where v.LinkToPath != null
-                         select v).Count();
-            if (count > 0)
-            {
-                Logger.LogInfo($"Skip dereferencing {count} files.");
-            }
-        }
-        else
-        {
-            generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
-        }
+        generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
 
         // Save to manifest.json
         EnvironmentContext.FileAbstractLayerImpl =

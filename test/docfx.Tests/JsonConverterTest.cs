@@ -32,7 +32,6 @@ public class JsonConverterTest
                     "}" +
                 "}" +
             "}," +
-            "\"keepFileLink\":false," +
             "\"disableGitFeatures\":false" +
         "}";
 
