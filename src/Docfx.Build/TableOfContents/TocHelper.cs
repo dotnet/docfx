@@ -15,11 +15,10 @@ static class TocHelper
         YamlDeserializerWithFallback.Create<TocViewModel>()
         .WithFallback<TocRootViewModel>();
 
-    public static (List<FileModel> tocModels, HashSet<string> includedTocs) ResolveToc(ImmutableList<FileModel> models, IHostService host)
+    public static List<FileModel> ResolveToc(ImmutableList<FileModel> models, IHostService host)
     {
         var tocCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         var nonReferencedTocModels = new List<FileModel>();
-        var referencedToc = new HashSet<string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         foreach (var model in models)
         {
@@ -40,13 +39,9 @@ static class TocHelper
                 model.Content = tocItemInfo.Content;
                 nonReferencedTocModels.Add(model);
             }
-            else
-            {
-                referencedToc.Add(model.Key);
-            }
         }
 
-        return (nonReferencedTocModels, referencedToc);
+        return nonReferencedTocModels;
     }
 
     public static TocItemViewModel LoadSingleToc(string file)
