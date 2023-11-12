@@ -782,7 +782,7 @@ items:
         // Assert
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
         Assert.True(File.Exists(outputRawModelPath));
-        var model = JsonUtility.Deserialize<TocRootViewModel>(outputRawModelPath);
+        var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         Assert.Single(model.Items); // empty node is removed
     }
 

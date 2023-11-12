@@ -28,6 +28,16 @@ The YAML document is a tree of TOC nodes, each of which has these properties:
 - `uid`: The uid of the article. Can be used instead of `href`.
 - `expanded`: Expand children on load, only works if the template is `modern`.
 
+When an article is referenced by a TOC through `href`, the corresponding TOC appears when viewing that article. If multiple TOCs reference the same article, or the article isn't referenced by any TOC, the nearest TOC with the least amount of directory jumps is picked.
+
+The `order` property in the TOC allows customizating this pick logic, TOCs with a smaller order value are picked first.
+
+```yml
+order: 100
+items:
+- ...
+```
+
 ## Nested TOCs
 
 To nest a TOC within another TOC, set the `href` property to point to the `toc.yml` file that you want to nest. You can also use this structure as a way to reuse a TOC structure in one or more TOC files.
@@ -62,6 +72,8 @@ Reference
 ├─ System.String
 ├─ System.Float
 ```
+
+Nested TOCs by default have `order` set to `100` to let containing TOCs take precedence.
 
 ## Reference TOCs
 
