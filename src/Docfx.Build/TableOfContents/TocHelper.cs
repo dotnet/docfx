@@ -82,7 +82,7 @@ static class TocHelper
         }
         catch (Exception e)
         {
-            var message = $"{file} is not a valid TOC File: {e.Message}";
+            var message = $"{file} is not a valid TOC File: {e}";
             Logger.LogError(message, code: ErrorCodes.Toc.InvalidTocFile);
             throw new DocumentException(message, e);
         }
