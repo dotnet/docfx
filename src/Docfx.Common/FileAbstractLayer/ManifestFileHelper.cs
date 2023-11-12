@@ -25,15 +25,8 @@ public static class ManifestFileHelper
             new ParallelOptions { MaxDegreeOfParallelism = parallelism },
             ofi =>
             {
-                try
-                {
-                    fal.Copy(ofi.RelativePath, ofi.RelativePath);
-                    ofi.LinkToPath = null;
-                }
-                catch (PathTooLongException ex)
-                {
-                    Logger.LogError($"Unable to dereference file '{ofi.RelativePath}': {ex.Message}", file: ofi.RelativePath);
-                }
+                fal.Copy(ofi.RelativePath, ofi.RelativePath);
+                ofi.LinkToPath = null;
             });
     }
 }

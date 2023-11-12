@@ -89,77 +89,70 @@ public class TemplateModelTransformer
             {
                 continue;
             }
+
+            var extension = template.Extension;
+            string outputFile = item.FileWithoutExtension + extension;
+            object viewModel = null;
             try
             {
-                var extension = template.Extension;
-                string outputFile = item.FileWithoutExtension + extension;
-                object viewModel = null;
-                try
-                {
-                    viewModel = template.TransformModel(model);
-                }
-                catch (Exception e)
-                {
-                    string message;
-                    if (_settings.DebugMode)
-                    {
-                        // save raw model for further investigation:
-                        var rawModelPath = ExportModel(model, item.FileWithoutExtension, _settings.RawModelExportSettingsForDebug);
-                        message = $"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\". {e.Message}";
-                    }
-                    else
-                    {
-                        message = $"Error transforming model generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\". To get the detailed raw model, please run docfx with debug mode --debug. {e.Message} ";
-                    }
-
-                    Logger.LogError(message, code: ErrorCodes.Template.ApplyTemplatePreprocessorError);
-                    throw new DocumentException(message, e);
-                }
-
-                string result;
-                try
-                {
-                    result = template.Transform(viewModel);
-                }
-                catch (Exception e)
-                {
-                    string message;
-                    if (_settings.DebugMode)
-                    {
-                        // save view model for further investigation:
-                        var viewModelPath = ExportModel(viewModel, outputFile, _settings.ViewModelExportSettingsForDebug);
-                        message = $"Error applying template \"{template.Name}\" to view model \"{viewModelPath}\" generated from \"{item.LocalPathFromRoot}\". {e.Message}";
-                    }
-                    else
-                    {
-                        message = $"Error applying template \"{template.Name}\" generated from \"{item.LocalPathFromRoot}\". To get the detailed view model, please run docfx with debug mode --debug. {e.Message}";
-                    }
-
-                    Logger.LogError(message, code: ErrorCodes.Template.ApplyTemplateRendererError);
-                    throw new DocumentException(message, e);
-                }
-
-                if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportViewModel))
-                {
-                    ExportModel(viewModel, outputFile, _settings.ViewModelExportSettings);
-                }
-
-                if (_settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
-                {
-                    if (string.IsNullOrWhiteSpace(result) && _settings.DebugMode)
-                    {
-                        ExportModel(viewModel, outputFile, _settings.ViewModelExportSettingsForDebug);
-                    }
-
-                    TransformDocument(result ?? string.Empty, extension, _context, outputFile, manifestItem, out List<XRefDetails> invalidXRefs);
-                    unresolvedXRefs.AddRange(invalidXRefs);
-                    Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputFile}\".");
-                }
+                viewModel = template.TransformModel(model);
             }
-            catch (PathTooLongException e)
+            catch (Exception e)
             {
-                var message = $"Error processing {item.LocalPathFromRoot}: {e.Message}";
-                throw new PathTooLongException(message, e);
+                string message;
+                if (_settings.DebugMode)
+                {
+                    // save raw model for further investigation:
+                    var rawModelPath = ExportModel(model, item.FileWithoutExtension, _settings.RawModelExportSettingsForDebug);
+                    message = $"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\". {e.Message}";
+                }
+                else
+                {
+                    message = $"Error transforming model generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\". To get the detailed raw model, please run docfx with debug mode --debug. {e.Message} ";
+                }
+
+                Logger.LogError(message, code: ErrorCodes.Template.ApplyTemplatePreprocessorError);
+                throw new DocumentException(message, e);
+            }
+
+            string result;
+            try
+            {
+                result = template.Transform(viewModel);
+            }
+            catch (Exception e)
+            {
+                string message;
+                if (_settings.DebugMode)
+                {
+                    // save view model for further investigation:
+                    var viewModelPath = ExportModel(viewModel, outputFile, _settings.ViewModelExportSettingsForDebug);
+                    message = $"Error applying template \"{template.Name}\" to view model \"{viewModelPath}\" generated from \"{item.LocalPathFromRoot}\". {e.Message}";
+                }
+                else
+                {
+                    message = $"Error applying template \"{template.Name}\" generated from \"{item.LocalPathFromRoot}\". To get the detailed view model, please run docfx with debug mode --debug. {e.Message}";
+                }
+
+                Logger.LogError(message, code: ErrorCodes.Template.ApplyTemplateRendererError);
+                throw new DocumentException(message, e);
+            }
+
+            if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportViewModel))
+            {
+                ExportModel(viewModel, outputFile, _settings.ViewModelExportSettings);
+            }
+
+            if (_settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+            {
+                if (string.IsNullOrWhiteSpace(result) && _settings.DebugMode)
+                {
+                    ExportModel(viewModel, outputFile, _settings.ViewModelExportSettingsForDebug);
+                }
+
+                TransformDocument(result ?? string.Empty, extension, _context, outputFile, manifestItem, out List<XRefDetails> invalidXRefs);
+                unresolvedXRefs.AddRange(invalidXRefs);
+                Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputFile}\".");
             }
         }
 
