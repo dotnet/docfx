@@ -30,7 +30,7 @@ The YAML document is a tree of TOC nodes, each of which has these properties:
 
 When an article is referenced by a TOC through `href`, the corresponding TOC appears when viewing that article. If multiple TOCs reference the same article, or the article isn't referenced by any TOC, the nearest TOC with the least amount of directory jumps is picked.
 
-The `order` property in the TOC allows customizating this pick logic, TOCs with a smaller order value are picked first.
+The `order` property can customize this pick logic, TOCs with a smaller order value are picked first. The default order is 0.
 
 ```yml
 order: 100
