@@ -11,7 +11,7 @@ namespace Docfx.Build.Engine;
 internal sealed class SystemMetadataGenerator
 {
     private readonly IDocumentBuildContext _context;
-    private readonly IEnumerable<FileInfo> _toc;
+    private readonly Dictionary<string, FileInfo> _toc;
 
     public SystemMetadataGenerator(IDocumentBuildContext context)
     {
@@ -21,9 +21,10 @@ internal sealed class SystemMetadataGenerator
 
         // Order toc files by the output folder depth
         _toc = context.GetTocInfo()
-            .Select(s => new FileInfo(s.TocFileKey, context.GetFilePath(s.TocFileKey)))
+            .Select(s => new FileInfo(s.Order, s.TocFileKey, context.GetFilePath(s.TocFileKey)))
             .Where(s => s.RelativePath != null)
-            .OrderBy(s => s.RelativePath.SubdirectoryCount);
+            .OrderBy(s => s.RelativePath.SubdirectoryCount)
+            .ToDictionary(s => s.Key);
     }
 
     public SystemMetadata Generate(InternalManifestItem item)
@@ -68,7 +69,7 @@ internal sealed class SystemMetadataGenerator
         // 2. The algorithm of toc current article belongs to:
         //    a. If toc can be found in TocMap, return that toc
         //    b. Elsewise, get the nearest toc, **nearest** means nearest toc in **OUTPUT** folder
-        var parentTocFiles = _context.GetTocFileKeySet(key)?.Select(s => new FileInfo(s, _context.GetFilePath(s)));
+        var parentTocFiles = _context.GetTocFileKeySet(key)?.Select(s => _toc[s]);
         var parentToc = GetNearestToc(parentTocFiles, file) ?? GetDefaultToc(key);
 
         if (parentToc != null)
@@ -90,7 +91,7 @@ internal sealed class SystemMetadataGenerator
 
     private void GetRootTocFromOutputRoot(SystemMetadata attrs, RelativePath file)
     {
-        var rootToc = _toc.FirstOrDefault();
+        var rootToc = _toc.Values.FirstOrDefault();
         if (rootToc != null)
         {
             var rootTocPath = rootToc.RelativePath.RemoveWorkingFolder();
@@ -116,11 +117,13 @@ internal sealed class SystemMetadataGenerator
 
         // MakeRelativeTo calculates how to get file "s" from "outputPath"
         // The standard for being the toc of current file is: Relative directory is empty or ".."s only
-        var parentTocs = _toc
+        var parentTocs = _toc.Values
             .Select(s => new { rel = s.RelativePath.MakeRelativeTo(outputPath), info = s })
             .Where(s => s.rel.SubdirectoryCount == 0)
-            .OrderBy(s => s.rel.ParentDirectoryCount)
+            .OrderBy(s => s.info.Order)
+            .ThenBy(s => s.rel.ParentDirectoryCount)
             .Select(s => s.info);
+
         return parentTocs.FirstOrDefault();
     }
 
@@ -139,9 +142,8 @@ internal sealed class SystemMetadataGenerator
         return (from toc in tocFiles
                 where toc.RelativePath != null
                 let relativePath = toc.RelativePath.RemoveWorkingFolder() - file
-                orderby relativePath.SubdirectoryCount, relativePath.ParentDirectoryCount, toc.FilePath, toc.Key
-                select toc)
-            .FirstOrDefault();
+                orderby toc.Order, relativePath.SubdirectoryCount, relativePath.ParentDirectoryCount, toc.FilePath, toc.Key
+                select toc).FirstOrDefault();
     }
 
     private static string GetFileKey(string key)
@@ -150,16 +152,19 @@ internal sealed class SystemMetadataGenerator
         return RelativePath.NormalizedWorkingFolder + key;
     }
 
-    private sealed class FileInfo
+    class FileInfo
     {
-        public string Key { get; set; }
+        public int Order { get; }
 
-        public string FilePath { get; set; }
+        public string Key { get; }
 
-        public RelativePath RelativePath { get; set; }
+        public string FilePath { get; }
 
-        public FileInfo(string key, string filePath)
+        public RelativePath RelativePath { get; }
+
+        public FileInfo(int order, string key, string filePath)
         {
+            Order = order;
             Key = key;
             FilePath = filePath;
             RelativePath = (RelativePath)filePath;

@@ -48,6 +48,17 @@ In case the TOC file is auto-generated, use [file metadata](./config.md#metadata
 }
 ```
 
+You can create a single PDF file using a dedicated PDF TOC containing all articles with [Nested TOCs](./table-of-contents.md#nested-tocs) and set `order` to a bigger value to prevent the PDF TOC from appearing on the website.
+
+```yaml
+order: 200
+items:
+- name: Section 1
+  href: section-1/toc.yml
+- name: Section 2
+  href: section-2/toc.yml
+```
+
 ## PDF Metadata
 
 These metadata applies to TOC files that controls behaviors of PDF generation.
@@ -84,7 +95,7 @@ To preview PDF rendering result, print the HTML page in the web browser, or set 
 
 The site template adds a default margin and removes background graphics for pages in print mode. Use `@page { margin: 0 }` to remove the default margin and use `print-color-adjust: exact` to keep background graphics for cover pages.
 
-See [this example](https://raw.githubusercontent.com/dotnet/docfx/main/samples/seed/pdf.md) on a PDF cover page that fills the whole page with background graphics:
+See [this example](https://raw.githubusercontent.com/dotnet/docfx/main/samples/seed/pdf/cover.md) on a PDF cover page that fills the whole page with background graphics:
 
 ![Alt text](./media/pdf-cover-page.png)
 

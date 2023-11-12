@@ -186,18 +186,7 @@ public class TocDocumentProcessor : DisposableDocumentProcessor
         // Add current folder to the toc mapping, e.g. `a/` maps to `a/toc`
         var directory = ((RelativePath)key).GetPathFromWorkingFolder().GetDirectoryPath();
         context.RegisterToc(key, directory);
-
-        var tocInfo = new TocInfo(key);
-        if (toc.Homepage != null)
-        {
-            if (PathUtility.IsRelativePath(toc.Homepage))
-            {
-                var pathToRoot = ((RelativePath)model.File + (RelativePath)HttpUtility.UrlDecode(toc.Homepage)).GetPathFromWorkingFolder();
-                tocInfo.Homepage = pathToRoot;
-            }
-        }
-
-        context.RegisterTocInfo(tocInfo);
+        context.RegisterTocInfo(new() { TocFileKey = key, Order = toc.Order ?? 0 });
     }
 
     private void RegisterTocMapToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context)

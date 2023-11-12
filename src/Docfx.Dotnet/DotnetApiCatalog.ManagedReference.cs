@@ -53,7 +53,7 @@ partial class DotnetApiCatalog
             // generate toc.yml
             model.TocYamlViewModel.Type = MemberType.Toc;
 
-            var tocViewModel = new TocRootViewModel
+            var tocViewModel = new TocItemViewModel
             {
                 Metadata = new() { ["memberLayout"] = config.MemberLayout },
                 Items = model.TocYamlViewModel.ToTocViewModel(),

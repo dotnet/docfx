@@ -3,17 +3,17 @@
   "type": "Conceptual",
   "source": {
     "remote": {
-      "path": "samples/seed/pdf.md",
+      "path": "samples/seed/pdf/cover.md",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "startLine": 0.0,
     "endLine": 0.0
   },
-  "path": "pdf.md",
+  "path": "pdf/cover.md",
   "documentation": {
     "remote": {
-      "path": "samples/seed/pdf.md",
+      "path": "samples/seed/pdf/cover.md",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
@@ -28,15 +28,15 @@
   "rawTitle": "",
   "title": "DOCFX PDF SAMPLE",
   "wordCount": 3.0,
-  "_key": "pdf.md",
+  "_key": "pdf/cover.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
-  "_navRel": "toc.html",
-  "_path": "pdf.html",
-  "_rel": "",
+  "_navRel": "../toc.html",
+  "_path": "pdf/cover.html",
+  "_rel": "../",
   "_tocKey": "~/toc.yml",
   "_tocPath": "toc.html",
-  "_tocRel": "toc.html",
+  "_tocRel": "../toc.html",
   "_disableToc": true,
-  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/pdf.md/#L1"
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/pdf/cover.md/#L1"
 }
