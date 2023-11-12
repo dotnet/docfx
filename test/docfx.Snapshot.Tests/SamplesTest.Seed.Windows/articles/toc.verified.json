@@ -1,4 +1,5 @@
 ﻿{
+  "order": 100,
   "items": [
     {
       "name": "Getting Started",
@@ -36,7 +37,7 @@
     }
   ],
   "pdfFileName": "seed.pdf",
-  "pdfCoverPage": "pdf.html",
+  "pdfCoverPage": "pdf/cover.html",
   "pdf": true,
   "pdfTocPage": true
 }

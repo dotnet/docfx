@@ -13,7 +13,7 @@
     // Run `docfx build` command.
     "docfx build": {
       "commandName": "Project",
-      "commandLineArgs": "build ../../samples/seed/docfx.json",
+      "commandLineArgs": "build ../../samples/seed/docfx.json --serve",
       "workingDirectory": ".",
       "environmentVariables": {
       }

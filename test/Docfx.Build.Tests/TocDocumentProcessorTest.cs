@@ -529,9 +529,9 @@ items:
 
         AssertTocEqual(expectedModel, model);
 
-        // Referenced TOC File should not exist
+        // Referenced TOC File should exist
         var referencedTocPath = Path.Combine(_outputFolder, Path.ChangeExtension(sub1tocmd, RawModelFileExtension));
-        Assert.False(File.Exists(referencedTocPath));
+        Assert.True(File.Exists(referencedTocPath));
     }
 
     [Fact]
@@ -761,7 +761,7 @@ items:
       href: x2.md";
         var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
         var ex = Assert.Throws<DocumentException>(() => TocHelper.LoadSingleToc(toc));
-        Assert.Equal("toc.yml is not a valid TOC File: toc.yml is not a valid TOC file, detail: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): While scanning a plain scalar value, found invalid mapping..", ex.Message);
+        Assert.Equal("toc.yml is not a valid TOC File: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): While scanning a plain scalar value, found invalid mapping.", ex.Message);
     }
 
     [Fact]
@@ -782,7 +782,7 @@ items:
         // Assert
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
         Assert.True(File.Exists(outputRawModelPath));
-        var model = JsonUtility.Deserialize<TocRootViewModel>(outputRawModelPath);
+        var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         Assert.Single(model.Items); // empty node is removed
     }
 

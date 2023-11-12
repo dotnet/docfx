@@ -5,11 +5,7 @@ namespace Docfx.Plugins;
 
 public class TocInfo
 {
-    public string TocFileKey { get; }
-    public string Homepage { get; set; }
+    public string TocFileKey { get; init; }
 
-    public TocInfo(string tocFileKey)
-    {
-        TocFileKey = tocFileKey;
-    }
+    public int Order { get; init; }
 }

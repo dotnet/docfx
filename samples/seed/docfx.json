@@ -66,10 +66,10 @@
   "build": {
     "content": [
       { "files": [ "**/*.yml" ], "src": "obj/api", "dest": "api" },
-      { "files": [ "**/*.yml" ], "src": "obj/apipage", "dest": "apipage" },
       { "files": [ "**" ], "src": "obj/md", "dest": "md" },
       { "files": [ "**" ], "src": "obj/apipage", "dest": "apipage" },
-      { "files": [ "articles/**/*.{md,yml}", "*.md", "toc.yml", "restapi/**", "md/**", "md2/**" ] }
+      { "files": [ "articles/**/*.{md,yml}", "*.md", "toc.yml", "restapi/**" ] },
+      { "files": [ "pdf/**" ] }
     ],
     "resource": [
       {
