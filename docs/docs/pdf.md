@@ -52,6 +52,7 @@ You can create a single PDF file using a dedicated PDF TOC containing all articl
 
 ```yaml
 order: 200
+items:
 - name: Section 1
   href: section-1/toc.yml
 - name: Section 2
