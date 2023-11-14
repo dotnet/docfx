@@ -14,9 +14,7 @@ jobs:
     - uses: actions/setup-dotnet@v3
       with:
         dotnet-version: |
-          6.x
-          7.x
-          8.0.100-rc.2.23502.2
+          8.x
 
     - run: npm install
       working-directory: templates
@@ -60,14 +58,14 @@ jobs:
     steps:
     - uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.x
+        dotnet-version: 8.x
 
     - uses: actions/download-artifact@v3
       with:
         name: nuget
         path: drop/nuget
 
-    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23356.1
+    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23530.1
 
     - run: >
         ./sign code azure-key-vault
@@ -94,7 +92,7 @@ jobs:
     steps:
     - uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.x
+        dotnet-version: 8.x
 
     - uses: actions/download-artifact@v3
       with:
