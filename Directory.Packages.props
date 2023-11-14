@@ -39,7 +39,7 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.3.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23503-02" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23531-01" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.37.1" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.1" />
     <PackageVersion Include="Verify.Xunit" Version="22.1.1" />
