@@ -189,8 +189,8 @@ public class MarkdigMarkdownService : IMarkdownService
 
     private static void ReportDependency(RelativePath filePathToDocset, string parentFileDirectoryToDocset)
     {
-        var expectedPhysicalPath = EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(filePathToDocset);
-        foreach (var physicalPath in expectedPhysicalPath)
+        var physicalPath = EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(filePathToDocset);
+        if (physicalPath is not null)
         {
             var fallbackFileRelativePath = PathUtility.MakeRelativePath(parentFileDirectoryToDocset, physicalPath);
             InclusionContext.PushDependency((RelativePath)fallbackFileRelativePath);

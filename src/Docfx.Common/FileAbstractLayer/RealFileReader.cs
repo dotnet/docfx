@@ -1,20 +1,16 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Immutable;
-
 namespace Docfx.Common;
 
 public class RealFileReader : IFileReader
 {
+    private readonly string _inputFolder;
     private readonly string _expandedInputFolder;
 
-    public RealFileReader(string inputFolder, ImmutableDictionary<string, string> properties)
+    public RealFileReader(string inputFolder)
     {
         ArgumentNullException.ThrowIfNull(inputFolder);
-        ArgumentNullException.ThrowIfNull(properties);
-
-        Properties = properties;
 
         _expandedInputFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(inputFolder));
         if (!Directory.Exists(_expandedInputFolder))
@@ -27,14 +23,8 @@ public class RealFileReader : IFileReader
         {
             inputFolder += "/";
         }
-        InputFolder = inputFolder;
+        _inputFolder = inputFolder;
     }
-
-    public string InputFolder { get; }
-
-    public ImmutableDictionary<string, string> Properties { get; }
-
-    #region IFileReader Members
 
     public PathMapping? FindFile(RelativePath file)
     {
@@ -43,7 +33,7 @@ public class RealFileReader : IFileReader
         {
             return null;
         }
-        return new PathMapping(file, Path.Combine(InputFolder, file.RemoveWorkingFolder())) { Properties = Properties };
+        return new PathMapping(file, Path.Combine(_inputFolder, file.RemoveWorkingFolder()));
     }
 
     public IEnumerable<RelativePath> EnumerateFiles()
@@ -53,8 +43,6 @@ public class RealFileReader : IFileReader
                select ((RelativePath)f.Substring(length)).GetPathFromWorkingFolder();
     }
 
-    public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
-        new[] { Path.Combine(InputFolder, file.RemoveWorkingFolder().ToString()) };
-
-    #endregion
+    public string GetExpectedPhysicalPath(RelativePath file) =>
+        Path.Combine(_inputFolder, file.RemoveWorkingFolder().ToString());
 }

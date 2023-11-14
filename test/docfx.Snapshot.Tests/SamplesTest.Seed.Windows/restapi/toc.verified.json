@@ -1,0 +1,17 @@
+﻿{
+  "order": 100,
+  "items": [
+    {
+      "name": "Pet Store API",
+      "href": "petstore.html",
+      "topicHref": "petstore.html"
+    },
+    {
+      "name": "Contacts API",
+      "href": "contacts.html",
+      "topicHref": "contacts.html"
+    }
+  ],
+  "pdf": true,
+  "pdfTocPage": true
+}

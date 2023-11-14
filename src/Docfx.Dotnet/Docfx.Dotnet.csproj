@@ -4,10 +4,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="../Docfx.Build/ApiPage/ApiPage.cs" />
+    <Compile Include="../Docfx.Build/ApiPage/ApiPageMarkdownTemplate.cs" />
+    <Compile Include="../Docfx.Build/OneOfJsonConverterFactory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="docfx" />
     <InternalsVisibleTo Include="docfx.Tests" />
     <InternalsVisibleTo Include="Docfx.App" />
     <InternalsVisibleTo Include="Docfx.Dotnet.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsAssemblyName Include="Microsoft.CodeAnalysis.Workspaces" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,7 +31,8 @@
   <ItemGroup>
     <PackageReference Include="ICSharpCode.Decompiler" />
     <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" />
+    <PackageReference Include="OneOf" />
+    <PackageReference Include="OneOf.SourceGenerator" />
     <PackageReference Include="Markdig" />
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" />
@@ -33,10 +44,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <InternalsAssemblyName Include="Microsoft.CodeAnalysis.Workspaces" />
   </ItemGroup>
 
 </Project>

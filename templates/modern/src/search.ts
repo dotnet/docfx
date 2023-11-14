@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-import { loc, meta } from './helper'
+import { loc, meta, options } from './helper'
 import { html, render, TemplateResult } from 'lit-html'
 import { classMap } from 'lit-html/directives/class-map.js'
 
@@ -16,7 +16,7 @@ let query
 /**
  * Support full-text-search
  */
-export function enableSearch() {
+export async function enableSearch() {
   const searchQuery = document.getElementById('search-query') as HTMLInputElement
   if (!searchQuery || !window.Worker) {
     return
@@ -46,6 +46,9 @@ export function enableSearch() {
         break
     }
   }
+
+  const { lunrLanguages } = await options()
+  worker.postMessage({ init: { lunrLanguages } })
 
   function onSearchQueryInput() {
     query = searchQuery.value
@@ -100,7 +103,7 @@ export function enableSearch() {
       const curHits = hits.slice(start, start + numPerPage)
 
       const items = html`
-        <div class="search-list">${loc('searchResultsCount', { count: hits.length, query })}</div>
+        <div class="search-list">${loc('searchResultsCount', { count: hits.length.toString(), query })}</div>
         <div class="sr-items">${curHits.map(hit => {
           const currentUrl = window.location.href
           const itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href)

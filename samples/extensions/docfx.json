@@ -37,7 +37,6 @@
       "modern"
     ],
     "postProcessors": [],
-    "keepFileLink": false,
     "disableGitFeatures": false,
     "exportViewModel": true
   }

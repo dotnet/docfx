@@ -41,21 +41,30 @@ jobs:
     - uses: codecov/codecov-action@v3
       if: matrix.os == 'ubuntu-latest'
 
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- docs/docfx.json
+    - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
+      if: matrix.os == 'ubuntu-latest'
 
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- metadata samples/seed/docfx.json
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- metadata samples/seed/docfx.json --outputFormat markdown --output samples/seed/md
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- metadata samples/seed/docfx.json --outputFormat markdown --output samples/seed/md2 --namespaceLayout nested --memberLayout separatePages
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- build samples/seed/docfx.json --output docs/_site/seed
+    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- docs/docfx.json
+    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
 
     - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'
       with:
         name: site
         path: docs/_site
+  
+    - uses: actions/upload-artifact@v3
+      if: ${{ failure() && matrix.os == 'ubuntu-latest' }}
+      with:
+        name: dump
+        path: /tmp/coredump*
 
   snapshot:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
     permissions:
       contents: write
     steps:
@@ -72,10 +81,10 @@ jobs:
         SNAPSHOT_TEST: true
         BUILD_SERVER: ${{ github.event_name != 'pull_request' }}
 
-    - uses: stefanzweifel/git-auto-commit-action@v4
+    - uses: stefanzweifel/git-auto-commit-action@v5
       if: github.event_name == 'pull_request'
       with:
-        commit_message: 'test(snapshot): update snapshots for ${{ github.sha }}'
+        commit_message: 'test(snapshot): update snapshots ${{ github.sha }} for ${{ matrix.os }}'
 
   publish-docs:
     if: github.ref == 'refs/heads/main'

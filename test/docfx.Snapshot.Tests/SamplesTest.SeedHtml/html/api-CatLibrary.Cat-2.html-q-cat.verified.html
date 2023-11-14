@@ -27,6 +27,7 @@
       <meta name="loc:themeAuto" content="Auto">
       <meta name="loc:changeTheme" content="Change theme">
       <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
   <script type="module" src="./../public/docfx.min.js"></script><script>
     const theme = localStorage.getItem('theme') || 'auto'
     document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
@@ -60,7 +61,7 @@
               <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="nav-link dropdown-toggle active">
                 API Documentation
               </a>
-              <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/md/BuildFromAssembly.html">.NET API (markdown)</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
+              <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/md/BuildFromAssembly.html">.NET API (markdown)</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/apipage/BuildFromAssembly.html">.NET API (apipage)</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
             </li></ul> 
       <form class="icons">
         <a class="btn border-0" href="https://github.com/dotnet/docfx" title="GitHub"><i class="bi bi-github"></i></a><a class="btn border-0" href="https://twitter.com/" title="Twitter"><i class="bi bi-twitter"></i></a>
@@ -69,7 +70,7 @@
       <a class="btn border-0 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Change theme">
         <i class="bi bi-circle-half"></i>
       </a>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" href="#"><i class="bi bi-sun"></i> Light</a></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-moon"></i> Dark</a></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-circle-half"></i> Auto</a></li>
@@ -90,11 +91,13 @@
           </div>
           <div class="offcanvas-body">
             <nav class="toc" id="toc">
+      
       <form class="filter">
         <i class="bi bi-filter"></i>
         <input class="form-control" type="search" autocomplete="off" value="" placeholder="Filter by title" aria-label="Filter by title">
-      </form> <ul>
-        <li class="  ">
+      </form> 
+      <div class="flex-fill overflow-y-auto"><ul>
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromAssembly.html">Build<wbr>From<wbr>Assembly</a>
           <ul>
@@ -104,7 +107,7 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromCSharpSourceCode.html">Build<wbr>From<wbr>CSharp<wbr>Source<wbr>Code</a>
           <ul>
@@ -114,15 +117,15 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.html">Build<wbr>From<wbr>Project</a>
           <ul>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.html">Issue8540</a>
           <ul>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.A.html">A</a>
           <ul>
@@ -132,7 +135,7 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.B.html">B</a>
           <ul>
@@ -166,6 +169,11 @@
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue8948.html">Class1.<wbr>Issue8948</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue9260.html">Class1.<wbr>Issue9260</a>
           
         </li>
         <li class="  ">
@@ -219,7 +227,7 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromVBSourceCode.html">Build<wbr>From<wbr>VBSource<wbr>Code</a>
           <ul>
@@ -234,11 +242,11 @@
           
         </li></ul>
         </li>
-        <li class=" expanded active ">
+        <li class=" expander expanded active ">
           <span class="expand-stub"></span>
           <a class="  " href="http://localhost:8089/api/CatLibrary.html">Cat<wbr>Library</a>
           <ul>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.html">Core</a>
           <ul>
@@ -334,7 +342,7 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/MRef.Demo.Enumeration.html">MRef.<wbr>Demo.<wbr>Enumeration</a>
           <ul>
@@ -343,7 +351,8 @@
           <a class=" nav-link " href="http://localhost:8089/api/MRef.Demo.Enumeration.ColorType.html">Color<wbr>Type</a>
           
         </li></ul>
-        </li></ul></nav>
+        </li></ul></div>
+      <div class="py-2 mb-md-4"><a class="pdf-link" href="http://localhost:8089/api/toc.pdf">Download PDF</a></div></nav>
           </div>
         </div>
       </div>
@@ -390,7 +399,8 @@ This is a CAT class</p>
 </div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">Serializable</span>]
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">Serializable</span>]
+[<span class="hljs-meta">Obsolete</span>]
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span>&lt;<span class="hljs-title">T</span>, <span class="hljs-title">K</span>&gt; : <span class="hljs-title">ICat</span>, <span class="hljs-title">IAnimal</span> <span class="hljs-keyword">where</span> <span class="hljs-title">T</span> : <span class="hljs-keyword">class</span>, <span class="hljs-title">new</span>() <span class="hljs-keyword">where</span> <span class="hljs-title">K</span> : <span class="hljs-title">struct</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
@@ -460,7 +470,7 @@ This is a CAT class</p>
 
   <h2 id="CatLibrary_Cat_2_examples">Examples<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_examples" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
   <p>Here's example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
-<pre><code class="lang-c# hljs language-c">var a = new Cat(object, <span class="hljs-type">int</span>)();
+<pre><code class="lang-c# hljs language-c" data-highlighted="yes">var a = new Cat(object, <span class="hljs-type">int</span>)();
 <span class="hljs-type">int</span> catNumber = new <span class="hljs-type">int</span>();
 unsafe
 {
@@ -481,7 +491,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2__ctor" data-uid="CatLibrary.Cat`2.#ctor">
   Cat()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L123"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Default constructor.</p>
@@ -489,7 +499,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -508,7 +518,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" data-uid="CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)">
   Cat(string, out int, string, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L138"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>It's a complex constructor. The parameter will have some attributes.</p>
@@ -516,7 +526,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> nickName, <span class="hljs-keyword">out</span> <span class="hljs-built_in">int</span> age, <span class="hljs-built_in">string</span> realName, <span class="hljs-built_in">bool</span> isHealthy</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> nickName, <span class="hljs-keyword">out</span> <span class="hljs-built_in">int</span> age, <span class="hljs-built_in">string</span> realName, <span class="hljs-built_in">bool</span> isHealthy</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -550,7 +560,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2__ctor__0_" data-uid="CatLibrary.Cat`2.#ctor(`0)">
   Cat(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L129"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor__0_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Constructor with one generic parameter.</p>
@@ -558,7 +568,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params">T ownType</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params">T ownType</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-1">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-1" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -585,7 +595,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_isHealthy" data-uid="CatLibrary.Cat`2.isHealthy">
   isHealthy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L235"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_isHealthy" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Field with attribute.</p>
@@ -593,8 +603,9 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">ContextStatic</span>]
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">ContextStatic</span>]
 [<span class="hljs-meta">NonSerialized</span>]
+[<span class="hljs-meta">Obsolete</span>]
 <span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> isHealthy</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
@@ -622,7 +633,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_Age" data-uid="CatLibrary.Cat`2.Age">
   Age
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L213"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L214"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Age" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Hint cat's age.</p>
@@ -630,7 +641,8 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">protected</span> <span class="hljs-built_in">int</span> Age { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">Obsolete</span>]
+<span class="hljs-keyword">protected</span> <span class="hljs-built_in">int</span> Age { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -654,7 +666,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_Item_System_String_" data-uid="CatLibrary.Cat`2.Item(System.String)">
   this[string]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L205"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Item_System_String_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>This is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.</p>
@@ -662,7 +674,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">this</span>[<span class="hljs-built_in">string</span> a] { <span class="hljs-keyword">protected</span> <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">this</span>[<span class="hljs-built_in">string</span> a] { <span class="hljs-keyword">protected</span> <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-2">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-2" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -693,7 +705,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_Name" data-uid="CatLibrary.Cat`2.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L255"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L259"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Name" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>EII property.</p>
@@ -701,7 +713,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name { <span class="hljs-keyword">get</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name { <span class="hljs-keyword">get</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -728,7 +740,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_CalculateFood_System_DateTime_" data-uid="CatLibrary.Cat`2.CalculateFood(System.DateTime)">
   Override CalculateFood Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L145"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L146"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>It's an overridden summary in <code>markdown</code> format</p>
@@ -738,7 +750,7 @@ unsafe
 </div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> Dictionary&lt;<span class="hljs-built_in">string</span>, List&lt;<span class="hljs-built_in">int</span>&gt;&gt; CalculateFood(DateTime date)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> Dictionary&lt;<span class="hljs-built_in">string</span>, List&lt;<span class="hljs-built_in">int</span>&gt;&gt; CalculateFood(DateTime date)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-3">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-3" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -775,7 +787,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_Equals_System_Object_" data-uid="CatLibrary.Cat`2.Equals(System.Object)">
   Equals(object)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L166"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Equals_System_Object_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Override the method of <code>Object.Equals(object obj).</code></p>
@@ -783,7 +795,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">Equals</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> obj</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">Equals</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> obj</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-4">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-4" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -814,7 +826,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___" data-uid="CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])">
   GetTailLength(int*, params object[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L175"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>It's an <code>unsafe</code> method.
@@ -823,7 +835,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">long</span> <span class="hljs-title">GetTailLength</span>(<span class="hljs-params"><span class="hljs-built_in">int</span>* catName, <span class="hljs-keyword">params</span> <span class="hljs-built_in">object</span>[] parameters</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">long</span> <span class="hljs-title">GetTailLength</span>(<span class="hljs-params"><span class="hljs-built_in">int</span>* catName, <span class="hljs-keyword">params</span> <span class="hljs-built_in">object</span>[] parameters</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-5">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-5" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -857,7 +869,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_Jump__0__1_System_Boolean__" data-uid="CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)">
   Jump(T, K, ref bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L155"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>This method have attribute above it.</p>
@@ -865,7 +877,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">Conditional(<span class="hljs-string">"Debug"</span>)</span>]
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">Conditional(<span class="hljs-string">"Debug"</span>)</span>]
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Jump</span>(<span class="hljs-params">T ownType, K anotherOwnType, <span class="hljs-keyword">ref</span> <span class="hljs-built_in">bool</span> cheat</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
@@ -905,7 +917,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_ownEat" data-uid="CatLibrary.Cat`2.ownEat">
   ownEat
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L226"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_ownEat" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Eat event of this cat</p>
@@ -913,7 +925,8 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> EventHandler ownEat</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">Obsolete(<span class="hljs-string">"This _event handler_ is deprecated."</span>)</span>]
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> EventHandler ownEat</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -940,7 +953,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_" data-uid="CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)">
   operator +(Cat&lt;T, K&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L184"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Addition operator of this class.</p>
@@ -948,7 +961,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> +(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> +(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-7">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-7" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -982,7 +995,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom" data-uid="CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom">
   explicit operator Tom(Cat&lt;T, K&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L197"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Expilicit operator of this class.</p>
@@ -991,7 +1004,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">explicit</span> <span class="hljs-keyword">operator</span> <span class="hljs-title">Tom</span>(<span class="hljs-params">Cat&lt;T, K&gt; src</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">explicit</span> <span class="hljs-keyword">operator</span> <span class="hljs-title">Tom</span>(<span class="hljs-params">Cat&lt;T, K&gt; src</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-8">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-8" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -1022,7 +1035,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_" data-uid="CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)">
   operator -(Cat&lt;T, K&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L189"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Similar with operaotr +, refer to that topic.</p>
@@ -1030,7 +1043,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> -(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> -(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-9">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-9" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -1070,13 +1083,13 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
       <div class="affix">
         <nav id="affix">
       <h5 class="border-bottom">In this article</h5>
-      <ul><li><h6>Constructors</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor">Cat()</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_">Cat(string,<wbr> out int,<wbr> string,<wbr> bool)</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor__0_">Cat(T)</a></li><li><h6>Fields</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_isHealthy">is<wbr>Healthy</a></li><li><h6>Properties</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Age">Age</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Item_System_String_">this[string]</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Name">Name</a></li><li><h6>Methods</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_">Override Calculate<wbr>Food Name</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Equals_System_Object_">Equals(object)</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___">Get<wbr>Tail<wbr>Length(int*, params object[])</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__">Jump(T,<wbr> K,<wbr> ref bool)</a></li><li><h6>Events</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_ownEat">own<wbr>Eat</a></li><li><h6>Operators</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_">operator +(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int)</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom">explicit operator Tom(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>)</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_">operator -(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int)</a></li></ul></nav>
+      <ul><li><a class="link-body-emphasis" href="#CatLibrary_Cat_2_examples">Examples</a></li><li><a class="link-body-emphasis" href="#CatLibrary_Cat_2_remarks">Remarks</a></li><li><a class="link-body-emphasis" href="#constructors">Constructors</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor">Cat() </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_">Cat(string,<wbr> out int,<wbr> string,<wbr> bool) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor__0_">Cat(T) </a></li><li><a class="link-body-emphasis" href="#fields">Fields</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_isHealthy">is<wbr>Healthy </a></li><li><a class="link-body-emphasis" href="#properties">Properties</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Age">Age </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Item_System_String_">this[string] </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Name">Name </a></li><li><a class="link-body-emphasis" href="#methods">Methods</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_">Override Calculate<wbr>Food Name </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Equals_System_Object_">Equals(object) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___">Get<wbr>Tail<wbr>Length(int*, params object[]) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__">Jump(T,<wbr> K,<wbr> ref bool) </a></li><li><a class="link-body-emphasis" href="#events">Events</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_ownEat">own<wbr>Eat </a></li><li><a class="link-body-emphasis" href="#operators">Operators</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_">operator +(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom">explicit operator Tom(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_">operator -(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int) </a></li></ul></nav>
       </div>
     </main>
 
     <div class="container-xxl search-results" id="search-results"></div>
 
-    <footer class="border-top">
+    <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
           <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>

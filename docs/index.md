@@ -19,13 +19,13 @@ dotnet tool update -g docfx
 To create a new docset, run:
 
 ```bash
-docfx init --quiet
+docfx init
 ```
 
-This command creates a new docset under the `docfx_project` directory. To build the docset, run: 
+This command walks you through creating a new docfx project under the current working directory. To build the docset, run: 
 
 ```bash
-docfx docfx_project/docfx.json --serve
+docfx docfx.json --serve
 ```
 
 Now you can preview the website on <http://localhost:8080>.
@@ -33,7 +33,7 @@ Now you can preview the website on <http://localhost:8080>.
 To preview your local changes, save changes then run this command in a new terminal to rebuild the website:
 
 ```bash
-docfx docfx_project/docfx.json
+docfx docfx.json
 ```
 
 ## Publish to GitHub Pages

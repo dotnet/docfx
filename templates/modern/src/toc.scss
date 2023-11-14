@@ -8,6 +8,9 @@ $expand-stub-width: .85rem;
 .toc {
   min-width: 0;
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
   ul {
     font-size: 14px;
@@ -72,7 +75,7 @@ $expand-stub-width: .85rem;
     display: flex;
     position: relative;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
 
     >i.bi {
       position: absolute;
@@ -88,5 +91,16 @@ $expand-stub-width: .85rem;
   >.no-result {
     font-size: .9em;
     color: $secondary;
+  }
+  
+  a.pdf-link {
+    @include underline-on-hover;
+
+    &::before {
+      content: "\F756";
+      display: inline-block;
+
+      @include adjust-icon;
+    }
   }
 }

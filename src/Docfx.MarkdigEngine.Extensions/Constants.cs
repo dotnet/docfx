@@ -3,7 +3,7 @@
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public static class Constants
+internal static class Constants
 {
     public static readonly string FencedCodePrefix = "lang-";
 

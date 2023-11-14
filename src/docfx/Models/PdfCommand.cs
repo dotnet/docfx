@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
-using Newtonsoft.Json;
+using Docfx.Pdf;
 using Spectre.Console.Cli;
 
 namespace Docfx;
@@ -13,9 +13,16 @@ internal class PdfCommand : Command<PdfCommandOptions>
     {
         return CommandHelper.Run(options, () =>
         {
-            var (config, baseDirectory) = CommandHelper.GetConfig<PdfConfig>(options.ConfigFile);
-            MergeOptionsToConfig(options, config.Item, baseDirectory);
-            RunPdf.Exec(config.Item, new(), baseDirectory, options.OutputFolder);
+            var (config, configDirectory) = Docset.GetConfig(options.ConfigFile);
+
+            if (config.build is not null)
+                PdfBuilder.Run(config.build, configDirectory, options.OutputFolder).GetAwaiter().GetResult();
+
+            if (config.pdf is not null)
+            {
+                MergeOptionsToConfig(options, config.pdf, configDirectory);
+                RunPdf.Exec(config.pdf, new(), configDirectory, options.OutputFolder);
+            }
         });
     }
 
@@ -92,11 +99,5 @@ internal class PdfCommand : Command<PdfCommandOptions>
         {
             config.Wkhtmltopdf.FilePath = Path.Combine(Environment.CurrentDirectory, options.FilePath);
         }
-    }
-
-    private sealed class PdfConfig
-    {
-        [JsonProperty("pdf")]
-        public PdfJsonConfig Item { get; set; }
     }
 }

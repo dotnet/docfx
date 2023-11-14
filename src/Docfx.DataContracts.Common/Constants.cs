@@ -119,14 +119,12 @@ public static class Constants
 #pragma warning disable format
         public const string DOCFX_KEEP_DEBUG_INFO                      = nameof(DOCFX_KEEP_DEBUG_INFO);
         public const string DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST = nameof(DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST);
-        public const string DOCFX_GIT_TIMEOUT                          = nameof(DOCFX_GIT_TIMEOUT);
         public const string DOCFX_SOURCE_BRANCH_NAME                   = nameof(DOCFX_SOURCE_BRANCH_NAME);
 #pragma warning restore format
 
 #pragma warning disable format
         public static string? KeepDebugInfo                         => GetValue(DOCFX_KEEP_DEBUG_INFO);
         public static bool NoCheckCertificateRevocationList         => GetBooleanValue(DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST);
-        public static string? GitTimeout                            => GetValue(DOCFX_GIT_TIMEOUT);
         public static string? SourceBranchName                      => GetValue(DOCFX_SOURCE_BRANCH_NAME);
 #pragma warning restore format
 

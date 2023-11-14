@@ -29,6 +29,10 @@ blockquote {
 }
 
 /* Alerts */
+.alert {
+  break-inside: avoid;
+}
+
 .alert h5 {
   text-transform: uppercase;
   font-weight: bold;
@@ -37,6 +41,10 @@ blockquote {
   &::before {
     @include adjust-icon;
   }
+}
+
+.alert:not(:has(h5))>p:last-child {
+  margin-block-end: 0;
 }
 
 .alert-info h5::before {

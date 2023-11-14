@@ -8,8 +8,6 @@ namespace Docfx.Plugins;
 
 public sealed class FileModel
 {
-    private ImmutableArray<UidDefinition> _uids = ImmutableArray<UidDefinition>.Empty;
-
     public FileModel(FileAndType ft, object content, FileAndType original = null)
         : this(ft, content, original, null)
     {
@@ -43,32 +41,24 @@ public sealed class FileModel
 
     public string BaseDir
     {
-        get
-        {
-            return FileAndType.BaseDir;
-        }
+        get => FileAndType.BaseDir;
         set
         {
             if (value != BaseDir)
             {
                 FileAndType = FileAndType.ChangeBaseDir(value);
-                OnFileOrBaseDirChanged();
             }
         }
     }
 
     public string File
     {
-        get
-        {
-            return FileAndType.File;
-        }
+        get => FileAndType.File;
         set
         {
             if (value != File)
             {
                 FileAndType = FileAndType.ChangeFile(value);
-                OnFileOrBaseDirChanged();
             }
         }
     }
@@ -95,28 +85,5 @@ public sealed class FileModel
 
     public string DocumentType { get; set; }
 
-    public ImmutableArray<UidDefinition> Uids
-    {
-        get { return _uids; }
-        set
-        {
-            var original = _uids;
-            _uids = value;
-            OnUidsChanged(nameof(Uids), original, value);
-        }
-    }
-
-    public event EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> UidsChanged;
-
-    public event EventHandler FileOrBaseDirChanged;
-
-    private void OnUidsChanged(string propertyName, ImmutableArray<UidDefinition> original, ImmutableArray<UidDefinition> current)
-    {
-        UidsChanged?.Invoke(this, new PropertyChangedEventArgs<ImmutableArray<UidDefinition>>(propertyName, original, current));
-    }
-
-    private void OnFileOrBaseDirChanged()
-    {
-        FileOrBaseDirChanged?.Invoke(this, EventArgs.Empty);
-    }
+    public ImmutableArray<UidDefinition> Uids { get; set; } = ImmutableArray<UidDefinition>.Empty;
 }

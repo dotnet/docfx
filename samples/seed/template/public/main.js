@@ -13,7 +13,12 @@ export default {
       title: 'Twitter'
     }
   ],
-  configureHljs: function (hljs) {
+  lunrLanguages: ['en', 'ru'],
+  start() {
+    console.log('started');
+  },
+  configureHljs (hljs) {
     hljs.registerLanguage('bicep', bicep);
   },
 }
+

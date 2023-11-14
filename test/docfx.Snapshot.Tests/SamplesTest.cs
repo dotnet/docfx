@@ -8,11 +8,16 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Docfx.Common;
 using Docfx.Dotnet;
 using ImageMagick;
 using Microsoft.Playwright;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Actions;
+using UglyToad.PdfPig.Annotations;
+using UglyToad.PdfPig.Outline;
 
 namespace Docfx.Tests;
 
@@ -52,7 +57,7 @@ public class SamplesTest
 
     static SamplesTest()
     {
-        Microsoft.Playwright.Program.Main(new[] { "install" });
+        Microsoft.Playwright.Program.Main(new[] { "install", "chromium" });
         Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
     }
 
@@ -65,22 +70,66 @@ public class SamplesTest
         if (Debugger.IsAttached)
         {
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-            Assert.Equal(0, Program.Main(new[] { "metadata", $"{samplePath}/docfx.json" }));
-            Assert.Equal(0, Program.Main(new[] { "build", $"{samplePath}/docfx.json" }));
+            Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json" }));
         }
         else
         {
             var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-            Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
-            Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
+            Assert.Equal(0, Exec(docfxPath, $"{samplePath}/docfx.json"));
         }
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+        Parallel.ForEach(Directory.EnumerateFiles($"{samplePath}/_site", "*.pdf", SearchOption.AllDirectories), PdfToJson);
+
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
+
+        void PdfToJson(string path)
+        {
+            using var document = PdfDocument.Open(path);
+
+            var pdf = new
+            {
+                document.NumberOfPages,
+                Pages = document.GetPages().Select(p => new
+                {
+                    p.Number,
+                    p.NumberOfImages,
+                    p.Text,
+                    Links = p.ExperimentalAccess.GetAnnotations().Select(ToLink).ToArray(),
+                }).ToArray(),
+                Bookmarks = document.TryGetBookmarks(out var bookmarks) ? ToBookmarks(bookmarks.Roots) : null,
+            };
+
+            var json = JsonSerializer.Serialize(pdf, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+            });
+
+            File.WriteAllText(Path.ChangeExtension(path, ".pdf.json"), json);
+
+            object ToLink(Annotation a) => a.Action switch
+            {
+                GoToAction g => new { Goto = g.Destination },
+                UriAction u => new { u.Uri },
+            };
+
+            object ToBookmarks(IEnumerable<BookmarkNode> nodes)
+            {
+                return nodes.Select(node => node switch
+                {
+                    DocumentBookmarkNode d => (object)new { node.Title, Children = ToBookmarks(node.Children), d.Destination },
+                    UriBookmarkNode d => new { node.Title, Children = ToBookmarks(node.Children), d.Uri },
+                }).ToArray();
+            }
+        }
     }
 
     [SnapshotFact]
     public async Task SeedHtml()
     {
+        if (!OperatingSystem.IsLinux())
+            return;
+
         var samplePath = $"{s_samplesDir}/seed";
         Clean(samplePath);
 
@@ -102,7 +151,7 @@ public class SamplesTest
         var browser = await playwright.Chromium.LaunchAsync();
         var htmlUrls = new ConcurrentDictionary<string, string>();
 
-        await s_viewports.ForEachInParallelAsync(async viewport =>
+        await Parallel.ForEachAsync(s_viewports, async (viewport, _) =>
         {
             var (width, height, theme, fullPage) = viewport;
             var isMobile = width < 500;
@@ -151,7 +200,7 @@ public class SamplesTest
                 var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
                 await
                     Verify(new Target("png", new MemoryStream(bytes)))
-                    .UseStreamComparer((received, verified, _) => CompareImage(received, verified, directory, fileName))
+                    .UseStreamComparer((received, verified, _) => CompareImage(received, verified, fileName))
                     .UseDirectory(directory)
                     .UseFileName(fileName)
                     .AutoVerify(includeBuildServer: false);
@@ -160,7 +209,7 @@ public class SamplesTest
             await page.CloseAsync();
         });
 
-        static Task<CompareResult> CompareImage(Stream received, Stream verified, string directory, string fileName)
+        static Task<CompareResult> CompareImage(Stream received, Stream verified, string fileName)
         {
             using var receivedImage = new MagickImage(received);
             using var verifiedImage = new MagickImage(verified);
@@ -176,11 +225,14 @@ public class SamplesTest
 
         static string NormalizeHtml(string html)
         {
-            return Regex.Replace(html, "<!--.*?-->", "");
+            html = Regex.Replace(html, "<!--.*?-->", "");
+            html = Regex.Replace(html, @"mermaid-\d+", "");
+            html = Regex.Replace(html, @"flowchart-\w+-\d", "");
+            return html;
         }
     }
 
-    [Fact]
+    [SnapshotFact]
     public async Task SeedMarkdown()
     {
         var samplePath = $"{s_samplesDir}/seed";
@@ -189,7 +241,7 @@ public class SamplesTest
 
         Program.Main(new[] { "metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath });
 
-        await VerifyDirectory(outputPath, IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory(outputPath, IncludeFile, fileScrubber: ScrubFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
     }
 
     [SnapshotFact]
@@ -210,7 +262,7 @@ public class SamplesTest
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
         }
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
     }
 
     [SnapshotFact]
@@ -225,7 +277,7 @@ public class SamplesTest
         Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
-        return VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        return VerifyDirectory($"{samplePath}/_site", IncludeFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
     }
 
     private static int Exec(string filename, string args, string workingDirectory = null)
@@ -260,7 +312,7 @@ public class SamplesTest
 
     private void ScrubFile(string path, StringBuilder builder)
     {
-        if (Path.GetExtension(path) is ".json" && JsonNode.Parse(builder.ToString()) is JsonObject obj)
+        if (Path.GetExtension(path) == ".json" && JsonNode.Parse(builder.ToString()) is JsonObject obj)
         {
             obj.Remove("__global");
             obj.Remove("_systemKeys");

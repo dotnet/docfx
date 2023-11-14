@@ -111,10 +111,6 @@ span.languagekeyword{
     font-weight: bold;
 }
 
-svg:hover path {
-    fill: #ffffff;
-}
-
 .hljs {
   display: inline;
   background-color: inherit;
@@ -1036,4 +1032,10 @@ div.embeddedvideo iframe {
 #fields, #properties, #methods, #events {
     font-weight: bold;
     margin-top: 2em;
+}
+
+@media print {
+  @page {
+    margin: .4in;
+  }
 }

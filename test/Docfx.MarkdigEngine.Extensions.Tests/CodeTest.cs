@@ -7,7 +7,6 @@ namespace Docfx.MarkdigEngine.Tests;
 
 public class CodeTest
 {
-    public static string LoggerPhase = "Code";
     public static string contentCSharp = @"using System;
 using System.Windows;
 using System.Windows.Controls;

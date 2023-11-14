@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Docfx.Common.Git;
 using Newtonsoft.Json;
 using YamlDotNet.Serialization;
@@ -11,14 +12,12 @@ public class SourceDetail
 {
     [YamlMember(Alias = "remote")]
     [JsonProperty("remote")]
+    [JsonPropertyName("remote")]
     public GitDetail Remote { get; set; }
-
-    [YamlMember(Alias = "base")]
-    [JsonProperty("base")]
-    public string BasePath { get; set; }
 
     [YamlMember(Alias = "id")]
     [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public string Name { get; set; }
 
     /// <summary>
@@ -26,6 +25,7 @@ public class SourceDetail
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Href)]
     [JsonProperty(Constants.PropertyName.Href)]
+    [JsonPropertyName(Constants.PropertyName.Href)]
     public string Href { get; set; }
 
     /// <summary>
@@ -33,24 +33,16 @@ public class SourceDetail
     /// </summary>
     [YamlMember(Alias = "path")]
     [JsonProperty("path")]
+    [JsonPropertyName("path")]
     public string Path { get; set; }
 
     [YamlMember(Alias = "startLine")]
     [JsonProperty("startLine")]
+    [JsonPropertyName("startLine")]
     public int StartLine { get; set; }
 
     [YamlMember(Alias = "endLine")]
     [JsonProperty("endLine")]
+    [JsonPropertyName("endLine")]
     public int EndLine { get; set; }
-
-    [YamlMember(Alias = "content")]
-    [JsonProperty("content")]
-    public string Content { get; set; }
-
-    /// <summary>
-    /// The external path for current source if it is not locally available
-    /// </summary>
-    [YamlMember(Alias = "isExternal")]
-    [JsonProperty("isExternal")]
-    public bool IsExternalPath { get; set; }
 }

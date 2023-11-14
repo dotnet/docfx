@@ -7,19 +7,6 @@ namespace Docfx;
 
 internal class CommandHelper
 {
-    public static (T, string baseDirectory) GetConfig<T>(string configFile)
-    {
-        if (string.IsNullOrEmpty(configFile))
-            configFile = DataContracts.Common.Constants.ConfigFileName;
-
-        configFile = Path.GetFullPath(configFile);
-
-        if (!File.Exists(configFile))
-            throw new FileNotFoundException($"Cannot find config file {configFile}");
-
-        return (JsonUtility.Deserialize<T>(configFile), Path.GetDirectoryName(configFile));
-    }
-
     public static int Run(Action run)
     {
         var consoleLogListener = new ConsoleLogListener();
@@ -38,22 +25,21 @@ internal class CommandHelper
         var consoleLogListener = new ConsoleLogListener();
         Logger.RegisterListener(consoleLogListener);
 
-        var buildOption = options as BuildCommandOptions;
-        var root = Path.GetDirectoryName(buildOption?.ConfigFile ?? Directory.GetCurrentDirectory());
-
         if (!string.IsNullOrWhiteSpace(options.LogFilePath))
         {
-            Logger.RegisterListener(new ReportLogListener(options.LogFilePath, options.RepoRoot ?? string.Empty, root));
+            Logger.RegisterListener(new ReportLogListener(options.LogFilePath));
         }
 
         if (options.LogLevel.HasValue)
         {
             Logger.LogLevelThreshold = options.LogLevel.Value;
         }
+        else if (options.Verbose)
+        {
+            Logger.LogLevelThreshold = LogLevel.Verbose;
+        }
 
         Logger.WarningsAsErrors = options.WarningsAsErrors;
-
-        using var _ = new PerformanceScope(string.Empty, LogLevel.Info);
 
         run();
 

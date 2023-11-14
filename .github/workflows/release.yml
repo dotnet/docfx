@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: 18
     - uses: actions/setup-dotnet@v3
@@ -16,7 +16,7 @@ jobs:
         dotnet-version: |
           6.x
           7.x
-          8.0.100-rc.1.23455.8
+          8.0.100-rc.2.23502.2
 
     - run: npm install
       working-directory: templates
@@ -32,9 +32,9 @@ jobs:
 
     - name: dotnet publish
       run: |
-        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
-        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64
-        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
+        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64 /p:PlaywrightPlatform=win
+        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64 /p:PlaywrightPlatform=linux
+        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64 /p:PlaywrightPlatform=osx
         mkdir -p drop/bin
 
     - run: zip -r ../../bin/docfx-win-x64-${GITHUB_REF_NAME}.zip .

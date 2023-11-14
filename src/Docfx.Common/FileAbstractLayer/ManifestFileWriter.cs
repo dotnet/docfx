@@ -8,10 +8,9 @@ namespace Docfx.Common;
 public class ManifestFileWriter : FileWriterBase
 {
     private readonly bool _noRandomFile;
-
-    public Manifest Manifest { get; }
-
-    public string ManifestFolder { get; }
+    private readonly Manifest _manifest;
+    private readonly string _manifestFolder;
+    private readonly Dictionary<string, OutputFileInfo> _files;
 
     public ManifestFileWriter(Manifest manifest, string manifestFolder, string outputFolder)
         : base(outputFolder ?? manifestFolder)
@@ -19,31 +18,25 @@ public class ManifestFileWriter : FileWriterBase
         ArgumentNullException.ThrowIfNull(manifest);
         ArgumentNullException.ThrowIfNull(manifestFolder);
 
-        Manifest = manifest;
-        ManifestFolder = manifestFolder;
+        _manifest = manifest;
+        _manifestFolder = manifestFolder;
         _noRandomFile = outputFolder == null;
+        _files = ManifestFileReader.ToLookup(manifest);
     }
-
-    #region Overrides
 
     public override void Copy(PathMapping sourceFileName, RelativePath destFileName)
     {
-        lock (Manifest)
+        lock (_manifest)
         {
-            var entry = FindEntryInManifest(destFileName.RemoveWorkingFolder());
-            if (entry == null)
-            {
-                throw new InvalidOperationException("File entry not found.");
-            }
-            entry.LinkToPath = sourceFileName.PhysicalPath;
+            _files[destFileName.RemoveWorkingFolder()].LinkToPath = sourceFileName.PhysicalPath;
         }
     }
 
     public override Stream Create(RelativePath file)
     {
-        lock (Manifest)
+        lock (_manifest)
         {
-            var entry = FindEntryInManifest(file.RemoveWorkingFolder());
+            var entry = _files[file.RemoveWorkingFolder()];
             if (entry == null)
             {
                 throw new InvalidOperationException("File entry not found.");
@@ -51,8 +44,8 @@ public class ManifestFileWriter : FileWriterBase
             if (_noRandomFile)
             {
                 Directory.CreateDirectory(
-                    Path.Combine(ManifestFolder, file.RemoveWorkingFolder().GetDirectoryPath()));
-                var result = File.Create(Path.Combine(ManifestFolder, file.RemoveWorkingFolder()));
+                    Path.Combine(_manifestFolder, file.RemoveWorkingFolder().GetDirectoryPath()));
+                var result = File.Create(Path.Combine(_manifestFolder, file.RemoveWorkingFolder()));
                 entry.LinkToPath = null;
                 return result;
             }
@@ -69,13 +62,6 @@ public class ManifestFileWriter : FileWriterBase
 
     public override IFileReader CreateReader()
     {
-        return new ManifestFileReader(Manifest, ManifestFolder);
-    }
-
-    #endregion
-
-    private OutputFileInfo FindEntryInManifest(string file)
-    {
-        return Manifest.FindOutputFileInfo(file);
+        return new ManifestFileReader(_manifest, _manifestFolder);
     }
 }

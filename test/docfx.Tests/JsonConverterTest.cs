@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Reflection;
 using Docfx.Common;
-using Docfx.Plugins;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Xunit;
@@ -33,7 +32,6 @@ public class JsonConverterTest
                     "}" +
                 "}" +
             "}," +
-            "\"keepFileLink\":false," +
             "\"disableGitFeatures\":false" +
         "}";
 
@@ -100,30 +98,6 @@ public class JsonConverterTest
 
         var result = JsonUtility.Serialize(fileMappingItem);
         Assert.Equal("{\"files\":[\"file1\"],\"src\":\"folder1\"}", result);
-    }
-
-    [Fact]
-    [Trait("Related", "docfx")]
-    public void TestManifestItemCollectionConverterCouldSerializeAndDeserialize()
-    {
-        var manifest = new Manifest();
-        ManifestItem manifestItemA = new()
-        {
-            SourceRelativePath = "a"
-        };
-        ManifestItem manifestItemB = new()
-        {
-            SourceRelativePath = "b"
-        };
-        manifest.Files.Add(manifestItemB);
-        manifest.Files.Add(manifestItemA);
-
-        Assert.Equal(
-            "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{}},{\"source_relative_path\":\"b\",\"output\":{}}]}",
-            JsonUtility.Serialize(manifest));
-        Assert.Equal(
-            "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{}},{\"source_relative_path\":\"b\",\"output\":{}}]}",
-            JsonUtility.Serialize(JsonUtility.FromJsonString<Manifest>(JsonUtility.Serialize(manifest))));
     }
 }
 

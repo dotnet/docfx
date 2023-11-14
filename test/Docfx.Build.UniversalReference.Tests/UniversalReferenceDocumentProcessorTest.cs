@@ -93,8 +93,8 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
         Assert.Equal("Value", classModel.Name[0].Value);
         Assert.Equal("cntk.core.Value", classModel.FullName[0].Value);
 
-        Assert.Equal("https://github.com/Microsoft/CNTK", classModel.Source[0].Value.Remote.RemoteRepositoryUrl);
-        Assert.Equal("cntk/core.py", classModel.Source[0].Value.Remote.RelativePath);
+        Assert.Equal("https://github.com/Microsoft/CNTK", classModel.Source[0].Value.Remote.Repo);
+        Assert.Equal("cntk/core.py", classModel.Source[0].Value.Remote.Path);
         Assert.Equal(182, classModel.Source[0].Value.StartLine);
 
         Assert.Equal(6, classModel.Syntax.Parameters.Count);
@@ -173,7 +173,7 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
         var files = new FileCollection(Directory.GetCurrentDirectory());
         files.Add(DocumentType.Article, fileNames.Select(f => $"{YmlDataDirectory}/{f}"), TestDataDirectory);
 
-        using var listener = new TestListenerScope(nameof(UniversalReferenceDocumentProcessorTest));
+        using var listener = new TestListenerScope();
         BuildDocument(files);
         Assert.NotNull(listener.Items);
         Assert.Equal(2, listener.Items.Count);

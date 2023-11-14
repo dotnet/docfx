@@ -48,6 +48,7 @@ partial class DotnetApiCatalog
 
         var filter = new SymbolFilter(config, options);
         var tocNodes = new Dictionary<string, TocNode>();
+        var ext = config.OutputFormat is MetadataOutputFormat.Markdown ? ".md" : ".yml";
         var toc = assemblies.SelectMany(a => CreateToc(a.symbol.GlobalNamespace, a.compilation)).ToList();
 
         SortToc(toc, root: true);
@@ -98,7 +99,7 @@ partial class DotnetApiCatalog
                     {
                         id = id,
                         name = config.NamespaceLayout is NamespaceLayout.Nested ? symbol.Name : symbol.ToString() ?? "",
-                        href = $"{id}.md",
+                        href = $"{id}{ext}",
                         type = TocNodeType.Namespace,
                     });
                 }
@@ -138,7 +139,7 @@ partial class DotnetApiCatalog
                     {
                         id = id,
                         name = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp),
-                        href = $"{id}.md",
+                        href = $"{id}{ext}",
                         containsLeafNodes = true,
                         type = type.TypeKind switch
                         {
@@ -196,7 +197,7 @@ partial class DotnetApiCatalog
                     {
                         id = id,
                         name = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true),
-                        href = $"{id}.md",
+                        href = $"{id}{ext}",
                         containsLeafNodes = true,
                         type = type,
                     });

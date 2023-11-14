@@ -4,7 +4,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Docfx.Build.Engine\Docfx.Build.Engine.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Build\Docfx.Build.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.UniversalReference\Docfx.Build.UniversalReference.csproj" />
     <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics;
 using Docfx.Common;
 using Docfx.Exceptions;
 using Docfx.HtmlToPdf;
@@ -20,6 +21,14 @@ internal static class RunPdf
     /// </summary>
     public static void Exec(PdfJsonConfig config, BuildOptions buildOptions, string configDirectory, string outputDirectory = null)
     {
+        var stopwatch = Stopwatch.StartNew();
+
+        Logger.LogWarning($"""
+            PDF on wkhtmltopdf is deprecated and will be removed in future release. Please use the new Chromium-based PDF instead. 
+            
+            See https://dotnet.github.io/docfx/docs/pdf.html for instructions on the new PDF engine.
+            """);
+
         EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory));
         // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
         var baseDirectory = EnvironmentContext.BaseDirectory;
@@ -69,17 +78,14 @@ internal static class RunPdf
         var converter = new ConvertWrapper(options);
         try
         {
-            using (new LoggerPhaseScope("PDF", LogLevel.Info))
-            {
-                Logger.LogInfo("Start generating PDF files...");
-                converter.Convert();
-            }
+            Logger.LogInfo("Start generating PDF files...");
+            converter.Convert();
         }
         catch (IOException ioe)
         {
             throw new DocfxException(ioe.Message, ioe);
         }
 
-        // 3. Should we delete generated files according to manifest
+        Logger.LogVerbose($"PDF done in {stopwatch.Elapsed}");
     }
 }

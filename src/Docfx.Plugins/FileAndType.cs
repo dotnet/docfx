@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
@@ -8,7 +9,8 @@ namespace Docfx.Plugins;
 public sealed class FileAndType
     : IEquatable<FileAndType>
 {
-    [JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     public FileAndType(string baseDir, string file, DocumentType type, string sourceDir = null, string destinationDir = null)
     {
         ArgumentNullException.ThrowIfNull(baseDir);
@@ -44,25 +46,32 @@ public sealed class FileAndType
         StringComparer = GetStringComparer();
     }
 
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public StringComparer StringComparer { get; }
 
     [JsonProperty("baseDir")]
+    [JsonPropertyName("baseDir")]
     public string BaseDir { get; }
 
     [JsonProperty("file")]
+    [JsonPropertyName("file")]
     public string File { get; }
 
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string FullPath { get; }
 
     [JsonProperty("type")]
+    [JsonPropertyName("type")]
     public DocumentType Type { get; }
 
     [JsonProperty("sourceDir")]
+    [JsonPropertyName("sourceDir")]
     public string SourceDir { get; set; }
 
     [JsonProperty("destinationDir")]
+    [JsonPropertyName("destinationDir")]
     public string DestinationDir { get; set; }
 
     public FileAndType ChangeBaseDir(string baseDir)

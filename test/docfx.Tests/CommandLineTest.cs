@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Docfx.Tests;
 
+[Collection("docfx STA")]
 public static class CommandLineTest
 {
     [Fact]
@@ -33,5 +34,12 @@ public static class CommandLineTest
     public static void FailForUnknownArgs()
     {
         Assert.Equal(-1, Program.Main(new[] { "--unknown" }));
+    }
+
+    [Fact]
+    public static void InitBuild()
+    {
+        Assert.Equal(0, Program.Main(new[] { "init", "-o", "init", "-y" }));
+        Assert.Equal(0, Program.Main(new[] { "init/docfx.json" }));
     }
 }

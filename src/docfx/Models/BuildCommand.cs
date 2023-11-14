@@ -14,9 +14,9 @@ internal class BuildCommand : Command<BuildCommandOptions>
     {
         return CommandHelper.Run(settings, () =>
         {
-            var (config, baseDirectory) = CommandHelper.GetConfig<BuildConfig>(settings.ConfigFile);
-            MergeOptionsToConfig(settings, config.Item, baseDirectory);
-            var serveDirectory = RunBuild.Exec(config.Item, new(), baseDirectory, settings.OutputFolder);
+            var (config, baseDirectory) = Docset.GetConfig(settings.ConfigFile);
+            MergeOptionsToConfig(settings, config.build, baseDirectory);
+            var serveDirectory = RunBuild.Exec(config.build, new(), baseDirectory, settings.OutputFolder);
 
             if (settings.Serve)
                 RunServe.Exec(serveDirectory, settings.Host, settings.Port, settings.OpenBrowser, settings.OpenFile);
@@ -88,7 +88,6 @@ internal class BuildCommand : Command<BuildCommandOptions>
 
         SetGlobalMetadataFromCommandLineArgs();
 
-        config.KeepFileLink |= options.KeepFileLink;
         config.DisableGitFeatures |= options.DisableGitFeatures;
 
         void SetGlobalMetadataFromCommandLineArgs()
@@ -117,11 +116,5 @@ internal class BuildCommand : Command<BuildCommandOptions>
                 return (key, value);
             }
         }
-    }
-
-    private sealed class BuildConfig
-    {
-        [JsonProperty("build")]
-        public BuildJsonConfig Item { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 using Docfx.Common;
 using Docfx.YamlSerialization;
 using Newtonsoft.Json;
@@ -13,63 +14,78 @@ public class ReferenceViewModel
 {
     [YamlMember(Alias = Constants.PropertyName.Uid)]
     [JsonProperty(Constants.PropertyName.Uid)]
+    [JsonPropertyName(Constants.PropertyName.Uid)]
     public string Uid { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.CommentId)]
     [JsonProperty(Constants.PropertyName.CommentId)]
+    [JsonPropertyName(Constants.PropertyName.CommentId)]
     public string CommentId { get; set; }
 
     [YamlMember(Alias = "parent")]
     [JsonProperty("parent")]
+    [JsonPropertyName("parent")]
     public string Parent { get; set; }
 
     [YamlMember(Alias = "definition")]
     [JsonProperty("definition")]
+    [JsonPropertyName("definition")]
     public string Definition { get; set; }
 
     [JsonProperty("isExternal")]
     [YamlMember(Alias = "isExternal")]
+    [JsonPropertyName("isExternal")]
     public bool? IsExternal { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.Href)]
     [JsonProperty(Constants.PropertyName.Href)]
+    [JsonPropertyName(Constants.PropertyName.Href)]
     public string Href { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.Name)]
     [JsonProperty(Constants.PropertyName.Name)]
+    [JsonPropertyName(Constants.PropertyName.Name)]
     public string Name { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> NameInDevLangs { get; private set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = Constants.PropertyName.NameWithType)]
     [JsonProperty(Constants.PropertyName.NameWithType)]
+    [JsonPropertyName(Constants.PropertyName.NameWithType)]
     public string NameWithType { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> NameWithTypeInDevLangs { get; private set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = Constants.PropertyName.FullName)]
     [JsonProperty(Constants.PropertyName.FullName)]
+    [JsonPropertyName(Constants.PropertyName.FullName)]
     public string FullName { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> FullNameInDevLangs { get; private set; } = new SortedList<string, string>();
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Spec)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<SpecViewModel>> Specs { get; private set; } = new SortedList<string, List<SpecViewModel>>();
 
     [ExtensibleMember]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Dictionary<string, object> Additional { get; private set; } = new Dictionary<string, object>();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
     public CompositeDictionary AdditionalJson =>

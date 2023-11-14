@@ -31,24 +31,6 @@ public static class PathUtility
     }
 
     /// <summary>
-    /// http://stackoverflow.com/questions/422090/in-c-sharp-check-that-filename-is-possibly-valid-not-that-it-exists
-    /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    public static bool IsValidFilePath(string path)
-    {
-        FileInfo fi = null;
-        try
-        {
-            fi = new FileInfo(path);
-        }
-        catch (ArgumentException) { }
-        catch (PathTooLongException) { }
-        catch (NotSupportedException) { }
-        return fi != null;
-    }
-
-    /// <summary>
     /// Creates a relative path from one file or folder to another.
     /// </summary>
     /// <param name="basePath">Contains the directory that defines the start of the relative path.</param>
@@ -160,24 +142,5 @@ public static class PathUtility
         }
 
         return null;
-    }
-
-    public static string NormalizePath(string path)
-    {
-        if (string.IsNullOrEmpty(path))
-        {
-            return path;
-        }
-        return Path.GetFullPath(path).Replace('\\', '/');
-    }
-
-    public static bool IsDirectory(string path)
-    {
-        if (string.IsNullOrEmpty(path))
-        {
-            throw new ArgumentException($"{nameof(path)} should not be null or empty string");
-        }
-
-        return Directory.Exists(path);
     }
 }

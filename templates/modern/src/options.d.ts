@@ -5,7 +5,6 @@ import BootstrapIcons from 'bootstrap-icons/font/bootstrap-icons.json'
 import { HLJSApi } from 'highlight.js'
 import { AnchorJSOptions } from 'anchor-js'
 import { MermaidConfig } from 'mermaid'
-import lunr from 'lunr'
 
 export type Theme = 'light' | 'dark' | 'auto'
 
@@ -36,9 +35,15 @@ export type DocfxOptions = {
   /** Configures mermaid diagram options */
   mermaid?: MermaidConfig,
 
+  /** A list of [lunr languages](https://github.com/MihaiValentin/lunr-languages#readme) such as fr, es for full text search */
+  lunrLanguages?: string[],
+
+  /** Hooks to app start event */
+  start?: () => void,
+
   /** Configures [hightlight.js](https://highlightjs.org/) */
   configureHljs?: (hljs: HLJSApi) => void,
 
-  /** Configures [lunr](https://lunrjs.com/docs/index.html) */
-  configureLunr?: (lunr: lunr.Builder) => void,
+  /** Specifies if an image should show as lightbox when clicked. */
+  showLightbox?: (image: HTMLImageElement) => boolean,
 }

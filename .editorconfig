@@ -162,6 +162,7 @@ dotnet_diagnostic.IDE0110.severity = suggestion # IDE0110: Remove unnecessary di
 dotnet_diagnostic.IDE0240.severity = suggestion # IDE0240: Nullable directive is redundant
 dotnet_diagnostic.IDE0241.severity = suggestion # IDE0241: Nullable directive is unnecessary
 
+dotnet_diagnostic.CS8509.severity = suggestion # The switch expression does not handle all possible values of its input type
 
 csharp_style_unused_value_expression_statement_preference = discard_variable:suggestion # IDE0058: Remove unnecessary expression value
 csharp_style_unused_value_assignment_preference = discard_variable:suggestion           # IDE0059: Remove unnecessary value assignment

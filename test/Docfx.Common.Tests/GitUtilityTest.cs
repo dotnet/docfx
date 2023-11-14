@@ -26,59 +26,22 @@ public class GitUtilityTest : IDisposable
     public void Environment_ForBranchName()
     {
         var info = GitUtility.TryGetFileDetail(Directory.GetCurrentDirectory());
-        Assert.Equal("special-branch", info.RemoteBranch);
+        Assert.Equal("special-branch", info.Branch);
     }
 
-    [Fact]
-    public void Environment_ForGitTimeout()
+    [Theory]
+    [InlineData("https://github.com/user/repo.git", "main", "path/to/file.cs", 0, "https://github.com/user/repo/blob/main/path/to/file.cs")]
+    [InlineData("https://github.com/user/repo.git", "main", "path/to/file.cs", 10, "https://github.com/user/repo/blob/main/path/to/file.cs#L10")]
+    [InlineData("https://bitbucket.org/user/repo.git", "main", "path/to/file.cs", 0, "https://bitbucket.org/user/repo/src/main/path/to/file.cs")]
+    [InlineData("https://bitbucket.org/user/repo.git", "main", "path/to/file.cs", 10, "https://bitbucket.org/user/repo/src/main/path/to/file.cs#lines-10")]
+    [InlineData("https://dev.azure.com/user/repo/_git/repo", "main", "path/to/file.cs", 0, "https://dev.azure.com/user/repo/_git/repo?path=path/to/file.cs&version=GBmain")]
+    [InlineData("https://dev.azure.com/user/repo/_git/repo", "0123456789abcdef0123456789abcdef01234567", "path/to/file.cs", 10, "https://dev.azure.com/user/repo/_git/repo?path=path/to/file.cs&version=GC0123456789abcdef0123456789abcdef01234567&line=10")]
+    [InlineData("https://user.visualstudio.com/repo/_git/repo", "main", "path/to/file.cs", 0, "https://user.visualstudio.com/repo/_git/repo?path=path/to/file.cs&version=GBmain")]
+    [InlineData("https://user.visualstudio.com/repo/_git/repo", "0123456789abcdef0123456789abcdef01234567", "path/to/file.cs", 10, "https://user.visualstudio.com/repo/_git/repo?path=path/to/file.cs&version=GC0123456789abcdef0123456789abcdef01234567&line=10")]
+    [InlineData("git@github.com:user/repo.git", "main", "path/to/file.cs", 0, "https://github.com/user/repo/blob/main/path/to/file.cs")]
+    [InlineData("ssh://mseng@vs-ssh.visualstudio.com:22/FakeProject/_ssh/Docfx", "main", "path/to/file.cs", 0, "https://vs-ssh.visualstudio.com/FakeProject/_ssh/Docfx?path=path/to/file.cs&version=GBmain")]
+    public static void GetSourceUrlTest(string repo, string branch, string path, int line, string result)
     {
-        Environment.SetEnvironmentVariable(GitUtility.GitTimeoutEnvVarName, "3000");
-        Assert.Equal(3000, GitUtility.GetGitTimeout());
-
-        Environment.SetEnvironmentVariable(GitUtility.GitTimeoutEnvVarName, "0");
-        Assert.Equal(10_000, GitUtility.GetGitTimeout());
-
-        Environment.SetEnvironmentVariable(GitUtility.GitTimeoutEnvVarName, "");
-        Assert.Equal(10_000, GitUtility.GetGitTimeout());
-    }
-
-    [Obsolete("It will be removed in a future version.")]
-    [Fact]
-    public void TestParseGitRepoInfo()
-    {
-        var repoInfo = GitUtility.Parse("git@github.com:dotnet/docfx");
-        Assert.Equal("dotnet", repoInfo.RepoAccount);
-        Assert.Equal("docfx", repoInfo.RepoName);
-        Assert.Equal(RepoType.GitHub, repoInfo.RepoType);
-
-        repoInfo = GitUtility.Parse("https://github.com/dotnet/docfx");
-        Assert.Equal("dotnet", repoInfo.RepoAccount);
-        Assert.Equal("docfx", repoInfo.RepoName);
-        Assert.Equal(RepoType.GitHub, repoInfo.RepoType);
-
-        repoInfo = GitUtility.Parse("ssh://mseng@vs-ssh.visualstudio.com:22/FakeProject/_ssh/Docfx");
-        Assert.Equal("mseng", repoInfo.RepoAccount);
-        Assert.Equal("Docfx", repoInfo.RepoName);
-        Assert.Equal("FakeProject", repoInfo.RepoProject);
-        Assert.Equal(RepoType.Vso, repoInfo.RepoType);
-
-        repoInfo = GitUtility.Parse("https://mseng.visualstudio.com/FakeProject/_git/Docfx");
-        Assert.Equal("mseng", repoInfo.RepoAccount);
-        Assert.Equal("Docfx", repoInfo.RepoName);
-        Assert.Equal("FakeProject", repoInfo.RepoProject);
-        Assert.Equal(RepoType.Vso, repoInfo.RepoType);
-    }
-
-    [Obsolete("It will be removed in a future version.")]
-    [Fact]
-    public void TestCombineGitUrl()
-    {
-        var repoInfo = GitUtility.Parse("git@github.com:dotnet/docfx");
-        var url = GitUtility.CombineUrl(repoInfo.NormalizedRepoUrl.AbsoluteUri, "dev", "src/docfx/Program.cs", RepoType.GitHub);
-        Assert.Equal("https://github.com/dotnet/docfx/blob/dev/src/docfx/Program.cs", url.AbsoluteUri);
-
-        repoInfo = GitUtility.Parse("https://mseng.visualstudio.com/FakeProject/_git/Docfx");
-        url = GitUtility.CombineUrl(repoInfo.NormalizedRepoUrl.AbsoluteUri, "dev", "src/docfx/Program.cs", RepoType.Vso);
-        Assert.Equal("https://mseng.visualstudio.com/DefaultCollection/FakeProject/_git/Docfx?path=%2fsrc%2fdocfx%2fProgram.cs&version=GBdev&_a=contents", url.AbsoluteUri);
+        Assert.Equal(result, GitUtility.GetSourceUrl(new(repo, branch, path, line)));
     }
 }

@@ -111,6 +111,7 @@ namespace CatLibrary
     /// </list>
     /// </remarks>
     [Serializable]
+    [Obsolete]
     public class Cat<T, K> : ICat
         where T : class, new()
         where K : struct
@@ -210,6 +211,7 @@ namespace CatLibrary
         /// <summary>
         /// Hint cat's age.
         /// </summary>
+        [Obsolete]
         protected int Age
         {
             get { return 1; }
@@ -220,6 +222,7 @@ namespace CatLibrary
         /// <summary>
         /// Eat event of this cat
         /// </summary>
+        [Obsolete("This _event handler_ is deprecated.")]
         public event EventHandler ownEat;
 
         //Field: with attribute
@@ -228,6 +231,7 @@ namespace CatLibrary
         /// </summary>
         [ContextStatic]
         [NonSerialized]
+        [Obsolete]
         public bool isHealthy;
 
         //EII Method

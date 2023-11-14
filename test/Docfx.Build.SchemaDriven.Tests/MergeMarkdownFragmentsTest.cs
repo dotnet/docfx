@@ -20,7 +20,7 @@ public class MergeMarkdownFragmentsTest : TestBase
     private readonly TemplateManager _templateManager;
     private readonly FileCollection _files;
 
-    private readonly TestLoggerListener _listener;
+    private readonly TestLoggerListener _listener = new();
     private readonly string _rawModelFilePath;
 
     private const string RawModelFileExtension = ".raw.json";
@@ -35,7 +35,6 @@ public class MergeMarkdownFragmentsTest : TestBase
 
         _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
 
-        _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
         _rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
 
         var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), _templateFolder);
@@ -319,12 +318,10 @@ overwrite in contents block
     [Fact]
     public void TestFragmentsWithIncremental()
     {
-        using var listener = new TestListenerScope(nameof(TestFragmentsWithIncremental));
+        using var listener = new TestListenerScope();
         // first build
-        using (new LoggerPhaseScope("FirstBuild"))
-        {
-            BuildDocument(_files);
-        }
+        BuildDocument(_files);
+
         Assert.True(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
         Assert.Null(rawModel["summary"]);
@@ -339,10 +336,9 @@ overwrite in contents block
 I add a summary.
 With [!include[invalid](invalid.md)]",
             _inputFolder);
-        using (new LoggerPhaseScope("AddFragments"))
-        {
-            BuildDocument(_files);
-        }
+
+        BuildDocument(_files);
+
         Assert.True(File.Exists(_rawModelFilePath));
         rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
         Assert.NotNull(rawModel["summary"]);
@@ -361,10 +357,9 @@ With [!include[invalid](invalid.md)]",
                 "With [!include[invalid](invalid.md)]",
             },
             _inputFolder);
-        using (new LoggerPhaseScope("ModifyFragments"))
-        {
-            BuildDocument(_files);
-        }
+
+        BuildDocument(_files);
+
         Assert.True(File.Exists(_rawModelFilePath));
         rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
         Assert.NotNull(rawModel["summary"]);
@@ -376,10 +371,8 @@ With [!include[invalid](invalid.md)]",
         Assert.True(messages.SequenceEqual(lastMessages));
 
         // rebuild
-        using (new LoggerPhaseScope("Rebuild"))
-        {
-            BuildDocument(_files);
-        }
+        BuildDocument(_files);
+
         Assert.True(File.Exists(_rawModelFilePath));
         rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
         Assert.NotNull(rawModel["summary"]);

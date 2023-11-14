@@ -25,6 +25,7 @@
       <meta name="loc:themeAuto" content="Auto">
       <meta name="loc:changeTheme" content="Change theme">
       <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
   <script type="module" src="./../public/docfx.min.js"></script><script>
     const theme = localStorage.getItem('theme') || 'auto'
     document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
@@ -58,7 +59,7 @@
               <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="nav-link dropdown-toggle active">
                 API Documentation
               </a>
-              <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/md/BuildFromAssembly.html">.NET API (markdown)</a></li><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
+              <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/md/BuildFromAssembly.html">.NET API (markdown)</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/apipage/BuildFromAssembly.html">.NET API (apipage)</a></li><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
             </li></ul> 
       <form class="icons">
         <a class="btn border-0" href="https://github.com/dotnet/docfx" title="GitHub"><i class="bi bi-github"></i></a><a class="btn border-0" href="https://twitter.com/" title="Twitter"><i class="bi bi-twitter"></i></a>
@@ -67,7 +68,7 @@
       <a class="btn border-0 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Change theme">
         <i class="bi bi-circle-half"></i>
       </a>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" href="#"><i class="bi bi-sun"></i> Light</a></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-moon"></i> Dark</a></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-circle-half"></i> Auto</a></li>
@@ -88,10 +89,12 @@
           </div>
           <div class="offcanvas-body">
             <nav class="toc" id="toc">
+      
       <form class="filter">
         <i class="bi bi-filter"></i>
         <input class="form-control" type="search" autocomplete="off" value="" placeholder="Filter by title" aria-label="Filter by title">
-      </form> <ul>
+      </form> 
+      <div class="flex-fill overflow-y-auto"><ul>
         <li class=" active ">
           
           <a class="  " href="http://localhost:8089/restapi/petstore.html">Pet Store API</a>
@@ -101,7 +104,8 @@
           
           <a class=" nav-link " href="http://localhost:8089/restapi/contacts.html">Contacts API</a>
           
-        </li></ul></nav>
+        </li></ul></div>
+      <div class="py-2 mb-md-4"><a class="pdf-link" href="http://localhost:8089/restapi/toc.pdf">Download PDF</a></div></nav>
           </div>
         </div>
       </div>
@@ -2033,13 +2037,13 @@
       <div class="affix">
         <nav id="affix">
       <h5 class="border-bottom">In this article</h5>
-      <ul><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet">pet</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store">store</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user">user</a></li><li><a class="link-secondary" href="#other-apis">Other APIs</a></li><li><a class="link-secondary" href="#definitions">Definitions</a></li></ul></nav>
+      <ul><li><a class="link-body-emphasis" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet">pet</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet">Add<wbr>Pet</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet">Update<wbr>Pet</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus">Find<wbr>Pets<wbr>ByStatus</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags">Find<wbr>Pets<wbr>ByTags</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet">Delete<wbr>Pet</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById">Get<wbr>Pet<wbr>ById</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm">Update<wbr>Pet<wbr>With<wbr>Form</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile">Upload<wbr>File</a></li><li><a class="link-body-emphasis" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store">store</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet">Add<wbr>Pet</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory">Get<wbr>Inventory</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder">Place<wbr>Order</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder">Delete<wbr>Order</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById">Get<wbr>Order<wbr>ById</a></li><li><a class="link-body-emphasis" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user">user</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser">Create<wbr>User</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput">Create<wbr>Users<wbr>With<wbr>Array<wbr>Input</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput">Create<wbr>Users<wbr>With<wbr>List<wbr>Input</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser">Login<wbr>User</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser">Logout<wbr>User</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser">Delete<wbr>User</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName">Get<wbr>User<wbr>ByName</a></li><li><a class="link-body-emphasis" href="#other-apis">Other APIs</a></li><li><a class="link-secondary" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser">Update<wbr>User</a></li><li><a class="link-body-emphasis" href="#definitions">Definitions</a></li><li><a class="link-secondary" href="#Pet">Pet</a></li><li><a class="link-secondary" href="#Category">Category</a></li><li><a class="link-secondary" href="#Tag">Tag</a></li><li><a class="link-secondary" href="#ApiResponse">Api<wbr>Response</a></li><li><a class="link-secondary" href="#Order">Order</a></li><li><a class="link-secondary" href="#User">User</a></li><li><a class="link-secondary" href="#see-alsos">See Alsos</a></li></ul></nav>
       </div>
     </main>
 
     <div class="container-xxl search-results" id="search-results"></div>
 
-    <footer class="border-top">
+    <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
           <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>

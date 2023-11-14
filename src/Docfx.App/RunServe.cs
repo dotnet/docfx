@@ -35,15 +35,6 @@ internal static class RunServe
             throw new ArgumentException("Site folder does not exist. You may need to build it first. Example: \"docfx docfx_project/docfx.json\"", nameof(folder));
         }
 
-        var fileServerOptions = new FileServerOptions
-        {
-            EnableDirectoryBrowsing = true,
-            FileProvider = new PhysicalFileProvider(folder),
-        };
-
-        // Fix the issue that .JSON file is 404 when running docfx serve
-        fileServerOptions.StaticFileOptions.ServeUnknownFileTypes = true;
-
         try
         {
             var builder = WebApplication.CreateBuilder();
@@ -52,7 +43,7 @@ internal static class RunServe
 
             Console.WriteLine($"Serving \"{folder}\" on {url}. Press Ctrl+C to shut down.");
             using var app = builder.Build();
-            app.UseFileServer(fileServerOptions);
+            app.UseServe(folder);
 
             if (openBrowser || !string.IsNullOrEmpty(openFile))
             {
@@ -82,6 +73,19 @@ internal static class RunServe
         }
     }
 
+    public static IApplicationBuilder UseServe(this WebApplication app, string folder)
+    {
+        var fileServerOptions = new FileServerOptions
+        {
+            EnableDirectoryBrowsing = true,
+            FileProvider = new PhysicalFileProvider(folder),
+        };
+
+        // Fix the issue that .JSON file is 404 when running docfx serve
+        fileServerOptions.StaticFileOptions.ServeUnknownFileTypes = true;
+        return app.UseFileServer(fileServerOptions);
+    }
+
     /// <summary>
     /// Resolve output HTML file path by `manifest.json` file.
     /// If failed to resolve path. return baseUrl.
@@ -94,18 +98,18 @@ internal static class RunServe
 
         try
         {
-            Manifest manifest = JsonUtility.Deserialize<Manifest>(manifestPath);
+            relativePath = relativePath.Replace('\\', '/'); // Normalize path.
+            var manifest = JsonUtility.Deserialize<Manifest>(manifestPath);
 
             // Try to find output html file (html->html)
-            OutputFileInfo outputFileInfo = manifest.FindOutputFileInfo(relativePath);
-            if (outputFileInfo != null)
-                return outputFileInfo.RelativePath;
-
-            // Try to resolve output HTML file. (md->html)
-            relativePath = relativePath.Replace('\\', '/'); // Normalize path.
-            var manifestFile = manifest.Files
-                                       .Where(x => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(x.SourceRelativePath, relativePath))
-                                       .FirstOrDefault(x => x.Output.TryGetValue(".html", out outputFileInfo));
+            var outputFileInfo = manifest.Files.SelectMany(f => f.Output.Values).FirstOrDefault(f => f.RelativePath == relativePath);
+            if (outputFileInfo is null)
+            {
+                // Try to resolve output HTML file. (md->html)
+                manifest.Files
+                    .FirstOrDefault(x => x.SourceRelativePath == relativePath)
+                    ?.Output.TryGetValue(".html", out outputFileInfo);
+            }
 
             if (outputFileInfo != null)
             {

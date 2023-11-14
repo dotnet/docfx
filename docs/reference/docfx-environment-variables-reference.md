@@ -1,9 +1,4 @@
----
-uid: docfx_environment_variables_reference
-title: docfx environment variables reference
----
-
-# Docfx environment variables
+# Environment Variables
 
 ## `DOCFX_KEEP_DEBUG_INFO`
 
@@ -15,10 +10,6 @@ If set true. Keep following debug info in output HTML.
 - `data-raw-source`
 - `nocheck`
 
-## `DOCFX_GIT_TIMEOUT`
-
-Used to overide git command timeout. (Default: `10,000` [ms])
-
 ## `DOCFX_SOURCE_BRANCH_NAME`
 
 Used to override git branch name.
@@ -27,3 +18,7 @@ Used to override git branch name.
 
 Used to disable CRL check.
 This setting is intended to be used on offline environment.
+
+## `DOCFX_PDF_TIMEOUT`
+
+Maximum time in milliseconds to override the default [Playwright timeout](https://playwright.dev/docs/api/class-browsercontext#browser-context-set-default-timeout) for PDF generation.

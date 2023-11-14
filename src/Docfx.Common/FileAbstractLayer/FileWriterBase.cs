@@ -5,8 +5,6 @@ namespace Docfx.Common;
 
 public abstract class FileWriterBase : IFileWriter
 {
-    private const int MaxRetry = 3;
-
     public FileWriterBase(string outputFolder)
     {
         ExpandedOutputFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(outputFolder));

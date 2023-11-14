@@ -22,6 +22,11 @@ export async function initTheme() {
   setTheme(await getDefaultTheme())
 }
 
+export function onThemeChange(callback: (theme: 'light' | 'dark') => void) {
+  return new MutationObserver(() => callback(getTheme()))
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] })
+}
+
 export function getTheme(): 'light' | 'dark' {
   return document.documentElement.getAttribute('data-bs-theme') as 'light' | 'dark'
 }
@@ -35,7 +40,7 @@ export async function themePicker(refresh: () => void) {
       <a title='${loc('changeTheme')}' class='btn border-0 dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false'>
         <i class='bi bi-${icon}'></i>
       </a>
-      <ul class='dropdown-menu'>
+      <ul class='dropdown-menu dropdown-menu-end'>
         <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'light')}><i class='bi bi-sun'></i> ${loc('themeLight')}</a></li>
         <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'dark')}><i class='bi bi-moon'></i> ${loc('themeDark')}</a></li>
         <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'auto')}><i class='bi bi-circle-half'></i> ${loc('themeAuto')}</a></li>

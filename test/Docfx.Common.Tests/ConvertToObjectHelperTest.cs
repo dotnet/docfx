@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -63,7 +64,7 @@ public class ConvertToObjectHelperTest
         a["key1"] = a;
 
         dynamic converted = ConvertToObjectHelper.ConvertToDynamic(a);
-        Assert.Equal(converted.key1, converted);
+        Assert.Same(converted.key1, converted);
         Assert.Equal("value", converted.key1.key);
 
         Dictionary<string, object> obj = ConvertToObjectHelper.ConvertExpandoObjectToObject(converted);
@@ -96,10 +97,15 @@ public class ConvertToObjectHelperTest
     private sealed class ComplexTypeWithJson
     {
         [JsonProperty("str")]
+        [JsonPropertyName("str")]
         public string String { get; set; }
+
         [JsonProperty("list")]
+        [JsonPropertyName("list")]
         public List<string> List { get; set; }
+
         [JsonProperty("dict")]
+        [JsonPropertyName("dict")]
         public Dictionary<int, string> IntDictionary { get; set; }
     }
 }

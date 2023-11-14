@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Docfx;
@@ -67,6 +68,11 @@ internal enum MetadataOutputFormat
     /// Output as common-mark compliant markdown file
     /// </summary>
     Markdown,
+
+    /// <summary>
+    /// Output as ApiPage YAML files
+    /// </summary>
+    ApiPage,
 }
 
 /// <summary>
@@ -79,6 +85,7 @@ internal class MetadataJsonItemConfig
     /// Defines the source projects to have metadata generated.
     /// </summary>
     [JsonProperty("src")]
+    [JsonPropertyName("src")]
     public FileMapping Src { get; set; }
 
     /// <summary>
@@ -86,6 +93,7 @@ internal class MetadataJsonItemConfig
     /// Command line --output argument prepends this value.
     /// </summary>
     [JsonProperty("dest")]
+    [JsonPropertyName("dest")]
     public string Dest { get; set; }
 
     /// <summary>
@@ -93,30 +101,36 @@ internal class MetadataJsonItemConfig
     /// Command line --output argument override this value.
     /// </summary>
     [JsonProperty("output")]
+    [JsonPropertyName("output")]
     public string Output { get; set; }
 
     /// <summary>
     /// Defines the output file format.
     /// </summary>
     [JsonProperty("outputFormat")]
+    [JsonPropertyName("outputFormat")]
     public MetadataOutputFormat OutputFormat { get; set; }
 
     /// <summary>
     /// If set to true, DocFX would not render triple-slash-comments in source code as markdown.
     /// </summary>
     [JsonProperty("shouldSkipMarkup")]
+    [JsonPropertyName("shouldSkipMarkup")]
     public bool? ShouldSkipMarkup { get; set; }
 
     [JsonProperty("raw")]
+    [JsonPropertyName("raw")]
     public bool? Raw { get; set; }
 
     [JsonProperty("references")]
+    [JsonPropertyName("references")]
     public FileMapping References { get; set; }
 
     /// <summary>
     /// Defines the filter configuration file.
     /// </summary>
     [JsonProperty("filter")]
+    [JsonPropertyName("filter")]
     public string Filter { get; set; }
 
     /// <summary>
@@ -124,12 +138,14 @@ internal class MetadataJsonItemConfig
     /// The default is false.
     /// </summary>
     [JsonProperty("includePrivateMembers")]
+    [JsonPropertyName("includePrivateMembers")]
     public bool IncludePrivateMembers { get; set; }
 
     /// <summary>
     /// Specify the name to use for the global namespace.
     /// </summary>
     [JsonProperty("globalNamespaceId")]
+    [JsonPropertyName("globalNamespaceId")]
     public string GlobalNamespaceId { get; set; }
 
     /// <summary>
@@ -138,30 +154,35 @@ internal class MetadataJsonItemConfig
     ///  command line argument.
     /// </summary>
     [JsonProperty("properties")]
+    [JsonPropertyName("properties")]
     public Dictionary<string, string> Properties { get; set; }
 
     /// <summary>
     /// Disables generation of view source links.
     /// </summary>
     [JsonProperty("disableGitFeatures")]
+    [JsonPropertyName("disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }
 
     /// <summary>
     /// Specify the base directory that is used to resolve code source (e.g. `&lt;code source="Example.cs"&gt;`).
     /// </summary>
     [JsonProperty("codeSourceBasePath")]
+    [JsonPropertyName("codeSourceBasePath")]
     public string CodeSourceBasePath { get; set; }
 
     /// <summary>
     /// Disables the default filter configuration file.
     /// </summary>
     [JsonProperty("disableDefaultFilter")]
+    [JsonPropertyName("disableDefaultFilter")]
     public bool DisableDefaultFilter { get; set; }
 
     /// <summary>
     /// Do not run dotnet restore before building the projects.
     /// </summary>
     [JsonProperty("noRestore")]
+    [JsonPropertyName("noRestore")]
     public bool NoRestore { get; set; }
 
     /// <summary>
@@ -170,6 +191,7 @@ internal class MetadataJsonItemConfig
     /// - `nested`: Renders namespaces in a nested tree form.
     /// </summary>
     [JsonProperty("namespaceLayout")]
+    [JsonPropertyName("namespaceLayout")]
     public NamespaceLayout NamespaceLayout { get; set; }
 
     /// <summary>
@@ -178,6 +200,7 @@ internal class MetadataJsonItemConfig
     /// - `separatePages`: Places members in separate pages.
     /// </summary>
     [JsonProperty("memberLayout")]
+    [JsonPropertyName("memberLayout")]
     public MemberLayout MemberLayout { get; set; }
 
     /// <summary>
@@ -186,12 +209,14 @@ internal class MetadataJsonItemConfig
     /// - `separatePages`: Places members in separate pages.
     /// </summary>
     [JsonProperty("enumSortOrder")]
+    [JsonPropertyName("enumSortOrder")]
     public EnumSortOrder EnumSortOrder { get; init; }
 
     /// <summary>
     /// When enabled, continues documentation generation in case of compilation errors.
     /// </summary>
     [JsonProperty("allowCompilationErrors")]
+    [JsonPropertyName("allowCompilationErrors")]
     public bool AllowCompilationErrors { get; set; }
 }
 

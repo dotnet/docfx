@@ -5,13 +5,14 @@ namespace Docfx.Common;
 
 public sealed class LoggerFileScope : IDisposable
 {
+    private static readonly AsyncLocal<string> t_fileName = new();
     private readonly string _originFileName;
 
     public LoggerFileScope(string fileName)
     {
         if (string.IsNullOrWhiteSpace(fileName))
         {
-            throw new ArgumentException("Phase name cannot be null or white space.", nameof(fileName));
+            throw new ArgumentException("File name cannot be null or white space.", nameof(fileName));
         }
         _originFileName = GetFileName();
         SetFileName(fileName);
@@ -22,32 +23,7 @@ public sealed class LoggerFileScope : IDisposable
         SetFileName(_originFileName);
     }
 
-    internal static string GetFileName()
-    {
-        return LogicalCallContext.GetData(nameof(LoggerFileScope)) as string;
-    }
+    internal static string GetFileName() => t_fileName.Value;
 
-    private static void SetFileName(string fileName)
-    {
-        LogicalCallContext.SetData(nameof(LoggerFileScope), fileName);
-    }
-
-    public static object Capture()
-    {
-        return new CapturedLoggerFileScope();
-    }
-
-    public static LoggerFileScope Restore(object captured)
-    {
-        if (captured is not CapturedLoggerFileScope capturedScope)
-        {
-            return null;
-        }
-        return new LoggerFileScope(capturedScope.FileName);
-    }
-
-    private sealed class CapturedLoggerFileScope
-    {
-        public string FileName { get; } = GetFileName();
-    }
+    private static void SetFileName(string fileName) => t_fileName.Value = fileName;
 }

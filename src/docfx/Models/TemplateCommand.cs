@@ -14,11 +14,8 @@ internal class TemplateCommand
     {
         public override int Execute(CommandContext context)
         {
-            Directory.GetDirectories(GetTemplateBaseDirectory())
-                .Select(Path.GetFileName)
-                .ToArray()
-                .WriteLinesToConsole(ConsoleColor.White);
-
+            foreach (var path in Directory.GetDirectories(GetTemplateBaseDirectory()))
+                Console.WriteLine(Path.GetFileName(path));
             return 0;
         }
     }

@@ -35,6 +35,7 @@
       <meta name="loc:themeAuto" content="{{__global.themeAuto}}">
       <meta name="loc:changeTheme" content="{{__global.changeTheme}}">
       <meta name="loc:copy" content="{{__global.copy}}">
+      <meta name="loc:downloadPdf" content="{{__global.downloadPdf}}">
     {{/redirect_url}}
   </head>
 
@@ -135,7 +136,7 @@
     <div class="container-xxl search-results" id="search-results"></div>
     {{/_enableSearch}}
 
-    <footer class="border-top">
+    <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
           {{{_appFooter}}}{{^_appFooter}}<span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>{{/_appFooter}}

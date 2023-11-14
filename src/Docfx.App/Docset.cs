@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Common;
-using Newtonsoft.Json.Linq;
+using Docfx.Pdf;
 
 namespace Docfx;
 
@@ -30,11 +30,7 @@ public static class Docset
     /// <returns>A task to await for build completion.</returns>
     public static Task Build(string configPath, BuildOptions options)
     {
-        return Exec<BuildJsonConfig>(
-            configPath,
-            options,
-            "build",
-            (config, exeOptions, configDirectory, outputDirectory) => RunBuild.Exec(config, exeOptions, configDirectory, outputDirectory));
+        return Exec(configPath, (config, configDirectory) => RunBuild.Exec(config.build, options, configDirectory));
     }
 
     /// <summary>
@@ -55,39 +51,39 @@ public static class Docset
     /// <returns>A task to await for build completion.</returns>
     public static Task Pdf(string configPath, BuildOptions options)
     {
-        return Exec<PdfJsonConfig>(
-            configPath,
-            options,
-            "pdf",
-            RunPdf.Exec);
+        return Exec(configPath, (config, configDirectory) =>
+        {
+            if (config.build is not null)
+                PdfBuilder.Run(config.build, configDirectory);
+
+            if (config.pdf is not null)
+                RunPdf.Exec(config.pdf, options, configDirectory);
+        });
     }
 
-    private static Task Exec<TConfig>(
-        string configPath,
-        BuildOptions options,
-        string elementKey,
-        Action<TConfig, BuildOptions, string, string> execAction)
+    internal static (DocfxConfig, string configDirectory) GetConfig(string configFile)
+    {
+        if (string.IsNullOrEmpty(configFile))
+            configFile = DataContracts.Common.Constants.ConfigFileName;
+
+        configFile = Path.GetFullPath(configFile);
+
+        if (!File.Exists(configFile))
+            throw new FileNotFoundException($"Cannot find config file {configFile}");
+
+        return (JsonUtility.Deserialize<DocfxConfig>(configFile), Path.GetDirectoryName(configFile));
+    }
+
+
+    private static Task Exec(string configPath, Action<DocfxConfig, string> action)
     {
         var consoleLogListener = new ConsoleLogListener();
         Logger.RegisterListener(consoleLogListener);
 
         try
         {
-            var configDirectory = Path.GetDirectoryName(Path.GetFullPath(configPath));
-
-            var defaultSerializer = JsonUtility.DefaultSerializer.Value;
-
-            var config = JObject.Parse(File.ReadAllText(configPath));
-
-            if (config.TryGetValue(elementKey, out var value))
-            {
-                execAction(value.ToObject<TConfig>(defaultSerializer), options, configDirectory, null);
-            }
-            else
-            {
-                Logger.LogError($"Unable to find '{elementKey}' in '{configPath}'.");
-            }
-
+            var (config, baseDirectory) = GetConfig(configPath);
+            action(config, baseDirectory);
             return Task.CompletedTask;
         }
         finally

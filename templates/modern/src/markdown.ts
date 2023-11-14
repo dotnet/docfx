@@ -2,9 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 import { breakWord, meta, loc, options } from './helper'
-import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
-import { getTheme } from './theme'
+import { getTheme, onThemeChange } from './theme'
 
 /**
  * Initialize markdown rendering.
@@ -16,13 +15,14 @@ export async function renderMarkdown() {
   renderLinks()
   renderTabs()
   renderCodeCopy()
-  renderClickableImage()
 
   await Promise.all([
-    renderAnchor(),
+    renderClickableImage(),
     renderMath(),
     renderMermaid()
   ])
+
+  onThemeChange(renderMermaid)
 }
 
 async function renderMath() {
@@ -32,14 +32,13 @@ async function renderMath() {
   }
 }
 
-let mermaidRenderCount = 0
-
 /**
  * Render mermaid diagrams.
  */
 async function renderMermaid() {
   const diagrams = document.querySelectorAll<HTMLElement>('pre code.lang-mermaid')
-  if (diagrams.length <= 0) {
+  const processedDiagrams = document.querySelectorAll<HTMLElement>('pre.mermaid[data-mermaid]')
+  if (diagrams.length <= 0 && processedDiagrams.length <= 0) {
     return
   }
 
@@ -47,18 +46,26 @@ async function renderMermaid() {
   const theme = getTheme() === 'dark' ? 'dark' : 'default'
 
   // Turn off deterministic ids on re-render
-  const deterministicIds = mermaidRenderCount === 0
   const { mermaid: mermaidOptions } = await options()
-  mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds, theme }, mermaidOptions))
-  mermaidRenderCount++
+  mermaid.initialize(Object.assign({ startOnLoad: false, theme }, mermaidOptions))
 
   const nodes = []
   diagrams.forEach(e => {
     // Rerender when elements becomes visible due to https://github.com/mermaid-js/mermaid/issues/1846
     if (e.offsetParent) {
       nodes.push(e.parentElement)
+      const code = e.innerHTML
       e.parentElement.classList.add('mermaid')
-      e.parentElement.innerHTML = e.innerHTML
+      e.parentElement.setAttribute('data-mermaid', code)
+      e.parentElement.innerHTML = code
+    }
+  })
+
+  processedDiagrams.forEach(e => {
+    if (e.offsetParent) {
+      e.removeAttribute('data-processed')
+      e.innerHTML = e.getAttribute('data-mermaid')
+      nodes.push(e)
     }
   })
 
@@ -87,7 +94,8 @@ function renderWordBreaks() {
  * Make images in articles clickable by wrapping the image in an anchor tag.
  * The image is clickable only if its size is larger than 200x200 and it is not already been wrapped in an anchor tag.
  */
-function renderClickableImage() {
+async function renderClickableImage() {
+  const { showLightbox } = await options()
   const MIN_CLICKABLE_IMAGE_SIZE = 200
   const imageLinks = Array.from(document.querySelectorAll<HTMLImageElement>('article a img[src]'))
 
@@ -112,6 +120,10 @@ function renderClickableImage() {
     }
 
     function shouldMakeClickable(): boolean {
+      if (showLightbox) {
+        return showLightbox(img)
+      }
+
       return img.naturalWidth > MIN_CLICKABLE_IMAGE_SIZE &&
         img.naturalHeight > MIN_CLICKABLE_IMAGE_SIZE &&
         !imageLinks.includes(img)
@@ -157,25 +169,6 @@ function renderLinks() {
       a.classList.add('external')
     }
   })
-}
-
-/**
- * Render anchor # for headings
- */
-async function renderAnchor() {
-  const anchors = new AnchorJs()
-  const { anchors: anchorsOptions } = await options()
-  anchors.options = Object.assign({
-    visible: 'hover',
-    icon: '#'
-  }, anchorsOptions)
-
-  anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
-
-  /* eslint-disable no-self-assign */
-  if (location.hash) {
-    location.href = location.href
-  }
 }
 
 /**

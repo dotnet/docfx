@@ -1,4 +1,7 @@
-﻿- name: Getting Started
+﻿pdfFileName: seed.pdf
+pdfCoverPage: pdf/cover.html
+items:
+- name: Getting Started
   href: docfx_getting_started.md
 - name: Engineering Docs
   expanded: true

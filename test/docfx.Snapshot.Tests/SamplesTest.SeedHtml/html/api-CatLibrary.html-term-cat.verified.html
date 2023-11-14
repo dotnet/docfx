@@ -27,6 +27,7 @@
       <meta name="loc:themeAuto" content="Auto">
       <meta name="loc:changeTheme" content="Change theme">
       <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
   <script type="module" src="./../public/docfx.min.js"></script><script>
     const theme = localStorage.getItem('theme') || 'auto'
     document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
@@ -60,7 +61,7 @@
               <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="nav-link dropdown-toggle active">
                 API Documentation
               </a>
-              <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/md/BuildFromAssembly.html">.NET API (markdown)</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
+              <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/md/BuildFromAssembly.html">.NET API (markdown)</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/apipage/BuildFromAssembly.html">.NET API (apipage)</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
             </li></ul> 
       <form class="icons">
         <a class="btn border-0" href="https://github.com/dotnet/docfx" title="GitHub"><i class="bi bi-github"></i></a><a class="btn border-0" href="https://twitter.com/" title="Twitter"><i class="bi bi-twitter"></i></a>
@@ -69,7 +70,7 @@
       <a class="btn border-0 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Change theme">
         <i class="bi bi-circle-half"></i>
       </a>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" href="#"><i class="bi bi-sun"></i> Light</a></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-moon"></i> Dark</a></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-circle-half"></i> Auto</a></li>
@@ -90,11 +91,13 @@
           </div>
           <div class="offcanvas-body">
             <nav class="toc" id="toc">
+      
       <form class="filter">
         <i class="bi bi-filter"></i>
         <input class="form-control" type="search" autocomplete="off" value="" placeholder="Filter by title" aria-label="Filter by title">
-      </form> <ul>
-        <li class="  ">
+      </form> 
+      <div class="flex-fill overflow-y-auto"><ul>
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromAssembly.html">Build<wbr>From<wbr>Assembly</a>
           <ul>
@@ -104,7 +107,7 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromCSharpSourceCode.html">Build<wbr>From<wbr>CSharp<wbr>Source<wbr>Code</a>
           <ul>
@@ -114,15 +117,15 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.html">Build<wbr>From<wbr>Project</a>
           <ul>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.html">Issue8540</a>
           <ul>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.A.html">A</a>
           <ul>
@@ -132,7 +135,7 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.B.html">B</a>
           <ul>
@@ -166,6 +169,11 @@
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue8948.html">Class1.<wbr>Issue8948</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue9260.html">Class1.<wbr>Issue9260</a>
           
         </li>
         <li class="  ">
@@ -219,7 +227,7 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromVBSourceCode.html">Build<wbr>From<wbr>VBSource<wbr>Code</a>
           <ul>
@@ -234,11 +242,11 @@
           
         </li></ul>
         </li>
-        <li class=" expanded active ">
+        <li class=" expander expanded active ">
           <span class="expand-stub"></span>
           <a class="  " href="http://localhost:8089/api/CatLibrary.html">Cat<wbr>Library</a>
           <ul>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.html">Core</a>
           <ul>
@@ -334,7 +342,7 @@
           
         </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expander ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/MRef.Demo.Enumeration.html">MRef.<wbr>Demo.<wbr>Enumeration</a>
           <ul>
@@ -343,7 +351,8 @@
           <a class=" nav-link " href="http://localhost:8089/api/MRef.Demo.Enumeration.ColorType.html">Color<wbr>Type</a>
           
         </li></ul>
-        </li></ul></nav>
+        </li></ul></div>
+      <div class="py-2 mb-md-4"><a class="pdf-link" href="http://localhost:8089/api/toc.pdf">Download PDF</a></div></nav>
           </div>
         </div>
       </div>
@@ -452,8 +461,13 @@
     </main>
 
     <div class="container-xxl search-results" id="search-results">
-        <div class="search-list">6 results for "cat"</div>
+        <div class="search-list">9 results for "cat"</div>
         <div class="sr-items">
+            <div class="sr-item">
+              <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../apipage/CatLibrary.ICat.html?q=cat">Interface I<b>Cat</b> | docfx seed website</a></div>
+              <div class="item-href">http:/localhost:8089/apipage/<b>Cat</b>Library.ICat.html</div>
+              <div class="item-brief">Interface I<b>Cat</b> Namespace CatLibrary Assembly CatLibrary.dll Cat's interface public interface ICat : IAnimal Implements IAnimal Extension Methods ICatExtension.Play(ICat, ContainersRefType.ColorType) ICatExtension.Sleep(ICat, long) eat eat event of cat. Every cat must implement this event. event EventHandler eat Event Type EventHandler...</div>
+            </div>
             <div class="sr-item">
               <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../md/CatLibrary.ICat.html?q=cat">Interface I<b>Cat</b> | docfx seed website</a></div>
               <div class="item-href">http:/localhost:8089/md/<b>Cat</b>Library.ICat.html</div>
@@ -463,6 +477,11 @@
               <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../api/CatLibrary.Cat-2.html?q=cat">Class <b>Cat</b>&lt;T, K&gt; | docfx seed website</a></div>
               <div class="item-href">http:/localhost:8089/api/<b>Cat</b>Library.Cat-2.html</div>
               <div class="item-brief">... used for this parameter. Inheritance object <b>Cat</b>&lt;T, K&gt; Implements ICat IAnimal Inherited Members object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Extension Methods ICatExtension.Play(ICat, ContainersRefType.ColorType) ICatExtension.Sleep(ICat, long) Examples Here's example of how to create an instance of this class. As T is limited with class and K is limited with struct. var a = new Cat(object, int)(); int catNumber = new int(); unsafe { a.GetFeetLength(catNumber); } As you see, here we bring in pointer so we need to add unsafe keyword. Remarks THIS is remarks overridden in MARKDWON file Constructors Cat() Default constructor. public Cat() Cat(string, out int, string, bool) It's a complex constructor. The parameter will have some attributes. public Cat(string nickName, out int age, string realName, bool isHealthy) Parameters nickName string it's string type. age int It's an out and ref parameter. realName str...</div>
+            </div>
+            <div class="sr-item">
+              <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../apipage/CatLibrary.Cat-2.html?q=cat">Class <b>Cat</b>&lt;T, K&gt; | docfx seed website</a></div>
+              <div class="item-href">http:/localhost:8089/apipage/<b>Cat</b>Library.Cat-2.html</div>
+              <div class="item-brief">Class <b>Cat</b>&lt;T, K&gt; Deprecated Namespace CatLibrary Assembly CatLibrary.dll Here's main class of this Demo. You can see mostly type of article within this class and you for more detail, please see the remarks. this class is a template class. It has two Generic parameter. they are: T and K. The extension method of this class can refer to ICatExtension class [Serializable] [Obsolete] public class Cat&lt;T, K&gt; : ICat, IAnimal where T : class, new() where K : struct Type Parameters T This type should be class and can new instance. K This ...</div>
             </div>
             <div class="sr-item">
               <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../md/CatLibrary.Cat-2.html?q=cat">Class <b>Cat</b>&lt;T, K&gt; | docfx seed website</a></div>
@@ -480,13 +499,18 @@
               <div class="item-brief">...ass I<b>Cat</b>Extension Namespace CatLibrary Assembly CatLibrary.dll It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class public static class ICatExtension Inheritance object ICatExtension Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Play(ICat, ColorType) Extension method to let cat play public static void Play(this ICat icat, ContainersRefType.ColorType toy) Parameters icat ICat Cat toy ContainersRefType.ColorType Something to play Sleep(ICat, long) Extension method hint that how long the cat can sleep. public static void Sleep(this ICat icat, long hours) Parameters icat ICat The type will be extended. hours long The length of sleep....</div>
             </div>
             <div class="sr-item">
+              <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../apipage/CatLibrary.ICatExtension.html?q=cat">Class I<b>Cat</b>Extension | docfx seed website</a></div>
+              <div class="item-href">http:/localhost:8089/apipage/<b>Cat</b>Library.ICatExtension.html</div>
+              <div class="item-brief">...<b>Cat</b>Extension Namespace CatLibrary Assembly CatLibrary.dll It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class public static class ICatExtension Inheritance object ICatExtension Inherited Members object.Equals(object?) object.Equals(object?, object?) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object?, object?) object.ToString() Methods Play(ICat, ColorType) Extension method to let cat play public static void Play(this ICat icat, ContainersRefType.ColorType toy) Parameters icat ICat Cat toy ContainersRefType.ColorType Something to play Sleep(ICat, long) Extension method hint that how long the cat can sleep. public static void Sleep(this ICat icat, long hours) Parameters icat ICat The type will be extended. hours long The length of sleep....</div>
+            </div>
+            <div class="sr-item">
               <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../md/CatLibrary.ICatExtension.html?q=cat">Class I<b>Cat</b>Extension | docfx seed website</a></div>
               <div class="item-href">http:/localhost:8089/md/<b>Cat</b>Library.ICatExtension.html</div>
               <div class="item-brief">...on Namespace: <b>Cat</b>Library Assembly: CatLibrary.dll It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class public static class ICatExtension Inheritance object ← ICatExtension Inherited Members object.Equals(object?), object.Equals(object?, object?), object.GetHashCode(), object.GetType(), object.MemberwiseClone(), object.ReferenceEquals(object?, object?), object.ToString() Methods Play(ICat, ColorType) Extension method to let cat play public static void Play(this ICat icat, ContainersRefType.ColorType toy) Parameters icat ICat Cat toy ContainersRefType.ColorType Something to play Sleep(ICat, long) Extension method hint that how long the cat can sleep. public static void Sleep(this ICat icat, long hours) Parameters icat ICat The type will be extended. hours long The length of sleep....</div>
             </div>
         </div> </div>
 
-    <footer class="border-top">
+    <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
           <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>

@@ -1,11 +1,14 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics;
+using System.Text.Json;
 using Docfx.Common;
 using Docfx.Exceptions;
 using Docfx.Plugins;
 using Microsoft.Build.Locator;
 using Newtonsoft.Json.Linq;
+using YamlDotNet.Serialization;
 
 namespace Docfx.Dotnet;
 
@@ -52,31 +55,32 @@ public static partial class DotnetApiCatalog
 
     internal static async Task Exec(MetadataJsonConfig config, DotnetApiOptions options, string configDirectory, string outputDirectory = null)
     {
+        var stopwatch = Stopwatch.StartNew();
+
         EnsureMSBuildLocator();
 
         try
         {
-            using (new LoggerPhaseScope("ExtractMetadata"))
+            string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
+
+            EnvironmentContext.SetBaseDirectory(configDirectory);
+
+            foreach (var item in config)
             {
-                string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
+                VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
+                EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
 
-                EnvironmentContext.SetBaseDirectory(configDirectory);
-
-                foreach (var item in config)
-                {
-                    VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
-                    EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
-
-                    await Build(ConvertConfig(item, configDirectory, outputDirectory), options);
-                }
-
-                VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
+                await Build(ConvertConfig(item, configDirectory, outputDirectory), options);
             }
+
+            VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
         }
         finally
         {
             EnvironmentContext.Clean();
         }
+
+        Logger.LogVerbose($".NET API done in {stopwatch.Elapsed}");
 
         async Task Build(ExtractMetadataConfig config, DotnetApiOptions options)
         {
@@ -85,8 +89,32 @@ public static partial class DotnetApiCatalog
             switch (config.OutputFormat)
             {
                 case MetadataOutputFormat.Markdown:
-                    Logger.LogWarning($"Markdown output format is experimental.");
-                    CreatePages(MarkdownWriter.Create, assemblies, config, options);
+#if NET7_0_OR_GREATER
+                    CreatePages(WriteMarkdown, assemblies, config, options);
+
+                    void WriteMarkdown(string outputFolder, string id, Build.ApiPage.ApiPage apiPage)
+                    {
+                        File.WriteAllText(Path.Combine(outputFolder, $"{id}.md"), Docfx.Build.ApiPage.ApiPageMarkdownTemplate.Render(apiPage));
+                    }
+#else
+                    Logger.LogError($"Markdown output format is only supported for docfx built against .NET 7 or greater.");
+#endif
+                    break;
+
+                case MetadataOutputFormat.ApiPage:
+#if NET7_0_OR_GREATER
+                    var serializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
+                    CreatePages(WriteYaml, assemblies, config, options);
+
+                    void WriteYaml(string outputFolder, string id, Build.ApiPage.ApiPage apiPage)
+                    {
+                        var json = JsonSerializer.Serialize(apiPage, Docfx.Build.ApiPage.ApiPage.JsonSerializerOptions);
+                        var obj = serializer.Deserialize(json);
+                        YamlUtility.Serialize(Path.Combine(outputFolder, $"{id}.yml"), obj, "YamlMime:ApiPage");
+                    }
+#else
+                    Logger.LogError($"ApiPage output format is only supported for docfx built against .NET 7 or greater.");
+#endif
                     break;
 
                 case MetadataOutputFormat.Mref:
@@ -137,6 +165,7 @@ public static partial class DotnetApiCatalog
             OutputFolder = outputFolder,
             CodeSourceBasePath = configModel?.CodeSourceBasePath,
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
+            DisableGitFeatures = configModel?.DisableGitFeatures ?? false,
             NoRestore = configModel?.NoRestore ?? false,
             NamespaceLayout = configModel?.NamespaceLayout ?? default,
             MemberLayout = configModel?.MemberLayout ?? default,

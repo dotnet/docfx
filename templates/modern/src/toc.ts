@@ -3,7 +3,7 @@
 
 import { TemplateResult, html, render } from 'lit-html'
 import { classMap } from 'lit-html/directives/class-map.js'
-import { breakWordLit, meta, isExternalHref, loc } from './helper'
+import { breakWordLit, meta, isExternalHref, loc, isSameURL } from './helper'
 
 export type TocNode = {
   name: string
@@ -24,7 +24,7 @@ export async function renderToc(): Promise<TocNode[]> {
   const disableTocFilter = meta('docfx:disabletocfilter') === 'true'
 
   const tocUrl = new URL(tocrel.replace(/.html$/gi, '.json'), window.location.href)
-  const { items } = await (await fetch(tocUrl)).json()
+  const { items, pdf, pdfFileName } = await (await fetch(tocUrl)).json()
 
   const tocFilterUrl = disableTocFilter ? '' : (localStorage?.getItem('tocFilterUrl') || '')
   let tocFilter = disableTocFilter ? '' : (localStorage?.getItem('tocFilter') || '')
@@ -48,6 +48,10 @@ export async function renderToc(): Promise<TocNode[]> {
     const lastActiveElement = activeElements[activeElements.length - 1]
     if (lastActiveElement) {
       lastActiveElement.scrollIntoView({ block: 'nearest' })
+      /* eslint-disable no-self-assign */
+      if (location.hash) {
+        location.href = location.href
+      }
     }
   }
 
@@ -62,7 +66,7 @@ export async function renderToc(): Promise<TocNode[]> {
     if (node.href) {
       const url = new URL(node.href, tocUrl)
       node.href = url.href
-      active = isExternalHref(url) ? false : normalizeUrlPath(url) === normalizeUrlPath(window.location)
+      active = isExternalHref(url) ? false : isSameURL(url, window.location)
       if (active) {
         if (node.items) {
           node.expanded = true
@@ -88,7 +92,10 @@ export async function renderToc(): Promise<TocNode[]> {
   }
 
   function renderToc() {
-    render(html`${renderTocFilter()} ${renderTocNodes(items) || renderNoFilterResult()}`, tocContainer)
+    render(html`
+      ${renderTocFilter()} 
+      <div class="flex-fill overflow-y-auto">${renderTocNodes(items) || renderNoFilterResult()}</div>
+      ${renderDownloadPdf()}`, tocContainer)
   }
 
   function renderTocNodes(nodes: TocNode[]): TemplateResult {
@@ -110,7 +117,7 @@ export async function renderToc(): Promise<TocNode[]> {
       const isExpanded = (tocFilter !== '' && expanded !== false && children != null) || expanded === true
 
       return html`
-        <li class=${classMap({ expanded: isExpanded, active: activeNodes.includes(node) })}>
+        <li class=${classMap({ expander: !isLeaf, expanded: isExpanded, active: activeNodes.includes(node) })}>
           ${isLeaf ? null : html`<span class='expand-stub' @click=${toggleExpand}></span>`}
           ${dom}
           ${children}
@@ -146,8 +153,8 @@ export async function renderToc(): Promise<TocNode[]> {
     return tocFilter === '' ? null : html`<div class='no-result'>${loc('searchNoResults', { query: tocFilter })}</div>`
   }
 
-  function normalizeUrlPath(url: { pathname: string }): string {
-    return url.pathname.replace(/\/index\.html$/gi, '/')
+  function renderDownloadPdf(): TemplateResult {
+    return pdf ? html`<div class="py-2 mb-md-4"><a class="pdf-link" href="${new URL(pdfFileName || 'toc.pdf', tocUrl)}">${loc('downloadPdf')}</a></div>` : null
   }
 }
 

@@ -6,7 +6,7 @@ namespace Docfx.HtmlToPdf;
 /// <summary>
 /// Represents a simple class for validating parameters and throwing exceptions.
 /// </summary>
-public static class Guard
+internal static class Guard
 {
     /// <summary>
     /// Validates argumentValue is not null and throws ArgumentNullException if it is null.

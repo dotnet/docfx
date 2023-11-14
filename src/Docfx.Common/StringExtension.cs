@@ -13,8 +13,7 @@ public static class StringExtension
 
     public static string BackSlashToForwardSlash(this string input)
     {
-        if (string.IsNullOrEmpty(input)) return null;
-        return input.Replace('\\', '/');
+        return input?.Replace('\\', '/');
     }
 
     public static string ToDelimitedString(this IEnumerable<string> input, string delimiter = ",")
@@ -25,23 +24,6 @@ public static class StringExtension
         }
 
         return string.Join(delimiter, input);
-    }
-
-    public static string GetNormalizedFullPathKey(this IEnumerable<string> list)
-    {
-        if (list == null) return null;
-
-        // make sure the order consistent
-        var normalizedPaths = GetNormalizedFullPathList(list);
-        return normalizedPaths.ToDelimitedString();
-    }
-
-    public static IEnumerable<string> GetNormalizedFullPathList(this IEnumerable<string> paths)
-    {
-        if (paths == null) return null;
-        return (from p in paths
-                where !string.IsNullOrEmpty(p)
-                select ToNormalizedFullPath(p)).Distinct().OrderBy(s => s);
     }
 
     /// <summary>

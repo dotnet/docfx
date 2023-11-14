@@ -1,8 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Immutable;
-
 namespace Docfx.Plugins;
 
 public class RootedFileAbstractLayer : IFileAbstractLayer
@@ -13,10 +11,6 @@ public class RootedFileAbstractLayer : IFileAbstractLayer
     {
         _impl = impl;
     }
-
-    public bool CanRead => true;
-
-    public bool CanWrite => true;
 
     public IEnumerable<string> GetAllInputFiles() => _impl.GetAllInputFiles();
 
@@ -58,12 +52,9 @@ public class RootedFileAbstractLayer : IFileAbstractLayer
         }
     }
 
-    public ImmutableDictionary<string, string> GetProperties(string file) =>
-        Path.IsPathRooted(file) ? ImmutableDictionary<string, string>.Empty : _impl.GetProperties(file);
-
     public string GetPhysicalPath(string file) =>
         Path.IsPathRooted(file) ? file : _impl.GetPhysicalPath(file);
 
-    public IEnumerable<string> GetExpectedPhysicalPath(string file) =>
-        Path.IsPathRooted(file) ? new[] { file } : _impl.GetExpectedPhysicalPath(file);
+    public string GetExpectedPhysicalPath(string file) =>
+        Path.IsPathRooted(file) ? file : _impl.GetExpectedPhysicalPath(file);
 }

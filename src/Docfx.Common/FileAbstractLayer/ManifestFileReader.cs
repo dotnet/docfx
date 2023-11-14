@@ -7,58 +7,57 @@ namespace Docfx.Common;
 
 public class ManifestFileReader : IFileReader
 {
-    public Manifest Manifest { get; }
-
-    public string ManifestFolder { get; }
+    private readonly Manifest _manifest;
+    private readonly string _manifestFolder;
+    private readonly Dictionary<string, OutputFileInfo> _files;
 
     public ManifestFileReader(Manifest manifest, string manifestFolder)
     {
         ArgumentNullException.ThrowIfNull(manifest);
 
-        Manifest = manifest;
-        ManifestFolder = manifestFolder;
+        _manifest = manifest;
+        _manifestFolder = manifestFolder;
+        _files = ToLookup(manifest);
+    }
+
+    internal static Dictionary<string, OutputFileInfo> ToLookup(Manifest manifest)
+    {
+        return (
+            from file in manifest.Files
+            from output in file.Output
+            group output.Value by output.Value.RelativePath)
+            .ToDictionary(g => g.Key, g => g.First());
     }
 
     public PathMapping? FindFile(RelativePath file)
     {
-        OutputFileInfo entry;
-        lock (Manifest)
+        lock (_manifest)
         {
-            entry = FindEntryInManifest(file.RemoveWorkingFolder());
+            if (!_files.TryGetValue(file.RemoveWorkingFolder(), out var entry))
+                return null;
+
+            return new PathMapping(file, entry.LinkToPath ?? Path.Combine(_manifestFolder, entry.RelativePath));
         }
-        if (entry == null)
-        {
-            return null;
-        }
-        return new PathMapping(file, entry.LinkToPath ?? Path.Combine(ManifestFolder, entry.RelativePath));
     }
 
     public IEnumerable<RelativePath> EnumerateFiles()
     {
-        lock (Manifest)
+        lock (_manifest)
         {
-            return (from f in Manifest.Files
+            return (from f in _manifest.Files
                     from ofi in f.Output.Values
                     select ((RelativePath)ofi.RelativePath).GetPathFromWorkingFolder()).Distinct().ToList();
         }
     }
 
-    public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file)
+    public string GetExpectedPhysicalPath(RelativePath file)
     {
-        OutputFileInfo entry;
-        lock (Manifest)
+        lock (_manifest)
         {
-            entry = FindEntryInManifest(file.RemoveWorkingFolder());
-        }
-        if (entry == null)
-        {
-            return Enumerable.Empty<string>();
-        }
-        return new[] { entry.LinkToPath ?? Path.Combine(ManifestFolder, entry.RelativePath) };
-    }
+            if (!_files.TryGetValue(file.RemoveWorkingFolder(), out var entry))
+                return null;
 
-    private OutputFileInfo FindEntryInManifest(string file)
-    {
-        return Manifest.FindOutputFileInfo(file);
+            return entry.LinkToPath ?? Path.Combine(_manifestFolder, entry.RelativePath);
+        }
     }
 }

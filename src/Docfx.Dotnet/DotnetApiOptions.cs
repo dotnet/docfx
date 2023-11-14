@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Docfx.Common.Git;
 using Microsoft.CodeAnalysis;
 
 #nullable enable
@@ -44,4 +45,10 @@ public class DotnetApiOptions
     /// Excluding a parent symbol exclude all child symbols underneath it.
     /// </summary>
     public Func<ISymbol, SymbolIncludeState>? IncludeAttribute { get; init; }
+
+    /// <summary>
+    /// Customizes the view source URL for files in a git repository.
+    /// Returns `null` to use built-in support for GitHub, Azure Repos, etc.
+    /// </summary>
+    public Func<GitSource, string?>? SourceUrl { get; init; }
 }

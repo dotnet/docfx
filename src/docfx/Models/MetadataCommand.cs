@@ -3,7 +3,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Docfx.Dotnet;
-using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
 namespace Docfx;
@@ -14,16 +13,16 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
     {
         return CommandHelper.Run(options, () =>
         {
-            var (config, baseDirectory) = CommandHelper.GetConfig<MetadataConfig>(options.Config);
+            var (config, baseDirectory) = Docset.GetConfig(options.Config);
             MergeOptionsToConfig(options, config);
-            DotnetApiCatalog.Exec(config.Item, new(), baseDirectory, options.OutputFolder).GetAwaiter().GetResult();
+            DotnetApiCatalog.Exec(config.metadata, new(), baseDirectory, options.OutputFolder).GetAwaiter().GetResult();
         });
     }
 
-    private static void MergeOptionsToConfig(MetadataCommandOptions options, MetadataConfig config)
+    private static void MergeOptionsToConfig(MetadataCommandOptions options, DocfxConfig config)
     {
         var msbuildProperties = ResolveMSBuildProperties(options);
-        foreach (var item in config.Item)
+        foreach (var item in config.metadata)
         {
             item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
             item.DisableGitFeatures |= options.DisableGitFeatures;
@@ -74,11 +73,5 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
         }
 
         return properties;
-    }
-
-    private sealed class MetadataConfig
-    {
-        [JsonProperty("metadata")]
-        public MetadataJsonConfig Item { get; set; }
     }
 }
