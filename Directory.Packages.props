@@ -32,7 +32,7 @@
     <PackageVersion Include="Spectre.Console.Cli" Version="0.47.0" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
     <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
-    <PackageVersion Include="System.Composition" Version="7.0.0" />
+    <PackageVersion Include="System.Composition" Version="8.0.0" />
     <PackageVersion Include="YamlDotNet" Version="13.7.1" />
     <!-- Test only -->
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
