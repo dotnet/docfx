@@ -48,9 +48,29 @@ This example uses [`peaceiris/actions-gh-pages`](https://github.com/marketplace/
 
 ```yaml
 # Your GitHub workflow file under .github/workflows/
+# Trigger the action on push to main
+on:
+  push:
+    branches:
+      - main
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+  
 jobs:
   publish-docs:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -63,11 +83,16 @@ jobs:
     - run: dotnet tool update -g docfx
     - run: docfx docfx_project/docfx.json
 
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: docs/_site
+        # Upload entire repository
+        path: 'docfx_project/_site'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
 ```
 
 ## Use the NuGet Library
