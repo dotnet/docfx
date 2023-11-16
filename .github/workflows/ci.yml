@@ -47,10 +47,9 @@ jobs:
     - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- docs/docfx.json
     - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-pages-artifact@v2
       if: matrix.os == 'ubuntu-latest'
       with:
-        name: site
         path: docs/_site
   
     - uses: actions/upload-artifact@v3
@@ -89,16 +88,14 @@ jobs:
   publish-docs:
     if: github.ref == 'refs/heads/main'
     needs: [test, snapshot]
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
     steps:
-    - uses: actions/download-artifact@v3
-      with:
-        name: site
-        path: site
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./site
+    - id: deployment
+      uses: actions/deploy-pages@v2
