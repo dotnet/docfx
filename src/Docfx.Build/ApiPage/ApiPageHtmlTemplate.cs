@@ -58,13 +58,15 @@ static class ApiPageHtmlTemplate
 
             var deprecated = DeprecatedBadge(value.deprecated);
             var deprecatedReason = DeprecatedReason(value.deprecated);
+            var preview = DeprecatedBadge(value.preview);
+            var previewReason = DeprecatedReason(value.preview);
             var titleHtml = deprecated is null ? Html($"{title}") : Html($"<span style='text-decoration: line-through'>{title}</span>");
 
             var src = string.IsNullOrEmpty(value.src)
                 ? default
                 : Html($" <a class='header-action link-secondary' title='View source' href='{value.src}'><i class='bi bi-code-slash'></i></a>");
 
-            return Html($"<h{level} class='section api' {attributes} id='{value.id}'>{titleHtml} {deprecated} {src}</h{level}> {deprecatedReason}");
+            return Html($"<h{level} class='section api' {attributes} id='{value.id}'>{titleHtml} {deprecated} {preview} {src}</h{level}> {deprecatedReason} {previewReason}");
         }
 
         HtmlTemplate? DeprecatedBadge(OneOf<bool, string>? value, string fontSize = ".5em")
@@ -83,6 +85,25 @@ static class ApiPageHtmlTemplate
         {
             return value?.Value is string ds && !string.IsNullOrEmpty(ds)
                 ? Html($"\n<div class='alert alert-warning' role='alert'>{UnsafeHtml(markup(ds))}</div>")
+                : default;
+        }
+
+        HtmlTemplate? PreviewBadge(OneOf<bool, string>? value, string fontSize = ".5em")
+        {
+            var isPreview = value?.Value switch
+            {
+                bool b when b => true,
+                string s => true,
+                _ => false,
+            };
+
+            return isPreview ? Html($" <span class='badge rounded-pill text-bg-info' style='font-size: {fontSize}; vertical-align: middle'>Preview</span>") : null;
+        }
+
+        HtmlTemplate PreviewReason(OneOf<bool, string>? value)
+        {
+            return value?.Value is string ds && !string.IsNullOrEmpty(ds)
+                ? Html($"\n<div class='alert alert-info' role='alert'>{UnsafeHtml(markup(ds))}</div>")
                 : default;
         }
 
@@ -120,6 +141,7 @@ static class ApiPageHtmlTemplate
         HtmlTemplate Parameter(Parameter parameter)
         {
             var deprecated = DeprecatedBadge(parameter.deprecated, ".875em");
+            var preview = DeprecatedBadge(parameter.preview, ".875em");
             var lineThrough = deprecated is not null ? UnsafeHtml(" style='text-decoration: line-through'") : default;
 
             var title = string.IsNullOrEmpty(parameter.name) ? default
@@ -129,9 +151,10 @@ static class ApiPageHtmlTemplate
 
             return Html(
                 $"""
-                <dt>{title} {Inline(parameter.type)} {deprecated}</dt>
+                <dt>{title} {Inline(parameter.type)} {deprecated} {preview}</dt>
                 <dd>
                 {DeprecatedReason(parameter.deprecated)}
+                {PreviewReason(parameter.preview)}
                 {(string.IsNullOrEmpty(parameter.description) ? default : UnsafeHtml(markup(parameter.description)))}
                 </dd>
                 """);

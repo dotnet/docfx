@@ -71,6 +71,7 @@ abstract class ApiBase
 {
     public string? id { get; init; }
     public OneOf<bool, string>? deprecated { get; init; }
+    public OneOf<bool, string>? preview { get; init; }
     public string? src { get; init; }
     public Dictionary<string, string>? metadata { get; init; }
 }
@@ -129,6 +130,7 @@ class Parameter
     public string? @default { get; init; }
     public string? description { get; init; }
     public OneOf<bool, string>? deprecated { get; init; }
+    public OneOf<bool, string>? preview { get; init; }
     public bool? optional { get; init; }
 }
 
