@@ -313,6 +313,67 @@
           "id": "CSharp12_PrimaryConstructors_CheckAccount",
           "hideTitleType": false,
           "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp12.RefReadOnlyParameters",
+          "isExtensionMethod": false,
+          "href": "CSharp12.RefReadOnlyParameters.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "RefReadOnlyParameters"
+            },
+            {
+              "lang": "vb",
+              "value": "RefReadOnlyParameters"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RefReadOnlyParameters"
+            },
+            {
+              "lang": "vb",
+              "value": "RefReadOnlyParameters"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.RefReadOnlyParameters"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.RefReadOnlyParameters"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.RefReadOnlyParameters\" text=\"RefReadOnlyParameters\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.RefReadOnlyParameters\" text=\"RefReadOnlyParameters\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "CSharp12_RefReadOnlyParameters",
+          "hideTitleType": false,
+          "hideSubtitle": false
         }
       ]
     },
