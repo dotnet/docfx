@@ -50,9 +50,12 @@ public class PrimaryConstructors
 
 public class CollectionExpressions
 {
-    public static int[] a = [1, 2, 3, 4, 5, 6, 7, 8];
+    static CollectionExpressions()
+    {
+        Span<int> b = ['a', 'b', 'c', 'd', 'e', 'f', 'h', 'i'];
+    }
 
-    public static Span<int> b  => ['a', 'b', 'c', 'd', 'e', 'f', 'h', 'i'];
+    public static int[] a = [1, 2, 3, 4, 5, 6, 7, 8];
 
     public static int[][] twoD = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
 }
@@ -75,4 +78,9 @@ public class DefaultLambdaParameters
 public struct InlineArrays
 {
     private int _element0;
+}
+
+public class RefReadOnlyParameters
+{
+    public void Foo(ref readonly int bar) { }
 }
