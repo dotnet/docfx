@@ -167,7 +167,7 @@
             },
             "id": "Value",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 171.0,
+            "startLine": 173.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -181,7 +181,7 @@
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">This is a regular enum value.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue9260_Value.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue9260.Value%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L172",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L174",
           "conceptual": "",
           "implements": "",
           "seealso": null,
@@ -301,7 +301,7 @@
             },
             "id": "OldAndUnusedValue",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 179.0,
+            "startLine": 181.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -322,7 +322,7 @@
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">This is old and unused. You shouldn't use it anymore.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue9260_OldAndUnusedValue.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue9260.OldAndUnusedValue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L180",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L182",
           "conceptual": "",
           "implements": "",
           "seealso": null,
@@ -442,7 +442,7 @@
             },
             "id": "OldAndUnusedValue2",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 188.0,
+            "startLine": 190.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -468,7 +468,7 @@
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">This is old and unused. You shouldn't use it anymore.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue9260_OldAndUnusedValue2.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue9260.OldAndUnusedValue2%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L189",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L191",
           "conceptual": "",
           "implements": "",
           "seealso": null,
@@ -522,7 +522,7 @@
     },
     "id": "Issue9260",
     "path": "dotnet/project/Project/Class1.cs",
-    "startLine": 163.0,
+    "startLine": 165.0,
     "endLine": 0.0
   },
   "assemblies": [
@@ -604,7 +604,7 @@
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue9260.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue9260%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L164",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L166",
   "summary": "",
   "remarks": "",
   "conceptual": "",

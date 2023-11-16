@@ -96,7 +96,7 @@ static class ApiPageMarkdownTemplate
         };
     }
 
-    private static string Escape(string text)
+    internal static string Escape(string text)
     {
         const string EscapeChars = "\\`*_{}[]()#+-!>~\"'";
 

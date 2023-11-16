@@ -1,5 +1,6 @@
 ﻿namespace BuildFromProject;
 
+[Experimental("DOCFX001", UrlFormat = "https://example.org/{0}")]
 public class Class1 : IClass1
 {
     public class Test<T> { }
@@ -148,6 +149,7 @@ public class Class1 : IClass1
     /// <summary>
     /// <see cref="IConfiguration"/> related helper and extension routines.
     /// </summary>
+    [Experimental("")]
     public void Issue1887() { }
 
     /// <summary>
@@ -189,4 +191,15 @@ public class Class1 : IClass1
         [Obsolete("Use Value")]
         OldAndUnusedValue2,
     }
+}
+
+class ExperimentalAttribute : Attribute
+{
+    public ExperimentalAttribute(string diagnosticId)
+    {
+        DiagnosticId = diagnosticId;
+    }
+
+    public string DiagnosticId { get; }
+    public string? UrlFormat { get; set; }
 }

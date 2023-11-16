@@ -126,13 +126,14 @@ partial class DotnetApiCatalog
                     : new GitSource(source.Remote.Repo, source.Remote.Branch, source.Remote.Path, source.StartLine + 1);
                 var src = git is null ? null : options.SourceUrl?.Invoke(git) ?? GitUtility.GetSourceUrl(git);
                 var deprecated = Deprecated(symbol);
+                var preview = Preview(symbol);
 
                 body.Add(level switch
                 {
-                    1 => (Api)new Api1 { api1 = title, id = id, src = src, deprecated = deprecated, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
-                    2 => (Api)new Api2 { api2 = title, id = id, src = src, deprecated = deprecated, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
-                    3 => (Api)new Api3 { api3 = title, id = id, src = src, deprecated = deprecated, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
-                    4 => (Api)new Api4 { api4 = title, id = id, src = src, deprecated = deprecated, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    1 => (Api)new Api1 { api1 = title, id = id, src = src, deprecated = deprecated, preview = preview, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    2 => (Api)new Api2 { api2 = title, id = id, src = src, deprecated = deprecated, preview = preview, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    3 => (Api)new Api3 { api3 = title, id = id, src = src, deprecated = deprecated, preview = preview, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    4 => (Api)new Api4 { api4 = title, id = id, src = src, deprecated = deprecated, preview = preview, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
                 });
             }
 
@@ -140,6 +141,24 @@ partial class DotnetApiCatalog
             {
                 if (symbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ObsoleteAttribute") is { } obsoleteAttribute)
                     return obsoleteAttribute.ConstructorArguments.FirstOrDefault().Value is string reason && !string.IsNullOrEmpty(reason) ? (OneOf<bool, string>?)reason : true;
+                return null;
+            }
+
+            OneOf<bool, string>? Preview(ISymbol symbol, ISymbol? originalSymbol = null)
+            {
+                if (symbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ExperimentalAttribute") is { } experimentalAttribute)
+                {
+                    var diagnosticId = ApiPageMarkdownTemplate.Escape(experimentalAttribute.ConstructorArguments.FirstOrDefault().Value as string ?? "");
+                    var urlFormat = experimentalAttribute.NamedArguments.FirstOrDefault(a => a.Key == "UrlFormat").Value.Value as string;
+                    var link = string.IsNullOrEmpty(urlFormat) ? diagnosticId : $"[{diagnosticId}]({ApiPageMarkdownTemplate.Escape(string.Format(urlFormat, diagnosticId))})";
+                    var message = $"'{originalSymbol ?? symbol}' is for evaluation purposes only and is subject to change or removal in future updates.";
+                    return string.IsNullOrEmpty(diagnosticId) ? message : $"{link}: {message}";
+                }
+
+                // Search containing namespace, module, assembly for named types
+                if (symbol.ContainingSymbol is not null && symbol.Kind is SymbolKind.NamedType or SymbolKind.Namespace or SymbolKind.NetModule or SymbolKind.Assembly)
+                    return Preview(symbol.ContainingSymbol, originalSymbol ?? symbol);
+
                 return null;
             }
 
@@ -592,6 +611,7 @@ partial class DotnetApiCatalog
                     {
                         name = item.Name, @default = $"{item.ConstantValue}",
                         deprecated = Deprecated(item),
+                        preview = Preview(item),
                         description = docs,
                     };
                 }
