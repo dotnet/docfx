@@ -121,7 +121,7 @@
             },
             "id": "Foo",
             "path": "src/CSharp12.cs",
-            "startLine": 61.0,
+            "startLine": 64.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -177,7 +177,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_DefaultLambdaParameters_Foo.md&value=---%0Auid%3A%20CSharp12.DefaultLambdaParameters.Foo%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L62",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L65",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -233,7 +233,7 @@
     },
     "id": "DefaultLambdaParameters",
     "path": "src/CSharp12.cs",
-    "startLine": 59.0,
+    "startLine": 62.0,
     "endLine": 0.0
   },
   "assemblies": [
@@ -814,7 +814,7 @@
   },
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_DefaultLambdaParameters.md&value=---%0Auid%3A%20CSharp12.DefaultLambdaParameters%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L60",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L63",
   "summary": "",
   "remarks": "",
   "conceptual": "",

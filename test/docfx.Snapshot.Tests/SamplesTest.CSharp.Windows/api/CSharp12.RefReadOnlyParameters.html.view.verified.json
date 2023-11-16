@@ -1,5 +1,5 @@
 ﻿{
-  "uid": "CSharp12.CollectionExpressions",
+  "uid": "CSharp12.RefReadOnlyParameters",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
@@ -51,113 +51,115 @@
   },
   "children": [
     {
-      "inField": true,
-      "typePropertyName": "inField",
-      "id": "fields",
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
       "children": [
         {
-          "uid": "CSharp12.CollectionExpressions.a",
+          "uid": "CSharp12.RefReadOnlyParameters.Foo(System.Int32@)",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "CSharp12.CollectionExpressions",
+          "parent": "CSharp12.RefReadOnlyParameters",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "a"
+              "value": "Foo(ref readonly int)"
             },
             {
               "lang": "vb",
-              "value": "a"
+              "value": "Foo(Integer)"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "CollectionExpressions.a"
+              "value": "RefReadOnlyParameters.Foo(ref readonly int)"
             },
             {
               "lang": "vb",
-              "value": "CollectionExpressions.a"
+              "value": "RefReadOnlyParameters.Foo(Integer)"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp12.CollectionExpressions.a"
+              "value": "CSharp12.RefReadOnlyParameters.Foo(ref readonly int)"
             },
             {
               "lang": "vb",
-              "value": "CSharp12.CollectionExpressions.a"
+              "value": "CSharp12.RefReadOnlyParameters.Foo(Integer)"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp12.CollectionExpressions.a\" text=\"a\"/>"
+              "value": "<xref uid=\"CSharp12.RefReadOnlyParameters.Foo(System.Int32@)\" text=\"Foo(ref readonly int)\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp12.CollectionExpressions.a\" text=\"a\"/>"
+              "value": "<xref uid=\"CSharp12.RefReadOnlyParameters.Foo(System.Int32@)\" text=\"Foo(ref readonly int)\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public static int[] a"
+                "value": "public void Foo(ref readonly int bar)"
               },
               {
                 "lang": "vb",
-                "value": "Public Shared a As Integer()"
+                "value": "Public Sub Foo(bar As Integer)"
               }
             ],
-            "return": null,
-            "fieldValue": {
-              "type": {
-                "uid": "System.Int32[]",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "int[]"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Integer()"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "int[]"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Integer()"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "int[]"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Integer()"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>[]"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>()"
-                  }
-                ]
+            "parameters": [
+              {
+                "id": "bar",
+                "type": {
+                  "uid": "System.Int32",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    }
+                  ]
+                }
               }
-            }
+            ]
           },
           "source": {
             "remote": {
@@ -165,161 +167,71 @@
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "a",
+            "id": "Foo",
             "path": "src/CSharp12.cs",
-            "startLine": 57.0,
+            "startLine": 84.0,
             "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
           ],
           "namespace": "CSharp12",
-          "level": 0.0,
-          "type": "field",
-          "summary": "",
-          "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_CollectionExpressions_a.md&value=---%0Auid%3A%20CSharp12.CollectionExpressions.a%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L58",
-          "remarks": "",
-          "conceptual": "",
-          "implements": "",
-          "example": "",
-          "seealso": null,
-          "id": "CSharp12_CollectionExpressions_a",
-          "hideTitleType": false,
-          "hideSubtitle": false
-        },
-        {
-          "uid": "CSharp12.CollectionExpressions.twoD",
-          "isEii": false,
-          "isExtensionMethod": false,
-          "parent": "CSharp12.CollectionExpressions",
-          "isExternal": false,
-          "name": [
-            {
-              "lang": "csharp",
-              "value": "twoD"
-            },
-            {
-              "lang": "vb",
-              "value": "twoD"
-            }
-          ],
-          "nameWithType": [
-            {
-              "lang": "csharp",
-              "value": "CollectionExpressions.twoD"
-            },
-            {
-              "lang": "vb",
-              "value": "CollectionExpressions.twoD"
-            }
-          ],
-          "fullName": [
-            {
-              "lang": "csharp",
-              "value": "CSharp12.CollectionExpressions.twoD"
-            },
-            {
-              "lang": "vb",
-              "value": "CSharp12.CollectionExpressions.twoD"
-            }
-          ],
-          "specName": [
-            {
-              "lang": "csharp",
-              "value": "<xref uid=\"CSharp12.CollectionExpressions.twoD\" text=\"twoD\"/>"
-            },
-            {
-              "lang": "vb",
-              "value": "<xref uid=\"CSharp12.CollectionExpressions.twoD\" text=\"twoD\"/>"
-            }
-          ],
-          "syntax": {
-            "content": [
+          "overload": {
+            "uid": "CSharp12.RefReadOnlyParameters.Foo*",
+            "name": [
               {
                 "lang": "csharp",
-                "value": "public static int[][] twoD"
+                "value": "Foo"
               },
               {
                 "lang": "vb",
-                "value": "Public Shared twoD As Integer()()"
+                "value": "Foo"
               }
             ],
-            "return": null,
-            "fieldValue": {
-              "type": {
-                "uid": "System.Int32[][]",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "int[][]"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Integer()()"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "int[][]"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Integer()()"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "int[][]"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Integer()()"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>[][]"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>()()"
-                  }
-                ]
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "RefReadOnlyParameters.Foo"
+              },
+              {
+                "lang": "vb",
+                "value": "RefReadOnlyParameters.Foo"
               }
-            }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp12.RefReadOnlyParameters.Foo"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp12.RefReadOnlyParameters.Foo"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp12.RefReadOnlyParameters.Foo*\" text=\"Foo\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp12.RefReadOnlyParameters.Foo*\" text=\"Foo\"/>"
+              }
+            ],
+            "id": "CSharp12_RefReadOnlyParameters_Foo_"
           },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp12.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "twoD",
-            "path": "src/CSharp12.cs",
-            "startLine": 59.0,
-            "endLine": 0.0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp12",
           "level": 0.0,
-          "type": "field",
+          "type": "method",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_CollectionExpressions_twoD.md&value=---%0Auid%3A%20CSharp12.CollectionExpressions.twoD%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L60",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_RefReadOnlyParameters_Foo_System_Int32__.md&value=---%0Auid%3A%20CSharp12.RefReadOnlyParameters.Foo(System.Int32%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L85",
           "remarks": "",
           "conceptual": "",
           "implements": "",
           "example": "",
           "seealso": null,
-          "id": "CSharp12_CollectionExpressions_twoD",
+          "id": "CSharp12_RefReadOnlyParameters_Foo_System_Int32__",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -333,31 +245,31 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "CollectionExpressions"
+      "value": "RefReadOnlyParameters"
     },
     {
       "lang": "vb",
-      "value": "CollectionExpressions"
+      "value": "RefReadOnlyParameters"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "CollectionExpressions"
+      "value": "RefReadOnlyParameters"
     },
     {
       "lang": "vb",
-      "value": "CollectionExpressions"
+      "value": "RefReadOnlyParameters"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "CSharp12.CollectionExpressions"
+      "value": "CSharp12.RefReadOnlyParameters"
     },
     {
       "lang": "vb",
-      "value": "CSharp12.CollectionExpressions"
+      "value": "CSharp12.RefReadOnlyParameters"
     }
   ],
   "type": "class",
@@ -367,9 +279,9 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "CollectionExpressions",
+    "id": "RefReadOnlyParameters",
     "path": "src/CSharp12.cs",
-    "startLine": 50.0,
+    "startLine": 82.0,
     "endLine": 0.0
   },
   "assemblies": [
@@ -426,11 +338,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class CollectionExpressions"
+        "value": "public class RefReadOnlyParameters"
       },
       {
         "lang": "vb",
-        "value": "Public Class CollectionExpressions"
+        "value": "Public Class RefReadOnlyParameters"
       }
     ]
   },
@@ -868,8 +780,8 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp12.CollectionExpressions.yml",
-  "_path": "api/CSharp12.CollectionExpressions.html",
+  "_key": "api/CSharp12.RefReadOnlyParameters.yml",
+  "_path": "api/CSharp12.RefReadOnlyParameters.html",
   "_rel": "../",
   "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -949,15 +861,15 @@
     "_shared": {}
   },
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_CollectionExpressions.md&value=---%0Auid%3A%20CSharp12.CollectionExpressions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L51",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_RefReadOnlyParameters.md&value=---%0Auid%3A%20CSharp12.RefReadOnlyParameters%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L83",
   "summary": "",
   "remarks": "",
   "conceptual": "",
   "implements": "",
   "example": "",
   "seealso": null,
-  "id": "CSharp12_CollectionExpressions",
+  "id": "CSharp12_RefReadOnlyParameters",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,
