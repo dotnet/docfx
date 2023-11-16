@@ -1,5 +1,6 @@
 ﻿namespace BuildFromProject;
 
+[Experimental("DOCFX001", UrlFormat = "https://example.org/{0}")]
 public class Class1 : IClass1
 {
     public class Test<T> { }

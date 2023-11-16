@@ -144,10 +144,21 @@ partial class DotnetApiCatalog
                 return null;
             }
 
-            OneOf<bool, string>? Preview(ISymbol symbol)
+            OneOf<bool, string>? Preview(ISymbol symbol, ISymbol? originalSymbol = null)
             {
                 if (symbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ExperimentalAttribute") is { } experimentalAttribute)
-                    return $"'{symbol}' is for evaluation purposes only and is subject to change or removal in future updates.";
+                {
+                    var diagnosticId = ApiPageMarkdownTemplate.Escape(experimentalAttribute.ConstructorArguments.FirstOrDefault().Value as string ?? "");
+                    var urlFormat = experimentalAttribute.NamedArguments.FirstOrDefault(a => a.Key == "UrlFormat").Value.Value as string;
+                    var link = string.IsNullOrEmpty(urlFormat) ? diagnosticId : $"[{diagnosticId}]({ApiPageMarkdownTemplate.Escape(string.Format(urlFormat, diagnosticId))})";
+                    var message = $"'{originalSymbol ?? symbol}' is for evaluation purposes only and is subject to change or removal in future updates.";
+                    return string.IsNullOrEmpty(diagnosticId) ? message : $"{link}: {message}";
+                }
+
+                // Search containing namespace, module, assembly for named types
+                if (symbol.ContainingSymbol is not null && symbol.Kind is SymbolKind.NamedType or SymbolKind.Namespace or SymbolKind.NetModule or SymbolKind.Assembly)
+                    return Preview(symbol.ContainingSymbol, originalSymbol ?? symbol);
+
                 return null;
             }
 
