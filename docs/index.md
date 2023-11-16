@@ -44,7 +44,7 @@ To publish to GitHub Pages:
 1. [Enable GitHub Pages](https://docs.github.com/en/pages/quickstart).
 2. Upload `_site` folder to GitHub Pages using GitHub actions.
 
-This example uses [`peaceiris/actions-gh-pages`](https://github.com/marketplace/actions/github-pages-action) to publish to the `gh-pages` branch:
+This is an example GitHub action file that publishes documents to the `gh-pages` branch:
 
 ```yaml
 # Your GitHub workflow file under .github/workflows/
@@ -78,10 +78,10 @@ jobs:
     - name: Dotnet Setup
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.x
+        dotnet-version: 8.x
 
     - run: dotnet tool update -g docfx
-    - run: docfx docfx_project/docfx.json
+    - run: docfx <docfx-project-path>/docfx.json
 
     - name: Setup Pages
       uses: actions/configure-pages@v3
@@ -89,7 +89,7 @@ jobs:
       uses: actions/upload-pages-artifact@v2
       with:
         # Upload entire repository
-        path: 'docfx_project/_site'
+        path: '<docfx-project-path>/_site'
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v2
@@ -100,7 +100,7 @@ jobs:
 You can also use docfx as a NuGet library:
 
 ```xml
-<PackageReference Include="Docfx.App" Version="2.70.0" />
+<PackageReference Include="Docfx.App" Version="2.73.2" />
 ```
 
 Then build a docset using:
