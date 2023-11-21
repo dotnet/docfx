@@ -30,13 +30,13 @@
   "wordCount": 521.0,
   "_key": "articles/engineering_guidelines.md",
   "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
+  "_navPath": "toc.json",
+  "_navRel": "../toc.json",
   "_path": "articles/engineering_guidelines.html",
   "_rel": "../",
   "_tocKey": "~/articles/toc.yml",
-  "_tocPath": "articles/toc.html",
-  "_tocRel": "toc.html",
+  "_tocPath": "articles/toc.json",
+  "_tocRel": "toc.json",
   "_disableToc": false,
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/articles/engineering_guidelines.md/#L1"
 }
