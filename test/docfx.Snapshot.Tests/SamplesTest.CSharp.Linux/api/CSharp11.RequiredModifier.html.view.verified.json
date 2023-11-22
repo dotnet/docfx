@@ -1141,8 +1141,8 @@
   "_path": "api/CSharp11.RequiredModifier.html",
   "_rel": "../",
   "_tocKey": "~/api/toc.yml",
-  "_tocPath": "api/toc.html",
-  "_tocRel": "toc.html",
+  "_tocPath": "api/toc.json",
+  "_tocRel": "toc.json",
   "__global": {
     "namespacesInSubtitle": "Namespaces",
     "classesInSubtitle": "Classes",

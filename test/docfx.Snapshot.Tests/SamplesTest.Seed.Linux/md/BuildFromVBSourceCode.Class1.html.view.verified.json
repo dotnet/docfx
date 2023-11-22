@@ -30,13 +30,13 @@
   "wordCount": 96.0,
   "_key": "obj/md/BuildFromVBSourceCode.Class1.md",
   "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
+  "_navPath": "toc.json",
+  "_navRel": "../toc.json",
   "_path": "md/BuildFromVBSourceCode.Class1.html",
   "_rel": "../",
   "_tocKey": "~/obj/md/toc.yml",
-  "_tocPath": "md/toc.html",
-  "_tocRel": "toc.html",
+  "_tocPath": "md/toc.json",
+  "_tocRel": "toc.json",
   "_disableToc": false,
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromVBSourceCode.Class1.md/#L1"
 }
