@@ -30,13 +30,13 @@
   "wordCount": 2.0,
   "_key": "obj/md/MRef.md",
   "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
+  "_navPath": "toc.json",
+  "_navRel": "../toc.json",
   "_path": "md/MRef.html",
   "_rel": "../",
   "_tocKey": "~/obj/md/toc.yml",
-  "_tocPath": "md/toc.html",
-  "_tocRel": "toc.html",
+  "_tocPath": "md/toc.json",
+  "_tocRel": "toc.json",
   "_disableToc": false,
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/MRef.md/#L1"
 }

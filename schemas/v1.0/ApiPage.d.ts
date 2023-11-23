@@ -36,6 +36,9 @@ type Api = (
   /** Is this API deprecated, or the deprecation reason in markdown format */
   deprecated?: boolean | string;
 
+  /** Is this API experimental, or the preview disclaimer text */
+  preview?: boolean | string;
+
   /** API source URL */
   src?: string;
 
@@ -85,6 +88,9 @@ type Param = {
 
   /** Is this parameter deprecated, or the deprecation reason */
   deprecated?: boolean | string;
+
+  /** Is this parameter experimental, or the preview disclaimer text */
+  preview?: boolean | string;
 
   /** Is this parameter optional? */
   optional?: boolean;

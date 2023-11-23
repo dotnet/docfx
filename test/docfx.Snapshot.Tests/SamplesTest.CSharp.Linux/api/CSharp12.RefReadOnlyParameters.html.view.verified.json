@@ -1,50 +1,50 @@
 ﻿{
-  "uid": "CSharp9.FunctionPointers",
+  "uid": "CSharp12.RefReadOnlyParameters",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "CSharp9",
+    "uid": "CSharp12",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "CSharp9.html",
+    "href": "CSharp12.html",
     "name": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp12"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp12"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp12"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp12"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp12"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp12"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
       }
     ],
     "level": 0.0
@@ -56,316 +56,105 @@
       "id": "methods",
       "children": [
         {
-          "uid": "CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)",
+          "uid": "CSharp12.RefReadOnlyParameters.Foo(System.Int32@)",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "CSharp9.FunctionPointers",
+          "parent": "CSharp12.RefReadOnlyParameters",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)"
+              "value": "Foo(ref readonly int)"
             },
             {
               "lang": "vb",
-              "value": "Example(Action(Of Integer), , , , , )"
+              "value": "Foo(Integer)"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "FunctionPointers.Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)"
+              "value": "RefReadOnlyParameters.Foo(ref readonly int)"
             },
             {
               "lang": "vb",
-              "value": "FunctionPointers.Example(Action(Of Integer), , , , , )"
+              "value": "RefReadOnlyParameters.Foo(Integer)"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp9.FunctionPointers.Example(System.Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)"
+              "value": "CSharp12.RefReadOnlyParameters.Foo(ref readonly int)"
             },
             {
               "lang": "vb",
-              "value": "CSharp9.FunctionPointers.Example(System.Action(Of Integer), , , , , )"
+              "value": "CSharp12.RefReadOnlyParameters.Foo(Integer)"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;int&gt;, delegate*&lt;int, void&gt;, delegate*&lt;int, int&gt;, delegate* unmanaged&lt;int, int&gt;, delegate* unmanaged[Cdecl]&lt;int, int&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;int, int&gt;)\"/>"
+              "value": "<xref uid=\"CSharp12.RefReadOnlyParameters.Foo(System.Int32@)\" text=\"Foo(ref readonly int)\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;int&gt;, delegate*&lt;int, void&gt;, delegate*&lt;int, int&gt;, delegate* unmanaged&lt;int, int&gt;, delegate* unmanaged[Cdecl]&lt;int, int&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;int, int&gt;)\"/>"
+              "value": "<xref uid=\"CSharp12.RefReadOnlyParameters.Foo(System.Int32@)\" text=\"Foo(ref readonly int)\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public static void Example(Action<int> a, delegate*<int, void> b, delegate*<int, int> c, delegate* unmanaged<int, int> d, delegate* unmanaged[Cdecl]<int, int> e, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int> f)"
+                "value": "public void Foo(ref readonly int bar)"
               },
               {
                 "lang": "vb",
-                "value": "Public Shared Sub Example(a As Action(Of Integer), b As , c As , d As , e As , f As )"
+                "value": "Public Sub Foo(bar As Integer)"
               }
             ],
             "parameters": [
               {
-                "id": "a",
+                "id": "bar",
                 "type": {
-                  "uid": "System.Action{System.Int32}",
-                  "definition": "System.Action`1",
+                  "uid": "System.Int32",
                   "name": [
                     {
                       "lang": "csharp",
-                      "value": "Action<int>"
+                      "value": "int"
                     },
                     {
                       "lang": "vb",
-                      "value": "Action(Of Integer)"
+                      "value": "Integer"
                     }
                   ],
                   "nameWithType": [
                     {
                       "lang": "csharp",
-                      "value": "Action<int>"
+                      "value": "int"
                     },
                     {
                       "lang": "vb",
-                      "value": "Action(Of Integer)"
+                      "value": "Integer"
                     }
                   ],
                   "fullName": [
                     {
                       "lang": "csharp",
-                      "value": "System.Action<int>"
+                      "value": "int"
                     },
                     {
                       "lang": "vb",
-                      "value": "System.Action(Of Integer)"
+                      "value": "Integer"
                     }
                   ],
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.action-1\">Action</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
                     },
                     {
                       "lang": "vb",
-                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.action-1\">Action</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>)"
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "b",
-                "type": {
-                  "uid": "delegate*<int, void>",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate*<int, void>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate*<int, void>"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate*<int, void>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate*<int, void>"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate*<int, void>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate*<int, void>"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate*&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.void\">void</a>&gt;"
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "c",
-                "type": {
-                  "uid": "delegate*<int, int>",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate*<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate*<int, int>"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate*<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate*<int, int>"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate*<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate*<int, int>"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate*&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "d",
-                "type": {
-                  "uid": "delegate* unmanaged<int, int>",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate* unmanaged<int, int>"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate* unmanaged<int, int>"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate* unmanaged<int, int>"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "e",
-                "type": {
-                  "uid": "delegate* unmanaged[Cdecl]<int, int>",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged[Cdecl]<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate* unmanaged[Cdecl]<int, int>"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged[Cdecl]<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate* unmanaged[Cdecl]<int, int>"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged[Cdecl]<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate* unmanaged[Cdecl]<int, int>"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged[<xref uid=\".(System.Int32)\" text=\"Cdecl\"/>]&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "f",
-                "type": {
-                  "uid": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "delegate* unmanaged[<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.callconvstdcall\">Stdcall</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.callconvsuppressgctransition\">SuppressGCTransition</a>]&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
                     }
                   ]
                 }
@@ -374,75 +163,75 @@
           },
           "source": {
             "remote": {
-              "path": "samples/csharp/src/CSharp9.cs",
+              "path": "samples/csharp/src/CSharp12.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "Example",
-            "path": "src/CSharp9.cs",
-            "startLine": 29.0,
+            "id": "Foo",
+            "path": "src/CSharp12.cs",
+            "startLine": 84.0,
             "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
           ],
-          "namespace": "CSharp9",
+          "namespace": "CSharp12",
           "overload": {
-            "uid": "CSharp9.FunctionPointers.Example*",
+            "uid": "CSharp12.RefReadOnlyParameters.Foo*",
             "name": [
               {
                 "lang": "csharp",
-                "value": "Example"
+                "value": "Foo"
               },
               {
                 "lang": "vb",
-                "value": "Example"
+                "value": "Foo"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "FunctionPointers.Example"
+                "value": "RefReadOnlyParameters.Foo"
               },
               {
                 "lang": "vb",
-                "value": "FunctionPointers.Example"
+                "value": "RefReadOnlyParameters.Foo"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "CSharp9.FunctionPointers.Example"
+                "value": "CSharp12.RefReadOnlyParameters.Foo"
               },
               {
                 "lang": "vb",
-                "value": "CSharp9.FunctionPointers.Example"
+                "value": "CSharp12.RefReadOnlyParameters.Foo"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"CSharp9.FunctionPointers.Example*\" text=\"Example\"/>"
+                "value": "<xref uid=\"CSharp12.RefReadOnlyParameters.Foo*\" text=\"Foo\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"CSharp9.FunctionPointers.Example*\" text=\"Example\"/>"
+                "value": "<xref uid=\"CSharp12.RefReadOnlyParameters.Foo*\" text=\"Foo\"/>"
               }
             ],
-            "id": "CSharp9_FunctionPointers_Example_"
+            "id": "CSharp12_RefReadOnlyParameters_Foo_"
           },
           "level": 0.0,
           "type": "method",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_FunctionPointers_Example_System_Action_System_Int32_______.md&value=---%0Auid%3A%20CSharp9.FunctionPointers.Example(System.Action%7BSystem.Int32%7D%2C%2C%2C%2C%2C)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L30",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_RefReadOnlyParameters_Foo_System_Int32__.md&value=---%0Auid%3A%20CSharp12.RefReadOnlyParameters.Foo(System.Int32%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L85",
           "remarks": "",
           "conceptual": "",
           "implements": "",
           "example": "",
           "seealso": null,
-          "id": "CSharp9_FunctionPointers_Example_System_Action_System_Int32_______",
+          "id": "CSharp12_RefReadOnlyParameters_Foo_System_Int32__",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -456,91 +245,91 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "FunctionPointers"
+      "value": "RefReadOnlyParameters"
     },
     {
       "lang": "vb",
-      "value": "FunctionPointers"
+      "value": "RefReadOnlyParameters"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "FunctionPointers"
+      "value": "RefReadOnlyParameters"
     },
     {
       "lang": "vb",
-      "value": "FunctionPointers"
+      "value": "RefReadOnlyParameters"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "CSharp9.FunctionPointers"
+      "value": "CSharp12.RefReadOnlyParameters"
     },
     {
       "lang": "vb",
-      "value": "CSharp9.FunctionPointers"
+      "value": "CSharp12.RefReadOnlyParameters"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/csharp/src/CSharp9.cs",
+      "path": "samples/csharp/src/CSharp12.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "FunctionPointers",
-    "path": "src/CSharp9.cs",
-    "startLine": 27.0,
+    "id": "RefReadOnlyParameters",
+    "path": "src/CSharp12.cs",
+    "startLine": 82.0,
     "endLine": 0.0
   },
   "assemblies": [
     "CSharp"
   ],
   "namespace": {
-    "uid": "CSharp9",
+    "uid": "CSharp12",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "CSharp9.html",
+    "href": "CSharp12.html",
     "name": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp12"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp12"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp12"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp12"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp12"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp12"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
       }
     ],
     "level": 0.0
@@ -549,11 +338,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class FunctionPointers"
+        "value": "public class RefReadOnlyParameters"
       },
       {
         "lang": "vb",
-        "value": "Public Class FunctionPointers"
+        "value": "Public Class RefReadOnlyParameters"
       }
     ]
   },
@@ -991,8 +780,8 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp9.FunctionPointers.yml",
-  "_path": "api/CSharp9.FunctionPointers.html",
+  "_key": "api/CSharp12.RefReadOnlyParameters.yml",
+  "_path": "api/CSharp12.RefReadOnlyParameters.html",
   "_rel": "../",
   "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.json",
@@ -1072,15 +861,15 @@
     "_shared": {}
   },
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_FunctionPointers.md&value=---%0Auid%3A%20CSharp9.FunctionPointers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L28",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_RefReadOnlyParameters.md&value=---%0Auid%3A%20CSharp12.RefReadOnlyParameters%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L83",
   "summary": "",
   "remarks": "",
   "conceptual": "",
   "implements": "",
   "example": "",
   "seealso": null,
-  "id": "CSharp9_FunctionPointers",
+  "id": "CSharp12_RefReadOnlyParameters",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

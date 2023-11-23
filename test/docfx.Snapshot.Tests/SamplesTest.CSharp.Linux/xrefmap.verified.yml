@@ -774,19 +774,6 @@ references:
   commentId: F:CSharp12.CollectionExpressions.a
   fullName: CSharp12.CollectionExpressions.a
   nameWithType: CollectionExpressions.a
-- uid: CSharp12.CollectionExpressions.b
-  name: b
-  href: api/CSharp12.CollectionExpressions.html#CSharp12_CollectionExpressions_b
-  commentId: P:CSharp12.CollectionExpressions.b
-  fullName: CSharp12.CollectionExpressions.b
-  nameWithType: CollectionExpressions.b
-- uid: CSharp12.CollectionExpressions.b*
-  name: b
-  href: api/CSharp12.CollectionExpressions.html#CSharp12_CollectionExpressions_b_
-  commentId: Overload:CSharp12.CollectionExpressions.b
-  isSpec: "True"
-  fullName: CSharp12.CollectionExpressions.b
-  nameWithType: CollectionExpressions.b
 - uid: CSharp12.CollectionExpressions.twoD
   name: twoD
   href: api/CSharp12.CollectionExpressions.html#CSharp12_CollectionExpressions_twoD
@@ -1008,6 +995,28 @@ references:
   commentId: F:CSharp12.PrimaryConstructors.Distance.Magnitude
   fullName: CSharp12.PrimaryConstructors.Distance.Magnitude
   nameWithType: PrimaryConstructors.Distance.Magnitude
+- uid: CSharp12.RefReadOnlyParameters
+  name: RefReadOnlyParameters
+  href: api/CSharp12.RefReadOnlyParameters.html
+  commentId: T:CSharp12.RefReadOnlyParameters
+  fullName: CSharp12.RefReadOnlyParameters
+  nameWithType: RefReadOnlyParameters
+- uid: CSharp12.RefReadOnlyParameters.Foo(System.Int32@)
+  name: Foo(ref readonly int)
+  href: api/CSharp12.RefReadOnlyParameters.html#CSharp12_RefReadOnlyParameters_Foo_System_Int32__
+  commentId: M:CSharp12.RefReadOnlyParameters.Foo(System.Int32@)
+  name.vb: Foo(Integer)
+  fullName: CSharp12.RefReadOnlyParameters.Foo(ref readonly int)
+  fullName.vb: CSharp12.RefReadOnlyParameters.Foo(Integer)
+  nameWithType: RefReadOnlyParameters.Foo(ref readonly int)
+  nameWithType.vb: RefReadOnlyParameters.Foo(Integer)
+- uid: CSharp12.RefReadOnlyParameters.Foo*
+  name: Foo
+  href: api/CSharp12.RefReadOnlyParameters.html#CSharp12_RefReadOnlyParameters_Foo_
+  commentId: Overload:CSharp12.RefReadOnlyParameters.Foo
+  isSpec: "True"
+  fullName: CSharp12.RefReadOnlyParameters.Foo
+  nameWithType: RefReadOnlyParameters.Foo
 - uid: CSharp8
   name: CSharp8
   href: api/CSharp8.html

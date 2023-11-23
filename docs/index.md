@@ -44,13 +44,33 @@ To publish to GitHub Pages:
 1. [Enable GitHub Pages](https://docs.github.com/en/pages/quickstart).
 2. Upload `_site` folder to GitHub Pages using GitHub actions.
 
-This example uses [`peaceiris/actions-gh-pages`](https://github.com/marketplace/actions/github-pages-action) to publish to the `gh-pages` branch:
+This is an example GitHub action file that publishes documents to the `gh-pages` branch:
 
 ```yaml
 # Your GitHub workflow file under .github/workflows/
+# Trigger the action on push to main
+on:
+  push:
+    branches:
+      - main
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+  
 jobs:
   publish-docs:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -58,16 +78,21 @@ jobs:
     - name: Dotnet Setup
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.x
+        dotnet-version: 8.x
 
     - run: dotnet tool update -g docfx
-    - run: docfx docfx_project/docfx.json
+    - run: docfx <docfx-project-path>/docfx.json
 
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: docs/_site
+        # Upload entire repository
+        path: '<docfx-project-path>/_site'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
 ```
 
 ## Use the NuGet Library
@@ -75,7 +100,7 @@ jobs:
 You can also use docfx as a NuGet library:
 
 ```xml
-<PackageReference Include="Docfx.App" Version="2.70.0" />
+<PackageReference Include="Docfx.App" Version="2.73.2" />
 ```
 
 Then build a docset using:
