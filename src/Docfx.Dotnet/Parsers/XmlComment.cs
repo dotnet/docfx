@@ -106,7 +106,7 @@ internal class XmlComment
         // Quick turnaround for badly formed XML comment
         if (xml.StartsWith("<!-- Badly formed XML comment ignored for member ", StringComparison.Ordinal))
         {
-            Logger.LogWarning($"Invalid triple slash comment is ignored: {xml}");
+            Logger.LogWarning($"Invalid XML comment: {xml}", code: "InvalidXmlComment");
             return null;
         }
         try
@@ -360,7 +360,7 @@ internal class XmlComment
                     }
                 }
 
-                Logger.Log(LogLevel.Warning, $"Invalid cref value \"{cref}\" found in XML documentation comment {detailedInfo}.");
+                Logger.Log(LogLevel.Warning, $"Invalid cref value \"{cref}\" found in XML documentation comment {detailedInfo}.", code: "InvalidCref");
 
                 if (cref.StartsWith("!:"))
                 {

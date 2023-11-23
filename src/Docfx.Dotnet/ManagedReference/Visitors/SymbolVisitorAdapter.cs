@@ -727,7 +727,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             var path = Path.GetFullPath(Path.Combine(basePath, source));
             if (!File.Exists(path))
             {
-                Logger.LogWarning($"Source file '{path}' not found.");
+                Logger.LogWarning($"Source file '{path}' not found.", code: "CodeNotFound");
                 return null;
             }
 
