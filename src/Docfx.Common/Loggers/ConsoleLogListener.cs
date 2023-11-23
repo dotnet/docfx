@@ -48,6 +48,8 @@ public sealed class ConsoleLogListener : ILoggerListener
         {
             if (level >= LogLevel.Warning)
                 message.Append($"{level.ToString().ToLowerInvariant()}: ");
+            if (!string.IsNullOrEmpty(item.Code))
+                message.Append($"{item.Code}: ");
         }
 
         message.Append(item.Message);

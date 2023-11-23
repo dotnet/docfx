@@ -71,7 +71,11 @@ public static class Docset
         if (!File.Exists(configFile))
             throw new FileNotFoundException($"Cannot find config file {configFile}");
 
-        return (JsonUtility.Deserialize<DocfxConfig>(configFile), Path.GetDirectoryName(configFile));
+        var config = JsonUtility.Deserialize<DocfxConfig>(configFile);
+
+        Logger.Rules = config.rules;
+
+        return (config, Path.GetDirectoryName(configFile));
     }
 
 

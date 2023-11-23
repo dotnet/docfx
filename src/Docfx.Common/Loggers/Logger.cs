@@ -18,6 +18,7 @@ public static class Logger
     private static int _errorCount = 0;
     public static volatile LogLevel LogLevelThreshold = LogLevel.Info;
     public static volatile bool WarningsAsErrors = false;
+    public static volatile Dictionary<string, LogLevel> Rules;
 
     public static void RegisterListener(ILoggerListener listener)
     {
@@ -45,8 +46,13 @@ public static class Logger
         _syncListener.RemoveAllListeners();
     }
 
-    public static void Log(ILogItem item)
+    private static void Log(LogItem item)
     {
+        if (Rules is not null && !string.IsNullOrEmpty(item.Code) && Rules.TryGetValue(item.Code, out var level))
+        {
+            item.LogLevel = level;
+        }
+
         if (item.LogLevel < LogLevelThreshold)
         {
             return;

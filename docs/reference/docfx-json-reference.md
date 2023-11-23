@@ -10,6 +10,20 @@ The `docfx.json` file indicates that the directory is the root of a docfx projec
 }
 ```
 
+## Global properties 
+
+### `rules`
+
+Overrides default log message severity level:
+
+```json
+{
+  "rules": {
+    "InvalidHref": "Info"
+  }
+}
+```
+
 ## `build`
 
 Configuration options that are applied for `docfx build` command:
