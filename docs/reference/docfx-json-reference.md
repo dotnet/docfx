@@ -14,12 +14,12 @@ The `docfx.json` file indicates that the directory is the root of a docfx projec
 
 ### `rules`
 
-Overrides default log message severity level:
+Overrides default log message severity level. Key is the log code, supported values are `verbose`, `info`, `suggestion`, `warning`, `error`:
 
 ```json
 {
   "rules": {
-    "InvalidHref": "Info"
+    "InvalidHref": "info"
   }
 }
 ```
