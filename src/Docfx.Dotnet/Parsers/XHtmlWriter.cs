@@ -5,7 +5,7 @@
 
 namespace Docfx.Common;
 
-public class XHtmlWriter : XmlWriter
+class XHtmlWriter : XmlWriter
 {
     private static HashSet<string> _voidElements;
     private string _currentElement;
@@ -15,7 +15,7 @@ public class XHtmlWriter : XmlWriter
 
     public XHtmlWriter(TextWriter writer)
     {
-        _writer = Create(writer);
+        _writer = Create(writer, new() { OmitXmlDeclaration = true });
         // void element (ref: http://www.w3.org/TR/html-markup/syntax.html)
         _voidElements = new HashSet<string> { "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr" };
     }

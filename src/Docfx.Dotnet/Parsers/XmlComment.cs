@@ -68,7 +68,8 @@ internal class XmlComment
         }
 
         // Transform triple slash comment
-        var doc = XmlCommentTransformer.Transform(xml);
+        xml = XmlCommentTransformer.Transform(xml);
+        var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo);
 
         _context = context;
 
@@ -139,9 +140,9 @@ internal class XmlComment
                 continue;
             }
 
-            var indent = ((IXmlLineInfo)node).LinePosition - 2;
+            var indent = new string(' ', ((IXmlLineInfo)node).LinePosition - 2);
             var (lang, value) = ResolveCodeSource(node, context);
-            value = TrimEachLine(value ?? node.Value, new(' ', indent));
+            value = TrimEachLine(value ?? node.Value, indent);
             var code = new XElement("code", value);
 
             if (node.Attribute("language") is { } languageAttribute)
@@ -155,7 +156,18 @@ internal class XmlComment
             }
 
             code.SetAttributeValue("class", $"lang-{lang}");
-            node.ReplaceWith(new XElement("pre", code));
+
+            if (node.PreviousNode is null)
+            {
+                // Xml writer formats <pre><code> with unintended identation
+                // when there is no preceeding text node.
+                // Prepend a text node with the same indentation to force <pre><code>.
+                node.ReplaceWith($"\n{indent}", new XElement("pre", code));
+            }
+            else
+            {
+                node.ReplaceWith(new XElement("pre", code));
+            }
         }
     }
 
