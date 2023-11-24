@@ -92,5 +92,8 @@
         "TODO": "alert alert-secondary"
       }
     }
+  },
+  "rules": {
+    "InvalidCref": "info"
   }
 }

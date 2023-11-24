@@ -42,8 +42,6 @@ partial class DotnetApiCatalog
 
     private static List<TocNode> CreateToc(List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
     {
-        Logger.LogWarning($"Markdown output format is experimental.");
-
         Directory.CreateDirectory(config.OutputFolder);
 
         var filter = new SymbolFilter(config, options);
