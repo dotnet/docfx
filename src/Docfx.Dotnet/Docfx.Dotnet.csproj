@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="../Docfx.Build/ApiPage/ApiPage.cs" />
+    <Compile Include="../Docfx.Build/ApiPage/ApiPageMarkdownTemplate.cs" />
+    <Compile Include="../Docfx.Build/OneOfJsonConverterFactory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="docfx" />
+    <InternalsVisibleTo Include="docfx.Tests" />
+    <InternalsVisibleTo Include="Docfx.App" />
+    <InternalsVisibleTo Include="Docfx.Dotnet.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsAssemblyName Include="Microsoft.CodeAnalysis.Workspaces" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\Docfx.Glob\Docfx.Glob.csproj" />
+    <ProjectReference Include="..\Docfx.YamlSerialization\Docfx.YamlSerialization.csproj" />
+    <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ICSharpCode.Decompiler" />
+    <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
+    <PackageReference Include="OneOf" />
+    <PackageReference Include="OneOf.SourceGenerator" />
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Locator" />
+    <PackageReference Include="Microsoft.CodeAnalysis" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
+  </ItemGroup>
+
+</Project>

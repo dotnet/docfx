@@ -2,9 +2,15 @@
   "extends": "stylelint-config-standard-scss",
   "ignoreFiles": [
     "**/*.ts",
-    "src/docfx.scss"
+    "**/*.js"
   ],
   "rules": {
-    "selector-class-pattern": null
+    "selector-class-pattern": null,
+    "media-feature-range-notation": null,
+    "font-family-no-missing-generic-family-keyword": [ true, {
+      "ignoreFontFamilies": [
+        "bootstrap-icons"
+      ]
+    }]
   }
 }

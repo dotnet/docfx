@@ -1,4 +1,4 @@
-{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
 
 {{^_disableContribution}}
 {{#docurl}}
@@ -11,7 +11,7 @@
   <a href="{{sourceurl}}">View Source</a>
 </span>{{/sourceurl}}
 {{/_disableContribution}}
- <h3 id="{{htmlId}}" data-uid="{{uid}}" class="text-capitalize">{{operationId}}</h3>
+<h3 id="{{htmlId}}" data-uid="{{uid}}" class="text-capitalize">{{operationId}}</h3>
 {{#summary}}
 <div class="markdown level1 summary">{{{summary}}}</div>
 {{/summary}}
@@ -27,12 +27,12 @@
 </div>
 {{#parameters.0}}
 <h5>Parameters</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>Name</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Default</th>
       <th>Notes</th>
     </tr>
   </thead>
@@ -41,7 +41,18 @@
 {{#parameters}}
     <tr>
       <td><span class="parametername">{{#required}}*{{/required}}{{name}}</span></td>
-      <td>{{type}}</td>
+      <td>
+          {{^schema.cType}}
+            {{schema.type}}
+            {{#schema.format}}
+              ({{schema.format}})
+            {{/schema.format}}
+          {{/schema.cType}}
+
+          {{#schema.cType}}
+            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
+          {{/schema.cType}}
+      </td>
       <td>{{default}}</td>
       <td>{{{description}}}</td>
     </tr>
@@ -53,10 +64,11 @@
 {{#responses.0}}
 <div class="responses">
   <h5>Responses</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Status Code</th>
+        <th>Type</th>
         <th>Description</th>
         <th>Samples</th>
       </tr>
@@ -66,6 +78,15 @@
 {{#responses}}
     <tr>
       <td><span class="status">{{statusCode}}</span></td>
+      <td>
+          {{^schema.cType}}
+            {{schema.type}}
+          {{/schema.cType}}
+
+          {{#schema.cType}}
+            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
+          {{/schema.cType}}
+      </td>
       <td>{{{description}}}</td>
       <td class="sample-response">
         {{#examples}}

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Docfx.MarkdigEngine.Extensions\Docfx.MarkdigEngine.Extensions.csproj" />
+  </ItemGroup>
+</Project>

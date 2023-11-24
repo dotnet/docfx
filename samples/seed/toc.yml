@@ -2,8 +2,13 @@
   href: index.md
 - name: Articles
   href: articles/
-  homepage: articles/docfx_getting_started.md
 - name: API Documentation
-  href: obj/api/
-- name: REST API
-  href: restapi/
+  items:
+  - name: .NET API
+    href: obj/api/
+  - name: .NET API (markdown)
+    href: obj/md/
+  - name: .NET API (apipage)
+    href: obj/apipage/
+  - name: REST API
+    href: restapi/

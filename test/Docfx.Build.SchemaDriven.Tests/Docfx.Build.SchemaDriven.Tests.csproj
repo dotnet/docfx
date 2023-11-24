@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Docfx.Build.Common\Docfx.Build.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Build\Docfx.Build.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Plugins\Docfx.Plugins.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.YamlSerialization\Docfx.YamlSerialization.csproj" />
+    <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
+  </ItemGroup>
+</Project>

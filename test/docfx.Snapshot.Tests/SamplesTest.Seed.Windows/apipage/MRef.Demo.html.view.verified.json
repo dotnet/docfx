@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Namespace MRef.Demo",
+  "content": "<h1 class='section api' data-uid='MRef.Demo' data-commentId='N:MRef.Demo' id='MRef_Demo'>Namespace MRef.Demo   </h1>\r\n <h3 class='section'>Namespaces</h3><dl class='parameters'><dt> <a href='MRef.Demo.Enumeration.html'>MRef.Demo.Enumeration</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/MRef.Demo.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/MRef.Demo.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

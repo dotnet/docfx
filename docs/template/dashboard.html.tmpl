@@ -1,88 +1,47 @@
-{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
-{{!include(/^styles/.*/)}}
-{{!include(/^fonts/.*/)}}
-{{!include(favicon.ico)}}
-{{!include(logo.svg)}}
-<!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<html>
-  {{>partials/head}}
-  <body data-spy="scroll" data-target="#affix">
-  <style type="text/css">
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
+{{!master(layout/_master.tmpl)}}
+<h1>{{title}}</h1>
+{{#items.Length}}
+<div id="template-container">
+{{#items}}
+  <div class="card">
+    <img src="{{thumbnail}}" class="card-img-top" alt="{{name}}">
+    <div class="card-body flex-fill">
+      <h5 class="card-title"><a href="{{homepage}}" class="card-link">{{name}}</a></h5>
+      <p class="card-text">{{{description}}}</p>
+    </div>
+    <div class="card-body flex-grow-0">
+      {{#usage}}
+      <div class="">
+        {{#config}}<div class="list-group-item"><c>docfx.json</c>: <code>{{config}}</code></div>{{/config}}
+        {{#command}}<div class="list-group-item"><c>docfx</c>: <code>{{command}}</code></div>{{/command}}
+        {{#init}}<div class="list-group-item"><c>docfx init</c>: <code>{{init}}</code></div>{{/init}}
+      </div>
+      {{/usage}}
+    </div>
+  </div>
+{{/items}}
+</div>
+{{/items.Length}}
+
+<style type="text/css">
+  .affix {
+    display: none !important;
+  }
+
+  .card {
+    width: 24rem;
+    margin: 1rem;
+  }
+
+  .card > img {
+    height: 16rem;
+    object-fit: cover;
+  }
+
   #template-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    clear: both;
   }
-  .template-item {
-    flex: 0 0 50%;
-    display: block;
-    padding: 16px;
-  }
-  .template-screenshot {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    margin-bottom: 16px;
-    padding-top: 60%;
-    height: 0;
-  }
-  .template-screenshot-img {
-    position: absolute;
-    top: 0;
-    width: auto;
-    height: auto;
-    max-height: 100%;
-    max-width: 100%;
-  }
-  .template-title {
-    font-weight: 600;
-    font-size: 1.1em;
-  }
-  </style>
-    <div id="wrapper">
-      <header>
-        {{>partials/navbar}}
-        {{>partials/breadcrumb}}
-      </header>
-      <div role="main" class="container body-content hide-when-search">
-        {{>partials/toc}}
-        <div class="article row grid-right">
-          <h1>{{title}}</h1>
-          <span class="pull-right mobile-hide">
-          <a href="{{contributionLink}}" class="contribution-link">Improve this Doc</a>
-          </span>
-          {{#items.Length}}
-          <ul id="template-container">
-          {{#items}}
-              <li class="template-item">
-                <div class="template-screenshot">
-                  <img src= "{{thumbnail}}" class="template-screenshot-img"/>
-                </div>
-                <a class="template-title" href="{{homepage}}">{{name}}</a>
-                <p class="template-desc" >{{{description}}}</p>
-                {{#usage}}
-                <ul>
-                  {{#init}}
-                  <li><span>Init:<code>{{init}}</code></span></li>
-                  {{/init}}
-                  {{#command}}
-                  <li><span>In command:<code>{{command}}</code></span></li>
-                  {{/command}}
-                  {{#config}}
-                  <li><span>In <c>docfx.json</c>:<code>{{config}}</code></span></li>
-                  {{/config}}
-                </ul>
-                {{/usage}}
-              </li>
-          {{/items}}
-          </ul>
-          {{/items.Length}}
-        </div>
-      </div>
-      {{>partials/footer}}
-    </div>
-    {{>partials/scripts}}
-  </body>
-</html>
+</style>

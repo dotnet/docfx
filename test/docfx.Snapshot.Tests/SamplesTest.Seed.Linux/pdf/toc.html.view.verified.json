@@ -1,0 +1,650 @@
+﻿{
+  "order": 200.0,
+  "items": [
+    {
+      "name": "Articles",
+      "includedFrom": "~/articles/toc.yml",
+      "items": [
+        {
+          "name": "Getting Started",
+          "href": "../articles/docfx_getting_started.html",
+          "topicHref": "../articles/docfx_getting_started.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Engineering Docs",
+          "items": [
+            {
+              "name": "Section 1",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Engineering Guidelines",
+              "href": "../articles/engineering_guidelines.html",
+              "topicHref": "../articles/engineering_guidelines.html",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "CSharp Coding Standards",
+              "href": "../articles/csharp_coding_standards.html",
+              "topicHref": "../articles/csharp_coding_standards.html",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "expanded": true,
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3.0
+        },
+        {
+          "name": "Markdown",
+          "href": "../articles/markdown.html",
+          "topicHref": "../articles/markdown.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Microsoft Docs",
+          "href": "https://docs.microsoft.com/en-us/",
+          "topicHref": "https://docs.microsoft.com/en-us/",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "topicHref": null,
+      "tocHref": null,
+      "level": 2.0
+    },
+    {
+      "name": "API Documentation",
+      "includedFrom": "~/obj/api/toc.yml",
+      "items": [
+        {
+          "name": "BuildFromAssembly",
+          "href": "../api/BuildFromAssembly.html",
+          "topicHref": "../api/BuildFromAssembly.html",
+          "topicUid": "BuildFromAssembly",
+          "items": [
+            {
+              "name": "Class1",
+              "href": "../api/BuildFromAssembly.Class1.html",
+              "topicHref": "../api/BuildFromAssembly.Class1.html",
+              "topicUid": "BuildFromAssembly.Class1",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3.0
+        },
+        {
+          "name": "BuildFromCSharpSourceCode",
+          "href": "../api/BuildFromCSharpSourceCode.html",
+          "topicHref": "../api/BuildFromCSharpSourceCode.html",
+          "topicUid": "BuildFromCSharpSourceCode",
+          "items": [
+            {
+              "name": "CSharp",
+              "href": "../api/BuildFromCSharpSourceCode.CSharp.html",
+              "topicHref": "../api/BuildFromCSharpSourceCode.CSharp.html",
+              "topicUid": "BuildFromCSharpSourceCode.CSharp",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3.0
+        },
+        {
+          "name": "BuildFromProject",
+          "href": "../api/BuildFromProject.html",
+          "topicHref": "../api/BuildFromProject.html",
+          "topicUid": "BuildFromProject",
+          "items": [
+            {
+              "name": "Issue8540",
+              "href": "../api/BuildFromProject.Issue8540.html",
+              "topicHref": "../api/BuildFromProject.Issue8540.html",
+              "topicUid": "BuildFromProject.Issue8540",
+              "items": [
+                {
+                  "name": "A",
+                  "href": "../api/BuildFromProject.Issue8540.A.html",
+                  "topicHref": "../api/BuildFromProject.Issue8540.A.html",
+                  "topicUid": "BuildFromProject.Issue8540.A",
+                  "items": [
+                    {
+                      "name": "A",
+                      "href": "../api/BuildFromProject.Issue8540.A.A.html",
+                      "topicHref": "../api/BuildFromProject.Issue8540.A.A.html",
+                      "topicUid": "BuildFromProject.Issue8540.A.A",
+                      "tocHref": null,
+                      "level": 6.0,
+                      "items": [],
+                      "leaf": true
+                    }
+                  ],
+                  "tocHref": null,
+                  "level": 5.0
+                },
+                {
+                  "name": "B",
+                  "href": "../api/BuildFromProject.Issue8540.B.html",
+                  "topicHref": "../api/BuildFromProject.Issue8540.B.html",
+                  "topicUid": "BuildFromProject.Issue8540.B",
+                  "items": [
+                    {
+                      "name": "B",
+                      "href": "../api/BuildFromProject.Issue8540.B.B.html",
+                      "topicHref": "../api/BuildFromProject.Issue8540.B.B.html",
+                      "topicUid": "BuildFromProject.Issue8540.B.B",
+                      "tocHref": null,
+                      "level": 6.0,
+                      "items": [],
+                      "leaf": true
+                    }
+                  ],
+                  "tocHref": null,
+                  "level": 5.0
+                }
+              ],
+              "tocHref": null,
+              "level": 4.0
+            },
+            {
+              "name": "Class1",
+              "href": "../api/BuildFromProject.Class1.html",
+              "topicHref": "../api/BuildFromProject.Class1.html",
+              "topicUid": "BuildFromProject.Class1",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Class1.IIssue8948",
+              "href": "../api/BuildFromProject.Class1.IIssue8948.html",
+              "topicHref": "../api/BuildFromProject.Class1.IIssue8948.html",
+              "topicUid": "BuildFromProject.Class1.IIssue8948",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Class1.Issue8665",
+              "href": "../api/BuildFromProject.Class1.Issue8665.html",
+              "topicHref": "../api/BuildFromProject.Class1.Issue8665.html",
+              "topicUid": "BuildFromProject.Class1.Issue8665",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Class1.Issue8696Attribute",
+              "href": "../api/BuildFromProject.Class1.Issue8696Attribute.html",
+              "topicHref": "../api/BuildFromProject.Class1.Issue8696Attribute.html",
+              "topicUid": "BuildFromProject.Class1.Issue8696Attribute",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Class1.Issue8948",
+              "href": "../api/BuildFromProject.Class1.Issue8948.html",
+              "topicHref": "../api/BuildFromProject.Class1.Issue8948.html",
+              "topicUid": "BuildFromProject.Class1.Issue8948",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Class1.Issue9260",
+              "href": "../api/BuildFromProject.Class1.Issue9260.html",
+              "topicHref": "../api/BuildFromProject.Class1.Issue9260.html",
+              "topicUid": "BuildFromProject.Class1.Issue9260",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Class1.Test<T>",
+              "href": "../api/BuildFromProject.Class1.Test-1.html",
+              "topicHref": "../api/BuildFromProject.Class1.Test-1.html",
+              "topicUid": "BuildFromProject.Class1.Test`1",
+              "name.vb": "Class1.Test(Of T)",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "IInheritdoc",
+              "href": "../api/BuildFromProject.IInheritdoc.html",
+              "topicHref": "../api/BuildFromProject.IInheritdoc.html",
+              "topicUid": "BuildFromProject.IInheritdoc",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Inheritdoc",
+              "href": "../api/BuildFromProject.Inheritdoc.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.html",
+              "topicUid": "BuildFromProject.Inheritdoc",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Inheritdoc.Issue6366",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue6366.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue6366.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue6366",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Inheritdoc.Issue6366.Class1<T>",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue6366.Class1`1",
+              "name.vb": "Inheritdoc.Issue6366.Class1(Of T)",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Inheritdoc.Issue6366.Class2",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue6366.Class2.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue6366.Class2.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue6366.Class2",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Inheritdoc.Issue7035",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue7035.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue7035.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue7035",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Inheritdoc.Issue7484",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue7484.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue7484.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue7484",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Inheritdoc.Issue8101",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue8101.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue8101.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue8101",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Inheritdoc.Issue8129",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue8129.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue8129.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue8129",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3.0
+        },
+        {
+          "name": "BuildFromVBSourceCode",
+          "href": "../api/BuildFromVBSourceCode.html",
+          "topicHref": "../api/BuildFromVBSourceCode.html",
+          "topicUid": "BuildFromVBSourceCode",
+          "items": [
+            {
+              "name": "BaseClass1",
+              "href": "../api/BuildFromVBSourceCode.BaseClass1.html",
+              "topicHref": "../api/BuildFromVBSourceCode.BaseClass1.html",
+              "topicUid": "BuildFromVBSourceCode.BaseClass1",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Class1",
+              "href": "../api/BuildFromVBSourceCode.Class1.html",
+              "topicHref": "../api/BuildFromVBSourceCode.Class1.html",
+              "topicUid": "BuildFromVBSourceCode.Class1",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3.0
+        },
+        {
+          "name": "CatLibrary",
+          "href": "../api/CatLibrary.html",
+          "topicHref": "../api/CatLibrary.html",
+          "topicUid": "CatLibrary",
+          "items": [
+            {
+              "name": "Core",
+              "href": "../api/CatLibrary.Core.html",
+              "topicHref": "../api/CatLibrary.Core.html",
+              "topicUid": "CatLibrary.Core",
+              "items": [
+                {
+                  "name": "ContainersRefType",
+                  "href": "../api/CatLibrary.Core.ContainersRefType.html",
+                  "topicHref": "../api/CatLibrary.Core.ContainersRefType.html",
+                  "topicUid": "CatLibrary.Core.ContainersRefType",
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                },
+                {
+                  "name": "ContainersRefType.ColorType",
+                  "href": "../api/CatLibrary.Core.ContainersRefType.ColorType.html",
+                  "topicHref": "../api/CatLibrary.Core.ContainersRefType.ColorType.html",
+                  "topicUid": "CatLibrary.Core.ContainersRefType.ColorType",
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                },
+                {
+                  "name": "ContainersRefType.ContainersRefTypeChild",
+                  "href": "../api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html",
+                  "topicHref": "../api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html",
+                  "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                },
+                {
+                  "name": "ContainersRefType.ContainersRefTypeChildInterface",
+                  "href": "../api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html",
+                  "topicHref": "../api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html",
+                  "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface",
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                },
+                {
+                  "name": "ContainersRefType.ContainersRefTypeDelegate",
+                  "href": "../api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html",
+                  "topicHref": "../api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html",
+                  "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                },
+                {
+                  "name": "ExplicitLayoutClass",
+                  "href": "../api/CatLibrary.Core.ExplicitLayoutClass.html",
+                  "topicHref": "../api/CatLibrary.Core.ExplicitLayoutClass.html",
+                  "topicUid": "CatLibrary.Core.ExplicitLayoutClass",
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                },
+                {
+                  "name": "Issue231",
+                  "href": "../api/CatLibrary.Core.Issue231.html",
+                  "topicHref": "../api/CatLibrary.Core.Issue231.html",
+                  "topicUid": "CatLibrary.Core.Issue231",
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                }
+              ],
+              "tocHref": null,
+              "level": 4.0
+            },
+            {
+              "name": "CatException<T>",
+              "href": "../api/CatLibrary.CatException-1.html",
+              "topicHref": "../api/CatLibrary.CatException-1.html",
+              "topicUid": "CatLibrary.CatException`1",
+              "name.vb": "CatException(Of T)",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Cat<T, K>",
+              "href": "../api/CatLibrary.Cat-2.html",
+              "topicHref": "../api/CatLibrary.Cat-2.html",
+              "topicUid": "CatLibrary.Cat`2",
+              "name.vb": "Cat(Of T, K)",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Complex<T, J>",
+              "href": "../api/CatLibrary.Complex-2.html",
+              "topicHref": "../api/CatLibrary.Complex-2.html",
+              "topicUid": "CatLibrary.Complex`2",
+              "name.vb": "Complex(Of T, J)",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "FakeDelegate<T>",
+              "href": "../api/CatLibrary.FakeDelegate-1.html",
+              "topicHref": "../api/CatLibrary.FakeDelegate-1.html",
+              "topicUid": "CatLibrary.FakeDelegate`1",
+              "name.vb": "FakeDelegate(Of T)",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "IAnimal",
+              "href": "../api/CatLibrary.IAnimal.html",
+              "topicHref": "../api/CatLibrary.IAnimal.html",
+              "topicUid": "CatLibrary.IAnimal",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "ICat",
+              "href": "../api/CatLibrary.ICat.html",
+              "topicHref": "../api/CatLibrary.ICat.html",
+              "topicUid": "CatLibrary.ICat",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "ICatExtension",
+              "href": "../api/CatLibrary.ICatExtension.html",
+              "topicHref": "../api/CatLibrary.ICatExtension.html",
+              "topicUid": "CatLibrary.ICatExtension",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "MRefDelegate<K, T, L>",
+              "href": "../api/CatLibrary.MRefDelegate-3.html",
+              "topicHref": "../api/CatLibrary.MRefDelegate-3.html",
+              "topicUid": "CatLibrary.MRefDelegate`3",
+              "name.vb": "MRefDelegate(Of K, T, L)",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "MRefNormalDelegate",
+              "href": "../api/CatLibrary.MRefNormalDelegate.html",
+              "topicHref": "../api/CatLibrary.MRefNormalDelegate.html",
+              "topicUid": "CatLibrary.MRefNormalDelegate",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Tom",
+              "href": "../api/CatLibrary.Tom.html",
+              "topicHref": "../api/CatLibrary.Tom.html",
+              "topicUid": "CatLibrary.Tom",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "TomFromBaseClass",
+              "href": "../api/CatLibrary.TomFromBaseClass.html",
+              "topicHref": "../api/CatLibrary.TomFromBaseClass.html",
+              "topicUid": "CatLibrary.TomFromBaseClass",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3.0
+        },
+        {
+          "name": "MRef.Demo.Enumeration",
+          "href": "../api/MRef.Demo.Enumeration.html",
+          "topicHref": "../api/MRef.Demo.Enumeration.html",
+          "topicUid": "MRef.Demo.Enumeration",
+          "items": [
+            {
+              "name": "ColorType",
+              "href": "../api/MRef.Demo.Enumeration.ColorType.html",
+              "topicHref": "../api/MRef.Demo.Enumeration.ColorType.html",
+              "topicUid": "MRef.Demo.Enumeration.ColorType",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3.0
+        }
+      ],
+      "topicHref": null,
+      "tocHref": null,
+      "level": 2.0
+    },
+    {
+      "name": "REST API",
+      "includedFrom": "~/restapi/toc.md",
+      "items": [
+        {
+          "name": "Pet Store API",
+          "href": "../restapi/petstore.html",
+          "topicHref": "../restapi/petstore.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Contacts API",
+          "href": "../restapi/contacts.html",
+          "topicHref": "../restapi/contacts.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "topicHref": null,
+      "tocHref": null,
+      "level": 2.0
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "pdf/toc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.json",
+  "_navRel": "../toc.json",
+  "_path": "pdf/toc.json",
+  "_rel": "../",
+  "_tocKey": "~/pdf/toc.yml",
+  "_tocPath": "pdf/toc.json",
+  "_tocRel": "toc.json",
+  "topicHref": null,
+  "tocHref": null,
+  "name": null,
+  "level": 1.0,
+  "leaf": false,
+  "title": "Table of Content",
+  "_disableToc": true
+}

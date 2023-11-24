@@ -1,286 +1,334 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.IO;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Docfx.Common;
+using Docfx.Dotnet;
 using ImageMagick;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Dotnet;
 using Microsoft.Playwright;
-using VerifyTests;
-using VerifyXunit;
-using Xunit;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Actions;
+using UglyToad.PdfPig.Annotations;
+using UglyToad.PdfPig.Outline;
 
-namespace Microsoft.DocAsCode.Tests
+namespace Docfx.Tests;
+
+[UsesVerify]
+[Trait("Stage", "Snapshot")]
+public class SamplesTest
 {
-    [UsesVerify]
-    [Trait("Stage", "Snapshot")]
-    public class SamplesTest
+    private class SnapshotFactAttribute : FactAttribute
     {
-        private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
-
-        private static readonly string[] s_screenshotUrls = new[]
+        public SnapshotFactAttribute()
         {
-            "index.html",
-            "docs/markdown.html?tabs=windows%2Ctypescript",
-            "articles/csharp_coding_standards.html",
-            "api/CatLibrary.html",
-            "api/CatLibrary.html?term=cat",
-            "api/CatLibrary.Cat-2.html?q=cat",
-            "restapi/petstore.html",
-        };
-
-        private static readonly (int width, int height, bool fullPage)[] s_viewports = new[]
-        {
-            (1920, 1080, true),
-            (1152, 648, false),
-            (768, 600, false),
-            (375, 812, true),
-        };
-
-        static SamplesTest()
-        {
-            Playwright.Program.Main(new[] { "install" });
-            Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
+            Skip = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SNAPSHOT_TEST")) ? "Skip snapshot tests" : null;
         }
+    }
 
-        [Fact]
-        public async Task Seed()
+    private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
+
+    private static readonly string[] s_screenshotUrls = new[]
+    {
+        "index.html",
+        "articles/markdown.html?tabs=windows%2Ctypescript#markdown-extensions",
+        "articles/csharp_coding_standards.html",
+        "api/BuildFromProject.Class1.html",
+        "api/CatLibrary.html",
+        "api/CatLibrary.html?term=cat",
+        "api/CatLibrary.Cat-2.html?q=cat",
+        "restapi/petstore.html",
+    };
+
+    private static readonly (int width, int height, string theme, bool fullPage)[] s_viewports = new[]
+    {
+        (1920, 1080, "light", true),
+        (1152, 648, "light", false),
+        (768, 600, "dark", false),
+        (375, 812, "dark", true),
+    };
+
+    static SamplesTest()
+    {
+        Microsoft.Playwright.Program.Main(new[] { "install", "chromium" });
+        Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
+    }
+
+    [SnapshotFact]
+    public async Task Seed()
+    {
+        var samplePath = $"{s_samplesDir}/seed";
+        Clean(samplePath);
+
+        if (Debugger.IsAttached)
         {
-            var samplePath = $"{s_samplesDir}/seed";
-            Clean(samplePath);
-
-            if (Debugger.IsAttached)
-            {
-                Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-                Assert.Equal(0, Program.Main(new[] { "metadata", $"{samplePath}/docfx.json" }));
-                Assert.Equal(0, Program.Main(new[] { "build", $"{samplePath}/docfx.json" }));
-            }
-            else
-            {
-                var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-                Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
-                Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
-            }
-
-            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+            Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
+            Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json" }));
         }
-
-#if NET7_0_OR_GREATER
-        [Fact]
-        public async Task SeedHtml()
+        else
         {
-            var samplePath = $"{s_samplesDir}/seed";
-            Clean(samplePath);
-
             var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-            Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
-            Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
+            Assert.Equal(0, Exec(docfxPath, $"{samplePath}/docfx.json"));
+        }
 
-            const int port = 8089;
-            var _ = Task.Run(() => Program.Main(new[] { "serve", "--port", $"{port}", $"{samplePath}/_site" }));
+        Parallel.ForEach(Directory.EnumerateFiles($"{samplePath}/_site", "*.pdf", SearchOption.AllDirectories), PdfToJson);
 
-            using var playwright = await Playwright.Playwright.CreateAsync();
-            var browser = await playwright.Chromium.LaunchAsync();
-            var htmlUrls = new ConcurrentDictionary<string, string>();
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
 
-            await s_viewports.ForEachInParallelAsync(async viewport =>
+        void PdfToJson(string path)
+        {
+            using var document = PdfDocument.Open(path);
+
+            var pdf = new
             {
-                var (width, height, fullPage) = viewport;
-                var isMobile = width < 500;
-                var page = await browser.NewPageAsync(new()
+                document.NumberOfPages,
+                Pages = document.GetPages().Select(p => new
                 {
-                    ViewportSize = new() { Width = width, Height = height },
-                    IsMobile = isMobile,
-                    HasTouch = isMobile,
-                });
+                    p.Number,
+                    p.NumberOfImages,
+                    p.Text,
+                    Links = p.ExperimentalAccess.GetAnnotations().Select(ToLink).ToArray(),
+                }).ToArray(),
+                Bookmarks = document.TryGetBookmarks(out var bookmarks) ? ToBookmarks(bookmarks.Roots) : null,
+            };
 
-                foreach (var url in s_screenshotUrls)
+            var json = JsonSerializer.Serialize(pdf, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
+            });
+
+            File.WriteAllText(Path.ChangeExtension(path, ".pdf.json"), json);
+
+            object ToLink(Annotation a) => a.Action switch
+            {
+                GoToAction g => new { Goto = g.Destination },
+                UriAction u => new { u.Uri },
+            };
+
+            object ToBookmarks(IEnumerable<BookmarkNode> nodes)
+            {
+                return nodes.Select(node => node switch
                 {
-                    await page.GotoAsync($"http://localhost:{port}/{url}");
-                    await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-                    await page.WaitForFunctionAsync("window.docfx.ready");
+                    DocumentBookmarkNode d => (object)new { node.Title, Children = ToBookmarks(node.Children), d.Destination },
+                    UriBookmarkNode d => new { node.Title, Children = ToBookmarks(node.Children), d.Uri },
+                }).ToArray();
+            }
+        }
+    }
 
-                    if (url.Contains("?term=cat"))
+    [SnapshotFact]
+    public async Task SeedHtml()
+    {
+        if (!OperatingSystem.IsLinux())
+            return;
+
+        var samplePath = $"{s_samplesDir}/seed";
+        Clean(samplePath);
+
+        var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
+        Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
+        Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
+
+        const int port = 8089;
+        var _ = Task.Run(() => Program.Main(new[] { "serve", "--port", $"{port}", $"{samplePath}/_site" }))
+                    .ContinueWith(x =>
                     {
-                        if (isMobile)
-                        {
-                            await (await page.QuerySelectorAsync(".navbar-toggle")).ClickAsync();
-                            await page.WaitForSelectorAsync("#navbar.in");
-                        }
+                        Logger.LogError("Failed to run `dotnet serve` command. " + x.Exception.ToString());
+                    }, TaskContinuationOptions.OnlyOnFaulted);
 
-                        await (await page.QuerySelectorAsync("#search-query")).TypeAsync("cat");
-                        // Wait for input box focus animation
-                        await page.WaitForTimeoutAsync(200);
-                        await page.WaitForFunctionAsync("window.docfx.searchResultReady");
+        // Wait until web server started.
+        bool isStarted = SpinWait.SpinUntil(() => { Thread.Sleep(100); return IsActiveLocalTcpPort(port); }, TimeSpan.FromSeconds(10));
+
+        using var playwright = await Playwright.CreateAsync();
+        var browser = await playwright.Chromium.LaunchAsync();
+        var htmlUrls = new ConcurrentDictionary<string, string>();
+
+        await Parallel.ForEachAsync(s_viewports, async (viewport, _) =>
+        {
+            var (width, height, theme, fullPage) = viewport;
+            var isMobile = width < 500;
+            var page = await browser.NewPageAsync(new()
+            {
+                ViewportSize = new() { Width = width, Height = height },
+                IsMobile = isMobile,
+                HasTouch = isMobile,
+                ReducedMotion = ReducedMotion.Reduce,
+            });
+
+            foreach (var url in s_screenshotUrls)
+            {
+                await page.GotoAsync($"http://localhost:{port}/{url}");
+                await page.WaitForFunctionAsync("window.docfx.ready");
+                await page.WaitForFunctionAsync("window.docfx.searchReady");
+                await page.EvaluateAsync($"() => document.documentElement.setAttribute('data-bs-theme', '{theme}')");
+                await Task.Delay(200);
+
+                if (url.Contains("?term=cat"))
+                {
+                    if (isMobile)
+                    {
+                        await (await page.QuerySelectorAsync("[data-bs-target='#navpanel']")).ClickAsync();
+                        await page.WaitForSelectorAsync("#navpanel.show");
                     }
 
-                    var directory = $"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}";
-                    var fileName = $"{Regex.Replace(url, "[^a-zA-Z0-9-_.]", "-")}";
+                    await (await page.QuerySelectorAsync("#search-query")).FillAsync("cat");
+                    await page.WaitForFunctionAsync("window.docfx.searchResultReady");
+                }
 
-                    // Verify HTML files once
-                    if (htmlUrls.TryAdd(url, url))
-                    {
-                        var html = await page.ContentAsync();
-                        await Verifier
-                            .Verify(new Target("html", NormalizeHtml(html)))
-                            .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/html")
-                            .UseFileName(fileName)
-                            .AutoVerify(includeBuildServer: false);
-                    }
+                var directory = $"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}";
+                var fileName = $"{Regex.Replace(url, "[^a-zA-Z0-9-_.]", "-")}";
 
-                    // Verify screenshots only on windows
-                    if (!OperatingSystem.IsWindows())
-                        continue;
-
-                    var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
-                    await Verifier
-                        .Verify(new Target("png", new MemoryStream(bytes)))
-                        .UseStreamComparer((received, verified, _) => CompareImage(received, verified, directory, fileName))
-                        .UseDirectory(directory)
+                // Verify HTML files once
+                if (theme is "light" && htmlUrls.TryAdd(url, url))
+                {
+                    var html = await page.ContentAsync();
+                    await
+                        Verify(new Target("html", NormalizeHtml(html)))
+                        .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/html")
                         .UseFileName(fileName)
                         .AutoVerify(includeBuildServer: false);
                 }
 
-                await page.CloseAsync();
-            });
-
-            Task<CompareResult> CompareImage(Stream received, Stream verified, string directory, string fileName)
-            {
-                using var receivedImage = new MagickImage(received);
-                using var verifiedImage = new MagickImage(verified);
-                using var diffImage = new MagickImage();
-                var diff = receivedImage.Compare(verifiedImage, ErrorMetric.Fuzz, diffImage);
-                if (diff <= 0.001)
-                {
-                    return Task.FromResult(CompareResult.Equal);
-                }
-
-                var diffFile = Path.GetFullPath(Path.Combine("../../../", directory, $"{fileName}.diff.png"));
-                Directory.CreateDirectory(Path.GetDirectoryName(diffFile));
-                diffImage.Write(diffFile);
-                return Task.FromResult(CompareResult.NotEqual($"Image diff: {diff}"));
+                var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
+                await
+                    Verify(new Target("png", new MemoryStream(bytes)))
+                    .UseStreamComparer((received, verified, _) => CompareImage(received, verified, fileName))
+                    .UseDirectory(directory)
+                    .UseFileName(fileName)
+                    .AutoVerify(includeBuildServer: false);
             }
 
-            static string NormalizeHtml(string html)
+            await page.CloseAsync();
+        });
+
+        static Task<CompareResult> CompareImage(Stream received, Stream verified, string fileName)
+        {
+            using var receivedImage = new MagickImage(received);
+            using var verifiedImage = new MagickImage(verified);
+            using var diffImage = new MagickImage();
+            var diff = receivedImage.Compare(verifiedImage, ErrorMetric.Fuzz, diffImage);
+            if (diff <= 0.001)
             {
-                return Regex.Replace(html, "<!--.*?-->", "");
+                return Task.FromResult(CompareResult.Equal);
             }
+
+            return Task.FromResult(CompareResult.NotEqual($"Image diff: {diff}"));
         }
 
-        [Fact]
-        public void Pdf()
+        static string NormalizeHtml(string html)
         {
-            if (!OperatingSystem.IsWindows())
-                return;
+            html = Regex.Replace(html, "<!--.*?-->", "");
+            html = Regex.Replace(html, @"mermaid-\d+", "");
+            html = Regex.Replace(html, @"flowchart-\w+-\d", "");
+            return html;
+        }
+    }
 
-            var samplePath = $"{s_samplesDir}/seed";
-            Clean(samplePath);
+    [SnapshotFact]
+    public async Task SeedMarkdown()
+    {
+        var samplePath = $"{s_samplesDir}/seed";
+        var outputPath = nameof(SeedMarkdown);
+        Clean(samplePath);
 
-            if (Debugger.IsAttached)
-            {
-                Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-                Assert.Equal(0, Program.Main(new[] { "metadata", $"{samplePath}/docfx.json" }));
-                Assert.Equal(0, Program.Main(new[] { "pdf", $"{samplePath}/docfx.json" }));
-            }
-            else
-            {
-                var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-                Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
-                Assert.Equal(0, Exec(docfxPath, $"pdf {samplePath}/docfx.json"));
-            }
+        Program.Main(new[] { "metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath });
 
-            Assert.True(File.Exists($"{samplePath}/_site_pdf/seed_pdf.pdf"));
+        await VerifyDirectory(outputPath, IncludeFile, fileScrubber: ScrubFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
+    }
+
+    [SnapshotFact]
+    public async Task CSharp()
+    {
+        var samplePath = $"{s_samplesDir}/csharp";
+        Clean(samplePath);
+
+        Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
+
+        try
+        {
+            await DotnetApiCatalog.GenerateManagedReferenceYamlFiles($"{samplePath}/docfx.json");
+            await Docset.Build($"{samplePath}/docfx.json");
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
         }
 
-        [Fact]
-        public async Task CSharp()
-        {
-            var samplePath = $"{s_samplesDir}/csharp";
-            Clean(samplePath);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
+    }
 
-            Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-
-            try
-            {
-                await DotnetApiCatalog.GenerateManagedReferenceYamlFiles($"{samplePath}/docfx.json");
-                await Docset.Build($"{samplePath}/docfx.json");
-            }
-            finally
-            {
-                Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
-            }
-
-            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
-        }
-#endif
-
-        [Fact]
-        public Task Extensions()
-        {
-            var samplePath = $"{s_samplesDir}/extensions";
-            Clean(samplePath);
+    [SnapshotFact]
+    public Task Extensions()
+    {
+        var samplePath = $"{s_samplesDir}/extensions";
+        Clean(samplePath);
 
 #if DEBUG
-            Assert.Equal(0, Exec("dotnet", "run --project build", workingDirectory: samplePath));
+        Assert.Equal(0, Exec("dotnet", "run --no-build --project build", workingDirectory: samplePath));
 #else
-            Assert.Equal(0, Exec("dotnet", "run -c Release --project build", workingDirectory: samplePath));
+        Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
-            return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
-        }
+        return VerifyDirectory($"{samplePath}/_site", IncludeFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
+    }
 
-        private static int Exec(string filename, string args, string workingDirectory = null)
+    private static int Exec(string filename, string args, string workingDirectory = null)
+    {
+        var psi = new ProcessStartInfo(filename, args);
+        psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
+        if (workingDirectory != null)
+            psi.WorkingDirectory = Path.GetFullPath(workingDirectory);
+        var process = Process.Start(psi);
+        process.WaitForExit();
+        return process.ExitCode;
+    }
+
+    private static void Clean(string samplePath)
+    {
+        if (Directory.Exists($"{samplePath}/_site"))
+            Directory.Delete($"{samplePath}/_site", recursive: true);
+
+        if (Directory.Exists($"{samplePath}/_site_pdf"))
+            Directory.Delete($"{samplePath}/_site_pdf", recursive: true);
+    }
+
+    private static bool IncludeFile(string file)
+    {
+        return Path.GetExtension(file) switch
         {
-            var psi = new ProcessStartInfo(filename, args);
-            psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
-            if (workingDirectory != null)
-                psi.WorkingDirectory = Path.GetFullPath(workingDirectory);
-            var process = Process.Start(psi);
-            process.WaitForExit();
-            return process.ExitCode;
-        }
+            ".json" => Path.GetFileName(file) != "manifest.json",
+            ".yml" or ".md" => true,
+            _ => false,
+        };
+    }
 
-        private static void Clean(string samplePath)
+    private void ScrubFile(string path, StringBuilder builder)
+    {
+        if (Path.GetExtension(path) == ".json" && JsonNode.Parse(builder.ToString()) is JsonObject obj)
         {
-            if (Directory.Exists($"{samplePath}/_site"))
-                Directory.Delete($"{samplePath}/_site", recursive: true);
-
-            if (Directory.Exists($"{samplePath}/_site_pdf"))
-                Directory.Delete($"{samplePath}/_site_pdf", recursive: true);
-        }
-
-        private static bool IncludeFile(string file)
-        {
-            return Path.GetExtension(file) switch
+            obj.Remove("__global");
+            obj.Remove("_systemKeys");
+            builder.Clear();
+            builder.Append(JsonSerializer.Serialize(obj, new JsonSerializerOptions
             {
-                ".json" => Path.GetFileName(file) != "manifest.json",
-                ".yml" => true,
-                _ => false,
-            };
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            }));
         }
+    }
 
-        private void ScrubFile(string path, StringBuilder builder)
-        {
-            if (Path.GetExtension(path) is ".json" && JsonNode.Parse(builder.ToString()) is JsonObject obj)
-            {
-                obj.Remove("__global");
-                obj.Remove("_systemKeys");
-                builder.Clear();
-                builder.Append(JsonSerializer.Serialize(obj, new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                }));
-            }
-        }
+    private static bool IsActiveLocalTcpPort(int port)
+    {
+        var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+        var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpListeners();
+        return tcpConnInfoArray.Any(x => x.Port == port);
     }
 }

@@ -1,0 +1,1026 @@
+﻿<!DOCTYPE html><html data-bs-theme="light"><head>
+    <meta charset="utf-8">
+      <title>Class Class1
+ | docfx seed website </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class Class1
+ | docfx seed website ">
+      
+      <link rel="icon" href="../favicon.ico">
+      <style class="anchorjs"></style><link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.json">
+      <meta name="docfx:tocrel" content="toc.json">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1.md&amp;value=---%0Auid%3A%20BuildFromProject.Class1%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  <script type="module" src="./../public/docfx.min.js"></script><script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-SVG-styles">
+mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+  min-height: 1px;
+  min-width: 1px;
+}
+
+mjx-container[jax="SVG"] > svg a {
+  fill: blue;
+  stroke: blue;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line], svg[data-table] > g > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame], svg[data-table] > g > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed, svg[data-table] > g > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted, svg[data-table] > g > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > g > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
+  stroke-width: 3;
+}
+</style></head>
+
+  
+
+  
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Seed">
+            Seed
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            
+    <ul class="navbar-nav"><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/index.html">Home</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li>
+            <li class="nav-item dropdown">
+              <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="nav-link dropdown-toggle active">
+                API Documentation
+              </a>
+              <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/md/BuildFromAssembly.html">.NET API (markdown)</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/apipage/BuildFromAssembly.html">.NET API (apipage)</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
+            </li></ul> 
+      <form class="icons">
+        <a class="btn border-0" href="https://github.com/dotnet/docfx" title="GitHub"><i class="bi bi-github"></i></a><a class="btn border-0" href="https://twitter.com/" title="Twitter"><i class="bi bi-twitter"></i></a>
+        
+    <div class="dropdown">
+      <a class="btn border-0 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Change theme">
+        <i class="bi bi-circle-half"></i>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#"><i class="bi bi-sun"></i> Light</a></li>
+        <li><a class="dropdown-item" href="#"><i class="bi bi-moon"></i> Dark</a></li>
+        <li><a class="dropdown-item" href="#"><i class="bi bi-circle-half"></i> Auto</a></li>
+      </ul>
+    </div>
+      </form></div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc">
+      
+      <form class="filter">
+        <i class="bi bi-filter"></i>
+        <input class="form-control" type="search" autocomplete="off" value="" placeholder="Filter by title" aria-label="Filter by title">
+      </form> 
+      <div class="flex-fill overflow-y-auto"><ul>
+        <li class=" expander ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromAssembly.html">Build<wbr>From<wbr>Assembly</a>
+          <ul>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromAssembly.Class1.html">Class1</a>
+          
+        </li></ul>
+        </li>
+        <li class=" expander ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromCSharpSourceCode.html">Build<wbr>From<wbr>CSharp<wbr>Source<wbr>Code</a>
+          <ul>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromCSharpSourceCode.CSharp.html">CSharp</a>
+          
+        </li></ul>
+        </li>
+        <li class=" expander expanded active ">
+          <span class="expand-stub"></span>
+          <a class="  " href="http://localhost:8089/api/BuildFromProject.html">Build<wbr>From<wbr>Project</a>
+          <ul>
+        <li class=" expander ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.html">Issue8540</a>
+          <ul>
+        <li class=" expander ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.A.html">A</a>
+          <ul>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.A.A.html">A</a>
+          
+        </li></ul>
+        </li>
+        <li class=" expander ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.B.html">B</a>
+          <ul>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.B.B.html">B</a>
+          
+        </li></ul>
+        </li></ul>
+        </li>
+        <li class=" active ">
+          
+          <a class="  " href="http://localhost:8089/api/BuildFromProject.Class1.html">Class1</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.IIssue8948.html">Class1.<wbr>IIssue8948</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue8665.html">Class1.<wbr>Issue8665</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue8696Attribute.html">Class1.<wbr>Issue8696<wbr>Attribute</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue8948.html">Class1.<wbr>Issue8948</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue9260.html">Class1.<wbr>Issue9260</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Test-1.html">Class1.<wbr>Test&lt;<wbr>T&gt;</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.IInheritdoc.html">IInheritdoc</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Inheritdoc.html">Inheritdoc</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Inheritdoc.Issue6366.html">Inheritdoc.<wbr>Issue6366</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html">Inheritdoc.<wbr>Issue6366.<wbr>Class1&lt;<wbr>T&gt;</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Inheritdoc.Issue6366.Class2.html">Inheritdoc.<wbr>Issue6366.<wbr>Class2</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Inheritdoc.Issue7035.html">Inheritdoc.<wbr>Issue7035</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Inheritdoc.Issue7484.html">Inheritdoc.<wbr>Issue7484</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Inheritdoc.Issue8101.html">Inheritdoc.<wbr>Issue8101</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Inheritdoc.Issue8129.html">Inheritdoc.<wbr>Issue8129</a>
+          
+        </li></ul>
+        </li>
+        <li class=" expander ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromVBSourceCode.html">Build<wbr>From<wbr>VBSource<wbr>Code</a>
+          <ul>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromVBSourceCode.BaseClass1.html">Base<wbr>Class1</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromVBSourceCode.Class1.html">Class1</a>
+          
+        </li></ul>
+        </li>
+        <li class=" expander ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.html">Cat<wbr>Library</a>
+          <ul>
+        <li class=" expander ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.html">Core</a>
+          <ul>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.ContainersRefType.html">Containers<wbr>Ref<wbr>Type</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.ContainersRefType.ColorType.html">Containers<wbr>Ref<wbr>Type.<wbr>Color<wbr>Type</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html">Containers<wbr>Ref<wbr>Type.<wbr>Containers<wbr>Ref<wbr>Type<wbr>Child</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html">Containers<wbr>Ref<wbr>Type.<wbr>Containers<wbr>Ref<wbr>Type<wbr>Child<wbr>Interface</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html">Containers<wbr>Ref<wbr>Type.<wbr>Containers<wbr>Ref<wbr>Type<wbr>Delegate</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.ExplicitLayoutClass.html">Explicit<wbr>Layout<wbr>Class</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.Issue231.html">Issue231</a>
+          
+        </li></ul>
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.CatException-1.html">Cat<wbr>Exception&lt;<wbr>T&gt;</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Cat-2.html">Cat&lt;<wbr>T,<wbr> K&gt;</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Complex-2.html">Complex&lt;<wbr>T,<wbr> J&gt;</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.FakeDelegate-1.html">Fake<wbr>Delegate&lt;<wbr>T&gt;</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.IAnimal.html">IAnimal</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.ICat.html">ICat</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.ICatExtension.html">ICat<wbr>Extension</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.MRefDelegate-3.html">MRef<wbr>Delegate&lt;<wbr>K,<wbr> T,<wbr> L&gt;</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.MRefNormalDelegate.html">MRef<wbr>Normal<wbr>Delegate</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Tom.html">Tom</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.TomFromBaseClass.html">Tom<wbr>From<wbr>Base<wbr>Class</a>
+          
+        </li></ul>
+        </li>
+        <li class=" expander ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/MRef.Demo.Enumeration.html">MRef.<wbr>Demo.<wbr>Enumeration</a>
+          <ul>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/MRef.Demo.Enumeration.ColorType.html">Color<wbr>Type</a>
+          
+        </li></ul>
+        </li></ul></div>
+      <div class="py-2 mb-md-4"><a class="pdf-link" href="http://localhost:8089/api/toc.pdf">Download PDF</a></div></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="breadcrumb-item"><a href="http://localhost:8089/api/BuildFromProject.html">Build<wbr>From<wbr>Project</a></li>
+        </ol></nav>
+        </div>
+
+        <article data-uid="BuildFromProject.Class1">
+
+
+
+  <h1 id="BuildFromProject_Class1" data-uid="BuildFromProject.Class1" class="text-break">
+    Class Class1
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L3"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BuildFromProject.html">Build<wbr>From<wbr>Project</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BuildFromProject.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"></div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Class1</span> : <span class="hljs-title">IClass1</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object" target="_blank" rel="noopener noreferrer nofollow">object</a></div>
+      <div><span class="xref">Class1</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><span class="xref">IClass1</span></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Equals(object,<wbr> object)</a>
+    </div>
+    <div>
+      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Get<wbr>Hash<wbr>Code()</a>
+    </div>
+    <div>
+      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.gettype" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Get<wbr>Type()</a>
+    </div>
+    <div>
+      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Memberwise<wbr>Clone()</a>
+    </div>
+    <div>
+      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Reference<wbr>Equals(object,<wbr> object)</a>
+    </div>
+    <div>
+      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.tostring" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>To<wbr>String()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#methods" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
+
+
+  <a id="BuildFromProject_Class1_Issue1651_" data-uid="BuildFromProject.Class1.Issue1651*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue1651" data-uid="BuildFromProject.Class1.Issue1651">
+  Issue1651()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue1651" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"><p>Pricing models are used to calculate theoretical option values</p>
+<ul><li><span class="term">1</span>Black Scholes</li><li><span class="term">2</span>Black76</li><li><span class="term">3</span>Black76Fut</li><li><span class="term">4</span>Equity Tree</li><li><span class="term">5</span>Variance Swap</li><li><span class="term">6</span>Dividend Forecast</li></ul>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Issue1651</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BuildFromProject_Class1_Issue1887_" data-uid="BuildFromProject.Class1.Issue1887*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue1887" data-uid="BuildFromProject.Class1.Issue1887">
+  Issue1887()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L152"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue1887" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"><p>IConfiguration related helper and extension routines.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Issue1887</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BuildFromProject_Class1_Issue2623_" data-uid="BuildFromProject.Class1.Issue2623*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue2623" data-uid="BuildFromProject.Class1.Issue2623">
+  Issue2623()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue2623" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Issue2623</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BuildFromProject_Class1_Issue2623_examples">Examples<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue2623_examples" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">MyClass myClass = <span class="hljs-keyword">new</span> MyClass();
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span>
+{
+    myClass.Execute();
+}
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+
+
+  <h4 class="section" id="BuildFromProject_Class1_Issue2623_remarks">Remarks<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue2623_remarks" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <div class="markdown level1 remarks"><p>For example:</p>
+<pre><code data-highlighted="yes" class="hljs language-bicep"><span class="hljs-variable">MyClass</span> <span class="hljs-variable">myClass</span> = <span class="hljs-variable">new</span> <span class="hljs-function">MyClass()</span>;
+
+<span class="hljs-variable">void</span> <span class="hljs-function">Update()</span>
+{
+    <span class="hljs-property">myClass</span>.<span class="hljs-property">Execute</span>();
+}
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+</div>
+
+
+
+
+  <a id="BuildFromProject_Class1_Issue2723_" data-uid="BuildFromProject.Class1.Issue2723*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue2723" data-uid="BuildFromProject.Class1.Issue2723">
+  Issue2723()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L97"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue2723" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Issue2723</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BuildFromProject_Class1_Issue2723_remarks">Remarks<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue2723_remarks" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <div class="markdown level1 remarks"><div class="NOTE alert alert-info">
+<h5>Note</h5>
+<p>This is a &lt;note&gt;. &amp; " '</p>
+</div>
+<p>Inline <code>&lt;angle brackets&gt;</code>.</p>
+<p><a href="https://www.github.com" title="title" target="_blank" rel="noopener noreferrer nofollow" class="external">link</a></p>
+<pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &gt; <span class="hljs-number">10</span>; i++) <span class="hljs-comment">// &amp; " '</span>
+<span class="hljs-keyword">var</span> range = <span class="hljs-keyword">new</span> Range&lt;<span class="hljs-built_in">int</span>&gt; { Min = <span class="hljs-number">0</span>, Max = <span class="hljs-number">10</span> };
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+<pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">var</span> range = <span class="hljs-keyword">new</span> Range&lt;<span class="hljs-built_in">int</span>&gt; { Min = <span class="hljs-number">0</span>, Max = <span class="hljs-number">10</span> };</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+</div>
+
+
+
+
+  <a id="BuildFromProject_Class1_Issue4017_" data-uid="BuildFromProject.Class1.Issue4017*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue4017" data-uid="BuildFromProject.Class1.Issue4017">
+  Issue4017()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L56"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue4017" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Issue4017</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BuildFromProject_Class1_Issue4017_examples">Examples<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue4017_examples" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <pre><code class="lang-cs hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">HookMessageDeleted</span>(<span class="hljs-params">BaseSocketClient client</span>)</span>
+{
+    client.MessageDeleted += HandleMessageDelete;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> Task <span class="hljs-title">HandleMessageDelete</span>(<span class="hljs-params">Cacheable&lt;IMessage, <span class="hljs-built_in">ulong</span>&gt; cachedMessage, ISocketMessageChannel channel</span>)</span>
+{
+    <span class="hljs-comment">// check if the message exists in cache; if not, we cannot report what was removed</span>
+    <span class="hljs-keyword">if</span> (!cachedMessage.HasValue) <span class="hljs-keyword">return</span>;
+    <span class="hljs-keyword">var</span> message = cachedMessage.Value;
+    Console.WriteLine(<span class="hljs-string">$"A message (<span class="hljs-subst">{message.Id}</span>) from <span class="hljs-subst">{message.Author}</span> was removed from the channel <span class="hljs-subst">{channel.Name}</span> (<span class="hljs-subst">{channel.Id}</span>):"</span>
+        + Environment.NewLine
+        + message.Content);
+    <span class="hljs-keyword">return</span> Task.CompletedTask;
+}</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+
+
+  <h4 class="section" id="BuildFromProject_Class1_Issue4017_remarks">Remarks<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue4017_remarks" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <div class="markdown level1 remarks"><pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Update</span>()</span>
+{
+    myClass.Execute();
+}</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+</div>
+
+
+
+
+  <a id="BuildFromProject_Class1_Issue4392_" data-uid="BuildFromProject.Class1.Issue4392*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue4392" data-uid="BuildFromProject.Class1.Issue4392">
+  Issue4392()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L102"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue4392" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Issue4392</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BuildFromProject_Class1_Issue4392_remarks">Remarks<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue4392_remarks" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <div class="markdown level1 remarks"><p><code>@"\\?\"</code> <code>@"\\?\"</code></p>
+</div>
+
+
+
+
+  <a id="BuildFromProject_Class1_Issue7484_" data-uid="BuildFromProject.Class1.Issue7484*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue7484" data-uid="BuildFromProject.Class1.Issue7484">
+  Issue7484()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue7484" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Issue7484</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BuildFromProject_Class1_Issue7484_remarks">Remarks<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue7484_remarks" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <div class="markdown level1 remarks"><p>There's really no reason to not believe that this class can test things.</p>
+<div class="table-responsive"><table class="table table-bordered table-condensed"><thead><tr><th class="term">Term</th><th class="description">Description</th></tr></thead><tbody><tr><td class="term">A Term</td><td class="description">A Description</td></tr><tr><td class="term">Bee Term</td><td class="description">Bee Description</td></tr></tbody></table></div>
+</div>
+
+
+
+
+  <a id="BuildFromProject_Class1_Issue8764_" data-uid="BuildFromProject.Class1.Issue8764*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue8764__1" data-uid="BuildFromProject.Class1.Issue8764``1">
+  Issue8764&lt;T&gt;()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L104"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue8764__1" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Issue8764</span>&lt;<span class="hljs-title">T</span>&gt;() <span class="hljs-keyword">where</span> T : <span class="hljs-keyword">unmanaged</span></span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+  <h4 class="section" id="type-parameters">Type Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#type-parameters" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <a id="BuildFromProject_Class1_Issue896_" data-uid="BuildFromProject.Class1.Issue896*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue896" data-uid="BuildFromProject.Class1.Issue896">
+  Issue896()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L20"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue896" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"><p>Test</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Issue896</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="BuildFromProject.Class1.html">Class1</a>.<a class="xref" href="BuildFromProject.Class1.Test-1.html">Test</a>&lt;T&gt;</div>
+    <div><a class="xref" href="BuildFromProject.Class1.html">Class1</a></div>
+    </dd>
+  </dl>
+
+
+  <a id="BuildFromProject_Class1_Issue9216_" data-uid="BuildFromProject.Class1.Issue9216*"></a>
+
+  <h3 id="BuildFromProject_Class1_Issue9216" data-uid="BuildFromProject.Class1.Issue9216">
+  Issue9216()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L164"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_Issue9216" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"><p>Calculates the determinant of a 3-dimensional matrix:</p>
+<p><span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0" ctxtmenu_counter="0" style="position: relative;"><svg xmlns="http://www.w3.org/2000/svg" width="19.699ex" height="8.597ex" role="img" focusable="false" viewBox="0 -2150 8706.9 3800" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" style="vertical-align: -3.733ex;"><defs><path id="MJX-1-TEX-I-1D434" d="M208 74Q208 50 254 46Q272 46 272 35Q272 34 270 22Q267 8 264 4T251 0Q249 0 239 0T205 1T141 2Q70 2 50 0H42Q35 7 35 11Q37 38 48 46H62Q132 49 164 96Q170 102 345 401T523 704Q530 716 547 716H555H572Q578 707 578 706L606 383Q634 60 636 57Q641 46 701 46Q726 46 726 36Q726 34 723 22Q720 7 718 4T704 0Q701 0 690 0T651 1T578 2Q484 2 455 0H443Q437 6 437 9T439 27Q443 40 445 43L449 46H469Q523 49 533 63L521 213H283L249 155Q208 86 208 74ZM516 260Q516 271 504 416T490 562L463 519Q447 492 400 412L310 260L413 259Q516 259 516 260Z"></path><path id="MJX-1-TEX-N-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path><path id="MJX-1-TEX-S4-2223" d="M139 -249H137Q125 -249 119 -235V251L120 737Q130 750 139 750Q152 750 159 735V-235Q151 -249 141 -249H139Z"></path><path id="MJX-1-TEX-I-1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path><path id="MJX-1-TEX-N-31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path><path id="MJX-1-TEX-N-32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path id="MJX-1-TEX-N-33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><use data-c="1D434" xlink:href="#MJX-1-TEX-I-1D434"></use></g><g data-mml-node="mo" transform="translate(1027.8,0)"><use data-c="3D" xlink:href="#MJX-1-TEX-N-3D"></use></g><g data-mml-node="mrow" transform="translate(2083.6,0)"><g data-mml-node="mo"><svg width="278" height="3800" y="-1650" x="27.5" viewBox="0 -470.7 278 3800"><use data-c="2223" xlink:href="#MJX-1-TEX-S4-2223" transform="scale(1,5.706)"></use></svg></g><g data-mml-node="mtable" transform="translate(333,0)"><g data-mml-node="mtr" transform="translate(0,1400)"><g data-mml-node="mtd"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-1-TEX-I-1D44E"></use></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="31" xlink:href="#MJX-1-TEX-N-31"></use><use data-c="31" xlink:href="#MJX-1-TEX-N-31" transform="translate(500,0)"></use></g></g></g></g><g data-mml-node="mtd" transform="translate(2319.1,0)"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-1-TEX-I-1D44E"></use></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="31" xlink:href="#MJX-1-TEX-N-31"></use><use data-c="32" xlink:href="#MJX-1-TEX-N-32" transform="translate(500,0)"></use></g></g></g></g><g data-mml-node="mtd" transform="translate(4638.2,0)"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-1-TEX-I-1D44E"></use></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="31" xlink:href="#MJX-1-TEX-N-31"></use><use data-c="33" xlink:href="#MJX-1-TEX-N-33" transform="translate(500,0)"></use></g></g></g></g></g><g data-mml-node="mtr"><g data-mml-node="mtd"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-1-TEX-I-1D44E"></use></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-1-TEX-N-32"></use><use data-c="31" xlink:href="#MJX-1-TEX-N-31" transform="translate(500,0)"></use></g></g></g></g><g data-mml-node="mtd" transform="translate(2319.1,0)"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-1-TEX-I-1D44E"></use></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-1-TEX-N-32"></use><use data-c="32" xlink:href="#MJX-1-TEX-N-32" transform="translate(500,0)"></use></g></g></g></g><g data-mml-node="mtd" transform="translate(4638.2,0)"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-1-TEX-I-1D44E"></use></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="32" xlink:href="#MJX-1-TEX-N-32"></use><use data-c="33" xlink:href="#MJX-1-TEX-N-33" transform="translate(500,0)"></use></g></g></g></g></g><g data-mml-node="mtr" transform="translate(0,-1400)"><g data-mml-node="mtd"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-1-TEX-I-1D44E"></use></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="33" xlink:href="#MJX-1-TEX-N-33"></use><use data-c="31" xlink:href="#MJX-1-TEX-N-31" transform="translate(500,0)"></use></g></g></g></g><g data-mml-node="mtd" transform="translate(2319.1,0)"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-1-TEX-I-1D44E"></use></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="33" xlink:href="#MJX-1-TEX-N-33"></use><use data-c="32" xlink:href="#MJX-1-TEX-N-32" transform="translate(500,0)"></use></g></g></g></g><g data-mml-node="mtd" transform="translate(4638.2,0)"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-1-TEX-I-1D44E"></use></g><g data-mml-node="TeXAtom" transform="translate(562,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="33" xlink:href="#MJX-1-TEX-N-33"></use><use data-c="33" xlink:href="#MJX-1-TEX-N-33" transform="translate(500,0)"></use></g></g></g></g></g></g><g data-mml-node="mo" transform="translate(6290.3,0)"><svg width="278" height="3800" y="-1650" x="27.5" viewBox="0 -470.7 278 3800"><use data-c="2223" xlink:href="#MJX-1-TEX-S4-2223" transform="scale(1,5.706)"></use></svg></g></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>=</mo><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">|</mo><mtable columnspacing="1em" rowspacing="4pt"><mtr><mtd><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>11</mn></mrow></msub></mtd><mtd><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>12</mn></mrow></msub></mtd><mtd><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>13</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>21</mn></mrow></msub></mtd><mtd><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>22</mn></mrow></msub></mtd><mtd><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>23</mn></mrow></msub></mtd></mtr><mtr><mtd><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>31</mn></mrow></msub></mtd><mtd><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>32</mn></mrow></msub></mtd><mtd><msub><mi>a</mi><mrow data-mjx-texclass="ORD"><mn>33</mn></mrow></msub></mtd></mtr></mtable><mo data-mjx-texclass="CLOSE">|</mo></mrow></math></mjx-assistive-mml></mjx-container></span></p>
+<p>Returns the smallest value:</p>
+<p><span class="math"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="SVG" tabindex="0" ctxtmenu_counter="1" style="position: relative;"><svg xmlns="http://www.w3.org/2000/svg" width="9.084ex" height="5.43ex" role="img" focusable="false" viewBox="0 -1450 4015.2 2400" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" style="vertical-align: -2.149ex;"><defs><path id="MJX-2-TEX-S3-7B" d="M618 -943L612 -949H582L568 -943Q472 -903 411 -841T332 -703Q327 -682 327 -653T325 -350Q324 -28 323 -18Q317 24 301 61T264 124T221 171T179 205T147 225T132 234Q130 238 130 250Q130 255 130 258T131 264T132 267T134 269T139 272T144 275Q207 308 256 367Q310 436 323 519Q324 529 325 851Q326 1124 326 1154T332 1205Q369 1358 566 1443L582 1450H612L618 1444V1429Q618 1413 616 1411L608 1406Q599 1402 585 1393T552 1372T515 1343T479 1305T449 1257T429 1200Q425 1180 425 1152T423 851Q422 579 422 549T416 498Q407 459 388 424T346 364T297 318T250 284T214 264T197 254L188 251L205 242Q290 200 345 138T416 3Q421 -18 421 -48T423 -349Q423 -397 423 -472Q424 -677 428 -694Q429 -697 429 -699Q434 -722 443 -743T465 -782T491 -816T519 -845T548 -868T574 -886T595 -899T610 -908L616 -910Q618 -912 618 -928V-943Z"></path><path id="MJX-2-TEX-I-1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path><path id="MJX-2-TEX-N-2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path><path id="MJX-2-TEX-N-3C" d="M694 -11T694 -19T688 -33T678 -40Q671 -40 524 29T234 166L90 235Q83 240 83 250Q83 261 91 266Q664 540 678 540Q681 540 687 534T694 519T687 505Q686 504 417 376L151 250L417 124Q686 -4 687 -5Q694 -11 694 -19Z"></path><path id="MJX-2-TEX-I-1D44F" d="M73 647Q73 657 77 670T89 683Q90 683 161 688T234 694Q246 694 246 685T212 542Q204 508 195 472T180 418L176 399Q176 396 182 402Q231 442 283 442Q345 442 383 396T422 280Q422 169 343 79T173 -11Q123 -11 82 27T40 150V159Q40 180 48 217T97 414Q147 611 147 623T109 637Q104 637 101 637H96Q86 637 83 637T76 640T73 647ZM336 325V331Q336 405 275 405Q258 405 240 397T207 376T181 352T163 330L157 322L136 236Q114 150 114 114Q114 66 138 42Q154 26 178 26Q211 26 245 58Q270 81 285 114T318 219Q336 291 336 325Z"></path><path id="MJX-2-TEX-N-3E" d="M84 520Q84 528 88 533T96 539L99 540Q106 540 253 471T544 334L687 265Q694 260 694 250T687 235Q685 233 395 96L107 -40H101Q83 -38 83 -20Q83 -19 83 -17Q82 -10 98 -1Q117 9 248 71Q326 108 378 132L626 250L378 368Q90 504 86 509Q84 513 84 520Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mrow"><g data-mml-node="mo" transform="translate(0 -0.5)"><use data-c="7B" xlink:href="#MJX-2-TEX-S3-7B"></use></g><g data-mml-node="mtable" transform="translate(750,0)"><g data-mml-node="mtr" transform="translate(0,700)"><g data-mml-node="mtd"><g data-mml-node="mi"><use data-c="1D44E" xlink:href="#MJX-2-TEX-I-1D44E"></use></g><g data-mml-node="mo" transform="translate(529,0)"><use data-c="2C" xlink:href="#MJX-2-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(973.7,0)"><use data-c="1D44E" xlink:href="#MJX-2-TEX-I-1D44E"></use></g><g data-mml-node="mo" transform="translate(1780.4,0)"><use data-c="3C" xlink:href="#MJX-2-TEX-N-3C"></use></g><g data-mml-node="mi" transform="translate(2836.2,0)"><use data-c="1D44F" xlink:href="#MJX-2-TEX-I-1D44F"></use></g></g></g><g data-mml-node="mtr" transform="translate(0,-700)"><g data-mml-node="mtd" transform="translate(50,0)"><g data-mml-node="mi"><use data-c="1D44F" xlink:href="#MJX-2-TEX-I-1D44F"></use></g><g data-mml-node="mo" transform="translate(429,0)"><use data-c="2C" xlink:href="#MJX-2-TEX-N-2C"></use></g><g data-mml-node="mi" transform="translate(873.7,0)"><use data-c="1D44F" xlink:href="#MJX-2-TEX-I-1D44F"></use></g><g data-mml-node="mo" transform="translate(1580.4,0)"><use data-c="3E" xlink:href="#MJX-2-TEX-N-3E"></use></g><g data-mml-node="mi" transform="translate(2636.2,0)"><use data-c="1D44E" xlink:href="#MJX-2-TEX-I-1D44E"></use></g></g></g></g><g data-mml-node="mo" transform="translate(4015.2,0) translate(0 250)"></g></g></g></g></svg><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">{</mo><mtable columnspacing="1em" rowspacing="4pt"><mtr><mtd><mi>a</mi><mo>,</mo><mi>a</mi><mo>&lt;</mo><mi>b</mi></mtd></mtr><mtr><mtd><mi>b</mi><mo>,</mo><mi>b</mi><mo>&gt;</mo><mi>a</mi></mtd></mtr></mtable><mo data-mjx-texclass="CLOSE" fence="true" stretchy="true" symmetric="true"></mo></mrow></math></mjx-assistive-mml></mjx-container></span></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">double</span> <span class="hljs-title">Issue9216</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+  <h4 class="section" id="returns">Returns<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#returns" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.double" target="_blank" rel="noopener noreferrer nofollow">double</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BuildFromProject_Class1_XmlCommentIncludeTag_" data-uid="BuildFromProject.Class1.XmlCommentIncludeTag*"></a>
+
+  <h3 id="BuildFromProject_Class1_XmlCommentIncludeTag" data-uid="BuildFromProject.Class1.XmlCommentIncludeTag">
+  XmlCommentIncludeTag()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L12"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_XmlCommentIncludeTag" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
+  <div class="markdown level1 summary"><p>This method should do something...</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">XmlCommentIncludeTag</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BuildFromProject_Class1_XmlCommentIncludeTag_remarks">Remarks<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#BuildFromProject_Class1_XmlCommentIncludeTag_remarks" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <div class="markdown level1 remarks"><p>This is remarks.</p>
+</div>
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L3" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix">
+      <h5 class="border-bottom">In this article</h5>
+      <ul><li><a class="link-body-emphasis" href="#methods">Methods</a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue1651">Issue1651() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue1887">Issue1887() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue2623">Issue2623() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue2723">Issue2723() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue4017">Issue4017() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue4392">Issue4392() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue7484">Issue7484() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue8764__1">Issue8764&lt;<wbr>T&gt;<wbr>() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue896">Issue896() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_Issue9216">Issue9216() </a></li><li><a class="link-secondary" href="#BuildFromProject_Class1_XmlCommentIncludeTag">Xml<wbr>Comment<wbr>Include<wbr>Tag() </a></li></ul></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  
+
+</body></html>

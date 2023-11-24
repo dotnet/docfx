@@ -26,12 +26,16 @@ To add API docs for a .NET project, add a `metadata` section before the `build` 
 Docfx generates .NET API docs in 2 stages:
 1. The _metadata_ stage uses the `metadata` config to produce [.NET API YAML files](dotnet-yaml-format.md) at the `metadata.dest` directory.
 
+> [!NOTE]
+> The [`Docset.Build`](../api/Docfx.Docset.yml) method does not run the _metadata_ stage,
+> invoke the [`DotnetApiCatalog.GenerateManagedReferenceYamlFiles`](../api/Docfx.Dotnet.DotnetApiCatalog.yml) method to run the _metadata_ stage before the _build_ stage.
+
 2. The _build_ stage transforms the generated .NET API YAML files specified in `build.content` config into HTML files.
 
 These 2 stages can run independently with the `docfx metadata` command and the `docfx build` command. The `docfx` root command runs both `metadata` and `build`.
 
 > [!NOTE]
-> Glob patterns in docfx currently does not support crawling files outside the directory containing `docfx.json`. Use the `metadata.src` property 
+> Glob patterns in docfx currently does not support crawling files outside the directory containing `docfx.json`. Use the `metadata.src.src` property 
 
 Docfx supports several source formats to generate .NET API docs:
 
@@ -58,7 +62,7 @@ Docfx examines the assembly and tries to load the reference assemblies from with
 }
 ```
 
-Features that needs source code information such as "Improve this doc" and "View source" is not available using this approach.
+If [source link](https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) is enabled on the assembly and the `.pdb` file exists along side the assembly, docfx shows the "View Source" link based on the source URL extract from source link.
 
 ## Generate from projects or solutions
 
@@ -108,6 +112,18 @@ When the file extension is `.cs` or `.vb`, docfx uses the latest supported .NET 
 }
 ```
 
+## Customization Options
+
+There are several options available for customizing .NET API pages that are tailored to your specific needs and preferences. To customize .NET API pages for DocFX, you can use the following options:
+
+- `memberLayout`: This option determines whether type members should be on the same page as containing type or as dedicated pages. Possible values are:
+  - `samePage`: Type members are on the same page as containing type.
+  - `separatePages`: Type members are on dedicated pages.
+
+- `namespaceLayout`: This option determines whether namespace node in TOC is a list or nested. Possible values are:
+  - `flattened`: Namespace node in TOC is a list.
+  - `nested`: Namespace node in TOC is nested.
+
 ## Supported XML Tags
 
 Docfx supports [Recommended XML tags for C# documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags).
@@ -132,7 +148,7 @@ To disable markdown parsing while processing XML tags, set `shouldSkipMarkup` to
 
 ## Filter APIs
 
-Docfx shows only the public accessible types and methods callable from another assembly. It also has a set of [default filtering rules](https://github.com/dotnet/docfx/blob/main/src/Microsoft.DocAsCode.Metadata.ManagedReference.Common/Filters/defaultfilterconfig.yml) that excludes common API patterns based on attributes such as `[EditorBrowsableAttribute]`.
+Docfx shows only the public accessible types and methods callable from another assembly. It also has a set of [default filtering rules](https://github.com/dotnet/docfx/blob/main/src/Docfx.Metadata.ManagedReference.Common/Filters/defaultfilterconfig.yml) that excludes common API patterns based on attributes such as `[EditorBrowsableAttribute]`.
 
 To disable the default filtering rules, set the `disableDefaultFilter` property to `true`.
 
@@ -147,7 +163,7 @@ To use a custom filtering with code:
 1. Use docfx .NET API generation as a NuGet library:
 
 ```xml
-<PackageReference Include="Microsoft.DocAsCode.Dotnet" Version="2.62.0" />
+<PackageReference Include="Docfx.Dotnet" Version="2.62.0" />
 ```
 
 2. Configure the filter options:
@@ -165,7 +181,7 @@ var options = new DotnetApiOptions
 await DotnetApiCatalog.GenerateManagedReferenceYamlFiles("docfx.json", options);
 ```
 
-The filter callbacks takes an [`ISymbol`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.isymbol?view=roslyn-dotnet) interface and produces an [`SymbolIncludeState`](../api/Microsoft.Docascode.Dotnet.SymbolIncludeState.yml) enum to choose between include the API, exclude the API or use the default filtering behavior.
+The filter callbacks takes an [`ISymbol`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.isymbol?view=roslyn-dotnet) interface and produces an [`SymbolIncludeState`](../api/Docfx.Dotnet.SymbolIncludeState.yml) enum to choose between include the API, exclude the API or use the default filtering behavior.
 
 The callbacks are raised before applying the default rules but after processing type accessibility rules. Private types and members cannot be marked as include unless `includePrivateMembers` is true.
 

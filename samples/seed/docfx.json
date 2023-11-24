@@ -16,23 +16,60 @@
           "src": "dotnet"
         }
       ],
-      "dest": "obj/api"
+      "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
+      "output": "obj/api"
+    },
+    {
+      "src": [
+        {
+          "files": [
+            "assembly/bin/**/*.dll",
+            "project/**/*.csproj",
+            "solution/**/*.sln",
+            "csharp/**/*.cs",
+            "vb/**/*.vb"
+          ],
+          "exclude": [
+            "project/Project.Core/**"
+          ],
+          "src": "dotnet"
+        }
+      ],
+      "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
+      "outputFormat": "markdown",
+      "output": "obj/md"
+    },
+    {
+      "src": [
+        {
+          "files": [
+            "assembly/bin/**/*.dll",
+            "project/**/*.csproj",
+            "solution/**/*.sln",
+            "csharp/**/*.cs",
+            "vb/**/*.vb"
+          ],
+          "exclude": [
+            "project/Project.Core/**"
+          ],
+          "src": "dotnet"
+        }
+      ],
+      "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
+      "outputFormat": "apiPage",
+      "output": "obj/apipage"
     }
   ],
   "build": {
     "content": [
-      {
-        "files": [ "**/*.yml" ],
-        "src": "obj/api",
-        "dest": "api"
-      },
-      {
-        "files": [ "articles/**/*.md", "*.md", "toc.yml", "restapi/**" ]
-      },
-      {
-        "files": [ "docs/markdown.md" ],
-        "src": "../../docs/"
-      }
+      { "files": [ "**/*.yml" ], "src": "obj/api", "dest": "api" },
+      { "files": [ "**" ], "src": "obj/md", "dest": "md" },
+      { "files": [ "**" ], "src": "obj/apipage", "dest": "apipage" },
+      { "files": [ "articles/**/*.{md,yml}", "*.md", "toc.yml", "restapi/**" ] },
+      { "files": [ "pdf/**" ] }
     ],
     "resource": [
       {
@@ -43,36 +80,20 @@
     "globalMetadata": {
       "_appTitle": "docfx seed website",
       "_appName": "Seed",
-      "_enableSearch": true
+      "_enableSearch": true,
+      "pdf": true,
+      "pdfTocPage": true
     },
-    "dest": "_site",
+    "output": "_site",
     "exportViewModel": true,
-    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]
+    "template": ["default", "modern", "template"],
+    "markdownEngineProperties": {
+      "alerts": {
+        "TODO": "alert alert-secondary"
+      }
+    }
   },
-  "pdf": {
-    "content": [
-      {
-        "files": [ "obj/api/*.yml" ],
-        "exclude": [ "**/toc.yml" ]
-      },
-      {
-        "files": [ "articles/**/*.md", "*.md", "restapi/**" ]
-      },
-      {
-        "files": [ "pdf/toc.yml" ]
-      }
-    ],
-    "resource": [
-      {
-        "files": [ "articles/images/**"]
-      }
-    ],
-    "overwrite": "specs/*.md",
-    "wkhtmltopdf": {
-      "filePath": "C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe",
-      "additionalArguments": "--enable-local-file-access"
-    },
-    "dest": "_site_pdf",
-    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]
+  "rules": {
+    "InvalidCref": "info"
   }
 }

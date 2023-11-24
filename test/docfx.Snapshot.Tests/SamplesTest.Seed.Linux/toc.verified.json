@@ -1,0 +1,47 @@
+﻿{
+  "items": [
+    {
+      "name": "Home",
+      "href": "index.html",
+      "topicHref": "index.html"
+    },
+    {
+      "name": "Articles",
+      "href": "articles/docfx_getting_started.html",
+      "tocHref": "articles/toc.json",
+      "topicHref": "articles/docfx_getting_started.html"
+    },
+    {
+      "name": "API Documentation",
+      "items": [
+        {
+          "name": ".NET API",
+          "href": "api/BuildFromAssembly.html",
+          "tocHref": "api/toc.json",
+          "topicHref": "api/BuildFromAssembly.html",
+          "topicUid": "BuildFromAssembly"
+        },
+        {
+          "name": ".NET API (markdown)",
+          "href": "md/BuildFromAssembly.html",
+          "tocHref": "md/toc.json",
+          "topicHref": "md/BuildFromAssembly.html"
+        },
+        {
+          "name": ".NET API (apipage)",
+          "href": "apipage/BuildFromAssembly.html",
+          "tocHref": "apipage/toc.json",
+          "topicHref": "apipage/BuildFromAssembly.html"
+        },
+        {
+          "name": "REST API",
+          "href": "restapi/petstore.html",
+          "tocHref": "restapi/toc.json",
+          "topicHref": "restapi/petstore.html"
+        }
+      ]
+    }
+  ],
+  "pdf": true,
+  "pdfTocPage": true
+}

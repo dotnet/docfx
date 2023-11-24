@@ -7,8 +7,14 @@ namespace BuildFromAssembly;
 /// </summary>
 public class Class1
 {
+    /// <summary>
+    /// Hello World.
+    /// </summary>
     public static void HelloWorld() { }
 
+    /// <summary>
+    /// Hidden API.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void HiddenAPI() { }
 }

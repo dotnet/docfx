@@ -4,14 +4,33 @@ updates:
   target-branch: main
   directory: "/"
   schedule:
-    interval: weekly
+    interval: daily
+  groups:
+    roslyn:
+      patterns:
+      - "Microsoft.CodeAnalysis"
+      - "Microsoft.CodeAnalysis.*"
+    spectre:
+      patterns:
+      - "Spectre.Console"
+      - "Spectre.Console.*"
+
 - package-ecosystem: npm
   target-branch: main
   directory: "/templates"
   schedule:
-    interval: weekly
+    interval: daily
+  groups:
+    typescript-eslint:
+      patterns:
+      - "@typescript-eslint/*"
+  ignore:
+     # Ignore default template dependency update due to missing tests
+  - dependency-name: '@default/*'
+  - dependency-name: 'jquery'
+
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule: 
-    interval: weekly
+    interval: daily
   target-branch: main

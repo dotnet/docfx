@@ -2,20 +2,22 @@
 
 [![NuGet](https://img.shields.io/nuget/v/docfx)](https://www.nuget.org/packages/docfx)
 [![Help Wanted](https://img.shields.io/github/issues/dotnet/docfx/help-wanted?label=help-wanted)](https://github.com/dotnet/docfx/labels/help-wanted)
-[![Gitter](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 * [Getting Started](#getting-started)
 * [Contributing](#contributing)
 * [Roadmap](#roadmap)
-* [.NET Foundation](#net-foundation)
 * [License](#license)
+* [.NET Foundation](#net-foundation)
 
 Build your technical documentation site with docfx, with landing pages, markdown, API reference docs for .NET, REST API and more.
 
 > ⚠️⚠️⚠️ NOTICE ⚠️⚠️⚠️
 >
-> - For [Microsoft Learn](https://learn.microsoft.com/) users, the open source version of docfx [_will NOT_ be maintained to support Microsoft Learn content](https://github.com/dotnet/docfx/discussions/8277#discussioncomment-4409645). For Microsoft Learn feature requests, bug reports and other support ticks, use internal channels such as the [Learn Platform Support Channel](https://teams.microsoft.com/l/team/19%3a7ecffca1166a4a3986fed528cf0870ee%40thread.skype/conversations?groupId=de9ddba4-2574-4830-87ed-41668c07a1ca&tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47).
-> - V3 branch has been privatized to support [Microsoft Learn](https://learn.microsoft.com/), the development of V3 branch in the public is [officially stopped](https://github.com/dotnet/docfx/discussions/8277#discussioncomment-4409645).
+> DocFX is being transitioned to the .NET Foundation as an official .NET project!
+
+> - The DocFX team is working on improving the main branch. This will introduce new features and bug fixes to the project, remove some older code and features that are no longer necessary, as well as update the dependencies and simplify the project structure. Stay tuned for a roadmap.
+> - Due to [architectural changes in the site](https://github.com/dotnet/docfx/discussions/8277#discussioncomment-4409645), DocFX can no longer support building [Microsoft Learn](https://learn.microsoft.com/) content directly. The open source repos holding Markdown content for Microsoft Learn will still accept pull requests and changes, but are not directly buildable with DocFX.
+> - Moving forward, we will only be supporting this tool as a static site generator for new sites, not as a tool to build official Microsoft content on Microsoft Learn.  
 
 ## Getting Started
 
@@ -29,7 +31,7 @@ Build your technical documentation site with docfx, with landing pages, markdown
 
    ```
    docfx init -q
-   docfx docfx_project\docfx.json --serve
+   docfx build docfx_project\docfx.json --serve
    ```
 
 3. Go to https://localhost:8080 to see the sample site.
@@ -45,9 +47,9 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 
 ### Prerequisites
 
-- Install [Visual Studio 2022 (Community or higher)]((https://www.visualstudio.com/)) and make sure you have the latest updates.
-- Install [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core) 6.x and 7.x.
-- Install NodeJS (16.x.x).
+- Install [Visual Studio 2022 (Community or higher)](https://www.visualstudio.com/) and make sure you have the latest updates.
+- Install [.NET SDK](https://dotnet.microsoft.com/download/dotnet) 6.x, 7.x and 8.x.
+- Install NodeJS (18.x.x).
 - Optional: Install wkhtmltopdf on Windows to test PDF using `choco install wkhtmltopdf`.
 
 ### Build and Test
@@ -61,10 +63,9 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 
 ### Branch and Release
 
-The `main` branch is the default branch for pull requests and most other development activities. We occationally use `feature/*` branches for epic feature development.
+The `main` branch is the default branch for pull requests and most other development activities. We occasionally use `feature/*` branches for epic feature development.
 
-Releases are based on a stable `main` branch commit using [GitHub Releases](https://github.com/dotnet/docfx/releases). Release versioning follows [Semantic Versioning](https://semver.org/). 
-Use of [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) is encouraged.
+Releases are based on a stable `main` branch commit using [GitHub Releases](https://github.com/dotnet/docfx/releases). Use of [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) is encouraged.
 
 Docfx is _not_ released under a regular cadence, new versions arrive when maintainers see enough changes that warrant a new releases. Sometimes we use prereleases to dogfood breaking changes and get feedbacks from the community.
 
@@ -76,13 +77,14 @@ We use [Milestones](https://github.com/dotnet/docfx/milestones) to communicate u
 
 - [Backlog](https://github.com/dotnet/docfx/milestone/49) is a set of feature candidates for some future releases, but are not being actively worked on.
 
+## License
+
+This project is licensed under the [MIT](https://github.com/dotnet/docfx/blob/main/LICENSE) License.
+
 ## .NET Foundation
 
 This project is supported by the [.NET Foundation](http://www.dotnetfoundation.org).
 
-This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
-For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
-
-## License
-
-This project is licensed under the [MIT](https://github.com/dotnet/docfx/blob/main/LICENSE) License.
+This project has adopted the code of conduct defined by the Contributor Covenant to clarify expected behavior in our community.
+For more information see the [.NET Foundation Code of Conduct](https://dotnetfoundation.org/code-of-conduct).
+ 

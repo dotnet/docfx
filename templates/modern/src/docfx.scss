@@ -1,0 +1,99 @@
+/**
+ * Licensed to the .NET Foundation under one or more agreements.
+ * The .NET Foundation licenses this file to you under the MIT license.
+ */
+
+$enable-important-utilities: false;
+$container-max-widths: (
+  xxl: 1768px
+) !default;
+
+@import "mixins";
+@import "bootstrap/scss/bootstrap";
+@import "highlight";
+@import "layout";
+@import "nav";
+@import "toc";
+@import "markdown";
+@import "search";
+@import "dotnet";
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.xref,
+.text-break {
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.divider {
+  margin: 0 5px;
+  color: #ccc;
+}
+
+article {
+  // For REST API view source link
+  span.small.pull-right {
+    float: right;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+.codewrapper {
+  position: relative;
+}
+
+.sample-response .response-content {
+  max-height: 200px;
+}
+
+@media (width <= 768px) {
+  #mobile-indicator {
+    display: block;
+  }
+
+  .mobile-hide {
+    display: none;
+  }
+
+  /* workaround for #hashtag url is no longer needed */
+  h1::before,
+  h2::before,
+  h3::before,
+  h4::before {
+    content: "";
+    display: none;
+  }
+}
+
+@media print {
+  @page {
+    margin: .4in;
+  }
+}
+
+.pdftoc {
+  ul {
+    list-style: none;
+  }
+
+  a {
+    display: flex;
+    text-decoration: none;
+    color: var(--bs-body-color);
+
+    .spacer {
+      flex: 1;
+      border-bottom: 1px dashed var(--bs-body-color);
+      margin: .4em;
+    }
+  }
+}

@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Namespace CatLibrary.Core",
+  "content": "<h1 class='section api' data-uid='CatLibrary.Core' data-commentId='N:CatLibrary.Core' id='CatLibrary_Core'>Namespace CatLibrary.Core   </h1>\r\n <h3 class='section'>Classes</h3><dl class='parameters'><dt> <a href='CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html'>ContainersRefType.ContainersRefTypeChild</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd><dt> <a href='CatLibrary.Core.ExplicitLayoutClass.html'>ExplicitLayoutClass</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd><dt> <a href='CatLibrary.Core.Issue231.html'>Issue231</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd><dt> <a href='CatLibrary.Core.Issue231.html'>Issue231</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl><h3 class='section'>Structs</h3><dl class='parameters'><dt> <a href='CatLibrary.Core.ContainersRefType.html'>ContainersRefType</a>  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.Core.yml\" sourceStartLineNumber=\"1\">Struct ContainersRefType</p>\n\r\n</dd></dl><h3 class='section'>Interfaces</h3><dl class='parameters'><dt> <a href='CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html'>ContainersRefType.ContainersRefTypeChildInterface</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl><h3 class='section'>Enums</h3><dl class='parameters'><dt> <a href='CatLibrary.Core.ContainersRefType.ColorType.html'>ContainersRefType.ColorType</a>  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.Core.yml\" sourceStartLineNumber=\"1\">Enumeration ColorType</p>\n\r\n</dd></dl><h3 class='section'>Delegates</h3><dl class='parameters'><dt> <a href='CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html'>ContainersRefType.ContainersRefTypeDelegate</a>  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.Core.yml\" sourceStartLineNumber=\"1\">Delegate ContainersRefTypeDelegate</p>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/CatLibrary.Core.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/CatLibrary.Core.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

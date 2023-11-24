@@ -15,23 +15,14 @@ Goal and limitation
 
 Preparation
 -----------
-1.  Create a new C# class library project in `Visual Studio`, targets .NET Framework 4.7.2 or later.
+1.  Create a new C# class library targeting `net6.0` or later.
 
-2.  Add nuget packages:  
-    * `System.Collections.Immutable` with version 1.3.1 or later (if not already included in your .NET Framework target version)
-    * `Microsoft.Composition` with version 1.0.31
+2.  Add NuGet package reference to `System.Composition`, `Docfx.Plugins` and `Docfx.Common`.
 
-3.  Add `Microsoft.DocAsCode.Plugins` and `Microsoft.DocAsCode.Common`
-    If building DocFX from source code then add a reference to the project,
-    otherwise add the nuget packages with the same version as DocFX.
-
-4.  Add framework assembly references:
-    `PresentationCore`, `PresentationFramework`, `WindowsBase`. (This step is optional in Visual Studio 2017 or above)
-
-5.  Add a project for converting rtf to html:  
+4.  Add a project for converting rtf to html:
     Clone project [MarkupConverter](https://github.com/mmanela/MarkupConverter), and reference it.
 
-6.  Copy the code file `CSharp/parallel/ParallelExtensionsExtras/TaskSchedulers/StaTaskScheduler.cs` from [DotNet Samples](https://github.com/dotnet/samples)
+5.  Copy the code file `CSharp/parallel/ParallelExtensionsExtras/TaskSchedulers/StaTaskScheduler.cs` from [DotNet Samples](https://github.com/dotnet/samples)
 
 Create a document processor
 ---------------------------
@@ -66,7 +57,7 @@ Create a document processor
 3. Load our rtf file by reading all text:
    [!Code-csharp[Load](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Load)]
 
-   We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs)
+   We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Docfx.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs)
  stores the content of markdown files.
 
 4. Implement `Save` method as follows:
@@ -137,10 +128,10 @@ Enable plug-in
 --------------
 1.  Build our project.
 2.  Copy the output dll files to:
-    * Global: a folder you create, named `Plugins` under the folder where DocFX.exe resides.
-    * Non-global: a folder you create with the name `Plugins` under a template folder. Then run `DocFX build` command with parameter `-t {template}`.
+    * Global: the Docfx executable directory.
+    * Non-global: a folder you create with the name `plugins` under a template folder. Then run `DocFX build` command with parameter `-t {template}`.
 
-      *Hint*: DocFX can merge templates so create a template that only contains the `Plugins` folder, then run the command `DocFX build` with parameter `-t {templateForRender},{templateForPlugins}`. 
+      *Hint*: DocFX can merge templates so create a template that only contains the `plugins` folder, then run the command `DocFX build` with parameter `-t {templateForRender},{templateForPlugins}`. 
 
 Build document
 --------------

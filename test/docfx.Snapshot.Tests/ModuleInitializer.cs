@@ -1,17 +1,17 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
-namespace Microsoft.DocAsCode.Tests
+using System.Runtime.CompilerServices;
+using DiffEngine;
+
+namespace Docfx.Tests;
+
+public static class ModuleInitializer
 {
-    using System.Runtime.CompilerServices;
-    using VerifyTests;
-
-    public static class ModuleInitializer
+    [ModuleInitializer]
+    public static void Initialize()
     {
-        [ModuleInitializer]
-        public static void Initialize()
-        {
-            VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
-        }
+        BuildServerDetector.Detected = Environment.GetEnvironmentVariable("BUILD_SERVER") == "true";
+        VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
     }
 }

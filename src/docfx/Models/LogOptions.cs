@@ -1,27 +1,28 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
-namespace Microsoft.DocAsCode
+using System.ComponentModel;
+using Docfx.Common;
+
+using Spectre.Console.Cli;
+
+namespace Docfx;
+
+internal class LogOptions : CommandSettings
 {
-    using Microsoft.DocAsCode.Common;
+    [Description("Save log as structured JSON to the specified file")]
+    [CommandOption("-l|--log")]
+    public string LogFilePath { get; set; }
 
-    using CommandLine;
+    [Description("Set log level to error, warning, info, verbose or diagnostic")]
+    [CommandOption("--logLevel")]
+    public LogLevel? LogLevel { get; set; }
 
-    internal class LogOptions
-    {
-        [Option('l', "log", HelpText = "Specify the file name to save processing log")]
-        public string LogFilePath { get; set; }
+    [Description("Set log level to verbose")]
+    [CommandOption("--verbose")]
+    public bool Verbose { get; set; }
 
-        [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
-        public LogLevel? LogLevel { get; set; }
-
-        [Option("repositoryRoot", HelpText = "Specify the GIT repository root folder.")]
-        public string RepoRoot { get; set; }
-
-        [Option("correlationId", HelpText = "Specify the correlation id used for logging.")]
-        public string CorrelationId { get; set; }
-
-        [Option("warningsAsErrors", HelpText = "Specify if warnings should be treated as errors.")]
-        public bool WarningsAsErrors { get; set; }
-    }
+    [Description("Treats warnings as errors")]
+    [CommandOption("--warningsAsErrors")]
+    public bool WarningsAsErrors { get; set; }
 }

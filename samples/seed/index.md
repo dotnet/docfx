@@ -1,3 +1,10 @@
+---
+_disableNewTab: true
+_lang: zh-CN
+_layout: landing
+_appLogoUrl: https://github.com/dotnet/docfx
+---
+
 # docfx-seed
 ## Description
 This is a sample docfx documentation project. It contains .NET source code and markdown files.

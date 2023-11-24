@@ -111,6 +111,7 @@ namespace CatLibrary
     /// </list>
     /// </remarks>
     [Serializable]
+    [Obsolete]
     public class Cat<T, K> : ICat
         where T : class, new()
         where K : struct
@@ -177,8 +178,8 @@ namespace CatLibrary
         /// <summary>
         /// Addition operator of this class.
         /// </summary>
-        /// <param name="lsr">...</param>
-        /// <param name="rsr">~~~</param>
+        /// <param name="lsr">..</param>
+        /// <param name="rsr">~~</param>
         /// <returns>Result with <i>int</i> type.</returns>
         public static int operator +(Cat<T, K> lsr, int rsr) { return 1; }
 
@@ -200,7 +201,7 @@ namespace CatLibrary
         /// This is index property of Cat. You can see that the visibility is different between <c>get</c> and <c>set</c> method.
         /// </summary>
         /// <param name="a">Cat's name.</param>
-        /// <returns>Cat's number.</returns>
+        /// <value>Cat's number.</value>
         public int this[string a]
         {
             protected get { return 1; }
@@ -210,6 +211,7 @@ namespace CatLibrary
         /// <summary>
         /// Hint cat's age.
         /// </summary>
+        [Obsolete]
         protected int Age
         {
             get { return 1; }
@@ -220,6 +222,7 @@ namespace CatLibrary
         /// <summary>
         /// Eat event of this cat
         /// </summary>
+        [Obsolete("This _event handler_ is deprecated.")]
         public event EventHandler ownEat;
 
         //Field: with attribute
@@ -228,6 +231,7 @@ namespace CatLibrary
         /// </summary>
         [ContextStatic]
         [NonSerialized]
+        [Obsolete]
         public bool isHealthy;
 
         //EII Method
@@ -411,5 +415,13 @@ namespace MRef.Demo.Enumeration
         /// yellow comes from desert
         /// </summary>
         Yellow
+    }
+}
+
+namespace CatLibrary.Core
+{
+    public static class Issue231
+    {
+        public static void Bar(this ContainersRefType c) {}
     }
 }

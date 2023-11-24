@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 namespace RtfDocumentProcessors
 {
@@ -11,7 +11,7 @@ namespace RtfDocumentProcessors
     using System.Threading.Tasks.Schedulers;
 
     using MarkupConverter;
-    using Microsoft.DocAsCode.Plugins;
+    using Docfx.Plugins;
 
     [Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
     public class RtfBuildStep : IDocumentBuildStep

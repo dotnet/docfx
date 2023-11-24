@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Interface Class1.IIssue8948",
+  "content": "<h1 class='section api' data-uid='BuildFromProject.Class1.IIssue8948' data-commentId='T:BuildFromProject.Class1.IIssue8948' id='BuildFromProject_Class1_IIssue8948'>Interface Class1.IIssue8948   <span class='badge rounded-pill text-bg-info' style='font-size: .4em; vertical-align: middle'>Preview</span>  <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L134'><i class='bi bi-code-slash'></i></a></h1>\r\n \n<div class='alert alert-info' role='alert'><p sourceFile=\"obj/apipage/BuildFromProject.Class1.IIssue8948.yml\" sourceStartLineNumber=\"1\"><a href=\"https://example.org/DOCFX001\" sourceFile=\"obj/apipage/BuildFromProject.Class1.IIssue8948.yml\" sourceStartLineNumber=\"1\">DOCFX001</a>: 'BuildFromProject.Class1.IIssue8948' is for evaluation purposes only and is subject to change or removal in future updates.</p>\n</div><div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='BuildFromProject.html'>BuildFromProject</a></dd></dl><dl><dt>Assembly</dt><dd>BuildFromProject.dll</dd></dl>\r\n</div><pre><code class='lang-csharp'>public interface Class1.IIssue8948</code></pre><h2 class='section'>Methods</h2><h3 class='section api' data-uid='BuildFromProject.Class1.IIssue8948.DoNothing``1' data-commentId='M:BuildFromProject.Class1.IIssue8948.DoNothing``1' id='BuildFromProject_Class1_IIssue8948_DoNothing__1'>DoNothing&lt;T&gt;()    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L140'><i class='bi bi-code-slash'></i></a></h3>\r\n <p sourceFile=\"obj/apipage/BuildFromProject.Class1.IIssue8948.yml\" sourceStartLineNumber=\"1\">Does nothing with generic type <code class=\"typeparamref\">T</code>.</p>\n<pre><code class='lang-csharp'>void DoNothing&lt;T&gt;()</code></pre><h4 class='section'>Type Parameters</h4><dl class='parameters'><dt><code>T</code>   </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.IIssue8948.yml\" sourceStartLineNumber=\"1\">A generic type.</p>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromProject.Class1.IIssue8948.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromProject.Class1.IIssue8948.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

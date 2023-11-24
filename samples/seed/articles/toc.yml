@@ -1,0 +1,17 @@
+﻿pdfFileName: seed.pdf
+pdfCoverPage: pdf/cover.html
+items:
+- name: Getting Started
+  href: docfx_getting_started.md
+- name: Engineering Docs
+  expanded: true
+  items:
+  - name: Section 1
+  - name: Engineering Guidelines
+    href: engineering_guidelines.md
+  - name: CSharp Coding Standards
+    href: csharp_coding_standards.md
+- name: Markdown
+  href: markdown.md
+- name: Microsoft Docs
+  href: https://docs.microsoft.com/en-us/

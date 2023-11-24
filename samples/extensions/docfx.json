@@ -11,7 +11,8 @@
       "dest": "api",
       "includePrivateMembers": true,
       "disableGitFeatures": false,
-      "disableDefaultFilter": false
+      "disableDefaultFilter": false,
+      "memberLayout": "separatePages"
     }
   ],
   "build": {
@@ -33,12 +34,9 @@
     "fileMetadataFiles": [],
     "template": [
       "default",
-      "memberpage"
+      "modern"
     ],
     "postProcessors": [],
-    "noLangKeyword": false,
-    "keepFileLink": false,
-    "cleanupCacheHistory": false,
     "disableGitFeatures": false,
     "exportViewModel": true
   }

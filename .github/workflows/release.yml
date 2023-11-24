@@ -4,20 +4,17 @@ on:
     types: [published]
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       with:
-        node-version: 16
+        node-version: 18
     - uses: actions/setup-dotnet@v3
       with:
         dotnet-version: |
-          6.x
-          7.x
+          8.x
 
     - run: npm install
       working-directory: templates
@@ -31,16 +28,11 @@ jobs:
     - name: dotnet pack
       run: dotnet pack -c Release /p:Version=${GITHUB_REF_NAME#v} -o drop/nuget
 
-    - uses: actions/upload-artifact@v3
-      with:
-        name: nuget
-        path: drop/nuget
-
     - name: dotnet publish
       run: |
-        dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
-        dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64
-        dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
+        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64 /p:PlaywrightPlatform=win
+        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64 /p:PlaywrightPlatform=linux
+        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64 /p:PlaywrightPlatform=osx
         mkdir -p drop/bin
 
     - run: zip -r ../../bin/docfx-win-x64-${GITHUB_REF_NAME}.zip .
@@ -52,22 +44,74 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
+        name: nuget
+        path: drop/nuget
+
+    - uses: actions/upload-artifact@v3
+      with:
         name: bin
         path: drop/bin
 
+  sign:
+    runs-on: windows-latest
+    needs: build
+    steps:
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.x
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: nuget
+        path: drop/nuget
+
+    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23530.1
+
+    - run: >
+        ./sign code azure-key-vault
+        drop/nuget/**/*.*
+        --description "Docfx code sign"
+        --description-url "https://dotnet.github.io/docfx"
+        --timestamp-url http://timestamp.digicert.com
+        --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
+        --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE }}"
+        --azure-key-vault-tenant-id "${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}"
+        --azure-key-vault-client-id "${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}"
+        --azure-key-vault-client-secret "${{ secrets.SIGN_KEY_VAULT_CLIENT_SECRET }}"
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: nuget-signed
+        path: drop/nuget
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: sign
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.x
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: nuget-signed
+        path: drop/nuget
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: bin
+        path: drop/bin
+
+    - name: Publish NuGet packages
+      run: |
+        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.NUGET_KEY }}" --skip-duplicate --source https://api.nuget.org/v3/index.json
+
     - name: Upload GitHub release
       run: |
-        gh release upload ${GITHUB_REF_NAME} drop/bin/docfx-win-x64-${GITHUB_REF_NAME}.zip
-        gh release upload ${GITHUB_REF_NAME} drop/bin/docfx-linux-x64-${GITHUB_REF_NAME}.zip
-        gh release upload ${GITHUB_REF_NAME} drop/bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip
+        gh release upload --repo dotnet/docfx ${GITHUB_REF_NAME} drop/bin/docfx-win-x64-${GITHUB_REF_NAME}.zip
+        gh release upload --repo dotnet/docfx ${GITHUB_REF_NAME} drop/bin/docfx-linux-x64-${GITHUB_REF_NAME}.zip
+        gh release upload --repo dotnet/docfx ${GITHUB_REF_NAME} drop/bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip
       env:
         GH_TOKEN: ${{ github.token }}
-
-    # Run publish as the last step as `gh run download` does not download actions in running state
-    - name: publish
-      uses: Azure/pipelines@v1.2
-      with:
-        azure-devops-project-url: https://dev.azure.com/ceapex/Engineering
-        azure-pipeline-name: 'dotnet.docfx'
-        azure-devops-token: ${{ secrets.AZURE_DEVOPS_TOKEN }}
-        azure-pipeline-variables: '{"GH_RUNID": "${{github.run_id}}"}'

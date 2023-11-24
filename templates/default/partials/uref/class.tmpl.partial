@@ -1,4 +1,4 @@
-{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
 
 {{>partials/uref/class.header}}
 {{#children}}
@@ -28,7 +28,7 @@
 </div>
 {{#parameters.0}}
 <h5 class="parameters">{{__global.parameters}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>
@@ -54,7 +54,7 @@
 {{/parameters.0}}
 {{#return}}
 <h5 class="returns">{{__global.returns}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>
@@ -71,7 +71,7 @@
 {{/return}}
 {{#typeParameters.0}}
 <h5 class="typeParameters">{{__global.typeParameters}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.name}}</th>
@@ -92,7 +92,7 @@
 {{/typeParameters.0}}
 {{#fieldValue}}
 <h5 class="fieldValue">{{__global.fieldValue}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>
@@ -109,7 +109,7 @@
 {{/fieldValue}}
 {{#propertyValue}}
 <h5 class="propertyValue">{{__global.propertyValue}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>
@@ -126,7 +126,7 @@
 {{/propertyValue}}
 {{#eventType}}
 <h5 class="eventType">{{__global.eventType}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>
@@ -143,7 +143,7 @@
 {{/eventType}}
 {{#variableValue}}
 <h5 class="variableValue">{{__global.variableValue}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>
@@ -160,7 +160,7 @@
 {{/variableValue}}
 {{#typeAliasType}}
 <h5 class="typeAliasType">{{__global.typeAliasType}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>
@@ -203,7 +203,7 @@
 {{/example}}
 {{#exceptions.0}}
 <h5 class="exceptions">{{__global.exceptions}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>

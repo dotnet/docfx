@@ -1,4 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 exports.path = {};
 exports.path.getFileNameWithoutExtension = getFileNameWithoutExtension;
 exports.path.getDirectoryName = getDirectoryName;
@@ -31,7 +32,9 @@ function getHtmlId(input) {
 
 // Note: the parameter `gitContribute` won't be used in this function
 function getViewSourceHref(item, gitContribute, gitUrlPattern) {
-    if (!item || !item.source || !item.source.remote) return '';
+    if (!item || !item.source) return '';
+    if (item.source.href) return item.source.href;
+    if (!item.source.remote) return '';
     return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1, null, gitUrlPattern);
 }
 

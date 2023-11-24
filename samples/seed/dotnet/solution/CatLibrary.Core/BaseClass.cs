@@ -97,3 +97,11 @@ namespace CatLibrary.Core
 
     }
 }
+
+namespace CatLibrary.Core
+{
+    public static class Issue231
+    {
+        public static void Foo(this ContainersRefType c) {}
+    }
+}

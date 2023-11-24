@@ -3,19 +3,60 @@
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
     <RollForward>Major</RollForward>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <Description>The docfx command line tool published as .NET tool</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../THIRD-PARTY-NOTICES.TXT" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+  </ItemGroup>
+
+  <!-- Custom target to merge large docfx dependencies to TargetFramework independent folder.
+       By default, these files are packed to `tools/$(TargetFramework)/any/*`.
+       This target rewrite:
+       - templates to the `/templates` directory.
+       - .playwright to the `/tools/.playwright` directory.
+  -->
+  <Target Name="RewriteDocfxTemplateFiles" AfterTargets="PackTool">
+    <PropertyGroup>
+      <!-- Select first element of TargetFrameworks as template source (e.g. `net6.0` is selected when TargetFrameworks `net6.0;net7.0;net8.0`) -->
+      <DocfxTemplateSourceTargetFramework>$(TargetFrameworks.Split(";")[0])</DocfxTemplateSourceTargetFramework>
+    </PropertyGroup>
+    <!-- If TargetFramework is selected version. Rewrite template files PackagePath.-->
+    <ItemGroup Condition="'$(TargetFramework)' == '$(DocfxTemplateSourceTargetFramework)'">
+      <TfmSpecificPackageFile Update="@(TfmSpecificPackageFile)"
+                              Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/templates/'))"
+                              PackagePath="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').Replace('tools/$(TargetFramework)/any/',''))"/>
+      <TfmSpecificPackageFile Update="@(TfmSpecificPackageFile)"
+                              Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/.playwright/'))"
+                              PackagePath="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').Replace('$(TargetFramework)/any/',''))"/>
+    </ItemGroup>
+    <!-- If TargetFramework is not selected version. Remove template files from package. -->
+    <ItemGroup Condition="'$(TargetFramework)' != '$(DocfxTemplateSourceTargetFramework)'">
+      <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)"
+                              Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/templates/'))"/>
+      <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)"
+                              Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/.playwright/'))"/>
+    </ItemGroup>
+  </Target>
+
+  <!-- Target to add custom configProperties to `docfx.runsettings.json`. See [.NET Runtime configuration settings](https://learn.microsoft.com/en-us/dotnet/core/runtime-config) -->
+  <Target Name="SetDocfxDotNetToolMode" BeforeTargets="PrepareForBuild" Condition="'$(_IsPacking)'=='true' AND '$(_IsPublishing)'!='true'">
+    <ItemGroup>
+      <RuntimeHostConfigurationOption Include="Docfx.DotnetToolMode" Value="true" />
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <InternalsVisibleTo Include="docfx.Snapshot.Tests" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj" />
-    <ProjectReference Include="..\Microsoft.DocAsCode.Dotnet\Microsoft.DocAsCode.Dotnet.csproj" />
+    <ProjectReference Include="..\Docfx.App\Docfx.App.csproj" />
+    <ProjectReference Include="..\Docfx.Dotnet\Docfx.Dotnet.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="1.9.71" />
+    <PackageReference Include="Spectre.Console.Cli" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,7 @@
+root = false
+
+# Settings for Docfx template files
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2

@@ -9,6 +9,7 @@ _site
 _site_pdf
 docs/api
 samples/**/api
+src/Docfx.App/templates
 
 *.user
 *.log
@@ -19,7 +20,7 @@ samples/**/api
 .DS_Store
 .idea
 launchSettings.json
-package-lock.json
 *.sublime-workspace
 *.nuget.targets
 *.code-workspace
+*.binlog

@@ -1,0 +1,1607 @@
+﻿### YamlMime:XRefMap
+sorted: true
+references:
+- uid: CSharp10
+  name: CSharp10
+  href: api/CSharp10.html
+  commentId: N:CSharp10
+  fullName: CSharp10
+  nameWithType: CSharp10
+- uid: CSharp10.ConstantInterpolatedStrings
+  name: ConstantInterpolatedStrings
+  href: api/CSharp10.ConstantInterpolatedStrings.html
+  commentId: T:CSharp10.ConstantInterpolatedStrings
+  fullName: CSharp10.ConstantInterpolatedStrings
+  nameWithType: ConstantInterpolatedStrings
+- uid: CSharp10.ConstantInterpolatedStrings.S1
+  name: S1
+  href: api/CSharp10.ConstantInterpolatedStrings.html#CSharp10_ConstantInterpolatedStrings_S1
+  commentId: F:CSharp10.ConstantInterpolatedStrings.S1
+  fullName: CSharp10.ConstantInterpolatedStrings.S1
+  nameWithType: ConstantInterpolatedStrings.S1
+- uid: CSharp10.ConstantInterpolatedStrings.S2
+  name: S2
+  href: api/CSharp10.ConstantInterpolatedStrings.html#CSharp10_ConstantInterpolatedStrings_S2
+  commentId: F:CSharp10.ConstantInterpolatedStrings.S2
+  fullName: CSharp10.ConstantInterpolatedStrings.S2
+  nameWithType: ConstantInterpolatedStrings.S2
+- uid: CSharp10.ConstantInterpolatedStrings.S3
+  name: S3
+  href: api/CSharp10.ConstantInterpolatedStrings.html#CSharp10_ConstantInterpolatedStrings_S3
+  commentId: F:CSharp10.ConstantInterpolatedStrings.S3
+  fullName: CSharp10.ConstantInterpolatedStrings.S3
+  nameWithType: ConstantInterpolatedStrings.S3
+- uid: CSharp10.Issue7737
+  name: Issue7737
+  href: api/CSharp10.Issue7737.html
+  commentId: T:CSharp10.Issue7737
+  fullName: CSharp10.Issue7737
+  nameWithType: Issue7737
+- uid: CSharp10.Issue7737.Foo
+  name: Foo()
+  href: api/CSharp10.Issue7737.html#CSharp10_Issue7737_Foo
+  commentId: M:CSharp10.Issue7737.Foo
+  fullName: CSharp10.Issue7737.Foo()
+  nameWithType: Issue7737.Foo()
+- uid: CSharp10.Issue7737.Foo*
+  name: Foo
+  href: api/CSharp10.Issue7737.html#CSharp10_Issue7737_Foo_
+  commentId: Overload:CSharp10.Issue7737.Foo
+  isSpec: "True"
+  fullName: CSharp10.Issue7737.Foo
+  nameWithType: Issue7737.Foo
+- uid: CSharp10.ParameterlessStructConstructors
+  name: ParameterlessStructConstructors
+  href: api/CSharp10.ParameterlessStructConstructors.html
+  commentId: T:CSharp10.ParameterlessStructConstructors
+  fullName: CSharp10.ParameterlessStructConstructors
+  nameWithType: ParameterlessStructConstructors
+- uid: CSharp10.ParameterlessStructConstructors.#ctor
+  name: ParameterlessStructConstructors()
+  href: api/CSharp10.ParameterlessStructConstructors.html#CSharp10_ParameterlessStructConstructors__ctor
+  commentId: M:CSharp10.ParameterlessStructConstructors.#ctor
+  name.vb: New()
+  fullName: CSharp10.ParameterlessStructConstructors.ParameterlessStructConstructors()
+  fullName.vb: CSharp10.ParameterlessStructConstructors.New()
+  nameWithType: ParameterlessStructConstructors.ParameterlessStructConstructors()
+  nameWithType.vb: ParameterlessStructConstructors.New()
+- uid: CSharp10.ParameterlessStructConstructors.#ctor*
+  name: ParameterlessStructConstructors
+  href: api/CSharp10.ParameterlessStructConstructors.html#CSharp10_ParameterlessStructConstructors__ctor_
+  commentId: Overload:CSharp10.ParameterlessStructConstructors.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp10.ParameterlessStructConstructors.ParameterlessStructConstructors
+  fullName.vb: CSharp10.ParameterlessStructConstructors.New
+  nameWithType: ParameterlessStructConstructors.ParameterlessStructConstructors
+  nameWithType.vb: ParameterlessStructConstructors.New
+- uid: CSharp10.ParameterlessStructConstructors.Description
+  name: Description
+  href: api/CSharp10.ParameterlessStructConstructors.html#CSharp10_ParameterlessStructConstructors_Description
+  commentId: P:CSharp10.ParameterlessStructConstructors.Description
+  fullName: CSharp10.ParameterlessStructConstructors.Description
+  nameWithType: ParameterlessStructConstructors.Description
+- uid: CSharp10.ParameterlessStructConstructors.Description*
+  name: Description
+  href: api/CSharp10.ParameterlessStructConstructors.html#CSharp10_ParameterlessStructConstructors_Description_
+  commentId: Overload:CSharp10.ParameterlessStructConstructors.Description
+  isSpec: "True"
+  fullName: CSharp10.ParameterlessStructConstructors.Description
+  nameWithType: ParameterlessStructConstructors.Description
+- uid: CSharp10.ParameterlessStructConstructors.X
+  name: X
+  href: api/CSharp10.ParameterlessStructConstructors.html#CSharp10_ParameterlessStructConstructors_X
+  commentId: F:CSharp10.ParameterlessStructConstructors.X
+  fullName: CSharp10.ParameterlessStructConstructors.X
+  nameWithType: ParameterlessStructConstructors.X
+- uid: CSharp10.ParameterlessStructConstructors.Y
+  name: Y
+  href: api/CSharp10.ParameterlessStructConstructors.html#CSharp10_ParameterlessStructConstructors_Y
+  commentId: P:CSharp10.ParameterlessStructConstructors.Y
+  fullName: CSharp10.ParameterlessStructConstructors.Y
+  nameWithType: ParameterlessStructConstructors.Y
+- uid: CSharp10.ParameterlessStructConstructors.Y*
+  name: Y
+  href: api/CSharp10.ParameterlessStructConstructors.html#CSharp10_ParameterlessStructConstructors_Y_
+  commentId: Overload:CSharp10.ParameterlessStructConstructors.Y
+  isSpec: "True"
+  fullName: CSharp10.ParameterlessStructConstructors.Y
+  nameWithType: ParameterlessStructConstructors.Y
+- uid: CSharp10.ReadOnlyRecordStruct
+  name: ReadOnlyRecordStruct
+  href: api/CSharp10.ReadOnlyRecordStruct.html
+  commentId: T:CSharp10.ReadOnlyRecordStruct
+  fullName: CSharp10.ReadOnlyRecordStruct
+  nameWithType: ReadOnlyRecordStruct
+- uid: CSharp10.ReadOnlyRecordStruct.#ctor(System.Double,System.Double,System.Double)
+  name: ReadOnlyRecordStruct(double, double, double)
+  href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct__ctor_System_Double_System_Double_System_Double_
+  commentId: M:CSharp10.ReadOnlyRecordStruct.#ctor(System.Double,System.Double,System.Double)
+  name.vb: New(Double, Double, Double)
+  fullName: CSharp10.ReadOnlyRecordStruct.ReadOnlyRecordStruct(double, double, double)
+  fullName.vb: CSharp10.ReadOnlyRecordStruct.New(Double, Double, Double)
+  nameWithType: ReadOnlyRecordStruct.ReadOnlyRecordStruct(double, double, double)
+  nameWithType.vb: ReadOnlyRecordStruct.New(Double, Double, Double)
+- uid: CSharp10.ReadOnlyRecordStruct.#ctor*
+  name: ReadOnlyRecordStruct
+  href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct__ctor_
+  commentId: Overload:CSharp10.ReadOnlyRecordStruct.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp10.ReadOnlyRecordStruct.ReadOnlyRecordStruct
+  fullName.vb: CSharp10.ReadOnlyRecordStruct.New
+  nameWithType: ReadOnlyRecordStruct.ReadOnlyRecordStruct
+  nameWithType.vb: ReadOnlyRecordStruct.New
+- uid: CSharp10.ReadOnlyRecordStruct.X
+  name: X
+  href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct_X
+  commentId: P:CSharp10.ReadOnlyRecordStruct.X
+  fullName: CSharp10.ReadOnlyRecordStruct.X
+  nameWithType: ReadOnlyRecordStruct.X
+- uid: CSharp10.ReadOnlyRecordStruct.X*
+  name: X
+  href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct_X_
+  commentId: Overload:CSharp10.ReadOnlyRecordStruct.X
+  isSpec: "True"
+  fullName: CSharp10.ReadOnlyRecordStruct.X
+  nameWithType: ReadOnlyRecordStruct.X
+- uid: CSharp10.ReadOnlyRecordStruct.Y
+  name: Y
+  href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct_Y
+  commentId: P:CSharp10.ReadOnlyRecordStruct.Y
+  fullName: CSharp10.ReadOnlyRecordStruct.Y
+  nameWithType: ReadOnlyRecordStruct.Y
+- uid: CSharp10.ReadOnlyRecordStruct.Y*
+  name: Y
+  href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct_Y_
+  commentId: Overload:CSharp10.ReadOnlyRecordStruct.Y
+  isSpec: "True"
+  fullName: CSharp10.ReadOnlyRecordStruct.Y
+  nameWithType: ReadOnlyRecordStruct.Y
+- uid: CSharp10.ReadOnlyRecordStruct.Z
+  name: Z
+  href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct_Z
+  commentId: P:CSharp10.ReadOnlyRecordStruct.Z
+  fullName: CSharp10.ReadOnlyRecordStruct.Z
+  nameWithType: ReadOnlyRecordStruct.Z
+- uid: CSharp10.ReadOnlyRecordStruct.Z*
+  name: Z
+  href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct_Z_
+  commentId: Overload:CSharp10.ReadOnlyRecordStruct.Z
+  isSpec: "True"
+  fullName: CSharp10.ReadOnlyRecordStruct.Z
+  nameWithType: ReadOnlyRecordStruct.Z
+- uid: CSharp10.RecordClass
+  name: RecordClass
+  href: api/CSharp10.RecordClass.html
+  commentId: T:CSharp10.RecordClass
+  fullName: CSharp10.RecordClass
+  nameWithType: RecordClass
+- uid: CSharp10.RecordClass.#ctor(System.String,System.String)
+  name: RecordClass(string, string)
+  href: api/CSharp10.RecordClass.html#CSharp10_RecordClass__ctor_System_String_System_String_
+  commentId: M:CSharp10.RecordClass.#ctor(System.String,System.String)
+  name.vb: New(String, String)
+  fullName: CSharp10.RecordClass.RecordClass(string, string)
+  fullName.vb: CSharp10.RecordClass.New(String, String)
+  nameWithType: RecordClass.RecordClass(string, string)
+  nameWithType.vb: RecordClass.New(String, String)
+- uid: CSharp10.RecordClass.#ctor*
+  name: RecordClass
+  href: api/CSharp10.RecordClass.html#CSharp10_RecordClass__ctor_
+  commentId: Overload:CSharp10.RecordClass.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp10.RecordClass.RecordClass
+  fullName.vb: CSharp10.RecordClass.New
+  nameWithType: RecordClass.RecordClass
+  nameWithType.vb: RecordClass.New
+- uid: CSharp10.RecordClass.FirstName
+  name: FirstName
+  href: api/CSharp10.RecordClass.html#CSharp10_RecordClass_FirstName
+  commentId: P:CSharp10.RecordClass.FirstName
+  fullName: CSharp10.RecordClass.FirstName
+  nameWithType: RecordClass.FirstName
+- uid: CSharp10.RecordClass.FirstName*
+  name: FirstName
+  href: api/CSharp10.RecordClass.html#CSharp10_RecordClass_FirstName_
+  commentId: Overload:CSharp10.RecordClass.FirstName
+  isSpec: "True"
+  fullName: CSharp10.RecordClass.FirstName
+  nameWithType: RecordClass.FirstName
+- uid: CSharp10.RecordClass.LastName
+  name: LastName
+  href: api/CSharp10.RecordClass.html#CSharp10_RecordClass_LastName
+  commentId: P:CSharp10.RecordClass.LastName
+  fullName: CSharp10.RecordClass.LastName
+  nameWithType: RecordClass.LastName
+- uid: CSharp10.RecordClass.LastName*
+  name: LastName
+  href: api/CSharp10.RecordClass.html#CSharp10_RecordClass_LastName_
+  commentId: Overload:CSharp10.RecordClass.LastName
+  isSpec: "True"
+  fullName: CSharp10.RecordClass.LastName
+  nameWithType: RecordClass.LastName
+- uid: CSharp10.RecordStruct
+  name: RecordStruct
+  href: api/CSharp10.RecordStruct.html
+  commentId: T:CSharp10.RecordStruct
+  fullName: CSharp10.RecordStruct
+  nameWithType: RecordStruct
+- uid: CSharp10.RecordStruct.#ctor(System.DateTime,System.Double)
+  name: RecordStruct(DateTime, double)
+  href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct__ctor_System_DateTime_System_Double_
+  commentId: M:CSharp10.RecordStruct.#ctor(System.DateTime,System.Double)
+  name.vb: New(Date, Double)
+  fullName: CSharp10.RecordStruct.RecordStruct(System.DateTime, double)
+  fullName.vb: CSharp10.RecordStruct.New(Date, Double)
+  nameWithType: RecordStruct.RecordStruct(DateTime, double)
+  nameWithType.vb: RecordStruct.New(Date, Double)
+- uid: CSharp10.RecordStruct.#ctor*
+  name: RecordStruct
+  href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct__ctor_
+  commentId: Overload:CSharp10.RecordStruct.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp10.RecordStruct.RecordStruct
+  fullName.vb: CSharp10.RecordStruct.New
+  nameWithType: RecordStruct.RecordStruct
+  nameWithType.vb: RecordStruct.New
+- uid: CSharp10.RecordStruct.Measurement
+  name: Measurement
+  href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct_Measurement
+  commentId: P:CSharp10.RecordStruct.Measurement
+  fullName: CSharp10.RecordStruct.Measurement
+  nameWithType: RecordStruct.Measurement
+- uid: CSharp10.RecordStruct.Measurement*
+  name: Measurement
+  href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct_Measurement_
+  commentId: Overload:CSharp10.RecordStruct.Measurement
+  isSpec: "True"
+  fullName: CSharp10.RecordStruct.Measurement
+  nameWithType: RecordStruct.Measurement
+- uid: CSharp10.RecordStruct.TakenAt
+  name: TakenAt
+  href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct_TakenAt
+  commentId: P:CSharp10.RecordStruct.TakenAt
+  fullName: CSharp10.RecordStruct.TakenAt
+  nameWithType: RecordStruct.TakenAt
+- uid: CSharp10.RecordStruct.TakenAt*
+  name: TakenAt
+  href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct_TakenAt_
+  commentId: Overload:CSharp10.RecordStruct.TakenAt
+  isSpec: "True"
+  fullName: CSharp10.RecordStruct.TakenAt
+  nameWithType: RecordStruct.TakenAt
+- uid: CSharp11
+  name: CSharp11
+  href: api/CSharp11.html
+  commentId: N:CSharp11
+  fullName: CSharp11
+  nameWithType: CSharp11
+- uid: CSharp11.CheckedUserDefinedOperators`1
+  name: CheckedUserDefinedOperators<T>
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html
+  commentId: T:CSharp11.CheckedUserDefinedOperators`1
+  name.vb: CheckedUserDefinedOperators(Of T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T)
+  nameWithType: CheckedUserDefinedOperators<T>
+  nameWithType.vb: CheckedUserDefinedOperators(Of T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Addition(`0,`0)
+  name: operator +(T, T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Addition__0__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Addition(`0,`0)
+  name.vb: +(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator +(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).+(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator +(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).+(T, T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Addition*
+  name: operator +
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Addition_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Addition
+  isSpec: "True"
+  name.vb: +
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator +
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).+
+  nameWithType: CheckedUserDefinedOperators<T>.operator +
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).+
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition(`0,`0)
+  name: operator checked +(T, T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedAddition__0__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition(`0,`0)
+  name.vb: op_CheckedAddition(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked +(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedAddition(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked +(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedAddition(T, T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition*
+  name: operator checked +
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedAddition_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition
+  isSpec: "True"
+  name.vb: op_CheckedAddition
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked +
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedAddition
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked +
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedAddition
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement(`0)
+  name: operator checked --(T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDecrement__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement(`0)
+  name.vb: op_CheckedDecrement(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked --(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedDecrement(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked --(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedDecrement(T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement*
+  name: operator checked --
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDecrement_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement
+  isSpec: "True"
+  name.vb: op_CheckedDecrement
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked --
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedDecrement
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked --
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedDecrement
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision(`0,`0)
+  name: operator checked /(T, T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDivision__0__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision(`0,`0)
+  name.vb: op_CheckedDivision(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked /(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedDivision(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked /(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedDivision(T, T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision*
+  name: operator checked /
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDivision_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision
+  isSpec: "True"
+  name.vb: op_CheckedDivision
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked /
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedDivision
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked /
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedDivision
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit(`0)~System.Int32
+  name: explicit operator checked int(T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedExplicit__0__System_Int32
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit(`0)~System.Int32
+  name.vb: op_CheckedExplicit(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator checked int(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedExplicit(T)
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator checked int(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedExplicit(T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit*
+  name: explicit operator checked
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedExplicit_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit
+  isSpec: "True"
+  name.vb: op_CheckedExplicit
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator checked
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedExplicit
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator checked
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedExplicit
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement(`0)
+  name: operator checked ++(T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedIncrement__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement(`0)
+  name.vb: op_CheckedIncrement(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked ++(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedIncrement(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked ++(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedIncrement(T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement*
+  name: operator checked ++
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedIncrement_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement
+  isSpec: "True"
+  name.vb: op_CheckedIncrement
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked ++
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedIncrement
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked ++
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedIncrement
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply(`0,`0)
+  name: operator checked *(T, T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedMultiply__0__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply(`0,`0)
+  name.vb: op_CheckedMultiply(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked *(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedMultiply(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked *(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedMultiply(T, T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply*
+  name: operator checked *
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedMultiply_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply
+  isSpec: "True"
+  name.vb: op_CheckedMultiply
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked *
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedMultiply
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked *
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedMultiply
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction(`0,`0)
+  name: operator checked -(T, T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedSubtraction__0__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction(`0,`0)
+  name.vb: op_CheckedSubtraction(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked -(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedSubtraction(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked -(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedSubtraction(T, T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction*
+  name: operator checked -
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedSubtraction_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction
+  isSpec: "True"
+  name.vb: op_CheckedSubtraction
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked -
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedSubtraction
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked -
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedSubtraction
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation(`0)
+  name: operator checked -(T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedUnaryNegation__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation(`0)
+  name.vb: op_CheckedUnaryNegation(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked -(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedUnaryNegation(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked -(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedUnaryNegation(T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation*
+  name: operator checked -
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedUnaryNegation_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation
+  isSpec: "True"
+  name.vb: op_CheckedUnaryNegation
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked -
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedUnaryNegation
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked -
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedUnaryNegation
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Decrement(`0)
+  name: operator --(T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Decrement__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Decrement(`0)
+  name.vb: op_Decrement(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator --(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_Decrement(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator --(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_Decrement(T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Decrement*
+  name: operator --
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Decrement_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Decrement
+  isSpec: "True"
+  name.vb: op_Decrement
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator --
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_Decrement
+  nameWithType: CheckedUserDefinedOperators<T>.operator --
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_Decrement
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Division(`0,`0)
+  name: operator /(T, T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Division__0__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Division(`0,`0)
+  name.vb: /(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator /(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T)./(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator /(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T)./(T, T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Division*
+  name: operator /
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Division_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Division
+  isSpec: "True"
+  name.vb: /
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator /
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T)./
+  nameWithType: CheckedUserDefinedOperators<T>.operator /
+  nameWithType.vb: CheckedUserDefinedOperators(Of T)./
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Explicit(`0)~System.Int32
+  name: explicit operator int(T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Explicit__0__System_Int32
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Explicit(`0)~System.Int32
+  name.vb: CType(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator int(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CType(T)
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator int(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).CType(T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Explicit*
+  name: explicit operator
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Explicit_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Explicit
+  isSpec: "True"
+  name.vb: CType
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CType
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).CType
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Increment(`0)
+  name: operator ++(T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Increment__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Increment(`0)
+  name.vb: op_Increment(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator ++(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_Increment(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator ++(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_Increment(T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Increment*
+  name: operator ++
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Increment_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Increment
+  isSpec: "True"
+  name.vb: op_Increment
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator ++
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_Increment
+  nameWithType: CheckedUserDefinedOperators<T>.operator ++
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_Increment
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Multiply(`0,`0)
+  name: operator *(T, T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Multiply__0__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Multiply(`0,`0)
+  name.vb: '*(T, T)'
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator *(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).*(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator *(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).*(T, T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Multiply*
+  name: operator *
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Multiply_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Multiply
+  isSpec: "True"
+  name.vb: '*'
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator *
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).*
+  nameWithType: CheckedUserDefinedOperators<T>.operator *
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).*
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Subtraction(`0,`0)
+  name: operator -(T, T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Subtraction__0__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Subtraction(`0,`0)
+  name.vb: -(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator -(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator -(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).-(T, T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_Subtraction*
+  name: operator -
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Subtraction_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Subtraction
+  isSpec: "True"
+  name.vb: '-'
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator -
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-
+  nameWithType: CheckedUserDefinedOperators<T>.operator -
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).-
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation(`0)
+  name: operator -(T)
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation__0_
+  commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation(`0)
+  name.vb: -(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator -(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator -(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).-(T)
+- uid: CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation*
+  name: operator -
+  href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation_
+  commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation
+  isSpec: "True"
+  name.vb: '-'
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator -
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-
+  nameWithType: CheckedUserDefinedOperators<T>.operator -
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).-
+- uid: CSharp11.RequiredModifier
+  name: RequiredModifier
+  href: api/CSharp11.RequiredModifier.html
+  commentId: T:CSharp11.RequiredModifier
+  fullName: CSharp11.RequiredModifier
+  nameWithType: RequiredModifier
+- uid: CSharp11.RequiredModifier.FirstName
+  name: FirstName
+  href: api/CSharp11.RequiredModifier.html#CSharp11_RequiredModifier_FirstName
+  commentId: P:CSharp11.RequiredModifier.FirstName
+  fullName: CSharp11.RequiredModifier.FirstName
+  nameWithType: RequiredModifier.FirstName
+- uid: CSharp11.RequiredModifier.FirstName*
+  name: FirstName
+  href: api/CSharp11.RequiredModifier.html#CSharp11_RequiredModifier_FirstName_
+  commentId: Overload:CSharp11.RequiredModifier.FirstName
+  isSpec: "True"
+  fullName: CSharp11.RequiredModifier.FirstName
+  nameWithType: RequiredModifier.FirstName
+- uid: CSharp11.RequiredModifier.LastName
+  name: LastName
+  href: api/CSharp11.RequiredModifier.html#CSharp11_RequiredModifier_LastName
+  commentId: P:CSharp11.RequiredModifier.LastName
+  fullName: CSharp11.RequiredModifier.LastName
+  nameWithType: RequiredModifier.LastName
+- uid: CSharp11.RequiredModifier.LastName*
+  name: LastName
+  href: api/CSharp11.RequiredModifier.html#CSharp11_RequiredModifier_LastName_
+  commentId: Overload:CSharp11.RequiredModifier.LastName
+  isSpec: "True"
+  fullName: CSharp11.RequiredModifier.LastName
+  nameWithType: RequiredModifier.LastName
+- uid: CSharp11.RequiredModifier.MiddleName
+  name: MiddleName
+  href: api/CSharp11.RequiredModifier.html#CSharp11_RequiredModifier_MiddleName
+  commentId: P:CSharp11.RequiredModifier.MiddleName
+  fullName: CSharp11.RequiredModifier.MiddleName
+  nameWithType: RequiredModifier.MiddleName
+- uid: CSharp11.RequiredModifier.MiddleName*
+  name: MiddleName
+  href: api/CSharp11.RequiredModifier.html#CSharp11_RequiredModifier_MiddleName_
+  commentId: Overload:CSharp11.RequiredModifier.MiddleName
+  isSpec: "True"
+  fullName: CSharp11.RequiredModifier.MiddleName
+  nameWithType: RequiredModifier.MiddleName
+- uid: CSharp11.ScopedModifier
+  name: ScopedModifier
+  href: api/CSharp11.ScopedModifier.html
+  commentId: T:CSharp11.ScopedModifier
+  fullName: CSharp11.ScopedModifier
+  nameWithType: ScopedModifier
+- uid: CSharp11.ScopedModifier.CreateSpan(System.Int32@)
+  name: CreateSpan(scoped ref int)
+  href: api/CSharp11.ScopedModifier.html#CSharp11_ScopedModifier_CreateSpan_System_Int32__
+  commentId: M:CSharp11.ScopedModifier.CreateSpan(System.Int32@)
+  name.vb: CreateSpan(Integer)
+  fullName: CSharp11.ScopedModifier.CreateSpan(scoped ref int)
+  fullName.vb: CSharp11.ScopedModifier.CreateSpan(Integer)
+  nameWithType: ScopedModifier.CreateSpan(scoped ref int)
+  nameWithType.vb: ScopedModifier.CreateSpan(Integer)
+- uid: CSharp11.ScopedModifier.CreateSpan*
+  name: CreateSpan
+  href: api/CSharp11.ScopedModifier.html#CSharp11_ScopedModifier_CreateSpan_
+  commentId: Overload:CSharp11.ScopedModifier.CreateSpan
+  isSpec: "True"
+  fullName: CSharp11.ScopedModifier.CreateSpan
+  nameWithType: ScopedModifier.CreateSpan
+- uid: CSharp11.StaticAbstractMembersInInterfaces
+  name: StaticAbstractMembersInInterfaces
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.html
+  commentId: T:CSharp11.StaticAbstractMembersInInterfaces
+  fullName: CSharp11.StaticAbstractMembersInInterfaces
+  nameWithType: StaticAbstractMembersInInterfaces
+- uid: CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1
+  name: StaticAbstractMembersInInterfaces.IGetNext<T>
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html
+  commentId: T:CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1
+  name.vb: StaticAbstractMembersInInterfaces.IGetNext(Of T)
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T)
+  nameWithType: StaticAbstractMembersInInterfaces.IGetNext<T>
+  nameWithType.vb: StaticAbstractMembersInInterfaces.IGetNext(Of T)
+- uid: CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)
+  name: operator ++(T)
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_
+  commentId: M:CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)
+  name.vb: op_Increment(T)
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++(T)
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment(T)
+  nameWithType: StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++(T)
+  nameWithType.vb: StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment(T)
+- uid: CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*
+  name: operator ++
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment_
+  commentId: Overload:CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment
+  isSpec: "True"
+  name.vb: op_Increment
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment
+  nameWithType: StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++
+  nameWithType.vb: StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence
+  name: StaticAbstractMembersInInterfaces.RepeatSequence
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html
+  commentId: T:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor
+  name: RepeatSequence()
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence__ctor
+  commentId: M:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor
+  name.vb: New()
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence()
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.New()
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence()
+  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.New()
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor*
+  name: RepeatSequence
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence__ctor_
+  commentId: Overload:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.New
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence
+  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.New
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Text
+  name: Text
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_Text
+  commentId: F:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Text
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Text
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.Text
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString
+  name: ToString()
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_ToString
+  commentId: M:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString()
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.ToString()
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString*
+  name: ToString
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_ToString_
+  commentId: Overload:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString
+  isSpec: "True"
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.ToString
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  name: operator ++(RepeatSequence)
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_
+  commentId: M:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  name.vb: op_Increment(RepeatSequence)
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(StaticAbstractMembersInInterfaces.RepeatSequence)
+  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(StaticAbstractMembersInInterfaces.RepeatSequence)
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment*
+  name: operator ++
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_
+  commentId: Overload:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment
+  isSpec: "True"
+  name.vb: op_Increment
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.operator ++
+  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment
+- uid: CSharp12
+  name: CSharp12
+  href: api/CSharp12.html
+  commentId: N:CSharp12
+  fullName: CSharp12
+  nameWithType: CSharp12
+- uid: CSharp12.CollectionExpressions
+  name: CollectionExpressions
+  href: api/CSharp12.CollectionExpressions.html
+  commentId: T:CSharp12.CollectionExpressions
+  fullName: CSharp12.CollectionExpressions
+  nameWithType: CollectionExpressions
+- uid: CSharp12.CollectionExpressions.a
+  name: a
+  href: api/CSharp12.CollectionExpressions.html#CSharp12_CollectionExpressions_a
+  commentId: F:CSharp12.CollectionExpressions.a
+  fullName: CSharp12.CollectionExpressions.a
+  nameWithType: CollectionExpressions.a
+- uid: CSharp12.CollectionExpressions.twoD
+  name: twoD
+  href: api/CSharp12.CollectionExpressions.html#CSharp12_CollectionExpressions_twoD
+  commentId: F:CSharp12.CollectionExpressions.twoD
+  fullName: CSharp12.CollectionExpressions.twoD
+  nameWithType: CollectionExpressions.twoD
+- uid: CSharp12.DefaultLambdaParameters
+  name: DefaultLambdaParameters
+  href: api/CSharp12.DefaultLambdaParameters.html
+  commentId: T:CSharp12.DefaultLambdaParameters
+  fullName: CSharp12.DefaultLambdaParameters
+  nameWithType: DefaultLambdaParameters
+- uid: CSharp12.DefaultLambdaParameters.Foo
+  name: Foo()
+  href: api/CSharp12.DefaultLambdaParameters.html#CSharp12_DefaultLambdaParameters_Foo
+  commentId: M:CSharp12.DefaultLambdaParameters.Foo
+  fullName: CSharp12.DefaultLambdaParameters.Foo()
+  nameWithType: DefaultLambdaParameters.Foo()
+- uid: CSharp12.DefaultLambdaParameters.Foo*
+  name: Foo
+  href: api/CSharp12.DefaultLambdaParameters.html#CSharp12_DefaultLambdaParameters_Foo_
+  commentId: Overload:CSharp12.DefaultLambdaParameters.Foo
+  isSpec: "True"
+  fullName: CSharp12.DefaultLambdaParameters.Foo
+  nameWithType: DefaultLambdaParameters.Foo
+- uid: CSharp12.InlineArrays
+  name: InlineArrays
+  href: api/CSharp12.InlineArrays.html
+  commentId: T:CSharp12.InlineArrays
+  fullName: CSharp12.InlineArrays
+  nameWithType: InlineArrays
+- uid: CSharp12.PrimaryConstructors
+  name: PrimaryConstructors
+  href: api/CSharp12.PrimaryConstructors.html
+  commentId: T:CSharp12.PrimaryConstructors
+  fullName: CSharp12.PrimaryConstructors
+  nameWithType: PrimaryConstructors
+- uid: CSharp12.PrimaryConstructors.BankAccount
+  name: PrimaryConstructors.BankAccount
+  href: api/CSharp12.PrimaryConstructors.BankAccount.html
+  commentId: T:CSharp12.PrimaryConstructors.BankAccount
+  fullName: CSharp12.PrimaryConstructors.BankAccount
+  nameWithType: PrimaryConstructors.BankAccount
+- uid: CSharp12.PrimaryConstructors.BankAccount.#ctor(System.String,System.String)
+  name: BankAccount(string, string)
+  href: api/CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount__ctor_System_String_System_String_
+  commentId: M:CSharp12.PrimaryConstructors.BankAccount.#ctor(System.String,System.String)
+  name.vb: New(String, String)
+  fullName: CSharp12.PrimaryConstructors.BankAccount.BankAccount(string, string)
+  fullName.vb: CSharp12.PrimaryConstructors.BankAccount.New(String, String)
+  nameWithType: PrimaryConstructors.BankAccount.BankAccount(string, string)
+  nameWithType.vb: PrimaryConstructors.BankAccount.New(String, String)
+- uid: CSharp12.PrimaryConstructors.BankAccount.#ctor*
+  name: BankAccount
+  href: api/CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount__ctor_
+  commentId: Overload:CSharp12.PrimaryConstructors.BankAccount.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp12.PrimaryConstructors.BankAccount.BankAccount
+  fullName.vb: CSharp12.PrimaryConstructors.BankAccount.New
+  nameWithType: PrimaryConstructors.BankAccount.BankAccount
+  nameWithType.vb: PrimaryConstructors.BankAccount.New
+- uid: CSharp12.PrimaryConstructors.BankAccount.AccountID
+  name: AccountID
+  href: api/CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_AccountID
+  commentId: P:CSharp12.PrimaryConstructors.BankAccount.AccountID
+  fullName: CSharp12.PrimaryConstructors.BankAccount.AccountID
+  nameWithType: PrimaryConstructors.BankAccount.AccountID
+- uid: CSharp12.PrimaryConstructors.BankAccount.AccountID*
+  name: AccountID
+  href: api/CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_AccountID_
+  commentId: Overload:CSharp12.PrimaryConstructors.BankAccount.AccountID
+  isSpec: "True"
+  fullName: CSharp12.PrimaryConstructors.BankAccount.AccountID
+  nameWithType: PrimaryConstructors.BankAccount.AccountID
+- uid: CSharp12.PrimaryConstructors.BankAccount.Owner
+  name: Owner
+  href: api/CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_Owner
+  commentId: P:CSharp12.PrimaryConstructors.BankAccount.Owner
+  fullName: CSharp12.PrimaryConstructors.BankAccount.Owner
+  nameWithType: PrimaryConstructors.BankAccount.Owner
+- uid: CSharp12.PrimaryConstructors.BankAccount.Owner*
+  name: Owner
+  href: api/CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_Owner_
+  commentId: Overload:CSharp12.PrimaryConstructors.BankAccount.Owner
+  isSpec: "True"
+  fullName: CSharp12.PrimaryConstructors.BankAccount.Owner
+  nameWithType: PrimaryConstructors.BankAccount.Owner
+- uid: CSharp12.PrimaryConstructors.BankAccount.ToString
+  name: ToString()
+  href: api/CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_ToString
+  commentId: M:CSharp12.PrimaryConstructors.BankAccount.ToString
+  fullName: CSharp12.PrimaryConstructors.BankAccount.ToString()
+  nameWithType: PrimaryConstructors.BankAccount.ToString()
+- uid: CSharp12.PrimaryConstructors.BankAccount.ToString*
+  name: ToString
+  href: api/CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_ToString_
+  commentId: Overload:CSharp12.PrimaryConstructors.BankAccount.ToString
+  isSpec: "True"
+  fullName: CSharp12.PrimaryConstructors.BankAccount.ToString
+  nameWithType: PrimaryConstructors.BankAccount.ToString
+- uid: CSharp12.PrimaryConstructors.CheckAccount
+  name: PrimaryConstructors.CheckAccount
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html
+  commentId: T:CSharp12.PrimaryConstructors.CheckAccount
+  fullName: CSharp12.PrimaryConstructors.CheckAccount
+  nameWithType: PrimaryConstructors.CheckAccount
+- uid: CSharp12.PrimaryConstructors.CheckAccount.#ctor(System.String,System.String,System.Decimal)
+  name: CheckAccount(string, string, decimal)
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount__ctor_System_String_System_String_System_Decimal_
+  commentId: M:CSharp12.PrimaryConstructors.CheckAccount.#ctor(System.String,System.String,System.Decimal)
+  name.vb: New(String, String, Decimal)
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.CheckAccount(string, string, decimal)
+  fullName.vb: CSharp12.PrimaryConstructors.CheckAccount.New(String, String, Decimal)
+  nameWithType: PrimaryConstructors.CheckAccount.CheckAccount(string, string, decimal)
+  nameWithType.vb: PrimaryConstructors.CheckAccount.New(String, String, Decimal)
+- uid: CSharp12.PrimaryConstructors.CheckAccount.#ctor*
+  name: CheckAccount
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount__ctor_
+  commentId: Overload:CSharp12.PrimaryConstructors.CheckAccount.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.CheckAccount
+  fullName.vb: CSharp12.PrimaryConstructors.CheckAccount.New
+  nameWithType: PrimaryConstructors.CheckAccount.CheckAccount
+  nameWithType.vb: PrimaryConstructors.CheckAccount.New
+- uid: CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance
+  name: CurrentBalance
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount_CurrentBalance
+  commentId: P:CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance
+  nameWithType: PrimaryConstructors.CheckAccount.CurrentBalance
+- uid: CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance*
+  name: CurrentBalance
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount_CurrentBalance_
+  commentId: Overload:CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance
+  isSpec: "True"
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance
+  nameWithType: PrimaryConstructors.CheckAccount.CurrentBalance
+- uid: CSharp12.PrimaryConstructors.CheckAccount.Deposit(System.Decimal)
+  name: Deposit(decimal)
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount_Deposit_System_Decimal_
+  commentId: M:CSharp12.PrimaryConstructors.CheckAccount.Deposit(System.Decimal)
+  name.vb: Deposit(Decimal)
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.Deposit(decimal)
+  fullName.vb: CSharp12.PrimaryConstructors.CheckAccount.Deposit(Decimal)
+  nameWithType: PrimaryConstructors.CheckAccount.Deposit(decimal)
+  nameWithType.vb: PrimaryConstructors.CheckAccount.Deposit(Decimal)
+- uid: CSharp12.PrimaryConstructors.CheckAccount.Deposit*
+  name: Deposit
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount_Deposit_
+  commentId: Overload:CSharp12.PrimaryConstructors.CheckAccount.Deposit
+  isSpec: "True"
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.Deposit
+  nameWithType: PrimaryConstructors.CheckAccount.Deposit
+- uid: CSharp12.PrimaryConstructors.CheckAccount.ToString
+  name: ToString()
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount_ToString
+  commentId: M:CSharp12.PrimaryConstructors.CheckAccount.ToString
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.ToString()
+  nameWithType: PrimaryConstructors.CheckAccount.ToString()
+- uid: CSharp12.PrimaryConstructors.CheckAccount.ToString*
+  name: ToString
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount_ToString_
+  commentId: Overload:CSharp12.PrimaryConstructors.CheckAccount.ToString
+  isSpec: "True"
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.ToString
+  nameWithType: PrimaryConstructors.CheckAccount.ToString
+- uid: CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(System.Decimal)
+  name: Withdrawal(decimal)
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount_Withdrawal_System_Decimal_
+  commentId: M:CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(System.Decimal)
+  name.vb: Withdrawal(Decimal)
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(decimal)
+  fullName.vb: CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(Decimal)
+  nameWithType: PrimaryConstructors.CheckAccount.Withdrawal(decimal)
+  nameWithType.vb: PrimaryConstructors.CheckAccount.Withdrawal(Decimal)
+- uid: CSharp12.PrimaryConstructors.CheckAccount.Withdrawal*
+  name: Withdrawal
+  href: api/CSharp12.PrimaryConstructors.CheckAccount.html#CSharp12_PrimaryConstructors_CheckAccount_Withdrawal_
+  commentId: Overload:CSharp12.PrimaryConstructors.CheckAccount.Withdrawal
+  isSpec: "True"
+  fullName: CSharp12.PrimaryConstructors.CheckAccount.Withdrawal
+  nameWithType: PrimaryConstructors.CheckAccount.Withdrawal
+- uid: CSharp12.PrimaryConstructors.Distance
+  name: PrimaryConstructors.Distance
+  href: api/CSharp12.PrimaryConstructors.Distance.html
+  commentId: T:CSharp12.PrimaryConstructors.Distance
+  fullName: CSharp12.PrimaryConstructors.Distance
+  nameWithType: PrimaryConstructors.Distance
+- uid: CSharp12.PrimaryConstructors.Distance.#ctor(System.Double,System.Double)
+  name: Distance(double, double)
+  href: api/CSharp12.PrimaryConstructors.Distance.html#CSharp12_PrimaryConstructors_Distance__ctor_System_Double_System_Double_
+  commentId: M:CSharp12.PrimaryConstructors.Distance.#ctor(System.Double,System.Double)
+  name.vb: New(Double, Double)
+  fullName: CSharp12.PrimaryConstructors.Distance.Distance(double, double)
+  fullName.vb: CSharp12.PrimaryConstructors.Distance.New(Double, Double)
+  nameWithType: PrimaryConstructors.Distance.Distance(double, double)
+  nameWithType.vb: PrimaryConstructors.Distance.New(Double, Double)
+- uid: CSharp12.PrimaryConstructors.Distance.#ctor*
+  name: Distance
+  href: api/CSharp12.PrimaryConstructors.Distance.html#CSharp12_PrimaryConstructors_Distance__ctor_
+  commentId: Overload:CSharp12.PrimaryConstructors.Distance.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp12.PrimaryConstructors.Distance.Distance
+  fullName.vb: CSharp12.PrimaryConstructors.Distance.New
+  nameWithType: PrimaryConstructors.Distance.Distance
+  nameWithType.vb: PrimaryConstructors.Distance.New
+- uid: CSharp12.PrimaryConstructors.Distance.Direction
+  name: Direction
+  href: api/CSharp12.PrimaryConstructors.Distance.html#CSharp12_PrimaryConstructors_Distance_Direction
+  commentId: F:CSharp12.PrimaryConstructors.Distance.Direction
+  fullName: CSharp12.PrimaryConstructors.Distance.Direction
+  nameWithType: PrimaryConstructors.Distance.Direction
+- uid: CSharp12.PrimaryConstructors.Distance.Magnitude
+  name: Magnitude
+  href: api/CSharp12.PrimaryConstructors.Distance.html#CSharp12_PrimaryConstructors_Distance_Magnitude
+  commentId: F:CSharp12.PrimaryConstructors.Distance.Magnitude
+  fullName: CSharp12.PrimaryConstructors.Distance.Magnitude
+  nameWithType: PrimaryConstructors.Distance.Magnitude
+- uid: CSharp12.RefReadOnlyParameters
+  name: RefReadOnlyParameters
+  href: api/CSharp12.RefReadOnlyParameters.html
+  commentId: T:CSharp12.RefReadOnlyParameters
+  fullName: CSharp12.RefReadOnlyParameters
+  nameWithType: RefReadOnlyParameters
+- uid: CSharp12.RefReadOnlyParameters.Foo(System.Int32@)
+  name: Foo(ref readonly int)
+  href: api/CSharp12.RefReadOnlyParameters.html#CSharp12_RefReadOnlyParameters_Foo_System_Int32__
+  commentId: M:CSharp12.RefReadOnlyParameters.Foo(System.Int32@)
+  name.vb: Foo(Integer)
+  fullName: CSharp12.RefReadOnlyParameters.Foo(ref readonly int)
+  fullName.vb: CSharp12.RefReadOnlyParameters.Foo(Integer)
+  nameWithType: RefReadOnlyParameters.Foo(ref readonly int)
+  nameWithType.vb: RefReadOnlyParameters.Foo(Integer)
+- uid: CSharp12.RefReadOnlyParameters.Foo*
+  name: Foo
+  href: api/CSharp12.RefReadOnlyParameters.html#CSharp12_RefReadOnlyParameters_Foo_
+  commentId: Overload:CSharp12.RefReadOnlyParameters.Foo
+  isSpec: "True"
+  fullName: CSharp12.RefReadOnlyParameters.Foo
+  nameWithType: RefReadOnlyParameters.Foo
+- uid: CSharp8
+  name: CSharp8
+  href: api/CSharp8.html
+  commentId: N:CSharp8
+  fullName: CSharp8
+  nameWithType: CSharp8
+- uid: CSharp8.DefaultInterfaceMembers
+  name: DefaultInterfaceMembers
+  href: api/CSharp8.DefaultInterfaceMembers.html
+  commentId: T:CSharp8.DefaultInterfaceMembers
+  fullName: CSharp8.DefaultInterfaceMembers
+  nameWithType: DefaultInterfaceMembers
+- uid: CSharp8.DefaultInterfaceMembers.DoSomething
+  name: DoSomething()
+  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_DoSomething
+  commentId: M:CSharp8.DefaultInterfaceMembers.DoSomething
+  fullName: CSharp8.DefaultInterfaceMembers.DoSomething()
+  nameWithType: DefaultInterfaceMembers.DoSomething()
+- uid: CSharp8.DefaultInterfaceMembers.DoSomething*
+  name: DoSomething
+  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_DoSomething_
+  commentId: Overload:CSharp8.DefaultInterfaceMembers.DoSomething
+  isSpec: "True"
+  fullName: CSharp8.DefaultInterfaceMembers.DoSomething
+  nameWithType: DefaultInterfaceMembers.DoSomething
+- uid: CSharp8.DefaultInterfaceMembers.DoSomethingElse
+  name: DoSomethingElse()
+  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_DoSomethingElse
+  commentId: M:CSharp8.DefaultInterfaceMembers.DoSomethingElse
+  fullName: CSharp8.DefaultInterfaceMembers.DoSomethingElse()
+  nameWithType: DefaultInterfaceMembers.DoSomethingElse()
+- uid: CSharp8.DefaultInterfaceMembers.DoSomethingElse*
+  name: DoSomethingElse
+  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_DoSomethingElse_
+  commentId: Overload:CSharp8.DefaultInterfaceMembers.DoSomethingElse
+  isSpec: "True"
+  fullName: CSharp8.DefaultInterfaceMembers.DoSomethingElse
+  nameWithType: DefaultInterfaceMembers.DoSomethingElse
+- uid: CSharp8.DefaultInterfaceMembers.GravitationalConstant
+  name: GravitationalConstant
+  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_GravitationalConstant
+  commentId: F:CSharp8.DefaultInterfaceMembers.GravitationalConstant
+  fullName: CSharp8.DefaultInterfaceMembers.GravitationalConstant
+  nameWithType: DefaultInterfaceMembers.GravitationalConstant
+- uid: CSharp8.DefaultInterfaceMembers.IA
+  name: DefaultInterfaceMembers.IA
+  href: api/CSharp8.DefaultInterfaceMembers.IA.html
+  commentId: T:CSharp8.DefaultInterfaceMembers.IA
+  fullName: CSharp8.DefaultInterfaceMembers.IA
+  nameWithType: DefaultInterfaceMembers.IA
+- uid: CSharp8.DefaultInterfaceMembers.IA.M
+  name: M()
+  href: api/CSharp8.DefaultInterfaceMembers.IA.html#CSharp8_DefaultInterfaceMembers_IA_M
+  commentId: M:CSharp8.DefaultInterfaceMembers.IA.M
+  fullName: CSharp8.DefaultInterfaceMembers.IA.M()
+  nameWithType: DefaultInterfaceMembers.IA.M()
+- uid: CSharp8.DefaultInterfaceMembers.IA.M*
+  name: M
+  href: api/CSharp8.DefaultInterfaceMembers.IA.html#CSharp8_DefaultInterfaceMembers_IA_M_
+  commentId: Overload:CSharp8.DefaultInterfaceMembers.IA.M
+  isSpec: "True"
+  fullName: CSharp8.DefaultInterfaceMembers.IA.M
+  nameWithType: DefaultInterfaceMembers.IA.M
+- uid: CSharp8.DefaultInterfaceMembers.Nested
+  name: DefaultInterfaceMembers.Nested
+  href: api/CSharp8.DefaultInterfaceMembers.Nested.html
+  commentId: T:CSharp8.DefaultInterfaceMembers.Nested
+  fullName: CSharp8.DefaultInterfaceMembers.Nested
+  nameWithType: DefaultInterfaceMembers.Nested
+- uid: CSharp8.DefaultInterfaceMembers.X
+  name: X
+  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_X
+  commentId: F:CSharp8.DefaultInterfaceMembers.X
+  fullName: CSharp8.DefaultInterfaceMembers.X
+  nameWithType: DefaultInterfaceMembers.X
+- uid: CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)
+  name: operator +(DefaultInterfaceMembers)
+  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_op_UnaryPlus_CSharp8_DefaultInterfaceMembers_
+  commentId: M:CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)
+  name.vb: +(DefaultInterfaceMembers)
+  fullName: CSharp8.DefaultInterfaceMembers.operator +(CSharp8.DefaultInterfaceMembers)
+  fullName.vb: CSharp8.DefaultInterfaceMembers.+(CSharp8.DefaultInterfaceMembers)
+  nameWithType: DefaultInterfaceMembers.operator +(DefaultInterfaceMembers)
+  nameWithType.vb: DefaultInterfaceMembers.+(DefaultInterfaceMembers)
+- uid: CSharp8.DefaultInterfaceMembers.op_UnaryPlus*
+  name: operator +
+  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_op_UnaryPlus_
+  commentId: Overload:CSharp8.DefaultInterfaceMembers.op_UnaryPlus
+  isSpec: "True"
+  name.vb: +
+  fullName: CSharp8.DefaultInterfaceMembers.operator +
+  fullName.vb: CSharp8.DefaultInterfaceMembers.+
+  nameWithType: DefaultInterfaceMembers.operator +
+  nameWithType.vb: DefaultInterfaceMembers.+
+- uid: CSharp8.DisposableRefStructs
+  name: DisposableRefStructs
+  href: api/CSharp8.DisposableRefStructs.html
+  commentId: T:CSharp8.DisposableRefStructs
+  fullName: CSharp8.DisposableRefStructs
+  nameWithType: DisposableRefStructs
+- uid: CSharp8.DisposableRefStructs.Dispose
+  name: Dispose()
+  href: api/CSharp8.DisposableRefStructs.html#CSharp8_DisposableRefStructs_Dispose
+  commentId: M:CSharp8.DisposableRefStructs.Dispose
+  fullName: CSharp8.DisposableRefStructs.Dispose()
+  nameWithType: DisposableRefStructs.Dispose()
+- uid: CSharp8.DisposableRefStructs.Dispose*
+  name: Dispose
+  href: api/CSharp8.DisposableRefStructs.html#CSharp8_DisposableRefStructs_Dispose_
+  commentId: Overload:CSharp8.DisposableRefStructs.Dispose
+  isSpec: "True"
+  fullName: CSharp8.DisposableRefStructs.Dispose
+  nameWithType: DisposableRefStructs.Dispose
+- uid: CSharp8.DisposableRefStructs.DoSomething
+  name: DoSomething()
+  href: api/CSharp8.DisposableRefStructs.html#CSharp8_DisposableRefStructs_DoSomething
+  commentId: M:CSharp8.DisposableRefStructs.DoSomething
+  fullName: CSharp8.DisposableRefStructs.DoSomething()
+  nameWithType: DisposableRefStructs.DoSomething()
+- uid: CSharp8.DisposableRefStructs.DoSomething*
+  name: DoSomething
+  href: api/CSharp8.DisposableRefStructs.html#CSharp8_DisposableRefStructs_DoSomething_
+  commentId: Overload:CSharp8.DisposableRefStructs.DoSomething
+  isSpec: "True"
+  fullName: CSharp8.DisposableRefStructs.DoSomething
+  nameWithType: DisposableRefStructs.DoSomething
+- uid: CSharp8.Issue4007
+  name: Issue4007
+  href: api/CSharp8.Issue4007.html
+  commentId: T:CSharp8.Issue4007
+  fullName: CSharp8.Issue4007
+  nameWithType: Issue4007
+- uid: CSharp8.Issue4007.SomeMethod(System.Int32)
+  name: SomeMethod(int)
+  href: api/CSharp8.Issue4007.html#CSharp8_Issue4007_SomeMethod_System_Int32_
+  commentId: M:CSharp8.Issue4007.SomeMethod(System.Int32)
+  name.vb: SomeMethod(Integer)
+  fullName: CSharp8.Issue4007.SomeMethod(int)
+  fullName.vb: CSharp8.Issue4007.SomeMethod(Integer)
+  nameWithType: Issue4007.SomeMethod(int)
+  nameWithType.vb: Issue4007.SomeMethod(Integer)
+- uid: CSharp8.Issue4007.SomeMethod*
+  name: SomeMethod
+  href: api/CSharp8.Issue4007.html#CSharp8_Issue4007_SomeMethod_
+  commentId: Overload:CSharp8.Issue4007.SomeMethod
+  isSpec: "True"
+  fullName: CSharp8.Issue4007.SomeMethod
+  nameWithType: Issue4007.SomeMethod
+- uid: CSharp8.Issue4007.SomeOtherMethod
+  name: SomeOtherMethod()
+  href: api/CSharp8.Issue4007.html#CSharp8_Issue4007_SomeOtherMethod
+  commentId: M:CSharp8.Issue4007.SomeOtherMethod
+  fullName: CSharp8.Issue4007.SomeOtherMethod()
+  nameWithType: Issue4007.SomeOtherMethod()
+- uid: CSharp8.Issue4007.SomeOtherMethod*
+  name: SomeOtherMethod
+  href: api/CSharp8.Issue4007.html#CSharp8_Issue4007_SomeOtherMethod_
+  commentId: Overload:CSharp8.Issue4007.SomeOtherMethod
+  isSpec: "True"
+  fullName: CSharp8.Issue4007.SomeOtherMethod
+  nameWithType: Issue4007.SomeOtherMethod
+- uid: CSharp8.Misc
+  name: Misc
+  href: api/CSharp8.Misc.html
+  commentId: T:CSharp8.Misc
+  fullName: CSharp8.Misc
+  nameWithType: Misc
+- uid: CSharp8.Misc.AsynchronousStreams
+  name: AsynchronousStreams()
+  href: api/CSharp8.Misc.html#CSharp8_Misc_AsynchronousStreams
+  commentId: M:CSharp8.Misc.AsynchronousStreams
+  fullName: CSharp8.Misc.AsynchronousStreams()
+  nameWithType: Misc.AsynchronousStreams()
+- uid: CSharp8.Misc.AsynchronousStreams*
+  name: AsynchronousStreams
+  href: api/CSharp8.Misc.html#CSharp8_Misc_AsynchronousStreams_
+  commentId: Overload:CSharp8.Misc.AsynchronousStreams
+  isSpec: "True"
+  fullName: CSharp8.Misc.AsynchronousStreams
+  nameWithType: Misc.AsynchronousStreams
+- uid: CSharp8.Misc.GenerateSequence
+  name: GenerateSequence()
+  href: api/CSharp8.Misc.html#CSharp8_Misc_GenerateSequence
+  commentId: M:CSharp8.Misc.GenerateSequence
+  fullName: CSharp8.Misc.GenerateSequence()
+  nameWithType: Misc.GenerateSequence()
+- uid: CSharp8.Misc.GenerateSequence*
+  name: GenerateSequence
+  href: api/CSharp8.Misc.html#CSharp8_Misc_GenerateSequence_
+  commentId: Overload:CSharp8.Misc.GenerateSequence
+  isSpec: "True"
+  fullName: CSharp8.Misc.GenerateSequence
+  nameWithType: Misc.GenerateSequence
+- uid: CSharp8.Misc.IndicesAndRanges
+  name: IndicesAndRanges()
+  href: api/CSharp8.Misc.html#CSharp8_Misc_IndicesAndRanges
+  commentId: M:CSharp8.Misc.IndicesAndRanges
+  fullName: CSharp8.Misc.IndicesAndRanges()
+  nameWithType: Misc.IndicesAndRanges()
+- uid: CSharp8.Misc.IndicesAndRanges*
+  name: IndicesAndRanges
+  href: api/CSharp8.Misc.html#CSharp8_Misc_IndicesAndRanges_
+  commentId: Overload:CSharp8.Misc.IndicesAndRanges
+  isSpec: "True"
+  fullName: CSharp8.Misc.IndicesAndRanges
+  nameWithType: Misc.IndicesAndRanges
+- uid: CSharp8.Misc.IsExpression(System.DateTime)
+  name: IsExpression(DateTime)
+  href: api/CSharp8.Misc.html#CSharp8_Misc_IsExpression_System_DateTime_
+  commentId: M:CSharp8.Misc.IsExpression(System.DateTime)
+  name.vb: IsExpression(Date)
+  fullName: CSharp8.Misc.IsExpression(System.DateTime)
+  fullName.vb: CSharp8.Misc.IsExpression(Date)
+  nameWithType: Misc.IsExpression(DateTime)
+  nameWithType.vb: Misc.IsExpression(Date)
+- uid: CSharp8.Misc.IsExpression*
+  name: IsExpression
+  href: api/CSharp8.Misc.html#CSharp8_Misc_IsExpression_
+  commentId: Overload:CSharp8.Misc.IsExpression
+  isSpec: "True"
+  fullName: CSharp8.Misc.IsExpression
+  nameWithType: Misc.IsExpression
+- uid: CSharp8.Misc.NullCoalescingAssignment
+  name: NullCoalescingAssignment()
+  href: api/CSharp8.Misc.html#CSharp8_Misc_NullCoalescingAssignment
+  commentId: M:CSharp8.Misc.NullCoalescingAssignment
+  fullName: CSharp8.Misc.NullCoalescingAssignment()
+  nameWithType: Misc.NullCoalescingAssignment()
+- uid: CSharp8.Misc.NullCoalescingAssignment*
+  name: NullCoalescingAssignment
+  href: api/CSharp8.Misc.html#CSharp8_Misc_NullCoalescingAssignment_
+  commentId: Overload:CSharp8.Misc.NullCoalescingAssignment
+  isSpec: "True"
+  fullName: CSharp8.Misc.NullCoalescingAssignment
+  nameWithType: Misc.NullCoalescingAssignment
+- uid: CSharp8.Misc.StackallocInNestedExpressions
+  name: StackallocInNestedExpressions()
+  href: api/CSharp8.Misc.html#CSharp8_Misc_StackallocInNestedExpressions
+  commentId: M:CSharp8.Misc.StackallocInNestedExpressions
+  fullName: CSharp8.Misc.StackallocInNestedExpressions()
+  nameWithType: Misc.StackallocInNestedExpressions()
+- uid: CSharp8.Misc.StackallocInNestedExpressions*
+  name: StackallocInNestedExpressions
+  href: api/CSharp8.Misc.html#CSharp8_Misc_StackallocInNestedExpressions_
+  commentId: Overload:CSharp8.Misc.StackallocInNestedExpressions
+  isSpec: "True"
+  fullName: CSharp8.Misc.StackallocInNestedExpressions
+  nameWithType: Misc.StackallocInNestedExpressions
+- uid: CSharp8.Misc.StaticLocalFunctions(System.Int32)
+  name: StaticLocalFunctions(int)
+  href: api/CSharp8.Misc.html#CSharp8_Misc_StaticLocalFunctions_System_Int32_
+  commentId: M:CSharp8.Misc.StaticLocalFunctions(System.Int32)
+  name.vb: StaticLocalFunctions(Integer)
+  fullName: CSharp8.Misc.StaticLocalFunctions(int)
+  fullName.vb: CSharp8.Misc.StaticLocalFunctions(Integer)
+  nameWithType: Misc.StaticLocalFunctions(int)
+  nameWithType.vb: Misc.StaticLocalFunctions(Integer)
+- uid: CSharp8.Misc.StaticLocalFunctions*
+  name: StaticLocalFunctions
+  href: api/CSharp8.Misc.html#CSharp8_Misc_StaticLocalFunctions_
+  commentId: Overload:CSharp8.Misc.StaticLocalFunctions
+  isSpec: "True"
+  fullName: CSharp8.Misc.StaticLocalFunctions
+  nameWithType: Misc.StaticLocalFunctions
+- uid: CSharp8.Misc.SwitchExpression(System.ConsoleColor)
+  name: SwitchExpression(ConsoleColor)
+  href: api/CSharp8.Misc.html#CSharp8_Misc_SwitchExpression_System_ConsoleColor_
+  commentId: M:CSharp8.Misc.SwitchExpression(System.ConsoleColor)
+  fullName: CSharp8.Misc.SwitchExpression(System.ConsoleColor)
+  nameWithType: Misc.SwitchExpression(ConsoleColor)
+- uid: CSharp8.Misc.SwitchExpression*
+  name: SwitchExpression
+  href: api/CSharp8.Misc.html#CSharp8_Misc_SwitchExpression_
+  commentId: Overload:CSharp8.Misc.SwitchExpression
+  isSpec: "True"
+  fullName: CSharp8.Misc.SwitchExpression
+  nameWithType: Misc.SwitchExpression
+- uid: CSharp8.Misc.UsingDeclaration
+  name: UsingDeclaration()
+  href: api/CSharp8.Misc.html#CSharp8_Misc_UsingDeclaration
+  commentId: M:CSharp8.Misc.UsingDeclaration
+  fullName: CSharp8.Misc.UsingDeclaration()
+  nameWithType: Misc.UsingDeclaration()
+- uid: CSharp8.Misc.UsingDeclaration*
+  name: UsingDeclaration
+  href: api/CSharp8.Misc.html#CSharp8_Misc_UsingDeclaration_
+  commentId: Overload:CSharp8.Misc.UsingDeclaration
+  isSpec: "True"
+  fullName: CSharp8.Misc.UsingDeclaration
+  nameWithType: Misc.UsingDeclaration
+- uid: CSharp8.NullableReferenceTypes
+  name: NullableReferenceTypes
+  href: api/CSharp8.NullableReferenceTypes.html
+  commentId: T:CSharp8.NullableReferenceTypes
+  fullName: CSharp8.NullableReferenceTypes
+  nameWithType: NullableReferenceTypes
+- uid: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})
+  name: DoSomething(List<string?>?)
+  href: api/CSharp8.NullableReferenceTypes.html#CSharp8_NullableReferenceTypes_DoSomething_System_Collections_Generic_List_System_String__
+  commentId: M:CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})
+  name.vb: DoSomething(List(Of String))
+  fullName: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List<string?>?)
+  fullName.vb: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List(Of String))
+  nameWithType: NullableReferenceTypes.DoSomething(List<string?>?)
+  nameWithType.vb: NullableReferenceTypes.DoSomething(List(Of String))
+- uid: CSharp8.NullableReferenceTypes.DoSomething*
+  name: DoSomething
+  href: api/CSharp8.NullableReferenceTypes.html#CSharp8_NullableReferenceTypes_DoSomething_
+  commentId: Overload:CSharp8.NullableReferenceTypes.DoSomething
+  isSpec: "True"
+  fullName: CSharp8.NullableReferenceTypes.DoSomething
+  nameWithType: NullableReferenceTypes.DoSomething
+- uid: CSharp8.NullableReferenceTypes.Field
+  name: Field
+  href: api/CSharp8.NullableReferenceTypes.html#CSharp8_NullableReferenceTypes_Field
+  commentId: F:CSharp8.NullableReferenceTypes.Field
+  fullName: CSharp8.NullableReferenceTypes.Field
+  nameWithType: NullableReferenceTypes.Field
+- uid: CSharp8.NullableReferenceTypes.Property
+  name: Property
+  href: api/CSharp8.NullableReferenceTypes.html#CSharp8_NullableReferenceTypes_Property
+  commentId: P:CSharp8.NullableReferenceTypes.Property
+  fullName: CSharp8.NullableReferenceTypes.Property
+  nameWithType: NullableReferenceTypes.Property
+- uid: CSharp8.NullableReferenceTypes.Property*
+  name: Property
+  href: api/CSharp8.NullableReferenceTypes.html#CSharp8_NullableReferenceTypes_Property_
+  commentId: Overload:CSharp8.NullableReferenceTypes.Property
+  isSpec: "True"
+  fullName: CSharp8.NullableReferenceTypes.Property
+  nameWithType: NullableReferenceTypes.Property
+- uid: CSharp8.ReadOnlyMembers
+  name: ReadOnlyMembers
+  href: api/CSharp8.ReadOnlyMembers.html
+  commentId: T:CSharp8.ReadOnlyMembers
+  fullName: CSharp8.ReadOnlyMembers
+  nameWithType: ReadOnlyMembers
+- uid: CSharp8.ReadOnlyMembers.Counter
+  name: Counter
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_Counter
+  commentId: P:CSharp8.ReadOnlyMembers.Counter
+  fullName: CSharp8.ReadOnlyMembers.Counter
+  nameWithType: ReadOnlyMembers.Counter
+- uid: CSharp8.ReadOnlyMembers.Counter*
+  name: Counter
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_Counter_
+  commentId: Overload:CSharp8.ReadOnlyMembers.Counter
+  isSpec: "True"
+  fullName: CSharp8.ReadOnlyMembers.Counter
+  nameWithType: ReadOnlyMembers.Counter
+- uid: CSharp8.ReadOnlyMembers.Sum
+  name: Sum()
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_Sum
+  commentId: M:CSharp8.ReadOnlyMembers.Sum
+  fullName: CSharp8.ReadOnlyMembers.Sum()
+  nameWithType: ReadOnlyMembers.Sum()
+- uid: CSharp8.ReadOnlyMembers.Sum*
+  name: Sum
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_Sum_
+  commentId: Overload:CSharp8.ReadOnlyMembers.Sum
+  isSpec: "True"
+  fullName: CSharp8.ReadOnlyMembers.Sum
+  nameWithType: ReadOnlyMembers.Sum
+- uid: CSharp8.ReadOnlyMembers.ToString
+  name: ToString()
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_ToString
+  commentId: M:CSharp8.ReadOnlyMembers.ToString
+  fullName: CSharp8.ReadOnlyMembers.ToString()
+  nameWithType: ReadOnlyMembers.ToString()
+- uid: CSharp8.ReadOnlyMembers.ToString*
+  name: ToString
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_ToString_
+  commentId: Overload:CSharp8.ReadOnlyMembers.ToString
+  isSpec: "True"
+  fullName: CSharp8.ReadOnlyMembers.ToString
+  nameWithType: ReadOnlyMembers.ToString
+- uid: CSharp8.ReadOnlyMembers.X
+  name: X
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_X
+  commentId: P:CSharp8.ReadOnlyMembers.X
+  fullName: CSharp8.ReadOnlyMembers.X
+  nameWithType: ReadOnlyMembers.X
+- uid: CSharp8.ReadOnlyMembers.X*
+  name: X
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_X_
+  commentId: Overload:CSharp8.ReadOnlyMembers.X
+  isSpec: "True"
+  fullName: CSharp8.ReadOnlyMembers.X
+  nameWithType: ReadOnlyMembers.X
+- uid: CSharp8.ReadOnlyMembers.Y
+  name: Y
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_Y
+  commentId: P:CSharp8.ReadOnlyMembers.Y
+  fullName: CSharp8.ReadOnlyMembers.Y
+  nameWithType: ReadOnlyMembers.Y
+- uid: CSharp8.ReadOnlyMembers.Y*
+  name: Y
+  href: api/CSharp8.ReadOnlyMembers.html#CSharp8_ReadOnlyMembers_Y_
+  commentId: Overload:CSharp8.ReadOnlyMembers.Y
+  isSpec: "True"
+  fullName: CSharp8.ReadOnlyMembers.Y
+  nameWithType: ReadOnlyMembers.Y
+- uid: CSharp9
+  name: CSharp9
+  href: api/CSharp9.html
+  commentId: N:CSharp9
+  fullName: CSharp9
+  nameWithType: CSharp9
+- uid: CSharp9.FunctionPointers
+  name: FunctionPointers
+  href: api/CSharp9.FunctionPointers.html
+  commentId: T:CSharp9.FunctionPointers
+  fullName: CSharp9.FunctionPointers
+  nameWithType: FunctionPointers
+- uid: CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)
+  name: Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)
+  href: api/CSharp9.FunctionPointers.html#CSharp9_FunctionPointers_Example_System_Action_System_Int32_______
+  commentId: M:CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)
+  name.vb: Example(Action(Of Integer), , , , , )
+  fullName: CSharp9.FunctionPointers.Example(System.Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)
+  fullName.vb: CSharp9.FunctionPointers.Example(System.Action(Of Integer), , , , , )
+  nameWithType: FunctionPointers.Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)
+  nameWithType.vb: FunctionPointers.Example(Action(Of Integer), , , , , )
+- uid: CSharp9.FunctionPointers.Example*
+  name: Example
+  href: api/CSharp9.FunctionPointers.html#CSharp9_FunctionPointers_Example_
+  commentId: Overload:CSharp9.FunctionPointers.Example
+  isSpec: "True"
+  fullName: CSharp9.FunctionPointers.Example
+  nameWithType: FunctionPointers.Example
+- uid: CSharp9.InitOnlySetters
+  name: InitOnlySetters
+  href: api/CSharp9.InitOnlySetters.html
+  commentId: T:CSharp9.InitOnlySetters
+  fullName: CSharp9.InitOnlySetters
+  nameWithType: InitOnlySetters
+- uid: CSharp9.InitOnlySetters.PressureInMillibars
+  name: PressureInMillibars
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_PressureInMillibars
+  commentId: P:CSharp9.InitOnlySetters.PressureInMillibars
+  fullName: CSharp9.InitOnlySetters.PressureInMillibars
+  nameWithType: InitOnlySetters.PressureInMillibars
+- uid: CSharp9.InitOnlySetters.PressureInMillibars*
+  name: PressureInMillibars
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_PressureInMillibars_
+  commentId: Overload:CSharp9.InitOnlySetters.PressureInMillibars
+  isSpec: "True"
+  fullName: CSharp9.InitOnlySetters.PressureInMillibars
+  nameWithType: InitOnlySetters.PressureInMillibars
+- uid: CSharp9.InitOnlySetters.RecordedAt
+  name: RecordedAt
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_RecordedAt
+  commentId: P:CSharp9.InitOnlySetters.RecordedAt
+  fullName: CSharp9.InitOnlySetters.RecordedAt
+  nameWithType: InitOnlySetters.RecordedAt
+- uid: CSharp9.InitOnlySetters.RecordedAt*
+  name: RecordedAt
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_RecordedAt_
+  commentId: Overload:CSharp9.InitOnlySetters.RecordedAt
+  isSpec: "True"
+  fullName: CSharp9.InitOnlySetters.RecordedAt
+  nameWithType: InitOnlySetters.RecordedAt
+- uid: CSharp9.InitOnlySetters.TemperatureInCelsius
+  name: TemperatureInCelsius
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_TemperatureInCelsius
+  commentId: P:CSharp9.InitOnlySetters.TemperatureInCelsius
+  fullName: CSharp9.InitOnlySetters.TemperatureInCelsius
+  nameWithType: InitOnlySetters.TemperatureInCelsius
+- uid: CSharp9.InitOnlySetters.TemperatureInCelsius*
+  name: TemperatureInCelsius
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_TemperatureInCelsius_
+  commentId: Overload:CSharp9.InitOnlySetters.TemperatureInCelsius
+  isSpec: "True"
+  fullName: CSharp9.InitOnlySetters.TemperatureInCelsius
+  nameWithType: InitOnlySetters.TemperatureInCelsius
+- uid: CSharp9.NativeSizedIntegers
+  name: NativeSizedIntegers
+  href: api/CSharp9.NativeSizedIntegers.html
+  commentId: T:CSharp9.NativeSizedIntegers
+  fullName: CSharp9.NativeSizedIntegers
+  nameWithType: NativeSizedIntegers
+- uid: CSharp9.NativeSizedIntegers.X
+  name: X
+  href: api/CSharp9.NativeSizedIntegers.html#CSharp9_NativeSizedIntegers_X
+  commentId: F:CSharp9.NativeSizedIntegers.X
+  fullName: CSharp9.NativeSizedIntegers.X
+  nameWithType: NativeSizedIntegers.X
+- uid: CSharp9.NativeSizedIntegers.Y
+  name: Y
+  href: api/CSharp9.NativeSizedIntegers.html#CSharp9_NativeSizedIntegers_Y
+  commentId: F:CSharp9.NativeSizedIntegers.Y
+  fullName: CSharp9.NativeSizedIntegers.Y
+  nameWithType: NativeSizedIntegers.Y
+- uid: CSharp9.RecordTypes
+  name: RecordTypes
+  href: api/CSharp9.RecordTypes.html
+  commentId: T:CSharp9.RecordTypes
+  fullName: CSharp9.RecordTypes
+  nameWithType: RecordTypes
+- uid: CSharp9.RecordTypes.Person
+  name: RecordTypes.Person
+  href: api/CSharp9.RecordTypes.Person.html
+  commentId: T:CSharp9.RecordTypes.Person
+  fullName: CSharp9.RecordTypes.Person
+  nameWithType: RecordTypes.Person
+- uid: CSharp9.RecordTypes.Person.#ctor(System.String,System.String)
+  name: Person(string, string)
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person__ctor_System_String_System_String_
+  commentId: M:CSharp9.RecordTypes.Person.#ctor(System.String,System.String)
+  name.vb: New(String, String)
+  fullName: CSharp9.RecordTypes.Person.Person(string, string)
+  fullName.vb: CSharp9.RecordTypes.Person.New(String, String)
+  nameWithType: RecordTypes.Person.Person(string, string)
+  nameWithType.vb: RecordTypes.Person.New(String, String)
+- uid: CSharp9.RecordTypes.Person.#ctor*
+  name: Person
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person__ctor_
+  commentId: Overload:CSharp9.RecordTypes.Person.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp9.RecordTypes.Person.Person
+  fullName.vb: CSharp9.RecordTypes.Person.New
+  nameWithType: RecordTypes.Person.Person
+  nameWithType.vb: RecordTypes.Person.New
+- uid: CSharp9.RecordTypes.Person.FirstName
+  name: FirstName
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_FirstName
+  commentId: P:CSharp9.RecordTypes.Person.FirstName
+  fullName: CSharp9.RecordTypes.Person.FirstName
+  nameWithType: RecordTypes.Person.FirstName
+- uid: CSharp9.RecordTypes.Person.FirstName*
+  name: FirstName
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_FirstName_
+  commentId: Overload:CSharp9.RecordTypes.Person.FirstName
+  isSpec: "True"
+  fullName: CSharp9.RecordTypes.Person.FirstName
+  nameWithType: RecordTypes.Person.FirstName
+- uid: CSharp9.RecordTypes.Person.LastName
+  name: LastName
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_LastName
+  commentId: P:CSharp9.RecordTypes.Person.LastName
+  fullName: CSharp9.RecordTypes.Person.LastName
+  nameWithType: RecordTypes.Person.LastName
+- uid: CSharp9.RecordTypes.Person.LastName*
+  name: LastName
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_LastName_
+  commentId: Overload:CSharp9.RecordTypes.Person.LastName
+  isSpec: "True"
+  fullName: CSharp9.RecordTypes.Person.LastName
+  nameWithType: RecordTypes.Person.LastName
+- uid: CSharp9.RecordTypes.Teacher
+  name: RecordTypes.Teacher
+  href: api/CSharp9.RecordTypes.Teacher.html
+  commentId: T:CSharp9.RecordTypes.Teacher
+  fullName: CSharp9.RecordTypes.Teacher
+  nameWithType: RecordTypes.Teacher
+- uid: CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)
+  name: Teacher(string, string, int)
+  href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher__ctor_System_String_System_String_System_Int32_
+  commentId: M:CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)
+  name.vb: New(String, String, Integer)
+  fullName: CSharp9.RecordTypes.Teacher.Teacher(string, string, int)
+  fullName.vb: CSharp9.RecordTypes.Teacher.New(String, String, Integer)
+  nameWithType: RecordTypes.Teacher.Teacher(string, string, int)
+  nameWithType.vb: RecordTypes.Teacher.New(String, String, Integer)
+- uid: CSharp9.RecordTypes.Teacher.#ctor*
+  name: Teacher
+  href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher__ctor_
+  commentId: Overload:CSharp9.RecordTypes.Teacher.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CSharp9.RecordTypes.Teacher.Teacher
+  fullName.vb: CSharp9.RecordTypes.Teacher.New
+  nameWithType: RecordTypes.Teacher.Teacher
+  nameWithType.vb: RecordTypes.Teacher.New
+- uid: CSharp9.RecordTypes.Teacher.Grade
+  name: Grade
+  href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher_Grade
+  commentId: P:CSharp9.RecordTypes.Teacher.Grade
+  fullName: CSharp9.RecordTypes.Teacher.Grade
+  nameWithType: RecordTypes.Teacher.Grade
+- uid: CSharp9.RecordTypes.Teacher.Grade*
+  name: Grade
+  href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher_Grade_
+  commentId: Overload:CSharp9.RecordTypes.Teacher.Grade
+  isSpec: "True"
+  fullName: CSharp9.RecordTypes.Teacher.Grade
+  nameWithType: RecordTypes.Teacher.Grade

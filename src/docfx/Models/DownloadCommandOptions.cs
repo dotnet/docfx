@@ -1,20 +1,19 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
-namespace Microsoft.DocAsCode
+using System.ComponentModel;
+using Spectre.Console.Cli;
+
+namespace Docfx;
+
+[Description("Download remote xref map file and create an xref archive in local.")]
+internal class DownloadCommandOptions : CommandSettings
 {
-    using CommandLine;
+    [Description("Path to the archive file")]
+    [CommandArgument(0, "<path>")]
+    public string ArchiveFile { get; set; }
 
-    [OptionUsage("download [<output xref archive>]")]
-    internal class DownloadCommandOptions : ICanPrintHelpMessage
-    {
-        [ValueOption(0)]
-        public string ArchiveFile { get; set; }
-
-        [Option('x', "xref", HelpText = "Specify the url of xrefmap.")]
-        public string Uri { get; set; }
-
-        [Option('h', "help", HelpText = "Print help message for this sub-command")]
-        public bool PrintHelpMessage { get; set; }
-    }
+    [Description("Specify the url of xrefmap.")]
+    [CommandOption("-x|--xref")]
+    public string Uri { get; set; }
 }

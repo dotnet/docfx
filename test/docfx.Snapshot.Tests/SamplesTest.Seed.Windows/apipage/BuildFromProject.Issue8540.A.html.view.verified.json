@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Namespace BuildFromProject.Issue8540.A",
+  "content": "<h1 class='section api' data-uid='BuildFromProject.Issue8540.A' data-commentId='N:BuildFromProject.Issue8540.A' id='BuildFromProject_Issue8540_A'>Namespace BuildFromProject.Issue8540.A   </h1>\r\n <h3 class='section'>Classes</h3><dl class='parameters'><dt> <a href='BuildFromProject.Issue8540.A.A.html'>A</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromProject.Issue8540.A.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromProject.Issue8540.A.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

@@ -51,7 +51,7 @@ You can see the source file name (`.md`) is replaced with output file name (`.ht
 > [!Note]
 > DocFX does not simply replace the file extension here (`.md` to `.html`), it also tracks the mapping between input and
 > output files to make sure source file path will resolve to correct output path. For example, if in the above case,
-> `subfolder` is renamed to `subfolder2` using [file mapping](docfx.exe_user_manual.md#4-supported-file-mapping-format) in
+> `subfolder` is renamed to `subfolder2` using [file mapping](../reference/docfx-json-reference.md#2-supported-file-mapping-format) in
 > `docfx.json`, in output html, the link url will also resolve to `subfolder2/file2.html`.
 
 ### Relative path vs. absolute path
@@ -87,7 +87,7 @@ Both will resolve to `../file1.html` in output html.
 
 ### Links in file includes
 
-If you use [file include](../spec/docfx_flavored_markdown.md#file-inclusion) to include another file, the links in the included file are relative to the included file. For example, if `file1.md` includes `file2.md`:
+If you use [file include](../docs/markdown.md#include-markdown-files) to include another file, the links in the included file are relative to the included file. For example, if `file1.md` includes `file2.md`:
 
 ```markdown
 [!include[file2](subfolder/file2.md)]
@@ -135,7 +135,7 @@ As you can see, one benefit of using cross reference is that you don't need to s
 
 ### Define UID
 
-The unique identifier of a file in DocFX is called a UID. For a Markdown file, you can specify its UID by adding a UID metadata in the [YAML header](../spec/docfx_flavored_markdown.md#yaml-header). For example, the following Markdown defines a UID "fileA".
+The unique identifier of a file in DocFX is called a UID. For a Markdown file, you can specify its UID by adding a UID metadata in the [YAML header](../docs/markdown.md#yaml-header). For example, the following Markdown defines a UID "fileA".
 
 ```markdown
 ---
@@ -238,6 +238,9 @@ Both will render to:
 
 Another common need is to reference topics from an external project. For example, when you're writing the documentation for your own .NET library, you'll want to add some links that point to types in .NET base class library. DocFX gives you two ways to achieve this functionality: by exporting all UIDs in a project into a map file to be imported in another project, and through cross reference services.
 
+> [!TIP]
+> Docfx automatically resolves .NET base class library types and other types published to <https://learn.microsoft.com> by default, without cross reference map or cross reference service. This process does not require network access.
+
 ### Cross reference map file
 
 When building a DocFX project, there will be an `xrefmap.yml` generated under output folder. This file contains information for all topics that have UID defined and their corresponding urls. The format of `xrefmap.yml` looks like this:
@@ -286,23 +289,6 @@ The value of `xref` could be a string or a list of strings that contain the path
 > DocFX supports reading cross reference map from a local file or a web location. It's recommended to deploy `xrefmap.yml` to
 > the website together with topic files so that others can directly use its url in `docfx.json` instead of downloading it to
 > local.
-
-### Cross reference services
-
-Cross reference services are hosted services that can be queried for cross reference information. When DocFX generates the metadata for your project, it will perform cross reference lookups against the service.
-
-To use a cross reference service, add a `xrefservice` config to the `build` section of `docfx.json`:
-
-```json
-{
-  "build": {
-    "xrefService": [ "<url_to_xrefservice>" ],
-    ...
-  }
-}
-```
-
-For example, the URL for the cross reference service for .NET BCL types is `https://xref.docs.microsoft.com/query?uid={uid}`.
 
 ## Advanced: more options for cross reference
 

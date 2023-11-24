@@ -1,0 +1,54 @@
+{
+  // Uncomment next line to enable intellisense.
+  // "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/launchsettings.json",
+  "profiles": {
+    // Run `docfx init` command.
+    "docfx init": {
+      "commandName": "Project",
+      "commandLineArgs": "init --output bin/init",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
+    // Run `docfx build` command.
+    "docfx build": {
+      "commandName": "Project",
+      "commandLineArgs": "build ../../samples/seed/docfx.json --serve",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
+    // Run `docfx metadata` command.
+    "docfx metadata": {
+      "commandName": "Project",
+      "commandLineArgs": "metadata ../../samples/seed/docfx.json",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
+    // Run `docfx serve` command and launch browser.
+    "docfx serve": {
+      "commandName": "Project",
+      "commandLineArgs": "serve ../../samples/seed/_site --open-file articles/markdown.html --open-browser",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
+    // Run `docfx pdf` command and launch browser.
+    "docfx pdf": {
+      "commandName": "Project",
+      "commandLineArgs": "pdf ../../samples/seed/docfx.json",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
+    // Run `docfx` command.
+    "docfx": {
+      "commandName": "Project",
+      "commandLineArgs": "../../samples/seed/docfx.json",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    }
+  }
+}
