@@ -6,9 +6,4 @@ namespace Docfx.MarkdigEngine.Extensions;
 internal static class Constants
 {
     public static readonly string FencedCodePrefix = "lang-";
-
-    public static class WarningCodes
-    {
-        public const string InvalidTabGroup = "InvalidTabGroup";
-    }
 }

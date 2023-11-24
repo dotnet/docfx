@@ -3,6 +3,8 @@
 
 #nullable enable
 
+using Docfx.Common;
+
 namespace Docfx;
 
 class DocfxConfig
@@ -14,4 +16,6 @@ class DocfxConfig
     public BuildJsonConfig? build { get; init; }
 
     public PdfJsonConfig? pdf { get; init; }
+
+    public Dictionary<string, LogLevel>? rules { get; init; }
 }

@@ -40,10 +40,12 @@ public static partial class DotnetApiCatalog
         try
         {
             var configDirectory = Path.GetDirectoryName(Path.GetFullPath(configPath));
-
             var config = JObject.Parse(File.ReadAllText(configPath));
             if (config.TryGetValue("metadata", out var value))
+            {
+                Logger.Rules = config["rules"]?.ToObject<Dictionary<string, LogLevel>>();
                 await Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), options, configDirectory);
+            }
         }
         finally
         {

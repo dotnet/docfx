@@ -155,7 +155,7 @@ internal static class CompilationHelper
                 var file = assemblyResolver.FindAssemblyFile(reference);
                 if (file is null)
                 {
-                    Logger.LogWarning($"Unable to resolve assembly reference {reference}");
+                    Logger.LogWarning($"Unable to resolve assembly reference {reference}", code: "InvalidAssemblyReference");
                     continue;
                 }
 
