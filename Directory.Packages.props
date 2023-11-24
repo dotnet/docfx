@@ -30,7 +30,7 @@
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.263" />
     <PackageVersion Include="PdfPig" Version="0.1.9-alpha-20231119-4537e" />
     <PackageVersion Include="Spectre.Console" Version="0.47.0" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.47.0" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.48.0" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
     <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
     <PackageVersion Include="System.Composition" Version="8.0.0" />
