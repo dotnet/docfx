@@ -58,6 +58,9 @@
       "Links": [
         {
           "Uri": ""
+        },
+        {
+          "Uri": ""
         }
       ]
     },
@@ -99,13 +102,43 @@
           "Uri": "http://msdn.microsoft.com/en-us/library/ms229042.aspx"
         },
         {
+          "Uri": "http://msdn.microsoft.com/en-us/library/ms229042.aspx"
+        },
+        {
+          "Uri": "http://msdn.microsoft.com/en-us/library/ms229042.aspx"
+        },
+        {
+          "Uri": "http://www.jetbrains.com/resharper/"
+        },
+        {
+          "Uri": "http://www.jetbrains.com/resharper/"
+        },
+        {
           "Uri": "http://www.jetbrains.com/resharper/"
         },
         {
           "Uri": "http://stylecop.codeplex.com/"
         },
         {
+          "Uri": "http://stylecop.codeplex.com/"
+        },
+        {
+          "Uri": "http://stylecop.codeplex.com/"
+        },
+        {
           "Uri": "http://codebox/SDLFxCop"
+        },
+        {
+          "Uri": "http://codebox/SDLFxCop"
+        },
+        {
+          "Uri": "http://codebox/SDLFxCop"
+        },
+        {
+          "Uri": "http://toolbox/22561"
+        },
+        {
+          "Uri": "http://toolbox/22561"
         },
         {
           "Uri": "http://toolbox/22561"
@@ -121,6 +154,12 @@
       "Number": 10,
       "Text": "10DO start static readonly fields, constants with capitalized caseDO NOT capitalize each word in so-called closed-form compound words\uF1C5.DO have \"Async\" explicitly in the Async method name to notice people how to use it properlyFormatting (Mandatory)DO use spaces over tabs, and always show all spaces/tabs in IDETipsVisual Studio > TOOLS > Options > Text Editor > C# > Tabs > Insert spaces (Tab size: 4)Visual Studio > Edit > Advanced > View White SpaceDO add using inside namespace declarationDO add a space when:1. for (var i = 0; i < 1; i++)2. if (a == b)Cross-platform codingOur code should supports multiple operating systems. Don't assume we only run (and develop) onWindows. Code should be sensitvie to the differences between OS's. Here are some specifics to consider.DO use Enviroment.NewLine instead of hard-coding the line break instead of \\r\\n, as Windows uses\\r\\n and OSX/Linux uses \\n.NoteBe aware that thes line-endings may cause problems in code when using @\"\" text blocks with linebreaks.  private static readonly IEntityAccessor EntityAccessor = null;  private const string MetadataName = \"MetadataName\";  namespace Microsoft.Content.Build.BuildWorker.UnitTest  {  using System;  }",
       "Links": [
+        {
+          "Uri": "http://msdn.microsoft.com/en-us/library/ms229043.aspx"
+        },
+        {
+          "Uri": "http://msdn.microsoft.com/en-us/library/ms229043.aspx"
+        },
         {
           "Uri": "http://msdn.microsoft.com/en-us/library/ms229043.aspx"
         }
@@ -149,7 +188,25 @@
           "Uri": "https://daringfireball.net/projects/markdown/"
         },
         {
+          "Uri": "https://daringfireball.net/projects/markdown/"
+        },
+        {
+          "Uri": "https://daringfireball.net/projects/markdown/"
+        },
+        {
           "Uri": "https://commonmark.org/"
+        },
+        {
+          "Uri": "https://commonmark.org/"
+        },
+        {
+          "Uri": "https://commonmark.org/"
+        },
+        {
+          "Uri": "https://github.com/xoofx/markdig"
+        },
+        {
+          "Uri": "https://github.com/xoofx/markdig"
         },
         {
           "Uri": "https://github.com/xoofx/markdig"
@@ -158,8 +215,8 @@
           "Goto": {
             "PageNumber": 16,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 567.25
+              "Left": 28,
+              "Top": 552.50006
             }
           }
         }
@@ -167,19 +224,19 @@
     },
     {
       "Number": 15,
-      "Text": "15ImageMermaid DiagramsFlowchartCode SnippetThe example highlights lines 2, line 5 to 7 and lines 9 to the end of the file.MY TODOThis is a TODO.TextOneTwoHardRoundDecisionResult 1Result 2using System;using Azure;using Azure.Storage;using Azure.Storage.Blobs;class Program{    static void Main(string[] args)    {        // Define the connection string for the storage account        string connectionString = \"DefaultEndpointsProtocol=https;AccountName=<your-account-nam        // Create a new BlobServiceClient using the connection string        var blobServiceClient = new BlobServiceClient(connectionString);        // Create a new container        var container = blobServiceClient.CreateBlobContainer(\"mycontainer\");        // Upload a file to the container        using (var fileStream = File.OpenRead(\"path/to/file.txt\"))        {",
+      "Text": "15ImageMermaid DiagramsFlowchartCode SnippetThe example highlights lines 2, line 5 to 7 and lines 9 to the end of the file.MY TODOThis is a TODO.TextOneTwoHardRoundDecisionResult 1Result 2using System;using Azure;using Azure.Storage;using Azure.Storage.Blobs;class Program{    static void Main(string[] args)    {        // Define the connection string for the storage account        string connectionString = \"DefaultEndpointsProtocol=https;AccountName=<your-account-name>;AccountKey=<your-account-key>;EndpointSuffix=core.windows.net\";        // Create a new BlobServiceClient using the connection string        var blobServiceClient = new BlobServiceClient(connectionString);        // Create a new container        var container = blobServiceClient.CreateBlobContainer(\"mycontainer\");        // Upload a file to the container        using (var fileStream = File.OpenRead(\"path/to/file.txt\"))",
       "Links": []
     },
     {
       "Number": 16,
-      "Text": "16Math ExpressionsThis sentence uses $ delimiters to show math inline: The Cauchy-Schwarz InequalityThis expression uses \\$ to display a dollar sign: To split $100 in half, we calculate Custom Syntax HighlightingTabsLinuxWindowsThe above tab group was created with the following syntax:            container.UploadBlob(\"file.txt\", fileStream);        }        // Download the file from the container        var downloadedBlob = container.GetBlobClient(\"file.txt\").Download();        using (var fileStream = File.OpenWrite(\"path/to/downloaded-file.txt\"))        {            downloadedBlob.Value.Content.CopyTo(fileStream);        }    }}resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {  name: 'hello'  // (...)}Content for Linux...# [Linux](#tab/linux)Content for Linux...",
+      "Text": "16Math ExpressionsThis sentence uses $ delimiters to show math inline: The Cauchy-Schwarz InequalityThis expression uses \\$ to display a dollar sign: To split $100 in half, we calculate Custom Syntax HighlightingTabsLinuxWindowsThe above tab group was created with the following syntax:        {            container.UploadBlob(\"file.txt\", fileStream);        }        // Download the file from the container        var downloadedBlob = container.GetBlobClient(\"file.txt\").Download();        using (var fileStream = File.OpenWrite(\"path/to/downloaded-file.txt\"))        {            downloadedBlob.Value.Content.CopyTo(fileStream);        }    }}resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {  name: 'hello'  // (...)}Content for Linux...# [Linux](#tab/linux)",
       "Links": [
         {
           "Goto": {
             "PageNumber": 16,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 195.99988
+              "Left": 28,
+              "Top": 181.24994
             }
           }
         }
@@ -187,14 +244,14 @@
     },
     {
       "Number": 17,
-      "Text": "17Tabs are indicated by using a specific link syntax within a Markdown header. The syntax can be describedas follows:A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The text of the link willbecome the text of the tab header, displayed to the customer. In order for the header to be recognizedas a tab, the link itself must start with #tab/ and be followed by an ID representing the content of thetab. The ID is used to sync all same-ID tabs across the page. Using the above example, when a userselects a tab with the link #tab/windows, all tabs with the link #tab/windows on the page will be selected.Dependent tabsIt's possible to make the selection in one set of tabs dependent on the selection in another set of tabs.Here's an example of that in action:.NETTypeScriptREST APINotice how changing the Linux/Windows selection above changes the content in the .NET andTypeScript tabs. This is because the tab group defines two versions for each .NET and TypeScript, wherethe Windows/Linux selection above determines which version is shown for .NET/TypeScript. Here's themarkup that shows how this is done:# [Windows](#tab/windows)Content for Windows...---# [Tab Display Name](#tab/tab-id).NET content for Linux...# [.NET](#tab/dotnet/linux).NET content for Linux...# [.NET](#tab/dotnet/windows).NET content for Windows...# [TypeScript](#tab/typescript/linux)",
+      "Text": "17Tabs are indicated by using a specific link syntax within a Markdown header. The syntax can be describedas follows:A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The text of the link willbecome the text of the tab header, displayed to the customer. In order for the header to be recognizedas a tab, the link itself must start with #tab/ and be followed by an ID representing the content of thetab. The ID is used to sync all same-ID tabs across the page. Using the above example, when a userselects a tab with the link #tab/windows, all tabs with the link #tab/windows on the page will be selected.Dependent tabsIt's possible to make the selection in one set of tabs dependent on the selection in another set of tabs.Here's an example of that in action:.NETTypeScriptREST APINotice how changing the Linux/Windows selection above changes the content in the .NET andTypeScript tabs. This is because the tab group defines two versions for each .NET and TypeScript, wherethe Windows/Linux selection above determines which version is shown for .NET/TypeScript. Here's themarkup that shows how this is done:Content for Linux...# [Windows](#tab/windows)Content for Windows...---# [Tab Display Name](#tab/tab-id).NET content for Linux...# [.NET](#tab/dotnet/linux).NET content for Linux...# [.NET](#tab/dotnet/windows).NET content for Windows...",
       "Links": [
         {
           "Goto": {
             "PageNumber": 17,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 339.25009
+              "Left": 28,
+              "Top": 324.49994
             }
           }
         }
@@ -202,7 +259,7 @@
     },
     {
       "Number": 18,
-      "Text": "18TypeScript content for Linux...# [TypeScript](#tab/typescript/windows)TypeScript content for Windows...# [REST API](#tab/rest)REST API content, independent of platform...---",
+      "Text": "18# [TypeScript](#tab/typescript/linux)TypeScript content for Linux...# [TypeScript](#tab/typescript/windows)TypeScript content for Windows...# [REST API](#tab/rest)REST API content, independent of platform...---",
       "Links": []
     }
   ],
