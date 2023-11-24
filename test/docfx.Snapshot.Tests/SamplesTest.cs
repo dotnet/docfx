@@ -179,7 +179,7 @@ public class SamplesTest
                         await page.WaitForSelectorAsync("#navpanel.show");
                     }
 
-                    await (await page.QuerySelectorAsync("#search-query")).TypeAsync("cat");
+                    await (await page.QuerySelectorAsync("#search-query")).FillAsync("cat");
                     await page.WaitForFunctionAsync("window.docfx.searchResultReady");
                 }
 
