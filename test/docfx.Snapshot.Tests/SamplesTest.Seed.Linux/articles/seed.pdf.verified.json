@@ -1,5 +1,5 @@
 ﻿{
-  "NumberOfPages": 18,
+  "NumberOfPages": 19,
   "Pages": [
     {
       "Number": 1,
@@ -8,7 +8,7 @@
     },
     {
       "Number": 2,
-      "Text": "Table of ContentsGetting Started3Engineering DocsSection 1Engineering Guidelines5CSharp Coding Standards8Markdown14Microsoft Docs",
+      "Text": "Table of ContentsGetting Started3Engineering DocsSection 1Engineering Guidelines5CSharp Coding Standards8Markdown15Microsoft Docs",
       "Links": [
         {
           "Uri": "https://docs.microsoft.com/en-us/"
@@ -42,7 +42,7 @@
         },
         {
           "Goto": {
-            "PageNumber": 14,
+            "PageNumber": 15,
             "Type": 2,
             "Coordinates": {
               "Top": 0
@@ -56,6 +56,9 @@
       "NumberOfImages": 1,
       "Text": "3Getting Started with docfxGetting StartedThis is a seed.",
       "Links": [
+        {
+          "Uri": ""
+        },
         {
           "Uri": ""
         }
@@ -99,13 +102,43 @@
           "Uri": "http://msdn.microsoft.com/en-us/library/ms229042.aspx"
         },
         {
+          "Uri": "http://msdn.microsoft.com/en-us/library/ms229042.aspx"
+        },
+        {
+          "Uri": "http://msdn.microsoft.com/en-us/library/ms229042.aspx"
+        },
+        {
+          "Uri": "http://www.jetbrains.com/resharper/"
+        },
+        {
+          "Uri": "http://www.jetbrains.com/resharper/"
+        },
+        {
           "Uri": "http://www.jetbrains.com/resharper/"
         },
         {
           "Uri": "http://stylecop.codeplex.com/"
         },
         {
+          "Uri": "http://stylecop.codeplex.com/"
+        },
+        {
+          "Uri": "http://stylecop.codeplex.com/"
+        },
+        {
           "Uri": "http://codebox/SDLFxCop"
+        },
+        {
+          "Uri": "http://codebox/SDLFxCop"
+        },
+        {
+          "Uri": "http://codebox/SDLFxCop"
+        },
+        {
+          "Uri": "http://toolbox/22561"
+        },
+        {
+          "Uri": "http://toolbox/22561"
         },
         {
           "Uri": "http://toolbox/22561"
@@ -123,6 +156,12 @@
       "Links": [
         {
           "Uri": "http://msdn.microsoft.com/en-us/library/ms229043.aspx"
+        },
+        {
+          "Uri": "http://msdn.microsoft.com/en-us/library/ms229043.aspx"
+        },
+        {
+          "Uri": "http://msdn.microsoft.com/en-us/library/ms229043.aspx"
         }
       ]
     },
@@ -133,20 +172,37 @@
     },
     {
       "Number": 12,
-      "Text": "12Unit test structureThe contents of every unit test should be split into three distinct stages, optionallyseparated by these comments:The crucial thing here is the Act stage is exactly one statement. That one statement isnothing more than a call to the one method that you are trying to test. keeping that onestatement as simple as possible is also very important. For example, this is not ideal:This style is not recomended because way too many things can go wrong in this onestatement. All the GetComplexParamN() calls can throw for a variety of reasons unrelated tothe test itself. It is thus unclear to someone running into a problem why the failure occured.The ideal pattern is to move the complex parameter building into the `Arrange section:Now the only reason the line with CallSomeMethod() can fail is if the method itself blew up.Testing exception messagesIn general testing the speciﬁc exception message in a unit test is important. This ensuresthat the exact desired exception is what is being tested rather than a diﬀerent exception ofthe same type. In order to verify the exact exception it is important to verify the message.FormatStringGetData// Arrange// Act// Assertint result = myObj.CallSomeMethod(GetComplexParam1(), GetComplexParam2(), GetComplexPar// ArrangeP1 p1 = GetComplexParam1();P2 p2 = GetComplexParam2();P3 p3 = GetComplexParam3();// Actint result = myObj.CallSomeMethod(p1, p2, p3);// AssertAssert.AreEqual(1234, result);",
+      "Text": "12Unit test structureThe contents of every unit test should be split into three distinct stages, optionallyseparated by these comments:The crucial thing here is the Act stage is exactly one statement. That one statement isnothing more than a call to the one method that you are trying to test. keeping that onestatement as simple as possible is also very important. For example, this is not ideal:This style is not recomended because way too many things can go wrong in this onestatement. All the GetComplexParamN() calls can throw for a variety of reasons unrelated tothe test itself. It is thus unclear to someone running into a problem why the failure occured.The ideal pattern is to move the complex parameter building into the `Arrange section:Now the only reason the line with CallSomeMethod() can fail is if the method itself blew up.Testing exception messagesIn general testing the speciﬁc exception message in a unit test is important. This ensuresthat the exact desired exception is what is being tested rather than a diﬀerent exception ofFormatStringGetData// Arrange// Act// Assertint result = myObj.CallSomeMethod(GetComplexParam1(), GetComplexParam2(), GetComplexParam3());// ArrangeP1 p1 = GetComplexParam1();P2 p2 = GetComplexParam2();P3 p3 = GetComplexParam3();// Actint result = myObj.CallSomeMethod(p1, p2, p3);// AssertAssert.AreEqual(1234, result);",
       "Links": []
     },
     {
       "Number": 13,
-      "Text": "13Use xUnit.net's plethora of built-in assertionsxUnit.net includes many kinds of assertions – please use the most appropriate one for yourtest. This will make the tests a lot more readable and also allow the test runner report thebest possible errors (whether it's local or the CI machine). For example, these are bad:These are good:Parallel testsBy default all unit test assemblies should run in parallel mode, which is the default. Unittests shouldn't depend on any shared state, and so should generally be runnable inparallel. If the tests fail in parallel, the ﬁrst thing to do is to ﬁgure out why; do not justdisable parallel tests!For functional tests it is reasonable to disable parallel tests.var ex = Assert.Throws<InvalidOperationException>(    () => fruitBasket.GetBananaById(1234));Assert.Equal(    \"1234\",    ex.Message);Assert.Equal(true, someBool);Assert.True(\"abc123\" == someString);Assert.True(list1.Length == list2.Length);for (int i = 0; i < list1.Length; i++) {    Assert.True(        String.Equals            list1[i],            list2[i],            StringComparison.OrdinalIgnoreCase));}Assert.True(someBool);Assert.Equal(\"abc123\", someString);// built-in collection assertions!Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);",
+      "Text": "13the same type. In order to verify the exact exception it is important to verify the message.Use xUnit.net's plethora of built-in assertionsxUnit.net includes many kinds of assertions – please use the most appropriate one for yourtest. This will make the tests a lot more readable and also allow the test runner report thebest possible errors (whether it's local or the CI machine). For example, these are bad:These are good:Parallel testsBy default all unit test assemblies should run in parallel mode, which is the default. Unittests shouldn't depend on any shared state, and so should generally be runnable inparallel. If the tests fail in parallel, the ﬁrst thing to do is to ﬁgure out why; do not justdisable parallel tests!var ex = Assert.Throws<InvalidOperationException>(    () => fruitBasket.GetBananaById(1234));Assert.Equal(    \"1234\",    ex.Message);Assert.Equal(true, someBool);Assert.True(\"abc123\" == someString);Assert.True(list1.Length == list2.Length);for (int i = 0; i < list1.Length; i++) {    Assert.True(        String.Equals            list1[i],            list2[i],            StringComparison.OrdinalIgnoreCase));}Assert.True(someBool);Assert.Equal(\"abc123\", someString);// built-in collection assertions!Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);",
       "Links": []
     },
     {
       "Number": 14,
-      "Text": "14MarkdownMarkdown\uF1C5 is a lightweight markup language with plain text formatting syntax. Docfxsupports CommonMark\uF1C5 compliant Markdown parsed through the Markdig\uF1C5 parsingengine.Link to Math ExpressionsBlock QuotesThis is a block quote.AlertsNOTEInformation the user should notice even if skimming.\uF431TIPOptional information to help a user be more successful.\uF431IMPORTANTEssential information required for user success.\uF623CAUTIONNegative potential consequences of an action.\uF623WARNINGDangerous certain consequences of an action.\uF333",
+      "Text": "14For functional tests it is reasonable to disable parallel tests.",
+      "Links": []
+    },
+    {
+      "Number": 15,
+      "Text": "15MarkdownMarkdown\uF1C5 is a lightweight markup language with plain text formatting syntax. Docfxsupports CommonMark\uF1C5 compliant Markdown parsed through the Markdig\uF1C5 parsingengine.Link to Math ExpressionsBlock QuotesThis is a block quote.AlertsNOTEInformation the user should notice even if skimming.\uF431TIPOptional information to help a user be more successful.\uF431IMPORTANTEssential information required for user success.\uF623CAUTIONNegative potential consequences of an action.\uF623WARNINGDangerous certain consequences of an action.\uF333",
       "Links": [
         {
           "Uri": "https://daringfireball.net/projects/markdown/"
+        },
+        {
+          "Uri": "https://daringfireball.net/projects/markdown/"
+        },
+        {
+          "Uri": "https://daringfireball.net/projects/markdown/"
+        },
+        {
+          "Uri": "https://commonmark.org/"
+        },
+        {
+          "Uri": "https://commonmark.org/"
         },
         {
           "Uri": "https://commonmark.org/"
@@ -155,56 +211,65 @@
           "Uri": "https://github.com/xoofx/markdig"
         },
         {
+          "Uri": "https://github.com/xoofx/markdig"
+        },
+        {
+          "Uri": "https://github.com/xoofx/markdig"
+        },
+        {
           "Goto": {
-            "PageNumber": 16,
+            "PageNumber": 17,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 225.99988
+              "Left": 28,
+              "Top": 211.24994
             }
           }
         }
       ]
     },
     {
-      "Number": 15,
+      "Number": 16,
       "NumberOfImages": 1,
-      "Text": "15ImageMermaid DiagramsFlowchartCode SnippetThe example highlights lines 2, line 5 to 7 and lines 9 to the end of the ﬁle.MY TODOThis is a TODO.TextOneTwoHardRoundDecisionResult 1Result 2",
+      "Text": "16ImageMermaid DiagramsFlowchartCode SnippetThe example highlights lines 2, line 5 to 7 and lines 9 to the end of the ﬁle.MY TODOThis is a TODO.TextOneTwoHardRoundDecisionResult 1Result 2",
       "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main"
+        },
         {
           "Uri": "https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main"
         }
       ]
     },
     {
-      "Number": 16,
-      "Text": "16Math ExpressionsThis sentence uses $ delimiters to show math inline: The Cauchy-Schwarz InequalityThis expression uses \\$ to display a dollar sign: To split $100 in half, we calculate using System;using Azure;using Azure.Storage;using Azure.Storage.Blobs;class Program{    static void Main(string[] args)    {        // Define the connection string for the storage account        string connectionString = \"DefaultEndpointsProtocol=https;AccountName=<your-acc        // Create a new BlobServiceClient using the connection string        var blobServiceClient = new BlobServiceClient(connectionString);        // Create a new container        var container = blobServiceClient.CreateBlobContainer(\"mycontainer\");        // Upload a file to the container        using (var fileStream = File.OpenRead(\"path/to/file.txt\"))        {            container.UploadBlob(\"file.txt\", fileStream);        }        // Download the file from the container        var downloadedBlob = container.GetBlobClient(\"file.txt\").Download();        using (var fileStream = File.OpenWrite(\"path/to/downloaded-file.txt\"))        {            downloadedBlob.Value.Content.CopyTo(fileStream);        }    }}",
+      "Number": 17,
+      "Text": "17Math ExpressionsThis sentence uses $ delimiters to show math inline: The Cauchy-Schwarz InequalityThis expression uses \\$ to display a dollar sign: To split $100 in half, we calculate using System;using Azure;using Azure.Storage;using Azure.Storage.Blobs;class Program{    static void Main(string[] args)    {        // Define the connection string for the storage account        string connectionString = \"DefaultEndpointsProtocol=https;AccountName=<your-account-name>;AccountKey=<your-account-key>;EndpointSuffix=core.windows.net\";        // Create a new BlobServiceClient using the connection string        var blobServiceClient = new BlobServiceClient(connectionString);        // Create a new container        var container = blobServiceClient.CreateBlobContainer(\"mycontainer\");        // Upload a file to the container        using (var fileStream = File.OpenRead(\"path/to/file.txt\"))        {            container.UploadBlob(\"file.txt\", fileStream);        }        // Download the file from the container        var downloadedBlob = container.GetBlobClient(\"file.txt\").Download();        using (var fileStream = File.OpenWrite(\"path/to/downloaded-file.txt\"))        {            downloadedBlob.Value.Content.CopyTo(fileStream);        }    }}",
       "Links": []
     },
     {
-      "Number": 17,
-      "Text": "17Custom Syntax HighlightingTabsLinuxWindowsThe above tab group was created with the following syntax:Tabs are indicated by using a speciﬁc link syntax within a Markdown header. The syntax canbe described as follows:A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The textof the link will become the text of the tab header, displayed to the customer. In order forthe header to be recognized as a tab, the link itself must start with #tab/ and be followedby an ID representing the content of the tab. The ID is used to sync all same-ID tabs acrossthe page. Using the above example, when a user selects a tab with the link #tab/windows, alltabs with the link #tab/windows on the page will be selected.Dependent tabsresource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {  name: 'hello'  // (...)}Content for Linux...# [Linux](#tab/linux)Content for Linux...# [Windows](#tab/windows)Content for Windows...---# [Tab Display Name](#tab/tab-id)",
+      "Number": 18,
+      "Text": "18Custom Syntax HighlightingTabsLinuxWindowsThe above tab group was created with the following syntax:Tabs are indicated by using a speciﬁc link syntax within a Markdown header. The syntax canbe described as follows:A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The textof the link will become the text of the tab header, displayed to the customer. In order forthe header to be recognized as a tab, the link itself must start with #tab/ and be followedby an ID representing the content of the tab. The ID is used to sync all same-ID tabs acrossthe page. Using the above example, when a user selects a tab with the link #tab/windows, alltabs with the link #tab/windows on the page will be selected.Dependent tabsresource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {  name: 'hello'  // (...)}Content for Linux...# [Linux](#tab/linux)Content for Linux...# [Windows](#tab/windows)Content for Windows...---# [Tab Display Name](#tab/tab-id)",
       "Links": [
         {
           "Goto": {
-            "PageNumber": 17,
+            "PageNumber": 18,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 574.00006
+              "Left": 28,
+              "Top": 574.99994
             }
           }
         }
       ]
     },
     {
-      "Number": 18,
-      "Text": "18It's possible to make the selection in one set of tabs dependent on the selection in anotherset of tabs. Here's an example of that in action:.NETTypeScriptREST APINotice how changing the Linux/Windows selection above changes the content in the .NETand TypeScript tabs. This is because the tab group deﬁnes two versions for each .NET andTypeScript, where the Windows/Linux selection above determines which version is shownfor .NET/TypeScript. Here's the markup that shows how this is done:.NET content for Linux...# [.NET](#tab/dotnet/linux).NET content for Linux...# [.NET](#tab/dotnet/windows).NET content for Windows...# [TypeScript](#tab/typescript/linux)TypeScript content for Linux...# [TypeScript](#tab/typescript/windows)TypeScript content for Windows...# [REST API](#tab/rest)REST API content, independent of platform...---",
+      "Number": 19,
+      "Text": "19It's possible to make the selection in one set of tabs dependent on the selection in anotherset of tabs. Here's an example of that in action:.NETTypeScriptREST APINotice how changing the Linux/Windows selection above changes the content in the .NETand TypeScript tabs. This is because the tab group deﬁnes two versions for each .NET andTypeScript, where the Windows/Linux selection above determines which version is shownfor .NET/TypeScript. Here's the markup that shows how this is done:.NET content for Linux...# [.NET](#tab/dotnet/linux).NET content for Linux...# [.NET](#tab/dotnet/windows).NET content for Windows...# [TypeScript](#tab/typescript/linux)TypeScript content for Linux...# [TypeScript](#tab/typescript/windows)TypeScript content for Windows...# [REST API](#tab/rest)REST API content, independent of platform...---",
       "Links": [
         {
           "Goto": {
-            "PageNumber": 18,
+            "PageNumber": 19,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 683.50006
+              "Left": 28,
+              "Top": 684.49994
             }
           }
         }
@@ -272,7 +337,7 @@
       "Title": "Markdown",
       "Children": [],
       "Destination": {
-        "PageNumber": 14,
+        "PageNumber": 15,
         "Type": 2,
         "Coordinates": {
           "Top": 0

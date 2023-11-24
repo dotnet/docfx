@@ -513,7 +513,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
@@ -522,13 +540,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
@@ -576,7 +624,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -585,7 +651,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
@@ -594,7 +678,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -825,7 +927,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -834,13 +954,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -888,7 +1038,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -897,13 +1065,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -936,7 +1134,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -945,13 +1161,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -982,12 +1228,18 @@
       "Links": [
         {
           "Uri": "https://www.github.com/"
+        },
+        {
+          "Uri": "https://www.github.com/"
+        },
+        {
+          "Uri": "https://www.github.com/"
         }
       ]
     },
     {
       "Number": 15,
-      "Text": "15Issue4017()ExamplesRemarksIssue4392()Remarks@\"\\\\?\\\" @\"\\\\?\\\"Issue7484()var range = new Range<int> { Min = 0, Max = 10 };public void Issue4017()public void HookMessageDeleted(BaseSocketClient client){    client.MessageDeleted += HandleMessageDelete;}public Task HandleMessageDelete(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel{    // check if the message exists in cache; if not, we cannot report what was removed    if (!cachedMessage.HasValue) return;    var message = cachedMessage.Value;    Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the cha        + Environment.NewLine        + message.Content);    return Task.CompletedTask;}void Update(){    myClass.Execute();}public void Issue4392()",
+      "Text": "15Issue4017()ExamplesRemarksIssue4392()Remarks@\"\\\\?\\\" @\"\\\\?\\\"Issue7484()var range = new Range<int> { Min = 0, Max = 10 };public void Issue4017()public void HookMessageDeleted(BaseSocketClient client){    client.MessageDeleted += HandleMessageDelete;}public Task HandleMessageDelete(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel channel){    // check if the message exists in cache; if not, we cannot report what was removed    if (!cachedMessage.HasValue) return;    var message = cachedMessage.Value;    Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the channel {channel.Name} ({channel.Id}):\"        + Environment.NewLine        + message.Content);    return Task.CompletedTask;}void Update(){    myClass.Execute();}public void Issue4392()",
       "Links": []
     },
     {
@@ -1029,6 +1281,12 @@
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.double"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.double"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.double"
         }
       ]
     },
@@ -1040,7 +1298,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1049,13 +1325,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -1065,6 +1371,24 @@
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
@@ -1097,7 +1421,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -1106,7 +1448,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.char"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -1115,10 +1475,22 @@
     },
     {
       "Number": 20,
-      "Text": "20Class Class1.Issue8696AttributeNamespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Attribute\uF1C5 ← Class1.Issue8696AttributeInherited MembersAttribute.Equals(object?)\uF1C5, Attribute.GetCustomAttribute(Assembly, Type)\uF1C5,Attribute.GetCustomAttribute(Assembly, Type, bool)\uF1C5, Attribute.GetCustomAttribute(MemberInfo, Type)\uF1C5, Attribute.GetCustomAttribute(MemberInfo, Type, bool)\uF1C5, Attribute.GetCustomAttribute(Module,Type)\uF1C5, Attribute.GetCustomAttribute(Module, Type, bool)\uF1C5,Attribute.GetCustomAttribute(ParameterInfo, Type)\uF1C5, Attribute.GetCustomAttribute(ParameterInfo, Type,bool)\uF1C5, Attribute.GetCustomAttributes(Assembly)\uF1C5, Attribute.GetCustomAttributes(Assembly, bool)\uF1C5,Attribute.GetCustomAttributes(Assembly, Type)\uF1C5, Attribute.GetCustomAttributes(Assembly, Type, bool)\uF1C5, Attribute.GetCustomAttributes(MemberInfo)\uF1C5, Attribute.GetCustomAttributes(MemberInfo, bool)\uF1C5,Attribute.GetCustomAttributes(MemberInfo, Type)\uF1C5, Attribute.GetCustomAttributes(MemberInfo, Type,bool)\uF1C5, Attribute.GetCustomAttributes(Module)\uF1C5, Attribute.GetCustomAttributes(Module, bool)\uF1C5,Attribute.GetCustomAttributes(Module, Type)\uF1C5, Attribute.GetCustomAttributes(Module, Type, bool)\uF1C5,Attribute.GetCustomAttributes(ParameterInfo)\uF1C5, Attribute.GetCustomAttributes(ParameterInfo, bool)\uF1C5,Attribute.GetCustomAttributes(ParameterInfo, Type)\uF1C5, Attribute.GetCustomAttributes(ParameterInfo,Type, bool)\uF1C5, Attribute.GetHashCode()\uF1C5, Attribute.IsDefaultAttribute()\uF1C5, Attribute.IsDefined(Assembly,Type)\uF1C5, Attribute.IsDefined(Assembly, Type, bool)\uF1C5, Attribute.IsDefined(MemberInfo, Type)\uF1C5,Attribute.IsDefined(MemberInfo, Type, bool)\uF1C5, Attribute.IsDefined(Module, Type)\uF1C5,Attribute.IsDefined(Module, Type, bool)\uF1C5, Attribute.IsDefined(ParameterInfo, Type)\uF1C5,Attribute.IsDefined(ParameterInfo, Type, bool)\uF1C5, Attribute.Match(object?)\uF1C5, Attribute.TypeId\uF1C5,object.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5ConstructorsIssue8696Attribute(string?, int, int, string[]?, bool, Type?)Parameterspublic class Class1.Issue8696Attribute : Attribute[Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, null, false, null)public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, str",
+      "Text": "20Class Class1.Issue8696AttributeNamespace: BuildFromProjectAssembly: BuildFromProject.dllInheritanceobject\uF1C5 ← Attribute\uF1C5 ← Class1.Issue8696AttributeInherited MembersAttribute.Equals(object?)\uF1C5, Attribute.GetCustomAttribute(Assembly, Type)\uF1C5,Attribute.GetCustomAttribute(Assembly, Type, bool)\uF1C5, Attribute.GetCustomAttribute(MemberInfo, Type)\uF1C5, Attribute.GetCustomAttribute(MemberInfo, Type, bool)\uF1C5, Attribute.GetCustomAttribute(Module,Type)\uF1C5, Attribute.GetCustomAttribute(Module, Type, bool)\uF1C5,Attribute.GetCustomAttribute(ParameterInfo, Type)\uF1C5, Attribute.GetCustomAttribute(ParameterInfo, Type,bool)\uF1C5, Attribute.GetCustomAttributes(Assembly)\uF1C5, Attribute.GetCustomAttributes(Assembly, bool)\uF1C5,Attribute.GetCustomAttributes(Assembly, Type)\uF1C5, Attribute.GetCustomAttributes(Assembly, Type, bool)\uF1C5, Attribute.GetCustomAttributes(MemberInfo)\uF1C5, Attribute.GetCustomAttributes(MemberInfo, bool)\uF1C5,Attribute.GetCustomAttributes(MemberInfo, Type)\uF1C5, Attribute.GetCustomAttributes(MemberInfo, Type,bool)\uF1C5, Attribute.GetCustomAttributes(Module)\uF1C5, Attribute.GetCustomAttributes(Module, bool)\uF1C5,Attribute.GetCustomAttributes(Module, Type)\uF1C5, Attribute.GetCustomAttributes(Module, Type, bool)\uF1C5,Attribute.GetCustomAttributes(ParameterInfo)\uF1C5, Attribute.GetCustomAttributes(ParameterInfo, bool)\uF1C5,Attribute.GetCustomAttributes(ParameterInfo, Type)\uF1C5, Attribute.GetCustomAttributes(ParameterInfo,Type, bool)\uF1C5, Attribute.GetHashCode()\uF1C5, Attribute.IsDefaultAttribute()\uF1C5, Attribute.IsDefined(Assembly,Type)\uF1C5, Attribute.IsDefined(Assembly, Type, bool)\uF1C5, Attribute.IsDefined(MemberInfo, Type)\uF1C5,Attribute.IsDefined(MemberInfo, Type, bool)\uF1C5, Attribute.IsDefined(Module, Type)\uF1C5,Attribute.IsDefined(Module, Type, bool)\uF1C5, Attribute.IsDefined(ParameterInfo, Type)\uF1C5,Attribute.IsDefined(ParameterInfo, Type, bool)\uF1C5, Attribute.Match(object?)\uF1C5, Attribute.TypeId\uF1C5,object.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5ConstructorsIssue8696Attribute(string?, int, int, string[]?, bool, Type?)public class Class1.Issue8696Attribute : Attribute[Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, null, false, null)]public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, string[]? validGameModes = null, bool hasMultipleSelections = false, Type? enumType = null)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute"
@@ -1127,7 +1499,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.equals"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.equals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.equals"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type-system-boolean)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type-system-boolean)"
@@ -1136,7 +1526,31 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type)"
@@ -1145,7 +1559,28 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type-system-boolean)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type-system-boolean)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type-system-boolean)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type-system-boolean)"
@@ -1154,7 +1589,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type)"
@@ -1163,7 +1616,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type-system-boolean)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type-system-boolean)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-boolean)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-boolean)"
@@ -1172,7 +1643,28 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module)"
@@ -1181,7 +1673,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-boolean)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-boolean)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type-system-boolean)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type-system-boolean)"
@@ -1190,7 +1700,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type)"
@@ -1199,7 +1727,28 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type-system-boolean)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefaultattribute"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefaultattribute"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefaultattribute"
@@ -1208,7 +1757,28 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type)"
@@ -1217,7 +1787,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type-system-boolean)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type-system-boolean)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type-system-boolean)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type-system-boolean)"
@@ -1226,7 +1814,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type-system-boolean)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.match"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.match"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.match"
@@ -1235,7 +1841,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.typeid"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.typeid"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.typeid"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1244,13 +1868,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -1277,8 +1931,14 @@
     },
     {
       "Number": 21,
-      "Text": "21description string\uF1C5?boundsMin int\uF1C5boundsMax int\uF1C5validGameModes string\uF1C5[]?hasMultipleSelections bool\uF1C5enumType Type\uF1C5?",
+      "Text": "21Parametersdescription string\uF1C5?boundsMin int\uF1C5boundsMax int\uF1C5validGameModes string\uF1C5[]?hasMultipleSelections bool\uF1C5enumType Type\uF1C5?",
       "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
@@ -1287,12 +1947,42 @@
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.type"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.type"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.type"
@@ -1307,7 +1997,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1316,13 +2024,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -1364,7 +2102,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1373,13 +2129,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -1412,7 +2198,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.idisposable"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.idisposable"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.idisposable"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
@@ -1421,7 +2225,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
@@ -1430,7 +2252,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -1472,7 +2312,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1481,13 +2339,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -1520,7 +2408,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1529,7 +2435,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
@@ -1538,7 +2462,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -1571,7 +2513,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1580,7 +2540,28 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
@@ -1589,13 +2570,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
@@ -1631,8 +2642,8 @@
           "Goto": {
             "PageNumber": 26,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 412.74997
+              "Left": 28,
+              "Top": 413.75
             }
           }
         }
@@ -1646,7 +2657,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1655,13 +2684,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -1694,7 +2753,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1703,13 +2780,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -1737,6 +2844,15 @@
         },
         {
           "Uri": ""
+        },
+        {
+          "Uri": ""
+        },
+        {
+          "Uri": ""
+        },
+        {
+          "Uri": ""
         }
       ]
     },
@@ -1746,6 +2862,24 @@
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
@@ -1763,7 +2897,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1772,13 +2924,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -1793,10 +2975,46 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.action-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.action-1"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.action-1"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1832,13 +3050,49 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.single"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.action-1"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.action-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.action-1"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1853,7 +3107,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
@@ -1862,10 +3134,34 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -1958,7 +3254,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -1967,7 +3281,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.finalize"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.finalize"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.finalize"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
@@ -1976,10 +3308,34 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
@@ -2030,7 +3386,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -2039,7 +3413,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.finalize"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.finalize"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.finalize"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
@@ -2048,7 +3440,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -2084,8 +3494,8 @@
           "Goto": {
             "PageNumber": 38,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 382.74997
+              "Left": 28,
+              "Top": 383.75
             }
           }
         },
@@ -2117,7 +3527,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
@@ -2154,6 +3582,9 @@
               "Top": 0
             }
           }
+        },
+        {
+          "Uri": ""
         },
         {
           "Uri": ""
@@ -2342,7 +3773,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -2351,13 +3800,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -2390,7 +3869,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -2399,13 +3896,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -2438,7 +3965,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -2447,13 +3992,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -2504,7 +4079,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
@@ -2513,10 +4106,40 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
@@ -2537,8 +4160,8 @@
           "Goto": {
             "PageNumber": 46,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 468.99997
+              "Left": 28,
+              "Top": 470
             }
           }
         },
@@ -2546,8 +4169,8 @@
           "Goto": {
             "PageNumber": 46,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 335.49997
+              "Left": 28,
+              "Top": 336.5
             }
           }
         }
@@ -2561,7 +4184,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
@@ -2621,7 +4262,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -2630,13 +4289,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -2649,6 +4338,9 @@
               "Top": 0
             }
           }
+        },
+        {
+          "Uri": ""
         },
         {
           "Uri": ""
@@ -2684,8 +4376,8 @@
           "Goto": {
             "PageNumber": 61,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 378.99997
+              "Left": 28,
+              "Top": 380
             }
           }
         },
@@ -2693,8 +4385,8 @@
           "Goto": {
             "PageNumber": 61,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 125.5
+              "Left": 28,
+              "Top": 126.499939
             }
           }
         }
@@ -2713,7 +4405,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -2723,6 +4433,24 @@
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -2737,7 +4465,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
@@ -2746,10 +4492,34 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -2764,13 +4534,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
@@ -2785,10 +4585,40 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -2811,6 +4641,18 @@
       "Number": 58,
       "Text": "58Result with int type.explicit operator Tom(Cat<T, K>)Expilicit operator of this class.It means this cat can evolve to change to Tom. Tom and Jerry.Parameterssrc Cat<T, K>Instance of this class.ReturnsTomAdvanced class type of cat.operator -(Cat<T, K>, int)Similar with operaotr +, refer to that topic.Parameterslsr Cat<T, K>rsr int\uF1C5Returnsint\uF1C5public static explicit operator Tom(Cat<T, K> src)public static int operator -(Cat<T, K> lsr, int rsr)",
       "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
@@ -2854,7 +4696,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
@@ -2863,7 +4723,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
@@ -2872,7 +4750,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
@@ -2881,7 +4777,28 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
@@ -2890,7 +4807,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
@@ -2899,7 +4834,28 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -2908,13 +4864,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -2947,7 +4933,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -2956,13 +4960,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -2995,7 +5029,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -3004,13 +5056,43 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
@@ -3070,6 +5152,12 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
           "Goto": {
             "PageNumber": 68,
             "Type": 2,
@@ -3082,10 +5170,22 @@
     },
     {
       "Number": 63,
-      "Text": "63Class TomNamespace: CatLibraryAssembly: CatLibrary.dllTom class is only inherit from Object. Not any member inside itself.Inheritanceobject\uF1C5 ← TomDerivedTomFromBaseClassInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsTomMethod(Complex<TomFromBaseClass, TomFromBaseClass>,Tuple<string, Tom>)This is a Tom Method with complex type as returnParametersa Complex<TomFromBaseClass, TomFromBaseClass>A complex inputb Tuple\uF1C5<string\uF1C5, Tom>Another complex inputReturnsComplex<string\uF1C5, TomFromBaseClass>Complex TomFromBaseClasspublic class Tompublic Complex<string, TomFromBaseClass> TomMethod(Complex<TomFromBaseClass, TomFromBaseClass> ",
+      "Text": "63Class TomNamespace: CatLibraryAssembly: CatLibrary.dllTom class is only inherit from Object. Not any member inside itself.Inheritanceobject\uF1C5 ← TomDerivedTomFromBaseClassInherited Membersobject.Equals(object?)\uF1C5, object.Equals(object?, object?)\uF1C5, object.GetHashCode()\uF1C5, object.GetType()\uF1C5,object.MemberwiseClone()\uF1C5, object.ReferenceEquals(object?, object?)\uF1C5, object.ToString()\uF1C5MethodsTomMethod(Complex<TomFromBaseClass, TomFromBaseClass>,Tuple<string, Tom>)This is a Tom Method with complex type as returnParametersa Complex<TomFromBaseClass, TomFromBaseClass>A complex inputb Tuple\uF1C5<string\uF1C5, Tom>Another complex inputReturnsComplex<string\uF1C5, TomFromBaseClass>public class Tompublic Complex<string, TomFromBaseClass> TomMethod(Complex<TomFromBaseClass, TomFromBaseClass> a, Tuple<string, Tom> b)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
@@ -3094,7 +5194,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
@@ -3103,13 +5221,49 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.tuple-2"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.tuple-2"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.tuple-2"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -3197,21 +5351,42 @@
               "Top": 0
             }
           }
-        },
-        {
-          "Uri": ""
         }
       ]
     },
     {
       "Number": 64,
-      "Text": "64ExceptionsNotImplementedException\uF1C5This is not implementedArgumentException\uF1C5This is the exception to be thrown when implementedCatException<T>This is the exception in current documentation",
+      "Text": "64Complex TomFromBaseClassExceptionsNotImplementedException\uF1C5This is not implementedArgumentException\uF1C5This is the exception to be thrown when implementedCatException<T>This is the exception in current documentation",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.notimplementedexception"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.notimplementedexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.notimplementedexception"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+        },
+        {
+          "Uri": ""
+        },
+        {
+          "Uri": ""
+        },
+        {
+          "Uri": ""
+        },
+        {
+          "Uri": ""
         },
         {
           "Goto": {
@@ -3232,7 +5407,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -3241,7 +5434,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
@@ -3250,7 +5461,25 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -3286,8 +5515,8 @@
           "Goto": {
             "PageNumber": 63,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 382.74997
+              "Left": 28,
+              "Top": 383.75
             }
           }
         }
@@ -3297,6 +5526,18 @@
       "Number": 66,
       "Text": "66Interface IAnimalNamespace: CatLibraryAssembly: CatLibrary.dllThis is basic interface of all animal.PropertiesNameName of Animal.Property Valuestring\uF1C5this[int]Return specific number animal's name.Property Valuestring\uF1C5MethodsEat()Animal's eat method.Eat<Tool>(Tool)Overload method of eat. This define the animal eat by which tool.public interface IAnimalstring Name { get; }string this[int index] { get; }void Eat()",
       "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
@@ -3320,6 +5561,12 @@
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         }
       ]
     },
@@ -3327,6 +5574,12 @@
       "Number": 68,
       "Text": "68Interface ICatNamespace: CatLibraryAssembly: CatLibrary.dllCat's interfaceImplementsIAnimalExtension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType), ICatExtension.Sleep(ICat, long)eateat event of cat. Every cat must implement this event.Event TypeEventHandler\uF1C5public interface ICat : IAnimalevent EventHandler eat",
       "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
+        },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
         },
@@ -3352,8 +5605,8 @@
           "Goto": {
             "PageNumber": 61,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 378.99997
+              "Left": 28,
+              "Top": 380
             }
           }
         },
@@ -3361,8 +5614,8 @@
           "Goto": {
             "PageNumber": 61,
             "Coordinates": {
-              "Left": 29.000002,
-              "Top": 125.5
+              "Left": 28,
+              "Top": 126.499939
             }
           }
         }
@@ -3376,10 +5629,34 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
         },
         {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -3397,7 +5674,7 @@
     },
     {
       "Number": 70,
-      "Text": "70Delegate MRefDelegate<K, T, L>Namespace: CatLibraryAssembly: CatLibrary.dllGeneric delegate with many constrains.Parametersk KType K.t TType T.l LType L.Type ParametersKGeneric K.TGeneric T.LGeneric L.public delegate void MRefDelegate<K, T, L>(K k, T t, L l) where K : class, IComparable where T ",
+      "Text": "70Delegate MRefDelegate<K, T, L>Namespace: CatLibraryAssembly: CatLibrary.dllGeneric delegate with many constrains.Parametersk KType K.t TType T.l LType L.Type ParametersKGeneric K.TGeneric T.LGeneric L.public delegate void MRefDelegate<K, T, L>(K k, T t, L l) where K : class, IComparable where T : struct where L : Tom, IEnumerable<long>",
       "Links": [
         {
           "Goto": {
@@ -3416,6 +5693,24 @@
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -3483,6 +5778,12 @@
       "Number": 75,
       "Text": "75Enum ColorTypeNamespace: MRef.Demo.EnumerationAssembly: CatLibrary.dllEnumeration ColorTypeFieldsRed = 0this color is redBlue = 1blue like riverYellow = 2yellow comes from desertRemarksRed/Blue/Yellow can become all color you want.See Alsoobject\uF1C5public enum ColorType",
       "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
