@@ -6,6 +6,7 @@
   ],
   "rules": {
     "selector-class-pattern": null,
+    "media-feature-range-notation": null,
     "font-family-no-missing-generic-family-keyword": [ true, {
       "ignoreFontFamilies": [
         "bootstrap-icons"
