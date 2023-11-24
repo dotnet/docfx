@@ -4,6 +4,7 @@
 using System.Text;
 using Docfx.Plugins;
 using Spectre.Console;
+using Spectre.Console.Rendering;
 
 namespace Docfx.Common;
 
@@ -53,7 +54,7 @@ public sealed class ConsoleLogListener : ILoggerListener
         message.Append(item.Message);
 
         AnsiConsole.Foreground = consoleColor;
-        AnsiConsole.WriteLine($"{message}");
+        AnsiConsole.Console.Write(new NonBreakingText($"{message}\n"));
     }
 
     public void Dispose()
@@ -62,5 +63,13 @@ public sealed class ConsoleLogListener : ILoggerListener
 
     public void Flush()
     {
+    }
+
+    class NonBreakingText(string text) : IRenderable
+    {
+        private readonly Paragraph _paragraph = new(text);
+
+        public Measurement Measure(RenderOptions options, int maxWidth) => ((IRenderable)_paragraph).Measure(options, int.MaxValue);
+        public IEnumerable<Segment> Render(RenderOptions options, int maxWidth) => ((IRenderable)_paragraph).Render(options, int.MaxValue);
     }
 }
