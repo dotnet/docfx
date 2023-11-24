@@ -8,7 +8,7 @@
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.2.0.7535" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
     <PackageVersion Include="Jint" Version="3.0.0-beta-2056" />
-    <PackageVersion Include="JsonSchema.Net" Version="5.3.1" />
+    <PackageVersion Include="JsonSchema.Net" Version="5.4.0" />
     <PackageVersion Include="Markdig" Version="0.33.0" />
     <!-- "17.3.2" is the latest compatible version for .NET 6 -->
     <PackageVersion Include="Microsoft.Build" Version="[17.3.2]" Condition="'$(TargetFramework)' == 'net6.0'" />
@@ -28,7 +28,7 @@
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="OneOf" Version="3.0.263" />
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.263" />
-    <PackageVersion Include="PdfPig" Version="0.1.9-alpha-20231113-1bc0e" />
+    <PackageVersion Include="PdfPig" Version="0.1.9-alpha-20231119-4537e" />
     <PackageVersion Include="Spectre.Console" Version="0.47.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.47.0" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
@@ -41,7 +41,7 @@
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.4.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23531-01" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.3.0" />
-    <PackageVersion Include="Verify.Xunit" Version="22.4.1" />
+    <PackageVersion Include="Verify.Xunit" Version="22.5.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
     <PackageVersion Include="xunit" Version="2.6.2" />
   </ItemGroup>
