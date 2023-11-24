@@ -10,7 +10,7 @@ using Docfx.Common;
 
 namespace Docfx.Dotnet;
 
-internal static class XmlCommentTransformer
+static class XmlCommentTransformer
 {
     private static readonly XslCompiledTransform _transform;
 
@@ -25,13 +25,12 @@ internal static class XmlCommentTransformer
         _transform.Load(reader, xsltSettings, new XmlUrlResolver());
     }
 
-    public static XDocument Transform(string xml)
+    public static string Transform(string xml)
     {
-        using var ms = new MemoryStream();
-        using var writer = new XHtmlWriter(new StreamWriter(ms));
+        using var ms = new StringWriter();
+        using var writer = new XHtmlWriter(ms);
         XDocument doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
         _transform.Transform(doc.CreateNavigator(), writer);
-        ms.Seek(0, SeekOrigin.Begin);
-        return XDocument.Load(ms, LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo);
+        return ms.ToString();
     }
 }

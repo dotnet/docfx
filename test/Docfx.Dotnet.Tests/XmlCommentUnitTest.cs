@@ -23,6 +23,25 @@ public class XmlCommentUnitTest
     }
 
     [Fact]
+    public static void ParaNewLine()
+    {
+        Assert.Equal(
+            """
+            a
+            <p>b</p>
+            <p>c</p>
+            """,
+            XmlComment.Parse("""
+                <summary>
+                a
+                <para>b</para>
+                <para>c</para>
+                </summary>
+                """).Summary,
+            ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
     public static void Issue8122()
     {
         var comment = XmlComment.Parse("<seealso href=\"#\">Foo's</seealso>");
@@ -147,6 +166,35 @@ public class XmlCommentUnitTest
             <pre><code class="lang-xaml">&lt;Grid&gt;
               &lt;TextBlock Text="Hello World" /&gt;
             &lt;/Grid&gt;</code></pre>
+            """,
+            commentModel.Examples.Single(),
+            ignoreLineEndingDifferences: true);
+    }
+
+    [Theory]
+    [InlineData("<example><code source='Example.cs' region='SDK_CustomProcessor' /></example>")]
+    [InlineData("""
+        <example>
+          <code source='Example.cs' region='SDK_CustomProcessor' />
+        </example>
+        """)]
+    public void Issue9462(string input)
+    {
+        var commentModel = XmlComment.Parse(input, new()
+        {
+            ResolveCode = _ =>
+                """
+                #region SDK_CustomProcessor
+
+                using System;
+                using System.Collections.Generic;
+                #endregion
+                """
+        });
+        Assert.Equal(
+            """
+            <pre><code class="lang-cs">using System;
+            using System.Collections.Generic;</code></pre>
             """,
             commentModel.Examples.Single(),
             ignoreLineEndingDifferences: true);
