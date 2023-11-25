@@ -3,18 +3,18 @@
 
 using System.Collections.Immutable;
 using System.Composition;
-
+using System.Net;
 using Docfx.Build.Common;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 
 namespace Docfx.Build.ConceptualDocuments;
 
 [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
 class BuildConceptualDocument : BaseDocumentBuildStep
 {
-    private const string ConceptualKey = Constants.PropertyName.Conceptual;
     private const string DocumentTypeKey = "documentType";
 
     public override string Name => nameof(BuildConceptualDocument);
@@ -28,16 +28,17 @@ class BuildConceptualDocument : BaseDocumentBuildStep
             return;
         }
         var content = (Dictionary<string, object>)model.Content;
-        var markdown = (string)content[ConceptualKey];
+        var markdown = (string)content[Constants.PropertyName.Conceptual];
         var result = host.Markup(markdown, model.OriginalFileAndType, false);
 
-        var htmlInfo = HtmlDocumentUtility.SeparateHtml(result.Html);
-        content["rawTitle"] = htmlInfo.RawTitle;
-        if (!string.IsNullOrEmpty(htmlInfo.RawTitle))
+        var (h1, h1Raw, conceptual) = ExtractH1(result.Html);
+        content["rawTitle"] = h1Raw;
+        if (!string.IsNullOrEmpty(h1Raw))
         {
-            model.ManifestProperties.rawTitle = htmlInfo.RawTitle;
+            model.ManifestProperties.rawTitle = h1Raw;
         }
-        content[ConceptualKey] = htmlInfo.Content;
+        content[Constants.PropertyName.Conceptual] = conceptual;
+        content["wordCount"] = WordCounter.CountWord(conceptual);
 
         if (result.YamlHeader?.Count > 0)
         {
@@ -47,13 +48,14 @@ class BuildConceptualDocument : BaseDocumentBuildStep
             }
         }
 
-        (content[Constants.PropertyName.Title], model.Properties.IsUserDefinedTitle) = GetTitle(result.YamlHeader, htmlInfo);
+        (content[Constants.PropertyName.Title], model.Properties.IsUserDefinedTitle) = GetTitle(result.YamlHeader, h1);
 
         model.LinkToFiles = result.LinkToFiles.ToImmutableHashSet();
         model.LinkToUids = result.LinkToUids;
         model.FileLinkSources = result.FileLinkSources;
         model.UidLinkSources = result.UidLinkSources;
         model.Properties.XrefSpec = null;
+
         if (model.Uids.Length > 0)
         {
             var title = content[Constants.PropertyName.Title] as string;
@@ -108,7 +110,7 @@ class BuildConceptualDocument : BaseDocumentBuildStep
             }
         }
 
-        (string title, bool isUserDefined) GetTitle(ImmutableDictionary<string, object> yamlHeader, SeparatedHtmlInfo info)
+        (string title, bool isUserDefined) GetTitle(ImmutableDictionary<string, object> yamlHeader, string h1)
         {
             // title from YAML header
             if (yamlHeader != null
@@ -124,9 +126,9 @@ class BuildConceptualDocument : BaseDocumentBuildStep
             }
 
             // title from H1
-            if (!string.IsNullOrEmpty(info.Title))
+            if (!string.IsNullOrEmpty(h1))
             {
-                return (info.Title, false);
+                return (h1, false);
             }
 
             // title from globalMetadata or fileMetadata
@@ -150,6 +152,36 @@ class BuildConceptualDocument : BaseDocumentBuildStep
                 strValue = null;
                 return false;
             }
+        }
+    }
+
+    static (string h1, string h1Raw, string body) ExtractH1(string contentHtml)
+    {
+        ArgumentNullException.ThrowIfNull(contentHtml);
+
+        var document = new HtmlDocument();
+        document.LoadHtml(contentHtml);
+
+        // InnerText in HtmlAgilityPack is not decoded, should be a bug
+        var h1Node = document.DocumentNode.SelectSingleNode("//h1");
+        var h1 = WebUtility.HtmlDecode(h1Node?.InnerText);
+        var h1Raw = "";
+        if (h1Node != null && GetFirstNoneCommentChild(document.DocumentNode) == h1Node)
+        {
+            h1Raw = h1Node.OuterHtml;
+            h1Node.Remove();
+        }
+
+        return (h1, h1Raw, document.DocumentNode.OuterHtml);
+
+        static HtmlNode GetFirstNoneCommentChild(HtmlNode node)
+        {
+            var result = node.FirstChild;
+            while (result != null && (result.NodeType == HtmlNodeType.Comment || string.IsNullOrWhiteSpace(result.OuterHtml)))
+            {
+                result = result.NextSibling;
+            }
+            return result;
         }
     }
 }
