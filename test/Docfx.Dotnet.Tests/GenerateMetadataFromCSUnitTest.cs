@@ -3691,4 +3691,22 @@ namespace Test1
         var foo = output.Items[0].Items[0];
         Assert.Equal("public class Foo : Bar", foo.Syntax.Content[SyntaxLanguage.CSharp]);
     }
+
+    [Fact]
+    public void TestIncludeExplicitInterfaceImplementations()
+    {
+        var code =
+            """
+            namespace Test
+            {
+                public class Foo : IFoo { void IFoo.Bar(); }
+                public interface IFoo { void Bar(); }
+            }
+            """;
+
+        var output = Verify(code, new() { IncludeExplicitInterfaceImplementations = true });
+        var foo = output.Items[0].Items[0];
+        Assert.Equal("public class Foo : IFoo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal("void IFoo.Bar()", foo.Items[0].Syntax.Content[SyntaxLanguage.CSharp]);
+    }
 }
