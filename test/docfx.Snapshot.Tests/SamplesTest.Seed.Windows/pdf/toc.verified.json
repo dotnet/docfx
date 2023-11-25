@@ -6,7 +6,7 @@
       "includedFrom": "~/articles/toc.yml",
       "items": [
         {
-          "name": "Getting Started",
+          "name": "Getting Started with docfx",
           "href": "../articles/docfx_getting_started.html",
           "topicHref": "../articles/docfx_getting_started.html"
         },
@@ -22,7 +22,7 @@
               "topicHref": "../articles/engineering_guidelines.html"
             },
             {
-              "name": "CSharp Coding Standards",
+              "name": "C# Coding Standards",
               "href": "../articles/csharp_coding_standards.html",
               "topicHref": "../articles/csharp_coding_standards.html"
             }

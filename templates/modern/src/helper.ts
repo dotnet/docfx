@@ -33,7 +33,10 @@ export function loc(id: string, args?: { [key: string]: string }): string {
 /**
  * Add <wbr> into long word.
  */
-export function breakWord(text: string): string[] {
+export function breakWord(text?: string): string[] {
+  if (!text) {
+    return []
+  }
   const regex = /([a-z0-9])([A-Z]+[a-z])|([a-zA-Z0-9][.,/<>_])/g
   const result = []
   let start = 0
@@ -55,7 +58,7 @@ export function breakWord(text: string): string[] {
 /**
  * Add <wbr> into long word.
  */
-export function breakWordLit(text: string): TemplateResult {
+export function breakWordLit(text?: string): TemplateResult {
   const result = []
   breakWord(text).forEach(word => {
     if (result.length > 0) {

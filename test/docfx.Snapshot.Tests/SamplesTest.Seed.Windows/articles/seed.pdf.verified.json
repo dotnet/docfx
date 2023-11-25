@@ -8,7 +8,7 @@
     },
     {
       "Number": 2,
-      "Text": "Table of ContentsGetting Started3Engineering DocsSection 1Engineering Guidelines5CSharp Coding Standards8Markdown14Microsoft Docs",
+      "Text": "Table of ContentsGetting Started with docfx3Engineering DocsSection 1Engineering Guidelines5C# Coding Standards8Markdown14Microsoft Docs",
       "Links": [
         {
           "Uri": "https://docs.microsoft.com/en-us/"
@@ -265,7 +265,7 @@
   ],
   "Bookmarks": [
     {
-      "Title": "Getting Started",
+      "Title": "Getting Started with docfx",
       "Children": [],
       "Destination": {
         "PageNumber": 3,
@@ -301,7 +301,7 @@
           }
         },
         {
-          "Title": "CSharp Coding Standards",
+          "Title": "C# Coding Standards",
           "Children": [],
           "Destination": {
             "PageNumber": 8,

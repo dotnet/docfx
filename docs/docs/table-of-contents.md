@@ -10,19 +10,15 @@ To add a TOC, create a file named `toc.yml`. Here's the structure for a simple Y
 items:
 - name: Tutorial
   items:
-  - name: Introduction
-    href: tutorial.md
-  - name: Step 1
-    href: step-1.md
-  - name: Step 2
-    href: step-2.md
-  - name: Step 3
-    href: step-3.md
+  - href: tutorial.md
+  - href: step-1.md
+  - href: step-2.md
+  - href: step-3.md
 ```
 
 The YAML document is a tree of TOC nodes, each of which has these properties: 
 
-- `name`: The display name for the TOC node.
+- `name`: An optional display name for the TOC node. When not specified, uses the `title` metadata or the first Heading 1 element from the referenced article as the display name.
 - `href`: The path the TOC node leads to. Optional because a node can exist just to parent other nodes.
 - `items`: If a node has children, they're listed in the items array.
 - `uid`: The uid of the article. Can be used instead of `href`.
