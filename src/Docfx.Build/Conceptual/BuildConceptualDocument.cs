@@ -38,7 +38,6 @@ class BuildConceptualDocument : BaseDocumentBuildStep
             model.ManifestProperties.rawTitle = h1Raw;
         }
         content[Constants.PropertyName.Conceptual] = conceptual;
-        content["wordCount"] = WordCounter.CountWord(conceptual);
 
         if (result.YamlHeader?.Count > 0)
         {
@@ -49,6 +48,7 @@ class BuildConceptualDocument : BaseDocumentBuildStep
         }
 
         content[Constants.PropertyName.Title] = GetTitle(result.YamlHeader, h1);
+        content["wordCount"] = WordCounter.CountWord(conceptual);
 
         model.LinkToFiles = result.LinkToFiles.ToImmutableHashSet();
         model.LinkToUids = result.LinkToUids;
