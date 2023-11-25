@@ -379,6 +379,14 @@ Specifies how enum members are sorted:
 - `alphabetic` (default): Sort enum members in alphabetic order.
 - `declaringOrder`: Sort enum members in the order as they are declared in the source code.
 
+### `includePrivateMembers`
+
+Specifies whether private or internal APIs are included in the generated docs. The default value is `false`.
+
+### `includeExplicitInterfaceImplementations`
+
+Specifies whether explicit interface implementations are included in the generated docs. The default value is `false`.
+
 ## `pdf`
 
 Configuration options that are applied for `docfx pdf` command:

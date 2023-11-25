@@ -92,15 +92,19 @@ internal class SymbolFilter
         if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
             return false;
 
+        if (_config.IncludeExplicitInterfaceImplementations &&
+            SymbolHelper.TryGetExplicitInterfaceImplementations(symbol, out var eiis) &&
+            IsEiiAndIncludesContainingSymbols(eiis))
+        {
+            return true;
+        }
+
         if (_config.IncludePrivateMembers)
         {
-            return symbol.Kind switch
-            {
-                SymbolKind.Method => IncludesContainingSymbols(((IMethodSymbol)symbol).ExplicitInterfaceImplementations),
-                SymbolKind.Property => IncludesContainingSymbols(((IPropertySymbol)symbol).ExplicitInterfaceImplementations),
-                SymbolKind.Event => IncludesContainingSymbols(((IEventSymbol)symbol).ExplicitInterfaceImplementations),
-                _ => true,
-            };
+            if (SymbolHelper.TryGetExplicitInterfaceImplementations(symbol, out eiis))
+                return IncludesContainingSymbols(eiis);
+
+            return true;
         }
 
         if (GetDisplayAccessibility(symbol) is null)
@@ -111,6 +115,11 @@ internal class SymbolFilter
         bool IncludesContainingSymbols(IEnumerable<ISymbol> symbols)
         {
             return !symbols.Any() || symbols.All(s => IncludeApi(s.ContainingSymbol));
+        }
+
+        bool IsEiiAndIncludesContainingSymbols(IEnumerable<ISymbol> symbols)
+        {
+            return symbols.Any() && symbols.All(s => IncludeApi(s.ContainingSymbol));
         }
     }
 }

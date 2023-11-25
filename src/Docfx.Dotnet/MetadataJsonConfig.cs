@@ -142,6 +142,14 @@ internal class MetadataJsonItemConfig
     public bool IncludePrivateMembers { get; set; }
 
     /// <summary>
+    /// Include explicit interface implementations.
+    /// The default is false.
+    /// </summary>
+    [JsonProperty("includeExplicitInterfaceImplementations")]
+    [JsonPropertyName("includeExplicitInterfaceImplementations")]
+    public bool IncludeExplicitInterfaceImplementations { get; set; }
+
+    /// <summary>
     /// Specify the name to use for the global namespace.
     /// </summary>
     [JsonProperty("globalNamespaceId")]

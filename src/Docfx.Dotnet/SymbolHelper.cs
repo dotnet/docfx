@@ -1,5 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Shared.Extensions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
 #nullable enable
 
@@ -172,5 +172,18 @@ internal static class SymbolHelper
             }
             return true;
         }
+    }
+
+    public static bool TryGetExplicitInterfaceImplementations(ISymbol symbol, [MaybeNullWhen(false)] out IEnumerable<ISymbol> eiis)
+    {
+        eiis = symbol.Kind switch
+        {
+            SymbolKind.Method => ((IMethodSymbol)symbol).ExplicitInterfaceImplementations,
+            SymbolKind.Property => ((IPropertySymbol)symbol).ExplicitInterfaceImplementations,
+            SymbolKind.Event => ((IEventSymbol)symbol).ExplicitInterfaceImplementations,
+            _ => null,
+        };
+
+        return eiis != null;
     }
 }

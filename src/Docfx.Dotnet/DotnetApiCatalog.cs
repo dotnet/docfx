@@ -161,6 +161,7 @@ public static partial class DotnetApiCatalog
             ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
             FilterConfigFile = configModel?.Filter is null ? null : Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, configModel.Filter)),
             IncludePrivateMembers = configModel?.IncludePrivateMembers ?? false,
+            IncludeExplicitInterfaceImplementations = configModel?.IncludeExplicitInterfaceImplementations ?? false,
             GlobalNamespaceId = configModel?.GlobalNamespaceId,
             MSBuildProperties = configModel?.Properties,
             OutputFormat = configModel?.OutputFormat ?? default,
