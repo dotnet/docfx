@@ -48,7 +48,7 @@ class BuildConceptualDocument : BaseDocumentBuildStep
             }
         }
 
-        (content[Constants.PropertyName.Title], model.Properties.IsUserDefinedTitle) = GetTitle(result.YamlHeader, h1);
+        content[Constants.PropertyName.Title] = GetTitle(result.YamlHeader, h1);
 
         model.LinkToFiles = result.LinkToFiles.ToImmutableHashSet();
         model.LinkToUids = result.LinkToUids;
@@ -110,31 +110,31 @@ class BuildConceptualDocument : BaseDocumentBuildStep
             }
         }
 
-        (string title, bool isUserDefined) GetTitle(ImmutableDictionary<string, object> yamlHeader, string h1)
+        string GetTitle(ImmutableDictionary<string, object> yamlHeader, string h1)
         {
             // title from YAML header
             if (yamlHeader != null
                 && TryGetStringValue(yamlHeader, Constants.PropertyName.Title, out var yamlHeaderTitle))
             {
-                return (yamlHeaderTitle, true);
+                return yamlHeaderTitle;
             }
 
             // title from metadata/titleOverwriteH1
             if (TryGetStringValue(content, Constants.PropertyName.TitleOverwriteH1, out var titleOverwriteH1))
             {
-                return (titleOverwriteH1, true);
+                return titleOverwriteH1;
             }
 
             // title from H1
             if (!string.IsNullOrEmpty(h1))
             {
-                return (h1, false);
+                return h1;
             }
 
             // title from globalMetadata or fileMetadata
             if (TryGetStringValue(content, Constants.PropertyName.Title, out var title))
             {
-                return (title, true);
+                return title;
             }
 
             return default;
