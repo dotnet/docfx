@@ -55,8 +55,7 @@ public sealed class ConsoleLogListener : ILoggerListener
 
         message.Append(item.Message);
 
-        AnsiConsole.Foreground = consoleColor;
-        AnsiConsole.Console.Write(new NonBreakingText($"{message}\n"));
+        AnsiConsole.Console.Write(new NonBreakingText($"{message}\n", new(consoleColor)));
     }
 
     public void Dispose()
@@ -67,9 +66,9 @@ public sealed class ConsoleLogListener : ILoggerListener
     {
     }
 
-    class NonBreakingText(string text) : IRenderable
+    class NonBreakingText(string text, Style style) : IRenderable
     {
-        private readonly Paragraph _paragraph = new(text);
+        private readonly Paragraph _paragraph = new(text, style);
 
         public Measurement Measure(RenderOptions options, int maxWidth) => ((IRenderable)_paragraph).Measure(options, int.MaxValue);
         public IEnumerable<Segment> Render(RenderOptions options, int maxWidth) => ((IRenderable)_paragraph).Render(options, int.MaxValue);
