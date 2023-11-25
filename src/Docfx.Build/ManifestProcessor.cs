@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 
 using Docfx.Common;
+using Docfx.DataContracts.Common;
 using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
@@ -33,6 +34,8 @@ internal class ManifestProcessor
 
     public void Process()
     {
+        UpdateTocName();
+
         UpdateContext();
 
         // Afterwards, m.Item.Model.Content is always IDictionary
@@ -52,8 +55,6 @@ internal class ManifestProcessor
             _context.ManifestItems.Add(item);
         }
     }
-
-    #region Private
 
     private void UpdateContext()
     {
@@ -181,5 +182,49 @@ internal class ManifestProcessor
         return _templateProcessor.Process(_manifestWithContext.Select(s => s.Item).ToList(), _context.ApplyTemplateSettings, _globalMetadata);
     }
 
-    #endregion
+    private void UpdateTocName()
+    {
+        var titles = (
+            from item in _manifestWithContext
+            let title = GetTitle(item)
+            where !string.IsNullOrEmpty(title)
+            group title
+            by item.FileModel.Key).ToDictionary(g => g.Key, g => g.First());
+
+        foreach (var item in _manifestWithContext)
+        {
+            if (item.FileModel.Content is not TocItemViewModel toc)
+                continue;
+
+            UpdateTocNameCore(toc.Items);
+        }
+
+        void UpdateTocNameCore(List<TocItemViewModel> items)
+        {
+            if (items is null)
+                return;
+
+            foreach (var node in items)
+            {
+                if (string.IsNullOrEmpty(node.Name))
+                {
+                    if (node.Href is not null && titles.TryGetValue(UriUtility.GetPath(node.Href), out var title))
+                        node.Name = title;
+                    else
+                        Logger.LogWarning(
+                            $"TOC item ({node}) with empty name found. Missing a name?",
+                            code: WarningCodes.Build.EmptyTocItemName);
+                }
+
+                UpdateTocNameCore(node.Items);
+            }
+        }
+
+        string GetTitle(ManifestItemWithContext item)
+        {
+            return item.FileModel.Content is Dictionary<string, object> dict &&
+                dict.TryGetValue("title", out var title) &&
+                title is string result ? result : null;
+        }
+    }
 }

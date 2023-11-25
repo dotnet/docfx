@@ -83,14 +83,6 @@ class TocResolver
         // validate href
         ValidateHref(item);
 
-        // validate if name is missing
-        if (!isRoot && string.IsNullOrEmpty(item.Name) && string.IsNullOrEmpty(item.TopicUid))
-        {
-            Logger.LogWarning(
-                $"TOC item ({item}) with empty name found. Missing a name?",
-                code: WarningCodes.Build.EmptyTocItemName);
-        }
-
         // TocHref supports 2 forms: absolute path and local toc file.
         // When TocHref is set, using TocHref as Href in output, and using Href as Homepage in output
         var tocHrefType = Utility.GetHrefType(item.TocHref);

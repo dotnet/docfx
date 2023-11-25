@@ -6,7 +6,7 @@ import { classMap } from 'lit-html/directives/class-map.js'
 import { breakWordLit, meta, isExternalHref, loc, isSameURL } from './helper'
 
 export type TocNode = {
-  name: string
+  name?: string
   href?: string
   expanded?: boolean
   items?: TocNode[]
