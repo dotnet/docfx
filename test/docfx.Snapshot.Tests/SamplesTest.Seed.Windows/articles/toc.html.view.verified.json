@@ -2,7 +2,7 @@
   "order": 100.0,
   "items": [
     {
-      "name": "Getting Started",
+      "name": "Getting Started with docfx",
       "href": "docfx_getting_started.html",
       "topicHref": "docfx_getting_started.html",
       "tocHref": null,
@@ -31,7 +31,7 @@
           "leaf": true
         },
         {
-          "name": "CSharp Coding Standards",
+          "name": "C# Coding Standards",
           "href": "csharp_coding_standards.html",
           "topicHref": "csharp_coding_standards.html",
           "tocHref": null,

@@ -3,7 +3,7 @@
   "Pages": [
     {
       "Number": 1,
-      "Text": "Table of ContentsArticlesGetting Started3Engineering DocsSection 1Engineering Guidelines5CSharp Coding Standards8Markdown14Microsoft DocsAPI DocumentationBuildFromAssembly19Class120BuildFromCSharpSourceCode21CSharp22BuildFromProject23Issue854024A25A26B27B28Class129Class1.IIssue894834Class1.Issue866535Class1.Issue8696Attribute38Class1.Issue894840Class1.Issue926041Class1.Test<T>42IInheritdoc43Inheritdoc44Inheritdoc.Issue636646Inheritdoc.Issue6366.Class1<T>47Inheritdoc.Issue6366.Class249Inheritdoc.Issue703550Inheritdoc.Issue748451Inheritdoc.Issue810153Inheritdoc.Issue812955BuildFromVBSourceCode56BaseClass157Class158",
+      "Text": "Table of ContentsArticlesGetting Started with docfx3Engineering DocsSection 1Engineering Guidelines5C# Coding Standards8Markdown14Microsoft DocsAPI DocumentationBuildFromAssembly19Class120BuildFromCSharpSourceCode21CSharp22BuildFromProject23Issue854024A25A26B27B28Class129Class1.IIssue894834Class1.Issue866535Class1.Issue8696Attribute38Class1.Issue894840Class1.Issue926041Class1.Test<T>42IInheritdoc43Inheritdoc44Inheritdoc.Issue636646Inheritdoc.Issue6366.Class1<T>47Inheritdoc.Issue6366.Class249Inheritdoc.Issue703550Inheritdoc.Issue748451Inheritdoc.Issue810153Inheritdoc.Issue812955BuildFromVBSourceCode56BaseClass157Class158",
       "Links": [
         {
           "Uri": "https://docs.microsoft.com/en-us/"
@@ -8538,7 +8538,7 @@
       "Title": "Articles",
       "Children": [
         {
-          "Title": "Getting Started",
+          "Title": "Getting Started with docfx",
           "Children": [],
           "Destination": {
             "PageNumber": 3,
@@ -8574,7 +8574,7 @@
               }
             },
             {
-              "Title": "CSharp Coding Standards",
+              "Title": "C# Coding Standards",
               "Children": [],
               "Destination": {
                 "PageNumber": 8,
