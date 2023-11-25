@@ -31,8 +31,8 @@
     "wordCount"
   ],
   "rawTitle": "<h1 id=\"this-is-the-homepage\" sourcefile=\"index.md\" sourcestartlinenumber=\"1\">This is the <strong sourcefile=\"index.md\" sourcestartlinenumber=\"1\">HOMEPAGE</strong>.</h1>",
-  "wordCount": 33.0,
   "title": "This is the HOMEPAGE.",
+  "wordCount": 33.0,
   "_key": "index.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.json",
