@@ -1,34 +1,9 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Immutable;
-using System.Composition;
-using Docfx.Build.Common;
-using Docfx.DataContracts.Common;
-using Docfx.Plugins;
 using HtmlAgilityPack;
 
 namespace Docfx.Build.ConceptualDocuments;
-
-[Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-class CountWord : BaseDocumentBuildStep
-{
-    public override string Name => nameof(CountWord);
-
-    public override int BuildOrder => 1;
-
-    public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
-    {
-        foreach (var model in models)
-        {
-            if (model.Type == DocumentType.Article)
-            {
-                var content = (Dictionary<string, object>)model.Content;
-                content["wordCount"] = WordCounter.CountWord((string)content[Constants.PropertyName.Conceptual]);
-            }
-        }
-    }
-}
 
 internal static class WordCounter
 {
