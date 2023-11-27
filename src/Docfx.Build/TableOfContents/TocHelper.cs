@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
@@ -11,9 +10,15 @@ namespace Docfx.Build.TableOfContents;
 
 static class TocHelper
 {
+    class AutoTocViewModel
+    {
+        public string items { get; set; }
+    }
+
     private static readonly YamlDeserializerWithFallback _deserializer =
         YamlDeserializerWithFallback.Create<List<TocItemViewModel>>()
-        .WithFallback<TocItemViewModel>();
+        .WithFallback<TocItemViewModel>()
+        .WithFallback<AutoTocViewModel>();
 
     public static List<FileModel> ResolveToc(ImmutableList<FileModel> models)
     {
@@ -76,6 +81,7 @@ static class TocHelper
                 {
                     List<TocItemViewModel> vm => new() { Items = vm },
                     TocItemViewModel root => root,
+                    AutoTocViewModel root when root.items == "auto" => new() { Items = CreateAutoItems(Path.GetDirectoryName(file)) },
                     _ => throw new NotSupportedException($"{file} is not a valid TOC file."),
                 };
             }
@@ -88,5 +94,10 @@ static class TocHelper
         }
 
         throw new NotSupportedException($"{file} is not a valid TOC file, supported TOC files should be either \"{Constants.TableOfContents.MarkdownTocFileName}\" or \"{Constants.TableOfContents.YamlTocFileName}\".");
+
+        List<TocItemViewModel> CreateAutoItems(string directory)
+        {
+            return new();
+        }
     }
 }

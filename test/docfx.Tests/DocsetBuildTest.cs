@@ -294,4 +294,36 @@ public class DocsetBuildTest : TestBase
             }
             """, outputs["toc.json"]());
     }
+
+    [Fact]
+    public static async Task Build_Toc_Items_Auto()
+    {
+        var outputs = await Build(new()
+        {
+            ["toc.yml"] = "items: auto",
+            ["a.md"] = "# A",
+            ["b/1/1.md"] = "# B11",
+            ["b/1/2.md"] = "# B12",
+            ["b/1/toc.yml"] =
+                """
+                - href: 2.md
+                - href: 1.md
+                """,
+            ["b/2.md"] = "# B2",
+            ["b/3.md"] = "# B3",
+            ["c.md"] = "# C",
+        });
+
+        AssertJsonEquivalent(
+            """
+            {
+              "items": [
+                { "name": "H1", "href": "from-h1.html" },
+                { "name": "Title", "href": "from-title.html" },
+                { "name": "folder ref/sub folder" },
+                { "name": "nested toc?" },
+              ]
+            }
+            """, outputs["toc.json"]());
+    }
 }
