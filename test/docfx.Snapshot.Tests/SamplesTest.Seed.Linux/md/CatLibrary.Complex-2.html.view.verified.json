@@ -30,13 +30,13 @@
   "wordCount": 28.0,
   "_key": "obj/md/CatLibrary.Complex-2.md",
   "_navKey": "~/toc.yml",
-  "_navPath": "toc.json",
-  "_navRel": "../toc.json",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "md/CatLibrary.Complex-2.html",
   "_rel": "../",
   "_tocKey": "~/obj/md/toc.yml",
-  "_tocPath": "md/toc.json",
-  "_tocRel": "toc.json",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
   "_disableToc": false,
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.Complex-2.md/#L1"
 }

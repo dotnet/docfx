@@ -30,13 +30,13 @@
   "wordCount": 581.0,
   "_key": "articles/markdown.md",
   "_navKey": "~/toc.yml",
-  "_navPath": "toc.json",
-  "_navRel": "../toc.json",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "articles/markdown.html",
   "_rel": "../",
   "_tocKey": "~/articles/toc.yml",
-  "_tocPath": "articles/toc.json",
-  "_tocRel": "toc.json",
+  "_tocPath": "articles/toc.html",
+  "_tocRel": "toc.html",
   "_disableToc": false,
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/articles/markdown.md/#L1"
 }
