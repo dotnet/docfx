@@ -10,11 +10,11 @@
   "_disableNextArticle": true,
   "_key": "obj/apipage/CatLibrary.CatException-1.yml",
   "_navKey": "~/toc.yml",
-  "_navPath": "toc.json",
-  "_navRel": "../toc.json",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "apipage/CatLibrary.CatException-1.html",
   "_rel": "../",
   "_tocKey": "~/obj/apipage/toc.yml",
-  "_tocPath": "apipage/toc.json",
-  "_tocRel": "toc.json"
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
 }

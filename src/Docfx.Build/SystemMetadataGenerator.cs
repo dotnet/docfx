@@ -61,7 +61,7 @@ internal sealed class SystemMetadataGenerator
         {
             // when item is toc, its toc is always itself
             attrs.TocPath = item.FileWithoutExtension + item.Extension;
-            attrs.TocRel = System.IO.Path.GetFileName(item.FileWithoutExtension) + item.Extension;
+            attrs.TocRel = Path.GetFileName(item.FileWithoutExtension) + item.Extension;
             attrs.TocKey = item.Key;
             return attrs;
         }
