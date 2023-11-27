@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Web;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
@@ -197,6 +198,11 @@ class TocResolver
                         item.Href = item.TopicHref;
                     }
 
+                    if (string.IsNullOrEmpty(item.Name) && !string.IsNullOrEmpty(item.TocHref))
+                    {
+                        item.Name = GetTocItemName(item.TocHref);
+                    }
+
                     if (item.Items != null)
                     {
                         for (int i = 0; i < item.Items.Count; i++)
@@ -209,6 +215,11 @@ class TocResolver
             case HrefType.MarkdownTocFile:
             case HrefType.YamlTocFile:
                 {
+                    if (string.IsNullOrEmpty(item.Name) && !string.IsNullOrEmpty(item.Href))
+                    {
+                        item.Name = GetTocItemName(item.Href);
+                    }
+
                     item.IncludedFrom = item.Href;
 
                     var href = (RelativePath)item.Href;
@@ -220,6 +231,7 @@ class TocResolver
                     // For referenced toc, content from referenced toc is expanded as the items of current toc item,
                     // Href is reset to the homepage of current toc item
                     item.Href = item.TopicHref;
+
                     var referencedTocClone = referencedToc?.Items?.Clone();
 
                     // For [reference](a/toc.md), and toc.md contains not-exist.md, the included not-exist.md should be resolved to a/not-exist.md
@@ -389,5 +401,10 @@ class TocResolver
             Logger.LogWarning($"Illegal href: {item.Href}.`#` or `?` aren't allowed when referencing toc file.");
             item.Href = UriUtility.GetPath(item.Href);
         }
+    }
+
+    private static string GetTocItemName(string href)
+    {
+        return HttpUtility.UrlDecode(href.TrimEnd("toc.yml").TrimEnd('/', '\\').Replace('-', ' ').Replace('_', ' '));
     }
 }

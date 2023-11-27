@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json;
 using Xunit;
 
 namespace Docfx.Tests.Common;
@@ -50,8 +51,6 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
         }
         return folder;
     }
-
-    #region IO related
 
     protected static string CreateFile(string fileName, string[] lines, string baseFolder)
     {
@@ -111,7 +110,35 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
         return subDirectory;
     }
 
-    #endregion
+    public static void AssertJsonEquivalent(string expected, string actual)
+    {
+        AssertJsonEquivalent(
+            JsonDocument.Parse(expected, new() { AllowTrailingCommas = true }).RootElement,
+            JsonDocument.Parse(actual, new() { AllowTrailingCommas = true }).RootElement);
+    }
+
+    public static void AssertJsonEquivalent(JsonElement expected, JsonElement actual)
+    {
+        Assert.Equal(expected.ValueKind, actual.ValueKind);
+
+        switch (expected.ValueKind)
+        {
+            case JsonValueKind.Object:
+                foreach (var property in expected.EnumerateObject())
+                    AssertJsonEquivalent(property.Value, actual.GetProperty(property.Name));
+                break;
+
+            case JsonValueKind.Array:
+                for (var i = 0; i < expected.GetArrayLength(); i++)
+                    AssertJsonEquivalent(expected[i], actual[i]);
+                break;
+
+            default:
+                Assert.Equal(expected.GetRawText(), actual.GetRawText());
+                break;
+        }
+    }
+
 
     public virtual void Dispose()
     {

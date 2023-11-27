@@ -25,7 +25,7 @@ class BuildTocDocument : BaseDocumentBuildStep
     /// </summary>
     public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
     {
-        return TocHelper.ResolveToc(models, host);
+        return TocHelper.ResolveToc(models);
     }
 
     public override void Build(FileModel model, IHostService host)
