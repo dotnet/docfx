@@ -103,7 +103,7 @@ internal static class YamlViewModelExtensions
         return shrinkedItem;
     }
 
-    public static TocViewModel ToTocViewModel(this MetadataItem item, string parentNamespace = "")
+    public static List<TocItemViewModel> ToTocViewModel(this MetadataItem item, string parentNamespace = "")
     {
         if (item == null)
         {
@@ -122,7 +122,7 @@ internal static class YamlViewModelExtensions
                 {
                     result.Add(child.ToTocItemViewModel(parentNamespace));
                 }
-                return new TocViewModel(result);
+                return result;
             default:
                 return null;
         }

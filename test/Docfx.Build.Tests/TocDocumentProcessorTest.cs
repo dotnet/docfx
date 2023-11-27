@@ -61,7 +61,7 @@ public class TocDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new TocViewModel
+            Items = new List<TocItemViewModel>
             {
                 new TocItemViewModel
                 {
@@ -95,19 +95,19 @@ public class TocDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new TocViewModel
+            Items = new List<TocItemViewModel>
             {
                 new TocItemViewModel
                 {
                     Name = "Topic1 Language",
                     Href = "/href1",
                     TopicHref = "/href1",
-                    Items = new TocViewModel
+                    Items = new List<TocItemViewModel>
                     {
                         new TocItemViewModel
                         {
                             Name = "Topic1.1 Language C#",
-                            Items = new TocViewModel
+                            Items = new List<TocItemViewModel>
                             {
                                 new TocItemViewModel
                                 {
@@ -159,21 +159,21 @@ public class TocDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new TocViewModel
+            Items = new List<TocItemViewModel>
             {
                 new TocItemViewModel
                 {
                     Name = "Topic1",
                     Href = "/href1",
                     TopicHref = "/href1",
-                    Items = new TocViewModel
+                    Items = new List<TocItemViewModel>
                     {
                         new TocItemViewModel
                         {
                             Name = "Topic1.1",
                             Href = file1,
                             TopicHref = file1,
-                            Items = new TocViewModel
+                            Items = new List<TocItemViewModel>
                             {
                                 new TocItemViewModel
                                 {
@@ -239,14 +239,14 @@ public class TocDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new TocViewModel
+            Items = new List<TocItemViewModel>
             {
                 new TocItemViewModel
                 {
                     Name = "Topic1",
                     Href = file1,
                     TopicHref = file1,
-                    Items = new TocViewModel
+                    Items = new List<TocItemViewModel>
                     {
                         new TocItemViewModel
                         {
@@ -309,14 +309,14 @@ items:
 
         var expectedModel = new TocItemViewModel
         {
-            Items = new TocViewModel
+            Items = new List<TocItemViewModel>
             {
                 new TocItemViewModel
                 {
                     Name = "Topic1",
                     Href = file1,
                     TopicHref = file1,
-                    Items = new TocViewModel
+                    Items = new List<TocItemViewModel>
                     {
                         new TocItemViewModel
                         {
@@ -378,14 +378,14 @@ items:
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new TocViewModel
+            Items = new List<TocItemViewModel>
             {
                 new TocItemViewModel
                 {
                     Name = "Topic1",
                     Href = file1,
                     TopicHref = file1,
-                    Items = new TocViewModel
+                    Items = new List<TocItemViewModel>
                     {
                         new TocItemViewModel
                         {
@@ -393,7 +393,7 @@ items:
                             IncludedFrom = "~/sub1/toc.md",
                             Href = null, // For referenced toc, the content from the referenced toc is expanded as the items of current toc, and href is cleared
                             TopicHref = null,
-                            Items = new TocViewModel
+                            Items = new List<TocItemViewModel>
                             {
                                 new TocItemViewModel
                                 {
@@ -405,7 +405,7 @@ items:
                                 {
                                     Name = "ReferencedToc",
                                     IncludedFrom = "~/sub1/sub2/toc.yml",
-                                    Items = new TocViewModel
+                                    Items = new List<TocItemViewModel>
                                     {
                                         new TocItemViewModel
                                         {
@@ -426,7 +426,7 @@ items:
                                 {
                                     Name = "ReferencedToc2",
                                     IncludedFrom = "~/sub1/sub3/toc.md",
-                                    Items = new TocViewModel
+                                    Items = new List<TocItemViewModel>
                                     {
                                         new TocItemViewModel
                                         {
@@ -451,7 +451,7 @@ items:
                             TopicHref = file1,
                             IncludedFrom = "~/sub1/toc.md",
                             Homepage = file1,
-                            Items = new TocViewModel
+                            Items = new List<TocItemViewModel>
                             {
                                 new TocItemViewModel
                                 {
@@ -463,7 +463,7 @@ items:
                                 {
                                     Name = "ReferencedToc",
                                     IncludedFrom = "~/sub1/sub2/toc.yml",
-                                    Items = new TocViewModel
+                                    Items = new List<TocItemViewModel>
                                     {
                                         new TocItemViewModel
                                         {
@@ -483,7 +483,7 @@ items:
                                 {
                                     Name = "ReferencedToc2",
                                     IncludedFrom = "~/sub1/sub3/toc.md",
-                                    Items = new TocViewModel
+                                    Items = new List<TocItemViewModel>
                                     {
                                         new TocItemViewModel
                                         {
@@ -508,7 +508,7 @@ items:
                     Name = "Topic2",
                     IncludedFrom = "~/sub1/sub2/toc.yml",
                     Href = null,
-                    Items = new TocViewModel
+                    Items = new List<TocItemViewModel>
                     {
                         new TocItemViewModel
                         {
@@ -637,7 +637,7 @@ items:
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new TocViewModel
+            Items = new List<TocItemViewModel>
             {
                 new TocItemViewModel
                 {
@@ -646,7 +646,7 @@ items:
                     TocHref = "/Topic1/",
                     Homepage = "/Topic1/index.html",
                     TopicHref = "/Topic1/index.html",
-                    Items = new TocViewModel
+                    Items = new List<TocItemViewModel>
                     {
                         new TocItemViewModel
                         {

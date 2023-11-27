@@ -259,7 +259,7 @@ root
         }
         var root = new TocItemViewModel
         {
-            Items = new TocViewModel()
+            Items = new()
         };
         var stack = new Stack<Tuple<LineInfo, TocItemViewModel>>();
         stack.Push(Tuple.Create(new LineInfo
@@ -280,7 +280,7 @@ root
             var parent = stack.Peek();
             if (parent.Item2.Items == null)
             {
-                parent.Item2.Items = new TocViewModel();
+                parent.Item2.Items = new();
             }
             parent.Item2.Items.Add(item);
 

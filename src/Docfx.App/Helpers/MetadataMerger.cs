@@ -85,7 +85,7 @@ internal class MetadataMerger
              select f).ToList();
         var vm = MergeTocViewModel(
             from f in tocFiles
-            select YamlUtility.Deserialize<TocViewModel>(f.File));
+            select YamlUtility.Deserialize<List<TocItemViewModel>>(f.File));
         CopyMetadataToToc(vm);
         YamlUtility.Serialize(
             ((RelativePath)tocFiles[0].DestinationDir + (((RelativePath)tocFiles[0].File) - (RelativePath)tocFiles[0].SourceDir)).ToString(),
@@ -140,7 +140,7 @@ internal class MetadataMerger
         return tableItem;
     }
 
-    private void CopyMetadataToToc(TocViewModel vm)
+    private void CopyMetadataToToc(List<TocItemViewModel> vm)
     {
         foreach (var item in vm)
         {
@@ -186,9 +186,9 @@ internal class MetadataMerger
         return first;
     }
 
-    private static TocViewModel MergeTocViewModel(IEnumerable<TocViewModel> items)
+    private static List<TocItemViewModel> MergeTocViewModel(IEnumerable<List<TocItemViewModel>> items)
     {
-        return new TocViewModel(
+        return new(
             (from item in items
              where item.Count > 0
              select item).ToList()

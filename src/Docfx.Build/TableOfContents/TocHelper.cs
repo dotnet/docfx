@@ -12,7 +12,7 @@ namespace Docfx.Build.TableOfContents;
 static class TocHelper
 {
     private static readonly YamlDeserializerWithFallback _deserializer =
-        YamlDeserializerWithFallback.Create<TocViewModel>()
+        YamlDeserializerWithFallback.Create<List<TocItemViewModel>>()
         .WithFallback<TocItemViewModel>();
 
     public static List<FileModel> ResolveToc(ImmutableList<FileModel> models)
@@ -74,7 +74,7 @@ static class TocHelper
             {
                 return _deserializer.Deserialize(file) switch
                 {
-                    TocViewModel vm => new() { Items = vm },
+                    List<TocItemViewModel> vm => new() { Items = vm },
                     TocItemViewModel root => root,
                     _ => throw new NotSupportedException($"{file} is not a valid TOC file."),
                 };

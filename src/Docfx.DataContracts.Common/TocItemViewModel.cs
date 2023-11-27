@@ -131,7 +131,7 @@ public class TocItemViewModel
     [YamlMember(Alias = "items")]
     [JsonProperty("items")]
     [JsonPropertyName("items")]
-    public TocViewModel Items { get; set; }
+    public List<TocItemViewModel> Items { get; set; }
 
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
@@ -157,10 +157,7 @@ public class TocItemViewModel
     public TocItemViewModel Clone()
     {
         var cloned = (TocItemViewModel)MemberwiseClone();
-        if (cloned.Items != null)
-        {
-            cloned.Items = Items.Clone();
-        }
+        cloned.Items = Items?.ConvertAll(s => s.Clone());
         return cloned;
     }
 

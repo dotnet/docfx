@@ -124,7 +124,7 @@ class TocResolver
             case HrefType.RelativeFile:
                 if (item.Items != null && item.Items.Count > 0)
                 {
-                    item.Items = new TocViewModel(from i in item.Items
+                    item.Items = new List<TocItemViewModel>(from i in item.Items
                                                   select ResolveItem(new TocItemInfo(file, i), stack, false) into r
                                                   where r != null
                                                   select r.Content);
@@ -232,7 +232,7 @@ class TocResolver
                     // Href is reset to the homepage of current toc item
                     item.Href = item.TopicHref;
 
-                    var referencedTocClone = referencedToc?.Items?.Clone();
+                    var referencedTocClone = referencedToc?.Items?.ConvertAll(s => s.Clone());
 
                     // For [reference](a/toc.md), and toc.md contains not-exist.md, the included not-exist.md should be resolved to a/not-exist.md
                     item.Items = UpdateOriginalHref(referencedTocClone, href);
@@ -296,7 +296,7 @@ class TocResolver
         }
     }
 
-    private static TocViewModel UpdateOriginalHref(TocViewModel toc, RelativePath relativePath)
+    private static List<TocItemViewModel> UpdateOriginalHref(List<TocItemViewModel> toc, RelativePath relativePath)
     {
         if (toc == null || relativePath.SubdirectoryCount == 0)
         {

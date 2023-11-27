@@ -14,7 +14,7 @@ public static class MarkdownTocReader
     private const string XrefShortcutRegexWithQuoteString = @"@(?:(['""])(?<uid>\s*?\S+?[\s\S]*?)\1)";
     private const string XrefShortcutRegexString = $@"@(?<uid>[a-zA-Z](?:[{ContinuableCharacters}]?[^{StopCharacters}{ContinuableCharacters}])*)";
 
-    public static TocViewModel LoadToc(string tocContent, string filePath)
+    public static List<TocItemViewModel> LoadToc(string tocContent, string filePath)
     {
         ParseState state = new InitialState(filePath);
         var rules = new ParseRule[]
@@ -40,7 +40,7 @@ public static class MarkdownTocReader
     {
         public abstract int Level { get; }
         public abstract Stack<TocItemViewModel> Parents { get; }
-        public abstract TocViewModel Root { get; }
+        public abstract List<TocItemViewModel> Root { get; }
         public abstract string FilePath { get; }
 
         public virtual ParseState ApplyRules(ParseRule[] rules, ref string input, ref int lineNumber)
@@ -65,13 +65,13 @@ public static class MarkdownTocReader
         public InitialState(string filePath)
         {
             Parents = new Stack<TocItemViewModel>();
-            Root = new TocViewModel();
+            Root = new();
             FilePath = filePath;
         }
         public override int Level => 0;
         public override Stack<TocItemViewModel> Parents { get; }
         public override string FilePath { get; }
-        public override TocViewModel Root { get; }
+        public override List<TocItemViewModel> Root { get; }
     }
 
     internal sealed class NodeState : ParseState
@@ -85,7 +85,7 @@ public static class MarkdownTocReader
         }
         public override int Level { get; }
         public override Stack<TocItemViewModel> Parents { get; }
-        public override TocViewModel Root { get; }
+        public override List<TocItemViewModel> Root { get; }
         public override string FilePath { get; }
     }
 
@@ -102,7 +102,7 @@ public static class MarkdownTocReader
         public string Message { get; }
         public override int Level { get; }
         public override Stack<TocItemViewModel> Parents { get; }
-        public override TocViewModel Root { get; }
+        public override List<TocItemViewModel> Root { get; }
         public override string FilePath { get; }
         public override ParseState ApplyRules(ParseRule[] rules, ref string input, ref int lineNumber)
         {
@@ -141,7 +141,7 @@ public static class MarkdownTocReader
             if (state.Parents.Count > 0)
             {
                 var parent = state.Parents.Peek();
-                parent.Items ??= new TocViewModel();
+                parent.Items ??= new();
                 parent.Items.Add(item);
             }
             else
