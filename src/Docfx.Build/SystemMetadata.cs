@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Docfx.Build.Engine;
 
-internal sealed class SystemMetadata
+class SystemMetadata
 {
     [JsonProperty("_title")]
     [JsonPropertyName("_title")]
@@ -36,14 +36,14 @@ internal sealed class SystemMetadata
     /// </summary>
     [JsonProperty("_navPath")]
     [JsonPropertyName("_navPath")]
-    public string RootTocPath { get; set; }
+    public string NavPath { get; set; }
 
     /// <summary>
     /// Current file's relative path to ROOT, e.g. file is ~/A/B.md, relative path to ROOT is ../
     /// </summary>
     [JsonProperty("_rel")]
     [JsonPropertyName("_rel")]
-    public string RelativePathToRoot { get; set; }
+    public string Rel { get; set; }
 
     /// <summary>
     /// Current file's path from ~ ROOT
@@ -64,21 +64,21 @@ internal sealed class SystemMetadata
     /// </summary>
     [JsonProperty("_navRel")]
     [JsonPropertyName("_navRel")]
-    public string RelativePathToRootToc { get; set; }
+    public string NavRel { get; set; }
 
     /// <summary>
     /// Current file's relative path to current file's TOC file
     /// </summary>
     [JsonProperty("_tocRel")]
     [JsonPropertyName("_tocRel")]
-    public string RelativePathToToc { get; set; }
+    public string TocRel { get; set; }
 
     /// <summary>
     /// The file key for Root TOC file, starting with `~`
     /// </summary>
     [JsonProperty("_navKey")]
     [JsonPropertyName("_navKey")]
-    public string RootTocKey { get; set; }
+    public string NavKey { get; set; }
 
     /// <summary>
     /// The file key for current file's TOC file, starting with `~`
@@ -92,12 +92,12 @@ internal sealed class SystemMetadata
     /// </summary>
     [JsonProperty("_version")]
     [JsonPropertyName("_version")]
-    public string VersionName { get; set; }
+    public string Version { get; set; }
 
     /// <summary>
     /// Current file's version root path from ~ ROOT
     /// </summary>
     [JsonProperty("_versionPath")]
     [JsonPropertyName("_versionPath")]
-    public string VersionFolder { get; set; }
+    public string VersionPath { get; set; }
 }

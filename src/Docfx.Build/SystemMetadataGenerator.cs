@@ -34,23 +34,23 @@ internal sealed class SystemMetadataGenerator
         attrs.Key = ((RelativePath)key).RemoveWorkingFolder();
         var file = (RelativePath)(item.FileWithoutExtension + item.Extension);
 
-        attrs.RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo(file);
+        attrs.Rel = (RelativePath.Empty).MakeRelativeTo(file);
         var fileWithoutWorkingFolder = file.RemoveWorkingFolder();
         attrs.Path = fileWithoutWorkingFolder;
 
         if (!string.IsNullOrEmpty(_context.VersionName))
         {
-            attrs.VersionName = _context.VersionName;
-            attrs.VersionFolder = _context.VersionFolder;
+            attrs.Version = _context.VersionName;
+            attrs.VersionPath = _context.VersionFolder;
         }
 
         // 1. Root Toc is specified by RootTocKey, or by default in the top directory of output folder
         if (!string.IsNullOrEmpty(_context.RootTocPath))
         {
-            attrs.RootTocKey = _context.RootTocPath;
+            attrs.NavKey = _context.RootTocPath;
             var rootTocPath = ((RelativePath)_context.RootTocPath).RemoveWorkingFolder();
-            attrs.RootTocPath = rootTocPath;
-            attrs.RelativePathToRootToc = rootTocPath.MakeRelativeTo(file);
+            attrs.NavPath = rootTocPath;
+            attrs.NavRel = rootTocPath.MakeRelativeTo(file);
         }
         else
         {
@@ -61,7 +61,7 @@ internal sealed class SystemMetadataGenerator
         {
             // when item is toc, its toc is always itself
             attrs.TocPath = item.FileWithoutExtension + item.Extension;
-            attrs.RelativePathToToc = System.IO.Path.GetFileName(item.FileWithoutExtension) + item.Extension;
+            attrs.TocRel = System.IO.Path.GetFileName(item.FileWithoutExtension) + item.Extension;
             attrs.TocKey = item.Key;
             return attrs;
         }
@@ -77,7 +77,7 @@ internal sealed class SystemMetadataGenerator
             var parentTocPath = parentToc.RelativePath.RemoveWorkingFolder();
             attrs.TocPath = parentTocPath;
             var tocRelativePath = parentTocPath.MakeRelativeTo(file);
-            attrs.RelativePathToToc = tocRelativePath;
+            attrs.TocRel = tocRelativePath;
             attrs.TocKey = parentToc.Key;
             Logger.LogDiagnostic($"TOC file {parentTocPath} is found for {item.LocalPathFromRoot}.");
         }
@@ -97,10 +97,10 @@ internal sealed class SystemMetadataGenerator
             var rootTocPath = rootToc.RelativePath.RemoveWorkingFolder();
             if (rootTocPath.SubdirectoryCount == 0)
             {
-                attrs.RootTocPath = rootTocPath;
+                attrs.NavPath = rootTocPath;
                 var rootTocRelativePath = rootTocPath.MakeRelativeTo(file);
-                attrs.RelativePathToRootToc = rootTocRelativePath;
-                attrs.RootTocKey = rootToc.Key;
+                attrs.NavRel = rootTocRelativePath;
+                attrs.NavKey = rootToc.Key;
                 Logger.LogDiagnostic($"Root TOC file {rootTocPath} is found.");
             }
             else
