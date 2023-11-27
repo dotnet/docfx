@@ -24,7 +24,23 @@ public class DocsetBuildTest : TestBase
         Directory.CreateDirectory(testDirectory);
         foreach (var (path, content) in files)
         {
-            File.WriteAllText(Path.Combine(testDirectory, path), content);
+            var filePath = Path.GetFullPath(Path.Combine(testDirectory, path));
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            File.WriteAllText(filePath, content);
+        }
+
+        if (!files.ContainsKey("docfx.json"))
+        {
+            File.WriteAllText($"{testDirectory}/docfx.json",
+                """
+                {
+                    "build": {
+                        "content": [{ "files": [ "**/*.md", "**/*.yml" ] }],
+                        "template": ["default", "modern"],
+                        "dest": "_site"
+                    }
+                }
+                """);
         }
 
         await Docset.Build($"{testDirectory}/docfx.json");
@@ -241,5 +257,41 @@ public class DocsetBuildTest : TestBase
         var sitemapXml = outputs["sitemap.xml"]();
         var urls = XDocument.Parse(sitemapXml).Root.Elements();
         Assert.True(!urls.Any());
+    }
+
+    [Fact]
+    public static async Task Build_Toc_Gen_Name()
+    {
+        var outputs = await Build(new()
+        {
+            ["toc.yml"] =
+                """
+                - href: from-h1.md
+                - href: from-title.md
+                - href: folder-ref/sub-folder/
+                - href: nested-toc%3F/toc.yml
+                """,
+            ["from-h1.md"] = "# H1",
+            ["from-title.md"] =
+                """
+                ---
+                title: Title
+                ---
+                """,
+            ["folder-ref/sub-folder/toc.yml"] = "- name: Folder Ref",
+            ["nested-toc%3F/toc.yml"] = "- name: Nested TOC",
+        });
+
+        AssertJsonEquivalent(
+            """
+            {
+              "items": [
+                { "name": "H1", "href": "from-h1.html" },
+                { "name": "Title", "href": "from-title.html" },
+                { "name": "folder ref/sub folder" },
+                { "name": "nested toc?" },
+              ]
+            }
+            """, outputs["toc.json"]());
     }
 }

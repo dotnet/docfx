@@ -15,7 +15,7 @@ static class TocHelper
         YamlDeserializerWithFallback.Create<TocViewModel>()
         .WithFallback<TocItemViewModel>();
 
-    public static List<FileModel> ResolveToc(ImmutableList<FileModel> models, IHostService host)
+    public static List<FileModel> ResolveToc(ImmutableList<FileModel> models)
     {
         var tocCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         var nonReferencedTocModels = new List<FileModel>();
