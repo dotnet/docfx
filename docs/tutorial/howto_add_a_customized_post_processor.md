@@ -1,4 +1,4 @@
-How-to: Add a customized post-processor
+Add a custom post processor
 =======================================
 
 We provide the ability to process output files by adding a customized post-processor.

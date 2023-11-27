@@ -1,4 +1,4 @@
-How-to: Create A Custom Template
+Create a Custom Template
 ===============================
 
 Templates are organized as a zip package or a folder. The file path (without the `.zip` extension) of the zip package or the path of the folder is considered to be the template name.

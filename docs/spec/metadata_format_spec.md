@@ -1,4 +1,4 @@
-Doc-as-Code: Metadata Format Specification
+Metadata Format Specification
 ==========================================
 
 ## 0. Introduction

@@ -1,4 +1,4 @@
-# Add REST API docs
+# REST API docs
 
 Docfx generates REST API documentation from [Swagger 2.0](http://swagger.io/specification/) files.
 

@@ -1,4 +1,4 @@
-🔧 Advanced: Support Hyperlink
+Support hyperlink
 ===============================
 
 In this topic, we will support hyperlinking in rtf files.

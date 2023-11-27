@@ -1,4 +1,4 @@
-How-to: Build your own type of documentation with a custom plug-in
+Create a custom plugin
 ====================================
 
 In this topic we will create a plug-in to convert some simple [rich text format](https://en.wikipedia.org/wiki/Rich_Text_Format) files to html documents.
