@@ -704,14 +704,7 @@
       "Number": 15,
       "NumberOfImages": 1,
       "Text": "15ImageMermaid DiagramsFlowchartCode SnippetThe example highlights lines 2, line 5 to 7 and lines 9 to the end of the file.MY TODOThis is a TODO.TextOneTwoHardRoundDecisionResult 1Result 2",
-      "Links": [
-        {
-          "Uri": "https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main"
-        }
-      ]
+      "Links": []
     },
     {
       "Number": 16,
