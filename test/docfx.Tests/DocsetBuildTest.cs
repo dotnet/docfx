@@ -294,4 +294,15 @@ public class DocsetBuildTest : TestBase
             }
             """, outputs["toc.json"]());
     }
+
+    [Fact]
+    public static async Task Issue5174()
+    {
+        var outputs = await Build(new()
+        {
+            ["index.md"] = "[link](On%25252Dcall-duties.md)",
+            ["On%252Dcall-duties.md"] = "a",
+        });
+        Assert.NotEmpty(outputs["On%252Dcall-duties.html"]());
+    }
 }
