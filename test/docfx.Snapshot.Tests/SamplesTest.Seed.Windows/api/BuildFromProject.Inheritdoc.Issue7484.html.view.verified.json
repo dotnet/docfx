@@ -182,7 +182,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue7484__ctor",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -368,7 +368,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue7484_DoDad",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -602,7 +602,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L80",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue7484_BoolReturningMethod_System_Boolean_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1138,7 +1138,7 @@
   "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L59",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Inheritdoc_Issue7484",
   "hideTitleType": false,
   "hideSubtitle": false,

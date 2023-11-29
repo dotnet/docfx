@@ -184,7 +184,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_NullableReferenceTypes_Field",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -370,7 +370,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_NullableReferenceTypes_Property",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -604,7 +604,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_NullableReferenceTypes_DoSomething_System_Collections_Generic_List_System_String__",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1242,7 +1242,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp8_NullableReferenceTypes",
   "hideTitleType": false,
   "hideSubtitle": false,

@@ -252,6 +252,15 @@
           "leaf": true
         },
         {
+          "name": "Issue8725",
+          "href": "BuildFromProject.Issue8725.html",
+          "topicHref": "BuildFromProject.Issue8725.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "Structs",
           "topicHref": null,
           "tocHref": null,

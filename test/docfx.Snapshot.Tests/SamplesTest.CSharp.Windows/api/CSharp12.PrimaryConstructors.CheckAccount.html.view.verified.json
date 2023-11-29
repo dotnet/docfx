@@ -322,7 +322,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_PrimaryConstructors_CheckAccount__ctor_System_String_System_String_System_Decimal_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -508,7 +508,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_PrimaryConstructors_CheckAccount_CurrentBalance",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -695,7 +695,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_PrimaryConstructors_CheckAccount_Deposit_System_Decimal_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -916,7 +916,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_PrimaryConstructors_CheckAccount_ToString",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1096,7 +1096,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_PrimaryConstructors_CheckAccount_Withdrawal_System_Decimal_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1836,7 +1836,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp12_PrimaryConstructors_CheckAccount",
   "hideTitleType": false,
   "hideSubtitle": false,

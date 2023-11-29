@@ -182,7 +182,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_DefaultLambdaParameters_Foo",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -820,7 +820,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp12_DefaultLambdaParameters",
   "hideTitleType": false,
   "hideSubtitle": false,

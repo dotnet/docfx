@@ -184,7 +184,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ColorCount",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -370,7 +370,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_GetColorCount",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -602,7 +602,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -743,7 +743,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1278,7 +1278,7 @@
   "remarks": "",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_Core_ContainersRefType",
   "hideTitleType": false,
   "hideSubtitle": false,

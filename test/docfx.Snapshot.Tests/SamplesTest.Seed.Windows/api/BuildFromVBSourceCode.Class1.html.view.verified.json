@@ -181,7 +181,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromVBSourceCode_Class1_ValueClass",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -380,7 +380,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromVBSourceCode_Class1_Keyword",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -611,7 +611,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromVBSourceCode_Class1_Value_System_String_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -876,7 +876,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1507,7 +1507,7 @@
   "remarks": "",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromVBSourceCode_Class1",
   "hideTitleType": false,
   "hideSubtitle": false,

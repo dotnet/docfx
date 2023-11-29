@@ -230,7 +230,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -410,7 +410,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -946,7 +946,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_Core_Issue231",
   "hideTitleType": false,
   "hideSubtitle": false,

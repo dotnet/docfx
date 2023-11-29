@@ -144,6 +144,11 @@
           "topicHref": "BuildFromProject.Inheritdoc.Issue8101.html"
         },
         {
+          "name": "Issue8725",
+          "href": "BuildFromProject.Issue8725.html",
+          "topicHref": "BuildFromProject.Issue8725.html"
+        },
+        {
           "name": "Structs"
         },
         {

@@ -276,7 +276,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_RecordStruct__ctor_System_DateTime_System_Double_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -462,7 +462,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_RecordStruct_Measurement",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -641,7 +641,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_RecordStruct_TakenAt",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1223,7 +1223,7 @@
   "remarks": "",
   "conceptual": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp10_RecordStruct",
   "hideTitleType": false,
   "hideSubtitle": false,

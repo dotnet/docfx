@@ -188,7 +188,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_IIssue8948_DoNothing__1",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -327,7 +327,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Class1_IIssue8948",
   "hideTitleType": false,
   "hideSubtitle": false,

@@ -179,7 +179,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MyExample_ExampleClass_MyProperty",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -411,7 +411,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "MyExample_ExampleClass_MyProperty_",
   "hideTitleType": false,
   "hideSubtitle": false,

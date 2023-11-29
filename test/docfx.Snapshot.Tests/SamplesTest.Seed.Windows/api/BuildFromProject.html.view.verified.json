@@ -34,7 +34,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Issue8540",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -102,7 +102,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -163,7 +163,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8665",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -225,7 +225,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8696Attribute",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -286,7 +286,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8948",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -347,7 +347,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Test_1",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -408,7 +408,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -469,7 +469,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue6366",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -530,7 +530,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue6366_Class1_1",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -591,7 +591,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue6366_Class2",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -652,7 +652,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue7035",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -713,7 +713,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue7484",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -774,8 +774,69 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue8101",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Issue8725",
+          "isExtensionMethod": false,
+          "href": "BuildFromProject.Issue8725.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue8725"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue8725"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Issue8725"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue8725"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Issue8725"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Issue8725"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Issue8725\" text=\"Issue8725\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Issue8725\" text=\"Issue8725\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Issue8725.yml\" sourcestartlinenumber=\"1\">A nice class</p>\n",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Issue8725",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -842,7 +903,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue8129",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -911,7 +972,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_IIssue8948",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -973,7 +1034,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_IInheritdoc",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1042,7 +1103,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue9260",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1112,7 +1173,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject",
   "hideTitleType": false,
   "hideSubtitle": false,

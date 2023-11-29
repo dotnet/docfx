@@ -129,10 +129,15 @@
     "title": "Namespace BuildFromProject.Issue8540 | docfx seed website",
     "keywords": "Namespace BuildFromProject.Issue8540 Namespaces BuildFromProject.Issue8540.A BuildFromProject.Issue8540.B"
   },
+  "api/BuildFromProject.Issue8725.html": {
+    "href": "api/BuildFromProject.Issue8725.html",
+    "title": "Class Issue8725 | docfx seed website",
+    "keywords": "Class Issue8725 Namespace BuildFromProject Assembly BuildFromProject.dll A nice class public class Issue8725 Inheritance object Issue8725 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods MoreOperations() Another nice operation public void MoreOperations() MyOperation() A nice operation public void MyOperation() See Also Class1"
+  },
   "api/BuildFromProject.html": {
     "href": "api/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces Class1.IIssue8948 IInheritdoc Enums Class1.Issue9260"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Issue8725 A nice class Structs Inheritdoc.Issue8129 Interfaces Class1.IIssue8948 IInheritdoc Enums Class1.Issue9260"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",
@@ -389,10 +394,15 @@
     "title": "Namespace BuildFromProject.Issue8540 | docfx seed website",
     "keywords": "Namespace BuildFromProject.Issue8540 Namespaces BuildFromProject.Issue8540.A BuildFromProject.Issue8540.B"
   },
+  "apipage/BuildFromProject.Issue8725.html": {
+    "href": "apipage/BuildFromProject.Issue8725.html",
+    "title": "Class Issue8725 | docfx seed website",
+    "keywords": "Class Issue8725 Namespace BuildFromProject Assembly BuildFromProject.dll A nice class public class Issue8725 Inheritance object Issue8725 Inherited Members object.Equals(object?) object.Equals(object?, object?) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object?, object?) object.ToString() Methods MoreOperations() Another nice operation public void MoreOperations() MyOperation() A nice operation public void MyOperation() See Also Class1"
+  },
   "apipage/BuildFromProject.html": {
     "href": "apipage/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Enums Class1.Issue9260"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Enums Class1.Issue9260"
   },
   "apipage/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "apipage/BuildFromVBSourceCode.BaseClass1.html",
@@ -684,10 +694,15 @@
     "title": "Namespace BuildFromProject.Issue8540 | docfx seed website",
     "keywords": "Namespace BuildFromProject.Issue8540 Namespaces BuildFromProject.Issue8540.A BuildFromProject.Issue8540.B"
   },
+  "md/BuildFromProject.Issue8725.html": {
+    "href": "md/BuildFromProject.Issue8725.html",
+    "title": "Class Issue8725 | docfx seed website",
+    "keywords": "Class Issue8725 Namespace: BuildFromProject Assembly: BuildFromProject.dll A nice class public class Issue8725 Inheritance object ← Issue8725 Inherited Members object.Equals(object?), object.Equals(object?, object?), object.GetHashCode(), object.GetType(), object.MemberwiseClone(), object.ReferenceEquals(object?, object?), object.ToString() Methods MoreOperations() Another nice operation public void MoreOperations() MyOperation() A nice operation public void MyOperation() See Also Class1"
+  },
   "md/BuildFromProject.html": {
     "href": "md/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Enums Class1.Issue9260"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Enums Class1.Issue9260"
   },
   "md/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "md/BuildFromVBSourceCode.BaseClass1.html",
