@@ -48,7 +48,7 @@ internal class SymbolFilter
 
         static bool IsCompilerGeneratedDisplayClass(ISymbol symbol)
         {
-            return symbol.Name.Contains('<') || symbol.Name.Contains('>');
+            return symbol.Kind == SymbolKind.NamedType && (symbol.Name.Contains('<') || symbol.Name.Contains('>'));
         }
     }
 
