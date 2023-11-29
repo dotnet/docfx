@@ -3709,4 +3709,25 @@ namespace Test1
         Assert.Equal("public class Foo : IFoo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
         Assert.Equal("void IFoo.Bar()", foo.Items[0].Syntax.Content[SyntaxLanguage.CSharp]);
     }
+
+    [Fact]
+    public void TestExcludeDocumentationComment()
+    {
+        var code =
+            """
+            namespace Test
+            {
+                public class Foo
+                {
+                    /// <exclude />
+                    public void F1() {}
+                }
+            }
+            """;
+
+        var output = Verify(code);
+        var foo = output.Items[0].Items[0];
+        Assert.Equal("public class Foo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Empty(foo.Items);
+    }
 }

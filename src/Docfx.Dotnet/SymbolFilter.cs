@@ -26,24 +26,25 @@ internal class SymbolFilter
 
     public bool IncludeApi(ISymbol symbol)
     {
-        return !IsCompilerGeneratedDisplayClass(symbol) && IsSymbolAccessible(symbol) && IncludeApiCore(symbol);
-
-        bool IncludeApiCore(ISymbol symbol)
+        return _cache.GetOrAdd(symbol, _ =>
         {
-            return _cache.GetOrAdd(symbol, _ => _options.IncludeApi?.Invoke(_) switch
-            {
-                SymbolIncludeState.Include => true,
-                SymbolIncludeState.Exclude => false,
-                _ => IncludeApiDefault(symbol),
-            });
-        }
+            return !IsCompilerGeneratedDisplayClass(symbol) &&
+                IsSymbolAccessible(symbol) &&
+                !HasExcludeDocumentComment(symbol) &&
+                _options.IncludeApi?.Invoke(_) switch
+                {
+                    SymbolIncludeState.Include => true,
+                    SymbolIncludeState.Exclude => false,
+                    _ => IncludeApiDefault(symbol),
+                };
+        });
 
         bool IncludeApiDefault(ISymbol symbol)
         {
             if (_filterRule is not null && !_filterRule.CanVisitApi(RoslynFilterData.GetSymbolFilterData(symbol)))
                 return false;
 
-            return symbol.ContainingSymbol is null || IncludeApiCore(symbol.ContainingSymbol);
+            return symbol.ContainingSymbol is null || IncludeApi(symbol.ContainingSymbol);
         }
 
         static bool IsCompilerGeneratedDisplayClass(ISymbol symbol)
@@ -54,24 +55,22 @@ internal class SymbolFilter
 
     public bool IncludeAttribute(ISymbol symbol)
     {
-        return IsSymbolAccessible(symbol) && IncludeAttributeCore(symbol);
-
-        bool IncludeAttributeCore(ISymbol symbol)
+        return _attributeCache.GetOrAdd(symbol, _ =>
         {
-            return _attributeCache.GetOrAdd(symbol, _ => _options.IncludeAttribute?.Invoke(_) switch
+            return IsSymbolAccessible(symbol) && !HasExcludeDocumentComment(symbol) && _options.IncludeAttribute?.Invoke(_) switch
             {
                 SymbolIncludeState.Include => true,
                 SymbolIncludeState.Exclude => false,
                 _ => IncludeAttributeDefault(symbol),
-            });
-        }
+            };
+        });
 
         bool IncludeAttributeDefault(ISymbol symbol)
         {
             if (_filterRule is not null && !_filterRule.CanVisitAttribute(RoslynFilterData.GetSymbolFilterData(symbol)))
                 return false;
 
-            return symbol.ContainingSymbol is null || IncludeAttributeCore(symbol.ContainingSymbol);
+            return symbol.ContainingSymbol is null || IncludeAttribute(symbol.ContainingSymbol);
         }
     }
 
@@ -126,5 +125,13 @@ internal class SymbolFilter
         {
             return symbols.Any() && symbols.All(s => IncludeApi(s.ContainingSymbol));
         }
+    }
+
+    private static bool HasExcludeDocumentComment(ISymbol symbol)
+    {
+        return symbol.GetDocumentationCommentXml() is { } xml && (
+            xml.Contains("<exclude/>") ||
+            xml.Contains("<exclude>") ||
+            xml.Contains("<exclude "));
     }
 }
