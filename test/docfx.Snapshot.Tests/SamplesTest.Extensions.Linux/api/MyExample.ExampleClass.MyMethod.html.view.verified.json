@@ -177,7 +177,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MyExample_ExampleClass_MyMethod",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -409,7 +409,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "MyExample_ExampleClass_MyMethod_",
   "hideTitleType": false,
   "hideSubtitle": false,

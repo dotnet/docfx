@@ -182,7 +182,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_DisposableRefStructs_Dispose",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -314,7 +314,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_DisposableRefStructs_DoSomething",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -851,7 +851,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp8_DisposableRefStructs",
   "hideTitleType": false,
   "hideSubtitle": false,

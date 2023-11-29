@@ -132,7 +132,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MyExample_ExampleClass__ctor",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -364,7 +364,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "MyExample_ExampleClass__ctor_",
   "hideTitleType": false,
   "hideSubtitle": false,

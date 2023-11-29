@@ -218,6 +218,12 @@
               "href": "../api/BuildFromProject.Inheritdoc.Issue8129.html",
               "topicHref": "../api/BuildFromProject.Inheritdoc.Issue8129.html",
               "topicUid": "BuildFromProject.Inheritdoc.Issue8129"
+            },
+            {
+              "name": "Issue8725",
+              "href": "../api/BuildFromProject.Issue8725.html",
+              "topicHref": "../api/BuildFromProject.Issue8725.html",
+              "topicUid": "BuildFromProject.Issue8725"
             }
           ]
         },

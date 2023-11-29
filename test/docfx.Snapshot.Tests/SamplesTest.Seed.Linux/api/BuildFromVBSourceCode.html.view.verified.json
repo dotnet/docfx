@@ -65,7 +65,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromVBSourceCode_BaseClass1",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -127,7 +127,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromVBSourceCode_Class1",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -194,7 +194,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromVBSourceCode",
   "hideTitleType": false,
   "hideSubtitle": false,

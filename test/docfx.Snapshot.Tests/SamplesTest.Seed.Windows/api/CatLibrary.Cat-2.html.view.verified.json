@@ -182,7 +182,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2__ctor",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -504,7 +504,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -686,7 +686,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2__ctor__0_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -844,7 +844,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_isHealthy",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1037,7 +1037,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_Age",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1265,7 +1265,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_Item_System_String_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1488,7 +1488,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L259",
           "remarks": "",
           "conceptual": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_Name",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1781,7 +1781,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L146",
           "remarks": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_CalculateFood_System_DateTime_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -2051,7 +2051,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_Equals_System_Object_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -2325,7 +2325,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -2662,7 +2662,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_Jump__0__1_System_Boolean__",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -2815,7 +2815,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_ownEat",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -3092,7 +3092,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -3315,7 +3315,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -3582,7 +3582,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -4290,7 +4290,7 @@
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/specs/Cat.md/#L2",
   "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L113",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_Cat_2",
   "hideTitleType": false,
   "hideSubtitle": false,

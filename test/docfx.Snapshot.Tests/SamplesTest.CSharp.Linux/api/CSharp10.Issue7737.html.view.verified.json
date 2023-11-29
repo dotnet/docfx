@@ -182,7 +182,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_Issue7737_Foo",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -820,7 +820,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp10_Issue7737",
   "hideTitleType": false,
   "hideSubtitle": false,

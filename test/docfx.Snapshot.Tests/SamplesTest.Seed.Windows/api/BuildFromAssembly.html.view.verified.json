@@ -65,7 +65,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromAssembly_Class1",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -134,7 +134,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromAssembly_Issue5432",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -204,7 +204,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromAssembly",
   "hideTitleType": false,
   "hideSubtitle": false,

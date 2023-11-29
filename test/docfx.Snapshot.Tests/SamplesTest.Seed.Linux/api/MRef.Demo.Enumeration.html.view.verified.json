@@ -65,7 +65,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MRef_Demo_Enumeration_ColorType",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -135,7 +135,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "MRef_Demo_Enumeration",
   "hideTitleType": false,
   "hideSubtitle": false,

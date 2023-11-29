@@ -232,7 +232,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L146",
           "remarks": "",
           "conceptual": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8948_DoNothing__1",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -812,7 +812,7 @@
   "remarks": "",
   "conceptual": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Class1_Issue8948",
   "hideTitleType": false,
   "hideSubtitle": false,

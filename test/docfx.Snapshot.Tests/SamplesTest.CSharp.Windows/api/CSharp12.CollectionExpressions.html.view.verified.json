@@ -184,7 +184,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_CollectionExpressions_a",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -318,7 +318,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_CollectionExpressions_twoD",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -956,7 +956,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp12_CollectionExpressions",
   "hideTitleType": false,
   "hideSubtitle": false,

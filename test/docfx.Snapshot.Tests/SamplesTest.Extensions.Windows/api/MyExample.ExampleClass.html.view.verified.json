@@ -111,7 +111,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MyExample_ExampleClass__ctor",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -179,7 +179,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MyExample_ExampleClass_MyProperty",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -247,7 +247,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MyExample_ExampleClass_MyMethod",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -315,7 +315,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MyExample_ExampleClass_MyEvent",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -955,7 +955,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "MyExample_ExampleClass",
   "hideTitleType": false,
   "hideSubtitle": false,

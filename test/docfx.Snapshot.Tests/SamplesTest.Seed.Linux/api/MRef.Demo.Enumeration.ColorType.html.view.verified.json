@@ -184,7 +184,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MRef_Demo_Enumeration_ColorType_Red",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -318,7 +318,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MRef_Demo_Enumeration_ColorType_Blue",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -452,7 +452,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MRef_Demo_Enumeration_ColorType_Yellow",
           "hideTitleType": false,
           "hideSubtitle": false

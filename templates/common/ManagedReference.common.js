@@ -199,6 +199,7 @@ function handleItem(vm, gitContribute, gitUrlPattern) {
   vm.syntax = vm.syntax || "";
   vm.implements = vm.implements || "";
   vm.example = vm.example || "";
+  vm.seealso = vm.seealso || [];
   common.processSeeAlso(vm);
 
   // id is used as default template's bookmark

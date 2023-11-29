@@ -467,7 +467,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1021,7 +1021,7 @@
   "remarks": "",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_Tom",
   "hideTitleType": false,
   "hideSubtitle": false,

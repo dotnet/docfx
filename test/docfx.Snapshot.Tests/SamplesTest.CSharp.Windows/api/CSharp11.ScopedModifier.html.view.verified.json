@@ -276,7 +276,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp11_ScopedModifier_CreateSpan_System_Int32__",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -914,7 +914,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp11_ScopedModifier",
   "hideTitleType": false,
   "hideSubtitle": false,

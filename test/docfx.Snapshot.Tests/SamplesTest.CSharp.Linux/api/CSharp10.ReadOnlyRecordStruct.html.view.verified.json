@@ -322,7 +322,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_ReadOnlyRecordStruct__ctor_System_Double_System_Double_System_Double_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -508,7 +508,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_ReadOnlyRecordStruct_X",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -687,7 +687,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_ReadOnlyRecordStruct_Y",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -866,7 +866,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_ReadOnlyRecordStruct_Z",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1448,7 +1448,7 @@
   "remarks": "",
   "conceptual": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp10_ReadOnlyRecordStruct",
   "hideTitleType": false,
   "hideSubtitle": false,

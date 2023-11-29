@@ -229,7 +229,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp11_RequiredModifier_FirstName",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -408,7 +408,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp11_RequiredModifier_LastName",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -587,7 +587,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp11_RequiredModifier_MiddleName",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1225,7 +1225,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp11_RequiredModifier",
   "hideTitleType": false,
   "hideSubtitle": false,

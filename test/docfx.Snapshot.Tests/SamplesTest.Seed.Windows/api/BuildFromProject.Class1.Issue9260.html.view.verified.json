@@ -184,7 +184,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L174",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue9260_Value",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -325,7 +325,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L182",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue9260_OldAndUnusedValue",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -471,7 +471,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L191",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue9260_OldAndUnusedValue2",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -610,7 +610,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Class1_Issue9260",
   "hideTitleType": false,
   "hideSubtitle": false,

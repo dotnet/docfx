@@ -276,7 +276,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_RecordClass__ctor_System_String_System_String_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -462,7 +462,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_RecordClass_FirstName",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -641,7 +641,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp10_RecordClass_LastName",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1324,7 +1324,7 @@
   "remarks": "",
   "conceptual": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp10_RecordClass",
   "hideTitleType": false,
   "hideSubtitle": false,

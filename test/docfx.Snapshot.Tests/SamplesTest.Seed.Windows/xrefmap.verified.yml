@@ -728,6 +728,38 @@ references:
   commentId: T:BuildFromProject.Issue8540.B.B
   fullName: BuildFromProject.Issue8540.B.B
   nameWithType: B
+- uid: BuildFromProject.Issue8725
+  name: Issue8725
+  href: api/BuildFromProject.Issue8725.html
+  commentId: T:BuildFromProject.Issue8725
+  fullName: BuildFromProject.Issue8725
+  nameWithType: Issue8725
+- uid: BuildFromProject.Issue8725.MoreOperations
+  name: MoreOperations()
+  href: api/BuildFromProject.Issue8725.html#BuildFromProject_Issue8725_MoreOperations
+  commentId: M:BuildFromProject.Issue8725.MoreOperations
+  fullName: BuildFromProject.Issue8725.MoreOperations()
+  nameWithType: Issue8725.MoreOperations()
+- uid: BuildFromProject.Issue8725.MoreOperations*
+  name: MoreOperations
+  href: api/BuildFromProject.Issue8725.html#BuildFromProject_Issue8725_MoreOperations_
+  commentId: Overload:BuildFromProject.Issue8725.MoreOperations
+  isSpec: "True"
+  fullName: BuildFromProject.Issue8725.MoreOperations
+  nameWithType: Issue8725.MoreOperations
+- uid: BuildFromProject.Issue8725.MyOperation
+  name: MyOperation()
+  href: api/BuildFromProject.Issue8725.html#BuildFromProject_Issue8725_MyOperation
+  commentId: M:BuildFromProject.Issue8725.MyOperation
+  fullName: BuildFromProject.Issue8725.MyOperation()
+  nameWithType: Issue8725.MyOperation()
+- uid: BuildFromProject.Issue8725.MyOperation*
+  name: MyOperation
+  href: api/BuildFromProject.Issue8725.html#BuildFromProject_Issue8725_MyOperation_
+  commentId: Overload:BuildFromProject.Issue8725.MyOperation
+  isSpec: "True"
+  fullName: BuildFromProject.Issue8725.MyOperation
+  nameWithType: Issue8725.MyOperation
 - uid: BuildFromVBSourceCode
   name: BuildFromVBSourceCode
   href: api/BuildFromVBSourceCode.html

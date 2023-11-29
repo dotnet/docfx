@@ -182,7 +182,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence__ctor",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -323,7 +323,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_Text",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -551,7 +551,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_ToString",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -824,7 +824,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L17",
           "remarks": "",
           "conceptual": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1357,7 +1357,7 @@
   "remarks": "",
   "conceptual": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence",
   "hideTitleType": false,
   "hideSubtitle": false,

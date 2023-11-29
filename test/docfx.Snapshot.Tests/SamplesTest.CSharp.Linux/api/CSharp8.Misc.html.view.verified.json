@@ -227,7 +227,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Misc_AsynchronousStreams",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -405,7 +405,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Misc_GenerateSequence",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -537,7 +537,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Misc_IndicesAndRanges",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -762,7 +762,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Misc_IsExpression_System_DateTime_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -894,7 +894,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Misc_NullCoalescingAssignment",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1026,7 +1026,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Misc_StackallocInNestedExpressions",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1251,7 +1251,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Misc_StaticLocalFunctions_System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1476,7 +1476,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Misc_SwitchExpression_System_ConsoleColor_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1608,7 +1608,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Misc_UsingDeclaration",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -2246,7 +2246,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp8_Misc",
   "hideTitleType": false,
   "hideSubtitle": false,

@@ -278,7 +278,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_IAnimal_Item_System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -457,7 +457,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_IAnimal_Name",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -596,7 +596,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_IAnimal_Eat",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -777,7 +777,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_IAnimal_Eat_System_String_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -965,7 +965,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_IAnimal_Eat__1___0_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1114,7 +1114,7 @@
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/specs/CatLibrary.IAnimal.md/#L2",
   "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L16",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_IAnimal",
   "hideTitleType": false,
   "hideSubtitle": false,

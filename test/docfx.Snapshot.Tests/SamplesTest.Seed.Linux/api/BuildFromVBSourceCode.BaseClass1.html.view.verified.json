@@ -272,7 +272,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -905,7 +905,7 @@
   "remarks": "",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromVBSourceCode_BaseClass1",
   "hideTitleType": false,
   "hideSubtitle": false,

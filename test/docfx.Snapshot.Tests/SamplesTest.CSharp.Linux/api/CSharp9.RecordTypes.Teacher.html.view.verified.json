@@ -322,7 +322,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_RecordTypes_Teacher__ctor_System_String_System_String_System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -508,7 +508,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_RecordTypes_Teacher_Grade",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1386,7 +1386,7 @@
   "remarks": "",
   "conceptual": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp9_RecordTypes_Teacher",
   "hideTitleType": false,
   "hideSubtitle": false,

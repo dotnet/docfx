@@ -224,7 +224,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromAssembly_Issue5432_Name",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -654,7 +654,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromAssembly_Issue5432",
   "hideTitleType": false,
   "hideSubtitle": false,

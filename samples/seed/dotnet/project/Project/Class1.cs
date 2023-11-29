@@ -203,3 +203,14 @@ class ExperimentalAttribute : Attribute
     public string DiagnosticId { get; }
     public string? UrlFormat { get; set; }
 }
+
+/// <summary>A nice class</summary>
+/// <seealso cref="Class1"/>
+public class Issue8725
+{
+    /// <summary>A nice operation</summary>
+    public void MyOperation() {}
+
+    /// <summary>Another nice operation</summary>
+    public void MoreOperations() {}
+}

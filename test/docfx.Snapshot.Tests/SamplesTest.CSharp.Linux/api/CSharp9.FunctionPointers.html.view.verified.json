@@ -441,7 +441,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_FunctionPointers_Example_System_Action_System_Int32_______",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1079,7 +1079,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp9_FunctionPointers",
   "hideTitleType": false,
   "hideSubtitle": false,

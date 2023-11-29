@@ -278,7 +278,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -506,7 +506,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1042,7 +1042,7 @@
   "remarks": "",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_ICatExtension",
   "hideTitleType": false,
   "hideSubtitle": false,

@@ -230,7 +230,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_RefReadOnlyParameters_Foo_System_Int32__",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -868,7 +868,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp12_RefReadOnlyParameters",
   "hideTitleType": false,
   "hideSubtitle": false,

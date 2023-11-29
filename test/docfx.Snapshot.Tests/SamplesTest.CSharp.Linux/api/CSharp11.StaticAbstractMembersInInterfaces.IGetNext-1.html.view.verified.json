@@ -273,7 +273,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -519,7 +519,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1",
   "hideTitleType": false,
   "hideSubtitle": false,

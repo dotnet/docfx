@@ -276,7 +276,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_RecordTypes_Person__ctor_System_String_System_String_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -462,7 +462,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_RecordTypes_Person_FirstName",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -641,7 +641,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_RecordTypes_Person_LastName",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1342,7 +1342,7 @@
   "remarks": "",
   "conceptual": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp9_RecordTypes_Person",
   "hideTitleType": false,
   "hideSubtitle": false,

@@ -368,7 +368,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue6366_Class2_TestMethod1_System_Boolean_System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -954,7 +954,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Inheritdoc_Issue6366_Class2",
   "hideTitleType": false,
   "hideSubtitle": false,

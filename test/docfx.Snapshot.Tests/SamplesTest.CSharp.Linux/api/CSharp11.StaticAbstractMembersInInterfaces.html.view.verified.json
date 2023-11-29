@@ -680,7 +680,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp11_StaticAbstractMembersInInterfaces",
   "hideTitleType": false,
   "hideSubtitle": false,

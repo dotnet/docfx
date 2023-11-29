@@ -64,7 +64,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_FunctionPointers",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -125,7 +125,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_InitOnlySetters",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -186,7 +186,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_NativeSizedIntegers",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -247,7 +247,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_RecordTypes",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -309,7 +309,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_RecordTypes_Person",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -370,7 +370,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_RecordTypes_Teacher",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -542,7 +542,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp9",
   "hideTitleType": false,
   "hideSubtitle": false,
