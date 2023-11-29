@@ -18,3 +18,19 @@ public class Class1
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void HiddenAPI() { }
 }
+
+public unsafe struct Issue5432
+{
+    private fixed char Name0[30];
+
+    public string Name
+    {
+        get
+        {
+            fixed (char* name = Name0)
+            {
+                return new string((char*)name);
+            }
+        }
+    }
+}

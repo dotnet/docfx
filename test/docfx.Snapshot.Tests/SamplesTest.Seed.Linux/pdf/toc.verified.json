@@ -56,6 +56,12 @@
               "href": "../api/BuildFromAssembly.Class1.html",
               "topicHref": "../api/BuildFromAssembly.Class1.html",
               "topicUid": "BuildFromAssembly.Class1"
+            },
+            {
+              "name": "Issue5432",
+              "href": "../api/BuildFromAssembly.Issue5432.html",
+              "topicHref": "../api/BuildFromAssembly.Issue5432.html",
+              "topicUid": "BuildFromAssembly.Issue5432"
             }
           ]
         },

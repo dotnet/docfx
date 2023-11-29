@@ -5,6 +5,9 @@
   - name: Classes
   - name: Class1
     href: BuildFromAssembly.Class1.md
+  - name: Structs
+  - name: Issue5432
+    href: BuildFromAssembly.Issue5432.md
 - name: BuildFromCSharpSourceCode
   href: BuildFromCSharpSourceCode.md
   items:

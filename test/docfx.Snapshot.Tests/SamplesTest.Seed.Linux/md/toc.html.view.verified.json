@@ -21,6 +21,23 @@
           "level": 3.0,
           "items": [],
           "leaf": true
+        },
+        {
+          "name": "Structs",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Issue5432",
+          "href": "BuildFromAssembly.Issue5432.html",
+          "topicHref": "BuildFromAssembly.Issue5432.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
         }
       ],
       "tocHref": null,
