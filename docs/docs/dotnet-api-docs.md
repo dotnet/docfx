@@ -154,45 +154,18 @@ To disable the default filtering rules, set the `disableDefaultFilter` property 
 
 To show private methods, set the `includePrivateMembers` config to `true`. When enabled, internal only langauge keywords such as `private` or `internal` starts to appear in the declaration of all APIs, to accurately reflect API accessibility.
 
-There are two ways of customizing the API filters:
+### The `<exclude />` documentation comment
 
-### Custom with Code
+The `<exclude />` documentation comment excludes the type or member on a per API basis using C# documentation comment:
 
-To use a custom filtering with code:
-
-1. Use docfx .NET API generation as a NuGet library:
-
-```xml
-<PackageReference Include="Docfx.Dotnet" Version="2.62.0" />
+```csharp
+/// <exclude />
+public class Foo { }
 ```
 
-2. Configure the filter options:
+### Custom filter rules
 
-```cs
-var options = new DotnetApiOptions
-{
-    // Filter based on types
-    IncludeApi = symbol => ...
-
-    // Filter based on attributes
-    IncludeAttribute = symbol => ...
-}
-
-await DotnetApiCatalog.GenerateManagedReferenceYamlFiles("docfx.json", options);
-```
-
-The filter callbacks takes an [`ISymbol`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.isymbol?view=roslyn-dotnet) interface and produces an [`SymbolIncludeState`](../api/Docfx.Dotnet.SymbolIncludeState.yml) enum to choose between include the API, exclude the API or use the default filtering behavior.
-
-The callbacks are raised before applying the default rules but after processing type accessibility rules. Private types and members cannot be marked as include unless `includePrivateMembers` is true.
-
-Hiding the parent symbol also hides all of its child symbols, e.g.:
-- If a namespace is hidden, all child namespaces and types underneath it are hidden.
-- If a class is hidden, all nested types underneath it are hidden.
-- If an interface is hidden, explicit implementations of that interface are also hidden.
-
-### Custom with Filter Rules
-
-To add additional filter rules, add a custom YAML file and set the `filter` property in `docfx.json` to point to the custom YAML filter:
+To bulk filter APIs with custom filter rules, add a custom YAML file and set the `filter` property in `docfx.json` to point to the custom YAML filter:
 
 ```json
 {
@@ -265,3 +238,38 @@ apiRules:
 ```
 
 Where the `ctorArguments` property specifies a list of match conditions based on constructor parameters and the `ctorNamedArguments` property specifies match conditions using named constructor arguments.
+
+
+### Custom code filter
+
+To use a custom filtering with code:
+
+1. Use docfx .NET API generation as a NuGet library:
+
+```xml
+<PackageReference Include="Docfx.Dotnet" Version="2.62.0" />
+```
+
+2. Configure the filter options:
+
+```cs
+var options = new DotnetApiOptions
+{
+    // Filter based on types
+    IncludeApi = symbol => ...
+
+    // Filter based on attributes
+    IncludeAttribute = symbol => ...
+}
+
+await DotnetApiCatalog.GenerateManagedReferenceYamlFiles("docfx.json", options);
+```
+
+The filter callbacks takes an [`ISymbol`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.isymbol?view=roslyn-dotnet) interface and produces an [`SymbolIncludeState`](../api/Docfx.Dotnet.SymbolIncludeState.yml) enum to choose between include the API, exclude the API or use the default filtering behavior.
+
+The callbacks are raised before applying the default rules but after processing type accessibility rules. Private types and members cannot be marked as include unless `includePrivateMembers` is true.
+
+Hiding the parent symbol also hides all of its child symbols, e.g.:
+- If a namespace is hidden, all child namespaces and types underneath it are hidden.
+- If a class is hidden, all nested types underneath it are hidden.
+- If an interface is hidden, explicit implementations of that interface are also hidden.
