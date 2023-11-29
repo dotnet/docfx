@@ -46,7 +46,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             DisplayNames = new SortedList<SyntaxLanguage, string>(),
             DisplayNamesWithType = new SortedList<SyntaxLanguage, string>(),
             DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>(),
-            Source = VisitorHelper.GetSourceDetail(symbol, _compilation),
+            Source = _config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, _compilation),
         };
         var assemblyName = symbol.ContainingAssembly?.Name;
         item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) || assemblyName is "?" ? null : new List<string> { assemblyName };
