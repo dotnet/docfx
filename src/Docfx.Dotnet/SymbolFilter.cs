@@ -26,7 +26,7 @@ internal class SymbolFilter
 
     public bool IncludeApi(ISymbol symbol)
     {
-        return IsSymbolAccessible(symbol) && IncludeApiCore(symbol);
+        return !IsCompilerGeneratedDisplayClass(symbol) && IsSymbolAccessible(symbol) && IncludeApiCore(symbol);
 
         bool IncludeApiCore(ISymbol symbol)
         {
@@ -44,6 +44,11 @@ internal class SymbolFilter
                 return false;
 
             return symbol.ContainingSymbol is null || IncludeApiCore(symbol.ContainingSymbol);
+        }
+
+        static bool IsCompilerGeneratedDisplayClass(ISymbol symbol)
+        {
+            return symbol.Name.Contains('<') || symbol.Name.Contains('>');
         }
     }
 
