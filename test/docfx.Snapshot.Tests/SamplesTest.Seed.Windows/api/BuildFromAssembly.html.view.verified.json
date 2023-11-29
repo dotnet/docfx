@@ -71,6 +71,75 @@
           "hideSubtitle": false
         }
       ]
+    },
+    {
+      "inStruct": true,
+      "typePropertyName": "inStruct",
+      "id": "structs",
+      "children": [
+        {
+          "uid": "BuildFromAssembly.Issue5432",
+          "isExtensionMethod": false,
+          "isExternal": true,
+          "href": "BuildFromAssembly.Issue5432.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue5432"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue5432"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Issue5432"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue5432"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromAssembly.Issue5432"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromAssembly.Issue5432"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromAssembly.Issue5432\" text=\"Issue5432\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromAssembly.Issue5432\" text=\"Issue5432\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromAssembly_Issue5432",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
     }
   ],
   "langs": [

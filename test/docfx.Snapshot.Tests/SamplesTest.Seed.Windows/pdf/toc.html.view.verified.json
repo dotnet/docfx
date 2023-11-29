@@ -91,6 +91,16 @@
               "level": 4.0,
               "items": [],
               "leaf": true
+            },
+            {
+              "name": "Issue5432",
+              "href": "../api/BuildFromAssembly.Issue5432.html",
+              "topicHref": "../api/BuildFromAssembly.Issue5432.html",
+              "topicUid": "BuildFromAssembly.Issue5432",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
             }
           ],
           "tocHref": null,

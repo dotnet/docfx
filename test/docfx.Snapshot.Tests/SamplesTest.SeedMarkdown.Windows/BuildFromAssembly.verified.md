@@ -6,3 +6,7 @@
 
 This is a test class.
 
+### Structs
+
+ [Issue5432](BuildFromAssembly.Issue5432.md)
+
