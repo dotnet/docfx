@@ -105,8 +105,11 @@
     },
     {
       "Number": 5,
-      "Text": "5ClassesClass1This is a test class.Namespace BuildFromAssembly",
+      "Text": "5ClassesClass1This is a test class.StructsIssue5432Namespace BuildFromAssembly",
       "Links": [
+        {
+          "Uri": ""
+        },
         {
           "Uri": ""
         }
@@ -114,8 +117,11 @@
     },
     {
       "Number": 6,
-      "Text": "6Namespace BuildFromAssemblyClassesClass1This is a test class.",
+      "Text": "6Namespace BuildFromAssemblyClassesClass1This is a test class.StructsIssue5432",
       "Links": [
+        {
+          "Uri": ""
+        },
         {
           "Uri": ""
         }
@@ -123,8 +129,11 @@
     },
     {
       "Number": 7,
-      "Text": "7ClassesClass1This is a test class.Namespace BuildFromAssembly",
+      "Text": "7ClassesClass1This is a test class.StructsIssue5432Namespace BuildFromAssembly",
       "Links": [
+        {
+          "Uri": ""
+        },
         {
           "Uri": ""
         }

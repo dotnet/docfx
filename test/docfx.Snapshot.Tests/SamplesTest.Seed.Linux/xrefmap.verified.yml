@@ -43,6 +43,24 @@ references:
   commentId: Overload:BuildFromAssembly.Class1.HelloWorld
   fullName: BuildFromAssembly.Class1.HelloWorld
   nameWithType: Class1.HelloWorld
+- uid: BuildFromAssembly.Issue5432
+  name: Issue5432
+  href: api/BuildFromAssembly.Issue5432.html
+  commentId: T:BuildFromAssembly.Issue5432
+  fullName: BuildFromAssembly.Issue5432
+  nameWithType: Issue5432
+- uid: BuildFromAssembly.Issue5432.Name
+  name: Name
+  href: api/BuildFromAssembly.Issue5432.html#BuildFromAssembly_Issue5432_Name
+  commentId: P:BuildFromAssembly.Issue5432.Name
+  fullName: BuildFromAssembly.Issue5432.Name
+  nameWithType: Issue5432.Name
+- uid: BuildFromAssembly.Issue5432.Name*
+  name: Name
+  href: api/BuildFromAssembly.Issue5432.html#BuildFromAssembly_Issue5432_Name_
+  commentId: Overload:BuildFromAssembly.Issue5432.Name
+  fullName: BuildFromAssembly.Issue5432.Name
+  nameWithType: Issue5432.Name
 - uid: BuildFromCSharpSourceCode
   name: BuildFromCSharpSourceCode
   href: api/BuildFromCSharpSourceCode.html
