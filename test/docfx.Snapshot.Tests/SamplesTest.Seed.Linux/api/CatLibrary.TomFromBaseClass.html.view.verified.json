@@ -231,7 +231,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_TomFromBaseClass__ctor_System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -868,7 +868,7 @@
   "remarks": "",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_TomFromBaseClass",
   "hideTitleType": false,
   "hideSubtitle": false,

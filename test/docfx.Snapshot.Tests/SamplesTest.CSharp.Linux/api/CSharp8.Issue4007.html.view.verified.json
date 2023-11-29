@@ -230,7 +230,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Issue4007_SomeMethod_System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -362,7 +362,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp8_Issue4007_SomeOtherMethod",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1000,7 +1000,7 @@
   "remarks": "",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp8_Issue4007",
   "hideTitleType": false,
   "hideSubtitle": false,

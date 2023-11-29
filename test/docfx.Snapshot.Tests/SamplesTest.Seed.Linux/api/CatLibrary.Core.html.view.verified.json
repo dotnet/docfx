@@ -79,7 +79,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeChild",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -140,7 +140,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ExplicitLayoutClass",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -202,7 +202,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_Issue231",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -271,7 +271,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -339,7 +339,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeChildInterface",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -408,7 +408,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ColorType",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -476,7 +476,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeDelegate",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -546,7 +546,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_Core",
   "hideTitleType": false,
   "hideSubtitle": false,

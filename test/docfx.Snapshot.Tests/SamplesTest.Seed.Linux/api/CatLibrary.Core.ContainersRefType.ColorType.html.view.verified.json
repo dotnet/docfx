@@ -184,7 +184,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ColorType_Red",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -318,7 +318,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ColorType_Blue",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -452,7 +452,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_Core_ContainersRefType_ColorType_Yellow",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -591,7 +591,7 @@
   "remarks": "",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_Core_ContainersRefType_ColorType",
   "hideTitleType": false,
   "hideSubtitle": false,

@@ -229,7 +229,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_InitOnlySetters_PressureInMillibars",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -408,7 +408,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_InitOnlySetters_RecordedAt",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -587,7 +587,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp9_InitOnlySetters_TemperatureInCelsius",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1225,7 +1225,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp9_InitOnlySetters",
   "hideTitleType": false,
   "hideSubtitle": false,

@@ -28,6 +28,10 @@ This is a test class to have something for DocFX to document.
 
  [Class1.Issue8696Attribute](BuildFromProject.Class1.Issue8696Attribute.md)
 
+ [Issue8725](BuildFromProject.Issue8725.md)
+
+A nice class
+
  [Class1.Issue8948](BuildFromProject.Class1.Issue8948.md)
 
  [Class1.Test<T\>](BuildFromProject.Class1.Test\-1.md)

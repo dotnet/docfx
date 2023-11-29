@@ -184,7 +184,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CatLibrary_ICat_eat",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -680,7 +680,7 @@
   "remarks": "",
   "conceptual": "",
   "implements": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CatLibrary_ICat",
   "hideTitleType": false,
   "hideSubtitle": false,

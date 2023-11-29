@@ -680,7 +680,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp8_DefaultInterfaceMembers_Nested",
   "hideTitleType": false,
   "hideSubtitle": false,

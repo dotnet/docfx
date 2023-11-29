@@ -182,7 +182,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_IInheritdoc_Issue7629",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -321,7 +321,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_IInheritdoc",
   "hideTitleType": false,
   "hideSubtitle": false,

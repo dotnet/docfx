@@ -79,7 +79,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Issue8540_A",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -140,7 +140,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Issue8540_B",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -187,7 +187,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Issue8540",
   "hideTitleType": false,
   "hideSubtitle": false,

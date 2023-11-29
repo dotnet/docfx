@@ -182,7 +182,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue1651",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -314,7 +314,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue1887",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -448,7 +448,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L78",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue2623",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -580,7 +580,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L97",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue2723",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -714,7 +714,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L56",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue4017",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -846,7 +846,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L102",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue4392",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -978,7 +978,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L43",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue7484",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1115,7 +1115,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8764__1",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1519,7 +1519,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue9216",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1695,7 +1695,7 @@
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_XmlCommentIncludeTag.md&value=---%0Auid%3A%20BuildFromProject.Class1.XmlCommentIncludeTag%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L12",
           "conceptual": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_XmlCommentIncludeTag",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -2275,7 +2275,7 @@
   "remarks": "",
   "conceptual": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Class1",
   "hideTitleType": false,
   "hideSubtitle": false,

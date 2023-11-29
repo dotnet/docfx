@@ -182,7 +182,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8665__ctor",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -362,7 +362,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8665__ctor_System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -588,7 +588,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8665__ctor_System_Int32_System_Char_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -860,7 +860,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8665__ctor_System_Int32_System_Char_System_String_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1046,7 +1046,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8665_Bar",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1225,7 +1225,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8665_Baz",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1404,7 +1404,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8665_Foo",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1940,7 +1940,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Class1_Issue8665",
   "hideTitleType": false,
   "hideSubtitle": false,

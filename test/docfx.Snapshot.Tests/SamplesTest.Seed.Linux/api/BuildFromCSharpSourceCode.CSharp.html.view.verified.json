@@ -227,7 +227,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromCSharpSourceCode_CSharp_Main_System_String___",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -760,7 +760,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromCSharpSourceCode_CSharp",
   "hideTitleType": false,
   "hideSubtitle": false,

@@ -460,7 +460,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Class1_Issue8696Attribute__ctor_System_String_System_Int32_System_Int32_System_String___System_Boolean_System_Type_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -2761,7 +2761,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Class1_Issue8696Attribute",
   "hideTitleType": false,
   "hideSubtitle": false,

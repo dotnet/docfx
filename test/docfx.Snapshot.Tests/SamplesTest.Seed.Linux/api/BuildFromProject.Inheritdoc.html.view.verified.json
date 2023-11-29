@@ -226,7 +226,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L13",
           "remarks": "",
           "conceptual": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Dispose",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -358,7 +358,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue7628",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -534,7 +534,7 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L15",
           "remarks": "",
           "conceptual": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue7629",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1157,7 +1157,7 @@
   "remarks": "",
   "conceptual": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Inheritdoc",
   "hideTitleType": false,
   "hideSubtitle": false,

@@ -182,7 +182,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue7035_A",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -314,7 +314,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "BuildFromProject_Inheritdoc_Issue7035_B",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -850,7 +850,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "BuildFromProject_Inheritdoc_Issue7035",
   "hideTitleType": false,
   "hideSubtitle": false,

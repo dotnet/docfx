@@ -276,7 +276,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_PrimaryConstructors_BankAccount__ctor_System_String_System_String_",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -462,7 +462,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_PrimaryConstructors_BankAccount_AccountID",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -641,7 +641,7 @@
           "conceptual": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_PrimaryConstructors_BankAccount_Owner",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -869,7 +869,7 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "seealso": null,
+          "seealso": [],
           "id": "CSharp12_PrimaryConstructors_BankAccount_ToString",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -1476,7 +1476,7 @@
   "conceptual": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "CSharp12_PrimaryConstructors_BankAccount",
   "hideTitleType": false,
   "hideSubtitle": false,

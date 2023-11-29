@@ -64,7 +64,7 @@
           "syntax": "",
           "implements": "",
           "example": "",
-          "seealso": null,
+          "seealso": [],
           "id": "MyExample_ExampleClass",
           "hideTitleType": false,
           "hideSubtitle": false
@@ -236,7 +236,7 @@
   "syntax": "",
   "implements": "",
   "example": "",
-  "seealso": null,
+  "seealso": [],
   "id": "MyExample",
   "hideTitleType": false,
   "hideSubtitle": false,
