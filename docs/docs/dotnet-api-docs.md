@@ -148,7 +148,7 @@ To disable markdown parsing while processing XML tags, set `shouldSkipMarkup` to
 
 ## Filter APIs
 
-Docfx shows only the public accessible types and methods callable from another assembly. It also has a set of [default filtering rules](https://github.com/dotnet/docfx/blob/main/src/Docfx.Metadata.ManagedReference.Common/Filters/defaultfilterconfig.yml) that excludes common API patterns based on attributes such as `[EditorBrowsableAttribute]`.
+Docfx shows only the public accessible types and methods callable from another assembly. It also has a set of [default filtering rules](https://github.com/dotnet/docfx/blob/main/src/Docfx.Dotnet/Resources/defaultfilterconfig.yml) that excludes common API patterns based on attributes such as `[EditorBrowsableAttribute]`.
 
 To disable the default filtering rules, set the `disableDefaultFilter` property to `true`.
 
