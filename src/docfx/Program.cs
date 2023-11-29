@@ -17,13 +17,7 @@ internal class Program
         {
             config.SetApplicationName("docfx");
             config.UseStrictParsing();
-            config.SetExceptionHandler(e =>
-            {
-                if (e is CommandAppException cae && cae.Pretty is { } pretty)
-                    AnsiConsole.Write(pretty);
-                else
-                    AnsiConsole.WriteException(e, ExceptionFormats.ShortenEverything);
-            });
+            config.SetExceptionHandler(OnException);
 
             config.AddCommand<InitCommand>("init");
             config.AddCommand<BuildCommand>("build");
@@ -40,5 +34,29 @@ internal class Program
         });
 
         return app.Run(args);
+
+        static void OnException(Exception e)
+        {
+            if (e is CommandAppException cae)
+            {
+                if (cae.Pretty is { } pretty)
+                    AnsiConsole.Write(pretty);
+                else
+                    AnsiConsole.MarkupInterpolated($"[red]Error:[/] {e.Message}");
+            }
+            else
+            {
+                AnsiConsole.WriteException(e, new ExceptionSettings()
+                {
+                    Format = ExceptionFormats.ShortenEverything,
+                    Style = new()
+                    {
+                        ParameterName = Color.Grey,
+                        ParameterType = Color.Grey78,
+                        LineNumber = Color.Grey78,
+                    },
+                });
+            }
+        }
     }
 }
