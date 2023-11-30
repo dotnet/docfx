@@ -16,6 +16,7 @@
 - href: ../reference/docfx-json-reference.md
 - href: ../reference/docfx-cli-reference.md
 - href: ../reference/docfx-environment-variables-reference.md
+- href: ./api-page.yml
 
 - name: Archive
 - name: Templates
