@@ -30,7 +30,11 @@ public static class Docset
     /// <returns>A task to await for build completion.</returns>
     public static Task Build(string configPath, BuildOptions options)
     {
-        return Exec(configPath, (config, configDirectory) => RunBuild.Exec(config.build, options, configDirectory));
+        return Exec(configPath, (config, configDirectory) =>
+        {
+            RunBuild.Exec(config.build, options, configDirectory);
+            return Task.CompletedTask;
+        });
     }
 
     /// <summary>
@@ -51,10 +55,10 @@ public static class Docset
     /// <returns>A task to await for build completion.</returns>
     public static Task Pdf(string configPath, BuildOptions options)
     {
-        return Exec(configPath, (config, configDirectory) =>
+        return Exec(configPath, async (config, configDirectory) =>
         {
             if (config.build is not null)
-                PdfBuilder.Run(config.build, configDirectory);
+                await PdfBuilder.Run(config.build, configDirectory);
 
             if (config.pdf is not null)
                 RunPdf.Exec(config.pdf, options, configDirectory);
@@ -79,7 +83,7 @@ public static class Docset
     }
 
 
-    private static Task Exec(string configPath, Action<DocfxConfig, string> action)
+    private static async Task Exec(string configPath, Func<DocfxConfig, string, Task> action)
     {
         var consoleLogListener = new ConsoleLogListener();
         Logger.RegisterListener(consoleLogListener);
@@ -87,8 +91,7 @@ public static class Docset
         try
         {
             var (config, baseDirectory) = GetConfig(configPath);
-            action(config, baseDirectory);
-            return Task.CompletedTask;
+            await action(config, baseDirectory);
         }
         finally
         {
