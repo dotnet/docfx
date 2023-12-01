@@ -1,7 +1,7 @@
 #YamlMime:ApiPage
-title: API Page Reference
+title: API Page
 body:
-- h1: API Page Reference
+- h1: API Page
 - markdown: |
     The API page is a YAML file format designed to represent general API pages in a structured manner. It provides a diverse set of UX components commonly found in API pages, such as headings, markdown content, fact sheets, parameters, lists, inheritance chains, and code blocks:
 
@@ -348,7 +348,8 @@ body:
         description: A generic type.
       - name: state
         type: string
-        description: Whether to create a new instance.
+        default: 'new'
+        description: The operation status.
         preview: true
       - name: removed
         type: boolean
@@ -362,7 +363,8 @@ body:
     description: A generic type.
   - name: state
     type: string
-    description: Whether to create a new instance.
+    default: 'new'
+    description: The operation status.
     preview: true
   - name: removed
     type: boolean
