@@ -7459,15 +7459,6 @@
         },
         {
           "Goto": {
-            "PageNumber": 64,
-            "Type": 2,
-            "Coordinates": {
-              "Top": 0
-            }
-          }
-        },
-        {
-          "Goto": {
             "PageNumber": 97,
             "Type": 2,
             "Coordinates": {
