@@ -41,7 +41,7 @@ partial class DotnetApiCatalog
         {
             foreach (var file in unsupportedFiles)
             {
-                Logger.LogWarning($"Skip unsupported file {file}");
+                Logger.LogWarning($"Skip unsupported file {file.NormalizedPath}");
             }
         }
 

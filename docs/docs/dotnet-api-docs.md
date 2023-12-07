@@ -66,7 +66,7 @@ If [source link](https://learn.microsoft.com/en-us/dotnet/standard/library-guida
 
 ## Generate from projects or solutions
 
-When the file extension is `.csproj`, `.vbproj` or `.sln`, docfx uses [`MSBuildWorkspace`](https://gist.github.com/DustinCampbell/32cd69d04ea1c08a16ae5c4cd21dd3a3) to perform a design-time build of the projects before generating API docs.
+When the file extension is `.csproj`, `.vbproj`, `.sln` or `slnf`, docfx uses [`MSBuildWorkspace`](https://gist.github.com/DustinCampbell/32cd69d04ea1c08a16ae5c4cd21dd3a3) to perform a design-time build of the projects before generating API docs.
 
 In order to successfully load an MSBuild project, .NET Core SDK must be installed and available globally. The installation must have the necessary workloads and components to support the projects you'll be loading.
 

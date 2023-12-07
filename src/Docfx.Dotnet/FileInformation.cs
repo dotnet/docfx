@@ -46,6 +46,7 @@ internal class FileInformation
         switch (extension.ToLowerInvariant())
         {
             case ".sln":
+            case ".slnf":
                 return FileType.Solution;
             case ".csproj":
             case ".vbproj":
