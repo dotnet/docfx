@@ -187,7 +187,8 @@
               "href": "../api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
               "topicHref": "../api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
               "topicUid": "BuildFromProject.Inheritdoc.Issue6366.Class1`1",
-              "name.vb": "Inheritdoc.Issue6366.Class1(Of T)"
+              "name.vb": "Inheritdoc.Issue6366.Class1(Of T)",
+              "name.": null
             },
             {
               "name": "Inheritdoc.Issue6366.Class2",
@@ -315,7 +316,8 @@
               "href": "../api/CatLibrary.Cat-2.html",
               "topicHref": "../api/CatLibrary.Cat-2.html",
               "topicUid": "CatLibrary.Cat`2",
-              "name.vb": "Cat(Of T, K)"
+              "name.vb": "Cat(Of T, K)",
+              "name.": null
             },
             {
               "name": "Complex<T, J>",
