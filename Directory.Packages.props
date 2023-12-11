@@ -41,7 +41,7 @@
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.4.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23531-01" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.3.0" />
-    <PackageVersion Include="Verify.Xunit" Version="22.5.0" />
+    <PackageVersion Include="Verify.Xunit" Version="22.8.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
     <PackageVersion Include="xunit" Version="2.6.2" />
   </ItemGroup>
