@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageVersion Include="HtmlAgilityPack" Version="1.11.54" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.2.0.7535" />
-    <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
+    <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.7.0" />
     <PackageVersion Include="Jint" Version="3.0.0-beta-2056" />
     <PackageVersion Include="JsonSchema.Net" Version="5.4.0" />
     <PackageVersion Include="Markdig" Version="0.33.0" />
