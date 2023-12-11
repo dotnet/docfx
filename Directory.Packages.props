@@ -38,7 +38,7 @@
     <!-- Test only -->
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
-    <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.4.0" />
+    <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.5.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23531-01" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.3.0" />
     <PackageVersion Include="Verify.Xunit" Version="22.5.0" />
