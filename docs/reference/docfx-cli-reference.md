@@ -57,7 +57,7 @@ docfx metadata [<projects>] [--property <n1>=<v1>;<n2>=<v2>]
     `<projects>` specifies the projects to have metadata extracted. There are several approaches to extract language metadata.
 
     1. From a supported file or file list
-      Supported file extensions include `.csproj`, `.vbproj`, `.sln`, `project.json`, `dll` assembly file, `.cs` source file and `.vb` source file.
+      Supported file extensions include `.csproj`, `.vbproj`, `.sln`, `.slnf`, `exe`, `dll` assembly file, `.cs` source file and `.vb` source file.
 
       Multiple files are separated by whitespace, e.g. `docfx metadata Class1.cs a.csproj`
 
