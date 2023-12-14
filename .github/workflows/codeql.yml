@@ -20,7 +20,7 @@ jobs:
         dotnet-version: |
           8.x
 
-    - uses: github/codeql-action/init@v2
+    - uses: github/codeql-action/init@v3
       with:
         languages: ['csharp', 'javascript']
 
@@ -31,4 +31,4 @@ jobs:
 
     - run: dotnet build -c Release
 
-    - uses: github/codeql-action/analyze@v2
+    - uses: github/codeql-action/analyze@v3
