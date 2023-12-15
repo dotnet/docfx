@@ -482,28 +482,6 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             result.Metadata[Constants.MetadataName.Version] = version;
         }
 
-        if (item.Names.Count > 0)
-        {
-            foreach (var pair in item.Names)
-            {
-                result.Metadata[Constants.ExtensionMemberPrefix.Name + pair.Key] = pair.Value;
-            }
-        }
-        if (item.FullNames.Count > 0)
-        {
-            foreach (var pair in item.FullNames)
-            {
-                result.Metadata[Constants.ExtensionMemberPrefix.FullName + pair.Key] = pair.Value;
-            }
-        }
-        if (item.NamesWithType.Count > 0)
-        {
-            foreach (var pair in item.NamesWithType)
-            {
-                result.Metadata[Constants.ExtensionMemberPrefix.NameWithType + pair.Key] = pair.Value;
-            }
-        }
-
         if (overwriteMetadata != null)
         {
             foreach (var pair in overwriteMetadata)

@@ -114,15 +114,6 @@ class TocDocumentProcessor : DisposableDocumentProcessor
                 {
                     item.Name = xref.Name;
                 }
-
-                if (string.IsNullOrEmpty(item.NameForCSharp) && xref.TryGetXrefStringValue("name.csharp", out var nameForCSharp))
-                {
-                    item.NameForCSharp = nameForCSharp;
-                }
-                if (string.IsNullOrEmpty(item.NameForVB) && xref.TryGetXrefStringValue("name.vb", out var nameForVB))
-                {
-                    item.NameForVB = nameForVB;
-                }
             }
         }
     }

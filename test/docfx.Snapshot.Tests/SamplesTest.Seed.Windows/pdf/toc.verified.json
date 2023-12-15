@@ -161,8 +161,7 @@
               "name": "Class1.Test<T>",
               "href": "../api/BuildFromProject.Class1.Test-1.html",
               "topicHref": "../api/BuildFromProject.Class1.Test-1.html",
-              "topicUid": "BuildFromProject.Class1.Test`1",
-              "name.vb": "Class1.Test(Of T)"
+              "topicUid": "BuildFromProject.Class1.Test`1"
             },
             {
               "name": "IInheritdoc",
@@ -186,8 +185,7 @@
               "name": "Inheritdoc.Issue6366.Class1<T>",
               "href": "../api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
               "topicHref": "../api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
-              "topicUid": "BuildFromProject.Inheritdoc.Issue6366.Class1`1",
-              "name.vb": "Inheritdoc.Issue6366.Class1(Of T)"
+              "topicUid": "BuildFromProject.Inheritdoc.Issue6366.Class1`1"
             },
             {
               "name": "Inheritdoc.Issue6366.Class2",
@@ -307,29 +305,25 @@
               "name": "CatException<T>",
               "href": "../api/CatLibrary.CatException-1.html",
               "topicHref": "../api/CatLibrary.CatException-1.html",
-              "topicUid": "CatLibrary.CatException`1",
-              "name.vb": "CatException(Of T)"
+              "topicUid": "CatLibrary.CatException`1"
             },
             {
               "name": "Cat<T, K>",
               "href": "../api/CatLibrary.Cat-2.html",
               "topicHref": "../api/CatLibrary.Cat-2.html",
-              "topicUid": "CatLibrary.Cat`2",
-              "name.vb": "Cat(Of T, K)"
+              "topicUid": "CatLibrary.Cat`2"
             },
             {
               "name": "Complex<T, J>",
               "href": "../api/CatLibrary.Complex-2.html",
               "topicHref": "../api/CatLibrary.Complex-2.html",
-              "topicUid": "CatLibrary.Complex`2",
-              "name.vb": "Complex(Of T, J)"
+              "topicUid": "CatLibrary.Complex`2"
             },
             {
               "name": "FakeDelegate<T>",
               "href": "../api/CatLibrary.FakeDelegate-1.html",
               "topicHref": "../api/CatLibrary.FakeDelegate-1.html",
-              "topicUid": "CatLibrary.FakeDelegate`1",
-              "name.vb": "FakeDelegate(Of T)"
+              "topicUid": "CatLibrary.FakeDelegate`1"
             },
             {
               "name": "IAnimal",
@@ -353,8 +347,7 @@
               "name": "MRefDelegate<K, T, L>",
               "href": "../api/CatLibrary.MRefDelegate-3.html",
               "topicHref": "../api/CatLibrary.MRefDelegate-3.html",
-              "topicUid": "CatLibrary.MRefDelegate`3",
-              "name.vb": "MRefDelegate(Of K, T, L)"
+              "topicUid": "CatLibrary.MRefDelegate`3"
             },
             {
               "name": "MRefNormalDelegate",

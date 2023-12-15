@@ -27,37 +27,6 @@ public class TocItemViewModel
     [JsonPropertyName(Constants.PropertyName.DisplayName)]
     public string DisplayName { get; set; }
 
-    [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
-    [Newtonsoft.Json.JsonIgnore]
-    [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> NameInDevLangs { get; } = new SortedList<string, string>();
-
-    [YamlIgnore]
-    [Newtonsoft.Json.JsonIgnore]
-    [System.Text.Json.Serialization.JsonIgnore]
-    public string NameForCSharp
-    {
-        get
-        {
-            NameInDevLangs.TryGetValue(Constants.DevLang.CSharp, out string result);
-            return result;
-        }
-        set { NameInDevLangs[Constants.DevLang.CSharp] = value; }
-    }
-
-    [YamlIgnore]
-    [Newtonsoft.Json.JsonIgnore]
-    [System.Text.Json.Serialization.JsonIgnore]
-    public string NameForVB
-    {
-        get
-        {
-            NameInDevLangs.TryGetValue(Constants.DevLang.VB, out string result);
-            return result;
-        }
-        set { NameInDevLangs[Constants.DevLang.VB] = value; }
-    }
-
     [YamlMember(Alias = Constants.PropertyName.Href)]
     [JsonProperty(Constants.PropertyName.Href)]
     [JsonPropertyName(Constants.PropertyName.Href)]
@@ -147,12 +116,7 @@ public class TocItemViewModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
-    public CompositeDictionary MetadataJson =>
-        CompositeDictionary
-            .CreateBuilder()
-            .Add(Constants.ExtensionMemberPrefix.Name, NameInDevLangs, JTokenConverter.Convert<string>)
-            .Add(string.Empty, Metadata)
-            .Create();
+    public CompositeDictionary MetadataJson => CompositeDictionary.CreateBuilder().Add(string.Empty, Metadata).Create();
 
     public TocItemViewModel Clone()
     {
