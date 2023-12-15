@@ -42,12 +42,12 @@ jobs:
     - run: zip -r ../../bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip .
       working-directory: drop/publish/osx-x64
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: nuget
         path: drop/nuget
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: bin
         path: drop/bin
@@ -79,7 +79,7 @@ jobs:
         --azure-key-vault-client-id "${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}"
         --azure-key-vault-client-secret "${{ secrets.SIGN_KEY_VAULT_CLIENT_SECRET }}"
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: nuget-signed
         path: drop/nuget
