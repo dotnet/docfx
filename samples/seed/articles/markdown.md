@@ -166,3 +166,13 @@ REST API content, independent of platform...
 
 ---
 ```
+
+## Details
+
+<details>
+<summary>Demo</summary>
+
+```
+root@server# apt-get install nano
+```
+</details>
