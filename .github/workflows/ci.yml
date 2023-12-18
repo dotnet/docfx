@@ -52,7 +52,7 @@ jobs:
       with:
         path: docs/_site
   
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: ${{ failure() && matrix.os == 'ubuntu-latest' }}
       with:
         name: dump
