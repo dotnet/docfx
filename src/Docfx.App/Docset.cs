@@ -59,9 +59,6 @@ public static class Docset
         {
             if (config.build is not null)
                 await PdfBuilder.Run(config.build, configDirectory);
-
-            if (config.pdf is not null)
-                RunPdf.Exec(config.pdf, options, configDirectory);
         });
     }
 

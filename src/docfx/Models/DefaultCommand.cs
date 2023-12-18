@@ -46,12 +46,6 @@ class DefaultCommand : Command<DefaultCommand.Options>
                 PdfBuilder.CreatePdf(serveDirectory).GetAwaiter().GetResult();
             }
 
-            if (config.pdf is not null)
-            {
-                BuildCommand.MergeOptionsToConfig(options, config.pdf, configDirectory);
-                RunPdf.Exec(config.pdf, new(), configDirectory, outputFolder);
-            }
-
             if (options.Serve && serveDirectory is not null)
             {
                 RunServe.Exec(serveDirectory, options.Host, options.Port, options.OpenBrowser, options.OpenFile);

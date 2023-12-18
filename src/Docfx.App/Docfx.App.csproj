@@ -37,7 +37,6 @@
     <ProjectReference Include="..\Docfx.Build.SchemaDriven\Docfx.Build.SchemaDriven.csproj" />
     <ProjectReference Include="..\Docfx.Build.UniversalReference\Docfx.Build.UniversalReference.csproj" />
     <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
-    <ProjectReference Include="..\Docfx.HtmlToPdf\Docfx.HtmlToPdf.csproj" />
     <ProjectReference Include="..\Docfx.MarkdigEngine\Docfx.MarkdigEngine.csproj" />
     <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
     <ProjectReference Include="..\Docfx.Glob\Docfx.Glob.csproj" />

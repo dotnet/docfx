@@ -48,7 +48,6 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 - Install [Visual Studio 2022 (Community or higher)](https://www.visualstudio.com/) and make sure you have the latest updates.
 - Install [.NET SDK](https://dotnet.microsoft.com/download/dotnet) 6.x, 7.x and 8.x.
 - Install NodeJS (18.x.x).
-- Optional: Install wkhtmltopdf on Windows to test PDF using `choco install wkhtmltopdf`.
 
 ### Build and Test
 

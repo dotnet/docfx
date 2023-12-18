@@ -93,15 +93,12 @@ function copyToDist() {
 
   cpSync('common', join(distdir, 'common'), { recursive: true, overwrite: true, filter })
   cpSync('common', join(distdir, 'default'), { recursive: true, overwrite: true, filter })
-  cpSync('common', join(distdir, 'pdf.default'), { recursive: true, overwrite: true, filter })
   cpSync('common', join(distdir, 'statictoc'), { recursive: true, overwrite: true, filter })
 
   cpSync('default', join(distdir, 'default'), { recursive: true, overwrite: true, filter })
-  cpSync('default', join(distdir, 'pdf.default'), { recursive: true, overwrite: true, filter })
   cpSync('default', join(distdir, 'statictoc'), { recursive: true, overwrite: true, filter: staticTocFilter })
 
   cpSync('default(zh-cn)', join(distdir, 'default(zh-cn)'), { recursive: true, overwrite: true, filter })
-  cpSync('pdf.default', join(distdir, 'pdf.default'), { recursive: true, overwrite: true, filter })
   cpSync('statictoc', join(distdir, 'statictoc'), { recursive: true, overwrite: true, filter })
   cpSync('modern', join(distdir, 'modern'), { recursive: true, overwrite: true, filter })
 
