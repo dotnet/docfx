@@ -87,6 +87,8 @@ public static class GitUtility
         }
     }
 
+    private const string GitDir = "gitdir: ";
+
     private static Repo? GetRepoInfo(string? directory)
     {
         if (string.IsNullOrEmpty(directory))
@@ -94,17 +96,18 @@ public static class GitUtility
 
         return s_cache.GetOrAdd(directory, _ =>
         {
-            if (IsGitRoot(directory))
+            var gitRoot = GetRepoDatabase(directory);
+            if (gitRoot != null)
             {
-                return GetRepoInfoCore(directory);
+                return GetRepoInfoCore(directory, gitRoot);
             }
 
             return GetRepoInfo(Path.GetDirectoryName(directory));
         });
 
-        static Repo? GetRepoInfoCore(string directory)
+        static Repo? GetRepoInfoCore(string directory, string gitRoot)
         {
-            var remoteUrls = ParseRemoteUrls(directory).ToArray();
+            var remoteUrls = ParseRemoteUrls(directory, gitRoot).ToArray();
             var url = remoteUrls.FirstOrDefault(r => r.key == "origin").value ?? remoteUrls.FirstOrDefault().value;
             if (string.IsNullOrEmpty(url))
                 return null;
@@ -129,15 +132,26 @@ public static class GitUtility
             }
         }
 
-        static bool IsGitRoot(string directory)
+        static string? GetRepoDatabase(string directory)
         {
             var gitPath = Path.Combine(directory, ".git");
-            return Directory.Exists(gitPath);
+            if (Directory.Exists(gitPath))
+                return gitPath;
+
+            if (File.Exists(gitPath))
+            {
+                var firstLine = File.ReadLines(gitPath).FirstOrDefault();
+                if (firstLine != null && firstLine.StartsWith(GitDir))
+                    return Path.Combine(directory, firstLine.Substring(GitDir.Length));
+            }
+
+            return null;
+
         }
 
-        static IEnumerable<(string key, string value)> ParseRemoteUrls(string directory)
+        static IEnumerable<(string key, string value)> ParseRemoteUrls(string directory, string gitRoot)
         {
-            var configPath = Path.Combine(directory, ".git", "config");
+            var configPath = Path.Combine(gitRoot, "config");
             if (!File.Exists(configPath))
                 yield break;
 

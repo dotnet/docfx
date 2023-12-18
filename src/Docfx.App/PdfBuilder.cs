@@ -153,6 +153,7 @@ static class PdfBuilder
 
                 await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
                 await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
+                await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
                 return await page.PdfAsync();
             }
