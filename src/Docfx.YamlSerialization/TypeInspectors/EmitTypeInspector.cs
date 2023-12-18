@@ -11,7 +11,7 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.YamlSerialization.TypeInspectors;
 
-public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
+class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 {
     private static readonly ConcurrentDictionary<Type, CachingItem> _cache = new();
     private static readonly ConcurrentDictionary<Type, List<IPropertyDescriptor>> _propertyDescriptorCache = new();

@@ -11,7 +11,7 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.YamlSerialization.NodeDeserializers;
 
-public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
+class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
 {
     private static readonly MethodInfo DeserializeHelperMethod =
         typeof(EmitGenericDictionaryNodeDeserializer).GetMethod(nameof(DeserializeHelper));

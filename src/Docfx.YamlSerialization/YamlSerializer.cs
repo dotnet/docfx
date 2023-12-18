@@ -20,15 +20,12 @@ namespace Docfx.YamlSerialization;
 public class YamlSerializer
 {
     internal IList<IYamlTypeConverter> Converters { get; set; }
-    private readonly SerializationOptions _options;
-    private readonly INamingConvention _namingConvention;
+    private readonly SerializationOptions _options = SerializationOptions.DisableAliases;
+    private readonly INamingConvention _namingConvention = NullNamingConvention.Instance;
     private readonly ITypeResolver _typeResolver;
 
-    public YamlSerializer(SerializationOptions options = SerializationOptions.None, INamingConvention namingConvention = null)
+    public YamlSerializer()
     {
-        _options = options;
-        _namingConvention = namingConvention ?? NullNamingConvention.Instance;
-
         Converters = new List<IYamlTypeConverter>();
         foreach (IYamlTypeConverter yamlTypeConverter in YamlTypeConverters.BuiltInConverters)
         {
@@ -47,14 +44,7 @@ public class YamlSerializer
 
     public void Serialize(TextWriter writer, object graph)
     {
-        Serialize(new Emitter(writer), graph);
-    }
-
-    public void Serialize(IEmitter emitter, object graph)
-    {
-        ArgumentNullException.ThrowIfNull(emitter);
-
-        EmitDocument(emitter, new BetterObjectDescriptor(graph, graph != null ? graph.GetType() : typeof(object), typeof(object)));
+        EmitDocument(new Emitter(writer), new BetterObjectDescriptor(graph, graph != null ? graph.GetType() : typeof(object), typeof(object)));
     }
 
     private void EmitDocument(IEmitter emitter, IObjectDescriptor graph)
@@ -96,7 +86,7 @@ public class YamlSerializer
         return emittingVisitor;
     }
 
-    public void SerializeValue(IEmitter emitter, object value, Type type)
+    private void SerializeValue(IEmitter emitter, object value, Type type)
     {
         var graph = type != null
             ? new BetterObjectDescriptor(value, type, type)

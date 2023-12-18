@@ -65,7 +65,7 @@ public class OverwriteDocumentReader
         {
             YamlUtility.Serialize(sw, item);
             using var sr = new StringReader(sw.ToString());
-            var serializer = new YamlDeserializer(ignoreUnmatched: true);
+            var serializer = new YamlDeserializer();
             var placeholderValueDeserializer = new PlaceholderValueDeserializer(serializer.ValueDeserializer, item.Conceptual);
             item = serializer.Deserialize<T>(sr, placeholderValueDeserializer);
             if (placeholderValueDeserializer.ContainPlaceholder)

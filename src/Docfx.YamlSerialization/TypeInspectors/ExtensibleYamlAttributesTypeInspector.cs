@@ -5,7 +5,7 @@ namespace Docfx.YamlSerialization.TypeInspectors;
 /// <summary>
 /// Applies the <see cref="YamlMemberAttribute"/> to another <see cref="ITypeInspector"/>.
 /// </summary>
-public sealed class ExtensibleYamlAttributesTypeInspector : ExtensibleTypeInspectorSkeleton
+sealed class ExtensibleYamlAttributesTypeInspector : ExtensibleTypeInspectorSkeleton
 {
     private readonly IExtensibleTypeInspector innerTypeDescriptor;
 

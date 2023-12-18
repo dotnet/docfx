@@ -5,7 +5,7 @@ namespace Docfx.YamlSerialization;
 
 /// <summary>Options that control the serialization process.</summary>
 [Flags]
-public enum SerializationOptions
+enum SerializationOptions
 {
     /// <summary>Serializes using the default options</summary>
     None = 0,

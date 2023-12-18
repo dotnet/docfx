@@ -8,7 +8,7 @@ using YamlDotNet.Serialization.Utilities;
 
 namespace Docfx.YamlSerialization.NodeDeserializers;
 
-public sealed class ExtensibleObjectNodeDeserializer : INodeDeserializer
+class ExtensibleObjectNodeDeserializer : INodeDeserializer
 {
     private readonly IObjectFactory _objectFactory;
     private readonly ITypeInspector _typeDescriptor;

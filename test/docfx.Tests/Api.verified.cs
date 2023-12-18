@@ -4588,134 +4588,15 @@ namespace Docfx.YamlSerialization
         public ExtensibleMemberAttribute(string prefix) { }
         public string Prefix { get; }
     }
-    [System.Flags]
-    public enum SerializationOptions
-    {
-        None = 0,
-        Roundtrip = 1,
-        DisableAliases = 2,
-        EmitDefaults = 4,
-        JsonCompatible = 8,
-        DefaultToStaticType = 16,
-    }
     public sealed class YamlDeserializer
     {
-        public YamlDeserializer(YamlDotNet.Serialization.IObjectFactory objectFactory = null, YamlDotNet.Serialization.INamingConvention namingConvention = null, bool ignoreUnmatched = false, bool ignoreNotFoundAnchor = true) { }
-        public System.Collections.Generic.IList<YamlDotNet.Serialization.INodeDeserializer> NodeDeserializers { get; }
-        public System.Collections.Generic.IList<YamlDotNet.Serialization.INodeTypeResolver> TypeResolvers { get; }
+        public YamlDeserializer() { }
         public YamlDotNet.Serialization.IValueDeserializer ValueDeserializer { get; }
-        public object Deserialize(System.IO.TextReader input, YamlDotNet.Serialization.IValueDeserializer deserializer = null) { }
-        public object Deserialize(YamlDotNet.Core.IParser reader, YamlDotNet.Serialization.IValueDeserializer deserializer = null) { }
-        public object Deserialize(System.IO.TextReader input, System.Type type, YamlDotNet.Serialization.IValueDeserializer deserializer = null) { }
-        public object Deserialize(YamlDotNet.Core.IParser parser, System.Type type, YamlDotNet.Serialization.IValueDeserializer deserializer = null) { }
         public T Deserialize<T>(System.IO.TextReader input, YamlDotNet.Serialization.IValueDeserializer deserializer = null) { }
-        public T Deserialize<T>(YamlDotNet.Core.IParser reader, YamlDotNet.Serialization.IValueDeserializer deserializer = null) { }
-        public void RegisterTagMapping(string tag, System.Type type) { }
-        public void RegisterTypeConverter(YamlDotNet.Serialization.IYamlTypeConverter typeConverter) { }
     }
     public class YamlSerializer
     {
-        public YamlSerializer(Docfx.YamlSerialization.SerializationOptions options = 0, YamlDotNet.Serialization.INamingConvention namingConvention = null) { }
+        public YamlSerializer() { }
         public void Serialize(System.IO.TextWriter writer, object graph) { }
-        public void Serialize(YamlDotNet.Core.IEmitter emitter, object graph) { }
-        public void SerializeValue(YamlDotNet.Core.IEmitter emitter, object value, System.Type type) { }
-    }
-}
-namespace Docfx.YamlSerialization.NodeDeserializers
-{
-    public class EmitArrayNodeDeserializer : YamlDotNet.Serialization.INodeDeserializer
-    {
-        public EmitArrayNodeDeserializer() { }
-        public static TItem[] DeserializeHelper<TItem>(YamlDotNet.Core.IParser reader, System.Type expectedType, System.Func<YamlDotNet.Core.IParser, System.Type, object> nestedObjectDeserializer) { }
-    }
-    public class EmitGenericCollectionNodeDeserializer : YamlDotNet.Serialization.INodeDeserializer
-    {
-        public EmitGenericCollectionNodeDeserializer(YamlDotNet.Serialization.IObjectFactory objectFactory) { }
-        public static void DeserializeHelper<TItem>(YamlDotNet.Core.IParser reader, System.Type expectedType, System.Func<YamlDotNet.Core.IParser, System.Type, object> nestedObjectDeserializer, System.Collections.Generic.ICollection<TItem> result) { }
-    }
-    public class EmitGenericDictionaryNodeDeserializer : YamlDotNet.Serialization.INodeDeserializer
-    {
-        public EmitGenericDictionaryNodeDeserializer(YamlDotNet.Serialization.IObjectFactory objectFactory) { }
-        public static void DeserializeHelper<TKey, TValue>(YamlDotNet.Core.IParser reader, System.Type expectedType, System.Func<YamlDotNet.Core.IParser, System.Type, object> nestedObjectDeserializer, System.Collections.Generic.IDictionary<TKey, TValue> result) { }
-    }
-    public sealed class ExtensibleObjectNodeDeserializer : YamlDotNet.Serialization.INodeDeserializer
-    {
-        public ExtensibleObjectNodeDeserializer(YamlDotNet.Serialization.IObjectFactory objectFactory, YamlDotNet.Serialization.ITypeInspector typeDescriptor, bool ignoreUnmatched) { }
-    }
-}
-namespace Docfx.YamlSerialization.ObjectDescriptors
-{
-    public class BetterObjectDescriptor : YamlDotNet.Serialization.IObjectDescriptor
-    {
-        public BetterObjectDescriptor(object value, System.Type type, System.Type staticType) { }
-        public BetterObjectDescriptor(object value, System.Type type, System.Type staticType, YamlDotNet.Core.ScalarStyle scalarStyle) { }
-        public YamlDotNet.Core.ScalarStyle ScalarStyle { get; }
-        public System.Type StaticType { get; }
-        public System.Type Type { get; }
-        public object Value { get; }
-    }
-}
-namespace Docfx.YamlSerialization.ObjectFactories
-{
-    public class DefaultEmitObjectFactory : YamlDotNet.Serialization.ObjectFactories.ObjectFactoryBase
-    {
-        public DefaultEmitObjectFactory() { }
-        public override object Create(System.Type type) { }
-    }
-}
-namespace Docfx.YamlSerialization.ObjectGraphTraversalStrategies
-{
-    public class FullObjectGraphTraversalStrategy : YamlDotNet.Serialization.IObjectGraphTraversalStrategy
-    {
-        public FullObjectGraphTraversalStrategy(Docfx.YamlSerialization.YamlSerializer serializer, YamlDotNet.Serialization.ITypeInspector typeDescriptor, YamlDotNet.Serialization.ITypeResolver typeResolver, int maxRecursion, YamlDotNet.Serialization.INamingConvention namingConvention) { }
-        protected Docfx.YamlSerialization.YamlSerializer Serializer { get; }
-        protected virtual void Traverse<TContext>(YamlDotNet.Serialization.IObjectDescriptor value, YamlDotNet.Serialization.IObjectGraphVisitor<TContext> visitor, int currentDepth, TContext context) { }
-        protected virtual void TraverseDictionary<TContext>(YamlDotNet.Serialization.IObjectDescriptor dictionary, object visitor, int currentDepth, object context) { }
-        protected virtual void TraverseObject<TContext>(YamlDotNet.Serialization.IObjectDescriptor value, YamlDotNet.Serialization.IObjectGraphVisitor<TContext> visitor, int currentDepth, TContext context) { }
-        protected virtual void TraverseProperties<TContext>(YamlDotNet.Serialization.IObjectDescriptor value, object visitor, int currentDepth, object context) { }
-        public static void TraverseGenericDictionaryHelper<TKey, TValue, TContext>(Docfx.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy self, System.Collections.Generic.IDictionary<TKey, TValue> dictionary, object visitor, int currentDepth, YamlDotNet.Serialization.INamingConvention namingConvention, object context) { }
-    }
-    public class RoundtripObjectGraphTraversalStrategy : Docfx.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy
-    {
-        public RoundtripObjectGraphTraversalStrategy(Docfx.YamlSerialization.YamlSerializer serializer, YamlDotNet.Serialization.ITypeInspector typeDescriptor, YamlDotNet.Serialization.ITypeResolver typeResolver, int maxRecursion) { }
-        protected override void TraverseProperties<TContext>(YamlDotNet.Serialization.IObjectDescriptor value, object visitor, int currentDepth, object context) { }
-    }
-}
-namespace Docfx.YamlSerialization.TypeInspectors
-{
-    public class EmitTypeInspector : Docfx.YamlSerialization.TypeInspectors.ExtensibleTypeInspectorSkeleton
-    {
-        public EmitTypeInspector(YamlDotNet.Serialization.ITypeResolver resolver) { }
-        public override System.Collections.Generic.IEnumerable<YamlDotNet.Serialization.IPropertyDescriptor> GetProperties(System.Type type, object container) { }
-        public override YamlDotNet.Serialization.IPropertyDescriptor GetProperty(System.Type type, object container, string name) { }
-    }
-    public sealed class ExtensibleNamingConventionTypeInspector : Docfx.YamlSerialization.TypeInspectors.ExtensibleTypeInspectorSkeleton
-    {
-        public ExtensibleNamingConventionTypeInspector(Docfx.YamlSerialization.TypeInspectors.IExtensibleTypeInspector innerTypeDescriptor, YamlDotNet.Serialization.INamingConvention namingConvention) { }
-        public override System.Collections.Generic.IEnumerable<YamlDotNet.Serialization.IPropertyDescriptor> GetProperties(System.Type type, object container) { }
-        public override YamlDotNet.Serialization.IPropertyDescriptor GetProperty(System.Type type, object container, string name) { }
-    }
-    public sealed class ExtensibleReadableAndWritablePropertiesTypeInspector : Docfx.YamlSerialization.TypeInspectors.ExtensibleTypeInspectorSkeleton
-    {
-        public ExtensibleReadableAndWritablePropertiesTypeInspector(Docfx.YamlSerialization.TypeInspectors.IExtensibleTypeInspector innerTypeDescriptor) { }
-        public override System.Collections.Generic.IEnumerable<YamlDotNet.Serialization.IPropertyDescriptor> GetProperties(System.Type type, object container) { }
-        public override YamlDotNet.Serialization.IPropertyDescriptor GetProperty(System.Type type, object container, string name) { }
-    }
-    public abstract class ExtensibleTypeInspectorSkeleton : Docfx.YamlSerialization.TypeInspectors.IExtensibleTypeInspector, YamlDotNet.Serialization.ITypeInspector
-    {
-        protected ExtensibleTypeInspectorSkeleton() { }
-        public abstract System.Collections.Generic.IEnumerable<YamlDotNet.Serialization.IPropertyDescriptor> GetProperties(System.Type type, object container);
-        public virtual YamlDotNet.Serialization.IPropertyDescriptor GetProperty(System.Type type, object container, string name) { }
-        public YamlDotNet.Serialization.IPropertyDescriptor GetProperty(System.Type type, object container, string name, bool ignoreUnmatched) { }
-    }
-    public sealed class ExtensibleYamlAttributesTypeInspector : Docfx.YamlSerialization.TypeInspectors.ExtensibleTypeInspectorSkeleton
-    {
-        public ExtensibleYamlAttributesTypeInspector(Docfx.YamlSerialization.TypeInspectors.IExtensibleTypeInspector innerTypeDescriptor) { }
-        public override System.Collections.Generic.IEnumerable<YamlDotNet.Serialization.IPropertyDescriptor> GetProperties(System.Type type, object container) { }
-        public override YamlDotNet.Serialization.IPropertyDescriptor GetProperty(System.Type type, object container, string name) { }
-    }
-    public interface IExtensibleTypeInspector : YamlDotNet.Serialization.ITypeInspector
-    {
-        YamlDotNet.Serialization.IPropertyDescriptor GetProperty(System.Type type, object container, string name);
     }
 }

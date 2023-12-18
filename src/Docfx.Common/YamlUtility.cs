@@ -12,8 +12,8 @@ namespace Docfx.Common;
 
 public static class YamlUtility
 {
-    private static readonly ThreadLocal<YamlSerializer> serializer = new(() => new YamlSerializer(SerializationOptions.DisableAliases));
-    private static readonly ThreadLocal<YamlDeserializer> deserializer = new(() => new YamlDeserializer(ignoreUnmatched: true));
+    private static readonly ThreadLocal<YamlSerializer> serializer = new(() => new YamlSerializer());
+    private static readonly ThreadLocal<YamlDeserializer> deserializer = new(() => new YamlDeserializer());
 
     public static void Serialize(TextWriter writer, object graph)
     {

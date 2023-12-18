@@ -10,12 +10,10 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.YamlSerialization.NodeDeserializers;
 
-public class EmitArrayNodeDeserializer : INodeDeserializer
+class EmitArrayNodeDeserializer : INodeDeserializer
 {
-    private static readonly MethodInfo DeserializeHelperMethod =
-        typeof(EmitArrayNodeDeserializer).GetMethod(nameof(DeserializeHelper));
-    private static readonly ConcurrentDictionary<Type, Func<IParser, Type, Func<IParser, Type, object>, object>> _funcCache =
-        new();
+    private static readonly MethodInfo DeserializeHelperMethod = typeof(EmitArrayNodeDeserializer).GetMethod(nameof(DeserializeHelper));
+    private static readonly ConcurrentDictionary<Type, Func<IParser, Type, Func<IParser, Type, object>, object>> _funcCache = new();
 
     bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
     {

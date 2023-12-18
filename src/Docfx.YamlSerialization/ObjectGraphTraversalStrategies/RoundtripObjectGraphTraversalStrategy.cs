@@ -14,7 +14,7 @@ namespace Docfx.YamlSerialization.ObjectGraphTraversalStrategies;
 /// properties that are read/write, collections and dictionaries, while ensuring that
 /// the graph can be regenerated from the resulting document.
 /// </summary>
-public class RoundtripObjectGraphTraversalStrategy : FullObjectGraphTraversalStrategy
+class RoundtripObjectGraphTraversalStrategy : FullObjectGraphTraversalStrategy
 {
     public RoundtripObjectGraphTraversalStrategy(YamlSerializer serializer, ITypeInspector typeDescriptor, ITypeResolver typeResolver, int maxRecursion)
         : base(serializer, typeDescriptor, typeResolver, maxRecursion, null)

@@ -13,7 +13,7 @@ using EditorBrowsableState = System.ComponentModel.EditorBrowsableState;
 
 namespace Docfx.YamlSerialization.NodeDeserializers;
 
-public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
+class EmitGenericCollectionNodeDeserializer : INodeDeserializer
 {
     private static readonly MethodInfo DeserializeHelperMethod =
         typeof(EmitGenericCollectionNodeDeserializer).GetMethod(nameof(DeserializeHelper));

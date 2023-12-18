@@ -5,7 +5,7 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.YamlSerialization.TypeInspectors;
 
-public sealed class ExtensibleReadableAndWritablePropertiesTypeInspector : ExtensibleTypeInspectorSkeleton
+class ExtensibleReadableAndWritablePropertiesTypeInspector : ExtensibleTypeInspectorSkeleton
 {
     private readonly IExtensibleTypeInspector _innerTypeDescriptor;
 

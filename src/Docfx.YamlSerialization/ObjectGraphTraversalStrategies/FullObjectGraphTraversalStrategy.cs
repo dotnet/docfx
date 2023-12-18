@@ -19,7 +19,7 @@ namespace Docfx.YamlSerialization.ObjectGraphTraversalStrategies;
 /// An implementation of <see cref="IObjectGraphTraversalStrategy"/> that traverses
 /// readable properties, collections and dictionaries.
 /// </summary>
-public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
+class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
 {
     private static MethodInfo TraverseGenericDictionaryHelperMethod { get; } =
         typeof(FullObjectGraphTraversalStrategy).GetMethod(nameof(TraverseGenericDictionaryHelper));

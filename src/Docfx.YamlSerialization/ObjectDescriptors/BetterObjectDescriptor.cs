@@ -7,7 +7,7 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.YamlSerialization.ObjectDescriptors;
 
-public class BetterObjectDescriptor : IObjectDescriptor
+class BetterObjectDescriptor : IObjectDescriptor
 {
     public BetterObjectDescriptor(object value, Type type, Type staticType)
         : this(value, type, staticType, ScalarStyle.Any)

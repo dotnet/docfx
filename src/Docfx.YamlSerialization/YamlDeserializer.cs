@@ -39,8 +39,8 @@ public sealed class YamlDeserializer
     private readonly IValueDeserializer _valueDeserializer;
     private readonly ITypeConverter _reflectionTypeConverter = new ReflectionTypeConverter();
 
-    public IList<INodeDeserializer> NodeDeserializers { get; private set; }
-    public IList<INodeTypeResolver> TypeResolvers { get; private set; }
+    internal IList<INodeDeserializer> NodeDeserializers { get; private set; }
+    internal IList<INodeTypeResolver> TypeResolvers { get; private set; }
     public IValueDeserializer ValueDeserializer => _valueDeserializer;
 
     private sealed class TypeDescriptorProxy : ITypeInspector
@@ -58,14 +58,10 @@ public sealed class YamlDeserializer
         }
     }
 
-    public YamlDeserializer(
-        IObjectFactory objectFactory = null,
-        INamingConvention namingConvention = null,
-        bool ignoreUnmatched = false,
-        bool ignoreNotFoundAnchor = true)
+    public YamlDeserializer()
     {
-        objectFactory ??= new DefaultEmitObjectFactory();
-        namingConvention ??= NullNamingConvention.Instance;
+        var objectFactory = new DefaultEmitObjectFactory();
+        var namingConvention = NullNamingConvention.Instance;
 
         _typeDescriptor.TypeDescriptor =
             new ExtensibleYamlAttributesTypeInspector(
@@ -96,7 +92,7 @@ public sealed class YamlDeserializer
             new EmitGenericCollectionNodeDeserializer(objectFactory),
             new CollectionNodeDeserializer(objectFactory),
             new EnumerableNodeDeserializer(),
-            new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
+            new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched: true)
         };
         _tagMappings = new Dictionary<TagName, Type>(PredefinedTagMappings);
         TypeResolvers = new List<INodeTypeResolver>
@@ -107,24 +103,7 @@ public sealed class YamlDeserializer
         };
 
         NodeValueDeserializer nodeValueDeserializer = new(NodeDeserializers, TypeResolvers, _reflectionTypeConverter);
-        if (ignoreNotFoundAnchor)
-        {
-            _valueDeserializer = new LooseAliasValueDeserializer(nodeValueDeserializer);
-        }
-        else
-        {
-            _valueDeserializer = new AliasValueDeserializer(nodeValueDeserializer);
-        }
-    }
-
-    public void RegisterTagMapping(string tag, Type type)
-    {
-        _tagMappings.Add(tag, type);
-    }
-
-    public void RegisterTypeConverter(IYamlTypeConverter typeConverter)
-    {
-        _converters.Add(typeConverter);
+        _valueDeserializer = new LooseAliasValueDeserializer(nodeValueDeserializer);
     }
 
     public T Deserialize<T>(TextReader input, IValueDeserializer deserializer = null)
@@ -132,24 +111,9 @@ public sealed class YamlDeserializer
         return (T)Deserialize(input, typeof(T), deserializer);
     }
 
-    public object Deserialize(TextReader input, IValueDeserializer deserializer = null)
-    {
-        return Deserialize(input, typeof(object), deserializer);
-    }
-
-    public object Deserialize(TextReader input, Type type, IValueDeserializer deserializer = null)
+    private object Deserialize(TextReader input, Type type, IValueDeserializer deserializer = null)
     {
         return Deserialize(new Parser(input), type, deserializer);
-    }
-
-    public T Deserialize<T>(IParser reader, IValueDeserializer deserializer = null)
-    {
-        return (T)Deserialize(reader, typeof(T), deserializer);
-    }
-
-    public object Deserialize(IParser reader, IValueDeserializer deserializer = null)
-    {
-        return Deserialize(reader, typeof(object), deserializer);
     }
 
     /// <summary>
@@ -158,7 +122,7 @@ public sealed class YamlDeserializer
     /// <param name="parser">The <see cref="IParser" /> where to deserialize the object.</param>
     /// <param name="type">The static type of the object to deserialize.</param>
     /// <returns>Returns the deserialized object.</returns>
-    public object Deserialize(IParser parser, Type type, IValueDeserializer deserializer = null)
+    private object Deserialize(IParser parser, Type type, IValueDeserializer deserializer = null)
     {
         ArgumentNullException.ThrowIfNull(parser);
         ArgumentNullException.ThrowIfNull(type);

@@ -5,7 +5,7 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.YamlSerialization.TypeInspectors;
 
-public sealed class ExtensibleNamingConventionTypeInspector : ExtensibleTypeInspectorSkeleton
+class ExtensibleNamingConventionTypeInspector : ExtensibleTypeInspectorSkeleton
 {
     private readonly IExtensibleTypeInspector innerTypeDescriptor;
     private readonly INamingConvention namingConvention;

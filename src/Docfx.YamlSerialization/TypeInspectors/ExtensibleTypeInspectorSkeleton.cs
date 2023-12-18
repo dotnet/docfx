@@ -7,7 +7,7 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.YamlSerialization.TypeInspectors;
 
-public abstract class ExtensibleTypeInspectorSkeleton : ITypeInspector, IExtensibleTypeInspector
+abstract class ExtensibleTypeInspectorSkeleton : ITypeInspector, IExtensibleTypeInspector
 {
     public abstract IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container);
 
