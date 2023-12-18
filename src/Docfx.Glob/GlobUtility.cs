@@ -2,11 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Common;
-using Docfx.Glob;
 
-namespace Docfx;
+namespace Docfx.Glob;
 
-public class GlobUtility
+public static class GlobUtility
 {
     public static FileMapping ExpandFileMapping(string baseDirectory, FileMapping fileMapping)
     {

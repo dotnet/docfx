@@ -3,7 +3,7 @@
 
 namespace Docfx.Build.Common;
 
-public interface IModelAttributeHandler
+interface IModelAttributeHandler
 {
     object Handle(object obj, HandleModelAttributesContext context);
 }

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Docfx.Build.Common;
 
-public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler where T : Attribute
+abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler where T : Attribute
 {
     private const int MaximumNestedLevel = 32;
     private readonly TypeInfo _typeInfo;

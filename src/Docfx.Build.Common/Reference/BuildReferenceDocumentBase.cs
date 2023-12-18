@@ -54,10 +54,10 @@ public abstract class BuildReferenceDocumentBase : BaseDocumentBuildStep
                           item.Documentation.StartLine + 1)).ToImmutableArray();
     }
 
-    protected virtual void BuildArticleCore(IHostService host, FileModel model, IModelAttributeHandler handlers = null, HandleModelAttributesContext handlerContext = null, bool shouldSkipMarkup = false)
+    protected virtual void BuildArticleCore(IHostService host, FileModel model, bool shouldSkipMarkup = false)
     {
-        handlers ??= _defaultHandler;
-        handlerContext ??= new HandleModelAttributesContext
+        var handlers = _defaultHandler;
+        var handlerContext = new HandleModelAttributesContext
         {
             EnableContentPlaceholder = false,
             Host = host,

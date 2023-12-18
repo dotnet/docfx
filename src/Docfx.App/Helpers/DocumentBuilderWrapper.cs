@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using Docfx.Build.Engine;
 using Docfx.Common;
+using Docfx.Glob;
 using Docfx.Plugins;
 
 namespace Docfx;

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using Docfx.Common;
 using Docfx.Exceptions;
+using Docfx.Glob;
 using Docfx.Plugins;
 using Microsoft.Build.Locator;
 using Newtonsoft.Json.Linq;

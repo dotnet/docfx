@@ -26,7 +26,7 @@ namespace Docfx;
 ///     If the Array form contains only one item, it can be shortened to an object
 ///     e.g. <code>projects: ["file1", "file2"]</code>
 /// </summary>
-[Newtonsoft.Json.JsonConverter(typeof(FileMappingConverter))]
+[JsonConverter(typeof(FileMappingConverter))]
 public class FileMapping
 {
     private readonly List<FileMappingItem> _items = new();

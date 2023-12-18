@@ -10,7 +10,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Common;
 
-public class UrlContentHandler : IModelAttributeHandler
+class UrlContentHandler : IModelAttributeHandler
 {
     private readonly ConcurrentDictionary<Type, UrlContentHandlerImpl> _cache = new();
 

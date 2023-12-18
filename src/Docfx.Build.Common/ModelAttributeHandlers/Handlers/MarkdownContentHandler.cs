@@ -10,7 +10,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Common;
 
-public class MarkdownContentHandler : IModelAttributeHandler
+class MarkdownContentHandler : IModelAttributeHandler
 {
     private readonly ConcurrentDictionary<Type, MarkdownContentHandlerImpl> _cache = new();
 

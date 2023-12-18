@@ -3,7 +3,7 @@
 
 namespace Docfx.Build.Common;
 
-public class HandleGenericItemsHelper
+class HandleGenericItemsHelper
 {
     public static bool EnumerateIEnumerable(object currentObj, Func<object, object> handler)
     {

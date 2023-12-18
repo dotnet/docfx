@@ -541,39 +541,14 @@ namespace Docfx.Build.Common
         public virtual void Postbuild(System.Collections.Immutable.ImmutableList<Docfx.Plugins.FileModel> models, Docfx.Plugins.IHostService host) { }
         public virtual System.Collections.Generic.IEnumerable<Docfx.Plugins.FileModel> Prebuild(System.Collections.Immutable.ImmutableList<Docfx.Plugins.FileModel> models, Docfx.Plugins.IHostService host) { }
     }
-    public abstract class BaseModelAttributeHandler<T> : Docfx.Build.Common.IModelAttributeHandler
-        where T : System.Attribute
-    {
-        protected readonly Docfx.Build.Common.IModelAttributeHandler Handler;
-        protected BaseModelAttributeHandler(System.Type type, Docfx.Build.Common.IModelAttributeHandler handler) { }
-        protected virtual System.Collections.Generic.IEnumerable<Docfx.Build.Common.BaseModelAttributeHandler<T>.PropInfo> GetProps(System.Type type) { }
-        public object Handle(object obj, Docfx.Build.Common.HandleModelAttributesContext context) { }
-        protected abstract object HandleCurrent(object currentObj, object declaringObject, System.Reflection.PropertyInfo currentPropertyInfo, Docfx.Build.Common.HandleModelAttributesContext context);
-        protected virtual object HandleDictionaryType(object currentObj, Docfx.Build.Common.HandleModelAttributesContext context) { }
-        protected virtual object HandleIEnumerableType(object currentObj, Docfx.Build.Common.HandleModelAttributesContext context) { }
-        protected virtual object ProcessNonPrimitiveType(object currentObj, Docfx.Build.Common.HandleModelAttributesContext context) { }
-        protected virtual object ProcessPrimitiveType(object currentObj, Docfx.Build.Common.HandleModelAttributesContext context) { }
-        protected virtual bool ShouldHandle(object currentObj, object declaringObject, Docfx.Build.Common.BaseModelAttributeHandler<T>.PropInfo currentPropInfo, Docfx.Build.Common.HandleModelAttributesContext context) { }
-        protected sealed class PropInfo
-        {
-            public PropInfo() { }
-            public System.Attribute Attr { get; set; }
-            public System.Reflection.PropertyInfo Prop { get; set; }
-        }
-    }
     public abstract class BuildReferenceDocumentBase : Docfx.Build.Common.BaseDocumentBuildStep
     {
         protected BuildReferenceDocumentBase() { }
         public override int BuildOrder { get; }
         public override void Build(Docfx.Plugins.FileModel model, Docfx.Plugins.IHostService host) { }
         protected abstract void BuildArticle(Docfx.Plugins.IHostService host, Docfx.Plugins.FileModel model);
-        protected virtual void BuildArticleCore(Docfx.Plugins.IHostService host, Docfx.Plugins.FileModel model, Docfx.Build.Common.IModelAttributeHandler handlers = null, Docfx.Build.Common.HandleModelAttributesContext handlerContext = null, bool shouldSkipMarkup = false) { }
+        protected virtual void BuildArticleCore(Docfx.Plugins.IHostService host, Docfx.Plugins.FileModel model, bool shouldSkipMarkup = false) { }
         protected virtual void BuildOverwrite(Docfx.Plugins.IHostService host, Docfx.Plugins.FileModel model) { }
-    }
-    public class CompositeModelAttributeHandler : Docfx.Build.Common.IModelAttributeHandler
-    {
-        public CompositeModelAttributeHandler(params Docfx.Build.Common.IModelAttributeHandler[] handlers) { }
-        public object Handle(object obj, Docfx.Build.Common.HandleModelAttributesContext context) { }
     }
     public abstract class DisposableDocumentProcessor : Docfx.Plugins.IDocumentProcessor, System.IDisposable
     {
@@ -585,65 +560,6 @@ namespace Docfx.Build.Common
         public abstract Docfx.Plugins.FileModel Load(Docfx.Plugins.FileAndType file, System.Collections.Immutable.ImmutableDictionary<string, object> metadata);
         public abstract Docfx.Plugins.SaveResult Save(Docfx.Plugins.FileModel model);
         public virtual void UpdateHref(Docfx.Plugins.FileModel model, Docfx.Plugins.IDocumentBuildContext context) { }
-    }
-    public class HandleGenericItemsHelper
-    {
-        public HandleGenericItemsHelper() { }
-        public static bool EnumerateIDictionary(object currentObj, System.Func<object, object> handler) { }
-        public static bool EnumerateIEnumerable(object currentObj, System.Func<object, object> handler) { }
-        public static bool EnumerateIReadonlyDictionary(object currentObj, System.Func<object, object> handler) { }
-        public static bool HandleIDictionary(object currentObj, System.Func<object, object> handler) { }
-        public static bool HandleIList(object currentObj, System.Func<object, object> handler) { }
-        public sealed class EnumerateIDictionaryItems<TKey, TValue>
-        {
-            public EnumerateIDictionaryItems(System.Collections.Generic.IDictionary<TKey, TValue> dict) { }
-            public void Handle(System.Func<object, object> enumerate) { }
-        }
-        public sealed class EnumerateIEnumerableItems<TValue>
-        {
-            public EnumerateIEnumerableItems(System.Collections.Generic.IEnumerable<TValue> list) { }
-            public void Handle(System.Func<object, object> enumerate) { }
-        }
-        public sealed class EnumerateIReadonlyDictionaryItems<TKey, TValue>
-        {
-            public EnumerateIReadonlyDictionaryItems(System.Collections.Generic.IReadOnlyDictionary<TKey, TValue> dict) { }
-            public void Handle(System.Func<object, object> enumerate) { }
-        }
-        public sealed class HandleIDictionaryItems<TKey, TValue>
-        {
-            public HandleIDictionaryItems(System.Collections.Generic.IDictionary<TKey, TValue> dict) { }
-            public void Handle(System.Func<object, object> handler) { }
-        }
-        public sealed class HandleIListItems<T>
-        {
-            public HandleIListItems(System.Collections.Generic.IList<T> list) { }
-            public void Handle(System.Func<object, object> handler) { }
-        }
-    }
-    public class HandleModelAttributesContext
-    {
-        public HandleModelAttributesContext() { }
-        public bool ContainsPlaceholder { get; set; }
-        public System.Collections.Generic.HashSet<string> Dependency { get; set; }
-        public bool EnableContentPlaceholder { get; set; }
-        public Docfx.Plugins.FileAndType FileAndType { get; set; }
-        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<Docfx.Plugins.LinkSourceInfo>> FileLinkSources { get; set; }
-        public Docfx.Plugins.IHostService Host { get; set; }
-        public System.Collections.Generic.HashSet<string> LinkToFiles { get; set; }
-        public System.Collections.Generic.HashSet<string> LinkToUids { get; set; }
-        public string PlaceholderContent { get; set; }
-        public bool SkipMarkup { get; set; }
-        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<Docfx.Plugins.LinkSourceInfo>> UidLinkSources { get; set; }
-        public System.Collections.Generic.List<Docfx.Plugins.UidDefinition> Uids { get; set; }
-    }
-    public interface IModelAttributeHandler
-    {
-        object Handle(object obj, Docfx.Build.Common.HandleModelAttributesContext context);
-    }
-    public class MarkdownContentHandler : Docfx.Build.Common.IModelAttributeHandler
-    {
-        public MarkdownContentHandler() { }
-        public object Handle(object obj, Docfx.Build.Common.HandleModelAttributesContext context) { }
     }
     public class MarkdownReader
     {
@@ -708,31 +624,6 @@ namespace Docfx.Build.Common
         protected abstract Docfx.Plugins.FileModel LoadArticle(Docfx.Plugins.FileAndType file, System.Collections.Immutable.ImmutableDictionary<string, object> metadata);
         protected virtual Docfx.Plugins.FileModel LoadOverwrite(Docfx.Plugins.FileAndType file, System.Collections.Immutable.ImmutableDictionary<string, object> metadata) { }
         public override Docfx.Plugins.SaveResult Save(Docfx.Plugins.FileModel model) { }
-    }
-    public static class ReflectionHelper
-    {
-        public static object CreateInstance(System.Type type, System.Type[] typeArguments, System.Type[] argumentTypes, object[] arguments) { }
-        public static System.Type GetGenericType(System.Type type, System.Type genericTypeDefinition) { }
-        public static System.Collections.Generic.List<System.Reflection.PropertyInfo> GetGettableProperties(System.Type type) { }
-        public static object GetPropertyValue(object instance, System.Reflection.PropertyInfo prop) { }
-        public static System.Collections.Generic.IEnumerable<System.Reflection.PropertyInfo> GetPublicProperties(System.Type type) { }
-        public static System.Collections.Generic.List<System.Reflection.PropertyInfo> GetSettableProperties(System.Type type) { }
-        public static bool ImplementsGenericDefinition(System.Type type, System.Type genericTypeDefinition) { }
-        public static bool IsDictionaryType(System.Type type) { }
-        public static bool IsGenericType(System.Type type, System.Type genericTypeDefinition) { }
-        public static bool IsIEnumerableType(System.Type t) { }
-        public static void SetPropertyValue(object instance, System.Reflection.PropertyInfo prop, object value) { }
-        public static bool TryGetGenericType(System.Type type, System.Type genericTypeDefinition, out System.Type genericType) { }
-    }
-    public class UniqueIdentityReferenceHandler : Docfx.Build.Common.IModelAttributeHandler
-    {
-        public UniqueIdentityReferenceHandler() { }
-        public object Handle(object obj, Docfx.Build.Common.HandleModelAttributesContext context) { }
-    }
-    public class UrlContentHandler : Docfx.Build.Common.IModelAttributeHandler
-    {
-        public UrlContentHandler() { }
-        public object Handle(object obj, Docfx.Build.Common.HandleModelAttributesContext context) { }
     }
     public class YamlHtmlPart
     {
@@ -3204,7 +3095,6 @@ namespace Docfx.Glob
         public bool Equals(Docfx.Glob.GlobMatcher other) { }
         public override bool Equals(object obj) { }
         public override int GetHashCode() { }
-        public System.Text.RegularExpressions.Regex GetRegex() { }
         public bool Match(string file, bool partial = false) { }
     }
     [System.Flags]
@@ -3218,12 +3108,8 @@ namespace Docfx.Glob
         AllowGlobStar = 16,
         AllowDotMatch = 32,
     }
-}
-namespace Docfx
-{
-    public class GlobUtility
+    public static class GlobUtility
     {
-        public GlobUtility() { }
         public static Docfx.FileMapping ExpandFileMapping(string baseDirectory, Docfx.FileMapping fileMapping) { }
     }
 }

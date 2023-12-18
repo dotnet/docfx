@@ -6,7 +6,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Common;
 
-public class HandleModelAttributesContext
+class HandleModelAttributesContext
 {
     internal int NestedLevel { get; set; } = 0;
     public IHostService Host { get; set; }

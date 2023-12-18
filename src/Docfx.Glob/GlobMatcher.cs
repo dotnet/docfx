@@ -59,34 +59,6 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         _items = Compile(pattern).ToArray();
     }
 
-    /// <summary>
-    /// Currently not used
-    /// TODO: add test case
-    /// </summary>
-    /// <param name="glob"></param>
-    /// <returns></returns>
-    public Regex GetRegex()
-    {
-        var regexParts = _items.Select(ConvertSingleGlob);
-        var content = string.Join("|", regexParts);
-        // Matches the entire pattern
-        content = $"^(?:{content})$";
-        if (_negate)
-        {
-            // Matches whatever not current pattern
-            content = $"^(?!{content}).*$";
-        }
-
-        if (_ignoreCase)
-        {
-            return new Regex(content, RegexOptions.IgnoreCase);
-        }
-        else
-        {
-            return new Regex(content);
-        }
-    }
-
     public bool Match(string file, bool partial = false)
     {
         ArgumentNullException.ThrowIfNull(file);

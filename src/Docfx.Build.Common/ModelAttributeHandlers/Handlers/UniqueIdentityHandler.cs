@@ -9,7 +9,7 @@ using Docfx.DataContracts.Common;
 
 namespace Docfx.Build.Common;
 
-public class UniqueIdentityReferenceHandler : IModelAttributeHandler
+class UniqueIdentityReferenceHandler : IModelAttributeHandler
 {
     private readonly ConcurrentDictionary<Type, UniqueIdentityHandlerImpl> _cache = new();
 

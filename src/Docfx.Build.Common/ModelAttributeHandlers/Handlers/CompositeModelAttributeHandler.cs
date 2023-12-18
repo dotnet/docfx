@@ -3,7 +3,7 @@
 
 namespace Docfx.Build.Common;
 
-public class CompositeModelAttributeHandler : IModelAttributeHandler
+class CompositeModelAttributeHandler : IModelAttributeHandler
 {
     private readonly IModelAttributeHandler[] _handlers;
     public CompositeModelAttributeHandler(params IModelAttributeHandler[] handlers)

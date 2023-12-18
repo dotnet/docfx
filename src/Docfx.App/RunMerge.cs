@@ -4,6 +4,7 @@
 using System.Collections.Immutable;
 using Docfx.Build.Engine;
 using Docfx.Common;
+using Docfx.Glob;
 using Docfx.Plugins;
 
 namespace Docfx;

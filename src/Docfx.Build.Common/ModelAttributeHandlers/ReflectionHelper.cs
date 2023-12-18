@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 
 namespace Docfx.Build.Common;
 
-public static class ReflectionHelper
+static class ReflectionHelper
 {
     private static readonly Func<Type, List<PropertyInfo>> _getGettableProperties =
         t => (from prop in GetPublicProperties(t)
