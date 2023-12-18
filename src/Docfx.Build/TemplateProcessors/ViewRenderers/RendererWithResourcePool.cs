@@ -10,7 +10,7 @@ internal class RendererWithResourcePool : ITemplateRenderer
     private readonly ResourcePoolManager<ITemplateRenderer> _rendererPool;
     public RendererWithResourcePool(Func<ITemplateRenderer> creator, int maxParallelism)
     {
-        _rendererPool = ResourcePool.Create(creator, maxParallelism);
+        _rendererPool = new(creator, maxParallelism);
 
         using var lease = _rendererPool.Rent();
         var inner = lease.Resource;

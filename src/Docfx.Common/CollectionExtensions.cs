@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace Docfx.Common;
 
-public static class CollectionExtensions
+static class CollectionExtensions
 {
     public static IEnumerable<TResult> Merge<TItem, TResult>(
         this IReadOnlyList<IEnumerable<TItem>> sources,

@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace Docfx.Common;
 
-public static class CollectionUtility
+static class CollectionUtility
 {
     public static Dictionary<string, List<T>> Merge<T>(this IDictionary<string, List<T>> left, IEnumerable<KeyValuePair<string, IEnumerable<T>>> right)
     {

@@ -3,7 +3,7 @@
 
 namespace Docfx.Common;
 
-public class CompositeLogListener : ILoggerListener
+class CompositeLogListener : ILoggerListener
 {
     private readonly object _sync = new();
     private readonly List<ILoggerListener> _listeners = new();

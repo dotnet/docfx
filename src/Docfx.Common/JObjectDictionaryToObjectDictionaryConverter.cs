@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Docfx.Common;
 
-public class JObjectDictionaryToObjectDictionaryConverter : JsonConverter
+class JObjectDictionaryToObjectDictionaryConverter : JsonConverter
 {
     public override bool CanConvert(Type objectType)
     {

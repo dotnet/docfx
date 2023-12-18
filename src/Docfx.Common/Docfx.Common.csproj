@@ -9,7 +9,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Docfx.App" />
+    <InternalsVisibleTo Include="Docfx.Build" />
+    <InternalsVisibleTo Include="Docfx.HtmlToPdf" />
+    <InternalsVisibleTo Include="Docfx.Glob" />
+    <InternalsVisibleTo Include="Docfx.Build.Tests" />
+    <InternalsVisibleTo Include="Docfx.Build.OperationLevelRestApi" />
+    <InternalsVisibleTo Include="Docfx.Build.TagLevelRestApi" />
+    <InternalsVisibleTo Include="Docfx.Build.ManagedReference" />
     <InternalsVisibleTo Include="Docfx.Build.Common" />
     <InternalsVisibleTo Include="Docfx.Build.RestApi" />
+    <InternalsVisibleTo Include="Docfx.Dotnet" />
+    <InternalsVisibleTo Include="Docfx.DataContracts.Common" />
+    <InternalsVisibleTo Include="Docfx.DataContracts.UniversalReference" />
+    <InternalsVisibleTo Include="Docfx.Tests" />
+    <InternalsVisibleTo Include="Docfx.Build.SchemaDriven" />
+    <InternalsVisibleTo Include="Docfx.Build.SchemaDriven.Tests" />
   </ItemGroup>
 </Project>

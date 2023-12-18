@@ -1,6 +1,6 @@
 ﻿namespace Docfx.Common;
 
-public class LruList<T>
+class LruList<T>
 {
     private readonly LinkedList<T> _cache;
     private readonly Dictionary<T, LinkedListNode<T>> _index;

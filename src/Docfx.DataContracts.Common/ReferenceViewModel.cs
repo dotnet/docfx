@@ -88,7 +88,7 @@ public class ReferenceViewModel
     [System.Text.Json.Serialization.JsonExtensionData]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
-    public CompositeDictionary AdditionalJson =>
+    public IDictionary<string, object> AdditionalJson =>
         CompositeDictionary
             .CreateBuilder()
             .Add(Constants.ExtensionMemberPrefix.Name, NameInDevLangs, JTokenConverter.Convert<string>)

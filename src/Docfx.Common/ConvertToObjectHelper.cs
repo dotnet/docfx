@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace Docfx.Common;
 
-public static class ConvertToObjectHelper
+static class ConvertToObjectHelper
 {
 #nullable enable
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Docfx.Common;
 
-public static class UriUtility
+static class UriUtility
 {
     private const char QueryMarker = '?';
     private const char FragmentMarker = '#';

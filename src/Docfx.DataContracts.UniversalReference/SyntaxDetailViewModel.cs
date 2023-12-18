@@ -60,7 +60,7 @@ public class SyntaxDetailViewModel
     [System.Text.Json.Serialization.JsonExtensionData]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
-    public CompositeDictionary ExtensionData =>
+    public IDictionary<string, object> ExtensionData =>
         CompositeDictionary
             .CreateBuilder()
             .Add(Constants.ExtensionMemberPrefix.Content, Contents, JTokenConverter.Convert<string>)

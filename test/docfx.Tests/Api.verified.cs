@@ -1053,7 +1053,7 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         [YamlDotNet.Serialization.YamlIgnore]
-        public Docfx.Common.CompositeDictionary MetadataJson { get; }
+        public System.Collections.Generic.IDictionary<string, object> MetadataJson { get; }
         [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]
@@ -1528,79 +1528,12 @@ namespace Docfx.Exceptions
 }
 namespace Docfx.Common
 {
-    public static class CollectionExtensions
-    {
-        public static System.Collections.Generic.IEnumerable<TResult> Merge<TItem, TResult>(this System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IEnumerable<TItem>> sources, System.Collections.Generic.IComparer<TItem> comparer, System.Func<System.Collections.Generic.List<TItem>, TResult> merger) { }
-    }
-    public static class CollectionUtility
-    {
-        public static System.Collections.Immutable.ImmutableArray<T> GetLongestCommonSequence<T>(this System.Collections.Immutable.ImmutableArray<T> leftItems, System.Collections.Immutable.ImmutableArray<T> rightItems) { }
-        public static void Merge<T>(this System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<T>> left, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, System.Collections.Immutable.ImmutableList<T>>> right) { }
-        public static System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<T>> Merge<T>(this System.Collections.Generic.IDictionary<string, System.Collections.Generic.List<T>> left, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IEnumerable<T>>> right) { }
-        public static System.Collections.Immutable.ImmutableDictionary<string, System.Collections.Immutable.ImmutableList<T>> Merge<T, TRight>(this System.Collections.Immutable.ImmutableDictionary<string, System.Collections.Immutable.ImmutableList<T>> left, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, TRight>> right)
-            where TRight : System.Collections.Generic.IEnumerable<T> { }
-    }
-    public class CommandInfo
-    {
-        public CommandInfo() { }
-        public string Arguments { get; set; }
-        public string Name { get; set; }
-        public string WorkingDirectory { get; set; }
-    }
-    public static class CommandUtility
-    {
-        public static bool ExistCommand(string commandName, System.Action<string> processOutput = null, System.Action<string> processError = null) { }
-        public static int RunCommand(Docfx.Common.CommandInfo commandInfo, System.IO.StreamWriter stdoutWriter = null, System.IO.StreamWriter stderrWriter = null, int timeoutInMilliseconds = -1) { }
-    }
-    public class CompositeDictionary : System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>, System.Collections.Generic.IDictionary<string, object>, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>, System.Collections.IEnumerable
-    {
-        public CompositeDictionary() { }
-        public int Count { get; }
-        public bool IsReadOnly { get; }
-        public object this[string key] { get; set; }
-        public System.Collections.Generic.ICollection<string> Keys { get; }
-        public System.Collections.Generic.ICollection<object> Values { get; }
-        public void Add(string key, object value) { }
-        public void Clear() { }
-        public bool ContainsKey(string key) { }
-        public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator() { }
-        public bool Remove(string key) { }
-        public bool TryGetValue(string key, out object value) { }
-        public static Docfx.Common.CompositeDictionary.Builder CreateBuilder() { }
-        public sealed class Builder
-        {
-            public Docfx.Common.CompositeDictionary.Builder Add<TValue>(string prefix, System.Collections.Generic.IDictionary<string, TValue> dict, System.Func<object, TValue> valueConverter = null) { }
-            public Docfx.Common.CompositeDictionary Create() { }
-        }
-    }
-    public class CompositeLogListener : Docfx.Common.ILoggerListener, System.IDisposable
-    {
-        public CompositeLogListener() { }
-        public CompositeLogListener(System.Collections.Generic.IEnumerable<Docfx.Common.ILoggerListener> listeners) { }
-        public int Count { get; }
-        public void AddListener(Docfx.Common.ILoggerListener listener) { }
-        public void AddListeners(System.Collections.Generic.IEnumerable<Docfx.Common.ILoggerListener> listeners) { }
-        public void Dispose() { }
-        public Docfx.Common.ILoggerListener FindListener(System.Predicate<Docfx.Common.ILoggerListener> predicate) { }
-        public void Flush() { }
-        public void RemoveAllListeners() { }
-        public void RemoveListener(Docfx.Common.ILoggerListener listener) { }
-        public void WriteLine(Docfx.Common.ILogItem item) { }
-    }
     public sealed class ConsoleLogListener : Docfx.Common.ILoggerListener, System.IDisposable
     {
         public ConsoleLogListener() { }
         public void Dispose() { }
         public void Flush() { }
         public void WriteLine(Docfx.Common.ILogItem item) { }
-    }
-    public static class ConvertToObjectHelper
-    {
-        public static object ConvertExpandoObjectToObject(object raw) { }
-        public static object? ConvertJObjectToObject(object raw) { }
-        public static object ConvertStrongTypeToJObject(object raw) { }
-        public static object ConvertStrongTypeToObject(object raw) { }
-        public static object ConvertToDynamic(object obj) { }
     }
     public static class ErrorCodes
     {
@@ -1736,13 +1669,6 @@ namespace Docfx.Common
         void Flush();
         void WriteLine(Docfx.Common.ILogItem item);
     }
-    public class JObjectDictionaryToObjectDictionaryConverter : Newtonsoft.Json.JsonConverter
-    {
-        public JObjectDictionaryToObjectDictionaryConverter() { }
-        public override bool CanConvert(System.Type objectType) { }
-        public override object ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer) { }
-        public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer) { }
-    }
     public static class JsonUtility
     {
         public static readonly System.Threading.ThreadLocal<Newtonsoft.Json.JsonSerializer> DefaultSerializer;
@@ -1792,16 +1718,6 @@ namespace Docfx.Common
     {
         public LoggerFileScope(string fileName) { }
         public void Dispose() { }
-    }
-    public class LruList<T>
-    {
-        protected LruList(int capacity, System.Action<T> onRemoving, System.Collections.Generic.IEqualityComparer<T> comparer) { }
-        public void Access(T item) { }
-        protected virtual void AccessNoCheck(T item) { }
-        public virtual bool Contains(T item) { }
-        public virtual bool TryFind(System.Func<T, bool> func, out T item) { }
-        public static Docfx.Common.LruList<T> Create(int capacity, System.Action<T> onRemoving = null, System.Collections.Generic.IEqualityComparer<T> comparer = null) { }
-        public static Docfx.Common.LruList<T> CreateSynchronized(int capacity, System.Action<T> onRemoving = null, System.Collections.Generic.IEqualityComparer<T> comparer = null) { }
     }
     public static class ManifestFileHelper
     {
@@ -1902,36 +1818,6 @@ namespace Docfx.Common
         public void Flush() { }
         public void WriteLine(Docfx.Common.ILogItem item) { }
     }
-    public sealed class ResourceLease<T> : System.IDisposable
-        where T :  class
-    {
-        public T Resource { get; }
-        public void Dispose() { }
-    }
-    public static class ResourcePool
-    {
-        public static Docfx.Common.ResourcePoolManager<T> Create<T>(System.Func<T> creator, int maxResourceCount)
-            where T :  class { }
-    }
-    public class ResourcePoolManager<TResource> : System.IDisposable
-        where TResource :  class
-    {
-        public ResourcePoolManager(System.Func<TResource> creator, int maxResourceCount) { }
-        public void Dispose() { }
-        protected virtual void Dispose(bool disposing) { }
-        protected override void Finalize() { }
-        public Docfx.Common.ResourceLease<TResource> Rent() { }
-    }
-    public static class StringExtension
-    {
-        public static string BackSlashToForwardSlash(this string input) { }
-        public static string ForwardSlashCombine(this string baseAddress, string relativeAddress) { }
-        public static string ToDelimitedString(this System.Collections.Generic.IEnumerable<string> input, string delimiter = ",") { }
-        public static string ToDisplayPath(this string path) { }
-        public static string ToNormalizedFullPath(this string path) { }
-        public static string ToNormalizedPath(this string path) { }
-        public static string TrimEnd(this string input, string suffixToRemove) { }
-    }
     public static class SuggestionCodes
     {
         public static class Build
@@ -1939,28 +1825,6 @@ namespace Docfx.Common
             public const string EmptyInputContents = "EmptyInputContents";
             public const string EmptyInputFiles = "EmptyInputFiles";
         }
-    }
-    public static class TreeIterator
-    {
-        public static void Preorder<T>(T current, T parent, System.Func<T, System.Collections.Generic.IEnumerable<T>> childrenGetter, System.Func<T, T, bool> action) { }
-        public static System.Threading.Tasks.Task PreorderAsync<T>(T current, T parent, System.Func<T, System.Collections.Generic.IEnumerable<T>> childrenGetter, System.Func<T, T, System.Threading.Tasks.Task<bool>> action) { }
-        public static T PreorderFirstOrDefault<T>(T current, System.Func<T, System.Collections.Generic.IEnumerable<T>> childrenGetter, System.Func<T, bool> predicate) { }
-    }
-    public static class UriUtility
-    {
-        public static string GetFragment(string uriString) { }
-        public static string GetNonFragment(string uriString) { }
-        public static string GetPath(string uriString) { }
-        public static string GetQueryString(string uriString) { }
-        public static string GetQueryStringAndFragment(string uriString) { }
-        public static bool HasFragment(string uriString) { }
-        public static bool HasQueryString(string uriString) { }
-        public static string MergeHref(string target, string source) { }
-        [return: System.Runtime.CompilerServices.TupleElementNames(new string[] {
-                "path",
-                "query",
-                "fragment"})]
-        public static System.ValueTuple<string, string, string> Split(string uri) { }
     }
     public static class WarningCodes
     {
@@ -2005,17 +1869,6 @@ namespace Docfx.Common
         {
             public const string MissingYamlMime = "MissingYamlMime";
         }
-    }
-    public static class XrefUtility
-    {
-        public static bool TryGetXrefStringValue(this Docfx.Plugins.XRefSpec spec, string key, out string value) { }
-    }
-    public class YamlDeserializerWithFallback
-    {
-        public object Deserialize(System.Func<System.IO.TextReader> reader) { }
-        public object Deserialize(string filePath) { }
-        public Docfx.Common.YamlDeserializerWithFallback WithFallback<T>() { }
-        public static Docfx.Common.YamlDeserializerWithFallback Create<T>() { }
     }
     public static class YamlMime
     {
@@ -2343,7 +2196,7 @@ namespace Docfx.DataContracts.Common
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         [YamlDotNet.Serialization.YamlIgnore]
-        public Docfx.Common.CompositeDictionary AdditionalJson { get; }
+        public System.Collections.Generic.IDictionary<string, object> AdditionalJson { get; }
         [Newtonsoft.Json.JsonProperty("commentId")]
         [System.Text.Json.Serialization.JsonPropertyName("commentId")]
         [YamlDotNet.Serialization.YamlMember(Alias="commentId")]
@@ -2492,7 +2345,7 @@ namespace Docfx.DataContracts.Common
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         [YamlDotNet.Serialization.YamlIgnore]
-        public Docfx.Common.CompositeDictionary MetadataJson { get; }
+        public System.Collections.Generic.IDictionary<string, object> MetadataJson { get; }
         [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]

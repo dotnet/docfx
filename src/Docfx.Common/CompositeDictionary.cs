@@ -6,8 +6,7 @@ using System.Collections.Immutable;
 
 namespace Docfx.Common;
 
-public class CompositeDictionary
-    : IDictionary<string, object>
+class CompositeDictionary : IDictionary<string, object>
 {
     private readonly ImmutableArray<Entry> _entries;
 

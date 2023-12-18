@@ -3,9 +3,7 @@
 
 namespace Docfx.Common;
 
-public class ResourcePoolManager<TResource>
-    : IDisposable
-    where TResource : class
+class ResourcePoolManager<TResource> : IDisposable where TResource : class
 {
     private readonly object _syncRoot = new();
     private readonly List<TResource> _resources = new();

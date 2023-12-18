@@ -3,7 +3,7 @@
 
 namespace Docfx.Common;
 
-public static class StringExtension
+static class StringExtension
 {
     public static string ForwardSlashCombine(this string baseAddress, string relativeAddress)
     {

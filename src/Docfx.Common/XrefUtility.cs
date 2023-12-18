@@ -5,7 +5,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Common;
 
-public static class XrefUtility
+static class XrefUtility
 {
     public static bool TryGetXrefStringValue(this XRefSpec spec, string key, out string value)
     {

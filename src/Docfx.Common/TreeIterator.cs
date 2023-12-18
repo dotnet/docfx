@@ -3,7 +3,7 @@
 
 namespace Docfx.Common;
 
-public static class TreeIterator
+static class TreeIterator
 {
     public static async Task PreorderAsync<T>(T current, T parent, Func<T, IEnumerable<T>> childrenGetter, Func<T, T, Task<bool>> action)
     {

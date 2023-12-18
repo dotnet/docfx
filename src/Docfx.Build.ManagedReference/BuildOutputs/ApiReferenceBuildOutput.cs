@@ -179,7 +179,7 @@ public class ApiReferenceBuildOutput
     [YamlIgnore]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
-    public CompositeDictionary MetadataJson =>
+    public IDictionary<string, object> MetadataJson =>
         CompositeDictionary
             .CreateBuilder()
             .Add(string.Empty, Metadata)

@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace Docfx.Common;
 
-public static class CommandUtility
+static class CommandUtility
 {
     public static int RunCommand(CommandInfo commandInfo, StreamWriter stdoutWriter = null, StreamWriter stderrWriter = null, int timeoutInMilliseconds = Timeout.Infinite)
     {
@@ -150,7 +150,7 @@ public static class CommandUtility
     }
 }
 
-public class CommandInfo
+class CommandInfo
 {
     public string Name { get; set; }
     public string Arguments { get; set; }

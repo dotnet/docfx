@@ -3,9 +3,7 @@
 
 namespace Docfx.Common;
 
-public sealed class ResourceLease<T>
-    : IDisposable
-    where T : class
+class ResourceLease<T> : IDisposable where T : class
 {
     private readonly Action<ResourceLease<T>> _callback;
 
@@ -17,12 +15,8 @@ public sealed class ResourceLease<T>
 
     public T Resource { get; private set; }
 
-    #region IDisposable
-
     public void Dispose()
     {
         _callback(this);
     }
-
-    #endregion
 }

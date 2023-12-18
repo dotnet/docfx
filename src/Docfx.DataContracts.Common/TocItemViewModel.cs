@@ -116,7 +116,7 @@ public class TocItemViewModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
-    public CompositeDictionary MetadataJson => CompositeDictionary.CreateBuilder().Add(string.Empty, Metadata).Create();
+    public IDictionary<string, object> MetadataJson => CompositeDictionary.CreateBuilder().Add(string.Empty, Metadata).Create();
 
     public TocItemViewModel Clone()
     {

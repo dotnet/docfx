@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-
 using Docfx.Common;
 
 namespace Docfx.DataContracts.Common;

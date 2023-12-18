@@ -5,7 +5,7 @@ using YamlDotNet.Core;
 
 namespace Docfx.Common;
 
-public class YamlDeserializerWithFallback
+class YamlDeserializerWithFallback
 {
     private readonly Func<Func<TextReader>, object> _textReaderDeserialize;
     private readonly Func<string, object> _filePathDeserialize;
