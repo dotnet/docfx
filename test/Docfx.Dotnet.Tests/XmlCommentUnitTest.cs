@@ -528,6 +528,6 @@ public class XmlCommentUnitTest
                  }
               }
             }</code></pre>
-            """, comment.Examples[0]);
+            """, comment.Examples[0], ignoreLineEndingDifferences: true);
     }
 }
