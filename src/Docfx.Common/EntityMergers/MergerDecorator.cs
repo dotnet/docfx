@@ -3,7 +3,7 @@
 
 namespace Docfx.Common.EntityMergers;
 
-public abstract class MergerDecorator : IMerger
+abstract class MergerDecorator : IMerger
 {
     private readonly IMerger _inner;
 

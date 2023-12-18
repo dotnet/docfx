@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Docfx.Common.EntityMergers;
 
-public class ReflectionEntityMerger : IMerger
+class ReflectionEntityMerger : IMerger
 {
     private readonly ConcurrentDictionary<Type, PropertyMergerImpl> _cache =
         new();

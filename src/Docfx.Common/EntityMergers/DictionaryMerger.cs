@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace Docfx.Common.EntityMergers;
 
-public class DictionaryMerger : MergerDecorator
+class DictionaryMerger : MergerDecorator
 {
     public DictionaryMerger(IMerger inner)
         : base(inner)

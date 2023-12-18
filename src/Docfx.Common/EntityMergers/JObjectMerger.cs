@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Docfx.Common.EntityMergers;
 
-public class JObjectMerger : MergerDecorator
+class JObjectMerger : MergerDecorator
 {
     public JObjectMerger(IMerger inner)
         : base(inner)

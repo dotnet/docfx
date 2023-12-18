@@ -149,7 +149,7 @@ public class ReflectionEntityMergerTest
         public string Text { get; set; }
     }
 
-    public class StringMergeHandler : IMergeHandler
+    class StringMergeHandler : IMergeHandler
     {
         public void Merge(ref object source, object overrides, IMergeContext context)
         {

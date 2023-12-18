@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Docfx.Common.EntityMergers;
 
-public class JArrayMerger : MergerDecorator
+class JArrayMerger : MergerDecorator
 {
     public JArrayMerger(IMerger inner)
         : base(inner)

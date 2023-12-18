@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace Docfx.Common.EntityMergers;
 
-public class KeyedListMerger : MergerDecorator
+class KeyedListMerger : MergerDecorator
 {
     public KeyedListMerger(IMerger inner)
         : base(inner)

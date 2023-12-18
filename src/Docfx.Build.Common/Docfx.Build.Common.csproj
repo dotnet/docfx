@@ -10,5 +10,4 @@
     <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="System.Composition" />
   </ItemGroup>
-
 </Project>

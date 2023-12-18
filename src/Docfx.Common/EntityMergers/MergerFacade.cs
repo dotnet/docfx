@@ -3,7 +3,7 @@
 
 namespace Docfx.Common.EntityMergers;
 
-public class MergerFacade
+class MergerFacade
 {
     private readonly IMerger _merger;
 

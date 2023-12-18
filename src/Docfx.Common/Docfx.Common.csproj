@@ -7,4 +7,9 @@
     <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
     <ProjectReference Include="..\Docfx.YamlSerialization\Docfx.YamlSerialization.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Docfx.Build.Common" />
+    <InternalsVisibleTo Include="Docfx.Build.RestApi" />
+  </ItemGroup>
 </Project>

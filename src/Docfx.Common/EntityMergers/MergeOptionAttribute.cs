@@ -25,5 +25,5 @@ public sealed class MergeOptionAttribute : Attribute
 
     public MergeOption Option { get; }
 
-    public IMergeHandler Handler { get; }
+    internal IMergeHandler Handler { get; }
 }

@@ -2038,39 +2038,15 @@ namespace Docfx.Common
 }
 namespace Docfx.Common.EntityMergers
 {
-    public class DictionaryMerger : Docfx.Common.EntityMergers.MergerDecorator
-    {
-        public DictionaryMerger(Docfx.Common.EntityMergers.IMerger inner) { }
-        public override void Merge(ref object source, object overrides, System.Type type, Docfx.Common.EntityMergers.IMergeContext context) { }
-    }
     public interface IMergeContext
     {
         object this[string key] { get; }
         Docfx.Common.EntityMergers.IMerger Merger { get; }
     }
-    public interface IMergeHandler
-    {
-        void Merge(ref object source, object overrides, Docfx.Common.EntityMergers.IMergeContext context);
-    }
     public interface IMerger
     {
         void Merge(ref object source, object overrides, System.Type type, Docfx.Common.EntityMergers.IMergeContext context);
         bool TestKey(object source, object overrides, System.Type type, Docfx.Common.EntityMergers.IMergeContext context);
-    }
-    public class JArrayMerger : Docfx.Common.EntityMergers.MergerDecorator
-    {
-        public JArrayMerger(Docfx.Common.EntityMergers.IMerger inner) { }
-        public override void Merge(ref object source, object overrides, System.Type type, Docfx.Common.EntityMergers.IMergeContext context) { }
-    }
-    public class JObjectMerger : Docfx.Common.EntityMergers.MergerDecorator
-    {
-        public JObjectMerger(Docfx.Common.EntityMergers.IMerger inner) { }
-        public override void Merge(ref object source, object overrides, System.Type type, Docfx.Common.EntityMergers.IMergeContext context) { }
-    }
-    public class KeyedListMerger : Docfx.Common.EntityMergers.MergerDecorator
-    {
-        public KeyedListMerger(Docfx.Common.EntityMergers.IMerger inner) { }
-        public override void Merge(ref object source, object overrides, System.Type type, Docfx.Common.EntityMergers.IMergeContext context) { }
     }
     public enum MergeOption
     {
@@ -2086,24 +2062,7 @@ namespace Docfx.Common.EntityMergers
     {
         public MergeOptionAttribute(Docfx.Common.EntityMergers.MergeOption option = 0) { }
         public MergeOptionAttribute(System.Type handlerType) { }
-        public Docfx.Common.EntityMergers.IMergeHandler Handler { get; }
         public Docfx.Common.EntityMergers.MergeOption Option { get; }
-    }
-    public abstract class MergerDecorator : Docfx.Common.EntityMergers.IMerger
-    {
-        protected MergerDecorator(Docfx.Common.EntityMergers.IMerger inner) { }
-        public virtual void Merge(ref object source, object overrides, System.Type type, Docfx.Common.EntityMergers.IMergeContext context) { }
-        public virtual bool TestKey(object source, object overrides, System.Type type, Docfx.Common.EntityMergers.IMergeContext context) { }
-    }
-    public class MergerFacade
-    {
-        public MergerFacade(Docfx.Common.EntityMergers.IMerger merger) { }
-        public void Merge<T>(ref T source, T overrides, System.Collections.Generic.IReadOnlyDictionary<string, object> data = null)
-            where T :  class { }
-    }
-    public class ReflectionEntityMerger : Docfx.Common.EntityMergers.IMerger
-    {
-        public ReflectionEntityMerger() { }
     }
 }
 namespace Docfx.Common.Git
