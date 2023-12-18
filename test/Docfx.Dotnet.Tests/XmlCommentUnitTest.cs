@@ -487,4 +487,47 @@ public class XmlCommentUnitTest
         var commentModel = XmlComment.Parse(input, new XmlCommentParserContext());
         Assert.Equal("A", commentModel.Summary);
     }
+
+    [Fact]
+    public void Issue9495()
+    {
+        var comment = XmlComment.Parse(
+            """
+            <example>
+            <code><![CDATA[
+            options.UseRelativeLinks = true;
+            ]]></code>
+            <code><![CDATA[
+            {
+              "type": "articles",
+              "id": "4309",
+              "relationships": {
+                 "author": {
+                   "links": {
+                     "self": "/api/shopping/articles/4309/relationships/author",
+                     "related": "/api/shopping/articles/4309/author"
+                   }
+                 }
+              }
+            }
+            ]]></code>
+            </example>
+            """);
+        Assert.Equal(
+            """
+            <pre><code class="lang-csharp">options.UseRelativeLinks = true;</code></pre>
+            <pre><code class="lang-csharp">{
+              "type": "articles",
+              "id": "4309",
+              "relationships": {
+                 "author": {
+                   "links": {
+                     "self": "/api/shopping/articles/4309/relationships/author",
+                     "related": "/api/shopping/articles/4309/author"
+                   }
+                 }
+              }
+            }</code></pre>
+            """, comment.Examples[0], ignoreLineEndingDifferences: true);
+    }
 }
