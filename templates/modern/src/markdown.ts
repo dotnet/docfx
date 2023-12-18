@@ -176,7 +176,7 @@ function renderLinks() {
  */
 function renderCodeCopy() {
   document.querySelectorAll<HTMLElement>('pre>code').forEach(code => {
-    if (code.innerText.trim().length === 0) {
+    if (code.textContent.trim().length === 0) {
       return
     }
 
