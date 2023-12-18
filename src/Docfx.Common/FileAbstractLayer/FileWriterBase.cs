@@ -3,7 +3,7 @@
 
 namespace Docfx.Common;
 
-public abstract class FileWriterBase : IFileWriter
+abstract class FileWriterBase : IFileWriter
 {
     public FileWriterBase(string outputFolder)
     {

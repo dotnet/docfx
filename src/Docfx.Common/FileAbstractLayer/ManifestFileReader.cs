@@ -5,7 +5,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Common;
 
-public class ManifestFileReader : IFileReader
+class ManifestFileReader : IFileReader
 {
     private readonly Manifest _manifest;
     private readonly string _manifestFolder;

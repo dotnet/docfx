@@ -3,7 +3,7 @@
 
 namespace Docfx.Common;
 
-internal sealed class EmptyFileReader : IFileReader
+class EmptyFileReader : IFileReader
 {
     public static readonly EmptyFileReader Instance = new();
 

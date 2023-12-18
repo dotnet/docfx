@@ -3,7 +3,7 @@
 
 namespace Docfx.Common;
 
-public static class FileAbstractLayerExtensions
+static class FileAbstractLayerExtensions
 {
     public static StreamReader OpenReadText(this FileAbstractLayer fal, RelativePath file) =>
         new(fal.OpenRead(file));

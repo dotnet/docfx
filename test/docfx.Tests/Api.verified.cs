@@ -1571,45 +1571,6 @@ namespace Docfx.Common
             public const string InvalidTocLink = "InvalidTocLink";
         }
     }
-    public class FileAbstractLayer : Docfx.Plugins.IFileAbstractLayer
-    {
-        public FileAbstractLayer(Docfx.Common.IFileReader reader, Docfx.Common.IFileWriter writer) { }
-        public Docfx.Common.IFileReader Reader { get; }
-        public Docfx.Common.IFileWriter Writer { get; }
-        public void Copy(Docfx.Common.RelativePath sourceFileName, Docfx.Common.RelativePath destFileName) { }
-        public void Copy(string sourceFileName, string destFileName) { }
-        public System.IO.Stream Create(Docfx.Common.RelativePath file) { }
-        public System.IO.Stream Create(string file) { }
-        public bool Exists(Docfx.Common.RelativePath file) { }
-        public bool Exists(string file) { }
-        public System.Collections.Generic.IEnumerable<Docfx.Common.RelativePath> GetAllInputFiles() { }
-        public string GetExpectedPhysicalPath(Docfx.Common.RelativePath file) { }
-        public string GetExpectedPhysicalPath(string file) { }
-        public string GetPhysicalPath(Docfx.Common.RelativePath file) { }
-        public string GetPhysicalPath(string file) { }
-        public System.IO.Stream OpenRead(Docfx.Common.RelativePath file) { }
-        public System.IO.Stream OpenRead(string file) { }
-    }
-    public class FileAbstractLayerBuilder
-    {
-        public static readonly Docfx.Common.FileAbstractLayerBuilder Default;
-        public Docfx.Common.FileAbstractLayer Create() { }
-        public Docfx.Common.FileAbstractLayerBuilder ReadFromManifest(Docfx.Plugins.Manifest manifest, string manifestFolder) { }
-        public Docfx.Common.FileAbstractLayerBuilder ReadFromOutput(Docfx.Common.FileAbstractLayer fal) { }
-        public Docfx.Common.FileAbstractLayerBuilder ReadFromRealFileSystem(string folder) { }
-        public Docfx.Common.FileAbstractLayerBuilder WriteToManifest(Docfx.Plugins.Manifest manifest, string manifestFolder, string outputFolder = null) { }
-        public Docfx.Common.FileAbstractLayerBuilder WriteToRealFileSystem(string folder) { }
-    }
-    public static class FileAbstractLayerExtensions
-    {
-        public static System.IO.StreamWriter CreateText(this Docfx.Common.FileAbstractLayer fal, Docfx.Common.RelativePath file) { }
-        public static string GetOutputPhysicalPath(this Docfx.Common.FileAbstractLayer fal, string file) { }
-        public static System.IO.StreamReader OpenReadText(this Docfx.Common.FileAbstractLayer fal, Docfx.Common.RelativePath file) { }
-        public static string ReadAllText(this Docfx.Common.FileAbstractLayer fal, Docfx.Common.RelativePath file) { }
-        public static string ReadAllText(this Docfx.Common.FileAbstractLayer fal, string file) { }
-        public static void WriteAllText(this Docfx.Common.FileAbstractLayer fal, Docfx.Common.RelativePath file, string content) { }
-        public static void WriteAllText(this Docfx.Common.FileAbstractLayer fal, string file, string content) { }
-    }
     public class FileLinkInfo : Docfx.Plugins.IFileLinkInfo
     {
         public FileLinkInfo() { }
@@ -1633,28 +1594,6 @@ namespace Docfx.Common
         public FilePathComparer(bool ignoreToFullPath) { }
         public bool Equals(string x, string y) { }
         public int GetHashCode(string obj) { }
-    }
-    public abstract class FileWriterBase : Docfx.Common.IFileWriter
-    {
-        public FileWriterBase(string outputFolder) { }
-        public string ExpandedOutputFolder { get; }
-        public string OutputFolder { get; }
-        public abstract void Copy(Docfx.Common.PathMapping sourceFileName, Docfx.Common.RelativePath destFileName);
-        public abstract System.IO.Stream Create(Docfx.Common.RelativePath filePath);
-        public abstract Docfx.Common.IFileReader CreateReader();
-        protected static void EnsureFolder(string folder) { }
-    }
-    public interface IFileReader
-    {
-        System.Collections.Generic.IEnumerable<Docfx.Common.RelativePath> EnumerateFiles();
-        Docfx.Common.PathMapping? FindFile(Docfx.Common.RelativePath file);
-        string GetExpectedPhysicalPath(Docfx.Common.RelativePath file);
-    }
-    public interface IFileWriter
-    {
-        void Copy(Docfx.Common.PathMapping sourceFileName, Docfx.Common.RelativePath destFileName);
-        System.IO.Stream Create(Docfx.Common.RelativePath file);
-        Docfx.Common.IFileReader CreateReader();
     }
     public interface ILogItem
     {
@@ -1719,30 +1658,6 @@ namespace Docfx.Common
         public LoggerFileScope(string fileName) { }
         public void Dispose() { }
     }
-    public static class ManifestFileHelper
-    {
-        public static void Dereference(this Docfx.Plugins.Manifest manifest, string manifestFolder, int parallelism) { }
-    }
-    public class ManifestFileReader : Docfx.Common.IFileReader
-    {
-        public ManifestFileReader(Docfx.Plugins.Manifest manifest, string manifestFolder) { }
-        public System.Collections.Generic.IEnumerable<Docfx.Common.RelativePath> EnumerateFiles() { }
-        public Docfx.Common.PathMapping? FindFile(Docfx.Common.RelativePath file) { }
-        public string GetExpectedPhysicalPath(Docfx.Common.RelativePath file) { }
-    }
-    public class ManifestFileWriter : Docfx.Common.FileWriterBase
-    {
-        public ManifestFileWriter(Docfx.Plugins.Manifest manifest, string manifestFolder, string outputFolder) { }
-        public override void Copy(Docfx.Common.PathMapping sourceFileName, Docfx.Common.RelativePath destFileName) { }
-        public override System.IO.Stream Create(Docfx.Common.RelativePath file) { }
-        public override Docfx.Common.IFileReader CreateReader() { }
-    }
-    public readonly struct PathMapping
-    {
-        public PathMapping(Docfx.Common.RelativePath logicalPath, string physicalPath) { }
-        public Docfx.Common.RelativePath LogicalPath { get; }
-        public string PhysicalPath { get; }
-    }
     public static class PathUtility
     {
         public static readonly char[] InvalidFileNameChars;
@@ -1752,20 +1667,6 @@ namespace Docfx.Common
         public static bool IsRelativePath(string path) { }
         public static string MakeRelativePath(string basePath, string absolutePath) { }
         public static string ToCleanUrlFileName(this string input, string replacement = "-") { }
-    }
-    public class RealFileReader : Docfx.Common.IFileReader
-    {
-        public RealFileReader(string inputFolder) { }
-        public System.Collections.Generic.IEnumerable<Docfx.Common.RelativePath> EnumerateFiles() { }
-        public Docfx.Common.PathMapping? FindFile(Docfx.Common.RelativePath file) { }
-        public string GetExpectedPhysicalPath(Docfx.Common.RelativePath file) { }
-    }
-    public class RealFileWriter : Docfx.Common.FileWriterBase
-    {
-        public RealFileWriter(string outputFolder) { }
-        public override void Copy(Docfx.Common.PathMapping sourceFileName, Docfx.Common.RelativePath destFileName) { }
-        public override System.IO.Stream Create(Docfx.Common.RelativePath file) { }
-        public override Docfx.Common.IFileReader CreateReader() { }
     }
     public sealed class RelativePath : System.IEquatable<Docfx.Common.RelativePath>
     {

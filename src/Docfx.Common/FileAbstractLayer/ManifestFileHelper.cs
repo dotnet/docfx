@@ -5,7 +5,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Common;
 
-public static class ManifestFileHelper
+static class ManifestFileHelper
 {
     public static void Dereference(this Manifest manifest, string manifestFolder, int parallelism)
     {

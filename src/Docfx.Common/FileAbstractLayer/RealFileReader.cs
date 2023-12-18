@@ -3,7 +3,7 @@
 
 namespace Docfx.Common;
 
-public class RealFileReader : IFileReader
+class RealFileReader : IFileReader
 {
     private readonly string _inputFolder;
     private readonly string _expandedInputFolder;

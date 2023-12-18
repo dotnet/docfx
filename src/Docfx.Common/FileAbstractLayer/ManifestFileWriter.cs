@@ -5,7 +5,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Common;
 
-public class ManifestFileWriter : FileWriterBase
+class ManifestFileWriter : FileWriterBase
 {
     private readonly bool _noRandomFile;
     private readonly Manifest _manifest;

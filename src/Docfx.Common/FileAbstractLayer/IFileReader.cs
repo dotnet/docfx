@@ -6,7 +6,7 @@ namespace Docfx.Common;
 /// <summary>
 /// File reader.
 /// </summary>
-public interface IFileReader
+interface IFileReader
 {
     /// <summary>
     /// Convert a logical file path to a physical file path

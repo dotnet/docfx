@@ -6,7 +6,7 @@ namespace Docfx.Common;
 /// <summary>
 /// File writer.
 /// </summary>
-public interface IFileWriter
+interface IFileWriter
 {
     /// <summary>
     /// Create a file with logical file path.

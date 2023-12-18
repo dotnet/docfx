@@ -3,7 +3,7 @@
 
 namespace Docfx.Common;
 
-public class RealFileWriter : FileWriterBase
+class RealFileWriter : FileWriterBase
 {
     public RealFileWriter(string outputFolder)
         : base(outputFolder) { }

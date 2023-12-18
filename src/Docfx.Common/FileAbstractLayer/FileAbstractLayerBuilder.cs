@@ -5,7 +5,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Common;
 
-public class FileAbstractLayerBuilder
+class FileAbstractLayerBuilder
 {
     public static readonly FileAbstractLayerBuilder Default = new(EmptyFileReader.Instance, null);
     private readonly IFileReader _reader;
