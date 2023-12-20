@@ -17,7 +17,7 @@ using Spectre.Console;
 
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Actions;
-using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Graphics.Operations.SpecialGraphicsState;
 using UglyToad.PdfPig.Outline;
 using UglyToad.PdfPig.Outline.Destinations;
 using UglyToad.PdfPig.Writer;
@@ -40,6 +40,9 @@ static class PdfBuilder
         public string? pdfFileName { get; init; }
         public bool pdfTocPage { get; init; }
         public string? pdfCoverPage { get; init; }
+
+        public string? pdfHeaderTemplate { get; init; }
+        public string? pdfFooterTemplate { get; init; }
     }
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
@@ -88,6 +91,7 @@ static class PdfBuilder
 
         using var pageLimiter = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
         var pagePool = new ConcurrentBag<IPage>();
+        var headerFooterCache = new ConcurrentDictionary<(string, string), Task<byte[]>>();
 
         await AnsiConsole.Progress().StartAsync(async progress =>
         {
@@ -99,7 +103,7 @@ static class PdfBuilder
                 var outputPath = Path.Combine(outputFolder, outputName);
 
                 await CreatePdf(
-                    PrintPdf, task, new(baseUrl, url), toc, outputPath,
+                    PrintPdf, PrintHeaderFooter, task, new(baseUrl, url), toc, outputPath,
                     pageNumbers => pdfPageNumbers[url] = pageNumbers);
 
                 task.Value = task.MaxValue;
@@ -163,10 +167,50 @@ static class PdfBuilder
                 pageLimiter.Release();
             }
         }
+
+        Task<byte[]> PrintHeaderFooter(Outline toc, int pageNumber, int totalPages)
+        {
+            var headerTemplate = ExpandTemplate(toc.pdfHeaderTemplate, pageNumber, totalPages);
+            var footerTemplate = ExpandTemplate(toc.pdfFooterTemplate ?? DefaultFooterTemplate, pageNumber, totalPages);
+
+            return headerFooterCache.GetOrAdd((headerTemplate, footerTemplate), _ => PrintHeaderFooterCore());
+
+            async Task<byte[]> PrintHeaderFooterCore()
+            {
+                await pageLimiter.WaitAsync();
+                var page = pagePool.TryTake(out var pooled) ? pooled : await context.NewPageAsync();
+
+                try
+                {
+                    await page.GotoAsync("about:blank");
+
+                    return await page.PdfAsync(new()
+                    {
+                        DisplayHeaderFooter = true,
+                        HeaderTemplate = headerTemplate,
+                        FooterTemplate = footerTemplate,
+                    });
+                }
+                finally
+                {
+                    pagePool.Add(page);
+                    pageLimiter.Release();
+                }
+            }
+
+            static string ExpandTemplate(string? pdfTemplate, int pageNumber, int totalPages)
+            {
+                return (pdfTemplate ?? "")
+                    .Replace("<span class='pageNumber'></span>", $"<span>{pageNumber}</span>")
+                    .Replace("<span class=\"pageNumber\"></span>", $"<span>{pageNumber}</span>")
+                    .Replace("<span class='totalPages'></span>", $"<span>{totalPages}</span>")
+                    .Replace("<span class=\"totalPages\"></span>", $"<span>{totalPages}</span>");
+            }
+        }
     }
 
     static async Task CreatePdf(
-        Func<Uri, Task<byte[]?>> printPdf, ProgressTask task,
+        Func<Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Task<byte[]>> printHeaderFooter, ProgressTask task,
         Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
@@ -280,30 +324,24 @@ static class PdfBuilder
                 for (var i = 1; i <= document.NumberOfPages; i++)
                 {
                     pageNumber++;
+
                     var pageBuilder = builder.AddPage(document, i, x => CopyLink(node, x));
 
                     if (isTocPage)
                         continue;
 
-                    // Draw page number before PDF content to
-                    //  1. Allow backgrounds in PDF content to cover page numbers.
-                    //  2. Use the default PDF rendering transformation matrix because chromium resets the matrix.
-                    pageBuilder.SelectContentStream(0);
+                    var headerFooter = await printHeaderFooter(outline, pageNumber, numberOfPages);
+                    using var headerFooterDocument = PdfDocument.Open(headerFooter);
+
                     pageBuilder.NewContentStreamBefore();
+                    pageBuilder.CurrentStream.Operations.Add(Push.Value);
 
-                    DrawPageNumber(pageBuilder, document.GetPage(i), pageNumber);
+                    // PDF produced by chromimum modifies global transformation matrix.
+                    // Push and pop graphics state to fix graphics state
+                    pageBuilder.CopyFrom(headerFooterDocument.GetPage(1));
+
+                    pageBuilder.CurrentStream.Operations.Add(Pop.Value);
                 }
-            }
-
-            void DrawPageNumber(PdfPageBuilder pageBuilder, Page page, int pageNumber)
-            {
-                const int FontSize = 10;
-                const int Margin = 10;
-
-                var text = $"{pageNumber}";
-                var letters = pageBuilder.MeasureText(text, FontSize, new(0, 0), font);
-                var width = letters[^1].GlyphRectangle.Right;
-                pageBuilder.AddText(text, FontSize, new(page.Width - width - Margin, Margin), font);
             }
         }
 
@@ -461,5 +499,14 @@ static class PdfBuilder
             document.body.appendChild(a)
           }
         })
+        """;
+
+    static string DefaultFooterTemplate =>
+        """
+        <div style="width: 100%; font-size: 12px;">
+          <div style="float: right; padding: 0 2em">
+            <span class="pageNumber"></span> / <span class="totalPages"></span>
+          </div>
+        </div>
         """;
 }

@@ -79,6 +79,28 @@ Indicates whether to include a "Table of Contents" pages at the beginning.
 
 A path to an HTML page relative to the root of the output directory. The HTML page will be inserted at the beginning of the PDF file as cover page.
 
+### `pdfHeaderTemplate`
+
+HTML template for the print header. Should be valid HTML markup with following HTML elements used to inject printing values into them:
+
+- `<span class='pageNumber'></span>`: current page number.
+- `<span class='totalPages'></span>`: total pages in the document.
+
+> [!NOTE]
+> For text to appear in the header and footer HTML template, you need to explicitly set the `font-size` CSS style.
+
+### `pdfFooterTemplate`
+
+HTML template for the print footer. Should use the same format as the [header template](#pdfheadertemplate). Uses the following default footer template if unspecified:
+
+```html
+<div style="width: 100%; font-size: 12px;">
+  <div style="float: right; padding: 0 2em">
+    <span class="pageNumber"></span> / <span class="totalPages"></span>
+  </div>
+</div>
+```
+
 > [!NOTE]
 > For the cover page to appear in PDF, it needs to be included in build.
 > For instance, if `cover.md` is outputted to `_site/cover.html`, you should set `pdfCoverPage` to `cover.html`.
