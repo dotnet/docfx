@@ -550,7 +550,7 @@
     {
       "Number": 3,
       "NumberOfImages": 1,
-      "Text": "3Getting Started with docfxGetting StartedThis is a seed.",
+      "Text": "3 / 125Getting Started with docfxGetting StartedThis is a seed.",
       "Links": [
         {
           "Uri": ""
@@ -562,22 +562,22 @@
     },
     {
       "Number": 4,
-      "Text": "4docfx is an API documentation generator for .NET, currently support C# and VB. It has theability to extract triple slash comments out from your source code. What's more, it hassyntax to link additional ﬁles to API to add additional remarks. docfx will scan your sourcecode and your additional conceptual ﬁles and generate a complete HTML documentationwebsite for you. docfx provides the ﬂexibility for you to customize the website throughtemplates. We currently have several embedded templates, including websites containingpure static html pages and also website managed by AngularJS.Click \"View Source\" for an API to route to the source code in GitHub (your API must bepushed to GitHub)docfx provide DNX version for cross platform use.docfx can be used within Visual Studio seamlessly. NOTE oﬃcal docfx.msbuild nugetpackage is now in pre-release version. You can also build your own with source codeand use it locally.We support Docfx Flavored Markdown(DFM) for writing conceptual ﬁles. DFM is100% compatible with Github Flavored Markdown(GFM) and add several new featuresincluding ﬁle inclusion, cross reference, and yaml header.",
+      "Text": "4 / 125docfx is an API documentation generator for .NET, currently support C# and VB. It has theability to extract triple slash comments out from your source code. What's more, it hassyntax to link additional ﬁles to API to add additional remarks. docfx will scan your sourcecode and your additional conceptual ﬁles and generate a complete HTML documentationwebsite for you. docfx provides the ﬂexibility for you to customize the website throughtemplates. We currently have several embedded templates, including websites containingpure static html pages and also website managed by AngularJS.Click \"View Source\" for an API to route to the source code in GitHub (your API must bepushed to GitHub)docfx provide DNX version for cross platform use.docfx can be used within Visual Studio seamlessly. NOTE oﬃcal docfx.msbuild nugetpackage is now in pre-release version. You can also build your own with source codeand use it locally.We support Docfx Flavored Markdown(DFM) for writing conceptual ﬁles. DFM is100% compatible with Github Flavored Markdown(GFM) and add several new featuresincluding ﬁle inclusion, cross reference, and yaml header.",
       "Links": []
     },
     {
       "Number": 5,
-      "Text": "5Engineering GuidelinesBasicsCopyright header and license noticeAll source code ﬁles require the following exact header according to its language (please donot make any changes to it).extension: .csextension: .jsextension: .cssextension: .tmpl, .tmpl.partialExternal dependenciesThis refers to dependencies on projects (i.e. NuGet packages) outside of the docfx repo, andespecially outside of Microsoft. Adding new dependencies require additional approval.Current approved dependencies are:Newtonsoft.JsonJintHtmlAgilityPack// Licensed to the .NET Foundation under one or more agreements.// The .NET Foundation licenses this file to you under the MIT license.// Licensed to the .NET Foundation under one or more agreements.// The .NET Foundation licenses this file to you under the MIT license./** * Licensed to the .NET Foundation under one or more agreements. * The .NET Foundation licenses this file to you under the MIT license. */{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation lic",
+      "Text": "5 / 125Engineering GuidelinesBasicsCopyright header and license noticeAll source code ﬁles require the following exact header according to its language (please donot make any changes to it).extension: .csextension: .jsextension: .cssextension: .tmpl, .tmpl.partialExternal dependenciesThis refers to dependencies on projects (i.e. NuGet packages) outside of the docfx repo, andespecially outside of Microsoft. Adding new dependencies require additional approval.Current approved dependencies are:Newtonsoft.JsonJintHtmlAgilityPack// Licensed to the .NET Foundation under one or more agreements.// The .NET Foundation licenses this file to you under the MIT license.// Licensed to the .NET Foundation under one or more agreements.// The .NET Foundation licenses this file to you under the MIT license./** * Licensed to the .NET Foundation under one or more agreements. * The .NET Foundation licenses this file to you under the MIT license. */{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation lic",
       "Links": []
     },
     {
       "Number": 6,
-      "Text": "6NustacheYamlDotNetCode reviews and checkinsTo help ensure that only the highest quality code makes its way into the project, pleasesubmit all your code changes to GitHub as PRs. This includes runtime code changes, unittest updates, and deployment scripts. For example, sending a PR for just an update to aunit test might seem like a waste of time but the unit tests are just as important as theproduct code and as such, reviewing changes to them is also just as important.The advantages are numerous: improving code quality, more visibility on changes and theirpotential impact, avoiding duplication of eﬀort, and creating general awareness of progressbeing made in various areas.In general a PR should be signed oﬀ(using the \uD83D\uDC4D emoticon) by the Owner of that code.To commit the PR to the repo do not use the Big Green Button. Instead, do a typicalpush that you would use with Git (e.g. local pull, rebase, merge, push).Source Code ManagementBranch strategyIn general:master has the code for the latest release on NuGet.org. (e.g. 1.0.0, 1.1.0)dev has the code that is being worked on but not yet released. This is the branch intowhich devs normally submit pull requests and merge changes into. We run daily CItowards dev branch and generate pre-release nuget package, e.g. 1.0.1-alpha-9-abcdefsd.hotfix has the code for ﬁxing master bug after it is released. hotfix changes will bemerged back to master and dev once it is veriﬁed.Solution and project folder structure and namingSolution ﬁles go in the repo root. The default entry point is All.sln.Every project also needs a project.json and a matching .xproj ﬁle. This project.json is thesource of truth for a project's dependencies and conﬁguration options.Solution need to contain solution folders that match the physical folder (src, test, tools,etc.).Assembly naming pattern",
+      "Text": "6 / 125NustacheYamlDotNetCode reviews and checkinsTo help ensure that only the highest quality code makes its way into the project, pleasesubmit all your code changes to GitHub as PRs. This includes runtime code changes, unittest updates, and deployment scripts. For example, sending a PR for just an update to aunit test might seem like a waste of time but the unit tests are just as important as theproduct code and as such, reviewing changes to them is also just as important.The advantages are numerous: improving code quality, more visibility on changes and theirpotential impact, avoiding duplication of eﬀort, and creating general awareness of progressbeing made in various areas.In general a PR should be signed oﬀ(using the \uD83D\uDC4D emoticon) by the Owner of that code.To commit the PR to the repo do not use the Big Green Button. Instead, do a typicalpush that you would use with Git (e.g. local pull, rebase, merge, push).Source Code ManagementBranch strategyIn general:master has the code for the latest release on NuGet.org. (e.g. 1.0.0, 1.1.0)dev has the code that is being worked on but not yet released. This is the branch intowhich devs normally submit pull requests and merge changes into. We run daily CItowards dev branch and generate pre-release nuget package, e.g. 1.0.1-alpha-9-abcdefsd.hotfix has the code for ﬁxing master bug after it is released. hotfix changes will bemerged back to master and dev once it is veriﬁed.Solution and project folder structure and namingSolution ﬁles go in the repo root. The default entry point is All.sln.Every project also needs a project.json and a matching .xproj ﬁle. This project.json is thesource of truth for a project's dependencies and conﬁguration options.Solution need to contain solution folders that match the physical folder (src, test, tools,etc.).Assembly naming pattern",
       "Links": []
     },
     {
       "Number": 7,
-      "Text": "7The general naming pattern is Docfx.<area>.<subarea>.Unit testsWe use xUnit.net for all unit testing.Coding StandardsPlease refer to C# Coding standards for detailed guideline for C# coding standards.TODO Template Coding standardsTODO Template Preprocess JS Coding standards",
+      "Text": "7 / 125The general naming pattern is Docfx.<area>.<subarea>.Unit testsWe use xUnit.net for all unit testing.Coding StandardsPlease refer to C# Coding standards for detailed guideline for C# coding standards.TODO Template Coding standardsTODO Template Preprocess JS Coding standards",
       "Links": [
         {
           "Goto": {
@@ -592,7 +592,7 @@
     },
     {
       "Number": 8,
-      "Text": "8C# Coding StandardsIntroductionThe coding standard will be used in conjunction with customized version of StyleCop andFxCop [TODO] during both development and build process. This will help ensure that thestandard is followed by all developers on the team in a consistent manner.\"Any fool can write code that a computer can understand. Good programmers writecode that humans understand\".Martin Fowler. Refactoring: Improving the design of existing code.PurposeThe aim of this section is to deﬁne a set of C# coding standards to be used by CAPS buildteam to guarantee maximum legibility, reliability, re-usability and homogeneity of our code.Each section is marked Mandatory or Recommended. Mandatory sections, will be enforcedduring code reviews as well as tools like StyleCop and FxCop, and code will not beconsidered complete until it is compliant.ScopeThis section contains general C# coding standards which can be applied to any type ofapplication developed in C#, based on Framework Design Guidelines\uF1C5.It does not pretend to be a tutorial on C#. It only includes a set of limitations andrecommendations focused on clarifying the development.ToolsResharper\uF1C5 is a great 3rd party code cleanup and style tool.StyleCop\uF1C5 analyzes C# srouce code to enforce a set of style and consistency rules andhas been integrated into many 3rd party development tools such as Resharper.FxCop\uF1C5 is an application that analyzes managed code assemblies (code that targetsthe .NET Framework common language runtime) and reports information about theassemblies, such as possible design, localization, performance, and securityimprovements.C# Stylizer\uF1C5 does many of the style rules automaticallyHighlights of Coding StandardsThis section is not intended to give a summary of all the coding standards that enabled byour customized StyleCop, but to give a highlight of some rules one will possibly meet in",
+      "Text": "8 / 125C# Coding StandardsIntroductionThe coding standard will be used in conjunction with customized version of StyleCop andFxCop [TODO] during both development and build process. This will help ensure that thestandard is followed by all developers on the team in a consistent manner.\"Any fool can write code that a computer can understand. Good programmers writecode that humans understand\".Martin Fowler. Refactoring: Improving the design of existing code.PurposeThe aim of this section is to deﬁne a set of C# coding standards to be used by CAPS buildteam to guarantee maximum legibility, reliability, re-usability and homogeneity of our code.Each section is marked Mandatory or Recommended. Mandatory sections, will be enforcedduring code reviews as well as tools like StyleCop and FxCop, and code will not beconsidered complete until it is compliant.ScopeThis section contains general C# coding standards which can be applied to any type ofapplication developed in C#, based on Framework Design Guidelines\uF1C5.It does not pretend to be a tutorial on C#. It only includes a set of limitations andrecommendations focused on clarifying the development.ToolsResharper\uF1C5 is a great 3rd party code cleanup and style tool.StyleCop\uF1C5 analyzes C# srouce code to enforce a set of style and consistency rules andhas been integrated into many 3rd party development tools such as Resharper.FxCop\uF1C5 is an application that analyzes managed code assemblies (code that targetsthe .NET Framework common language runtime) and reports information about theassemblies, such as possible design, localization, performance, and securityimprovements.C# Stylizer\uF1C5 does many of the style rules automaticallyHighlights of Coding StandardsThis section is not intended to give a summary of all the coding standards that enabled byour customized StyleCop, but to give a highlight of some rules one will possibly meet in",
       "Links": [
         {
           "Uri": "http://msdn.microsoft.com/en-us/library/ms229042.aspx"
@@ -643,12 +643,12 @@
     },
     {
       "Number": 9,
-      "Text": "9daily coding life. It also provides some recommended however not mandatory(which meansnot enabled in StyleCop) coding standards.File Layout (Recommended)Only one public class is allowed per ﬁle.The ﬁle name is derived from the class name.Class Deﬁnition Order (Mandatory)The class deﬁnition contains class members in the following order, from less restrictedscope (public) to more restrictive (private):Nested types, e.g. classes, enum, struct, etc.Field members, e.g. member variables, const, etc.Member functionsConstructorsFinalizer (Do not use unless absolutely necessary)Methods (Properties, Events, Operations, Overridables, Static)Private nested typesNaming (Mandatory)DO use PascalCasing for all public member, type, and namespace names consisting ofmultiple words.NOTE: A special case is made for two-letter acronyms in which both letters are capitalized,e.g. IOStreamDO use camelCasing for parameter names.Class   : ObserverFilename: Observer.cs  PropertyDescriptor  HtmlTag  IOStream  propertyDescriptor  htmlTag  ioStream",
+      "Text": "9 / 125daily coding life. It also provides some recommended however not mandatory(which meansnot enabled in StyleCop) coding standards.File Layout (Recommended)Only one public class is allowed per ﬁle.The ﬁle name is derived from the class name.Class Deﬁnition Order (Mandatory)The class deﬁnition contains class members in the following order, from less restrictedscope (public) to more restrictive (private):Nested types, e.g. classes, enum, struct, etc.Field members, e.g. member variables, const, etc.Member functionsConstructorsFinalizer (Do not use unless absolutely necessary)Methods (Properties, Events, Operations, Overridables, Static)Private nested typesNaming (Mandatory)DO use PascalCasing for all public member, type, and namespace names consisting ofmultiple words.NOTE: A special case is made for two-letter acronyms in which both letters are capitalized,e.g. IOStreamDO use camelCasing for parameter names.Class   : ObserverFilename: Observer.cs  PropertyDescriptor  HtmlTag  IOStream  propertyDescriptor  htmlTag  ioStream",
       "Links": []
     },
     {
       "Number": 10,
-      "Text": "10DO start with underscore for private ﬁeldsDO start static readonly ﬁelds, constants with capitalized caseDO NOT capitalize each word in so-called closed-form compound words\uF1C5.DO have \"Async\" explicitly in the Async method name to notice people how to use itproperlyFormatting (Mandatory)DO use spaces over tabs, and always show all spaces/tabs in IDETipsVisual Studio > TOOLS > Options > Text Editor > C# > Tabs > Insert spaces (Tab size:4)Visual Studio > Edit > Advanced > View White SpaceDO add using inside namespace declarationDO add a space when:1. for (var i = 0; i < 1; i++)2. if (a == b)Cross-platform codingOur code should supports multiple operating systems. Don't assume we only run (anddevelop) on Windows. Code should be sensitvie to the diﬀerences between OS's. Here aresome speciﬁcs to consider.  private readonly Guid _userId = Guid.NewGuid();  private static readonly IEntityAccessor EntityAccessor = null;  private const string MetadataName = \"MetadataName\";  namespace Microsoft.Content.Build.BuildWorker.UnitTest  {  using System;  }",
+      "Text": "10 / 125DO start with underscore for private ﬁeldsDO start static readonly ﬁelds, constants with capitalized caseDO NOT capitalize each word in so-called closed-form compound words\uF1C5.DO have \"Async\" explicitly in the Async method name to notice people how to use itproperlyFormatting (Mandatory)DO use spaces over tabs, and always show all spaces/tabs in IDETipsVisual Studio > TOOLS > Options > Text Editor > C# > Tabs > Insert spaces (Tab size:4)Visual Studio > Edit > Advanced > View White SpaceDO add using inside namespace declarationDO add a space when:1. for (var i = 0; i < 1; i++)2. if (a == b)Cross-platform codingOur code should supports multiple operating systems. Don't assume we only run (anddevelop) on Windows. Code should be sensitvie to the diﬀerences between OS's. Here aresome speciﬁcs to consider.  private readonly Guid _userId = Guid.NewGuid();  private static readonly IEntityAccessor EntityAccessor = null;  private const string MetadataName = \"MetadataName\";  namespace Microsoft.Content.Build.BuildWorker.UnitTest  {  using System;  }",
       "Links": [
         {
           "Uri": "http://msdn.microsoft.com/en-us/library/ms229043.aspx"
@@ -663,27 +663,27 @@
     },
     {
       "Number": 11,
-      "Text": "11DO use Enviroment.NewLine instead of hard-coding the line break instead of \\r\\n, asWindows uses \\r\\n and OSX/Linux uses \\n.NoteBe aware that thes line-endings may cause problems in code when using @\"\" text blockswith line breaks.DO Use Path.Combine() or Path.DirectorySeparatorChar to separate directories. If this isnot possible (such as in scripting), use a forward slash /. Windows is more forgivingthan Linux in this regard.Unit tests and functional testsAssembly namingThe unit tests for the Microsoft.Foo assembly live in the Microsoft.Foo.Tests assembly.The functional tests for the Microsoft.Foo assmebly live in theMicrosoft.Foo.FunctionalTests assmebly.In general there should be exactly one unit test assebmly for each product runtimeassembly. In general there should be one functional test assembly per repo. Exceptions canbe made for both.Unit test class namingTest class names end with Test and live in the same namespace as the class being tested.For example, the unit tests for the Microsoft.Foo.Boo class would be in a Microsoft.Foo.Booclass in the test assembly.Unit test method namingUnit test method names must be descriptive about what is being tested, under whatconditions, and what the expectations are. Pascal casing and underscores can be used toimprove readability. The following test names are correct:The following test names are incorrect:PublicApiArgumentsShouldHaveNotNullAnnotationPublic_api_arguments_should_have_not_null_annotationTest1Constructor",
+      "Text": "11 / 125DO use Enviroment.NewLine instead of hard-coding the line break instead of \\r\\n, asWindows uses \\r\\n and OSX/Linux uses \\n.NoteBe aware that thes line-endings may cause problems in code when using @\"\" text blockswith line breaks.DO Use Path.Combine() or Path.DirectorySeparatorChar to separate directories. If this isnot possible (such as in scripting), use a forward slash /. Windows is more forgivingthan Linux in this regard.Unit tests and functional testsAssembly namingThe unit tests for the Microsoft.Foo assembly live in the Microsoft.Foo.Tests assembly.The functional tests for the Microsoft.Foo assmebly live in theMicrosoft.Foo.FunctionalTests assmebly.In general there should be exactly one unit test assebmly for each product runtimeassembly. In general there should be one functional test assembly per repo. Exceptions canbe made for both.Unit test class namingTest class names end with Test and live in the same namespace as the class being tested.For example, the unit tests for the Microsoft.Foo.Boo class would be in a Microsoft.Foo.Booclass in the test assembly.Unit test method namingUnit test method names must be descriptive about what is being tested, under whatconditions, and what the expectations are. Pascal casing and underscores can be used toimprove readability. The following test names are correct:The following test names are incorrect:PublicApiArgumentsShouldHaveNotNullAnnotationPublic_api_arguments_should_have_not_null_annotationTest1Constructor",
       "Links": []
     },
     {
       "Number": 12,
-      "Text": "12Unit test structureThe contents of every unit test should be split into three distinct stages, optionallyseparated by these comments:The crucial thing here is the Act stage is exactly one statement. That one statement isnothing more than a call to the one method that you are trying to test. keeping that onestatement as simple as possible is also very important. For example, this is not ideal:This style is not recomended because way too many things can go wrong in this onestatement. All the GetComplexParamN() calls can throw for a variety of reasons unrelated tothe test itself. It is thus unclear to someone running into a problem why the failure occured.The ideal pattern is to move the complex parameter building into the `Arrange section:Now the only reason the line with CallSomeMethod() can fail is if the method itself blew up.Testing exception messagesIn general testing the speciﬁc exception message in a unit test is important. This ensuresthat the exact desired exception is what is being tested rather than a diﬀerent exception ofFormatStringGetData// Arrange// Act// Assertint result = myObj.CallSomeMethod(GetComplexParam1(), GetComplexParam2(), GetComplexParam3());// ArrangeP1 p1 = GetComplexParam1();P2 p2 = GetComplexParam2();P3 p3 = GetComplexParam3();// Actint result = myObj.CallSomeMethod(p1, p2, p3);// AssertAssert.AreEqual(1234, result);",
+      "Text": "12 / 125Unit test structureThe contents of every unit test should be split into three distinct stages, optionallyseparated by these comments:The crucial thing here is the Act stage is exactly one statement. That one statement isnothing more than a call to the one method that you are trying to test. keeping that onestatement as simple as possible is also very important. For example, this is not ideal:This style is not recomended because way too many things can go wrong in this onestatement. All the GetComplexParamN() calls can throw for a variety of reasons unrelated tothe test itself. It is thus unclear to someone running into a problem why the failure occured.The ideal pattern is to move the complex parameter building into the `Arrange section:Now the only reason the line with CallSomeMethod() can fail is if the method itself blew up.Testing exception messagesIn general testing the speciﬁc exception message in a unit test is important. This ensuresthat the exact desired exception is what is being tested rather than a diﬀerent exception ofFormatStringGetData// Arrange// Act// Assertint result = myObj.CallSomeMethod(GetComplexParam1(), GetComplexParam2(), GetComplexParam3());// ArrangeP1 p1 = GetComplexParam1();P2 p2 = GetComplexParam2();P3 p3 = GetComplexParam3();// Actint result = myObj.CallSomeMethod(p1, p2, p3);// AssertAssert.AreEqual(1234, result);",
       "Links": []
     },
     {
       "Number": 13,
-      "Text": "13the same type. In order to verify the exact exception it is important to verify the message.Use xUnit.net's plethora of built-in assertionsxUnit.net includes many kinds of assertions – please use the most appropriate one for yourtest. This will make the tests a lot more readable and also allow the test runner report thebest possible errors (whether it's local or the CI machine). For example, these are bad:These are good:Parallel testsBy default all unit test assemblies should run in parallel mode, which is the default. Unittests shouldn't depend on any shared state, and so should generally be runnable inparallel. If the tests fail in parallel, the ﬁrst thing to do is to ﬁgure out why; do not justdisable parallel tests!var ex = Assert.Throws<InvalidOperationException>(    () => fruitBasket.GetBananaById(1234));Assert.Equal(    \"1234\",    ex.Message);Assert.Equal(true, someBool);Assert.True(\"abc123\" == someString);Assert.True(list1.Length == list2.Length);for (int i = 0; i < list1.Length; i++) {    Assert.True(        String.Equals            list1[i],            list2[i],            StringComparison.OrdinalIgnoreCase));}Assert.True(someBool);Assert.Equal(\"abc123\", someString);// built-in collection assertions!Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);",
+      "Text": "13 / 125the same type. In order to verify the exact exception it is important to verify the message.Use xUnit.net's plethora of built-in assertionsxUnit.net includes many kinds of assertions – please use the most appropriate one for yourtest. This will make the tests a lot more readable and also allow the test runner report thebest possible errors (whether it's local or the CI machine). For example, these are bad:These are good:Parallel testsBy default all unit test assemblies should run in parallel mode, which is the default. Unittests shouldn't depend on any shared state, and so should generally be runnable inparallel. If the tests fail in parallel, the ﬁrst thing to do is to ﬁgure out why; do not justdisable parallel tests!var ex = Assert.Throws<InvalidOperationException>(    () => fruitBasket.GetBananaById(1234));Assert.Equal(    \"1234\",    ex.Message);Assert.Equal(true, someBool);Assert.True(\"abc123\" == someString);Assert.True(list1.Length == list2.Length);for (int i = 0; i < list1.Length; i++) {    Assert.True(        String.Equals            list1[i],            list2[i],            StringComparison.OrdinalIgnoreCase));}Assert.True(someBool);Assert.Equal(\"abc123\", someString);// built-in collection assertions!Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);",
       "Links": []
     },
     {
       "Number": 14,
-      "Text": "14For functional tests it is reasonable to disable parallel tests.",
+      "Text": "14 / 125For functional tests it is reasonable to disable parallel tests.",
       "Links": []
     },
     {
       "Number": 15,
-      "Text": "15MarkdownMarkdown\uF1C5 is a lightweight markup language with plain text formatting syntax. Docfxsupports CommonMark\uF1C5 compliant Markdown parsed through the Markdig\uF1C5 parsingengine.Link to Math ExpressionsBlock QuotesThis is a block quote.AlertsNOTEInformation the user should notice even if skimming.\uF431TIPOptional information to help a user be more successful.\uF431IMPORTANTEssential information required for user success.\uF623CAUTIONNegative potential consequences of an action.\uF623WARNINGDangerous certain consequences of an action.\uF333",
+      "Text": "15 / 125MarkdownMarkdown\uF1C5 is a lightweight markup language with plain text formatting syntax. Docfxsupports CommonMark\uF1C5 compliant Markdown parsed through the Markdig\uF1C5 parsingengine.Link to Math ExpressionsBlock QuotesThis is a block quote.AlertsNOTEInformation the user should notice even if skimming.\uF431TIPOptional information to help a user be more successful.\uF431IMPORTANTEssential information required for user success.\uF623CAUTIONNegative potential consequences of an action.\uF623WARNINGDangerous certain consequences of an action.\uF333",
       "Links": [
         {
           "Uri": "https://daringfireball.net/projects/markdown/"
@@ -726,7 +726,7 @@
     {
       "Number": 16,
       "NumberOfImages": 1,
-      "Text": "16ImageMermaid DiagramsFlowchartCode SnippetThe example highlights lines 2, line 5 to 7 and lines 9 to the end of the ﬁle.MY TODOThis is a TODO.TextOneTwoHardRoundDecisionResult 1Result 2",
+      "Text": "16 / 125ImageMermaid DiagramsFlowchartCode SnippetThe example highlights lines 2, line 5 to 7 and lines 9 to the end of the ﬁle.MY TODOThis is a TODO.TextOneTwoHardRoundDecisionResult 1Result 2",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main"
@@ -738,12 +738,12 @@
     },
     {
       "Number": 17,
-      "Text": "17Math ExpressionsThis sentence uses $ delimiters to show math inline: The Cauchy-Schwarz InequalityThis expression uses \\$ to display a dollar sign: To split $100 in half, we calculate using System;using Azure;using Azure.Storage;using Azure.Storage.Blobs;class Program{    static void Main(string[] args)    {        // Define the connection string for the storage account        string connectionString = \"DefaultEndpointsProtocol=https;AccountName=<your-account-name>;AccountKey=<your-account-key>;EndpointSuffix=core.windows.net\";        // Create a new BlobServiceClient using the connection string        var blobServiceClient = new BlobServiceClient(connectionString);        // Create a new container        var container = blobServiceClient.CreateBlobContainer(\"mycontainer\");        // Upload a file to the container        using (var fileStream = File.OpenRead(\"path/to/file.txt\"))        {            container.UploadBlob(\"file.txt\", fileStream);        }        // Download the file from the container        var downloadedBlob = container.GetBlobClient(\"file.txt\").Download();        using (var fileStream = File.OpenWrite(\"path/to/downloaded-file.txt\"))        {            downloadedBlob.Value.Content.CopyTo(fileStream);        }    }}",
+      "Text": "17 / 125Math ExpressionsThis sentence uses $ delimiters to show math inline: The Cauchy-Schwarz InequalityThis expression uses \\$ to display a dollar sign: To split $100 in half, we calculate using System;using Azure;using Azure.Storage;using Azure.Storage.Blobs;class Program{    static void Main(string[] args)    {        // Define the connection string for the storage account        string connectionString = \"DefaultEndpointsProtocol=https;AccountName=<your-account-name>;AccountKey=<your-account-key>;EndpointSuffix=core.windows.net\";        // Create a new BlobServiceClient using the connection string        var blobServiceClient = new BlobServiceClient(connectionString);        // Create a new container        var container = blobServiceClient.CreateBlobContainer(\"mycontainer\");        // Upload a file to the container        using (var fileStream = File.OpenRead(\"path/to/file.txt\"))        {            container.UploadBlob(\"file.txt\", fileStream);        }        // Download the file from the container        var downloadedBlob = container.GetBlobClient(\"file.txt\").Download();        using (var fileStream = File.OpenWrite(\"path/to/downloaded-file.txt\"))        {            downloadedBlob.Value.Content.CopyTo(fileStream);        }    }}",
       "Links": []
     },
     {
       "Number": 18,
-      "Text": "18Custom Syntax HighlightingTabsLinuxWindowsThe above tab group was created with the following syntax:Tabs are indicated by using a speciﬁc link syntax within a Markdown header. The syntax canbe described as follows:A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The textof the link will become the text of the tab header, displayed to the customer. In order forthe header to be recognized as a tab, the link itself must start with #tab/ and be followedby an ID representing the content of the tab. The ID is used to sync all same-ID tabs acrossthe page. Using the above example, when a user selects a tab with the link #tab/windows, alltabs with the link #tab/windows on the page will be selected.Dependent tabsresource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {  name: 'hello'  // (...)}Content for Linux...# [Linux](#tab/linux)Content for Linux...# [Windows](#tab/windows)Content for Windows...---# [Tab Display Name](#tab/tab-id)",
+      "Text": "18 / 125Custom Syntax HighlightingTabsLinuxWindowsThe above tab group was created with the following syntax:Tabs are indicated by using a speciﬁc link syntax within a Markdown header. The syntax canbe described as follows:A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The textof the link will become the text of the tab header, displayed to the customer. In order forthe header to be recognized as a tab, the link itself must start with #tab/ and be followedby an ID representing the content of the tab. The ID is used to sync all same-ID tabs acrossthe page. Using the above example, when a user selects a tab with the link #tab/windows, alltabs with the link #tab/windows on the page will be selected.Dependent tabsresource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {  name: 'hello'  // (...)}Content for Linux...# [Linux](#tab/linux)Content for Linux...# [Windows](#tab/windows)Content for Windows...---# [Tab Display Name](#tab/tab-id)",
       "Links": [
         {
           "Goto": {
@@ -758,7 +758,7 @@
     },
     {
       "Number": 19,
-      "Text": "19It's possible to make the selection in one set of tabs dependent on the selection in anotherset of tabs. Here's an example of that in action:.NETTypeScriptREST APINotice how changing the Linux/Windows selection above changes the content in the .NETand TypeScript tabs. This is because the tab group deﬁnes two versions for each .NET andTypeScript, where the Windows/Linux selection above determines which version is shownfor .NET/TypeScript. Here's the markup that shows how this is done:DetailsDemo.NET content for Linux...# [.NET](#tab/dotnet/linux).NET content for Linux...# [.NET](#tab/dotnet/windows).NET content for Windows...# [TypeScript](#tab/typescript/linux)TypeScript content for Linux...# [TypeScript](#tab/typescript/windows)TypeScript content for Windows...# [REST API](#tab/rest)REST API content, independent of platform...---",
+      "Text": "19 / 125It's possible to make the selection in one set of tabs dependent on the selection in anotherset of tabs. Here's an example of that in action:.NETTypeScriptREST APINotice how changing the Linux/Windows selection above changes the content in the .NETand TypeScript tabs. This is because the tab group deﬁnes two versions for each .NET andTypeScript, where the Windows/Linux selection above determines which version is shownfor .NET/TypeScript. Here's the markup that shows how this is done:DetailsDemo.NET content for Linux...# [.NET](#tab/dotnet/linux).NET content for Linux...# [.NET](#tab/dotnet/windows).NET content for Windows...# [TypeScript](#tab/typescript/linux)TypeScript content for Linux...# [TypeScript](#tab/typescript/windows)TypeScript content for Windows...# [REST API](#tab/rest)REST API content, independent of platform...---",
       "Links": [
         {
           "Goto": {
@@ -773,7 +773,7 @@
     },
     {
       "Number": 20,
-      "Text": "20ClassesClass1This is a test class.StructsIssue5432Namespace BuildFromAssembly",
+      "Text": "20 / 125ClassesClass1This is a test class.StructsIssue5432Namespace BuildFromAssembly",
       "Links": [
         {
           "Goto": {
@@ -797,7 +797,7 @@
     },
     {
       "Number": 21,
-      "Text": "21Namespace:BuildFromAssemblyAssembly:BuildFromAssembly.dllThis is a test class.Inheritanceobject\uF1C5 Class1Inherited Membersobject.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ToString()\uF1C5 ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5 , object.GetHashCode()\uF1C5ConstructorsMethodsHello World.Class Class1public class Class1\uF12CClass1()public Class1()HelloWorld()public static void HelloWorld()",
+      "Text": "21 / 125Namespace:BuildFromAssemblyAssembly:BuildFromAssembly.dllThis is a test class.Inheritanceobject\uF1C5 Class1Inherited Membersobject.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ToString()\uF1C5 ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5 , object.GetHashCode()\uF1C5ConstructorsMethodsHello World.Class Class1public class Class1\uF12CClass1()public Class1()HelloWorld()public static void HelloWorld()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -902,7 +902,7 @@
     },
     {
       "Number": 22,
-      "Text": "22Namespace:BuildFromAssemblyAssembly:BuildFromAssembly.dllInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.GetType()\uF1C5 , object.Equals(object, object)\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5PropertiesProperty Valuestring\uF1C5Struct Issue5432public struct Issue5432Namepublic string Name { get; }",
+      "Text": "22 / 125Namespace:BuildFromAssemblyAssembly:BuildFromAssembly.dllInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.GetType()\uF1C5 , object.Equals(object, object)\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5PropertiesProperty Valuestring\uF1C5Struct Issue5432public struct Issue5432Namepublic string Name { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals"
@@ -998,7 +998,7 @@
     },
     {
       "Number": 23,
-      "Text": "23ClassesCSharpNamespace BuildFromCSharpSourceCode",
+      "Text": "23 / 125ClassesCSharpNamespace BuildFromCSharpSourceCode",
       "Links": [
         {
           "Goto": {
@@ -1013,7 +1013,7 @@
     },
     {
       "Number": 24,
-      "Text": "24Namespace:BuildFromCSharpSourceCodeInheritanceobject\uF1C5 CSharpInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsParametersargs string\uF1C5[]Class CSharppublic class CSharp\uF12CMain(string[])public static void Main(string[] args)",
+      "Text": "24 / 125Namespace:BuildFromCSharpSourceCodeInheritanceobject\uF1C5 CSharpInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsParametersargs string\uF1C5[]Class CSharppublic class CSharp\uF12CMain(string[])public static void Main(string[] args)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1145,7 +1145,7 @@
     },
     {
       "Number": 25,
-      "Text": "25NamespacesBuildFromProject.Issue8540ClassesClass1Class1.Issue8665Class1.Issue8696AttributeClass1.Issue8948Class1.Test<T>InheritdocInheritdoc.Issue6366Inheritdoc.Issue6366.Class1<T>Inheritdoc.Issue6366.Class2Inheritdoc.Issue7035Inheritdoc.Issue7484This is a test class to have something for DocFX to document.Inheritdoc.Issue8101Issue8725A nice classStructsInheritdoc.Issue8129InterfacesClass1.IIssue8948IInheritdocEnumsNamespace BuildFromProject",
+      "Text": "25 / 125NamespacesBuildFromProject.Issue8540ClassesClass1Class1.Issue8665Class1.Issue8696AttributeClass1.Issue8948Class1.Test<T>InheritdocInheritdoc.Issue6366Inheritdoc.Issue6366.Class1<T>Inheritdoc.Issue6366.Class2Inheritdoc.Issue7035Inheritdoc.Issue7484This is a test class to have something for DocFX to document.Inheritdoc.Issue8101Issue8725A nice classStructsInheritdoc.Issue8129InterfacesClass1.IIssue8948IInheritdocEnumsNamespace BuildFromProject",
       "Links": [
         {
           "Goto": {
@@ -1439,7 +1439,7 @@
     },
     {
       "Number": 26,
-      "Text": "26Class1.Issue9260",
+      "Text": "26 / 125Class1.Issue9260",
       "Links": [
         {
           "Goto": {
@@ -1463,7 +1463,7 @@
     },
     {
       "Number": 27,
-      "Text": "27NamespacesBuildFromProject.Issue8540.ABuildFromProject.Issue8540.BNamespace BuildFromProject.Issue8540",
+      "Text": "27 / 125NamespacesBuildFromProject.Issue8540.ABuildFromProject.Issue8540.BNamespace BuildFromProject.Issue8540",
       "Links": [
         {
           "Goto": {
@@ -1559,7 +1559,7 @@
     },
     {
       "Number": 28,
-      "Text": "28ClassesANamespace BuildFromProject.Issue8540.A",
+      "Text": "28 / 125ClassesANamespace BuildFromProject.Issue8540.A",
       "Links": [
         {
           "Goto": {
@@ -1574,7 +1574,7 @@
     },
     {
       "Number": 29,
-      "Text": "29Namespace:BuildFromProject.Issue8540.AAssembly:BuildFromProject.dllInheritanceobject\uF1C5 AInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Apublic class A\uF12C",
+      "Text": "29 / 125Namespace:BuildFromProject.Issue8540.AAssembly:BuildFromProject.dllInheritanceobject\uF1C5 AInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Apublic class A\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1697,7 +1697,7 @@
     },
     {
       "Number": 30,
-      "Text": "30ClassesBNamespace BuildFromProject.Issue8540.B",
+      "Text": "30 / 125ClassesBNamespace BuildFromProject.Issue8540.B",
       "Links": [
         {
           "Goto": {
@@ -1712,7 +1712,7 @@
     },
     {
       "Number": 31,
-      "Text": "31Namespace:BuildFromProject.Issue8540.BAssembly:BuildFromProject.dllInheritanceobject\uF1C5 BInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Bpublic class B\uF12C",
+      "Text": "31 / 125Namespace:BuildFromProject.Issue8540.BAssembly:BuildFromProject.dllInheritanceobject\uF1C5 BInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Bpublic class B\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1835,7 +1835,7 @@
     },
     {
       "Number": 32,
-      "Text": "32Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1ImplementsIClass1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsPricing models are used to calculate theoretical option values1-Black Scholes2-Black763-Black76Fut4-Equity Tree5-Variance Swap6-Dividend ForecastIConﬁguration related helper and extension routines.Class Class1public class Class1 : IClass1\uF12CIssue1651()public void Issue1651()Issue1887()",
+      "Text": "32 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1ImplementsIClass1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsPricing models are used to calculate theoretical option values1-Black Scholes2-Black763-Black76Fut4-Equity Tree5-Variance Swap6-Dividend ForecastIConﬁguration related helper and extension routines.Class Class1public class Class1 : IClass1\uF12CIssue1651()public void Issue1651()Issue1887()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1940,12 +1940,12 @@
     },
     {
       "Number": 33,
-      "Text": "33ExamplesRemarksFor example:Remarkspublic void Issue1887()Issue2623()public void Issue2623()MyClass myClass = new MyClass();void Update(){    myClass.Execute();}MyClass myClass = new MyClass();void Update(){    myClass.Execute();}Issue2723()public void Issue2723()NOTEThis is a <note>. & \" '\uF431",
+      "Text": "33 / 125ExamplesRemarksFor example:Remarkspublic void Issue1887()Issue2623()public void Issue2623()MyClass myClass = new MyClass();void Update(){    myClass.Execute();}MyClass myClass = new MyClass();void Update(){    myClass.Execute();}Issue2723()public void Issue2723()NOTEThis is a <note>. & \" '\uF431",
       "Links": []
     },
     {
       "Number": 34,
-      "Text": "34Inline <angle brackets>.link\uF1C5ExamplesRemarksfor (var i = 0; i > 10; i++) // & \" 'var range = new Range<int> { Min = 0, Max = 10 };var range = new Range<int> { Min = 0, Max = 10 };Issue4017()public void Issue4017()public void HookMessageDeleted(BaseSocketClient client){    client.MessageDeleted += HandleMessageDelete;}public Task HandleMessageDelete(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel channel){    // check if the message exists in cache; if not, we cannot report what was removed    if (!cachedMessage.HasValue) return;    var message = cachedMessage.Value;    Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the channel {channel.Name} ({channel.Id}):\"        + Environment.NewLine        + message.Content);    return Task.CompletedTask;}void Update(){",
+      "Text": "34 / 125Inline <angle brackets>.link\uF1C5ExamplesRemarksfor (var i = 0; i > 10; i++) // & \" 'var range = new Range<int> { Min = 0, Max = 10 };var range = new Range<int> { Min = 0, Max = 10 };Issue4017()public void Issue4017()public void HookMessageDeleted(BaseSocketClient client){    client.MessageDeleted += HandleMessageDelete;}public Task HandleMessageDelete(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel channel){    // check if the message exists in cache; if not, we cannot report what was removed    if (!cachedMessage.HasValue) return;    var message = cachedMessage.Value;    Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the channel {channel.Name} ({channel.Id}):\"        + Environment.NewLine        + message.Content);    return Task.CompletedTask;}void Update(){",
       "Links": [
         {
           "Uri": "https://www.github.com/"
@@ -1960,12 +1960,12 @@
     },
     {
       "Number": 35,
-      "Text": "35Remarks@\"\\\\?\\\" @\"\\\\?\\\"RemarksThere's really no reason to not believe that this class can test things.TermDescriptionA TermA DescriptionBee TermBee DescriptionType ParametersT    myClass.Execute();}Issue4392()public void Issue4392()Issue7484()public void Issue7484()Issue8764<T>()public void Issue8764<T>() where T : unmanagedIssue896()",
+      "Text": "35 / 125Remarks@\"\\\\?\\\" @\"\\\\?\\\"RemarksThere's really no reason to not believe that this class can test things.TermDescriptionA TermA DescriptionBee TermBee DescriptionType ParametersT    myClass.Execute();}Issue4392()public void Issue4392()Issue7484()public void Issue7484()Issue8764<T>()public void Issue8764<T>() where T : unmanagedIssue896()",
       "Links": []
     },
     {
       "Number": 36,
-      "Text": "36TestSee AlsoClass1.Test<T>, Class1Calculates the determinant of a 3-dimensional matrix:Returns the smallest value:Returnsdouble\uF1C5This method should do something...RemarksThis is remarks.public void Issue896()Issue9216()public static double Issue9216()XmlCommentIncludeTag()public void XmlCommentIncludeTag()",
+      "Text": "36 / 125TestSee AlsoClass1.Test<T>, Class1Calculates the determinant of a 3-dimensional matrix:Returns the smallest value:Returnsdouble\uF1C5This method should do something...RemarksThis is remarks.public void Issue896()Issue9216()public static double Issue9216()XmlCommentIncludeTag()public void XmlCommentIncludeTag()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.double"
@@ -2007,7 +2007,7 @@
     },
     {
       "Number": 37,
-      "Text": "37Namespace:BuildFromProjectAssembly:BuildFromProject.dllMethodsDoes nothing with generic type T.Type ParametersTA generic type.Interface Class1.IIssue8948public interface Class1.IIssue8948DoNothing<T>()void DoNothing<T>()",
+      "Text": "37 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllMethodsDoes nothing with generic type T.Type ParametersTA generic type.Interface Class1.IIssue8948public interface Class1.IIssue8948DoNothing<T>()void DoNothing<T>()",
       "Links": [
         {
           "Goto": {
@@ -2040,7 +2040,7 @@
     },
     {
       "Number": 38,
-      "Text": "38Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1.Issue8665Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5ConstructorsParametersfoo int\uF1C5Class Class1.Issue8665public class Class1.Issue8665\uF12CIssue8665()public Issue8665()Issue8665(int)public Issue8665(int foo)Issue8665(int, char)public Issue8665(int foo, char bar)",
+      "Text": "38 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1.Issue8665Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5ConstructorsParametersfoo int\uF1C5Class Class1.Issue8665public class Class1.Issue8665\uF12CIssue8665()public Issue8665()Issue8665(int)public Issue8665(int foo)Issue8665(int, char)public Issue8665(int foo, char bar)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -2154,7 +2154,7 @@
     },
     {
       "Number": 39,
-      "Text": "39Parametersfoo int\uF1C5bar char\uF1C5Parametersfoo int\uF1C5bar char\uF1C5baz string\uF1C5PropertiesProperty Valuechar\uF1C5Property Valuestring\uF1C5Issue8665(int, char, string)public Issue8665(int foo, char bar, string baz)Barpublic char Bar { get; }Bazpublic string Baz { get; }",
+      "Text": "39 / 125Parametersfoo int\uF1C5bar char\uF1C5Parametersfoo int\uF1C5bar char\uF1C5baz string\uF1C5PropertiesProperty Valuechar\uF1C5Property Valuestring\uF1C5Issue8665(int, char, string)public Issue8665(int foo, char bar, string baz)Barpublic char Bar { get; }Bazpublic string Baz { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -2223,7 +2223,7 @@
     },
     {
       "Number": 40,
-      "Text": "40Property Valueint\uF1C5Foopublic int Foo { get; }",
+      "Text": "40 / 125Property Valueint\uF1C5Foopublic int Foo { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -2238,7 +2238,7 @@
     },
     {
       "Number": 41,
-      "Text": "41Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Attribute\uF1C5 Class1.Issue8696AttributeInherited MembersAttribute.Equals(object)\uF1C5 , Attribute.GetCustomAttribute(Assembly, Type)\uF1C5 ,Attribute.GetCustomAttribute(Assembly, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(MemberInfo, Type)\uF1C5 ,Attribute.GetCustomAttribute(MemberInfo, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(Module, Type)\uF1C5 ,Attribute.GetCustomAttribute(Module, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(ParameterInfo, Type)\uF1C5 ,Attribute.GetCustomAttribute(ParameterInfo, Type, bool)\uF1C5 ,Attribute.GetCustomAttributes(Assembly)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, bool)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, Type)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, Type, bool)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, bool)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, Type)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, Type, bool)\uF1C5 ,Attribute.GetCustomAttributes(Module)\uF1C5 , Attribute.GetCustomAttributes(Module, bool)\uF1C5 ,Attribute.GetCustomAttributes(Module, Type)\uF1C5 ,Attribute.GetCustomAttributes(Module, Type, bool)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, bool)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, Type)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, Type, bool)\uF1C5 , Attribute.GetHashCode()\uF1C5 ,Attribute.IsDefaultAttribute()\uF1C5 , Attribute.IsDeﬁned(Assembly, Type)\uF1C5 ,Attribute.IsDeﬁned(Assembly, Type, bool)\uF1C5 , Attribute.IsDeﬁned(MemberInfo, Type)\uF1C5 ,Attribute.IsDeﬁned(MemberInfo, Type, bool)\uF1C5 , Attribute.IsDeﬁned(Module, Type)\uF1C5 ,Attribute.IsDeﬁned(Module, Type, bool)\uF1C5 , Attribute.IsDeﬁned(ParameterInfo, Type)\uF1C5 ,Attribute.IsDeﬁned(ParameterInfo, Type, bool)\uF1C5 , Attribute.Match(object)\uF1C5 ,Class Class1.Issue8696Attributepublic class Class1.Issue8696Attribute : Attribute\uF12C\uF12C",
+      "Text": "41 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Attribute\uF1C5 Class1.Issue8696AttributeInherited MembersAttribute.Equals(object)\uF1C5 , Attribute.GetCustomAttribute(Assembly, Type)\uF1C5 ,Attribute.GetCustomAttribute(Assembly, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(MemberInfo, Type)\uF1C5 ,Attribute.GetCustomAttribute(MemberInfo, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(Module, Type)\uF1C5 ,Attribute.GetCustomAttribute(Module, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(ParameterInfo, Type)\uF1C5 ,Attribute.GetCustomAttribute(ParameterInfo, Type, bool)\uF1C5 ,Attribute.GetCustomAttributes(Assembly)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, bool)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, Type)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, Type, bool)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, bool)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, Type)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, Type, bool)\uF1C5 ,Attribute.GetCustomAttributes(Module)\uF1C5 , Attribute.GetCustomAttributes(Module, bool)\uF1C5 ,Attribute.GetCustomAttributes(Module, Type)\uF1C5 ,Attribute.GetCustomAttributes(Module, Type, bool)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, bool)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, Type)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, Type, bool)\uF1C5 , Attribute.GetHashCode()\uF1C5 ,Attribute.IsDefaultAttribute()\uF1C5 , Attribute.IsDeﬁned(Assembly, Type)\uF1C5 ,Attribute.IsDeﬁned(Assembly, Type, bool)\uF1C5 , Attribute.IsDeﬁned(MemberInfo, Type)\uF1C5 ,Attribute.IsDeﬁned(MemberInfo, Type, bool)\uF1C5 , Attribute.IsDeﬁned(Module, Type)\uF1C5 ,Attribute.IsDeﬁned(Module, Type, bool)\uF1C5 , Attribute.IsDeﬁned(ParameterInfo, Type)\uF1C5 ,Attribute.IsDeﬁned(ParameterInfo, Type, bool)\uF1C5 , Attribute.Match(object)\uF1C5 ,Class Class1.Issue8696Attributepublic class Class1.Issue8696Attribute : Attribute\uF12C\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -2613,7 +2613,7 @@
     },
     {
       "Number": 42,
-      "Text": "42Attribute.TypeId\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ConstructorsParametersdescription string\uF1C5boundsMin int\uF1C5boundsMax int\uF1C5validGameModes string\uF1C5[]hasMultipleSelections bool\uF1C5enumType Type\uF1C5Issue8696Attribute(string?, int, int, string[]?, bool,Type?)[Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, null, false, null)]public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, string[]? validGameModes = null, bool hasMultipleSelections = false, Type? enumType = null)",
+      "Text": "42 / 125Attribute.TypeId\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ConstructorsParametersdescription string\uF1C5boundsMin int\uF1C5boundsMax int\uF1C5validGameModes string\uF1C5[]hasMultipleSelections bool\uF1C5enumType Type\uF1C5Issue8696Attribute(string?, int, int, string[]?, bool,Type?)[Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, null, false, null)]public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, string[]? validGameModes = null, bool hasMultipleSelections = false, Type? enumType = null)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.attribute.typeid"
@@ -2727,7 +2727,7 @@
     },
     {
       "Number": 43,
-      "Text": "43Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1.Issue8948ImplementsClass1.IIssue8948Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsDoes nothing with generic type T.Type ParametersTA generic type.Class Class1.Issue8948public class Class1.Issue8948 : Class1.IIssue8948\uF12CDoNothing<T>()public void DoNothing<T>()",
+      "Text": "43 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1.Issue8948ImplementsClass1.IIssue8948Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsDoes nothing with generic type T.Type ParametersTA generic type.Class Class1.Issue8948public class Class1.Issue8948 : Class1.IIssue8948\uF12CDoNothing<T>()public void DoNothing<T>()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -2850,7 +2850,7 @@
     },
     {
       "Number": 44,
-      "Text": "44Namespace:BuildFromProjectAssembly:BuildFromProject.dllFieldsValue = 0This is a regular enum value.[Obsolete] OldAndUnusedValue = 1This is old and unused. You shouldn't use it anymore.[Obsolete(\"Use Value\")] OldAndUnusedValue2 = 2This is old and unused. You shouldn't use it anymore.Enum Class1.Issue9260public enum Class1.Issue9260",
+      "Text": "44 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllFieldsValue = 0This is a regular enum value.[Obsolete] OldAndUnusedValue = 1This is old and unused. You shouldn't use it anymore.[Obsolete(\"Use Value\")] OldAndUnusedValue2 = 2This is old and unused. You shouldn't use it anymore.Enum Class1.Issue9260public enum Class1.Issue9260",
       "Links": [
         {
           "Goto": {
@@ -2883,7 +2883,7 @@
     },
     {
       "Number": 45,
-      "Text": "45Namespace:BuildFromProjectAssembly:BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 Class1.Test<T>Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Class1.Test<T>public class Class1.Test<T>\uF12C",
+      "Text": "45 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 Class1.Test<T>Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Class1.Test<T>public class Class1.Test<T>\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -2988,7 +2988,7 @@
     },
     {
       "Number": 46,
-      "Text": "46Namespace:BuildFromProjectAssembly:BuildFromProject.dllMethodsThis method should do something...Interface IInheritdocpublic interface IInheritdocIssue7629()void Issue7629()",
+      "Text": "46 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllMethodsThis method should do something...Interface IInheritdocpublic interface IInheritdocIssue7629()void Issue7629()",
       "Links": [
         {
           "Goto": {
@@ -3021,7 +3021,7 @@
     },
     {
       "Number": 47,
-      "Text": "47Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 InheritdocImplementsIInheritdoc, IDisposable\uF1C5Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsPerforms application-deﬁned tasks associated with freeing, releasing, or resettingunmanaged resources.This method should do something...Class Inheritdocpublic class Inheritdoc : IInheritdoc, IDisposable\uF12CDispose()public void Dispose()Issue7628()public void Issue7628()Issue7629()",
+      "Text": "47 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 InheritdocImplementsIInheritdoc, IDisposable\uF1C5Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsPerforms application-deﬁned tasks associated with freeing, releasing, or resettingunmanaged resources.This method should do something...Class Inheritdocpublic class Inheritdoc : IInheritdoc, IDisposable\uF12CDispose()public void Dispose()Issue7628()public void Issue7628()Issue7629()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3144,12 +3144,12 @@
     },
     {
       "Number": 48,
-      "Text": "48This method should do something...public void Issue7629()",
+      "Text": "48 / 125This method should do something...public void Issue7629()",
       "Links": []
     },
     {
       "Number": 49,
-      "Text": "49Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue6366Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Inheritdoc.Issue6366public class Inheritdoc.Issue6366\uF12C",
+      "Text": "49 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue6366Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Inheritdoc.Issue6366public class Inheritdoc.Issue6366\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3254,7 +3254,7 @@
     },
     {
       "Number": 50,
-      "Text": "50Namespace:BuildFromProjectAssembly:BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 Inheritdoc.Issue6366.Class1<T>DerivedInheritdoc.Issue6366.Class2Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsThis text inherited.Parametersparm1 TThis text NOT inherited.parm2 int\uF1C5This text inherited.Class Inheritdoc.Issue6366.Class1<T>public abstract class Inheritdoc.Issue6366.Class1<T>\uF12CTestMethod1(T, int)public abstract T TestMethod1(T parm1, int parm2)",
+      "Text": "50 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 Inheritdoc.Issue6366.Class1<T>DerivedInheritdoc.Issue6366.Class2Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsThis text inherited.Parametersparm1 TThis text NOT inherited.parm2 int\uF1C5This text inherited.Class Inheritdoc.Issue6366.Class1<T>public abstract class Inheritdoc.Issue6366.Class1<T>\uF12CTestMethod1(T, int)public abstract T TestMethod1(T parm1, int parm2)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3395,12 +3395,12 @@
     },
     {
       "Number": 51,
-      "Text": "51ReturnsTThis text inherited.",
+      "Text": "51 / 125ReturnsTThis text inherited.",
       "Links": []
     },
     {
       "Number": 52,
-      "Text": "52Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue6366.Class1<bool\uF1C5> Inheritdoc.Issue6366.Class2Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsThis text inherited.Parametersparm1 bool\uF1C5This text NOT inherited.parm2 int\uF1C5This text inherited.Returnsbool\uF1C5This text inherited.Class Inheritdoc.Issue6366.Class2public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool>\uF12C\uF12CTestMethod1(bool, int)public override bool TestMethod1(bool parm1, int parm2)",
+      "Text": "52 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue6366.Class1<bool\uF1C5> Inheritdoc.Issue6366.Class2Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsThis text inherited.Parametersparm1 bool\uF1C5This text NOT inherited.parm2 int\uF1C5This text inherited.Returnsbool\uF1C5This text inherited.Class Inheritdoc.Issue6366.Class2public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool>\uF12C\uF12CTestMethod1(bool, int)public override bool TestMethod1(bool parm1, int parm2)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3568,7 +3568,7 @@
     },
     {
       "Number": 53,
-      "Text": "53Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue7035Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsClass Inheritdoc.Issue7035public class Inheritdoc.Issue7035\uF12CA()public void A()B()public void B()",
+      "Text": "53 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue7035Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsClass Inheritdoc.Issue7035public class Inheritdoc.Issue7035\uF12CA()public void A()B()public void B()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3673,7 +3673,7 @@
     },
     {
       "Number": 54,
-      "Text": "54Namespace:BuildFromProjectAssembly:BuildFromProject.dllThis is a test class to have something for DocFX to document.Inheritanceobject\uF1C5 Inheritdoc.Issue7484Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5RemarksWe're going to talk about things now.BoolReturningMethod(bool)Simple method to generate docs for.DoDadA string that could have something.ConstructorsThis is a constructor to document.PropertiesClass Inheritdoc.Issue7484public class Inheritdoc.Issue7484\uF12CIssue7484()public Issue7484()DoDad",
+      "Text": "54 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllThis is a test class to have something for DocFX to document.Inheritanceobject\uF1C5 Inheritdoc.Issue7484Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5RemarksWe're going to talk about things now.BoolReturningMethod(bool)Simple method to generate docs for.DoDadA string that could have something.ConstructorsThis is a constructor to document.PropertiesClass Inheritdoc.Issue7484public class Inheritdoc.Issue7484\uF12CIssue7484()public Issue7484()DoDad",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3823,7 +3823,7 @@
     },
     {
       "Number": 55,
-      "Text": "55A string that could have something.Property Valuestring\uF1C5MethodsSimple method to generate docs for.Parameterssource bool\uF1C5A meaningless boolean value, much like most questions in the world.Returnsbool\uF1C5An exactly equivalently meaningless boolean value, much like most answers in the world.RemarksI'd like to take a moment to thank all of those who helped me get to a place where I canwrite documentation like this.public string DoDad { get; }BoolReturningMethod(bool)public bool BoolReturningMethod(bool source)",
+      "Text": "55 / 125A string that could have something.Property Valuestring\uF1C5MethodsSimple method to generate docs for.Parameterssource bool\uF1C5A meaningless boolean value, much like most questions in the world.Returnsbool\uF1C5An exactly equivalently meaningless boolean value, much like most answers in the world.RemarksI'd like to take a moment to thank all of those who helped me get to a place where I canwrite documentation like this.public string DoDad { get; }BoolReturningMethod(bool)public bool BoolReturningMethod(bool source)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -3856,7 +3856,7 @@
     },
     {
       "Number": 56,
-      "Text": "56Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue8101Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsCreate a new tween.Parametersfrom int\uF1C5The starting value.to int\uF1C5The end value.duration ﬂoat\uF1C5Total tween duration in seconds.onChange Action\uF1C5<int\uF1C5>Class Inheritdoc.Issue8101public class Inheritdoc.Issue8101\uF12CTween(int, int, ﬂoat, Action<int>)public static object Tween(int from, int to, float duration, Action<int> onChange)",
+      "Text": "56 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue8101Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsCreate a new tween.Parametersfrom int\uF1C5The starting value.to int\uF1C5The end value.duration ﬂoat\uF1C5Total tween duration in seconds.onChange Action\uF1C5<int\uF1C5>Class Inheritdoc.Issue8101public class Inheritdoc.Issue8101\uF12CTween(int, int, ﬂoat, Action<int>)public static object Tween(int from, int to, float duration, Action<int> onChange)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -4006,7 +4006,7 @@
     },
     {
       "Number": 57,
-      "Text": "57A callback that will be invoked every time the tween value changes.Returnsobject\uF1C5The newly created tween instance.Create a new tween.Parametersfrom ﬂoat\uF1C5The starting value.to ﬂoat\uF1C5The end value.duration ﬂoat\uF1C5Total tween duration in seconds.onChange Action\uF1C5<ﬂoat\uF1C5>A callback that will be invoked every time the tween value changes.Returnsobject\uF1C5The newly created tween instance.Tween(ﬂoat, ﬂoat, ﬂoat, Action<ﬂoat>)public static object Tween(float from, float to, float duration, Action<float> onChange)",
+      "Text": "57 / 125A callback that will be invoked every time the tween value changes.Returnsobject\uF1C5The newly created tween instance.Create a new tween.Parametersfrom ﬂoat\uF1C5The starting value.to ﬂoat\uF1C5The end value.duration ﬂoat\uF1C5Total tween duration in seconds.onChange Action\uF1C5<ﬂoat\uF1C5>A callback that will be invoked every time the tween value changes.Returnsobject\uF1C5The newly created tween instance.Tween(ﬂoat, ﬂoat, ﬂoat, Action<ﬂoat>)public static object Tween(float from, float to, float duration, Action<float> onChange)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -4075,7 +4075,7 @@
     },
     {
       "Number": 58,
-      "Text": "58Namespace:BuildFromProjectAssembly:BuildFromProject.dllInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5ConstructorsParametersfoo string\uF1C5Struct Inheritdoc.Issue8129public struct Inheritdoc.Issue8129Issue8129(string)public Issue8129(string foo)",
+      "Text": "58 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5ConstructorsParametersfoo string\uF1C5Struct Inheritdoc.Issue8129public struct Inheritdoc.Issue8129Issue8129(string)public Issue8129(string foo)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals"
@@ -4171,7 +4171,7 @@
     },
     {
       "Number": 59,
-      "Text": "59Namespace:BuildFromProjectAssembly:BuildFromProject.dllA nice classInheritanceobject\uF1C5 Issue8725Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsAnother nice operationA nice operationSee AlsoClass1Class Issue8725public class Issue8725\uF12CMoreOperations()public void MoreOperations()MyOperation()public void MyOperation()",
+      "Text": "59 / 125Namespace:BuildFromProjectAssembly:BuildFromProject.dllA nice classInheritanceobject\uF1C5 Issue8725Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsAnother nice operationA nice operationSee AlsoClass1Class Issue8725public class Issue8725\uF12CMoreOperations()public void MoreOperations()MyOperation()public void MyOperation()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -4285,7 +4285,7 @@
     },
     {
       "Number": 60,
-      "Text": "60ClassesBaseClass1This is the BaseClassClass1This is summary from vb class...Namespace BuildFromVBSourceCode",
+      "Text": "60 / 125ClassesBaseClass1This is the BaseClassClass1This is summary from vb class...Namespace BuildFromVBSourceCode",
       "Links": [
         {
           "Goto": {
@@ -4318,7 +4318,7 @@
     },
     {
       "Number": 61,
-      "Text": "61Namespace:BuildFromVBSourceCodeThis is the BaseClassInheritanceobject\uF1C5 BaseClass1DerivedClass1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.Finalize()\uF1C5 ,object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsParameterskeyword Class1ReturnsDateTime\uF1C5Class BaseClass1public abstract class BaseClass1\uF12CWithDeclarationKeyword(Class1)public abstract DateTime WithDeclarationKeyword(Class1 keyword)",
+      "Text": "61 / 125Namespace:BuildFromVBSourceCodeThis is the BaseClassInheritanceobject\uF1C5 BaseClass1DerivedClass1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.Finalize()\uF1C5 ,object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsParameterskeyword Class1ReturnsDateTime\uF1C5Class BaseClass1public abstract class BaseClass1\uF12CWithDeclarationKeyword(Class1)public abstract DateTime WithDeclarationKeyword(Class1 keyword)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -4468,7 +4468,7 @@
     },
     {
       "Number": 62,
-      "Text": "62Namespace:BuildFromVBSourceCodeThis is summary from vb class...Inheritanceobject\uF1C5 BaseClass1 Class1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.Finalize()\uF1C5 ,object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5FieldsThis is a Value typeField ValueClass1PropertiesProperty ValueClass Class1public class Class1 : BaseClass1\uF12C\uF12CValueClasspublic Class1 ValueClassKeyword[Obsolete(\"This member is obsolete.\", true)]public Class1 Keyword { get; }",
+      "Text": "62 / 125Namespace:BuildFromVBSourceCodeThis is summary from vb class...Inheritanceobject\uF1C5 BaseClass1 Class1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.Finalize()\uF1C5 ,object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5FieldsThis is a Value typeField ValueClass1PropertiesProperty ValueClass Class1public class Class1 : BaseClass1\uF12C\uF12CValueClasspublic Class1 ValueClassKeyword[Obsolete(\"This member is obsolete.\", true)]public Class1 Keyword { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -4618,7 +4618,7 @@
     },
     {
       "Number": 63,
-      "Text": "63Class1MethodsThis is a FunctionParametersname string\uF1C5Name as the String valueReturnsint\uF1C5Returns AhoooWhat is Sub?Parameterskeyword Class1ReturnsDateTime\uF1C5Value(string)public int Value(string name)WithDeclarationKeyword(Class1)public override DateTime WithDeclarationKeyword(Class1 keyword)",
+      "Text": "63 / 125Class1MethodsThis is a FunctionParametersname string\uF1C5Name as the String valueReturnsint\uF1C5Returns AhoooWhat is Sub?Parameterskeyword Class1ReturnsDateTime\uF1C5Value(string)public int Value(string name)WithDeclarationKeyword(Class1)public override DateTime WithDeclarationKeyword(Class1 keyword)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -4669,7 +4669,7 @@
     },
     {
       "Number": 64,
-      "Text": "64NamespacesCatLibrary.CoreClassesCatException<T>Cat<T, K>Here's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see theremarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classComplex<T, J>ICatExtensionIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classTomTom class is only inherit from Object. Not any member inside itself.TomFromBaseClassTomFromBaseClass inherits from @InterfacesIAnimalThis is basic interface of all animal.ICatCat's interfaceDelegatesFakeDelegate<T>Fake delegateNamespace CatLibrary",
+      "Text": "64 / 125NamespacesCatLibrary.CoreClassesCatException<T>Cat<T, K>Here's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see theremarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classComplex<T, J>ICatExtensionIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classTomTom class is only inherit from Object. Not any member inside itself.TomFromBaseClassTomFromBaseClass inherits from @InterfacesIAnimalThis is basic interface of all animal.ICatCat's interfaceDelegatesFakeDelegate<T>Fake delegateNamespace CatLibrary",
       "Links": [
         {
           "Goto": {
@@ -4837,7 +4837,7 @@
     },
     {
       "Number": 65,
-      "Text": "65MRefDelegate<K, T, L>Generic delegate with many constrains.MRefNormalDelegateDelegate in the namespace",
+      "Text": "65 / 125MRefDelegate<K, T, L>Generic delegate with many constrains.MRefNormalDelegateDelegate in the namespace",
       "Links": [
         {
           "Goto": {
@@ -4879,7 +4879,7 @@
     },
     {
       "Number": 66,
-      "Text": "66ClassesContainersRefType.ContainersRefTypeChildExplicitLayoutClassIssue231StructsContainersRefTypeStruct ContainersRefTypeInterfacesContainersRefType.ContainersRefTypeChildInterfaceEnumsContainersRefType.ColorTypeEnumeration ColorTypeDelegatesContainersRefType.ContainersRefTypeDelegateDelegate ContainersRefTypeDelegateNamespace CatLibrary.Core",
+      "Text": "66 / 125ClassesContainersRefType.ContainersRefTypeChildExplicitLayoutClassIssue231StructsContainersRefTypeStruct ContainersRefTypeInterfacesContainersRefType.ContainersRefTypeChildInterfaceEnumsContainersRefType.ColorTypeEnumeration ColorTypeDelegatesContainersRefType.ContainersRefTypeDelegateDelegate ContainersRefTypeDelegateNamespace CatLibrary.Core",
       "Links": [
         {
           "Goto": {
@@ -5191,7 +5191,7 @@
     },
     {
       "Number": 67,
-      "Text": "67Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllStruct ContainersRefTypeInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5Extension MethodsIssue231.Bar(ContainersRefType) , Issue231.Foo(ContainersRefType)FieldsColorCountField Valuelong\uF1C5PropertiesGetColorCountStruct ContainersRefTypepublic struct ContainersRefTypeColorCountpublic long ColorCountGetColorCountpublic long GetColorCount { get; }",
+      "Text": "67 / 125Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllStruct ContainersRefTypeInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5Extension MethodsIssue231.Bar(ContainersRefType) , Issue231.Foo(ContainersRefType)FieldsColorCountField Valuelong\uF1C5PropertiesGetColorCountStruct ContainersRefTypepublic struct ContainersRefTypeColorCountpublic long ColorCountGetColorCountpublic long GetColorCount { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals"
@@ -5359,7 +5359,7 @@
     },
     {
       "Number": 68,
-      "Text": "68Property Valuelong\uF1C5MethodsContainersRefTypeNonRefMethodarrayParametersparmsArray object\uF1C5[]Returnsint\uF1C5EventsEvent TypeEventHandler\uF1C5ContainersRefTypeNonRefMethod(params object[])public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)ContainersRefTypeEventHandlerpublic event EventHandler ContainersRefTypeEventHandler",
+      "Text": "68 / 125Property Valuelong\uF1C5MethodsContainersRefTypeNonRefMethodarrayParametersparmsArray object\uF1C5[]Returnsint\uF1C5EventsEvent TypeEventHandler\uF1C5ContainersRefTypeNonRefMethod(params object[])public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)ContainersRefTypeEventHandlerpublic event EventHandler ContainersRefTypeEventHandler",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
@@ -5401,7 +5401,7 @@
     },
     {
       "Number": 69,
-      "Text": "69Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllEnumeration ColorTypeFieldsRed = 0redBlue = 1blueYellow = 2yellowEnum ContainersRefType.ColorTypepublic enum ContainersRefType.ColorType",
+      "Text": "69 / 125Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllEnumeration ColorTypeFieldsRed = 0redBlue = 1blueYellow = 2yellowEnum ContainersRefType.ColorTypepublic enum ContainersRefType.ColorType",
       "Links": [
         {
           "Goto": {
@@ -5434,7 +5434,7 @@
     },
     {
       "Number": 70,
-      "Text": "70Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInheritanceobject\uF1C5 ContainersRefType.ContainersRefTypeChildInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5ClassContainersRefType.ContainersRefTypeChildpublic class ContainersRefType.ContainersRefTypeChild\uF12C",
+      "Text": "70 / 125Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInheritanceobject\uF1C5 ContainersRefType.ContainersRefTypeChildInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5ClassContainersRefType.ContainersRefTypeChildpublic class ContainersRefType.ContainersRefTypeChild\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -5539,7 +5539,7 @@
     },
     {
       "Number": 71,
-      "Text": "71Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInterfaceContainersRefType.ContainersRefTypeChildInterfacepublic interface ContainersRefType.ContainersRefTypeChildInterface",
+      "Text": "71 / 125Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInterfaceContainersRefType.ContainersRefTypeChildInterfacepublic interface ContainersRefType.ContainersRefTypeChildInterface",
       "Links": [
         {
           "Goto": {
@@ -5572,7 +5572,7 @@
     },
     {
       "Number": 72,
-      "Text": "72Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllDelegate ContainersRefTypeDelegateDelegateContainersRefType.ContainersRefTypeDelegatepublic delegate void ContainersRefType.ContainersRefTypeDelegate()",
+      "Text": "72 / 125Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllDelegate ContainersRefTypeDelegateDelegateContainersRefType.ContainersRefTypeDelegatepublic delegate void ContainersRefType.ContainersRefTypeDelegate()",
       "Links": [
         {
           "Goto": {
@@ -5605,7 +5605,7 @@
     },
     {
       "Number": 73,
-      "Text": "73Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInheritanceobject\uF1C5 ExplicitLayoutClassInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class ExplicitLayoutClasspublic class ExplicitLayoutClass\uF12C",
+      "Text": "73 / 125Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInheritanceobject\uF1C5 ExplicitLayoutClassInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class ExplicitLayoutClasspublic class ExplicitLayoutClass\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -5710,7 +5710,7 @@
     },
     {
       "Number": 74,
-      "Text": "74Namespace:CatLibrary.CoreAssembly:CatLibrary.dllInheritanceobject\uF1C5 Issue231Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsParametersc ContainersRefTypeParametersc ContainersRefTypeClass Issue231public static class Issue231\uF12CBar(ContainersRefType)public static void Bar(this ContainersRefType c)Foo(ContainersRefType)public static void Foo(this ContainersRefType c)",
+      "Text": "74 / 125Namespace:CatLibrary.CoreAssembly:CatLibrary.dllInheritanceobject\uF1C5 Issue231Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsParametersc ContainersRefTypeParametersc ContainersRefTypeClass Issue231public static class Issue231\uF12CBar(ContainersRefType)public static void Bar(this ContainersRefType c)Foo(ContainersRefType)public static void Foo(this ContainersRefType c)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -5869,7 +5869,7 @@
     },
     {
       "Number": 75,
-      "Text": "75Namespace:CatLibraryAssembly:CatLibrary.dllType ParametersTInheritanceobject\uF1C5 Exception\uF1C5 CatException<T>ImplementsISerializable\uF1C5Inherited MembersException.GetBaseException()\uF1C5 ,Exception.GetObjectData(SerializationInfo, StreamingContext)\uF1C5 , Exception.GetType()\uF1C5 ,Exception.ToString()\uF1C5 , Exception.Data\uF1C5 , Exception.HelpLink\uF1C5 , Exception.HResult\uF1C5 ,Exception.InnerException\uF1C5 , Exception.Message\uF1C5 , Exception.Source\uF1C5 ,Exception.StackTrace\uF1C5 , Exception.TargetSite\uF1C5 , Exception.SerializeObjectState\uF1C5 ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5Class CatException<T>public class CatException<T> : Exception, ISerializable\uF12C\uF12C",
+      "Text": "75 / 125Namespace:CatLibraryAssembly:CatLibrary.dllType ParametersTInheritanceobject\uF1C5 Exception\uF1C5 CatException<T>ImplementsISerializable\uF1C5Inherited MembersException.GetBaseException()\uF1C5 ,Exception.GetObjectData(SerializationInfo, StreamingContext)\uF1C5 , Exception.GetType()\uF1C5 ,Exception.ToString()\uF1C5 , Exception.Data\uF1C5 , Exception.HelpLink\uF1C5 , Exception.HResult\uF1C5 ,Exception.InnerException\uF1C5 , Exception.Message\uF1C5 , Exception.Source\uF1C5 ,Exception.StackTrace\uF1C5 , Exception.TargetSite\uF1C5 , Exception.SerializeObjectState\uF1C5 ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5Class CatException<T>public class CatException<T> : Exception, ISerializable\uF12C\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -6082,7 +6082,7 @@
     },
     {
       "Number": 76,
-      "Text": "76Namespace:CatLibraryAssembly:CatLibrary.dllHere's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see theremarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classThis is a class talking about CAT\uF1C5.NOTE This is a CAT classRefer to IAnimal to see other animals.Type ParametersTThis type should be class and can new instance.KThis type is a struct type, class type can't be used for this parameter.Inheritanceobject\uF1C5 Cat<T, K>ImplementsICat, IAnimalInherited MembersClass Cat<T, K>[Serializable][Obsolete]public class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct\uF12C",
+      "Text": "76 / 125Namespace:CatLibraryAssembly:CatLibrary.dllHere's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see theremarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classThis is a class talking about CAT\uF1C5.NOTE This is a CAT classRefer to IAnimal to see other animals.Type ParametersTThis type should be class and can new instance.KThis type is a struct type, class type can't be used for this parameter.Inheritanceobject\uF1C5 Cat<T, K>ImplementsICat, IAnimalInherited MembersClass Cat<T, K>[Serializable][Obsolete]public class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct\uF12C",
       "Links": [
         {
           "Uri": "https://en.wikipedia.org/wiki/Cat"
@@ -6169,7 +6169,7 @@
     },
     {
       "Number": 77,
-      "Text": "77object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Extension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)ExamplesHere's example of how to create an instance of this class. As T is limited with class and K islimited with struct.As you see, here we bring in pointer so we need to add unsafe keyword.RemarksTHIS is remarks overridden in MARKDWON ﬁleConstructorsDefault constructor.It's a complex constructor. The parameter will have some attributes.Parametersvar a = new Cat(object, int)();int catNumber = new int();unsafe{    a.GetFeetLength(catNumber);}Cat()public Cat()Cat(string, out int, string, bool)public Cat(string nickName, out int age, string realName, bool isHealthy)",
+      "Text": "77 / 125object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Extension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)ExamplesHere's example of how to create an instance of this class. As T is limited with class and K islimited with struct.As you see, here we bring in pointer so we need to add unsafe keyword.RemarksTHIS is remarks overridden in MARKDWON ﬁleConstructorsDefault constructor.It's a complex constructor. The parameter will have some attributes.Parametersvar a = new Cat(object, int)();int catNumber = new int();unsafe{    a.GetFeetLength(catNumber);}Cat()public Cat()Cat(string, out int, string, bool)public Cat(string nickName, out int age, string realName, bool isHealthy)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -6337,7 +6337,7 @@
     },
     {
       "Number": 78,
-      "Text": "78nickName string\uF1C5it's string type.age int\uF1C5It's an out and ref parameter.realName string\uF1C5It's an out paramter.isHealthy bool\uF1C5It's an in parameter.Constructor with one generic parameter.ParametersownType TThis parameter type deﬁned by class.FieldsField with attribute.Field ValueCat(T)public Cat(T ownType)isHealthy[ContextStatic][NonSerialized][Obsolete]public bool isHealthy",
+      "Text": "78 / 125nickName string\uF1C5it's string type.age int\uF1C5It's an out and ref parameter.realName string\uF1C5It's an out paramter.isHealthy bool\uF1C5It's an in parameter.Constructor with one generic parameter.ParametersownType TThis parameter type deﬁned by class.FieldsField with attribute.Field ValueCat(T)public Cat(T ownType)isHealthy[ContextStatic][NonSerialized][Obsolete]public bool isHealthy",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -6379,7 +6379,7 @@
     },
     {
       "Number": 79,
-      "Text": "79bool\uF1C5PropertiesHint cat's age.Property Valueint\uF1C5This is index property of Cat. You can see that the visibility is diﬀerent between get and setmethod.Parametersa string\uF1C5Cat's name.Property Valueint\uF1C5Cat's number.EII property.Age[Obsolete]protected int Age { get; set; }this[string]public int this[string a] { protected get; set; }Name",
+      "Text": "79 / 125bool\uF1C5PropertiesHint cat's age.Property Valueint\uF1C5This is index property of Cat. You can see that the visibility is diﬀerent between get and setmethod.Parametersa string\uF1C5Cat's name.Property Valueint\uF1C5Cat's number.EII property.Age[Obsolete]protected int Age { get; set; }this[string]public int this[string a] { protected get; set; }Name",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
@@ -6421,7 +6421,7 @@
     },
     {
       "Number": 80,
-      "Text": "80Property Valuestring\uF1C5MethodsIt's an overridden summary in markdown formatThis is overriding methods. You can override parameter descriptions for methods, you caneven add exceptions to methods. Check the intermediate obj folder to see the data modelof the generated method/class. Override Yaml header should follow the data structure.Parametersdate DateTime\uF1C5This is overridden description for a parameter. id must be speciﬁed.ReturnsDictionary\uF1C5<string\uF1C5, List\uF1C5<int\uF1C5>>It's overridden description for return. type must be speciﬁed.ExceptionsArgumentException\uF1C5This is an overridden argument exception. you can add additional exception by addingdiﬀerent exception type.public string Name { get; }Override CalculateFood Namepublic Dictionary<string, List<int>> CalculateFood(DateTime date)Equals(object)",
+      "Text": "80 / 125Property Valuestring\uF1C5MethodsIt's an overridden summary in markdown formatThis is overriding methods. You can override parameter descriptions for methods, you caneven add exceptions to methods. Check the intermediate obj folder to see the data modelof the generated method/class. Override Yaml header should follow the data structure.Parametersdate DateTime\uF1C5This is overridden description for a parameter. id must be speciﬁed.ReturnsDictionary\uF1C5<string\uF1C5, List\uF1C5<int\uF1C5>>It's overridden description for return. type must be speciﬁed.ExceptionsArgumentException\uF1C5This is an overridden argument exception. you can add additional exception by addingdiﬀerent exception type.public string Name { get; }Override CalculateFood Namepublic Dictionary<string, List<int>> CalculateFood(DateTime date)Equals(object)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -6490,7 +6490,7 @@
     },
     {
       "Number": 81,
-      "Text": "81Override the method of Object.Equals(object obj).Parametersobj object\uF1C5Can pass any class type.Returnsbool\uF1C5The return value tell you whehter the compare operation is successful.It's an unsafe method. As you see, catName is a pointer, so we need to add unsafe keyword.ParameterscatName int\uF1C5*Thie represent for cat name length.parameters object\uF1C5[]Optional parameters.Returnslong\uF1C5Return cat tail's length.public override bool Equals(object obj)GetTailLength(int*, params object[])public long GetTailLength(int* catName, params object[] parameters)Jump(T, K, ref bool)",
+      "Text": "81 / 125Override the method of Object.Equals(object obj).Parametersobj object\uF1C5Can pass any class type.Returnsbool\uF1C5The return value tell you whehter the compare operation is successful.It's an unsafe method. As you see, catName is a pointer, so we need to add unsafe keyword.ParameterscatName int\uF1C5*Thie represent for cat name length.parameters object\uF1C5[]Optional parameters.Returnslong\uF1C5Return cat tail's length.public override bool Equals(object obj)GetTailLength(int*, params object[])public long GetTailLength(int* catName, params object[] parameters)Jump(T, K, ref bool)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -6541,7 +6541,7 @@
     },
     {
       "Number": 82,
-      "Text": "82This method have attribute above it.ParametersownType TType come from class deﬁne.anotherOwnType KType come from class deﬁne.cheat bool\uF1C5Hint whether this cat has cheat mode.ExceptionsArgumentException\uF1C5This is an argument exceptionEventsEat event of this catEvent TypeEventHandler\uF1C5Operators[Conditional(\"Debug\")]public void Jump(T ownType, K anotherOwnType, ref bool cheat)ownEat[Obsolete(\"This _event handler_ is deprecated.\")]public event EventHandler ownEat",
+      "Text": "82 / 125This method have attribute above it.ParametersownType TType come from class deﬁne.anotherOwnType KType come from class deﬁne.cheat bool\uF1C5Hint whether this cat has cheat mode.ExceptionsArgumentException\uF1C5This is an argument exceptionEventsEat event of this catEvent TypeEventHandler\uF1C5Operators[Conditional(\"Debug\")]public void Jump(T ownType, K anotherOwnType, ref bool cheat)ownEat[Obsolete(\"This _event handler_ is deprecated.\")]public event EventHandler ownEat",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
@@ -6574,7 +6574,7 @@
     },
     {
       "Number": 83,
-      "Text": "83Addition operator of this class.Parameterslsr Cat<T, K>..rsr int\uF1C5~~Returnsint\uF1C5Result with int type.Expilicit operator of this class.It means this cat can evolve to change to Tom. Tom and Jerry.Parameterssrc Cat<T, K>Instance of this class.ReturnsTomAdvanced class type of cat.operator +(Cat<T, K>, int)public static int operator +(Cat<T, K> lsr, int rsr)explicit operator Tom(Cat<T, K>)public static explicit operator Tom(Cat<T, K> src)",
+      "Text": "83 / 125Addition operator of this class.Parameterslsr Cat<T, K>..rsr int\uF1C5~~Returnsint\uF1C5Result with int type.Expilicit operator of this class.It means this cat can evolve to change to Tom. Tom and Jerry.Parameterssrc Cat<T, K>Instance of this class.ReturnsTomAdvanced class type of cat.operator +(Cat<T, K>, int)public static int operator +(Cat<T, K> lsr, int rsr)explicit operator Tom(Cat<T, K>)public static explicit operator Tom(Cat<T, K> src)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6625,7 +6625,7 @@
     },
     {
       "Number": 84,
-      "Text": "84Similar with operaotr +, refer to that topic.Parameterslsr Cat<T, K>rsr int\uF1C5Returnsint\uF1C5operator -(Cat<T, K>, int)public static int operator -(Cat<T, K> lsr, int rsr)",
+      "Text": "84 / 125Similar with operaotr +, refer to that topic.Parameterslsr Cat<T, K>rsr int\uF1C5Returnsint\uF1C5operator -(Cat<T, K>, int)public static int operator -(Cat<T, K> lsr, int rsr)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6658,7 +6658,7 @@
     },
     {
       "Number": 85,
-      "Text": "85Namespace:CatLibraryAssembly:CatLibrary.dllType ParametersTJInheritanceobject\uF1C5 Complex<T, J>Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Complex<T, J>public class Complex<T, J>\uF12C",
+      "Text": "85 / 125Namespace:CatLibraryAssembly:CatLibrary.dllType ParametersTJInheritanceobject\uF1C5 Complex<T, J>Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5Class Complex<T, J>public class Complex<T, J>\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -6754,7 +6754,7 @@
     },
     {
       "Number": 86,
-      "Text": "86Namespace:CatLibraryAssembly:CatLibrary.dllFake delegateParametersnum long\uF1C5Fake paraname string\uF1C5Fake parascores object\uF1C5[]Optional Parameter.Returnsint\uF1C5Return a fake number to confuse you.Type ParametersTFake paraDelegate FakeDelegate<T>public delegate int FakeDelegate<T>(long num, string name, params object[] scores)",
+      "Text": "86 / 125Namespace:CatLibraryAssembly:CatLibrary.dllFake delegateParametersnum long\uF1C5Fake paraname string\uF1C5Fake parascores object\uF1C5[]Optional Parameter.Returnsint\uF1C5Return a fake number to confuse you.Type ParametersTFake paraDelegate FakeDelegate<T>public delegate int FakeDelegate<T>(long num, string name, params object[] scores)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
@@ -6814,7 +6814,7 @@
     },
     {
       "Number": 87,
-      "Text": "87Namespace:CatLibraryAssembly:CatLibrary.dllThis is basic interface of all animal.Welcome to the Animal world!RemarksTHIS is remarks overridden in MARKDWON ﬁlePropertiesReturn speciﬁc number animal's name.Parametersindex int\uF1C5Animal number.Property Valuestring\uF1C5Animal name.Name of Animal.Interface IAnimalpublic interface IAnimalthis[int]string this[int index] { get; }Name",
+      "Text": "87 / 125Namespace:CatLibraryAssembly:CatLibrary.dllThis is basic interface of all animal.Welcome to the Animal world!RemarksTHIS is remarks overridden in MARKDWON ﬁlePropertiesReturn speciﬁc number animal's name.Parametersindex int\uF1C5Animal number.Property Valuestring\uF1C5Animal name.Name of Animal.Interface IAnimalpublic interface IAnimalthis[int]string this[int index] { get; }Name",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6856,7 +6856,7 @@
     },
     {
       "Number": 88,
-      "Text": "88Property Valuestring\uF1C5MethodsAnimal's eat method.Feed the animal with some foodParametersfood string\uF1C5Food to eatOverload method of eat. This deﬁne the animal eat by which tool.Parameterstool Toolstring Name { get; }Eat()void Eat()Eat(string)void Eat(string food)Eat<Tool>(Tool)void Eat<Tool>(Tool tool) where Tool : class",
+      "Text": "88 / 125Property Valuestring\uF1C5MethodsAnimal's eat method.Feed the animal with some foodParametersfood string\uF1C5Food to eatOverload method of eat. This deﬁne the animal eat by which tool.Parameterstool Toolstring Name { get; }Eat()void Eat()Eat(string)void Eat(string food)Eat<Tool>(Tool)void Eat<Tool>(Tool tool) where Tool : class",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -6880,12 +6880,12 @@
     },
     {
       "Number": 89,
-      "Text": "89Tool name.Type ParametersToolIt's a class type.",
+      "Text": "89 / 125Tool name.Type ParametersToolIt's a class type.",
       "Links": []
     },
     {
       "Number": 90,
-      "Text": "90Namespace:CatLibraryAssembly:CatLibrary.dllCat's interfaceInherited MembersIAnimal.Name , IAnimal.this[int] , IAnimal.Eat() , IAnimal.Eat<Tool>(Tool) ,IAnimal.Eat(string)Extension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)Eventseat event of cat. Every cat must implement this event.Event TypeEventHandler\uF1C5Interface ICatpublic interface ICat : IAnimaleatevent EventHandler eat",
+      "Text": "90 / 125Namespace:CatLibraryAssembly:CatLibrary.dllCat's interfaceInherited MembersIAnimal.Name , IAnimal.this[int] , IAnimal.Eat() , IAnimal.Eat<Tool>(Tool) ,IAnimal.Eat(string)Extension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)Eventseat event of cat. Every cat must implement this event.Event TypeEventHandler\uF1C5Interface ICatpublic interface ICat : IAnimaleatevent EventHandler eat",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
@@ -7107,7 +7107,7 @@
     },
     {
       "Number": 91,
-      "Text": "91Namespace:CatLibraryAssembly:CatLibrary.dllIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classInheritanceobject\uF1C5 ICatExtensionInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsExtension method to let cat playParametersicat ICatCattoy ContainersRefType.ColorTypeSomething to playClass ICatExtensionpublic static class ICatExtension\uF12CPlay(ICat, ColorType)public static void Play(this ICat icat, ContainersRefType.ColorType toy)",
+      "Text": "91 / 125Namespace:CatLibraryAssembly:CatLibrary.dllIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classInheritanceobject\uF1C5 ICatExtensionInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsExtension method to let cat playParametersicat ICatCattoy ContainersRefType.ColorTypeSomething to playClass ICatExtensionpublic static class ICatExtension\uF12CPlay(ICat, ColorType)public static void Play(this ICat icat, ContainersRefType.ColorType toy)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -7257,7 +7257,7 @@
     },
     {
       "Number": 92,
-      "Text": "92Extension method hint that how long the cat can sleep.Parametersicat ICatThe type will be extended.hours long\uF1C5The length of sleep.Sleep(ICat, long)public static void Sleep(this ICat icat, long hours)",
+      "Text": "92 / 125Extension method hint that how long the cat can sleep.Parametersicat ICatThe type will be extended.hours long\uF1C5The length of sleep.Sleep(ICat, long)public static void Sleep(this ICat icat, long hours)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
@@ -7281,7 +7281,7 @@
     },
     {
       "Number": 93,
-      "Text": "93Namespace:CatLibraryAssembly:CatLibrary.dllGeneric delegate with many constrains.Parametersk KType K.t TType T.l LType L.Type ParametersKGeneric K.TGeneric T.LGeneric L.Delegate MRefDelegate<K, T, L>public delegate void MRefDelegate<K, T, L>(K k, T t, L l) where K : class, IComparable where T : struct where L : Tom, IEnumerable<long>",
+      "Text": "93 / 125Namespace:CatLibraryAssembly:CatLibrary.dllGeneric delegate with many constrains.Parametersk KType K.t TType T.l LType L.Type ParametersKGeneric K.TGeneric T.LGeneric L.Delegate MRefDelegate<K, T, L>public delegate void MRefDelegate<K, T, L>(K k, T t, L l) where K : class, IComparable where T : struct where L : Tom, IEnumerable<long>",
       "Links": [
         {
           "Goto": {
@@ -7305,7 +7305,7 @@
     },
     {
       "Number": 94,
-      "Text": "94Namespace:CatLibraryAssembly:CatLibrary.dllDelegate in the namespaceParameterspics List\uF1C5<string\uF1C5>a name list of pictures.name string\uF1C5give out the needed name.Delegate MRefNormalDelegatepublic delegate void MRefNormalDelegate(List<string> pics, out string name)",
+      "Text": "94 / 125Namespace:CatLibraryAssembly:CatLibrary.dllDelegate in the namespaceParameterspics List\uF1C5<string\uF1C5>a name list of pictures.name string\uF1C5give out the needed name.Delegate MRefNormalDelegatepublic delegate void MRefNormalDelegate(List<string> pics, out string name)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
@@ -7356,7 +7356,7 @@
     },
     {
       "Number": 95,
-      "Text": "95Namespace:CatLibraryAssembly:CatLibrary.dllTom class is only inherit from Object. Not any member inside itself.Inheritanceobject\uF1C5 TomDerivedTomFromBaseClassInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsThis is a Tom Method with complex type as returnParametersa Complex<TomFromBaseClass, TomFromBaseClass>A complex inputb Tuple\uF1C5<string\uF1C5, Tom>Another complex inputClass Tompublic class Tom\uF12CTomMethod(Complex<TomFromBaseClass,TomFromBaseClass>, Tuple<string, Tom>)public Complex<string, TomFromBaseClass> TomMethod(Complex<TomFromBaseClass, TomFromBaseClass> a, Tuple<string, Tom> b)",
+      "Text": "95 / 125Namespace:CatLibraryAssembly:CatLibrary.dllTom class is only inherit from Object. Not any member inside itself.Inheritanceobject\uF1C5 TomDerivedTomFromBaseClassInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsThis is a Tom Method with complex type as returnParametersa Complex<TomFromBaseClass, TomFromBaseClass>A complex inputb Tuple\uF1C5<string\uF1C5, Tom>Another complex inputClass Tompublic class Tom\uF12CTomMethod(Complex<TomFromBaseClass,TomFromBaseClass>, Tuple<string, Tom>)public Complex<string, TomFromBaseClass> TomMethod(Complex<TomFromBaseClass, TomFromBaseClass> a, Tuple<string, Tom> b)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -7596,7 +7596,7 @@
     },
     {
       "Number": 96,
-      "Text": "96ReturnsComplex<string\uF1C5, TomFromBaseClass>Complex TomFromBaseClassExceptionsNotImplementedException\uF1C5This is not implementedArgumentException\uF1C5This is the exception to be thrown when implementedCatException<T>This is the exception in current documentation",
+      "Text": "96 / 125ReturnsComplex<string\uF1C5, TomFromBaseClass>Complex TomFromBaseClassExceptionsNotImplementedException\uF1C5This is not implementedArgumentException\uF1C5This is the exception to be thrown when implementedCatException<T>This is the exception in current documentation",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -7728,7 +7728,7 @@
     },
     {
       "Number": 97,
-      "Text": "97Namespace:CatLibraryAssembly:CatLibrary.dllTomFromBaseClass inherits from @Inheritanceobject\uF1C5 Tom TomFromBaseClassInherited MembersTom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>) ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5ConstructorsThis is a #ctor with parameterParametersk int\uF1C5Class TomFromBaseClasspublic class TomFromBaseClass : Tom\uF12C\uF12CTomFromBaseClass(int)public TomFromBaseClass(int k)",
+      "Text": "97 / 125Namespace:CatLibraryAssembly:CatLibrary.dllTomFromBaseClass inherits from @Inheritanceobject\uF1C5 Tom TomFromBaseClassInherited MembersTom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>) ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5ConstructorsThis is a #ctor with parameterParametersk int\uF1C5Class TomFromBaseClasspublic class TomFromBaseClass : Tom\uF12C\uF12CTomFromBaseClass(int)public TomFromBaseClass(int k)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -7851,7 +7851,7 @@
     },
     {
       "Number": 98,
-      "Text": "98EnumsColorTypeEnumeration ColorTypeNamespace MRef.Demo.Enumeration",
+      "Text": "98 / 125EnumsColorTypeEnumeration ColorTypeNamespace MRef.Demo.Enumeration",
       "Links": [
         {
           "Goto": {
@@ -7875,7 +7875,7 @@
     },
     {
       "Number": 99,
-      "Text": "99Namespace:MRef.Demo.EnumerationAssembly:CatLibrary.dllEnumeration ColorTypeFieldsRed = 0this color is redBlue = 1blue like riverYellow = 2yellow comes from desertRemarksRed/Blue/Yellow can become all color you want.See Alsoobject\uF1C5Enum ColorTypepublic enum ColorType",
+      "Text": "99 / 125Namespace:MRef.Demo.EnumerationAssembly:CatLibrary.dllEnumeration ColorTypeFieldsRed = 0this color is redBlue = 1blue like riverYellow = 2yellow comes from desertRemarksRed/Blue/Yellow can become all color you want.See Alsoobject\uF1C5Enum ColorTypepublic enum ColorType",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -7905,7 +7905,7 @@
     },
     {
       "Number": 100,
-      "Text": "100| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Swagger PetstoreDescribe APIs in Pet StorepetDescription for pet tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.UpdatePetUpdate an existing petRequestParametersPOST /petPUT /pet",
+      "Text": "100 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Swagger PetstoreDescribe APIs in Pet StorepetDescription for pet tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.UpdatePetUpdate an existing petRequestParametersPOST /petPUT /pet",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -7956,7 +7956,7 @@
     },
     {
       "Number": 101,
-      "Text": "101| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Pet not found405Validation exceptionFindPetsByStatusFinds Pets by statusMultiple status values can be provided with comma separated stringsRequestParametersNameTypeDefaultNotes*statusStatus values that need to be considered for ﬁlterResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid status valueFindPetsByTagsGET /pet/findByStatus?status",
+      "Text": "101 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Pet not found405Validation exceptionFindPetsByStatusFinds Pets by statusMultiple status values can be provided with comma separated stringsRequestParametersNameTypeDefaultNotes*statusStatus values that need to be considered for ﬁlterResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid status valueFindPetsByTagsGET /pet/findByStatus?status",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByStatus%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8016,7 +8016,7 @@
     },
     {
       "Number": 102,
-      "Text": "102| Improve this Doc\uF1C5View Source\uF1C5Finds Pets by tagsMuliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 fortesting.RequestParametersNameTypeDefaultNotes*tagsTags to ﬁlter byResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid tag valueDeletePetDeletes a petRequestParametersNameTypeDefaultNotesapi_key*petIdPet id to deleteResponsesGET /pet/findByTags?tagsDELETE /pet/{petId}",
+      "Text": "102 / 125| Improve this Doc\uF1C5View Source\uF1C5Finds Pets by tagsMuliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 fortesting.RequestParametersNameTypeDefaultNotes*tagsTags to ﬁlter byResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid tag valueDeletePetDeletes a petRequestParametersNameTypeDefaultNotesapi_key*petIdPet id to deleteResponsesGET /pet/findByTags?tagsDELETE /pet/{petId}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeletePet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8049,7 +8049,7 @@
     },
     {
       "Number": 103,
-      "Text": "103| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples400Invalid ID supplied404Pet not foundGetPetByIdFind pet by IDReturns a single petRequestParametersNameTypeDefaultNotes*petIdID of pet to returnResponsesStatus CodeTypeDescriptionSamples200Petsuccessful operation400Invalid ID supplied404Pet not foundUpdatePetWithFormUpdates a pet in the store with form dataRequestGET /pet/{petId}POST /pet/{petId}",
+      "Text": "103 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples400Invalid ID supplied404Pet not foundGetPetByIdFind pet by IDReturns a single petRequestParametersNameTypeDefaultNotes*petIdID of pet to returnResponsesStatus CodeTypeDescriptionSamples200Petsuccessful operation400Invalid ID supplied404Pet not foundUpdatePetWithFormUpdates a pet in the store with form dataRequestGET /pet/{petId}POST /pet/{petId}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetPetById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8100,7 +8100,7 @@
     },
     {
       "Number": 104,
-      "Text": "104| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*petIdID of pet that needs to be updatednameUpdated name of the petstatusUpdated status of the petResponsesStatus CodeTypeDescriptionSamples405Invalid inputUploadFileuploads an imageRequestParametersNameTypeDefaultNotes*petIdID of pet to updateadditionalMetadataAdditional data to pass to serverﬁleﬁle to uploadResponsesStatus CodeTypeDescriptionSamples200ApiResponsesuccessful operationPOST /pet/{petId}/uploadImage",
+      "Text": "104 / 125| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*petIdID of pet that needs to be updatednameUpdated name of the petstatusUpdated status of the petResponsesStatus CodeTypeDescriptionSamples405Invalid inputUploadFileuploads an imageRequestParametersNameTypeDefaultNotes*petIdID of pet to updateadditionalMetadataAdditional data to pass to serverﬁleﬁle to uploadResponsesStatus CodeTypeDescriptionSamples200ApiResponsesuccessful operationPOST /pet/{petId}/uploadImage",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FuploadFile%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8142,7 +8142,7 @@
     },
     {
       "Number": 105,
-      "Text": "105| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5storeAccess to Petstore ordersAdditional description for store tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.GetInventoryReturns pet inventories by statusReturns a map of status codes to quantitiesRequestResponsesPOST /petGET /store/inventory",
+      "Text": "105 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5storeAccess to Petstore ordersAdditional description for store tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.GetInventoryReturns pet inventories by statusReturns a map of status codes to quantitiesRequestResponsesPOST /petGET /store/inventory",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8193,7 +8193,7 @@
     },
     {
       "Number": 106,
-      "Text": "106| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples200objectsuccessful operationPlaceOrderPlace an order for a petRequestParametersNameTypeDefaultNotes*bodyOrderorder placed for purchasing the petResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid OrderDeleteOrderDelete purchase order by IDFor valid response try integer IDs with positive integer value. Negative or non-integervalues will generate API errorsRequestParametersPOST /store/orderDELETE /store/order/{orderId}",
+      "Text": "106 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples200objectsuccessful operationPlaceOrderPlace an order for a petRequestParametersNameTypeDefaultNotes*bodyOrderorder placed for purchasing the petResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid OrderDeleteOrderDelete purchase order by IDFor valid response try integer IDs with positive integer value. Negative or non-integervalues will generate API errorsRequestParametersPOST /store/orderDELETE /store/order/{orderId}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FplaceOrder%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8253,7 +8253,7 @@
     },
     {
       "Number": 107,
-      "Text": "107| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*orderIdID of the order that needs to be deletedResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Order not foundGetOrderByIdFind purchase order by IDFor valid response try integer IDs with value >= 1 and <= 10. Other values will generatedexceptionsRequestParametersNameTypeDefaultNotes*orderIdID of pet that needs to be fetchedResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid ID supplied404Order not foundGET /store/order/{orderId}",
+      "Text": "107 / 125| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*orderIdID of the order that needs to be deletedResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Order not foundGetOrderByIdFind purchase order by IDFor valid response try integer IDs with value >= 1 and <= 10. Other values will generatedexceptionsRequestParametersNameTypeDefaultNotes*orderIdID of pet that needs to be fetchedResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid ID supplied404Order not foundGET /store/order/{orderId}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetOrderById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8286,7 +8286,7 @@
     },
     {
       "Number": 108,
-      "Text": "108| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5userOperations about userCreateUserCreate userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*bodyUserCreated user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationCreateUsersWithArrayInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesPOST /userPOST /user/createWithArray",
+      "Text": "108 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5userOperations about userCreateUserCreate userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*bodyUserCreated user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationCreateUsersWithArrayInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesPOST /userPOST /user/createWithArray",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8346,7 +8346,7 @@
     },
     {
       "Number": 109,
-      "Text": "109| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamplesdefaultsuccessful operationCreateUsersWithListInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationLoginUserLogs user into the systemRequestParametersNameTypeDefaultNotes*usernameThe user name for login*passwordThe password for login in clear textPOST /user/createWithListGET /user/login?username&password",
+      "Text": "109 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamplesdefaultsuccessful operationCreateUsersWithListInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationLoginUserLogs user into the systemRequestParametersNameTypeDefaultNotes*usernameThe user name for login*passwordThe password for login in clear textPOST /user/createWithListGET /user/login?username&password",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithListInput%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8397,7 +8397,7 @@
     },
     {
       "Number": 110,
-      "Text": "110| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5ResponsesStatus CodeTypeDescriptionSamples200stringsuccessful operation400Invalid username/password suppliedLogoutUserLogs out current logged in user sessionRequestResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationDeleteUserDelete userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*usernameThe name that needs to be deletedResponsesGET /user/logoutDELETE /user/{username}",
+      "Text": "110 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5ResponsesStatus CodeTypeDescriptionSamples200stringsuccessful operation400Invalid username/password suppliedLogoutUserLogs out current logged in user sessionRequestResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationDeleteUserDelete userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*usernameThe name that needs to be deletedResponsesGET /user/logoutDELETE /user/{username}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FlogoutUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8439,7 +8439,7 @@
     },
     {
       "Number": 111,
-      "Text": "111| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples400Invalid username supplied404User not foundGetUserByNameGet user by user nameRequestParametersNameTypeDefaultNotes*usernameThe name that needs to be fetched. Use user1 for testing.ResponsesStatus CodeTypeDescriptionSamples200Usersuccessful operation400Invalid username supplied404User not foundOther APIsUpdateUserUpdated userThis can only be done by the logged in user.RequestGET /user/{username}",
+      "Text": "111 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples400Invalid username supplied404User not foundGetUserByNameGet user by user nameRequestParametersNameTypeDefaultNotes*usernameThe name that needs to be fetched. Use user1 for testing.ResponsesStatus CodeTypeDescriptionSamples200Usersuccessful operation400Invalid username supplied404User not foundOther APIsUpdateUserUpdated userThis can only be done by the logged in user.RequestGET /user/{username}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetUserByName%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8490,7 +8490,7 @@
     },
     {
       "Number": 112,
-      "Text": "112ParametersNameTypeDefaultNotes*usernamename that need to be updated*bodyUserUpdated user objectResponsesStatus CodeTypeDescriptionSamples400Invalid user supplied404User not foundDeﬁnitionsPetNameTypeNotescategoryCategory[]idinteger (int64)namestringphotoUrlsarraystatusstringpet status in the storetagsTag[]CategoryPUT /user/{username}",
+      "Text": "112 / 125ParametersNameTypeDefaultNotes*usernamename that need to be updated*bodyUserUpdated user objectResponsesStatus CodeTypeDescriptionSamples400Invalid user supplied404User not foundDeﬁnitionsPetNameTypeNotescategoryCategory[]idinteger (int64)namestringphotoUrlsarraystatusstringpet status in the storetagsTag[]CategoryPUT /user/{username}",
       "Links": [
         {
           "Goto": {
@@ -8523,12 +8523,12 @@
     },
     {
       "Number": 113,
-      "Text": "113NameTypeNotesidinteger (int64)namestringTagNameTypeNotesidinteger (int64)namestringApiResponseNameTypeNotescodeinteger (int32)messagestringtypestringOrderNameTypeNotescompletebooleanidinteger (int64)petIdinteger (int64)quantityinteger (int32)shipDatestring (date-time)statusstringOrder StatusUser",
+      "Text": "113 / 125NameTypeNotesidinteger (int64)namestringTagNameTypeNotesidinteger (int64)namestringApiResponseNameTypeNotescodeinteger (int32)messagestringtypestringOrderNameTypeNotescompletebooleanidinteger (int64)petIdinteger (int64)quantityinteger (int32)shipDatestring (date-time)statusstringOrder StatusUser",
       "Links": []
     },
     {
       "Number": 114,
-      "Text": "114NameTypeNotesemailstringﬁrstNamestringidinteger (int64)lastNamestringpasswordstringphonestringuserStatusinteger (int32)User StatususernamestringSee AlsosSee other REST APIs:Contacts API",
+      "Text": "114 / 125NameTypeNotesemailstringﬁrstNamestringidinteger (int64)lastNamestringpasswordstringphonestringuserStatusinteger (int32)User StatususernamestringSee AlsosSee other REST APIs:Contacts API",
       "Links": [
         {
           "Goto": {
@@ -8543,7 +8543,7 @@
     },
     {
       "Number": 115,
-      "Text": "115| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5ContactsGet ContactsYou can get a collection of contacts from your tenant.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented as datestrings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Theresults arereturned intheresponsebody.Mime type: application/jsonGet Contact By IdGet a contact by using the object ID.Required scope: Contacts.Read or Contacts.WriteGET /contacts?api-version{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"value\": [    {      \"odata.type\": \"Microsoft.DirectoryServices.Contac      \"objectType\": \"Contact\",      \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9      \"deletionTimestamp\": null,",
+      "Text": "115 / 125| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5ContactsGet ContactsYou can get a collection of contacts from your tenant.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented as datestrings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Theresults arereturned intheresponsebody.Mime type: application/jsonGet Contact By IdGet a contact by using the object ID.Required scope: Contacts.Read or Contacts.WriteGET /contacts?api-version{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"value\": [    {      \"odata.type\": \"Microsoft.DirectoryServices.Contac      \"objectType\": \"Contact\",      \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9      \"deletionTimestamp\": null,",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contacts.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contacts%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8585,7 +8585,7 @@
     },
     {
       "Number": 116,
-      "Text": "116| Improve this Doc\uF1C5View Source\uF1C5RequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6Speciﬁes the version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Thecontact isreturned intheresponsebody.Mime type: application/jsonUpdate ContactChange a contact's properties.Required scope: Contacts.WriteRequestGET /contacts/{object_id}?api-version{  \"odata.metadata\": \"https://graph.windows.net/graphdir1.onmicrosoft.com/$m  \"odata.type\": \"Microsoft.DirectoryServices.Contact\",  \"objectType\": \"Contact\",  \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",  \"deletionTimestamp\": null,  \"city\": null,  \"companyName\": null,",
+      "Text": "116 / 125| Improve this Doc\uF1C5View Source\uF1C5RequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6Speciﬁes the version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Thecontact isreturned intheresponsebody.Mime type: application/jsonUpdate ContactChange a contact's properties.Required scope: Contacts.WriteRequestGET /contacts/{object_id}?api-version{  \"odata.metadata\": \"https://graph.windows.net/graphdir1.onmicrosoft.com/$m  \"odata.type\": \"Microsoft.DirectoryServices.Contact\",  \"objectType\": \"Contact\",  \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",  \"deletionTimestamp\": null,  \"city\": null,  \"companyName\": null,",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8609,7 +8609,7 @@
     },
     {
       "Number": 117,
-      "Text": "117| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-versionstring is represented in major.minor format.Prior releases were represented as datestrings: '2013-11-08' and '2013-04-05'.Required.bodyparamcontactthis is request body, not real parameterResponsesStatusCodeTypeDescriptionSamples204No Content. Indicates success. No response body isreturned.Delete ContactDelete a contact.Required scope: Contacts.WriteRequestParametersPATCH /contacts/{object_id}?api-versionDELETE /contacts/{object_id}[?api-version]",
+      "Text": "117 / 125| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-versionstring is represented in major.minor format.Prior releases were represented as datestrings: '2013-11-08' and '2013-04-05'.Required.bodyparamcontactthis is request body, not real parameterResponsesStatusCodeTypeDescriptionSamples204No Content. Indicates success. No response body isreturned.Delete ContactDelete a contact.Required scope: Contacts.WriteRequestParametersPATCH /contacts/{object_id}?api-versionDELETE /contacts/{object_id}[?api-version]",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8642,7 +8642,7 @@
     },
     {
       "Number": 118,
-      "Text": "118| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.api-version1.6Speciﬁes the version of the Graph API to target.Beginning with version 1.5, the api-versionstring is represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success.Get Contact Manager LinkGet a link to the contact's manager.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.GET /contacts/{object_id}/$links/manager?api-version",
+      "Text": "118 / 125| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.api-version1.6Speciﬁes the version of the Graph API to target.Beginning with version 1.5, the api-versionstring is represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success.Get Contact Manager LinkGet a link to the contact's manager.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.GET /contacts/{object_id}/$links/manager?api-version",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20manager%20link%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8666,7 +8666,7 @@
     },
     {
       "Number": 119,
-      "Text": "119| Improve this Doc\uF1C5View Source\uF1C5ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Alink to thecontact'smanager isreturned.Mime type: application/json404Not Found.Therequestedresourcewas notfound. Thiscan occur ifthe managerproperty isnot currentlyset for thespeciﬁedcontact. Itcan alsohave othercauses, forexample, abad domain.A code andassociatedmessage isreturnedwith theerror.Mime type: application/jsonUpdate Contact Manager{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"url\": \"https://graph.windows.net/myorganization/dire4c4a-93b2-03f065fabd93/Microsoft.WindowsAzure.ActiveDir}{  \"odata.error\": {    \"code\": \"Request_ResourceNotFound\",    \"message\": {      \"lang\": \"en\",      \"value\": \"Resource not found for the segment 'man    }  }}",
+      "Text": "119 / 125| Improve this Doc\uF1C5View Source\uF1C5ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Alink to thecontact'smanager isreturned.Mime type: application/json404Not Found.Therequestedresourcewas notfound. Thiscan occur ifthe managerproperty isnot currentlyset for thespeciﬁedcontact. Itcan alsohave othercauses, forexample, abad domain.A code andassociatedmessage isreturnedwith theerror.Mime type: application/jsonUpdate Contact Manager{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"url\": \"https://graph.windows.net/myorganization/dire4c4a-93b2-03f065fabd93/Microsoft.WindowsAzure.ActiveDir}{  \"odata.error\": {    \"code\": \"Request_ResourceNotFound\",    \"message\": {      \"lang\": \"en\",      \"value\": \"Resource not found for the segment 'man    }  }}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact_manager.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%20manager%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8690,7 +8690,7 @@
     },
     {
       "Number": 120,
-      "Text": "120| Improve this Doc\uF1C5View Source\uF1C5Update the contact's managerRequired scope: Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-versionstring is represented in major.minor format.Prior releases were represented as datestrings: '2013-11-08' and '2013-04-05'.Required.*bodyparamThe request body contains a single propertythat speciﬁes the URL of the user or contact toadd as manager.ResponsesStatusCodeTypeDescriptionSamples204No Content. Indicates success. No response body isreturned.Delete Contact Manager By IdDelete the contact's manager.Required scope: Contacts.WriteRequestPUT /contacts/{object_id}/$links/manager?api-version",
+      "Text": "120 / 125| Improve this Doc\uF1C5View Source\uF1C5Update the contact's managerRequired scope: Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-versionstring is represented in major.minor format.Prior releases were represented as datestrings: '2013-11-08' and '2013-04-05'.Required.*bodyparamThe request body contains a single propertythat speciﬁes the URL of the user or contact toadd as manager.ResponsesStatusCodeTypeDescriptionSamples204No Content. Indicates success. No response body isreturned.Delete Contact Manager By IdDelete the contact's manager.Required scope: Contacts.WriteRequestPUT /contacts/{object_id}/$links/manager?api-version",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%20manager%20by%20id%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8714,7 +8714,7 @@
     },
     {
       "Number": 121,
-      "Text": "121| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples204No Content. Indicates success. N response body isreturned.Get Contact Direct Reports LinksGet a links to the contact's direct reports.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.DELETE /contacts/{object_id}/$links/manager?api-versionGET /contacts/{object_id}/$links/directReports?api-version",
+      "Text": "121 / 125| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples204No Content. Indicates success. N response body isreturned.Get Contact Direct Reports LinksGet a links to the contact's direct reports.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.DELETE /contacts/{object_id}/$links/manager?api-versionGET /contacts/{object_id}/$links/directReports?api-version",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20direct%20reports%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8738,7 +8738,7 @@
     },
     {
       "Number": 122,
-      "Text": "122| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One or moredirectreports arereturned.Mime type: application/jsonGet Contact MemberOf LinksGet a links to the contact's direct group and directory role memberships.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/4e26-b24f-c830606ef41c/Microsoft.DirectoryServices.Cont    }  ]GET /contacts/{object_id}/$links/memberOf?api-version",
+      "Text": "122 / 125| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One or moredirectreports arereturned.Mime type: application/jsonGet Contact MemberOf LinksGet a links to the contact's direct group and directory role memberships.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/4e26-b24f-c830606ef41c/Microsoft.DirectoryServices.Cont    }  ]GET /contacts/{object_id}/$links/memberOf?api-version",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20memberOf%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -8762,12 +8762,12 @@
     },
     {
       "Number": 123,
-      "Text": "123NameTypeDefaultNotes*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One or moregroupsand/ordirectoryroles arereturned.Mime type: application/jsonDeﬁnitionsContactNameTypeNotesobjectTypestringobjectIdstringdeletionTimestampstring (date-time)citystringcountrystringdepartmentstring{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/b942-47c9-a10e-a4bee353ce60/Microsoft.DirectoryServices    }  ]",
+      "Text": "123 / 125NameTypeDefaultNotes*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One or moregroupsand/ordirectoryroles arereturned.Mime type: application/jsonDeﬁnitionsContactNameTypeNotesobjectTypestringobjectIdstringdeletionTimestampstring (date-time)citystringcountrystringdepartmentstring{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/b942-47c9-a10e-a4bee353ce60/Microsoft.DirectoryServices    }  ]",
       "Links": []
     },
     {
       "Number": 124,
-      "Text": "124NameTypeNotesdirSyncEnabledbooleandisplayNamestringfacsimileTelephoneNumberstringgivenNamestringjobTitlestringlastDirSyncTimestring (date-time)mailstringmailNicknamestringmobilestringphysicalDeliveryOﬃceNamestringpostalCodestringprovisioningErrorsProvisioningError[]proxyAddressesarraysipProxyAddressstringstatestringstreetAddressstringsurnamestringtelephoneNumberstringthumbnailPhotostringProvisioningErrorNameTypeNoteserrorDetailstring",
+      "Text": "124 / 125NameTypeNotesdirSyncEnabledbooleandisplayNamestringfacsimileTelephoneNumberstringgivenNamestringjobTitlestringlastDirSyncTimestring (date-time)mailstringmailNicknamestringmobilestringphysicalDeliveryOﬃceNamestringpostalCodestringprovisioningErrorsProvisioningError[]proxyAddressesarraysipProxyAddressstringstatestringstreetAddressstringsurnamestringtelephoneNumberstringthumbnailPhotostringProvisioningErrorNameTypeNoteserrorDetailstring",
       "Links": [
         {
           "Goto": {
@@ -8791,7 +8791,7 @@
     },
     {
       "Number": 125,
-      "Text": "125NameTypeNotesresolvedbooleanserviceInstancestringtimestampstring (date-time)",
+      "Text": "125 / 125NameTypeNotesresolvedbooleanserviceInstancestringtimestampstring (date-time)",
       "Links": []
     }
   ],
