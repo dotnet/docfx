@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- Hide the Docfx templates folder from VS project tree.
+         Can be removed once https://github.com/NuGet/Home/issues/4856 is resolved -->
+    <ItemGroup>
+        <Content Update="@(Content)">
+            <Visible Condition="'%(NuGetItemType)' == 'Content' and '%(NuGetPackageId)' == 'docfx.app'">False</Visible>
+        </Content>
+    </ItemGroup>
+</Project>
