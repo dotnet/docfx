@@ -492,7 +492,7 @@
     },
     {
       "Number": 3,
-      "Text": "3ClassesClass1This is a test class.StructsIssue5432Namespace BuildFromAssembly",
+      "Text": "3 / 82ClassesClass1This is a test class.StructsIssue5432Namespace BuildFromAssembly",
       "Links": [
         {
           "Goto": {
@@ -516,7 +516,7 @@
     },
     {
       "Number": 4,
-      "Text": "4Namespace:BuildFromAssemblyAssembly:BuildFromAssembly.dllThis is a test class.Inheritanceobject\uF1C5 Class1Inherited Membersobject.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ToString()\uF1C5 , object.Equals(object)\uF1C5 ,object.Equals(object, object)\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.GetHashCode()\uF1C5ConstructorsMethodsHello World.Class Class1public class Class1\uF12CClass1()public Class1()HelloWorld()public static void HelloWorld()",
+      "Text": "4 / 82Namespace:BuildFromAssemblyAssembly:BuildFromAssembly.dllThis is a test class.Inheritanceobject\uF1C5 Class1Inherited Membersobject.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ToString()\uF1C5 , object.Equals(object)\uF1C5 ,object.Equals(object, object)\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.GetHashCode()\uF1C5ConstructorsMethodsHello World.Class Class1public class Class1\uF12CClass1()public Class1()HelloWorld()public static void HelloWorld()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -621,7 +621,7 @@
     },
     {
       "Number": 5,
-      "Text": "5Namespace:BuildFromAssemblyAssembly:BuildFromAssembly.dllInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 , object.GetType()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.ReferenceEquals(object, object)\uF1C5PropertiesProperty Valuestring\uF1C5Struct Issue5432public struct Issue5432Namepublic string Name { get; }",
+      "Text": "5 / 82Namespace:BuildFromAssemblyAssembly:BuildFromAssembly.dllInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 , object.GetType()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.ReferenceEquals(object, object)\uF1C5PropertiesProperty Valuestring\uF1C5Struct Issue5432public struct Issue5432Namepublic string Name { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals"
@@ -717,7 +717,7 @@
     },
     {
       "Number": 6,
-      "Text": "6ClassesCSharpNamespace BuildFromCSharpSourceCode",
+      "Text": "6 / 82ClassesCSharpNamespace BuildFromCSharpSourceCode",
       "Links": [
         {
           "Goto": {
@@ -732,7 +732,7 @@
     },
     {
       "Number": 7,
-      "Text": "7Namespace:BuildFromCSharpSourceCodeInheritanceobject\uF1C5 CSharpInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsParametersargs string\uF1C5[]Class CSharppublic class CSharp\uF12CMain(string[])public static void Main(string[] args)",
+      "Text": "7 / 82Namespace:BuildFromCSharpSourceCodeInheritanceobject\uF1C5 CSharpInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsParametersargs string\uF1C5[]Class CSharppublic class CSharp\uF12CMain(string[])public static void Main(string[] args)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -864,7 +864,7 @@
     },
     {
       "Number": 8,
-      "Text": "8NamespacesBuildFromProject.Issue8540ClassesClass1Class1.Issue8665Class1.Issue8696AttributeClass1.Issue8948Class1.Test<T>InheritdocInheritdoc.Issue6366Inheritdoc.Issue6366.Class1<T>Inheritdoc.Issue6366.Class2Inheritdoc.Issue7035Inheritdoc.Issue7484This is a test class to have something for DocFX to document.Inheritdoc.Issue8101Issue8725A nice classStructsInheritdoc.Issue8129InterfacesClass1.IIssue8948IInheritdocEnumsNamespace BuildFromProject",
+      "Text": "8 / 82NamespacesBuildFromProject.Issue8540ClassesClass1Class1.Issue8665Class1.Issue8696AttributeClass1.Issue8948Class1.Test<T>InheritdocInheritdoc.Issue6366Inheritdoc.Issue6366.Class1<T>Inheritdoc.Issue6366.Class2Inheritdoc.Issue7035Inheritdoc.Issue7484This is a test class to have something for DocFX to document.Inheritdoc.Issue8101Issue8725A nice classStructsInheritdoc.Issue8129InterfacesClass1.IIssue8948IInheritdocEnumsNamespace BuildFromProject",
       "Links": [
         {
           "Goto": {
@@ -1158,7 +1158,7 @@
     },
     {
       "Number": 9,
-      "Text": "9Class1.Issue9260",
+      "Text": "9 / 82Class1.Issue9260",
       "Links": [
         {
           "Goto": {
@@ -1182,7 +1182,7 @@
     },
     {
       "Number": 10,
-      "Text": "10NamespacesBuildFromProject.Issue8540.ABuildFromProject.Issue8540.BNamespace BuildFromProject.Issue8540",
+      "Text": "10 / 82NamespacesBuildFromProject.Issue8540.ABuildFromProject.Issue8540.BNamespace BuildFromProject.Issue8540",
       "Links": [
         {
           "Goto": {
@@ -1278,7 +1278,7 @@
     },
     {
       "Number": 11,
-      "Text": "11ClassesANamespace BuildFromProject.Issue8540.A",
+      "Text": "11 / 82ClassesANamespace BuildFromProject.Issue8540.A",
       "Links": [
         {
           "Goto": {
@@ -1293,7 +1293,7 @@
     },
     {
       "Number": 12,
-      "Text": "12Namespace:BuildFromProject.Issue8540.AAssembly:BuildFromProject.dllInheritanceobject\uF1C5 AInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Apublic class A\uF12C",
+      "Text": "12 / 82Namespace:BuildFromProject.Issue8540.AAssembly:BuildFromProject.dllInheritanceobject\uF1C5 AInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Apublic class A\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1416,7 +1416,7 @@
     },
     {
       "Number": 13,
-      "Text": "13ClassesBNamespace BuildFromProject.Issue8540.B",
+      "Text": "13 / 82ClassesBNamespace BuildFromProject.Issue8540.B",
       "Links": [
         {
           "Goto": {
@@ -1431,7 +1431,7 @@
     },
     {
       "Number": 14,
-      "Text": "14Namespace:BuildFromProject.Issue8540.BAssembly:BuildFromProject.dllInheritanceobject\uF1C5 BInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Bpublic class B\uF12C",
+      "Text": "14 / 82Namespace:BuildFromProject.Issue8540.BAssembly:BuildFromProject.dllInheritanceobject\uF1C5 BInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Bpublic class B\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1554,7 +1554,7 @@
     },
     {
       "Number": 15,
-      "Text": "15Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1ImplementsIClass1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsPricing models are used to calculate theoretical option values1-Black Scholes2-Black763-Black76Fut4-Equity Tree5-Variance Swap6-Dividend ForecastIConfiguration related helper and extension routines.Class Class1public class Class1 : IClass1\uF12CIssue1651()public void Issue1651()Issue1887()",
+      "Text": "15 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1ImplementsIClass1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsPricing models are used to calculate theoretical option values1-Black Scholes2-Black763-Black76Fut4-Equity Tree5-Variance Swap6-Dividend ForecastIConfiguration related helper and extension routines.Class Class1public class Class1 : IClass1\uF12CIssue1651()public void Issue1651()Issue1887()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1659,12 +1659,12 @@
     },
     {
       "Number": 16,
-      "Text": "16ExamplesRemarksFor example:Remarkspublic void Issue1887()Issue2623()public void Issue2623()MyClass myClass = new MyClass();void Update(){    myClass.Execute();}MyClass myClass = new MyClass();void Update(){    myClass.Execute();}Issue2723()public void Issue2723()NOTEThis is a <note>. & \" '\uF431",
+      "Text": "16 / 82ExamplesRemarksFor example:Remarkspublic void Issue1887()Issue2623()public void Issue2623()MyClass myClass = new MyClass();void Update(){    myClass.Execute();}MyClass myClass = new MyClass();void Update(){    myClass.Execute();}Issue2723()public void Issue2723()NOTEThis is a <note>. & \" '\uF431",
       "Links": []
     },
     {
       "Number": 17,
-      "Text": "17Inline <angle brackets>.link\uF1C5ExamplesRemarksfor (var i = 0; i > 10; i++) // & \" 'var range = new Range<int> { Min = 0, Max = 10 };var range = new Range<int> { Min = 0, Max = 10 };Issue4017()public void Issue4017()public void HookMessageDeleted(BaseSocketClient client){    client.MessageDeleted += HandleMessageDelete;}public Task HandleMessageDelete(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel channel){    // check if the message exists in cache; if not, we cannot report what was removed    if (!cachedMessage.HasValue) return;    var message = cachedMessage.Value;    Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the channel {channel.Name} ({channel.Id}):\"        + Environment.NewLine        + message.Content);    return Task.CompletedTask;}void Update(){    myClass.Execute();}",
+      "Text": "17 / 82Inline <angle brackets>.link\uF1C5ExamplesRemarksfor (var i = 0; i > 10; i++) // & \" 'var range = new Range<int> { Min = 0, Max = 10 };var range = new Range<int> { Min = 0, Max = 10 };Issue4017()public void Issue4017()public void HookMessageDeleted(BaseSocketClient client){    client.MessageDeleted += HandleMessageDelete;}public Task HandleMessageDelete(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel channel){    // check if the message exists in cache; if not, we cannot report what was removed    if (!cachedMessage.HasValue) return;    var message = cachedMessage.Value;    Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the channel {channel.Name} ({channel.Id}):\"        + Environment.NewLine        + message.Content);    return Task.CompletedTask;}void Update(){    myClass.Execute();}",
       "Links": [
         {
           "Uri": "https://www.github.com/"
@@ -1679,12 +1679,12 @@
     },
     {
       "Number": 18,
-      "Text": "18Remarks@\"\\\\?\\\" @\"\\\\?\\\"RemarksThere's really no reason to not believe that this class can test things.TermDescriptionA TermA DescriptionBee TermBee DescriptionType ParametersTTestIssue4392()public void Issue4392()Issue7484()public void Issue7484()Issue8764<T>()public void Issue8764<T>() where T : unmanagedIssue896()public void Issue896()",
+      "Text": "18 / 82Remarks@\"\\\\?\\\" @\"\\\\?\\\"RemarksThere's really no reason to not believe that this class can test things.TermDescriptionA TermA DescriptionBee TermBee DescriptionType ParametersTTestIssue4392()public void Issue4392()Issue7484()public void Issue7484()Issue8764<T>()public void Issue8764<T>() where T : unmanagedIssue896()public void Issue896()",
       "Links": []
     },
     {
       "Number": 19,
-      "Text": "19See AlsoClass1.Test<T>, Class1Calculates the determinant of a 3-dimensional matrix:Returns the smallest value:Returnsdouble\uF1C5This method should do something...RemarksThis is remarks.Issue9216()public static double Issue9216()XmlCommentIncludeTag()public void XmlCommentIncludeTag()",
+      "Text": "19 / 82See AlsoClass1.Test<T>, Class1Calculates the determinant of a 3-dimensional matrix:Returns the smallest value:Returnsdouble\uF1C5This method should do something...RemarksThis is remarks.Issue9216()public static double Issue9216()XmlCommentIncludeTag()public void XmlCommentIncludeTag()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.double"
@@ -1726,7 +1726,7 @@
     },
     {
       "Number": 20,
-      "Text": "20Namespace:BuildFromProjectAssembly:BuildFromProject.dllMethodsDoes nothing with generic type T.Type ParametersTA generic type.Interface Class1.IIssue8948public interface Class1.IIssue8948DoNothing<T>()void DoNothing<T>()",
+      "Text": "20 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllMethodsDoes nothing with generic type T.Type ParametersTA generic type.Interface Class1.IIssue8948public interface Class1.IIssue8948DoNothing<T>()void DoNothing<T>()",
       "Links": [
         {
           "Goto": {
@@ -1759,7 +1759,7 @@
     },
     {
       "Number": 21,
-      "Text": "21Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1.Issue8665Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ConstructorsParametersfoo int\uF1C5ParametersClass Class1.Issue8665public class Class1.Issue8665\uF12CIssue8665()public Issue8665()Issue8665(int)public Issue8665(int foo)Issue8665(int, char)public Issue8665(int foo, char bar)",
+      "Text": "21 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1.Issue8665Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ConstructorsParametersfoo int\uF1C5ParametersClass Class1.Issue8665public class Class1.Issue8665\uF12CIssue8665()public Issue8665()Issue8665(int)public Issue8665(int foo)Issue8665(int, char)public Issue8665(int foo, char bar)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -1873,7 +1873,7 @@
     },
     {
       "Number": 22,
-      "Text": "22foo int\uF1C5bar char\uF1C5Parametersfoo int\uF1C5bar char\uF1C5baz string\uF1C5PropertiesProperty Valuechar\uF1C5Property Valuestring\uF1C5Issue8665(int, char, string)public Issue8665(int foo, char bar, string baz)Barpublic char Bar { get; }Bazpublic string Baz { get; }",
+      "Text": "22 / 82foo int\uF1C5bar char\uF1C5Parametersfoo int\uF1C5bar char\uF1C5baz string\uF1C5PropertiesProperty Valuechar\uF1C5Property Valuestring\uF1C5Issue8665(int, char, string)public Issue8665(int foo, char bar, string baz)Barpublic char Bar { get; }Bazpublic string Baz { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -1942,7 +1942,7 @@
     },
     {
       "Number": 23,
-      "Text": "23Property Valueint\uF1C5Foopublic int Foo { get; }",
+      "Text": "23 / 82Property Valueint\uF1C5Foopublic int Foo { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -1957,7 +1957,7 @@
     },
     {
       "Number": 24,
-      "Text": "24Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Attribute\uF1C5 Class1.Issue8696AttributeInherited MembersAttribute.Equals(object)\uF1C5 , Attribute.GetCustomAttribute(Assembly, Type)\uF1C5 ,Attribute.GetCustomAttribute(Assembly, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(MemberInfo, Type)\uF1C5 ,Attribute.GetCustomAttribute(MemberInfo, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(Module, Type)\uF1C5 , Attribute.GetCustomAttribute(Module, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(ParameterInfo, Type)\uF1C5 ,Attribute.GetCustomAttribute(ParameterInfo, Type, bool)\uF1C5 , Attribute.GetCustomAttributes(Assembly)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, bool)\uF1C5 , Attribute.GetCustomAttributes(Assembly, Type)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, Type, bool)\uF1C5 , Attribute.GetCustomAttributes(MemberInfo)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, bool)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, Type)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, Type, bool)\uF1C5 , Attribute.GetCustomAttributes(Module)\uF1C5 ,Attribute.GetCustomAttributes(Module, bool)\uF1C5 , Attribute.GetCustomAttributes(Module, Type)\uF1C5 ,Attribute.GetCustomAttributes(Module, Type, bool)\uF1C5 , Attribute.GetCustomAttributes(ParameterInfo)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, bool)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, Type)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, Type, bool)\uF1C5 , Attribute.GetHashCode()\uF1C5 ,Attribute.IsDefaultAttribute()\uF1C5 , Attribute.IsDefined(Assembly, Type)\uF1C5 ,Attribute.IsDefined(Assembly, Type, bool)\uF1C5 , Attribute.IsDefined(MemberInfo, Type)\uF1C5 ,Attribute.IsDefined(MemberInfo, Type, bool)\uF1C5 , Attribute.IsDefined(Module, Type)\uF1C5 ,Attribute.IsDefined(Module, Type, bool)\uF1C5 , Attribute.IsDefined(ParameterInfo, Type)\uF1C5 ,Attribute.IsDefined(ParameterInfo, Type, bool)\uF1C5 , Attribute.Match(object)\uF1C5 , Attribute.TypeId\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ConstructorsClass Class1.Issue8696Attributepublic class Class1.Issue8696Attribute : Attribute\uF12C\uF12C",
+      "Text": "24 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Attribute\uF1C5 Class1.Issue8696AttributeInherited MembersAttribute.Equals(object)\uF1C5 , Attribute.GetCustomAttribute(Assembly, Type)\uF1C5 ,Attribute.GetCustomAttribute(Assembly, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(MemberInfo, Type)\uF1C5 ,Attribute.GetCustomAttribute(MemberInfo, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(Module, Type)\uF1C5 , Attribute.GetCustomAttribute(Module, Type, bool)\uF1C5 ,Attribute.GetCustomAttribute(ParameterInfo, Type)\uF1C5 ,Attribute.GetCustomAttribute(ParameterInfo, Type, bool)\uF1C5 , Attribute.GetCustomAttributes(Assembly)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, bool)\uF1C5 , Attribute.GetCustomAttributes(Assembly, Type)\uF1C5 ,Attribute.GetCustomAttributes(Assembly, Type, bool)\uF1C5 , Attribute.GetCustomAttributes(MemberInfo)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, bool)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, Type)\uF1C5 ,Attribute.GetCustomAttributes(MemberInfo, Type, bool)\uF1C5 , Attribute.GetCustomAttributes(Module)\uF1C5 ,Attribute.GetCustomAttributes(Module, bool)\uF1C5 , Attribute.GetCustomAttributes(Module, Type)\uF1C5 ,Attribute.GetCustomAttributes(Module, Type, bool)\uF1C5 , Attribute.GetCustomAttributes(ParameterInfo)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, bool)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, Type)\uF1C5 ,Attribute.GetCustomAttributes(ParameterInfo, Type, bool)\uF1C5 , Attribute.GetHashCode()\uF1C5 ,Attribute.IsDefaultAttribute()\uF1C5 , Attribute.IsDefined(Assembly, Type)\uF1C5 ,Attribute.IsDefined(Assembly, Type, bool)\uF1C5 , Attribute.IsDefined(MemberInfo, Type)\uF1C5 ,Attribute.IsDefined(MemberInfo, Type, bool)\uF1C5 , Attribute.IsDefined(Module, Type)\uF1C5 ,Attribute.IsDefined(Module, Type, bool)\uF1C5 , Attribute.IsDefined(ParameterInfo, Type)\uF1C5 ,Attribute.IsDefined(ParameterInfo, Type, bool)\uF1C5 , Attribute.Match(object)\uF1C5 , Attribute.TypeId\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 ,object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ConstructorsClass Class1.Issue8696Attributepublic class Class1.Issue8696Attribute : Attribute\uF12C\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -2386,7 +2386,7 @@
     },
     {
       "Number": 25,
-      "Text": "25Parametersdescription string\uF1C5boundsMin int\uF1C5boundsMax int\uF1C5validGameModes string\uF1C5[]hasMultipleSelections bool\uF1C5enumType Type\uF1C5Issue8696Attribute(string?, int, int, string[]?, bool, Type?)[Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, null, false, null)]public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, string[]? validGameModes = null, bool hasMultipleSelections = false, Type? enumType = null)",
+      "Text": "25 / 82Parametersdescription string\uF1C5boundsMin int\uF1C5boundsMax int\uF1C5validGameModes string\uF1C5[]hasMultipleSelections bool\uF1C5enumType Type\uF1C5Issue8696Attribute(string?, int, int, string[]?, bool, Type?)[Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, null, false, null)]public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, string[]? validGameModes = null, bool hasMultipleSelections = false, Type? enumType = null)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -2446,7 +2446,7 @@
     },
     {
       "Number": 26,
-      "Text": "26Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1.Issue8948ImplementsClass1.IIssue8948Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsDoes nothing with generic type T.Type ParametersTA generic type.Class Class1.Issue8948public class Class1.Issue8948 : Class1.IIssue8948\uF12CDoNothing<T>()public void DoNothing<T>()",
+      "Text": "26 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Class1.Issue8948ImplementsClass1.IIssue8948Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsDoes nothing with generic type T.Type ParametersTA generic type.Class Class1.Issue8948public class Class1.Issue8948 : Class1.IIssue8948\uF12CDoNothing<T>()public void DoNothing<T>()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -2569,7 +2569,7 @@
     },
     {
       "Number": 27,
-      "Text": "27Namespace:BuildFromProjectAssembly:BuildFromProject.dllFieldsValue = 0This is a regular enum value.[Obsolete] OldAndUnusedValue = 1This is old and unused. You shouldn't use it anymore.[Obsolete(\"Use Value\")] OldAndUnusedValue2 = 2This is old and unused. You shouldn't use it anymore.Enum Class1.Issue9260public enum Class1.Issue9260",
+      "Text": "27 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllFieldsValue = 0This is a regular enum value.[Obsolete] OldAndUnusedValue = 1This is old and unused. You shouldn't use it anymore.[Obsolete(\"Use Value\")] OldAndUnusedValue2 = 2This is old and unused. You shouldn't use it anymore.Enum Class1.Issue9260public enum Class1.Issue9260",
       "Links": [
         {
           "Goto": {
@@ -2602,7 +2602,7 @@
     },
     {
       "Number": 28,
-      "Text": "28Namespace:BuildFromProjectAssembly:BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 Class1.Test<T>Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Class1.Test<T>public class Class1.Test<T>\uF12C",
+      "Text": "28 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 Class1.Test<T>Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Class1.Test<T>public class Class1.Test<T>\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -2707,7 +2707,7 @@
     },
     {
       "Number": 29,
-      "Text": "29Namespace:BuildFromProjectAssembly:BuildFromProject.dllMethodsThis method should do something...Interface IInheritdocpublic interface IInheritdocIssue7629()void Issue7629()",
+      "Text": "29 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllMethodsThis method should do something...Interface IInheritdocpublic interface IInheritdocIssue7629()void Issue7629()",
       "Links": [
         {
           "Goto": {
@@ -2740,7 +2740,7 @@
     },
     {
       "Number": 30,
-      "Text": "30Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 InheritdocImplementsIInheritdoc, IDisposable\uF1C5Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsPerforms application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.This method should do something...This method should do something...Class Inheritdocpublic class Inheritdoc : IInheritdoc, IDisposable\uF12CDispose()public void Dispose()Issue7628()public void Issue7628()Issue7629()",
+      "Text": "30 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 InheritdocImplementsIInheritdoc, IDisposable\uF1C5Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsPerforms application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.This method should do something...This method should do something...Class Inheritdocpublic class Inheritdoc : IInheritdoc, IDisposable\uF12CDispose()public void Dispose()Issue7628()public void Issue7628()Issue7629()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -2863,12 +2863,12 @@
     },
     {
       "Number": 31,
-      "Text": "31public void Issue7629()",
+      "Text": "31 / 82public void Issue7629()",
       "Links": []
     },
     {
       "Number": 32,
-      "Text": "32Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue6366Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Inheritdoc.Issue6366public class Inheritdoc.Issue6366\uF12C",
+      "Text": "32 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue6366Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Inheritdoc.Issue6366public class Inheritdoc.Issue6366\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -2973,7 +2973,7 @@
     },
     {
       "Number": 33,
-      "Text": "33Namespace:BuildFromProjectAssembly:BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 Inheritdoc.Issue6366.Class1<T>DerivedInheritdoc.Issue6366.Class2Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsThis text inherited.Parametersparm1 TThis text NOT inherited.parm2 int\uF1C5This text inherited.Class Inheritdoc.Issue6366.Class1<T>public abstract class Inheritdoc.Issue6366.Class1<T>\uF12CTestMethod1(T, int)public abstract T TestMethod1(T parm1, int parm2)",
+      "Text": "33 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllType ParametersTInheritanceobject\uF1C5 Inheritdoc.Issue6366.Class1<T>DerivedInheritdoc.Issue6366.Class2Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsThis text inherited.Parametersparm1 TThis text NOT inherited.parm2 int\uF1C5This text inherited.Class Inheritdoc.Issue6366.Class1<T>public abstract class Inheritdoc.Issue6366.Class1<T>\uF12CTestMethod1(T, int)public abstract T TestMethod1(T parm1, int parm2)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3114,12 +3114,12 @@
     },
     {
       "Number": 34,
-      "Text": "34ReturnsTThis text inherited.",
+      "Text": "34 / 82ReturnsTThis text inherited.",
       "Links": []
     },
     {
       "Number": 35,
-      "Text": "35Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue6366.Class1<bool\uF1C5> Inheritdoc.Issue6366.Class2Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsThis text inherited.Parametersparm1 bool\uF1C5This text NOT inherited.parm2 int\uF1C5This text inherited.Returnsbool\uF1C5This text inherited.Class Inheritdoc.Issue6366.Class2public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool>\uF12C\uF12CTestMethod1(bool, int)public override bool TestMethod1(bool parm1, int parm2)",
+      "Text": "35 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue6366.Class1<bool\uF1C5> Inheritdoc.Issue6366.Class2Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsThis text inherited.Parametersparm1 bool\uF1C5This text NOT inherited.parm2 int\uF1C5This text inherited.Returnsbool\uF1C5This text inherited.Class Inheritdoc.Issue6366.Class2public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool>\uF12C\uF12CTestMethod1(bool, int)public override bool TestMethod1(bool parm1, int parm2)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3287,7 +3287,7 @@
     },
     {
       "Number": 36,
-      "Text": "36Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue7035Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsClass Inheritdoc.Issue7035public class Inheritdoc.Issue7035\uF12CA()public void A()B()public void B()",
+      "Text": "36 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue7035Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsClass Inheritdoc.Issue7035public class Inheritdoc.Issue7035\uF12CA()public void A()B()public void B()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3392,7 +3392,7 @@
     },
     {
       "Number": 37,
-      "Text": "37Namespace:BuildFromProjectAssembly:BuildFromProject.dllThis is a test class to have something for DocFX to document.Inheritanceobject\uF1C5 Inheritdoc.Issue7484Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5RemarksWe're going to talk about things now.BoolReturningMethod(bool)Simple method to generate docs for.DoDadA string that could have something.ConstructorsThis is a constructor to document.PropertiesA string that could have something.Class Inheritdoc.Issue7484public class Inheritdoc.Issue7484\uF12CIssue7484()public Issue7484()DoDad",
+      "Text": "37 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllThis is a test class to have something for DocFX to document.Inheritanceobject\uF1C5 Inheritdoc.Issue7484Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5RemarksWe're going to talk about things now.BoolReturningMethod(bool)Simple method to generate docs for.DoDadA string that could have something.ConstructorsThis is a constructor to document.PropertiesA string that could have something.Class Inheritdoc.Issue7484public class Inheritdoc.Issue7484\uF12CIssue7484()public Issue7484()DoDad",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3542,7 +3542,7 @@
     },
     {
       "Number": 38,
-      "Text": "38Property Valuestring\uF1C5MethodsSimple method to generate docs for.Parameterssource bool\uF1C5A meaningless boolean value, much like most questions in the world.Returnsbool\uF1C5An exactly equivalently meaningless boolean value, much like most answers in the world.RemarksI'd like to take a moment to thank all of those who helped me get to a place where I can writedocumentation like this.public string DoDad { get; }BoolReturningMethod(bool)public bool BoolReturningMethod(bool source)",
+      "Text": "38 / 82Property Valuestring\uF1C5MethodsSimple method to generate docs for.Parameterssource bool\uF1C5A meaningless boolean value, much like most questions in the world.Returnsbool\uF1C5An exactly equivalently meaningless boolean value, much like most answers in the world.RemarksI'd like to take a moment to thank all of those who helped me get to a place where I can writedocumentation like this.public string DoDad { get; }BoolReturningMethod(bool)public bool BoolReturningMethod(bool source)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -3575,7 +3575,7 @@
     },
     {
       "Number": 39,
-      "Text": "39Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue8101Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsCreate a new tween.Parametersfrom int\uF1C5The starting value.to int\uF1C5The end value.duration float\uF1C5Total tween duration in seconds.onChange Action\uF1C5<int\uF1C5>A callback that will be invoked every time the tween value changes.Class Inheritdoc.Issue8101public class Inheritdoc.Issue8101\uF12CTween(int, int, float, Action<int>)public static object Tween(int from, int to, float duration, Action<int> onChange)",
+      "Text": "39 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInheritanceobject\uF1C5 Inheritdoc.Issue8101Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsCreate a new tween.Parametersfrom int\uF1C5The starting value.to int\uF1C5The end value.duration float\uF1C5Total tween duration in seconds.onChange Action\uF1C5<int\uF1C5>A callback that will be invoked every time the tween value changes.Class Inheritdoc.Issue8101public class Inheritdoc.Issue8101\uF12CTween(int, int, float, Action<int>)public static object Tween(int from, int to, float duration, Action<int> onChange)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3725,7 +3725,7 @@
     },
     {
       "Number": 40,
-      "Text": "40Returnsobject\uF1C5The newly created tween instance.Create a new tween.Parametersfrom float\uF1C5The starting value.to float\uF1C5The end value.duration float\uF1C5Total tween duration in seconds.onChange Action\uF1C5<float\uF1C5>A callback that will be invoked every time the tween value changes.Returnsobject\uF1C5The newly created tween instance.Tween(float, float, float, Action<float>)public static object Tween(float from, float to, float duration, Action<float> onChange)",
+      "Text": "40 / 82Returnsobject\uF1C5The newly created tween instance.Create a new tween.Parametersfrom float\uF1C5The starting value.to float\uF1C5The end value.duration float\uF1C5Total tween duration in seconds.onChange Action\uF1C5<float\uF1C5>A callback that will be invoked every time the tween value changes.Returnsobject\uF1C5The newly created tween instance.Tween(float, float, float, Action<float>)public static object Tween(float from, float to, float duration, Action<float> onChange)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -3794,7 +3794,7 @@
     },
     {
       "Number": 41,
-      "Text": "41Namespace:BuildFromProjectAssembly:BuildFromProject.dllInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5ConstructorsParametersfoo string\uF1C5Struct Inheritdoc.Issue8129public struct Inheritdoc.Issue8129Issue8129(string)public Issue8129(string foo)",
+      "Text": "41 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5ConstructorsParametersfoo string\uF1C5Struct Inheritdoc.Issue8129public struct Inheritdoc.Issue8129Issue8129(string)public Issue8129(string foo)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals"
@@ -3890,7 +3890,7 @@
     },
     {
       "Number": 42,
-      "Text": "42Namespace:BuildFromProjectAssembly:BuildFromProject.dllA nice classInheritanceobject\uF1C5 Issue8725Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsAnother nice operationA nice operationSee AlsoClass1Class Issue8725public class Issue8725\uF12CMoreOperations()public void MoreOperations()MyOperation()public void MyOperation()",
+      "Text": "42 / 82Namespace:BuildFromProjectAssembly:BuildFromProject.dllA nice classInheritanceobject\uF1C5 Issue8725Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsAnother nice operationA nice operationSee AlsoClass1Class Issue8725public class Issue8725\uF12CMoreOperations()public void MoreOperations()MyOperation()public void MyOperation()",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -4004,7 +4004,7 @@
     },
     {
       "Number": 43,
-      "Text": "43ClassesBaseClass1This is the BaseClassClass1This is summary from vb class...Namespace BuildFromVBSourceCode",
+      "Text": "43 / 82ClassesBaseClass1This is the BaseClassClass1This is summary from vb class...Namespace BuildFromVBSourceCode",
       "Links": [
         {
           "Goto": {
@@ -4037,7 +4037,7 @@
     },
     {
       "Number": 44,
-      "Text": "44Namespace:BuildFromVBSourceCodeThis is the BaseClassInheritanceobject\uF1C5 BaseClass1DerivedClass1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.Finalize()\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsParameterskeyword Class1ReturnsDateTime\uF1C5Class BaseClass1public abstract class BaseClass1\uF12CWithDeclarationKeyword(Class1)public abstract DateTime WithDeclarationKeyword(Class1 keyword)",
+      "Text": "44 / 82Namespace:BuildFromVBSourceCodeThis is the BaseClassInheritanceobject\uF1C5 BaseClass1DerivedClass1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.Finalize()\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5MethodsParameterskeyword Class1ReturnsDateTime\uF1C5Class BaseClass1public abstract class BaseClass1\uF12CWithDeclarationKeyword(Class1)public abstract DateTime WithDeclarationKeyword(Class1 keyword)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -4187,7 +4187,7 @@
     },
     {
       "Number": 45,
-      "Text": "45Namespace:BuildFromVBSourceCodeThis is summary from vb class...Inheritanceobject\uF1C5 BaseClass1 Class1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.Finalize()\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5FieldsThis is a Value typeField ValueClass1PropertiesProperty ValueClass Class1public class Class1 : BaseClass1\uF12C\uF12CValueClasspublic Class1 ValueClassKeyword[Obsolete(\"This member is obsolete.\", true)]public Class1 Keyword { get; }",
+      "Text": "45 / 82Namespace:BuildFromVBSourceCodeThis is summary from vb class...Inheritanceobject\uF1C5 BaseClass1 Class1Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.Finalize()\uF1C5 , object.GetHashCode()\uF1C5 ,object.GetType()\uF1C5 , object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 ,object.ToString()\uF1C5FieldsThis is a Value typeField ValueClass1PropertiesProperty ValueClass Class1public class Class1 : BaseClass1\uF12C\uF12CValueClasspublic Class1 ValueClassKeyword[Obsolete(\"This member is obsolete.\", true)]public Class1 Keyword { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -4337,7 +4337,7 @@
     },
     {
       "Number": 46,
-      "Text": "46Class1MethodsThis is a FunctionParametersname string\uF1C5Name as the String valueReturnsint\uF1C5Returns AhoooWhat is Sub?Parameterskeyword Class1ReturnsDateTime\uF1C5Value(string)public int Value(string name)WithDeclarationKeyword(Class1)public override DateTime WithDeclarationKeyword(Class1 keyword)",
+      "Text": "46 / 82Class1MethodsThis is a FunctionParametersname string\uF1C5Name as the String valueReturnsint\uF1C5Returns AhoooWhat is Sub?Parameterskeyword Class1ReturnsDateTime\uF1C5Value(string)public int Value(string name)WithDeclarationKeyword(Class1)public override DateTime WithDeclarationKeyword(Class1 keyword)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -4388,7 +4388,7 @@
     },
     {
       "Number": 47,
-      "Text": "47NamespacesCatLibrary.CoreClassesCatException<T>Cat<T, K>Here's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see the remarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classComplex<T, J>ICatExtensionIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classTomTom class is only inherit from Object. Not any member inside itself.TomFromBaseClassTomFromBaseClass inherits from @InterfacesIAnimalThis is basic interface of all animal.ICatCat's interfaceDelegatesFakeDelegate<T>Fake delegateNamespace CatLibrary",
+      "Text": "47 / 82NamespacesCatLibrary.CoreClassesCatException<T>Cat<T, K>Here's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see the remarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classComplex<T, J>ICatExtensionIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classTomTom class is only inherit from Object. Not any member inside itself.TomFromBaseClassTomFromBaseClass inherits from @InterfacesIAnimalThis is basic interface of all animal.ICatCat's interfaceDelegatesFakeDelegate<T>Fake delegateNamespace CatLibrary",
       "Links": [
         {
           "Goto": {
@@ -4556,7 +4556,7 @@
     },
     {
       "Number": 48,
-      "Text": "48MRefDelegate<K, T, L>Generic delegate with many constrains.MRefNormalDelegateDelegate in the namespace",
+      "Text": "48 / 82MRefDelegate<K, T, L>Generic delegate with many constrains.MRefNormalDelegateDelegate in the namespace",
       "Links": [
         {
           "Goto": {
@@ -4598,7 +4598,7 @@
     },
     {
       "Number": 49,
-      "Text": "49ClassesContainersRefType.ContainersRefTypeChildExplicitLayoutClassIssue231StructsContainersRefTypeStruct ContainersRefTypeInterfacesContainersRefType.ContainersRefTypeChildInterfaceEnumsContainersRefType.ColorTypeEnumeration ColorTypeDelegatesContainersRefType.ContainersRefTypeDelegateDelegate ContainersRefTypeDelegateNamespace CatLibrary.Core",
+      "Text": "49 / 82ClassesContainersRefType.ContainersRefTypeChildExplicitLayoutClassIssue231StructsContainersRefTypeStruct ContainersRefTypeInterfacesContainersRefType.ContainersRefTypeChildInterfaceEnumsContainersRefType.ColorTypeEnumeration ColorTypeDelegatesContainersRefType.ContainersRefTypeDelegateDelegate ContainersRefTypeDelegateNamespace CatLibrary.Core",
       "Links": [
         {
           "Goto": {
@@ -4910,7 +4910,7 @@
     },
     {
       "Number": 50,
-      "Text": "50Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllStruct ContainersRefTypeInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5Extension MethodsIssue231.Bar(ContainersRefType) , Issue231.Foo(ContainersRefType)FieldsColorCountField Valuelong\uF1C5PropertiesGetColorCountStruct ContainersRefTypepublic struct ContainersRefTypeColorCountpublic long ColorCountGetColorCountpublic long GetColorCount { get; }",
+      "Text": "50 / 82Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllStruct ContainersRefTypeInherited MembersValueType.Equals(object)\uF1C5 , ValueType.GetHashCode()\uF1C5 , ValueType.ToString()\uF1C5 ,object.Equals(object, object)\uF1C5 , object.GetType()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5Extension MethodsIssue231.Bar(ContainersRefType) , Issue231.Foo(ContainersRefType)FieldsColorCountField Valuelong\uF1C5PropertiesGetColorCountStruct ContainersRefTypepublic struct ContainersRefTypeColorCountpublic long ColorCountGetColorCountpublic long GetColorCount { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals"
@@ -5078,7 +5078,7 @@
     },
     {
       "Number": 51,
-      "Text": "51Property Valuelong\uF1C5MethodsContainersRefTypeNonRefMethodarrayParametersparmsArray object\uF1C5[]Returnsint\uF1C5EventsEvent TypeEventHandler\uF1C5ContainersRefTypeNonRefMethod(params object[])public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)ContainersRefTypeEventHandlerpublic event EventHandler ContainersRefTypeEventHandler",
+      "Text": "51 / 82Property Valuelong\uF1C5MethodsContainersRefTypeNonRefMethodarrayParametersparmsArray object\uF1C5[]Returnsint\uF1C5EventsEvent TypeEventHandler\uF1C5ContainersRefTypeNonRefMethod(params object[])public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)ContainersRefTypeEventHandlerpublic event EventHandler ContainersRefTypeEventHandler",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
@@ -5120,7 +5120,7 @@
     },
     {
       "Number": 52,
-      "Text": "52Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllEnumeration ColorTypeFieldsRed = 0redBlue = 1blueYellow = 2yellowEnum ContainersRefType.ColorTypepublic enum ContainersRefType.ColorType",
+      "Text": "52 / 82Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllEnumeration ColorTypeFieldsRed = 0redBlue = 1blueYellow = 2yellowEnum ContainersRefType.ColorTypepublic enum ContainersRefType.ColorType",
       "Links": [
         {
           "Goto": {
@@ -5153,7 +5153,7 @@
     },
     {
       "Number": 53,
-      "Text": "53Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInheritanceobject\uF1C5 ContainersRefType.ContainersRefTypeChildInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ClassContainersRefType.ContainersRefTypeChildpublic class ContainersRefType.ContainersRefTypeChild\uF12C",
+      "Text": "53 / 82Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInheritanceobject\uF1C5 ContainersRefType.ContainersRefTypeChildInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ClassContainersRefType.ContainersRefTypeChildpublic class ContainersRefType.ContainersRefTypeChild\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -5258,7 +5258,7 @@
     },
     {
       "Number": 54,
-      "Text": "54Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInterfaceContainersRefType.ContainersRefTypeChildInterfacepublic interface ContainersRefType.ContainersRefTypeChildInterface",
+      "Text": "54 / 82Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInterfaceContainersRefType.ContainersRefTypeChildInterfacepublic interface ContainersRefType.ContainersRefTypeChildInterface",
       "Links": [
         {
           "Goto": {
@@ -5291,7 +5291,7 @@
     },
     {
       "Number": 55,
-      "Text": "55Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllDelegate ContainersRefTypeDelegateDelegateContainersRefType.ContainersRefTypeDelegatepublic delegate void ContainersRefType.ContainersRefTypeDelegate()",
+      "Text": "55 / 82Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllDelegate ContainersRefTypeDelegateDelegateContainersRefType.ContainersRefTypeDelegatepublic delegate void ContainersRefType.ContainersRefTypeDelegate()",
       "Links": [
         {
           "Goto": {
@@ -5324,7 +5324,7 @@
     },
     {
       "Number": 56,
-      "Text": "56Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInheritanceobject\uF1C5 ExplicitLayoutClassInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class ExplicitLayoutClasspublic class ExplicitLayoutClass\uF12C",
+      "Text": "56 / 82Namespace:CatLibrary.CoreAssembly:CatLibrary.Core.dllInheritanceobject\uF1C5 ExplicitLayoutClassInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class ExplicitLayoutClasspublic class ExplicitLayoutClass\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -5429,7 +5429,7 @@
     },
     {
       "Number": 57,
-      "Text": "57Namespace:CatLibrary.CoreAssembly:CatLibrary.dllInheritanceobject\uF1C5 Issue231Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsParametersc ContainersRefTypeParametersc ContainersRefTypeClass Issue231public static class Issue231\uF12CBar(ContainersRefType)public static void Bar(this ContainersRefType c)Foo(ContainersRefType)public static void Foo(this ContainersRefType c)",
+      "Text": "57 / 82Namespace:CatLibrary.CoreAssembly:CatLibrary.dllInheritanceobject\uF1C5 Issue231Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsParametersc ContainersRefTypeParametersc ContainersRefTypeClass Issue231public static class Issue231\uF12CBar(ContainersRefType)public static void Bar(this ContainersRefType c)Foo(ContainersRefType)public static void Foo(this ContainersRefType c)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -5588,7 +5588,7 @@
     },
     {
       "Number": 58,
-      "Text": "58Namespace:CatLibraryAssembly:CatLibrary.dllType ParametersTInheritanceobject\uF1C5 Exception\uF1C5 CatException<T>ImplementsISerializable\uF1C5Inherited MembersException.GetBaseException()\uF1C5 , Exception.GetObjectData(SerializationInfo, StreamingContext)\uF1C5 ,Exception.GetType()\uF1C5 , Exception.ToString()\uF1C5 , Exception.Data\uF1C5 , Exception.HelpLink\uF1C5 ,Exception.HResult\uF1C5 , Exception.InnerException\uF1C5 , Exception.Message\uF1C5 , Exception.Source\uF1C5 ,Exception.StackTrace\uF1C5 , Exception.TargetSite\uF1C5 , Exception.SerializeObjectState\uF1C5 ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5Class CatException<T>public class CatException<T> : Exception, ISerializable\uF12C\uF12C",
+      "Text": "58 / 82Namespace:CatLibraryAssembly:CatLibrary.dllType ParametersTInheritanceobject\uF1C5 Exception\uF1C5 CatException<T>ImplementsISerializable\uF1C5Inherited MembersException.GetBaseException()\uF1C5 , Exception.GetObjectData(SerializationInfo, StreamingContext)\uF1C5 ,Exception.GetType()\uF1C5 , Exception.ToString()\uF1C5 , Exception.Data\uF1C5 , Exception.HelpLink\uF1C5 ,Exception.HResult\uF1C5 , Exception.InnerException\uF1C5 , Exception.Message\uF1C5 , Exception.Source\uF1C5 ,Exception.StackTrace\uF1C5 , Exception.TargetSite\uF1C5 , Exception.SerializeObjectState\uF1C5 ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5Class CatException<T>public class CatException<T> : Exception, ISerializable\uF12C\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -5801,7 +5801,7 @@
     },
     {
       "Number": 59,
-      "Text": "59Namespace:CatLibraryAssembly:CatLibrary.dllHere's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see the remarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classThis is a class talking about CAT\uF1C5.NOTE This is a CAT classRefer to IAnimal to see other animals.Type ParametersTThis type should be class and can new instance.KThis type is a struct type, class type can't be used for this parameter.Inheritanceobject\uF1C5 Cat<T, K>ImplementsICat, IAnimalInherited Membersobject.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Cat<T, K>[Serializable][Obsolete]public class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct\uF12C",
+      "Text": "59 / 82Namespace:CatLibraryAssembly:CatLibrary.dllHere's main class of this Demo.You can see mostly type of article within this class and you for more detail, please see the remarks.this class is a template class. It has two Generic parameter. they are: T and K.The extension method of this class can refer to ICatExtension classThis is a class talking about CAT\uF1C5.NOTE This is a CAT classRefer to IAnimal to see other animals.Type ParametersTThis type should be class and can new instance.KThis type is a struct type, class type can't be used for this parameter.Inheritanceobject\uF1C5 Cat<T, K>ImplementsICat, IAnimalInherited Membersobject.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Cat<T, K>[Serializable][Obsolete]public class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct\uF12C",
       "Links": [
         {
           "Uri": "https://en.wikipedia.org/wiki/Cat"
@@ -5942,7 +5942,7 @@
     },
     {
       "Number": 60,
-      "Text": "60Extension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)ExamplesHere's example of how to create an instance of this class. As T is limited with class and K is limited withstruct.As you see, here we bring in pointer so we need to add unsafe keyword.RemarksTHIS is remarks overridden in MARKDWON fileConstructorsDefault constructor.It's a complex constructor. The parameter will have some attributes.ParametersnickName string\uF1C5var a = new Cat(object, int)();int catNumber = new int();unsafe{    a.GetFeetLength(catNumber);}Cat()public Cat()Cat(string, out int, string, bool)public Cat(string nickName, out int age, string realName, bool isHealthy)",
+      "Text": "60 / 82Extension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)ExamplesHere's example of how to create an instance of this class. As T is limited with class and K is limited withstruct.As you see, here we bring in pointer so we need to add unsafe keyword.RemarksTHIS is remarks overridden in MARKDWON fileConstructorsDefault constructor.It's a complex constructor. The parameter will have some attributes.ParametersnickName string\uF1C5var a = new Cat(object, int)();int catNumber = new int();unsafe{    a.GetFeetLength(catNumber);}Cat()public Cat()Cat(string, out int, string, bool)public Cat(string nickName, out int age, string realName, bool isHealthy)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -6065,7 +6065,7 @@
     },
     {
       "Number": 61,
-      "Text": "61it's string type.age int\uF1C5It's an out and ref parameter.realName string\uF1C5It's an out paramter.isHealthy bool\uF1C5It's an in parameter.Constructor with one generic parameter.ParametersownType TThis parameter type defined by class.FieldsField with attribute.Field Valuebool\uF1C5Cat(T)public Cat(T ownType)isHealthy[ContextStatic][NonSerialized][Obsolete]public bool isHealthy",
+      "Text": "61 / 82it's string type.age int\uF1C5It's an out and ref parameter.realName string\uF1C5It's an out paramter.isHealthy bool\uF1C5It's an in parameter.Constructor with one generic parameter.ParametersownType TThis parameter type defined by class.FieldsField with attribute.Field Valuebool\uF1C5Cat(T)public Cat(T ownType)isHealthy[ContextStatic][NonSerialized][Obsolete]public bool isHealthy",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6107,7 +6107,7 @@
     },
     {
       "Number": 62,
-      "Text": "62PropertiesHint cat's age.Property Valueint\uF1C5This is index property of Cat. You can see that the visibility is different between get and set method.Parametersa string\uF1C5Cat's name.Property Valueint\uF1C5Cat's number.EII property.Age[Obsolete]protected int Age { get; set; }this[string]public int this[string a] { protected get; set; }Namepublic string Name { get; }",
+      "Text": "62 / 82PropertiesHint cat's age.Property Valueint\uF1C5This is index property of Cat. You can see that the visibility is different between get and set method.Parametersa string\uF1C5Cat's name.Property Valueint\uF1C5Cat's number.EII property.Age[Obsolete]protected int Age { get; set; }this[string]public int this[string a] { protected get; set; }Namepublic string Name { get; }",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6140,7 +6140,7 @@
     },
     {
       "Number": 63,
-      "Text": "63Property Valuestring\uF1C5MethodsIt's an overridden summary in markdown formatThis is overriding methods. You can override parameter descriptions for methods, you can even addexceptions to methods. Check the intermediate obj folder to see the data model of the generatedmethod/class. Override Yaml header should follow the data structure.Parametersdate DateTime\uF1C5This is overridden description for a parameter. id must be specified.ReturnsDictionary\uF1C5<string\uF1C5, List\uF1C5<int\uF1C5>>It's overridden description for return. type must be specified.ExceptionsArgumentException\uF1C5This is an overridden argument exception. you can add additional exception by adding differentexception type.Override the method of Object.Equals(object obj).Override CalculateFood Namepublic Dictionary<string, List<int>> CalculateFood(DateTime date)Equals(object)",
+      "Text": "63 / 82Property Valuestring\uF1C5MethodsIt's an overridden summary in markdown formatThis is overriding methods. You can override parameter descriptions for methods, you can even addexceptions to methods. Check the intermediate obj folder to see the data model of the generatedmethod/class. Override Yaml header should follow the data structure.Parametersdate DateTime\uF1C5This is overridden description for a parameter. id must be specified.ReturnsDictionary\uF1C5<string\uF1C5, List\uF1C5<int\uF1C5>>It's overridden description for return. type must be specified.ExceptionsArgumentException\uF1C5This is an overridden argument exception. you can add additional exception by adding differentexception type.Override the method of Object.Equals(object obj).Override CalculateFood Namepublic Dictionary<string, List<int>> CalculateFood(DateTime date)Equals(object)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -6209,7 +6209,7 @@
     },
     {
       "Number": 64,
-      "Text": "64Parametersobj object\uF1C5Can pass any class type.Returnsbool\uF1C5The return value tell you whehter the compare operation is successful.It's an unsafe method. As you see, catName is a pointer, so we need to add unsafe keyword.ParameterscatName int\uF1C5*Thie represent for cat name length.parameters object\uF1C5[]Optional parameters.Returnslong\uF1C5Return cat tail's length.This method have attribute above it.public override bool Equals(object obj)GetTailLength(int*, params object[])public long GetTailLength(int* catName, params object[] parameters)Jump(T, K, ref bool)",
+      "Text": "64 / 82Parametersobj object\uF1C5Can pass any class type.Returnsbool\uF1C5The return value tell you whehter the compare operation is successful.It's an unsafe method. As you see, catName is a pointer, so we need to add unsafe keyword.ParameterscatName int\uF1C5*Thie represent for cat name length.parameters object\uF1C5[]Optional parameters.Returnslong\uF1C5Return cat tail's length.This method have attribute above it.public override bool Equals(object obj)GetTailLength(int*, params object[])public long GetTailLength(int* catName, params object[] parameters)Jump(T, K, ref bool)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -6260,7 +6260,7 @@
     },
     {
       "Number": 65,
-      "Text": "65ParametersownType TType come from class define.anotherOwnType KType come from class define.cheat bool\uF1C5Hint whether this cat has cheat mode.ExceptionsArgumentException\uF1C5This is an argument exceptionEventsEat event of this catEvent TypeEventHandler\uF1C5Operators[Conditional(\"Debug\")]public void Jump(T ownType, K anotherOwnType, ref bool cheat)ownEat[Obsolete(\"This _event handler_ is deprecated.\")]public event EventHandler ownEatoperator +(Cat<T, K>, int)",
+      "Text": "65 / 82ParametersownType TType come from class define.anotherOwnType KType come from class define.cheat bool\uF1C5Hint whether this cat has cheat mode.ExceptionsArgumentException\uF1C5This is an argument exceptionEventsEat event of this catEvent TypeEventHandler\uF1C5Operators[Conditional(\"Debug\")]public void Jump(T ownType, K anotherOwnType, ref bool cheat)ownEat[Obsolete(\"This _event handler_ is deprecated.\")]public event EventHandler ownEatoperator +(Cat<T, K>, int)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
@@ -6293,7 +6293,7 @@
     },
     {
       "Number": 66,
-      "Text": "66Addition operator of this class.Parameterslsr Cat<T, K>..rsr int\uF1C5~~Returnsint\uF1C5Result with int type.Expilicit operator of this class.It means this cat can evolve to change to Tom. Tom and Jerry.Parameterssrc Cat<T, K>Instance of this class.ReturnsTomAdvanced class type of cat.public static int operator +(Cat<T, K> lsr, int rsr)explicit operator Tom(Cat<T, K>)public static explicit operator Tom(Cat<T, K> src)",
+      "Text": "66 / 82Addition operator of this class.Parameterslsr Cat<T, K>..rsr int\uF1C5~~Returnsint\uF1C5Result with int type.Expilicit operator of this class.It means this cat can evolve to change to Tom. Tom and Jerry.Parameterssrc Cat<T, K>Instance of this class.ReturnsTomAdvanced class type of cat.public static int operator +(Cat<T, K> lsr, int rsr)explicit operator Tom(Cat<T, K>)public static explicit operator Tom(Cat<T, K> src)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6344,7 +6344,7 @@
     },
     {
       "Number": 67,
-      "Text": "67Similar with operaotr +, refer to that topic.Parameterslsr Cat<T, K>rsr int\uF1C5Returnsint\uF1C5operator -(Cat<T, K>, int)public static int operator -(Cat<T, K> lsr, int rsr)",
+      "Text": "67 / 82Similar with operaotr +, refer to that topic.Parameterslsr Cat<T, K>rsr int\uF1C5Returnsint\uF1C5operator -(Cat<T, K>, int)public static int operator -(Cat<T, K> lsr, int rsr)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6377,7 +6377,7 @@
     },
     {
       "Number": 68,
-      "Text": "68Namespace:CatLibraryAssembly:CatLibrary.dllType ParametersTJInheritanceobject\uF1C5 Complex<T, J>Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Complex<T, J>public class Complex<T, J>\uF12C",
+      "Text": "68 / 82Namespace:CatLibraryAssembly:CatLibrary.dllType ParametersTJInheritanceobject\uF1C5 Complex<T, J>Inherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5Class Complex<T, J>public class Complex<T, J>\uF12C",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -6473,7 +6473,7 @@
     },
     {
       "Number": 69,
-      "Text": "69Namespace:CatLibraryAssembly:CatLibrary.dllFake delegateParametersnum long\uF1C5Fake paraname string\uF1C5Fake parascores object\uF1C5[]Optional Parameter.Returnsint\uF1C5Return a fake number to confuse you.Type ParametersTFake paraDelegate FakeDelegate<T>public delegate int FakeDelegate<T>(long num, string name, params object[] scores)",
+      "Text": "69 / 82Namespace:CatLibraryAssembly:CatLibrary.dllFake delegateParametersnum long\uF1C5Fake paraname string\uF1C5Fake parascores object\uF1C5[]Optional Parameter.Returnsint\uF1C5Return a fake number to confuse you.Type ParametersTFake paraDelegate FakeDelegate<T>public delegate int FakeDelegate<T>(long num, string name, params object[] scores)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
@@ -6533,7 +6533,7 @@
     },
     {
       "Number": 70,
-      "Text": "70Namespace:CatLibraryAssembly:CatLibrary.dllThis is basic interface of all animal.Welcome to the Animal world!RemarksTHIS is remarks overridden in MARKDWON filePropertiesReturn specific number animal's name.Parametersindex int\uF1C5Animal number.Property Valuestring\uF1C5Animal name.Name of Animal.Interface IAnimalpublic interface IAnimalthis[int]string this[int index] { get; }Name",
+      "Text": "70 / 82Namespace:CatLibraryAssembly:CatLibrary.dllThis is basic interface of all animal.Welcome to the Animal world!RemarksTHIS is remarks overridden in MARKDWON filePropertiesReturn specific number animal's name.Parametersindex int\uF1C5Animal number.Property Valuestring\uF1C5Animal name.Name of Animal.Interface IAnimalpublic interface IAnimalthis[int]string this[int index] { get; }Name",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6575,7 +6575,7 @@
     },
     {
       "Number": 71,
-      "Text": "71Property Valuestring\uF1C5MethodsAnimal's eat method.Feed the animal with some foodParametersfood string\uF1C5Food to eatOverload method of eat. This define the animal eat by which tool.Parameterstool Toolstring Name { get; }Eat()void Eat()Eat(string)void Eat(string food)Eat<Tool>(Tool)void Eat<Tool>(Tool tool) where Tool : class",
+      "Text": "71 / 82Property Valuestring\uF1C5MethodsAnimal's eat method.Feed the animal with some foodParametersfood string\uF1C5Food to eatOverload method of eat. This define the animal eat by which tool.Parameterstool Toolstring Name { get; }Eat()void Eat()Eat(string)void Eat(string food)Eat<Tool>(Tool)void Eat<Tool>(Tool tool) where Tool : class",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -6599,12 +6599,12 @@
     },
     {
       "Number": 72,
-      "Text": "72Tool name.Type ParametersToolIt's a class type.",
+      "Text": "72 / 82Tool name.Type ParametersToolIt's a class type.",
       "Links": []
     },
     {
       "Number": 73,
-      "Text": "73Namespace:CatLibraryAssembly:CatLibrary.dllCat's interfaceInherited MembersIAnimal.Name , IAnimal.this[int] , IAnimal.Eat() , IAnimal.Eat<Tool>(Tool) , IAnimal.Eat(string)Extension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)Eventseat event of cat. Every cat must implement this event.Event TypeEventHandler\uF1C5Interface ICatpublic interface ICat : IAnimaleatevent EventHandler eat",
+      "Text": "73 / 82Namespace:CatLibraryAssembly:CatLibrary.dllCat's interfaceInherited MembersIAnimal.Name , IAnimal.this[int] , IAnimal.Eat() , IAnimal.Eat<Tool>(Tool) , IAnimal.Eat(string)Extension MethodsICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)Eventseat event of cat. Every cat must implement this event.Event TypeEventHandler\uF1C5Interface ICatpublic interface ICat : IAnimaleatevent EventHandler eat",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
@@ -6826,7 +6826,7 @@
     },
     {
       "Number": 74,
-      "Text": "74Namespace:CatLibraryAssembly:CatLibrary.dllIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classInheritanceobject\uF1C5 ICatExtensionInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsExtension method to let cat playParametersicat ICatCattoy ContainersRefType.ColorTypeSomething to playClass ICatExtensionpublic static class ICatExtension\uF12CPlay(ICat, ColorType)public static void Play(this ICat icat, ContainersRefType.ColorType toy)",
+      "Text": "74 / 82Namespace:CatLibraryAssembly:CatLibrary.dllIt's the class that contains ICat interface's extension method.This class must be public and static.Also it shouldn't be a geneic classInheritanceobject\uF1C5 ICatExtensionInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsExtension method to let cat playParametersicat ICatCattoy ContainersRefType.ColorTypeSomething to playClass ICatExtensionpublic static class ICatExtension\uF12CPlay(ICat, ColorType)public static void Play(this ICat icat, ContainersRefType.ColorType toy)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -6976,7 +6976,7 @@
     },
     {
       "Number": 75,
-      "Text": "75Extension method hint that how long the cat can sleep.Parametersicat ICatThe type will be extended.hours long\uF1C5The length of sleep.Sleep(ICat, long)public static void Sleep(this ICat icat, long hours)",
+      "Text": "75 / 82Extension method hint that how long the cat can sleep.Parametersicat ICatThe type will be extended.hours long\uF1C5The length of sleep.Sleep(ICat, long)public static void Sleep(this ICat icat, long hours)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
@@ -7000,7 +7000,7 @@
     },
     {
       "Number": 76,
-      "Text": "76Namespace:CatLibraryAssembly:CatLibrary.dllGeneric delegate with many constrains.Parametersk KType K.t TType T.l LType L.Type ParametersKGeneric K.TGeneric T.LGeneric L.Delegate MRefDelegate<K, T, L>public delegate void MRefDelegate<K, T, L>(K k, T t, L l) where K : class, IComparable where T : struct where L : Tom, IEnumerable<long>",
+      "Text": "76 / 82Namespace:CatLibraryAssembly:CatLibrary.dllGeneric delegate with many constrains.Parametersk KType K.t TType T.l LType L.Type ParametersKGeneric K.TGeneric T.LGeneric L.Delegate MRefDelegate<K, T, L>public delegate void MRefDelegate<K, T, L>(K k, T t, L l) where K : class, IComparable where T : struct where L : Tom, IEnumerable<long>",
       "Links": [
         {
           "Goto": {
@@ -7024,7 +7024,7 @@
     },
     {
       "Number": 77,
-      "Text": "77Namespace:CatLibraryAssembly:CatLibrary.dllDelegate in the namespaceParameterspics List\uF1C5<string\uF1C5>a name list of pictures.name string\uF1C5give out the needed name.Delegate MRefNormalDelegatepublic delegate void MRefNormalDelegate(List<string> pics, out string name)",
+      "Text": "77 / 82Namespace:CatLibraryAssembly:CatLibrary.dllDelegate in the namespaceParameterspics List\uF1C5<string\uF1C5>a name list of pictures.name string\uF1C5give out the needed name.Delegate MRefNormalDelegatepublic delegate void MRefNormalDelegate(List<string> pics, out string name)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
@@ -7075,7 +7075,7 @@
     },
     {
       "Number": 78,
-      "Text": "78Namespace:CatLibraryAssembly:CatLibrary.dllTom class is only inherit from Object. Not any member inside itself.Inheritanceobject\uF1C5 TomDerivedTomFromBaseClassInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsThis is a Tom Method with complex type as returnParametersa Complex<TomFromBaseClass, TomFromBaseClass>A complex inputb Tuple\uF1C5<string\uF1C5, Tom>Another complex inputClass Tompublic class Tom\uF12CTomMethod(Complex<TomFromBaseClass,TomFromBaseClass>, Tuple<string, Tom>)public Complex<string, TomFromBaseClass> TomMethod(Complex<TomFromBaseClass, TomFromBaseClass> a, Tuple<string, Tom> b)",
+      "Text": "78 / 82Namespace:CatLibraryAssembly:CatLibrary.dllTom class is only inherit from Object. Not any member inside itself.Inheritanceobject\uF1C5 TomDerivedTomFromBaseClassInherited Membersobject.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5MethodsThis is a Tom Method with complex type as returnParametersa Complex<TomFromBaseClass, TomFromBaseClass>A complex inputb Tuple\uF1C5<string\uF1C5, Tom>Another complex inputClass Tompublic class Tom\uF12CTomMethod(Complex<TomFromBaseClass,TomFromBaseClass>, Tuple<string, Tom>)public Complex<string, TomFromBaseClass> TomMethod(Complex<TomFromBaseClass, TomFromBaseClass> a, Tuple<string, Tom> b)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -7315,7 +7315,7 @@
     },
     {
       "Number": 79,
-      "Text": "79ReturnsComplex<string\uF1C5, TomFromBaseClass>Complex TomFromBaseClassExceptionsNotImplementedException\uF1C5This is not implementedArgumentException\uF1C5This is the exception to be thrown when implementedCatException<T>This is the exception in current documentation",
+      "Text": "79 / 82ReturnsComplex<string\uF1C5, TomFromBaseClass>Complex TomFromBaseClassExceptionsNotImplementedException\uF1C5This is not implementedArgumentException\uF1C5This is the exception to be thrown when implementedCatException<T>This is the exception in current documentation",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -7447,7 +7447,7 @@
     },
     {
       "Number": 80,
-      "Text": "80Namespace:CatLibraryAssembly:CatLibrary.dllTomFromBaseClass inherits from @Inheritanceobject\uF1C5 Tom TomFromBaseClassInherited MembersTom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>) ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ConstructorsThis is a #ctor with parameterParametersk int\uF1C5Class TomFromBaseClasspublic class TomFromBaseClass : Tom\uF12C\uF12CTomFromBaseClass(int)public TomFromBaseClass(int k)",
+      "Text": "80 / 82Namespace:CatLibraryAssembly:CatLibrary.dllTomFromBaseClass inherits from @Inheritanceobject\uF1C5 Tom TomFromBaseClassInherited MembersTom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>) ,object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,object.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5ConstructorsThis is a #ctor with parameterParametersk int\uF1C5Class TomFromBaseClasspublic class TomFromBaseClass : Tom\uF12C\uF12CTomFromBaseClass(int)public TomFromBaseClass(int k)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
@@ -7570,7 +7570,7 @@
     },
     {
       "Number": 81,
-      "Text": "81EnumsColorTypeEnumeration ColorTypeNamespace MRef.Demo.Enumeration",
+      "Text": "81 / 82EnumsColorTypeEnumeration ColorTypeNamespace MRef.Demo.Enumeration",
       "Links": [
         {
           "Goto": {
@@ -7594,7 +7594,7 @@
     },
     {
       "Number": 82,
-      "Text": "82Namespace:MRef.Demo.EnumerationAssembly:CatLibrary.dllEnumeration ColorTypeFieldsRed = 0this color is redBlue = 1blue like riverYellow = 2yellow comes from desertRemarksRed/Blue/Yellow can become all color you want.See Alsoobject\uF1C5Enum ColorTypepublic enum ColorType",
+      "Text": "82 / 82Namespace:MRef.Demo.EnumerationAssembly:CatLibrary.dllEnumeration ColorTypeFieldsRed = 0this color is redBlue = 1blue like riverYellow = 2yellow comes from desertRemarksRed/Blue/Yellow can become all color you want.See Alsoobject\uF1C5Enum ColorTypepublic enum ColorType",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
