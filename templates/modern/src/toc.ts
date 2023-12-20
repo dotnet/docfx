@@ -101,6 +101,10 @@ export async function renderToc(): Promise<TocNode[]> {
   function renderTocNodes(nodes: TocNode[]): TemplateResult {
     const result = nodes.map(node => {
       const { href, name, items, expanded } = node
+      if (!name) {
+        return null
+      }
+
       const isLeaf = !items || items.length <= 0
 
       const children = isLeaf ? null : renderTocNodes(items)

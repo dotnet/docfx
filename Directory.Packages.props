@@ -8,7 +8,7 @@
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.2.0.7535" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.7.0" />
     <PackageVersion Include="Jint" Version="3.0.0-beta-2057" />
-    <PackageVersion Include="JsonSchema.Net" Version="5.4.2" />
+    <PackageVersion Include="JsonSchema.Net" Version="5.4.3" />
     <PackageVersion Include="Markdig" Version="0.34.0" />
     <!-- "17.3.2" is the latest compatible version for .NET 6 -->
     <PackageVersion Include="Microsoft.Build" Version="[17.3.2]" Condition="'$(TargetFramework)' == 'net6.0'" />
@@ -40,7 +40,7 @@
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.5.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23531-01" />
-    <PackageVersion Include="PublicApiGenerator" Version="11.0.0" />
+    <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.3.0" />
     <PackageVersion Include="Verify.Xunit" Version="22.8.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
