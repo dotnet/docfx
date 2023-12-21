@@ -56,7 +56,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -83,16 +83,14 @@ jobs:
     - run: dotnet tool update -g docfx
     - run: docfx <docfx-project-path>/docfx.json
 
-    - name: Setup Pages
-      uses: actions/configure-pages@v3
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         # Upload entire repository
         path: '<docfx-project-path>/_site'
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4
 ```
 
 ## Use the NuGet Library
