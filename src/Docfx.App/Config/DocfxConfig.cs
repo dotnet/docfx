@@ -15,7 +15,5 @@ class DocfxConfig
 
     public BuildJsonConfig? build { get; init; }
 
-    public PdfJsonConfig? pdf { get; init; }
-
     public Dictionary<string, LogLevel>? rules { get; init; }
 }
