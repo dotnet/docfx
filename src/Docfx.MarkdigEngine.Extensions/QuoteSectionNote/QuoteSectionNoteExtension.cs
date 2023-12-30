@@ -1,10 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
+using Newtonsoft.Json;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
@@ -20,13 +22,14 @@ public class QuoteSectionNoteExtension : IMarkdownExtension
         ["CAUTION"] = "CAUTION",
     };
 
-    public QuoteSectionNoteExtension(MarkdownContext context, Dictionary<string, string> notes = null)
+    public QuoteSectionNoteExtension(MarkdownContext context)
     {
         _context = context;
 
-        if (notes != null)
+        var config = _context.GetExtensionConfiguration("Alerts");
+        if (config != null)
         {
-            foreach (var (key, value) in notes)
+            foreach (var (key, value) in config)
                 _notes[key] = value;
         }
     }

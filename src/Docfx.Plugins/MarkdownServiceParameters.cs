@@ -35,6 +35,13 @@ public class MarkdownServiceProperties
     [JsonProperty("alerts")]
     [JsonPropertyName("alerts")]
     public Dictionary<string, string> Alerts { get; set; }
+
+    /// <summary>
+    /// PlantUml extension configuration parameters
+    /// </summary>
+    [JsonProperty("plantUml")]
+    [JsonPropertyName("plantUml")]
+    public Dictionary<string, string> PlantUml { get; set; }
 }
 
 public class MarkdownServiceParameters
@@ -43,4 +50,16 @@ public class MarkdownServiceParameters
     public string TemplateDir { get; set; }
     public MarkdownServiceProperties Extensions { get; set; } = new();
     public ImmutableDictionary<string, string> Tokens { get; set; } = ImmutableDictionary<string, string>.Empty;
+
+    public IReadOnlyDictionary<string, string> GetExtensionConfiguration(string extension)
+    {
+        if (!string.IsNullOrEmpty(extension) && Extensions != null)
+        {
+            var property = typeof(MarkdownServiceProperties).GetProperty(extension);
+            if (property != null)
+                return property.GetValue(Extensions) as Dictionary<string, string>;
+        }
+
+        return null;
+    }
 }

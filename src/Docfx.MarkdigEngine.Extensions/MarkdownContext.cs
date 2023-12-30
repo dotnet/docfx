@@ -37,6 +37,12 @@ public class MarkdownContext
     public delegate string GetImageLinkDelegate(string path, MarkdownObject origin, string altText);
 
     /// <summary>
+    /// Allows configuration of extensions
+    /// </summary>
+    /// <param name="extension">Name of the extension being configured</param>
+    public delegate IReadOnlyDictionary<string, string> GetExtensionConfigurationDelegate(string extension);
+
+    /// <summary>
     /// Reads a file as text.
     /// </summary>
     public ReadFileDelegate ReadFile { get; }
@@ -50,6 +56,11 @@ public class MarkdownContext
     /// Get the image link for a given image url
     /// </summary>
     public GetImageLinkDelegate GetImageLink { get; }
+
+    /// <summary>
+    /// Get the configuration for a given extension
+    /// </summary>
+    public GetExtensionConfigurationDelegate GetExtensionConfiguration { get; }
 
     /// <summary>
     /// Log info
@@ -86,12 +97,14 @@ public class MarkdownContext
         LogActionDelegate logError = null,
         ReadFileDelegate readFile = null,
         GetLinkDelegate getLink = null,
-        GetImageLinkDelegate getImageLink = null)
+        GetImageLinkDelegate getImageLink = null,
+        GetExtensionConfigurationDelegate getConfig = null)
     {
         _getToken = getToken ?? (_ => null);
         ReadFile = readFile ?? ((a, b) => (a, a));
         GetLink = getLink ?? ((a, b) => a);
         GetImageLink = getImageLink ?? ((a, b, c) => a);
+        GetExtensionConfiguration = getConfig ?? (_ => null);
         LogInfo = logInfo ?? ((a, b, c, d) => { });
         LogSuggestion = logSuggestion ?? ((a, b, c, d) => { });
         LogWarning = logWarning ?? ((a, b, c, d) => { });

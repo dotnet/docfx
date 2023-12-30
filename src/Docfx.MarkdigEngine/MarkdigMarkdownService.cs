@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
+using System.Text;
 using Docfx.Common;
 using Docfx.MarkdigEngine.Extensions;
 using Docfx.Plugins;
@@ -33,7 +34,8 @@ public class MarkdigMarkdownService : IMarkdownService
             (code, message, origin, line) => Logger.LogError(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
             ReadFile,
             GetLink,
-            GetImageLink);
+            GetImageLink,
+            GetExtensionConfiguration);
     }
 
     public MarkupResult Markup(string content, string filePath)
@@ -127,7 +129,7 @@ public class MarkdigMarkdownService : IMarkdownService
 
         var builder = new MarkdownPipelineBuilder();
 
-        builder.UseDocfxExtensions(_context, _parameters.Extensions?.Alerts);
+        builder.UseDocfxExtensions(_context);
         builder.Extensions.Insert(0, new YamlHeaderExtension(_context) { AllowInMiddleOfDocument = multipleYamlHeader });
 
         if (enableSourceInfo)
@@ -184,6 +186,8 @@ public class MarkdigMarkdownService : IMarkdownService
         }
         return path;
     }
+
+    private IReadOnlyDictionary<string, string> GetExtensionConfiguration(string extension) => _parameters.GetExtensionConfiguration(extension);
 
     private static string GetImageLink(string href, MarkdownObject origin, string altText) => GetLink(href, origin);
 

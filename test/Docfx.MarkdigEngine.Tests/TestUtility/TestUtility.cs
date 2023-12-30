@@ -54,12 +54,12 @@ public static class TestUtility
         File.WriteAllText(file, content);
     }
 
-    public static MarkdigMarkdownService CreateMarkdownService()
+    public static MarkdigMarkdownService CreateMarkdownService(MarkdownServiceProperties extensions = null)
     {
         var parameter = new MarkdownServiceParameters
         {
             BasePath = ".",
-            Extensions = new() { EnableSourceInfo = false },
+            Extensions = extensions ?? new() { EnableSourceInfo = false }
         };
 
         return new MarkdigMarkdownService(parameter);
