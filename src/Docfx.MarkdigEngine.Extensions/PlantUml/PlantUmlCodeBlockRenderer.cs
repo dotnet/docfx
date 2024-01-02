@@ -14,7 +14,6 @@ public class CustomCodeBlockRenderer : CodeBlockRenderer
     private readonly MarkdownContext _context;
     private readonly DocfxPlantUmlSettings _settings;
     private readonly RendererFactory rendererFactory;
-    private readonly FormatterFactory formatterFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CodeBlockRenderer"/> class.
@@ -27,7 +26,6 @@ public class CustomCodeBlockRenderer : CodeBlockRenderer
         _settings = settings;
 
         rendererFactory = new RendererFactory();
-        formatterFactory = new FormatterFactory(settings);
     }
 
     protected override void Write(HtmlRenderer renderer, CodeBlock obj)
@@ -37,21 +35,60 @@ public class CustomCodeBlockRenderer : CodeBlockRenderer
           && info.Equals("plantuml", StringComparison.OrdinalIgnoreCase))
         {
             IPlantUmlRenderer plantUmlRenderer = rendererFactory.CreateRenderer(_settings);
-            IOutputFormatter outputFormatter = formatterFactory.CreateOutputFormatter();
 
             // Get PlantUML code.
             var plantUmlCode = fencedCodeBlock.Lines.ToString();
 
-            byte[] output = plantUmlRenderer.Render(plantUmlCode, _settings.OutputFormat);
+            try
+            {
+                byte[] output = plantUmlRenderer.Render(plantUmlCode, _settings.OutputFormat);
 
-            renderer.EnsureLine();
-            renderer.Write(outputFormatter.FormatOutput(output));
-            renderer.EnsureLine();
+                renderer.EnsureLine();
+                renderer.Write(FormatOutput(_settings.OutputFormat, output));
+                renderer.EnsureLine();
+            }
+            catch (RenderingException ex)
+            {
+                _context.LogWarning(nameof(PlantUmlExtension), ex.Message, null);
+            }
+            catch (Exception ex)
+            {
+                _context.LogError(nameof(PlantUmlExtension), ex.Message, null);
+
+                // If the error is not related to rendering a specific diagram, re-throw to abort
+                throw;
+            }
 
             return;
         }
 
         // Fallback to default CodeBlockRenderer
         base.Write(renderer, obj);
+    }
+
+    private static string FormatOutput(OutputFormat format, byte[] output)
+    {
+        switch (format)
+        {
+            case OutputFormat.Svg:
+                return new SvgOutputFormatter().FormatOutput(output);
+
+            case OutputFormat.Ascii:
+                return new AsciiOutputFormatter().FormatOutput(output);
+
+            case OutputFormat.Ascii_Unicode:
+                return new AsciiUnicodeOutputFormatter().FormatOutput(output);
+
+            case OutputFormat.Png:
+            case OutputFormat.Eps:
+            case OutputFormat.Pdf:
+            case OutputFormat.Vdx:
+            case OutputFormat.Xmi:
+            case OutputFormat.Scxml:
+            case OutputFormat.Html:
+            case OutputFormat.LaTeX:
+            default:
+                throw new NotSupportedException($"Output format {format} is currently not supported");
+        }
     }
 }

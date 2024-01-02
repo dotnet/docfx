@@ -40,8 +40,7 @@ internal class PlantUmlExtension : IMarkdownExtension
         _context = context;
         _settings = new();
 
-        var config = _context.GetExtensionConfiguration("PlantUml");
-        if (config != null)
+        if (_context.GetExtensionConfiguration("PlantUml") is Dictionary<string, string> config)
             _settings = new DocfxPlantUmlSettings(config);
     }
 

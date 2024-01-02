@@ -22,7 +22,7 @@ public static class TestUtility
         Dictionary<string, string> files = null,
         Action<MarkdownObject> verifyAST = null,
         IEnumerable<string> optionalExtensions = null,
-        Dictionary<string, string> extensionConfiguration = null)
+        object extensionConfiguration = null)
     {
         errors ??= Array.Empty<string>();
         tokens ??= new Dictionary<string, string>();

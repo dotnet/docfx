@@ -187,7 +187,7 @@ public class MarkdigMarkdownService : IMarkdownService
         return path;
     }
 
-    private IReadOnlyDictionary<string, string> GetExtensionConfiguration(string extension) => _parameters.GetExtensionConfiguration(extension);
+    private object GetExtensionConfiguration(string extension) => _parameters.GetExtensionConfiguration(extension);
 
     private static string GetImageLink(string href, MarkdownObject origin, string altText) => GetLink(href, origin);
 

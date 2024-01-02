@@ -26,8 +26,7 @@ public class QuoteSectionNoteExtension : IMarkdownExtension
     {
         _context = context;
 
-        var config = _context.GetExtensionConfiguration("Alerts");
-        if (config != null)
+        if (_context.GetExtensionConfiguration("Alerts") is Dictionary<string, string> config)
         {
             foreach (var (key, value) in config)
                 _notes[key] = value;

@@ -8,34 +8,6 @@ namespace Docfx.MarkdigEngine.Tests;
 public class QuoteSectionNoteTest
 {
     [Fact]
-    [Trait("Related", "DfmMarkdown")]
-    public void QuoteSectionNoteTest_ExtensionConfiguration()
-    {
-        var source = @"# Article 2
-> [!TODO]
-> This is a custom TODO section
-> [!REVIEW]
-> This is a custom REVIEW section
-";
-        var expected = @"<h1 id=""article-2"">Article 2</h1>
-<div class=""alert alert-secondary"">
-<h5>TODO</h5>
-<p>This is a custom TODO section</p>
-</div>
-<div class=""alert alert-primary"">
-<h5>REVIEW</h5>
-<p>This is a custom REVIEW section</p>
-</div>
-";
-        TestUtility.VerifyMarkup(source, expected, extensionConfiguration:
-            new Dictionary<string, string>
-            {
-                { "TODO", "alert alert-secondary" },
-                { "REVIEW", "alert alert-primary" }
-            });
-    }
-
-    [Fact]
     [Trait("Related", "QuoteSectionNote")]
     public void QuoteSectionNoteTest_CornerCases()
     {
@@ -251,9 +223,9 @@ this is also warning</p>
     [InlineData(@"the following is note type
   > [!NOTE]
   > note text 1-1
-  > note text 1-2
+  > note text 1-2  
   > note text 2-1
-This is also note
+This is also note  
 This is also note with br
 
 Skip the note
@@ -271,7 +243,7 @@ This is also note with br</p>
     [InlineData(@"the following is not note type
   > no-note text 1-1
   > [!NOTE]
-  > no-note text 1-2
+  > no-note text 1-2  
   > no-note text 2-1
 ", @"<p>the following is not note type</p>
 <blockquote>
@@ -287,7 +259,7 @@ no-note text 2-1</p>
   > no-note text 1-1
   >
   > [!NOTE]
-  > no-note text 2-1
+  > no-note text 2-1  
   > no-note text 2-2
 ", @"<p>the following is not note type</p>
 <blockquote>
@@ -303,12 +275,12 @@ no-note text 2-2</p>
 
     > code text 1-1
     > [!NOTE]
-    > code text 1-2
+    > code text 1-2  
     > code text 2-1
 ", @"<p>the following is code</p>
 <pre><code>&gt; code text 1-1
 &gt; [!NOTE]
-&gt; code text 1-2
+&gt; code text 1-2  
 &gt; code text 2-1
 </code></pre>
 ")]
@@ -353,7 +325,7 @@ no-note text 2-2</p>
 >                System.Diagnostics.Debug.WriteLine(""Event '{0}'."", calendarEvent.Subject);
 >            }
 >```
->
+> 
 >```javascript-i
 >outlookClient.me.events.getEvents().fetch().then(function(result) {
 >        result.currentPage.forEach(function(event) {
@@ -486,5 +458,33 @@ We should support that.</p>
 <div class=""embeddedvideo""><iframe src=""https://www.youtube-nocookie.com/foo"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
         TestUtility.VerifyMarkup(source, expected);
+    }
+
+    [Fact]
+    [Trait("Related", "DfmMarkdown")]
+    public void QuoteSectionNoteTest_ExtensionConfiguration()
+    {
+        var source = @"# Article 2
+> [!TODO]
+> This is a custom TODO section
+> [!REVIEW]
+> This is a custom REVIEW section
+";
+        var expected = @"<h1 id=""article-2"">Article 2</h1>
+<div class=""alert alert-secondary"">
+<h5>TODO</h5>
+<p>This is a custom TODO section</p>
+</div>
+<div class=""alert alert-primary"">
+<h5>REVIEW</h5>
+<p>This is a custom REVIEW section</p>
+</div>
+";
+        TestUtility.VerifyMarkup(source, expected, extensionConfiguration:
+            new Dictionary<string, string>
+            {
+                { "TODO", "alert alert-secondary" },
+                { "REVIEW", "alert alert-primary" }
+            });
     }
 }

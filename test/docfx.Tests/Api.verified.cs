@@ -3227,233 +3227,6 @@ namespace Docfx
         public static Docfx.FileMapping ExpandFileMapping(string baseDirectory, Docfx.FileMapping fileMapping) { }
     }
 }
-namespace Docfx.HtmlToPdf
-{
-    public class ConvertWrapper
-    {
-        public ConvertWrapper(Docfx.HtmlToPdf.PdfOptions pdfOptions) { }
-        public void Convert() { }
-        public static void PrerequisiteCheck(string filePath) { }
-    }
-    public class FileOutput
-    {
-        public FileOutput() { }
-        [Newtonsoft.Json.JsonProperty("is_raw_page")]
-        [System.Text.Json.Serialization.JsonPropertyName("is_raw_page")]
-        public bool IsRawPage { get; set; }
-        [Newtonsoft.Json.JsonProperty("link_to_path")]
-        [System.Text.Json.Serialization.JsonPropertyName("link_to_path")]
-        public string LinkToPath { get; set; }
-        [Newtonsoft.Json.JsonExtensionData]
-        [System.Text.Json.Serialization.JsonExtensionData]
-        public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonProperty("relative_path")]
-        [System.Text.Json.Serialization.JsonPropertyName("relative_path")]
-        public string RelativePath { get; set; }
-        [Newtonsoft.Json.JsonProperty("skip_publish", DefaultValueHandling=Newtonsoft.Json.DefaultValueHandling.Ignore)]
-        [System.Text.Json.Serialization.JsonPropertyName("skip_publish")]
-        public bool SkipPublish { get; set; }
-        public override string ToString() { }
-    }
-    public class FileOutputs
-    {
-        public FileOutputs() { }
-        [Newtonsoft.Json.JsonProperty(".html")]
-        [System.Text.Json.Serialization.JsonPropertyName(".html")]
-        public Docfx.HtmlToPdf.FileOutput Html { get; set; }
-        [Newtonsoft.Json.JsonProperty(".mta.json")]
-        [System.Text.Json.Serialization.JsonPropertyName(".mta.json")]
-        public Docfx.HtmlToPdf.FileOutput MtaJson { get; set; }
-        [Newtonsoft.Json.JsonExtensionData]
-        [System.Text.Json.Serialization.JsonExtensionData]
-        public System.Collections.Generic.Dictionary<string, object> OtherOutputs { get; set; }
-        [Newtonsoft.Json.JsonProperty(".raw.page.json")]
-        [System.Text.Json.Serialization.JsonPropertyName(".raw.page.json")]
-        public Docfx.HtmlToPdf.FileOutput RawPageJson { get; set; }
-        [Newtonsoft.Json.JsonProperty("resource")]
-        [System.Text.Json.Serialization.JsonPropertyName("resource")]
-        public Docfx.HtmlToPdf.FileOutput Resource { get; set; }
-        [Newtonsoft.Json.JsonProperty(".json")]
-        [System.Text.Json.Serialization.JsonPropertyName(".json")]
-        public Docfx.HtmlToPdf.FileOutput TocJson { get; set; }
-    }
-    public static class FolderUtility
-    {
-        public static void CopyDirectoryWithAllSubDirectories(string sourceDirectory, string targetDirectory, int maxDegreeOfParallelism = -1) { }
-        public static void ForceDeleteAllSubDirectories(string directory, int maxDegreeOfParallelism = -1) { }
-        public static void ForceDeleteDirectoryWithAllSubDirectories(string directory, int maxDegreeOfParallelism = -1) { }
-        public static void ForceDeleteFile(string filePath) { }
-    }
-    public class HtmlModel
-    {
-        public HtmlModel() { }
-        public System.Collections.Generic.IList<Docfx.HtmlToPdf.HtmlModel> Children { get; set; }
-        public string ExternalLink { get; set; }
-        public string HtmlFilePath { get; set; }
-        public string Title { get; set; }
-    }
-    public class HtmlToPdfConverter
-    {
-        public HtmlToPdfConverter(System.Collections.Generic.IList<Docfx.HtmlToPdf.HtmlModel> htmlModels, Docfx.HtmlToPdf.HtmlToPdfOptions htmlToPdfOptions) { }
-        public System.Collections.Generic.IDictionary<string, Docfx.HtmlToPdf.PartialPdfModel> GetPartialPdfModels(System.Collections.Generic.IList<string> htmlFilePaths) { }
-        public void Save(string outputFileName) { }
-    }
-    public class HtmlToPdfOptions
-    {
-        public HtmlToPdfOptions() { }
-        public string AdditionalArguments { get; set; }
-        public string BasePath { get; set; }
-        public string Encoding { get; set; }
-        public string FilePath { get; set; }
-        public string FooterHtmlPath { get; set; }
-        public string HeaderHtmlPath { get; set; }
-        public bool IsOutputToStdout { get; set; }
-        public bool IsQuiet { get; set; }
-        public bool IsReadArgsFromStdin { get; set; }
-        public string LoadErrorHandling { get; set; }
-        public int MaxDegreeOfParallelism { get; set; }
-        public Docfx.HtmlToPdf.OutlineOption OutlineOption { get; set; }
-        public System.TimeSpan[] RetryIntervals { get; set; }
-        public string UserStyleSheet { get; set; }
-        public override string ToString() { }
-    }
-    public enum ManifestItemType
-    {
-        Toc = 0,
-        Content = 1,
-        Resource = 2,
-    }
-    public static class ManifestUtility
-    {
-        public static string GetAssetId(Docfx.Plugins.ManifestItem manifestItem) { }
-        public static Docfx.HtmlToPdf.ManifestItemType GetDocumentType(Docfx.Plugins.ManifestItem item) { }
-        public static string GetRelativePath(Docfx.Plugins.ManifestItem item, Docfx.HtmlToPdf.OutputType type) { }
-    }
-    public enum OutlineOption
-    {
-        NoOutline = 0,
-        WkDefaultOutline = 1,
-        DefaultOutline = 2,
-    }
-    public enum OutputType
-    {
-        Html = 0,
-        TocJson = 1,
-        RawPageJson = 2,
-        Resource = 3,
-    }
-    public class PartialPdfModel
-    {
-        public PartialPdfModel() { }
-        public string FilePath { get; set; }
-        public int NumberOfPages { get; set; }
-        public int? PageNumber { get; set; }
-    }
-    public static class PdfHelper
-    {
-        public static string NormalizeFileLocalPath(string basePath, string relativePath, bool toLower = true) { }
-        public static string RemoveUrlBookmark(this string url) { }
-        public static string RemoveUrlQueryString(this string url) { }
-        public static string TrimStartPath(this string path) { }
-    }
-    public class PdfInformation
-    {
-        public PdfInformation() { }
-        [Newtonsoft.Json.JsonProperty("asset_id")]
-        [System.Text.Json.Serialization.JsonPropertyName("asset_id")]
-        public string AssetId { get; set; }
-        [Newtonsoft.Json.JsonProperty("docset_name")]
-        [System.Text.Json.Serialization.JsonPropertyName("docset_name")]
-        public string DocsetName { get; set; }
-        [Newtonsoft.Json.JsonProperty("toc_files")]
-        [System.Text.Json.Serialization.JsonPropertyName("toc_files")]
-        public System.Collections.Generic.ICollection<string> TocFiles { get; set; }
-        [Newtonsoft.Json.JsonProperty("version")]
-        [System.Text.Json.Serialization.JsonPropertyName("version")]
-        public string Version { get; set; }
-    }
-    public class PdfOptions
-    {
-        public PdfOptions() { }
-        public string AdditionalPdfCommandArgs { get; set; }
-        public string BasePath { get; set; }
-        public string CoverPageTitle { get; set; }
-        public string CssFilePath { get; set; }
-        public string DestDirectory { get; set; }
-        public bool ExcludeDefaultToc { get; set; }
-        public string[] ExcludeTocs { get; set; }
-        public string ExternalLinkFormat { get; }
-        public string FilePath { get; set; }
-        public bool GenerateAppendices { get; set; }
-        public string Host { get; set; }
-        public bool KeepRawFiles { get; set; }
-        public string LoadErrorHandling { get; set; }
-        public string Locale { get; set; }
-        public bool NeedGeneratePdfExternalLink { get; set; }
-        public bool NoInputStreamArgs { get; set; }
-        public Docfx.HtmlToPdf.OutlineOption OutlineOption { get; set; }
-        public int PdfConvertParallelism { get; set; }
-        public string PdfDocsetName { get; set; }
-        public string SourceDirectory { get; set; }
-        public string TocTitle { get; set; }
-    }
-    public class SelfCleaningFolder : System.IDisposable
-    {
-        public SelfCleaningFolder(string path) { }
-        public string FullPath { get; }
-        public void Dispose() { }
-    }
-    public class TocModel
-    {
-        public TocModel() { }
-        [Newtonsoft.Json.JsonProperty("children")]
-        [System.Text.Json.Serialization.JsonPropertyName("children")]
-        public System.Collections.Generic.IList<Docfx.HtmlToPdf.TocModel> Children { get; set; }
-        [Newtonsoft.Json.JsonProperty("external_link")]
-        [System.Text.Json.Serialization.JsonPropertyName("external_link")]
-        public string ExternalLink { get; set; }
-        [Newtonsoft.Json.JsonProperty("relative_path_in_depot")]
-        [System.Text.Json.Serialization.JsonPropertyName("relative_path_in_depot")]
-        public string HtmlFilePath { get; set; }
-        [Newtonsoft.Json.JsonProperty("toc_title")]
-        [System.Text.Json.Serialization.JsonPropertyName("toc_title")]
-        public string Title { get; set; }
-    }
-    public class UrlCache
-    {
-        public UrlCache(string basePath, Docfx.Plugins.ManifestItem[] manifestItemWithAssetIds) { }
-        public UrlCache(string basePath, System.Collections.Generic.IEnumerable<string> items) { }
-        public bool Contains(string url) { }
-        public Docfx.Plugins.ManifestItem Query(string url) { }
-    }
-}
-namespace Docfx.HtmlToPdf.Transformer
-{
-    public class AbsolutePathInTocPageFileTransformer : Docfx.HtmlToPdf.Transformer.ITransformer
-    {
-        public AbsolutePathInTocPageFileTransformer(Docfx.HtmlToPdf.PdfOptions pdfOptions) { }
-        public void Transform(System.Collections.Generic.IEnumerable<string> htmlFilePaths) { }
-    }
-    public class FrameTransformer : Docfx.HtmlToPdf.Transformer.ITransformer
-    {
-        public FrameTransformer(params string[] replaceHosts) { }
-        public void Transform(System.Collections.Generic.IEnumerable<string> htmlFilePaths) { }
-    }
-    public class HtmlNotInTocTransformer : Docfx.HtmlToPdf.Transformer.ITransformer
-    {
-        public HtmlNotInTocTransformer(string basePath, Docfx.HtmlToPdf.UrlCache manifestUrlCache, Docfx.HtmlToPdf.PdfOptions pdfOptions) { }
-        public void Transform(System.Collections.Generic.IEnumerable<string> htmlFilePaths) { }
-    }
-    public interface ITransformer
-    {
-        void Transform(System.Collections.Generic.IEnumerable<string> htmlFilePaths);
-    }
-    public class RemoveQueryStringTransformer : Docfx.HtmlToPdf.Transformer.ITransformer
-    {
-        public RemoveQueryStringTransformer() { }
-        public void Transform(System.Collections.Generic.IEnumerable<string> htmlFilePaths) { }
-    }
-}
 namespace Docfx.MarkdigEngine.Extensions
 {
     public class YamlHeaderExtension : Markdig.IMarkdownExtension
@@ -3577,6 +3350,17 @@ namespace Docfx.MarkdigEngine.Extensions
     {
         public CodeSnippetParser() { }
         public override Markdig.Parsers.BlockState TryOpen(Markdig.Parsers.BlockProcessor processor) { }
+    }
+    public class CustomCodeBlockRenderer : Markdig.Renderers.Html.CodeBlockRenderer
+    {
+        public CustomCodeBlockRenderer(Docfx.MarkdigEngine.Extensions.MarkdownContext context, Docfx.MarkdigEngine.Extensions.DocfxPlantUmlSettings settings) { }
+        protected override void Write(Markdig.Renderers.HtmlRenderer renderer, Markdig.Syntax.CodeBlock obj) { }
+    }
+    public class DocfxPlantUmlSettings : PlantUml.Net.PlantUmlSettings
+    {
+        public DocfxPlantUmlSettings() { }
+        public DocfxPlantUmlSettings(System.Collections.Generic.IReadOnlyDictionary<string, string> config) { }
+        public PlantUml.Net.OutputFormat OutputFormat { get; set; }
     }
     public static class ExtensionsHelper
     {
@@ -3759,7 +3543,8 @@ namespace Docfx.MarkdigEngine.Extensions
     }
     public class MarkdownContext
     {
-        public MarkdownContext(System.Func<string, string> getToken = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logInfo = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logSuggestion = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logWarning = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logError = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.ReadFileDelegate readFile = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetLinkDelegate getLink = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetImageLinkDelegate getImageLink = null) { }
+        public MarkdownContext(System.Func<string, string> getToken = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logInfo = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logSuggestion = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logWarning = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logError = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.ReadFileDelegate readFile = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetLinkDelegate getLink = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetImageLinkDelegate getImageLink = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetExtensionConfigurationDelegate getConfig = null) { }
+        public Docfx.MarkdigEngine.Extensions.MarkdownContext.GetExtensionConfigurationDelegate GetExtensionConfiguration { get; }
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.GetImageLinkDelegate GetImageLink { get; }
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.GetLinkDelegate GetLink { get; }
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate LogError { get; }
@@ -3768,6 +3553,7 @@ namespace Docfx.MarkdigEngine.Extensions
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate LogWarning { get; }
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.ReadFileDelegate ReadFile { get; }
         public string GetToken(string key) { }
+        public delegate object GetExtensionConfigurationDelegate(string extension);
         public delegate string GetImageLinkDelegate(string path, Markdig.Syntax.MarkdownObject origin, string altText);
         public delegate string GetLinkDelegate(string path, Markdig.Syntax.MarkdownObject origin);
         public delegate void LogActionDelegate(string code, string message, Markdig.Syntax.MarkdownObject origin, int? line = default);
@@ -3790,7 +3576,7 @@ namespace Docfx.MarkdigEngine.Extensions
     {
         public static Markdig.MarkdownPipelineBuilder UseCodeSnippet(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this Markdig.MarkdownPipelineBuilder pipeline) { }
-        public static Markdig.MarkdownPipelineBuilder UseDocfxExtensions(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context, System.Collections.Generic.Dictionary<string, string> notes = null) { }
+        public static Markdig.MarkdownPipelineBuilder UseDocfxExtensions(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseHeadingIdRewriter(this Markdig.MarkdownPipelineBuilder pipeline) { }
         public static Markdig.MarkdownPipelineBuilder UseIncludeFile(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseInlineOnly(this Markdig.MarkdownPipelineBuilder pipeline) { }
@@ -3800,7 +3586,8 @@ namespace Docfx.MarkdigEngine.Extensions
         public static Markdig.MarkdownPipelineBuilder UseNestedColumn(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseNoloc(this Markdig.MarkdownPipelineBuilder pipeline) { }
         public static Markdig.MarkdownPipelineBuilder UseOptionalExtensions(this Markdig.MarkdownPipelineBuilder pipeline, System.Collections.Generic.IEnumerable<string> optionalExtensions) { }
-        public static Markdig.MarkdownPipelineBuilder UseQuoteSectionNote(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context, System.Collections.Generic.Dictionary<string, string> notes = null) { }
+        public static Markdig.MarkdownPipelineBuilder UsePlantUml(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
+        public static Markdig.MarkdownPipelineBuilder UseQuoteSectionNote(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseResolveLink(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseRow(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseTabGroup(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
@@ -3887,7 +3674,7 @@ namespace Docfx.MarkdigEngine.Extensions
     }
     public class QuoteSectionNoteExtension : Markdig.IMarkdownExtension
     {
-        public QuoteSectionNoteExtension(Docfx.MarkdigEngine.Extensions.MarkdownContext context, System.Collections.Generic.Dictionary<string, string> notes = null) { }
+        public QuoteSectionNoteExtension(Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
     }
     public class QuoteSectionNoteParser : Markdig.Parsers.BlockParser
     {
@@ -4371,6 +4158,7 @@ namespace Docfx.Plugins
         public Docfx.Plugins.MarkdownServiceProperties Extensions { get; set; }
         public string TemplateDir { get; set; }
         public System.Collections.Immutable.ImmutableDictionary<string, string> Tokens { get; set; }
+        public object GetExtensionConfiguration(string extension) { }
     }
     public class MarkdownServiceProperties
     {
@@ -4387,6 +4175,9 @@ namespace Docfx.Plugins
         [Newtonsoft.Json.JsonProperty("markdigExtensions")]
         [System.Text.Json.Serialization.JsonPropertyName("markdigExtensions")]
         public string[] MarkdigExtensions { get; set; }
+        [Newtonsoft.Json.JsonProperty("plantUml")]
+        [System.Text.Json.Serialization.JsonPropertyName("plantUml")]
+        public System.Collections.Generic.Dictionary<string, string> PlantUml { get; set; }
     }
     public class MarkupResult
     {

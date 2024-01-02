@@ -40,7 +40,8 @@ public class MarkdownContext
     /// Allows configuration of extensions
     /// </summary>
     /// <param name="extension">Name of the extension being configured</param>
-    public delegate IReadOnlyDictionary<string, string> GetExtensionConfigurationDelegate(string extension);
+    /// <returns>Object representing the configuration for the extension</returns>
+    public delegate object GetExtensionConfigurationDelegate(string extension);
 
     /// <summary>
     /// Reads a file as text.
