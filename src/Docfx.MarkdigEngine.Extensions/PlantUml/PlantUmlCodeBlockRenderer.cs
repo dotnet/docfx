@@ -1,3 +1,5 @@
+using static System.Text.Encoding;
+
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Renderers.Html;
@@ -71,13 +73,16 @@ public class CustomCodeBlockRenderer : CodeBlockRenderer
         switch (format)
         {
             case OutputFormat.Svg:
-                return new SvgOutputFormatter().FormatOutput(output);
+                string svg = UTF8.GetString(output);
+                return $"<div class=\"lang-plantUml\">{svg}</div>";
 
             case OutputFormat.Ascii:
-                return new AsciiOutputFormatter().FormatOutput(output);
+                string ascii = ASCII.GetString(output);
+                return $"<div class=\"lang-plantUml\"><pre>{ascii}</pre></div>";
 
             case OutputFormat.Ascii_Unicode:
-                return new AsciiUnicodeOutputFormatter().FormatOutput(output);
+                string asciiUnicode = UTF8.GetString(output);
+                return $"<div class=\"lang-plantUml\"><pre>{asciiUnicode}</pre></div>";
 
             case OutputFormat.Png:
             case OutputFormat.Eps:
