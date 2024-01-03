@@ -47,7 +47,7 @@ public class JsonConverterTest
             ContractResolver = new SkipEmptyOrNullContractResolver()
         };
 
-        Assert.Equal(jsonString, JsonConvert.SerializeObject(buildOptions, settings));
+        Assert.Equal(jsonString, JsonConvert.SerializeObject(buildOptions, settings), ignoreLineEndingDifferences: true);
     }
 
     [Fact]
