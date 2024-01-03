@@ -2,6 +2,7 @@
   <ItemGroup>
     <PackageReference Include="Markdig" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="PlantUml.Net" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Reflection;
 using Docfx.Common;
+using Docfx.Plugins;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Xunit;
@@ -46,7 +47,52 @@ public class JsonConverterTest
             ContractResolver = new SkipEmptyOrNullContractResolver()
         };
 
-        Assert.Equal(jsonString, JsonConvert.SerializeObject(buildOptions, settings));
+        Assert.Equal(jsonString, JsonConvert.SerializeObject(buildOptions, settings), ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
+    [Trait("Related", "docfx")]
+    public void TestMarkdownEnginePropertiesSerializeAndDeserialize()
+    {
+        string jsonString = """
+                            {
+                              "markdownEngineProperties": {
+                                "enableSourceInfo": false,
+                                "alerts": {
+                                  "TODO": "alert alert-secondary",
+                                  "REVIEW": "alert alert-primary"
+                                },
+                                "plantUml": {
+                                  "outputFormat": "svg",
+                                  "remoteUrl": "https://www.plantuml.com/plantuml"
+                                }
+                              },
+                              "disableGitFeatures": true
+                            }
+                            """;
+
+        BuildJsonConfig buildOptions = JsonConvert.DeserializeObject<BuildJsonConfig>(jsonString);
+
+        Assert.NotNull(buildOptions.MarkdownEngineProperties);
+        Assert.False(buildOptions.MarkdownEngineProperties.EnableSourceInfo);
+        Assert.NotNull(buildOptions.MarkdownEngineProperties.Alerts);
+        Assert.Equal(2, buildOptions.MarkdownEngineProperties.Alerts.Count);
+        Assert.NotNull(buildOptions.MarkdownEngineProperties.Alerts["TODO"]);
+        Assert.NotNull(buildOptions.MarkdownEngineProperties.Alerts["REVIEW"]);
+        Assert.NotNull(buildOptions.MarkdownEngineProperties.PlantUml);
+        Assert.Equal(2, buildOptions.MarkdownEngineProperties.PlantUml.Count);
+        Assert.NotNull(buildOptions.MarkdownEngineProperties.PlantUml["outputFormat"]);
+        Assert.NotNull(buildOptions.MarkdownEngineProperties.PlantUml["remoteUrl"]);
+
+        JsonSerializerSettings settings = new()
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            Formatting = Formatting.Indented,
+            ContractResolver = new SkipEmptyOrNullContractResolver()
+        };
+
+        string json = JsonConvert.SerializeObject(buildOptions, settings);
+        Assert.Equal(jsonString, json, ignoreLineEndingDifferences: true);
     }
 
     [Fact]

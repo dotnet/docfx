@@ -459,4 +459,32 @@ We should support that.</p>
 ";
         TestUtility.VerifyMarkup(source, expected);
     }
+
+    [Fact]
+    [Trait("Related", "DfmMarkdown")]
+    public void QuoteSectionNoteTest_ExtensionConfiguration()
+    {
+        var source = @"# Article 2
+> [!TODO]
+> This is a custom TODO section
+> [!REVIEW]
+> This is a custom REVIEW section
+";
+        var expected = @"<h1 id=""article-2"">Article 2</h1>
+<div class=""alert alert-secondary"">
+<h5>TODO</h5>
+<p>This is a custom TODO section</p>
+</div>
+<div class=""alert alert-primary"">
+<h5>REVIEW</h5>
+<p>This is a custom REVIEW section</p>
+</div>
+";
+        TestUtility.VerifyMarkup(source, expected, extensionConfiguration:
+            new Dictionary<string, string>
+            {
+                { "TODO", "alert alert-secondary" },
+                { "REVIEW", "alert alert-primary" }
+            });
+    }
 }

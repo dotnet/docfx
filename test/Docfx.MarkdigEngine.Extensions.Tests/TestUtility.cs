@@ -4,6 +4,7 @@
 using Docfx.MarkdigEngine.Extensions;
 using Markdig;
 using Markdig.Syntax;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
@@ -20,7 +21,8 @@ public static class TestUtility
         Dictionary<string, string> tokens = null,
         Dictionary<string, string> files = null,
         Action<MarkdownObject> verifyAST = null,
-        IEnumerable<string> optionalExtensions = null)
+        IEnumerable<string> optionalExtensions = null,
+        object extensionConfiguration = null)
     {
         errors ??= Array.Empty<string>();
         tokens ??= new Dictionary<string, string>();
@@ -36,7 +38,8 @@ public static class TestUtility
             logSuggestion: Log("suggestion"),
             logWarning: Log("warning"),
             logError: Log("error"),
-            readFile: ReadFile);
+            readFile: ReadFile,
+            getConfig: _ => extensionConfiguration);
 
         var pipelineBuilder = new MarkdownPipelineBuilder()
             .UseDocfxExtensions(markdownContext)
