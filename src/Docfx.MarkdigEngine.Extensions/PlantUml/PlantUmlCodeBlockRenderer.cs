@@ -11,10 +11,11 @@ namespace Docfx.MarkdigEngine.Extensions;
 /// An HTML renderer for a <see cref="CodeBlock"/> and <see cref="FencedCodeBlock"/>.
 /// </summary>
 /// <seealso cref="HtmlObjectRenderer{CodeBlock}" />
-public class CustomCodeBlockRenderer : CodeBlockRenderer
+class PlantUmlCodeBlockRenderer : CodeBlockRenderer
 {
     private readonly MarkdownContext _context;
-    private readonly DocfxPlantUmlSettings _settings;
+    private readonly PlantUmlSettings _settings;
+    private readonly OutputFormat _outputFormat;
     private readonly RendererFactory rendererFactory;
 
     /// <summary>
@@ -22,10 +23,19 @@ public class CustomCodeBlockRenderer : CodeBlockRenderer
     /// </summary>
     /// <param name="context"></param>
     /// <param name="settings"></param>
-    public CustomCodeBlockRenderer(MarkdownContext context, DocfxPlantUmlSettings settings)
+    public PlantUmlCodeBlockRenderer(MarkdownContext context, PlantUmlOptions settings)
     {
         _context = context;
-        _settings = settings;
+        _settings = new()
+        {
+            Delimitor = settings.Delimitor,
+            RenderingMode = settings.RenderingMode,
+            RemoteUrl = settings.RemoteUrl,
+            JavaPath = settings.JavaPath,
+            LocalGraphvizDotPath = settings.LocalGraphvizDotPath,
+            LocalPlantUmlPath = settings.LocalPlantUmlPath,
+        };
+        _outputFormat = settings.OutputFormat;
 
         rendererFactory = new RendererFactory();
     }
@@ -43,10 +53,10 @@ public class CustomCodeBlockRenderer : CodeBlockRenderer
 
             try
             {
-                byte[] output = plantUmlRenderer.Render(plantUmlCode, _settings.OutputFormat);
+                byte[] output = plantUmlRenderer.Render(plantUmlCode, _outputFormat);
 
                 renderer.EnsureLine();
-                renderer.Write(FormatOutput(_settings.OutputFormat, output));
+                renderer.Write(FormatOutput(_outputFormat, output));
                 renderer.EnsureLine();
             }
             catch (RenderingException ex)

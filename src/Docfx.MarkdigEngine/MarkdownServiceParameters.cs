@@ -3,6 +3,7 @@
 
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
+using Docfx.MarkdigEngine.Extensions;
 using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
@@ -41,7 +42,7 @@ public class MarkdownServiceProperties
     /// </summary>
     [JsonProperty("plantUml")]
     [JsonPropertyName("plantUml")]
-    public Dictionary<string, string> PlantUml { get; set; }
+    public PlantUmlOptions PlantUml { get; set; }
 }
 
 public class MarkdownServiceParameters
@@ -50,16 +51,4 @@ public class MarkdownServiceParameters
     public string TemplateDir { get; set; }
     public MarkdownServiceProperties Extensions { get; set; } = new();
     public ImmutableDictionary<string, string> Tokens { get; set; } = ImmutableDictionary<string, string>.Empty;
-
-    public object GetExtensionConfiguration(string extension)
-    {
-        if (!string.IsNullOrEmpty(extension) && Extensions != null)
-        {
-            var property = typeof(MarkdownServiceProperties).GetProperty(extension);
-            if (property != null)
-                return property.GetValue(Extensions);
-        }
-
-        return null;
-    }
 }

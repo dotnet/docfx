@@ -480,7 +480,7 @@ We should support that.</p>
 <p>This is a custom REVIEW section</p>
 </div>
 ";
-        TestUtility.VerifyMarkup(source, expected, extensionConfiguration:
+        TestUtility.VerifyMarkup(source, expected, notes:
             new Dictionary<string, string>
             {
                 { "TODO", "alert alert-secondary" },

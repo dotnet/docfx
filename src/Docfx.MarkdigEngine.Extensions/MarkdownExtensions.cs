@@ -11,7 +11,9 @@ namespace Docfx.MarkdigEngine.Extensions;
 
 public static class MarkdownExtensions
 {
-    public static MarkdownPipelineBuilder UseDocfxExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+    public static MarkdownPipelineBuilder UseDocfxExtensions(
+        this MarkdownPipelineBuilder pipeline, MarkdownContext context,
+        Dictionary<string, string> notes = null, PlantUmlOptions plantUml = null)
     {
         return pipeline
             .UseMathematics()
@@ -24,7 +26,7 @@ public static class MarkdownExtensions
             .UseIncludeFile(context)
             .UseCodeSnippet(context)
             .UseDFMCodeInfoPrefix()
-            .UseQuoteSectionNote(context)
+            .UseQuoteSectionNote(context, notes)
             .UseXref()
             .UseEmojiAndSmiley(false)
             .UseTabGroup(context)
@@ -35,7 +37,7 @@ public static class MarkdownExtensions
             .UseTripleColon(context)
             .UseNoloc()
             .UseResolveLink(context)
-            .UsePlantUml(context)
+            .UsePlantUml(context, plantUml)
             .RemoveUnusedExtensions();
     }
 
@@ -100,9 +102,9 @@ public static class MarkdownExtensions
         return pipeline;
     }
 
-    public static MarkdownPipelineBuilder UseQuoteSectionNote(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+    public static MarkdownPipelineBuilder UseQuoteSectionNote(this MarkdownPipelineBuilder pipeline, MarkdownContext context, Dictionary<string, string> notes = null)
     {
-        pipeline.Extensions.AddIfNotAlready(new QuoteSectionNoteExtension(context));
+        pipeline.Extensions.AddIfNotAlready(new QuoteSectionNoteExtension(context, notes));
         return pipeline;
     }
 
@@ -112,9 +114,9 @@ public static class MarkdownExtensions
         return pipeline;
     }
 
-    public static MarkdownPipelineBuilder UsePlantUml(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+    public static MarkdownPipelineBuilder UsePlantUml(this MarkdownPipelineBuilder pipeline, MarkdownContext context, PlantUmlOptions options = null)
     {
-        pipeline.Extensions.AddIfNotAlready(new PlantUmlExtension(context));
+        pipeline.Extensions.AddIfNotAlready(new PlantUmlExtension(context, options));
         return pipeline;
     }
 

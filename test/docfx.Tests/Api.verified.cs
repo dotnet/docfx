@@ -3256,6 +3256,36 @@ namespace Docfx.MarkdigEngine
         public Docfx.Plugins.MarkupResult Render(Markdig.Syntax.MarkdownDocument document, bool isInline) { }
     }
 }
+namespace Docfx.Plugins
+{
+    public class MarkdownServiceParameters
+    {
+        public MarkdownServiceParameters() { }
+        public string BasePath { get; set; }
+        public Docfx.Plugins.MarkdownServiceProperties Extensions { get; set; }
+        public string TemplateDir { get; set; }
+        public System.Collections.Immutable.ImmutableDictionary<string, string> Tokens { get; set; }
+    }
+    public class MarkdownServiceProperties
+    {
+        public MarkdownServiceProperties() { }
+        [Newtonsoft.Json.JsonProperty("alerts")]
+        [System.Text.Json.Serialization.JsonPropertyName("alerts")]
+        public System.Collections.Generic.Dictionary<string, string> Alerts { get; set; }
+        [Newtonsoft.Json.JsonProperty("enableSourceInfo")]
+        [System.Text.Json.Serialization.JsonPropertyName("enableSourceInfo")]
+        public bool EnableSourceInfo { get; set; }
+        [Newtonsoft.Json.JsonProperty("fallbackFolders")]
+        [System.Text.Json.Serialization.JsonPropertyName("fallbackFolders")]
+        public string[] FallbackFolders { get; set; }
+        [Newtonsoft.Json.JsonProperty("markdigExtensions")]
+        [System.Text.Json.Serialization.JsonPropertyName("markdigExtensions")]
+        public string[] MarkdigExtensions { get; set; }
+        [Newtonsoft.Json.JsonProperty("plantUml")]
+        [System.Text.Json.Serialization.JsonPropertyName("plantUml")]
+        public Docfx.MarkdigEngine.Extensions.PlantUmlOptions PlantUml { get; set; }
+    }
+}
 namespace Docfx.MarkdigEngine.Extensions
 {
     public class ActiveAndVisibleRewriter : Docfx.MarkdigEngine.Extensions.IMarkdownObjectRewriter
@@ -3350,17 +3380,6 @@ namespace Docfx.MarkdigEngine.Extensions
     {
         public CodeSnippetParser() { }
         public override Markdig.Parsers.BlockState TryOpen(Markdig.Parsers.BlockProcessor processor) { }
-    }
-    public class CustomCodeBlockRenderer : Markdig.Renderers.Html.CodeBlockRenderer
-    {
-        public CustomCodeBlockRenderer(Docfx.MarkdigEngine.Extensions.MarkdownContext context, Docfx.MarkdigEngine.Extensions.DocfxPlantUmlSettings settings) { }
-        protected override void Write(Markdig.Renderers.HtmlRenderer renderer, Markdig.Syntax.CodeBlock obj) { }
-    }
-    public class DocfxPlantUmlSettings : PlantUml.Net.PlantUmlSettings
-    {
-        public DocfxPlantUmlSettings() { }
-        public DocfxPlantUmlSettings(System.Collections.Generic.IReadOnlyDictionary<string, string> config) { }
-        public PlantUml.Net.OutputFormat OutputFormat { get; set; }
     }
     public static class ExtensionsHelper
     {
@@ -3543,8 +3562,7 @@ namespace Docfx.MarkdigEngine.Extensions
     }
     public class MarkdownContext
     {
-        public MarkdownContext(System.Func<string, string> getToken = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logInfo = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logSuggestion = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logWarning = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logError = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.ReadFileDelegate readFile = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetLinkDelegate getLink = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetImageLinkDelegate getImageLink = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetExtensionConfigurationDelegate getConfig = null) { }
-        public Docfx.MarkdigEngine.Extensions.MarkdownContext.GetExtensionConfigurationDelegate GetExtensionConfiguration { get; }
+        public MarkdownContext(System.Func<string, string> getToken = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logInfo = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logSuggestion = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logWarning = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logError = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.ReadFileDelegate readFile = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetLinkDelegate getLink = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetImageLinkDelegate getImageLink = null) { }
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.GetImageLinkDelegate GetImageLink { get; }
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.GetLinkDelegate GetLink { get; }
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate LogError { get; }
@@ -3553,7 +3571,6 @@ namespace Docfx.MarkdigEngine.Extensions
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate LogWarning { get; }
         public Docfx.MarkdigEngine.Extensions.MarkdownContext.ReadFileDelegate ReadFile { get; }
         public string GetToken(string key) { }
-        public delegate object GetExtensionConfigurationDelegate(string extension);
         public delegate string GetImageLinkDelegate(string path, Markdig.Syntax.MarkdownObject origin, string altText);
         public delegate string GetLinkDelegate(string path, Markdig.Syntax.MarkdownObject origin);
         public delegate void LogActionDelegate(string code, string message, Markdig.Syntax.MarkdownObject origin, int? line = default);
@@ -3576,7 +3593,7 @@ namespace Docfx.MarkdigEngine.Extensions
     {
         public static Markdig.MarkdownPipelineBuilder UseCodeSnippet(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseDFMCodeInfoPrefix(this Markdig.MarkdownPipelineBuilder pipeline) { }
-        public static Markdig.MarkdownPipelineBuilder UseDocfxExtensions(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
+        public static Markdig.MarkdownPipelineBuilder UseDocfxExtensions(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context, System.Collections.Generic.Dictionary<string, string> notes = null, Docfx.MarkdigEngine.Extensions.PlantUmlOptions plantUml = null) { }
         public static Markdig.MarkdownPipelineBuilder UseHeadingIdRewriter(this Markdig.MarkdownPipelineBuilder pipeline) { }
         public static Markdig.MarkdownPipelineBuilder UseIncludeFile(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseInlineOnly(this Markdig.MarkdownPipelineBuilder pipeline) { }
@@ -3586,8 +3603,8 @@ namespace Docfx.MarkdigEngine.Extensions
         public static Markdig.MarkdownPipelineBuilder UseNestedColumn(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseNoloc(this Markdig.MarkdownPipelineBuilder pipeline) { }
         public static Markdig.MarkdownPipelineBuilder UseOptionalExtensions(this Markdig.MarkdownPipelineBuilder pipeline, System.Collections.Generic.IEnumerable<string> optionalExtensions) { }
-        public static Markdig.MarkdownPipelineBuilder UsePlantUml(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
-        public static Markdig.MarkdownPipelineBuilder UseQuoteSectionNote(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
+        public static Markdig.MarkdownPipelineBuilder UsePlantUml(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context, Docfx.MarkdigEngine.Extensions.PlantUmlOptions options = null) { }
+        public static Markdig.MarkdownPipelineBuilder UseQuoteSectionNote(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context, System.Collections.Generic.Dictionary<string, string> notes = null) { }
         public static Markdig.MarkdownPipelineBuilder UseResolveLink(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseRow(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseTabGroup(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
@@ -3663,6 +3680,31 @@ namespace Docfx.MarkdigEngine.Extensions
         public NolocRender() { }
         protected override void Write(Markdig.Renderers.HtmlRenderer renderer, Docfx.MarkdigEngine.Extensions.NolocInline obj) { }
     }
+    public class PlantUmlOptions
+    {
+        public PlantUmlOptions() { }
+        [Newtonsoft.Json.JsonProperty("delimitor")]
+        [System.Text.Json.Serialization.JsonPropertyName("delimitor")]
+        public string Delimitor { get; set; }
+        [Newtonsoft.Json.JsonProperty("javaPath")]
+        [System.Text.Json.Serialization.JsonPropertyName("javaPath")]
+        public string JavaPath { get; set; }
+        [Newtonsoft.Json.JsonProperty("localGraphvizDotPath")]
+        [System.Text.Json.Serialization.JsonPropertyName("localGraphvizDotPath")]
+        public string LocalGraphvizDotPath { get; set; }
+        [Newtonsoft.Json.JsonProperty("localPlantUmlPath")]
+        [System.Text.Json.Serialization.JsonPropertyName("localPlantUmlPath")]
+        public string LocalPlantUmlPath { get; set; }
+        [Newtonsoft.Json.JsonProperty("outputFormat")]
+        [System.Text.Json.Serialization.JsonPropertyName("outputFormat")]
+        public PlantUml.Net.OutputFormat OutputFormat { get; set; }
+        [Newtonsoft.Json.JsonProperty("remoteUrl")]
+        [System.Text.Json.Serialization.JsonPropertyName("remoteUrl")]
+        public string RemoteUrl { get; set; }
+        [Newtonsoft.Json.JsonProperty("renderingMode")]
+        [System.Text.Json.Serialization.JsonPropertyName("renderingMode")]
+        public PlantUml.Net.RenderingMode RenderingMode { get; set; }
+    }
     public class QuoteSectionNoteBlock : Markdig.Syntax.ContainerBlock
     {
         public QuoteSectionNoteBlock(Markdig.Parsers.BlockParser parser) { }
@@ -3674,7 +3716,7 @@ namespace Docfx.MarkdigEngine.Extensions
     }
     public class QuoteSectionNoteExtension : Markdig.IMarkdownExtension
     {
-        public QuoteSectionNoteExtension(Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
+        public QuoteSectionNoteExtension(Docfx.MarkdigEngine.Extensions.MarkdownContext context, System.Collections.Generic.Dictionary<string, string> notes) { }
     }
     public class QuoteSectionNoteParser : Markdig.Parsers.BlockParser
     {
@@ -4150,34 +4192,6 @@ namespace Docfx.Plugins
         [Newtonsoft.Json.JsonProperty("version")]
         [System.Text.Json.Serialization.JsonPropertyName("version")]
         public string Version { get; set; }
-    }
-    public class MarkdownServiceParameters
-    {
-        public MarkdownServiceParameters() { }
-        public string BasePath { get; set; }
-        public Docfx.Plugins.MarkdownServiceProperties Extensions { get; set; }
-        public string TemplateDir { get; set; }
-        public System.Collections.Immutable.ImmutableDictionary<string, string> Tokens { get; set; }
-        public object GetExtensionConfiguration(string extension) { }
-    }
-    public class MarkdownServiceProperties
-    {
-        public MarkdownServiceProperties() { }
-        [Newtonsoft.Json.JsonProperty("alerts")]
-        [System.Text.Json.Serialization.JsonPropertyName("alerts")]
-        public System.Collections.Generic.Dictionary<string, string> Alerts { get; set; }
-        [Newtonsoft.Json.JsonProperty("enableSourceInfo")]
-        [System.Text.Json.Serialization.JsonPropertyName("enableSourceInfo")]
-        public bool EnableSourceInfo { get; set; }
-        [Newtonsoft.Json.JsonProperty("fallbackFolders")]
-        [System.Text.Json.Serialization.JsonPropertyName("fallbackFolders")]
-        public string[] FallbackFolders { get; set; }
-        [Newtonsoft.Json.JsonProperty("markdigExtensions")]
-        [System.Text.Json.Serialization.JsonPropertyName("markdigExtensions")]
-        public string[] MarkdigExtensions { get; set; }
-        [Newtonsoft.Json.JsonProperty("plantUml")]
-        [System.Text.Json.Serialization.JsonPropertyName("plantUml")]
-        public System.Collections.Generic.Dictionary<string, string> PlantUml { get; set; }
     }
     public class MarkupResult
     {

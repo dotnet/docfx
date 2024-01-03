@@ -1,47 +1,52 @@
+using System.Text.Json.Serialization;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
+using Newtonsoft.Json;
 using PlantUml.Net;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public class DocfxPlantUmlSettings : PlantUmlSettings
+public class PlantUmlOptions
 {
-    public DocfxPlantUmlSettings() : base()
-    {
-    }
+    [JsonProperty("javaPath")]
+    [JsonPropertyName("javaPath")]
+    public string JavaPath { get; set; }
 
-    public DocfxPlantUmlSettings(IReadOnlyDictionary<string, string> config) : this()
-    {
-        if (config.TryGetValue("remoteUrl", out var url))
-            RemoteUrl = url;
-        if (config.TryGetValue("outputFormat", out var format))
-            OutputFormat = Enum.Parse<OutputFormat>(format, true);
-        if (config.TryGetValue("javaPath", out var path))
-            JavaPath = path;
-        if (config.TryGetValue("localPlantUmlPath", out path))
-            LocalPlantUmlPath = path;
-        if (config.TryGetValue("localGraphvizDotPath", out path))
-            LocalGraphvizDotPath = path;
-        if (config.TryGetValue("renderingMode", out var renderMode))
-            RenderingMode = Enum.Parse<RenderingMode>(renderMode, true);
-    }
+    [JsonProperty("remoteUrl")]
+    [JsonPropertyName("remoteUrl")]
+    public string RemoteUrl { get; set; }
 
+    [JsonProperty("localPlantUmlPath")]
+    [JsonPropertyName("localPlantUmlPath")]
+    public string LocalPlantUmlPath { get; set; }
+
+    [JsonProperty("localGraphvizDotPath")]
+    [JsonPropertyName("localGraphvizDotPath")]
+    public string LocalGraphvizDotPath { get; set; }
+
+    [JsonProperty("renderingMode")]
+    [JsonPropertyName("renderingMode")]
+    public RenderingMode RenderingMode { get; set; }
+
+    [JsonProperty("delimitor")]
+    [JsonPropertyName("delimitor")]
+    public string Delimitor { get; set; }
+
+    [JsonProperty("outputFormat")]
+    [JsonPropertyName("outputFormat")]
     public OutputFormat OutputFormat { get; set; } = OutputFormat.Svg;
 }
 
 internal class PlantUmlExtension : IMarkdownExtension
 {
     private readonly MarkdownContext _context;
-    private readonly DocfxPlantUmlSettings _settings;
+    private readonly PlantUmlOptions _settings;
 
-    public PlantUmlExtension(MarkdownContext context)
+    public PlantUmlExtension(MarkdownContext context, PlantUmlOptions settings)
     {
         _context = context;
-        _settings = new();
-
-        if (_context.GetExtensionConfiguration("PlantUml") is Dictionary<string, string> config)
-            _settings = new DocfxPlantUmlSettings(config);
+        _settings = settings ?? new();
     }
 
     public void Setup(MarkdownPipelineBuilder pipeline)
@@ -52,7 +57,7 @@ internal class PlantUmlExtension : IMarkdownExtension
     {
         if (renderer is HtmlRenderer { ObjectRenderers: not null } htmlRenderer)
         {
-            var customRenderer = new CustomCodeBlockRenderer(_context, _settings);
+            var customRenderer = new PlantUmlCodeBlockRenderer(_context, _settings);
             var renderers = htmlRenderer.ObjectRenderers;
 
             if (renderers.Contains<CodeBlockRenderer>())

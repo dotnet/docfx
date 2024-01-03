@@ -22,13 +22,13 @@ public class QuoteSectionNoteExtension : IMarkdownExtension
         ["CAUTION"] = "CAUTION",
     };
 
-    public QuoteSectionNoteExtension(MarkdownContext context)
+    public QuoteSectionNoteExtension(MarkdownContext context, Dictionary<string, string> notes)
     {
         _context = context;
 
-        if (_context.GetExtensionConfiguration("Alerts") is Dictionary<string, string> config)
+        if (notes != null)
         {
-            foreach (var (key, value) in config)
+            foreach (var (key, value) in notes)
                 _notes[key] = value;
         }
     }
