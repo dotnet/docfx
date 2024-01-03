@@ -114,9 +114,18 @@ async function renderClickableImage() {
       const a = document.createElement('a')
       a.target = '_blank'
       a.rel = 'noopener noreferrer nofollow'
-      a.href = img.src
-      img.replaceWith(a)
-      a.appendChild(img)
+
+      if (img.parentElement.tagName === 'PICTURE') {
+        const picture = img.parentElement
+        picture.addEventListener('click', () => {
+          a.href = img.currentSrc
+          a.click()
+        })
+      } else {
+        a.href = img.src
+        img.replaceWith(a)
+        a.appendChild(img)
+      }
     }
 
     function shouldMakeClickable(): boolean {
