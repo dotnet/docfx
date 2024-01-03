@@ -92,7 +92,7 @@ public class JsonConverterTest
         };
 
         string json = JsonConvert.SerializeObject(buildOptions, settings);
-        Assert.Equal(jsonString, json);
+        Assert.Equal(jsonString, json, ignoreLineEndingDifferences: true);
     }
 
     [Fact]
