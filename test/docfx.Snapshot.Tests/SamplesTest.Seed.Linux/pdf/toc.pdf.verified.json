@@ -717,7 +717,7 @@
             "PageNumber": 17,
             "Coordinates": {
               "Left": 28,
-              "Top": 211.24994
+              "Top": 284.75006
             }
           }
         }
@@ -726,7 +726,7 @@
     {
       "Number": 16,
       "NumberOfImages": 1,
-      "Text": "16 / 125ImageMermaid DiagramsFlowchartCode SnippetThe example highlights lines 2, line 5 to 7 and lines 9 to the end of the ﬁle.MY TODOThis is a TODO.TextOneTwoHardRoundDecisionResult 1Result 2",
+      "Text": "16 / 125[!TODO] This is a TODO.ImageMermaid DiagramsFlowchartCode SnippetThe example highlights lines 2, line 5 to 7 and lines 9 to the end of the ﬁle.TextOneTwoHardRoundDecisionResult 1Result 2using System;using Azure;using Azure.Storage;using Azure.Storage.Blobs;",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main"
@@ -738,19 +738,19 @@
     },
     {
       "Number": 17,
-      "Text": "17 / 125Math ExpressionsThis sentence uses $ delimiters to show math inline: The Cauchy-Schwarz InequalityThis expression uses \\$ to display a dollar sign: To split $100 in half, we calculate using System;using Azure;using Azure.Storage;using Azure.Storage.Blobs;class Program{    static void Main(string[] args)    {        // Define the connection string for the storage account        string connectionString = \"DefaultEndpointsProtocol=https;AccountName=<your-account-name>;AccountKey=<your-account-key>;EndpointSuffix=core.windows.net\";        // Create a new BlobServiceClient using the connection string        var blobServiceClient = new BlobServiceClient(connectionString);        // Create a new container        var container = blobServiceClient.CreateBlobContainer(\"mycontainer\");        // Upload a file to the container        using (var fileStream = File.OpenRead(\"path/to/file.txt\"))        {            container.UploadBlob(\"file.txt\", fileStream);        }        // Download the file from the container        var downloadedBlob = container.GetBlobClient(\"file.txt\").Download();        using (var fileStream = File.OpenWrite(\"path/to/downloaded-file.txt\"))        {            downloadedBlob.Value.Content.CopyTo(fileStream);        }    }}",
+      "Text": "17 / 125Math ExpressionsThis sentence uses $ delimiters to show math inline: The Cauchy-Schwarz InequalityThis expression uses \\$ to display a dollar sign: To split $100 in half, we calculate Custom Syntax Highlightingclass Program{    static void Main(string[] args)    {        // Define the connection string for the storage account        string connectionString = \"DefaultEndpointsProtocol=https;AccountName=<your-account-name>;AccountKey=<your-account-key>;EndpointSuffix=core.windows.net\";        // Create a new BlobServiceClient using the connection string        var blobServiceClient = new BlobServiceClient(connectionString);        // Create a new container        var container = blobServiceClient.CreateBlobContainer(\"mycontainer\");        // Upload a file to the container        using (var fileStream = File.OpenRead(\"path/to/file.txt\"))        {            container.UploadBlob(\"file.txt\", fileStream);        }        // Download the file from the container        var downloadedBlob = container.GetBlobClient(\"file.txt\").Download();        using (var fileStream = File.OpenWrite(\"path/to/downloaded-file.txt\"))        {            downloadedBlob.Value.Content.CopyTo(fileStream);        }    }}",
       "Links": []
     },
     {
       "Number": 18,
-      "Text": "18 / 125Custom Syntax HighlightingTabsLinuxWindowsThe above tab group was created with the following syntax:Tabs are indicated by using a speciﬁc link syntax within a Markdown header. The syntax canbe described as follows:A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The textof the link will become the text of the tab header, displayed to the customer. In order forthe header to be recognized as a tab, the link itself must start with #tab/ and be followedby an ID representing the content of the tab. The ID is used to sync all same-ID tabs acrossthe page. Using the above example, when a user selects a tab with the link #tab/windows, alltabs with the link #tab/windows on the page will be selected.Dependent tabsresource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {  name: 'hello'  // (...)}Content for Linux...# [Linux](#tab/linux)Content for Linux...# [Windows](#tab/windows)Content for Windows...---# [Tab Display Name](#tab/tab-id)",
+      "Text": "18 / 125TabsLinuxWindowsThe above tab group was created with the following syntax:Tabs are indicated by using a speciﬁc link syntax within a Markdown header. The syntax canbe described as follows:A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The textof the link will become the text of the tab header, displayed to the customer. In order forthe header to be recognized as a tab, the link itself must start with #tab/ and be followedby an ID representing the content of the tab. The ID is used to sync all same-ID tabs acrossthe page. Using the above example, when a user selects a tab with the link #tab/windows, alltabs with the link #tab/windows on the page will be selected.Dependent tabsIt's possible to make the selection in one set of tabs dependent on the selection in anotherset of tabs. Here's an example of that in action:resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {  name: 'hello'  // (...)}Content for Linux...# [Linux](#tab/linux)Content for Linux...# [Windows](#tab/windows)Content for Windows...---# [Tab Display Name](#tab/tab-id)",
       "Links": [
         {
           "Goto": {
             "PageNumber": 18,
             "Coordinates": {
               "Left": 28,
-              "Top": 574.99994
+              "Top": 605.74994
             }
           }
         }
@@ -758,14 +758,14 @@
     },
     {
       "Number": 19,
-      "Text": "19 / 125It's possible to make the selection in one set of tabs dependent on the selection in anotherset of tabs. Here's an example of that in action:.NETTypeScriptREST APINotice how changing the Linux/Windows selection above changes the content in the .NETand TypeScript tabs. This is because the tab group deﬁnes two versions for each .NET andTypeScript, where the Windows/Linux selection above determines which version is shownfor .NET/TypeScript. Here's the markup that shows how this is done:DetailsDemo.NET content for Linux...# [.NET](#tab/dotnet/linux).NET content for Linux...# [.NET](#tab/dotnet/windows).NET content for Windows...# [TypeScript](#tab/typescript/linux)TypeScript content for Linux...# [TypeScript](#tab/typescript/windows)TypeScript content for Windows...# [REST API](#tab/rest)REST API content, independent of platform...---",
+      "Text": "19 / 125.NETTypeScriptREST APINotice how changing the Linux/Windows selection above changes the content in the .NETand TypeScript tabs. This is because the tab group deﬁnes two versions for each .NET andTypeScript, where the Windows/Linux selection above determines which version is shownfor .NET/TypeScript. Here's the markup that shows how this is done:DetailsDemo.NET content for Linux...# [.NET](#tab/dotnet/linux).NET content for Linux...# [.NET](#tab/dotnet/windows).NET content for Windows...# [TypeScript](#tab/typescript/linux)TypeScript content for Linux...# [TypeScript](#tab/typescript/windows)TypeScript content for Windows...# [REST API](#tab/rest)REST API content, independent of platform...---",
       "Links": [
         {
           "Goto": {
             "PageNumber": 19,
             "Coordinates": {
               "Left": 28,
-              "Top": 684.49994
+              "Top": 732.49994
             }
           }
         }
