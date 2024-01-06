@@ -128,7 +128,7 @@ public class MarkdigMarkdownService : IMarkdownService
 
         var builder = new MarkdownPipelineBuilder();
 
-        builder.UseDocfxExtensions(_context);
+        builder.UseDocfxExtensions(_context, _parameters?.Extensions?.Alerts, _parameters?.Extensions?.PlantUml);
         builder.Extensions.Insert(0, new YamlHeaderExtension(_context) { AllowInMiddleOfDocument = multipleYamlHeader });
 
         if (enableSourceInfo)
