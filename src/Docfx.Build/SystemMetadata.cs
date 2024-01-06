@@ -8,21 +8,6 @@ namespace Docfx.Build.Engine;
 
 class SystemMetadata
 {
-    [JsonProperty("_title")]
-    [JsonPropertyName("_title")]
-    public string Title { get; set; }
-
-    [JsonProperty("_tocTitle")]
-    [JsonPropertyName("_tocTitle")]
-    public string TocTitle { get; set; }
-
-    [JsonProperty("_name")]
-    [JsonPropertyName("_name")]
-    public string Name { get; set; }
-
-    [JsonProperty("_description")]
-    [JsonPropertyName("_description")]
-    public string Description { get; set; }
 
     /// <summary>
     /// TOC PATH from ~ ROOT
