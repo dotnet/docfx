@@ -155,9 +155,16 @@ static class PdfBuilder
                 if (response is null || !response.Ok)
                     throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
 
-                await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
-                await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
-                await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                try
+                {
+                    await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
+                    await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
+                    await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                }
+                catch (TimeoutException)
+                {
+                    Logger.LogWarning($"Timeout waiting for page to load, generated PDF page may be incomplete: {url}");
+                }
 
                 return await page.PdfAsync();
             }
