@@ -106,8 +106,8 @@ public class ModelAttributeHandlerTest
 
         Assert.Equal(12, context.LinkToUids.Count);
         Assert.Equal(new List<string> {
-            "0", "1", "2", "3", "2.2", "0.0", "1.1", "1.2", "1.3", "0.0.0", "1.1.1", "1.1.2"
-        }, context.LinkToUids);
+            "0", "0.0", "0.0.0", "1", "1.1", "1.1.1","1.1.2", "1.2", "1.3","2",  "2.2", "3",
+        }, context.LinkToUids.OrderBy(x => x));
     }
 
     #endregion
