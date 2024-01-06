@@ -204,7 +204,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
         {
             return null;
         }
-        if (func is FunctionInstance)
+        if (func is Function)
         {
             return s =>
             {
