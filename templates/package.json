@@ -41,8 +41,8 @@
   "devDependencies": {
     "@types/jest": "^29.5.11",
     "@types/lunr": "^2.3.7",
-    "@typescript-eslint/eslint-plugin": "^6.18.0",
-    "@typescript-eslint/parser": "^6.18.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
     "browser-sync": "^3.0.2",
     "esbuild": "~0.19.11",
     "esbuild-sass-plugin": "~2.16.1",
