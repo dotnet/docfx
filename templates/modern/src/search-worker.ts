@@ -3,7 +3,7 @@
 
 import lunr from 'lunr'
 import stemmer from 'lunr-languages/lunr.stemmer.support'
-import tinyseg from 'lunr-languages/tinyseg.js'
+import tinyseg from 'lunr-languages/tinyseg'
 import multi from 'lunr-languages/lunr.multi'
 import { get, set, createStore } from 'idb-keyval'
 
