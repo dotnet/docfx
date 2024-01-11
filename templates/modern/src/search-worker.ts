@@ -3,6 +3,7 @@
 
 import lunr from 'lunr'
 import stemmer from 'lunr-languages/lunr.stemmer.support'
+import tinyseg from 'lunr-languages/tinyseg'
 import multi from 'lunr-languages/lunr.multi'
 import { get, set, createStore } from 'idb-keyval'
 
@@ -28,6 +29,9 @@ async function loadIndex({ lunrLanguages }: { lunrLanguages?: string[] }) {
     if (lunrLanguages && lunrLanguages.length > 0) {
       multi(lunr)
       stemmer(lunr)
+      if (lunrLanguages.includes('ja')) {
+        tinyseg(lunr)
+      }
       await Promise.all(lunrLanguages.map(initLanguage))
     }
 
