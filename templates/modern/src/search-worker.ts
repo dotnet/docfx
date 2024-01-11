@@ -29,7 +29,7 @@ async function loadIndex({ lunrLanguages }: { lunrLanguages?: string[] }) {
     if (lunrLanguages && lunrLanguages.length > 0) {
       multi(lunr)
       stemmer(lunr)
-      if(lunrLanguages.includes('ja')) {
+      if (lunrLanguages.includes('ja')) {
         tinyseg(lunr)
       }
       await Promise.all(lunrLanguages.map(initLanguage))
