@@ -28,7 +28,7 @@ Docfx is planned to continue as a community-driven project. We hope to produce f
 2. Create and start a website locally:
 
    ```
-   docfx init -q
+   docfx init -y
    docfx build docfx_project\docfx.json --serve
    ```
 
