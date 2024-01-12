@@ -284,6 +284,83 @@ class Class10 {
 }
 ```
 
+## PlantUML Diagrams
+
+You can embed [PlantUML](https://plantuml.com/) diagrams using markdown code blocks:
+
+Example:
+
+    ```plantuml
+    Bob -> Alice : hello
+    ```
+
+This will be rendered as:
+
+![alt-text](https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IW80)
+
+There are plenty of other diagrams supported by PlantUML such as:
+
+* [Sequence diagram](http://plantuml.com/sequence-diagram)
+* [Use Case diagram](http://plantuml.com/use-case-diagram)
+* [Class diagram](http://plantuml.com/activity-diagram-beta)
+* [Activity diagram](http://plantuml.com/activity-diagram-beta)
+* [Component diagram](http://plantuml.com/component-diagram)
+* [State diagram](http://plantuml.com/state-diagram)
+* [Gantt diagram](https://plantuml.com/gantt-diagram)
+* [Deployment diagram](http://plantuml.com/deployment-diagram)
+* [Mindmap diagram](https://plantuml.com/mindmap-diagram)
+
+Refer to the [PlantUml reference guide](http://plantuml.com/PlantUML_Language_Reference_Guide.pdf) for more details.
+
+### Settings
+
+The PlantUML extension can be configured using the `build.markdownEngineProperties.plantUml` property of your `docfx.json` file:
+
+```json
+{
+  "build": {
+    "markdownEngineProperties": {
+      "plantUml": {
+          "outputFormat": "svg",
+          "remoteUrl": "http://www.plantuml.com/plantuml/",
+          "renderingMode": "remote"
+      }
+    }
+  }
+}
+```
+
+The following settings are available for configuration:
+
+| Setting | Description | Default |
+| ------- | ----------- | ---------|
+| `javaPath`              | path to java installation                                               | uses the JAVA_HOME environment variable |
+| `localGraphvizDotPath`  | path to graphviz dot exe (required for local rendering mode only)       | none                                    |
+| `localPlantUmlPath`     | path to plantuml.jar                                                    | will look in project directory          |
+| `outputFormat`          | format of generated images (svg, ascii, ascii_unicode)                  | svg                                     |
+| `remoteUrl`             | url to remote PlantUml server (required for remote rendering mode only) | http://www.plantuml.com/plantuml/       |
+| `renderingMode`         | remote or local                                                         | remote                            
+
+### Local Rendering
+
+By default, PlantUML diagrams will be rendered on the remote server. Local rendering mode uses a [local copy](https://plantuml.com/faq-install) of PlantUML to render diagrams.  Local rendering mode can be configured in your `docfx.json` file:
+
+```json
+{
+  "build": {
+    "markdownEngineProperties": {
+      "plantUml": {
+          "localPlantUmlPath": "path/to/plantuml.jar",
+          "renderingMode": "local"
+      }
+    }
+  }
+}
+```
+
+> [!NOTE]
+> GraphViz Dot is required for local rendering mode of any diagram other than sequence. Refer to the [PlantUML documentation](http://plantuml.com/graphviz-dot) for more detailed instructions.
+
 ## Include Markdown Files
 
 Where markdown files need to be repeated in multiple articles, you can use an include file. The includes feature replace the reference with the contents of the included file at build time.
