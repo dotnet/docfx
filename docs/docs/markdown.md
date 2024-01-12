@@ -530,3 +530,4 @@ For example:
 ```
 
 In GFM, it will be rendered as a paragraph with content `[!NOTE] This is code.` in blockquote.  
+In DFM, it will be rendered as a code in note.
