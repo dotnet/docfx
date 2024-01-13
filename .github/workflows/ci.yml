@@ -54,6 +54,16 @@ jobs:
       with:
         name: dump
         path: /tmp/coredump*
+        
+    - name: dotnet pack
+      if: ${{ github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-latest' }}
+      run: dotnet pack -c Release /p:Version=${GITHUB_REF_NAME#v} -o drop/nuget
+
+    - uses: actions/upload-artifact@v4
+      if: ${{ github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-latest' }}
+      with:
+        name: nuget
+        path: drop/nuget
 
   snapshot:
     runs-on: ${{ matrix.os }}
@@ -81,6 +91,22 @@ jobs:
       if: github.event_name == 'pull_request'
       with:
         commit_message: 'test(snapshot): update snapshots ${{ github.sha }} for ${{ matrix.os }}'
+
+  publish-github-packages:
+    if: github.ref == 'refs/heads/main'
+    needs: [test, snapshot]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: nuget
+        path: drop/nuget
+
+    - name: Publish to GitHub packages
+      run: |
+        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.NUGET_KEY }}" --skip-duplicate --source https://api.nuget.org/v3/index.json
 
   publish-docs:
     if: github.ref == 'refs/heads/main'
