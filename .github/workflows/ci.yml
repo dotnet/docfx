@@ -82,6 +82,29 @@ jobs:
       with:
         commit_message: 'test(snapshot): update snapshots ${{ github.sha }} for ${{ matrix.os }}'
 
+  publish-github-packages:
+    if: github.ref == 'refs/heads/main'
+    needs: [test, snapshot]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        depth: 0
+ 
+    - id: version
+      uses: paulhatch/semantic-version@v5.3.0
+
+    - uses: ./.github/actions/build
+    
+    - name: dotnet pack
+      run: dotnet pack -c Release /p:Version=${{ steps.versioning.outputs.version }} -o drop/nuget
+
+    - name: dotnet nuget push
+      run: |
+        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.NUGET_KEY }}" --skip-duplicate --source https://api.nuget.org/v3/index.json
+
   publish-docs:
     if: github.ref == 'refs/heads/main'
     needs: [test, snapshot]

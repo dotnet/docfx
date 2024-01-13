@@ -8,22 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 18
-    - uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: |
-          8.x
 
-    - run: npm install
-      working-directory: templates
-
-    - run: npm run lint
-      working-directory: templates
-
-    - run: npm run build
-      working-directory: templates
+    - uses: ./.github/actions/build
 
     - name: dotnet pack
       run: dotnet pack -c Release /p:Version=${GITHUB_REF_NAME#v} -o drop/nuget
