@@ -37,7 +37,7 @@ exports.transform = function (model) {
   }
 
   if (model.summary && !model.description) {
-    model.description = model.summary.replace(/<.*?>/gi, '').replace(/(\r\n|\n|\r)/gm, ' ');
+    model.description = model.summary.replace(/<.*?>/gi, '').replace(/(\r\n|\n|\r)/gm, ' ').trim();
   }
 
   return model;
