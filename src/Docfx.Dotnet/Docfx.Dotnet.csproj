@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="ICSharpCode.Decompiler" />
     <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
     <PackageReference Include="OneOf" />

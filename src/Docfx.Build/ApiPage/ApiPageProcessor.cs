@@ -41,13 +41,18 @@ class ApiPageDocumentProcessor(IMarkdownService markdownService) : IDocumentProc
         var yml = EnvironmentContext.FileAbstractLayer.ReadAllText(file.File);
         var json = JsonSerializer.Serialize(deserializer.Deserialize<object>(yml));
         var data = JsonSerializer.Deserialize<ApiPage>(json, ApiPage.JsonSerializerOptions);
-        var content = new Dictionary<string, object>(metadata.OrderBy(item => item.Key))
+        var content = new Dictionary<string, object>(metadata.OrderBy(item => item.Key));
+
+        if (data.metadata is not null)
         {
-            ["title"] = data.title,
-            ["content"] = ApiPageHtmlTemplate.Render(data, Markup).ToString(),
-            ["yamlmime"] = "ApiPage",
-            ["_disableNextArticle"] = true,
-        };
+            foreach (var (key, value) in data.metadata.OrderBy(item => item.Key))
+                content[key] = value.Value;
+        }
+        
+        content["title"] = data.title;
+        content["content"] = ApiPageHtmlTemplate.Render(data, Markup).ToString();
+        content["yamlmime"] = "ApiPage";
+        content["_disableNextArticle"] = true;
 
         var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
