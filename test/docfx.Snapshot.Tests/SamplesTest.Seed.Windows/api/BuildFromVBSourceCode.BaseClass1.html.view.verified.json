@@ -911,6 +911,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
+  "description": "This is the BaseClass ",
   "_disableToc": false,
   "_disableNextArticle": true
 }

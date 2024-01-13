@@ -4296,6 +4296,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
+  "description": "Here's main class of this Demo. You can see mostly type of article within this class and you for more detail, please see the remarks.  this class is a template class. It has two Generic parameter. they are: T and K. The extension method of this class can refer to  class ",
   "_disableToc": false,
   "_disableNextArticle": true
 }

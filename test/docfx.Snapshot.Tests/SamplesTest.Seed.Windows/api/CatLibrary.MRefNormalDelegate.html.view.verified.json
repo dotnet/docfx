@@ -284,6 +284,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inDelegate": true,
+  "description": "Delegate in the namespace ",
   "_disableToc": false,
   "_disableNextArticle": true
 }

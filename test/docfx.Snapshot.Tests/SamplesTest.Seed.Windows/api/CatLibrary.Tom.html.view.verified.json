@@ -1027,6 +1027,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
+  "description": "Tom class is only inherit from Object. Not any member inside itself. ",
   "_disableToc": false,
   "_disableNextArticle": true
 }
