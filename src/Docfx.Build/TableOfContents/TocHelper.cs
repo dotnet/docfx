@@ -9,13 +9,13 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.TableOfContents;
 
-static class TocHelper
+public static class TocHelper
 {
     private static readonly YamlDeserializerWithFallback _deserializer =
         YamlDeserializerWithFallback.Create<List<TocItemViewModel>>()
         .WithFallback<TocItemViewModel>();
 
-    public static List<FileModel> ResolveToc(ImmutableList<FileModel> models)
+    internal static List<FileModel> ResolveToc(ImmutableList<FileModel> models)
     {
         var tocCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         var nonReferencedTocModels = new List<FileModel>();
