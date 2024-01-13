@@ -1144,7 +1144,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "description": "This is a test class to have something for DocFX to document. ",
+  "description": "This is a test class to have something for DocFX to document.",
   "_disableToc": false,
   "_disableNextArticle": true
 }
