@@ -1006,7 +1006,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "description": "This works: . This does not work: . ",
+  "description": "This works: . This does not work: .",
   "_disableToc": false,
   "_disableNextArticle": true
 }
