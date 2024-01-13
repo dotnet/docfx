@@ -1048,6 +1048,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
+  "description": "It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class ",
   "_disableToc": false,
   "_disableNextArticle": true
 }
