@@ -50,19 +50,17 @@ static class PdfBuilder
         var outputFolder = Path.GetFullPath(Path.Combine(
             string.IsNullOrEmpty(outputDirectory) ? Path.Combine(configDirectory, config.Output ?? "") : outputDirectory,
             config.Dest ?? ""));
+
+        Logger.LogInfo($"Searching for manifest in {outputFolder}");
         return CreatePdf(outputFolder);
     }
 
     public static async Task CreatePdf(string outputFolder)
     {
         var stopwatch = Stopwatch.StartNew();
-        Logger.LogInfo($"Searching for manifest in {outputFolder}");
         var pdfTocs = GetPdfTocs().ToDictionary(p => p.url, p => p.toc);
         if (pdfTocs.Count == 0)
-        {
-            Logger.LogWarning($"No PDF TOC's found in: {outputFolder}");
             return;
-        }
 
         Program.Main(new[] { "install", "chromium" });
 
