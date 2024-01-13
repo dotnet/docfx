@@ -1513,6 +1513,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
+  "description": "This is summary from vb class...",
   "_disableToc": false,
   "_disableNextArticle": true
 }

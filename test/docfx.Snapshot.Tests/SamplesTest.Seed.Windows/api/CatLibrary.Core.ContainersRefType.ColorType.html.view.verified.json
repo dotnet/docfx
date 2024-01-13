@@ -597,6 +597,7 @@
   "hideSubtitle": false,
   "isClass": false,
   "inEnum": true,
+  "description": "Enumeration ColorType",
   "isEnum": true,
   "_disableToc": false,
   "_disableNextArticle": true

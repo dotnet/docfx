@@ -874,6 +874,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
+  "description": "TomFromBaseClass inherits from @",
   "_disableToc": false,
   "_disableNextArticle": true
 }

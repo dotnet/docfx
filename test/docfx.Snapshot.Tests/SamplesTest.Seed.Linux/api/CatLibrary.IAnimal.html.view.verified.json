@@ -1120,6 +1120,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inInterface": true,
+  "description": "This is basic interface of all animal.",
   "_disableToc": false,
   "_disableNextArticle": true
 }

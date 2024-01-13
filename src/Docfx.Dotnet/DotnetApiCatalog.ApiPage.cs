@@ -10,6 +10,7 @@ using Docfx.Common;
 using Docfx.Common.Git;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using OneOf;
@@ -96,9 +97,14 @@ partial class DotnetApiCatalog
                     throw new NotSupportedException($"Unknown symbol type kind {symbols[0].symbol}");
             }
 
+            var metadata = new Dictionary<string, OneOf<string, string[]>>();
+            if (!string.IsNullOrEmpty(comment?.Summary))
+                metadata["description"] = HtmlInnerText(comment.Summary);
+
             output(config.OutputFolder, id, new ApiPage
             {
                 title = title,
+                metadata = metadata.Count > 0 ? metadata : null,
                 languageId = "csharp",
                 body = body.ToArray(),
             });
@@ -759,6 +765,13 @@ partial class DotnetApiCatalog
                 }
             });
         }
+    }
+
+    static string HtmlInnerText(string html)
+    {
+        var doc = new HtmlDocument();
+        doc.LoadHtml(html);
+        return doc.DocumentNode.InnerText;
     }
 }
 

@@ -347,6 +347,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inDelegate": true,
+  "description": "Generic delegate with many constrains.",
   "_disableToc": false,
   "_disableNextArticle": true
 }

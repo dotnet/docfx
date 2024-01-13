@@ -847,6 +847,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
+  "description": "This is a test class.",
   "_disableToc": false,
   "_disableNextArticle": true
 }

@@ -904,6 +904,7 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
+  "description": "A nice class",
   "_disableToc": false,
   "_disableNextArticle": true
 }
