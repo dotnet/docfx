@@ -4,9 +4,18 @@
 
 ## Markdown Extensions
 
-Docfx supports additional markdown syntax that provide richer content. These syntax are specific to docfx and won't be rendered elsewhere like GitHub.
+Docfx supports additional markdown syntax that provide richer content. These syntax are specific to docfx and won't be rendered elsewhere like GitHub.  In addition to its own extensions, docfx also supports the use of the markdown extensions provided by [Markdig](https://github.com/xoofx/markdig?tab=readme-ov-file#features).
 
-To use a custom markdown extension:
+The following list of Markdig extensions are enabled by default for docfx:
+- [Mathematics](https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/MathSpecs.md)
+- [Emphasis Extras](https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/EmphasisExtraSpecs.md)
+- [Auto Identifiers](https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/AutoIdentifierSpecs.md)
+- [Media Links](https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/MediaSpecs.md)
+- [Pipe Tables](https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/PipeTableSpecs.md)
+- [Auto Links](https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/AutoLinks.md)
+- [Emoji](https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/EmojiSpecs.md)
+
+To use other custom markdown extensions:
 
 1. Use docfx as a NuGet library:
 
@@ -20,13 +29,29 @@ To use a custom markdown extension:
 var options = new BuildOptions
 {
     // Enable custom markdown extensions here
-    ConfigureMarkdig = pipeline => pipeline.UseCitations(),
+    ConfigureMarkdig = pipeline => pipeline.UseAbbreviations().UseFootnotes(),
 }
 
 await Docset.Build("docfx.json", options);
 ```
 
-Here is a list of markdown extensions provided by docfx by default.
+Alternatively, set the `build.markdownEngineProperties.markdigExtensions` property in `docfx.json` to the list of additional extensions to use:
+
+```json
+{
+  "build": {
+    "markdownEngineProperties": {
+      "markdigExtensions": [
+          "Abbreviations",
+          "Footnotes"
+      ]
+    }
+  }
+}
+```
+
+> [!Note]
+> The custom configuration of extensions via the `build.markdownEngineProperties.markdigExtensions` property is not supported.
 
 ## YAML header
 
@@ -121,11 +146,11 @@ DocFX allows you to customize the display of alert titles in your documentation.
 2. **Create a `token.json` file**: In your custom template folder, create a new file named `token.json`. This file will be used to define your custom alert titles. The format should be as follows:
 
   ```md
-  {  
-    "todo": "MY TODO"  
+  {
+    "todo": "MY TODO"
   }
   ```
-  
+
   In this example, the key is the alert keyword in **lower case** (e.g., "todo"), and the value is the custom display title of the alert (e.g., "MY TODO").
 
 ## Video
@@ -145,7 +170,7 @@ This will be rendered as:
 
 > [!Video https://www.youtube.com/embed/Sz1lCeedcPI]
 
-## Image 
+## Image
 
 You can embed a image in your page by using the following Markdown syntax:
 
@@ -339,7 +364,7 @@ The following settings are available for configuration:
 | `localPlantUmlPath`     | path to plantuml.jar                                                    | will look in project directory          |
 | `outputFormat`          | format of generated images (svg, ascii, ascii_unicode)                  | svg                                     |
 | `remoteUrl`             | url to remote PlantUml server (required for remote rendering mode only) | http://www.plantuml.com/plantuml/       |
-| `renderingMode`         | remote or local                                                         | remote                            
+| `renderingMode`         | remote or local                                                         | remote
 
 ### Local Rendering
 
@@ -529,5 +554,5 @@ For example:
 >     This is code.
 ```
 
-In GFM, it will be rendered as a paragraph with content `[!NOTE] This is code.` in blockquote.  
+In GFM, it will be rendered as a paragraph with content `[!NOTE] This is code.` in blockquote.
 In DFM, it will be rendered as a code in note.
