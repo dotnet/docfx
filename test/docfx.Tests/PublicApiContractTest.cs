@@ -6,7 +6,6 @@ using PublicApiGenerator;
 
 namespace Docfx.Tests;
 
-[UsesVerify]
 public class PublicApiContractTest
 {
     [Fact]
