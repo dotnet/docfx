@@ -21,7 +21,6 @@ using UglyToad.PdfPig.Outline;
 
 namespace Docfx.Tests;
 
-[UsesVerify]
 [Trait("Stage", "Snapshot")]
 public class SamplesTest
 {
