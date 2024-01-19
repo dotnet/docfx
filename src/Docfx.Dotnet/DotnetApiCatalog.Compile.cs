@@ -136,7 +136,9 @@ partial class DotnetApiCatalog
 
                 foreach (var unresolvedAnalyzer in project.AnalyzerReferences.OfType<UnresolvedAnalyzerReference>())
                 {
-                    Logger.LogWarning("There is .NET Analyzer that can't be resolved. Path: " + unresolvedAnalyzer.FullPath);
+                    Logger.LogWarning($"There is .NET Analyzer that can't be resolved. "
+                                    + $"If this analyzer is .NET Source Generator project. "
+                                    + $"Try build with `dotnet build -c Release` command before running docfx. Path: {unresolvedAnalyzer.FullPath}");
                 }
             }
 
