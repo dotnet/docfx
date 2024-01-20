@@ -7,6 +7,7 @@ using Microsoft.Build.Construction;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
 
 #nullable enable
@@ -132,6 +133,13 @@ partial class DotnetApiCatalog
                     await Process.Start("dotnet", $"restore \"{path}\"").WaitForExitAsync();
                 }
                 project = await workspace.OpenProjectAsync(path, msbuildLogger);
+
+                foreach (var unresolvedAnalyzer in project.AnalyzerReferences.OfType<UnresolvedAnalyzerReference>())
+                {
+                    Logger.LogWarning($"There is .NET Analyzer that can't be resolved. "
+                                    + $"If this analyzer is .NET Source Generator project. "
+                                    + $"Try build with `dotnet build -c Release` command before running docfx. Path: {unresolvedAnalyzer.FullPath}");
+                }
             }
 
             if (!project.SupportsCompilation)
