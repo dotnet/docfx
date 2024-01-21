@@ -29,6 +29,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -97,6 +98,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -158,6 +160,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -220,6 +223,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -281,6 +285,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -342,6 +347,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -349,6 +355,68 @@
           "example": "",
           "seealso": [],
           "id": "BuildFromProject_Class1_Test_1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Dog",
+          "isExtensionMethod": false,
+          "href": "BuildFromProject.Dog.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Dog"
+            },
+            {
+              "lang": "vb",
+              "value": "Dog"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Dog"
+            },
+            {
+              "lang": "vb",
+              "value": "Dog"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Dog"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Dog"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Dog\" text=\"Dog\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Dog\" text=\"Dog\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Dog.yml\" sourcestartlinenumber=\"1\">Class representing a dog.</p>\n",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Dog",
           "hideTitleType": false,
           "hideSubtitle": false
         },
@@ -403,6 +471,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -464,6 +533,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -525,6 +595,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -586,6 +657,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -647,6 +719,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -708,6 +781,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -769,6 +843,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -830,6 +905,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -898,6 +974,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -967,6 +1044,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -1029,6 +1107,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -1098,6 +1177,7 @@
           "isEii": false,
           "docurl": "",
           "sourceurl": "",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "syntax": "",
@@ -1168,6 +1248,7 @@
   "docurl": "",
   "sourceurl": "",
   "summary": "",
+  "description": "",
   "remarks": "",
   "conceptual": "",
   "syntax": "",

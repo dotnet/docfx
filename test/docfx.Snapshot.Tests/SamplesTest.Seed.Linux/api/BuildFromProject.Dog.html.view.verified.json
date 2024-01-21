@@ -1,120 +1,167 @@
 ﻿{
-  "uid": "CSharp8.Issue4007",
+  "uid": "BuildFromProject.Dog",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "CSharp8",
+    "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "CSharp8.html",
+    "href": "BuildFromProject.html",
     "name": [
       {
         "lang": "csharp",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
     "level": 0.0
   },
   "children": [
     {
-      "inMethod": true,
-      "typePropertyName": "inMethod",
-      "id": "methods",
+      "inConstructor": true,
+      "typePropertyName": "inConstructor",
+      "id": "constructors",
       "children": [
         {
-          "uid": "CSharp8.Issue4007.SomeMethod(System.Int32)",
+          "uid": "BuildFromProject.Dog.#ctor(System.String,System.Int32)",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "CSharp8.Issue4007",
+          "parent": "BuildFromProject.Dog",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "SomeMethod(int)"
+              "value": "Dog(string, int)"
             },
             {
               "lang": "vb",
-              "value": "SomeMethod(Integer)"
+              "value": "New(String, Integer)"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "Issue4007.SomeMethod(int)"
+              "value": "Dog.Dog(string, int)"
             },
             {
               "lang": "vb",
-              "value": "Issue4007.SomeMethod(Integer)"
+              "value": "Dog.New(String, Integer)"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp8.Issue4007.SomeMethod(int)"
+              "value": "BuildFromProject.Dog.Dog(string, int)"
             },
             {
               "lang": "vb",
-              "value": "CSharp8.Issue4007.SomeMethod(Integer)"
+              "value": "BuildFromProject.Dog.New(String, Integer)"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" text=\"SomeMethod(int)\"/>"
+              "value": "<xref uid=\"BuildFromProject.Dog.#ctor(System.String,System.Int32)\" text=\"Dog(string, int)\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" text=\"SomeMethod(int)\"/>"
+              "value": "<xref uid=\"BuildFromProject.Dog.#ctor(System.String,System.Int32)\" text=\"Dog(string, int)\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public void SomeMethod(int a)"
+                "value": "public Dog(string name, int age)"
               },
               {
                 "lang": "vb",
-                "value": "Public Sub SomeMethod(a As Integer)"
+                "value": "Public Sub New(name As String, age As Integer)"
               }
             ],
             "parameters": [
               {
-                "id": "a",
+                "id": "name",
+                "type": {
+                  "uid": "System.String",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    }
+                  ]
+                },
+                "description": "<p sourcefile=\"obj/api/BuildFromProject.Dog.yml\" sourcestartlinenumber=\"1\">Name of the dog.</p>\n"
+              },
+              {
+                "id": "age",
                 "type": {
                   "uid": "System.Int32",
                   "name": [
@@ -157,215 +204,450 @@
                       "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
                     }
                   ]
-                }
+                },
+                "description": "<p sourcefile=\"obj/api/BuildFromProject.Dog.yml\" sourcestartlinenumber=\"1\">Age of the dog.</p>\n"
               }
             ]
           },
           "source": {
             "remote": {
-              "path": "samples/csharp/src/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "SomeMethod",
-            "path": "src/CSharp8.cs",
-            "startLine": 147.0,
+            "id": ".ctor",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 237.0,
             "endLine": 0.0
           },
           "assemblies": [
-            "CSharp"
+            "BuildFromProject"
           ],
-          "namespace": "CSharp8",
+          "namespace": "BuildFromProject",
+          "example": [],
           "overload": {
-            "uid": "CSharp8.Issue4007.SomeMethod*",
+            "uid": "BuildFromProject.Dog.#ctor*",
             "name": [
               {
                 "lang": "csharp",
-                "value": "SomeMethod"
+                "value": "Dog"
               },
               {
                 "lang": "vb",
-                "value": "SomeMethod"
+                "value": "New"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "Issue4007.SomeMethod"
+                "value": "Dog.Dog"
               },
               {
                 "lang": "vb",
-                "value": "Issue4007.SomeMethod"
+                "value": "Dog.New"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "CSharp8.Issue4007.SomeMethod"
+                "value": "BuildFromProject.Dog.Dog"
               },
               {
                 "lang": "vb",
-                "value": "CSharp8.Issue4007.SomeMethod"
+                "value": "BuildFromProject.Dog.New"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"CSharp8.Issue4007.SomeMethod*\" text=\"SomeMethod\"/>"
+                "value": "<xref uid=\"BuildFromProject.Dog.#ctor*\" text=\"Dog\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"CSharp8.Issue4007.SomeMethod*\" text=\"SomeMethod\"/>"
+                "value": "<xref uid=\"BuildFromProject.Dog.#ctor*\" text=\"Dog\"/>"
               }
             ],
-            "id": "CSharp8_Issue4007_SomeMethod_"
+            "id": "BuildFromProject_Dog__ctor_"
           },
           "level": 0.0,
-          "type": "method",
-          "summary": "",
+          "type": "constructor",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Dog.yml\" sourcestartlinenumber=\"1\">Constructor.</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Issue4007_SomeMethod_System_Int32_.md&value=---%0Auid%3A%20CSharp8.Issue4007.SomeMethod(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L148",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Dog__ctor_System_String_System_Int32_.md&value=---%0Auid%3A%20BuildFromProject.Dog.%23ctor(System.String%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L238",
           "description": "",
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "example": "",
           "seealso": [],
-          "id": "CSharp8_Issue4007_SomeMethod_System_Int32_",
+          "id": "BuildFromProject_Dog__ctor_System_String_System_Int32_",
           "hideTitleType": false,
           "hideSubtitle": false
-        },
+        }
+      ]
+    },
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
         {
-          "uid": "CSharp8.Issue4007.SomeOtherMethod",
+          "uid": "BuildFromProject.Dog.Age",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "CSharp8.Issue4007",
+          "parent": "BuildFromProject.Dog",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "SomeOtherMethod()"
+              "value": "Age"
             },
             {
               "lang": "vb",
-              "value": "SomeOtherMethod()"
+              "value": "Age"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "Issue4007.SomeOtherMethod()"
+              "value": "Dog.Age"
             },
             {
               "lang": "vb",
-              "value": "Issue4007.SomeOtherMethod()"
+              "value": "Dog.Age"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp8.Issue4007.SomeOtherMethod()"
+              "value": "BuildFromProject.Dog.Age"
             },
             {
               "lang": "vb",
-              "value": "CSharp8.Issue4007.SomeOtherMethod()"
+              "value": "BuildFromProject.Dog.Age"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.Issue4007.SomeOtherMethod\" text=\"SomeOtherMethod()\"/>"
+              "value": "<xref uid=\"BuildFromProject.Dog.Age\" text=\"Age\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.Issue4007.SomeOtherMethod\" text=\"SomeOtherMethod()\"/>"
+              "value": "<xref uid=\"BuildFromProject.Dog.Age\" text=\"Age\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public void SomeOtherMethod()"
+                "value": "public int Age { get; }"
               },
               {
                 "lang": "vb",
-                "value": "Public Sub SomeOtherMethod()"
+                "value": "Public ReadOnly Property Age As Integer"
               }
-            ]
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Int32",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  }
+                ]
+              }
+            }
           },
           "source": {
             "remote": {
-              "path": "samples/csharp/src/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "SomeOtherMethod",
-            "path": "src/CSharp8.cs",
-            "startLine": 157.0,
+            "id": "Age",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 230.0,
             "endLine": 0.0
           },
           "assemblies": [
-            "CSharp"
+            "BuildFromProject"
           ],
-          "namespace": "CSharp8",
+          "namespace": "BuildFromProject",
+          "example": [],
           "overload": {
-            "uid": "CSharp8.Issue4007.SomeOtherMethod*",
+            "uid": "BuildFromProject.Dog.Age*",
             "name": [
               {
                 "lang": "csharp",
-                "value": "SomeOtherMethod"
+                "value": "Age"
               },
               {
                 "lang": "vb",
-                "value": "SomeOtherMethod"
+                "value": "Age"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "Issue4007.SomeOtherMethod"
+                "value": "Dog.Age"
               },
               {
                 "lang": "vb",
-                "value": "Issue4007.SomeOtherMethod"
+                "value": "Dog.Age"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "CSharp8.Issue4007.SomeOtherMethod"
+                "value": "BuildFromProject.Dog.Age"
               },
               {
                 "lang": "vb",
-                "value": "CSharp8.Issue4007.SomeOtherMethod"
+                "value": "BuildFromProject.Dog.Age"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"CSharp8.Issue4007.SomeOtherMethod*\" text=\"SomeOtherMethod\"/>"
+                "value": "<xref uid=\"BuildFromProject.Dog.Age*\" text=\"Age\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"CSharp8.Issue4007.SomeOtherMethod*\" text=\"SomeOtherMethod\"/>"
+                "value": "<xref uid=\"BuildFromProject.Dog.Age*\" text=\"Age\"/>"
               }
             ],
-            "id": "CSharp8_Issue4007_SomeOtherMethod_"
+            "id": "BuildFromProject_Dog_Age_"
           },
           "level": 0.0,
-          "type": "method",
-          "summary": "",
+          "type": "property",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Dog.yml\" sourcestartlinenumber=\"1\">Age of the dog.</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Issue4007_SomeOtherMethod.md&value=---%0Auid%3A%20CSharp8.Issue4007.SomeOtherMethod%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L158",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Dog_Age.md&value=---%0Auid%3A%20BuildFromProject.Dog.Age%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L231",
           "description": "",
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "example": "",
           "seealso": [],
-          "id": "CSharp8_Issue4007_SomeOtherMethod",
+          "id": "BuildFromProject_Dog_Age",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Dog.Name",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Dog",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Name"
+            },
+            {
+              "lang": "vb",
+              "value": "Name"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Dog.Name"
+            },
+            {
+              "lang": "vb",
+              "value": "Dog.Name"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Dog.Name"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Dog.Name"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Dog.Name\" text=\"Name\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Dog.Name\" text=\"Name\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public string Name { get; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public ReadOnly Property Name As String"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Name",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 225.0,
+            "endLine": 0.0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Dog.Name*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Name"
+              },
+              {
+                "lang": "vb",
+                "value": "Name"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Dog.Name"
+              },
+              {
+                "lang": "vb",
+                "value": "Dog.Name"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Dog.Name"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Dog.Name"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Dog.Name*\" text=\"Name\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Dog.Name*\" text=\"Name\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Dog_Name_"
+          },
+          "level": 0.0,
+          "type": "property",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Dog.yml\" sourcestartlinenumber=\"1\">Name of the dog.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Dog_Name.md&value=---%0Auid%3A%20BuildFromProject.Dog.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L226",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Dog_Name",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -379,106 +661,106 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "Issue4007"
+      "value": "Dog"
     },
     {
       "lang": "vb",
-      "value": "Issue4007"
+      "value": "Dog"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "Issue4007"
+      "value": "Dog"
     },
     {
       "lang": "vb",
-      "value": "Issue4007"
+      "value": "Dog"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "CSharp8.Issue4007"
+      "value": "BuildFromProject.Dog"
     },
     {
       "lang": "vb",
-      "value": "CSharp8.Issue4007"
+      "value": "BuildFromProject.Dog"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/csharp/src/CSharp8.cs",
+      "path": "samples/seed/dotnet/project/Project/Class1.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "Issue4007",
-    "path": "src/CSharp8.cs",
-    "startLine": 145.0,
+    "id": "Dog",
+    "path": "dotnet/project/Project/Class1.cs",
+    "startLine": 220.0,
     "endLine": 0.0
   },
   "assemblies": [
-    "CSharp"
+    "BuildFromProject"
   ],
   "namespace": {
-    "uid": "CSharp8",
+    "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "CSharp8.html",
+    "href": "BuildFromProject.html",
     "name": [
       {
         "lang": "csharp",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "CSharp8"
+        "value": "BuildFromProject"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"api/CSharp8.Issue4007.yml\" sourcestartlinenumber=\"1\">This works: <xref href=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>.\nThis does not work: <xref href=\"CSharp8.Issue4007.SomeOtherMethod\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n",
+  "summary": "<p sourcefile=\"obj/api/BuildFromProject.Dog.yml\" sourcestartlinenumber=\"1\">Class representing a dog.</p>\n",
   "example": [],
   "syntax": {
     "content": [
       {
         "lang": "csharp",
-        "value": "public class Issue4007"
+        "value": "public class Dog"
       },
       {
         "lang": "vb",
-        "value": "Public Class Issue4007"
+        "value": "Public Class Dog"
       }
     ]
   },
@@ -880,131 +1162,29 @@
       "level": 0.0
     }
   ],
-  "_systemKeys": [
-    "uid",
-    "isEii",
-    "isExtensionMethod",
-    "parent",
-    "children",
-    "href",
-    "langs",
-    "name",
-    "nameWithType",
-    "fullName",
-    "type",
-    "source",
-    "documentation",
-    "assemblies",
-    "namespace",
-    "summary",
-    "remarks",
-    "example",
-    "syntax",
-    "overridden",
-    "overload",
-    "exceptions",
-    "seealso",
-    "see",
-    "inheritance",
-    "derivedClasses",
-    "level",
-    "implements",
-    "inheritedMembers",
-    "extensionMethods",
-    "conceptual",
-    "platform",
-    "attributes",
-    "additionalNotes"
-  ],
-  "_key": "api/CSharp8.Issue4007.yml",
-  "_path": "api/CSharp8.Issue4007.html",
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromProject.Dog.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromProject.Dog.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
-  "__global": {
-    "namespacesInSubtitle": "Namespaces",
-    "classesInSubtitle": "Classes",
-    "structsInSubtitle": "Structs",
-    "interfacesInSubtitle": "Interfaces",
-    "enumsInSubtitle": "Enums",
-    "delegatesInSubtitle": "Delegates",
-    "constructorsInSubtitle": "Constructors",
-    "fieldsInSubtitle": "Fields",
-    "propertiesInSubtitle": "Properties",
-    "methodsInSubtitle": "Methods",
-    "eventsInSubtitle": "Events",
-    "operatorsInSubtitle": "Operators",
-    "eiisInSubtitle": "Explicit Interface Implementations",
-    "functionsInSubtitle": "Functions",
-    "variablesInSubtitle": "Variables",
-    "typeAliasesInSubtitle": "Type Aliases",
-    "membersInSubtitle": "Members",
-    "improveThisDoc": "Edit this page",
-    "viewSource": "View Source",
-    "inheritance": "Inheritance",
-    "derived": "Derived",
-    "inheritedMembers": "Inherited Members",
-    "package": "Package",
-    "namespace": "Namespace",
-    "assembly": "Assembly",
-    "syntax": "Syntax",
-    "overrides": "Overrides",
-    "implements": "Implements",
-    "remarks": "Remarks",
-    "examples": "Examples",
-    "seealso": "See Also",
-    "declaration": "Declaration",
-    "parameters": "Parameters",
-    "typeParameters": "Type Parameters",
-    "type": "Type",
-    "name": "Name",
-    "description": "Description",
-    "returns": "Returns",
-    "fieldValue": "Field Value",
-    "propertyValue": "Property Value",
-    "eventType": "Event Type",
-    "variableValue": "Variable Value",
-    "typeAliasType": "Type Alias Type",
-    "exceptions": "Exceptions",
-    "condition": "Condition",
-    "extensionMethods": "Extension Methods",
-    "note": "Note",
-    "warning": "Warning",
-    "tip": "Tip",
-    "important": "Important",
-    "caution": "Caution",
-    "tocToggleButton": "Show / Hide Table of Contents",
-    "tocFilter": "Filter by title",
-    "search": "Search",
-    "searchResults": "Search Results for",
-    "searchResultsCount": "{count} results for \"{query}\"",
-    "searchNoResults": "No results for \"{query}\"",
-    "pageFirst": "First",
-    "pagePrev": "Previous",
-    "pageNext": "Next",
-    "pageLast": "Last",
-    "inThisArticle": "In this article",
-    "nextArticle": "Next",
-    "prevArticle": "Previous",
-    "backToTop": "Back to top",
-    "themeLight": "Light",
-    "themeDark": "Dark",
-    "themeAuto": "Auto",
-    "changeTheme": "Change theme",
-    "copy": "Copy",
-    "downloadPdf": "Download PDF",
-    "_shared": {}
-  },
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Issue4007.md&value=---%0Auid%3A%20CSharp8.Issue4007%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L146",
-  "description": "This works: . This does not work: .",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Dog.md&value=---%0Auid%3A%20BuildFromProject.Dog%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L221",
+  "description": "Class representing a dog.",
   "remarks": "",
   "conceptual": "",
   "implements": "",
   "seealso": [],
-  "id": "CSharp8_Issue4007",
+  "id": "BuildFromProject_Dog",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

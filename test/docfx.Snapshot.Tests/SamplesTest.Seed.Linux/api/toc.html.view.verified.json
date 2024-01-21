@@ -178,6 +178,16 @@
           "leaf": true
         },
         {
+          "name": "Dog",
+          "href": "BuildFromProject.Dog.html",
+          "topicHref": "BuildFromProject.Dog.html",
+          "topicUid": "BuildFromProject.Dog",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "IInheritdoc",
           "href": "BuildFromProject.IInheritdoc.html",
           "topicHref": "BuildFromProject.IInheritdoc.html",

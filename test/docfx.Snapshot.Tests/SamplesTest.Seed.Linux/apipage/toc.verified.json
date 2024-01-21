@@ -109,6 +109,11 @@
           "topicHref": "BuildFromProject.Class1.Test-1.html"
         },
         {
+          "name": "Dog",
+          "href": "BuildFromProject.Dog.html",
+          "topicHref": "BuildFromProject.Dog.html"
+        },
+        {
           "name": "Inheritdoc",
           "href": "BuildFromProject.Inheritdoc.html",
           "topicHref": "BuildFromProject.Inheritdoc.html"
