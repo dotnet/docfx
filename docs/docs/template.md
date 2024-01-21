@@ -133,6 +133,16 @@ export default {
 }
 ```
 
+You can add custom startup scripts in `main.js` using the `start` option:
+
+```js
+export default {
+  start: () => {
+    // Startup script goes here
+  },
+}
+```
+
 You can also configure syntax highlighting options using the `configureHljs` option:
 
 ```js
