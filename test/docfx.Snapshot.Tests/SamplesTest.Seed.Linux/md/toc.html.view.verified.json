@@ -189,6 +189,15 @@
           "leaf": true
         },
         {
+          "name": "Dog",
+          "href": "BuildFromProject.Dog.html",
+          "topicHref": "BuildFromProject.Dog.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "Inheritdoc",
           "href": "BuildFromProject.Inheritdoc.html",
           "topicHref": "BuildFromProject.Inheritdoc.html",

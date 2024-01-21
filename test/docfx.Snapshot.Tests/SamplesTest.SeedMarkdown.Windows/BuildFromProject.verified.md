@@ -12,6 +12,10 @@
 
  [Inheritdoc.Issue6366.Class2](BuildFromProject.Inheritdoc.Issue6366.Class2.md)
 
+ [Dog](BuildFromProject.Dog.md)
+
+Class representing a dog.
+
  [Inheritdoc](BuildFromProject.Inheritdoc.md)
 
  [Inheritdoc.Issue6366](BuildFromProject.Inheritdoc.Issue6366.md)

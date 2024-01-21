@@ -120,6 +120,12 @@
           "topicUid": "BuildFromProject.Class1.Test`1"
         },
         {
+          "name": "Dog",
+          "href": "BuildFromProject.Dog.html",
+          "topicHref": "BuildFromProject.Dog.html",
+          "topicUid": "BuildFromProject.Dog"
+        },
+        {
           "name": "IInheritdoc",
           "href": "BuildFromProject.IInheritdoc.html",
           "topicHref": "BuildFromProject.IInheritdoc.html",

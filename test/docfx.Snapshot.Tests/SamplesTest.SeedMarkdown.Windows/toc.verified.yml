@@ -43,6 +43,8 @@
     href: BuildFromProject.Class1.Issue8948.md
   - name: Class1.Test<T>
     href: BuildFromProject.Class1.Test-1.md
+  - name: Dog
+    href: BuildFromProject.Dog.md
   - name: Inheritdoc
     href: BuildFromProject.Inheritdoc.md
   - name: Inheritdoc.Issue6366

@@ -173,6 +173,7 @@
           "platform": null,
           "docurl": "",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -307,6 +308,7 @@
           "platform": null,
           "docurl": "",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+          "description": "",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -838,6 +840,7 @@
   "yamlmime": "ManagedReference",
   "docurl": "",
   "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+  "description": "This is a test class.",
   "remarks": "",
   "conceptual": "",
   "implements": "",
@@ -847,7 +850,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "description": "This is a test class.",
   "_disableToc": false,
   "_disableNextArticle": true
 }
