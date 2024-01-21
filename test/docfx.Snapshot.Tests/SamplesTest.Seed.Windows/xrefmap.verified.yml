@@ -440,6 +440,57 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.XmlCommentIncludeTag
   nameWithType: Class1.XmlCommentIncludeTag
+- uid: BuildFromProject.Dog
+  name: Dog
+  href: api/BuildFromProject.Dog.html
+  commentId: T:BuildFromProject.Dog
+  fullName: BuildFromProject.Dog
+  nameWithType: Dog
+- uid: BuildFromProject.Dog.#ctor(System.String,System.Int32)
+  name: Dog(string, int)
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog__ctor_System_String_System_Int32_
+  commentId: M:BuildFromProject.Dog.#ctor(System.String,System.Int32)
+  name.vb: New(String, Integer)
+  fullName: BuildFromProject.Dog.Dog(string, int)
+  fullName.vb: BuildFromProject.Dog.New(String, Integer)
+  nameWithType: Dog.Dog(string, int)
+  nameWithType.vb: Dog.New(String, Integer)
+- uid: BuildFromProject.Dog.#ctor*
+  name: Dog
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog__ctor_
+  commentId: Overload:BuildFromProject.Dog.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Dog.Dog
+  fullName.vb: BuildFromProject.Dog.New
+  nameWithType: Dog.Dog
+  nameWithType.vb: Dog.New
+- uid: BuildFromProject.Dog.Age
+  name: Age
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog_Age
+  commentId: P:BuildFromProject.Dog.Age
+  fullName: BuildFromProject.Dog.Age
+  nameWithType: Dog.Age
+- uid: BuildFromProject.Dog.Age*
+  name: Age
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog_Age_
+  commentId: Overload:BuildFromProject.Dog.Age
+  isSpec: "True"
+  fullName: BuildFromProject.Dog.Age
+  nameWithType: Dog.Age
+- uid: BuildFromProject.Dog.Name
+  name: Name
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog_Name
+  commentId: P:BuildFromProject.Dog.Name
+  fullName: BuildFromProject.Dog.Name
+  nameWithType: Dog.Name
+- uid: BuildFromProject.Dog.Name*
+  name: Name
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog_Name_
+  commentId: Overload:BuildFromProject.Dog.Name
+  isSpec: "True"
+  fullName: BuildFromProject.Dog.Name
+  nameWithType: Dog.Name
 - uid: BuildFromProject.IInheritdoc
   name: IInheritdoc
   href: api/BuildFromProject.IInheritdoc.html
