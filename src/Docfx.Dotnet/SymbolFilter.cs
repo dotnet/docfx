@@ -21,7 +21,9 @@ internal class SymbolFilter
     {
         _options = options;
         _config = config;
-        _filterRule = config.DisableDefaultFilter ? null : ConfigFilterRule.LoadWithDefaults(config.FilterConfigFile);
+        _filterRule = config.DisableDefaultFilter
+                            ? ConfigFilterRule.Load(config.FilterConfigFile)
+                            : ConfigFilterRule.LoadWithDefaults(config.FilterConfigFile);
     }
 
     public bool IncludeApi(ISymbol symbol)
