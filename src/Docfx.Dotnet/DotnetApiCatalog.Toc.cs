@@ -88,11 +88,9 @@ partial class DotnetApiCatalog
 
             IEnumerable<TocNode> CreateNamespaceToc(INamespaceSymbol ns)
             {
-                var idExists = true;
                 var id = VisitorHelper.PathFriendlyId(VisitorHelper.GetId(symbol));
                 if (!tocNodes.TryGetValue(id, out var node))
                 {
-                    idExists = false;
                     tocNodes.Add(id, node = new()
                     {
                         id = id,
@@ -120,7 +118,7 @@ partial class DotnetApiCatalog
                 }
 
                 node.containsLeafNodes = node.items.Any(i => i.containsLeafNodes);
-                if (!idExists && node.containsLeafNodes)
+                if (node.containsLeafNodes)
                 {
                     yield return node;
                 }
