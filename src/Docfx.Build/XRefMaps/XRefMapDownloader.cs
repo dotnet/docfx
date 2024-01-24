@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Net;
 using Docfx.Common;
 
 using EnvironmentVariables = Docfx.DataContracts.Common.Constants.EnvironmentVariables;
@@ -127,11 +128,15 @@ public class XRefMapDownloader
 
         using var httpClient = new HttpClient(new HttpClientHandler()
         {
+            AutomaticDecompression = DecompressionMethods.All,
             CheckCertificateRevocationList = !EnvironmentVariables.NoCheckCertificateRevocationList,
-        });
+        })
+        {
+            Timeout = TimeSpan.FromMinutes(30), // Default: 100 seconds
+        };
 
         using var stream = await httpClient.GetStreamAsync(uri);
-        using var sr = new StreamReader(stream);
+        using var sr = new StreamReader(stream, bufferSize: 81920); // Default :1024 byte
         var map = YamlUtility.Deserialize<XRefMap>(sr);
         map.BaseUrl = baseUrl;
         UpdateHref(map, null);
