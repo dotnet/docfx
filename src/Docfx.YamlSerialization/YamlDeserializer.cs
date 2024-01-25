@@ -89,12 +89,12 @@ public sealed class YamlDeserializer
         {
             new TypeConverterNodeDeserializer(_converters),
             new NullNodeDeserializer(),
-            new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter, YamlFormatter.Default),
+            new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter, YamlFormatter.Default, NullNamingConvention.Instance),
             new EmitArrayNodeDeserializer(),
             new EmitGenericDictionaryNodeDeserializer(objectFactory),
             new DictionaryNodeDeserializer(objectFactory, duplicateKeyChecking: true),
             new EmitGenericCollectionNodeDeserializer(objectFactory),
-            new CollectionNodeDeserializer(objectFactory),
+            new CollectionNodeDeserializer(objectFactory, NullNamingConvention.Instance),
             new EnumerableNodeDeserializer(),
             new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
         };
@@ -106,7 +106,7 @@ public sealed class YamlDeserializer
             new ScalarYamlNodeTypeResolver()
         };
 
-        NodeValueDeserializer nodeValueDeserializer = new(NodeDeserializers, TypeResolvers, _reflectionTypeConverter);
+        NodeValueDeserializer nodeValueDeserializer = new(NodeDeserializers, TypeResolvers, _reflectionTypeConverter, NullNamingConvention.Instance);
         if (ignoreNotFoundAnchor)
         {
             _valueDeserializer = new LooseAliasValueDeserializer(nodeValueDeserializer);

@@ -4,6 +4,7 @@
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.Utilities;
 
 namespace Docfx.YamlSerialization.NodeDeserializers;
@@ -43,7 +44,7 @@ public sealed class ExtensibleObjectNodeDeserializer : INodeDeserializer
             var propertyValue = nestedObjectDeserializer(reader, property.Type);
             if (propertyValue is not IValuePromise propertyValuePromise)
             {
-                var convertedValue = TypeConverter.ChangeType(propertyValue, property.Type);
+                var convertedValue = TypeConverter.ChangeType(propertyValue, property.Type, NullNamingConvention.Instance);
                 property.Write(value, convertedValue);
             }
             else
@@ -51,7 +52,7 @@ public sealed class ExtensibleObjectNodeDeserializer : INodeDeserializer
                 var valueRef = value;
                 propertyValuePromise.ValueAvailable += v =>
                 {
-                    var convertedValue = TypeConverter.ChangeType(v, property.Type);
+                    var convertedValue = TypeConverter.ChangeType(v, property.Type, NullNamingConvention.Instance);
                     property.Write(valueRef, convertedValue);
                 };
             }
