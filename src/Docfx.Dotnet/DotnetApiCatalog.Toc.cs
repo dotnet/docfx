@@ -102,6 +102,8 @@ partial class DotnetApiCatalog
                     });
                 }
 
+                var existingNodeHasNoLeafNode = idExists && !node.containsLeafNodes;
+
                 node.items ??= new();
                 node.symbols.Add((symbol, compilation));
 
@@ -120,9 +122,12 @@ partial class DotnetApiCatalog
                 }
 
                 node.containsLeafNodes = node.items.Any(i => i.containsLeafNodes);
-                if (!idExists && node.containsLeafNodes)
+                if (node.containsLeafNodes)
                 {
-                    yield return node;
+                    if (!idExists || existingNodeHasNoLeafNode)
+                    {
+                        yield return node;
+                    }
                 }
             }
 
