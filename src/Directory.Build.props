@@ -4,4 +4,9 @@
   <ItemGroup>
     <InternalsVisibleTo Include="$(AssemblyName).Tests" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <InternalsVisibleTo Include="Docfx.Benchmarks" />
+    <InternalsVisibleTo Include="LINQPadQuery" /> 
+  </ItemGroup>
 </Project>
