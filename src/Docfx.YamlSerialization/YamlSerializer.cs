@@ -119,11 +119,19 @@ public class YamlSerializer
 
         if (IsOptionSet(SerializationOptions.JsonCompatible))
         {
-            return new JsonEventEmitter(writer);
+            return new JsonEventEmitter(writer, YamlFormatter.Default, NullNamingConvention.Instance);
         }
         else
         {
-            return new TypeAssigningEventEmitter(writer, IsOptionSet(SerializationOptions.Roundtrip), new Dictionary<Type, TagName>());
+            return new TypeAssigningEventEmitter(
+                writer,
+                IsOptionSet(SerializationOptions.Roundtrip),
+                new Dictionary<Type, TagName>(),
+                quoteNecessaryStrings: false,
+                quoteYaml1_1Strings: false,
+                defaultScalarStyle: ScalarStyle.Any,
+                formatter: YamlFormatter.Default,
+                enumNamingConvention: NullNamingConvention.Instance);
         }
     }
 

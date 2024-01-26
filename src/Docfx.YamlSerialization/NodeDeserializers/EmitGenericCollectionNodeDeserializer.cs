@@ -7,6 +7,7 @@ using Docfx.YamlSerialization.Helpers;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.Utilities;
 using EditorBrowsable = System.ComponentModel.EditorBrowsableAttribute;
 using EditorBrowsableState = System.ComponentModel.EditorBrowsableState;
@@ -84,13 +85,13 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
             var value = nestedObjectDeserializer(reader, typeof(TItem));
             if (value is not IValuePromise promise)
             {
-                result.Add(TypeConverter.ChangeType<TItem>(value));
+                result.Add(TypeConverter.ChangeType<TItem>(value, NullNamingConvention.Instance));
             }
             else if (result is IList<TItem> list)
             {
                 var index = list.Count;
                 result.Add(default);
-                promise.ValueAvailable += v => list[index] = TypeConverter.ChangeType<TItem>(v);
+                promise.ValueAvailable += v => list[index] = TypeConverter.ChangeType<TItem>(v, NullNamingConvention.Instance);
             }
             else
             {
