@@ -1,0 +1,5 @@
+﻿apiRules:
+- include:
+    uidRegex: ^Microsoft\.DevDiv\.SpecialCase
+- exclude:
+    uidRegex: ^Microsoft\.DevDiv
