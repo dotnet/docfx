@@ -359,6 +359,12 @@ namespace Microsoft.DevDiv.SpecialCase
         Assert.Equal("Microsoft.DevDiv.SpecialCase.NestedClass", nestedClass.Name);
     }
 
+    [Fact]
+    public void TestExtendedSymbolKindFlags()
+    {
+        Assert.True((ExtendedSymbolKind.Type | ExtendedSymbolKind.Member).Contains(new SymbolFilterData { Kind = ExtendedSymbolKind.Interface }));
+    }
+
     private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, DotnetApiOptions options = null)
     {
         var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
