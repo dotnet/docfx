@@ -208,8 +208,13 @@ internal class ManifestProcessor
             {
                 if (string.IsNullOrEmpty(node.Name))
                 {
+                    // Try to get title from href
                     if (node.Href is not null && titles.TryGetValue(UriUtility.GetPath(node.Href), out var title))
                         node.Name = title;
+                    // If topicUid exists. Name is resolved by TocDocumentProcessor
+                    else if (node.TopicUid != null)
+                    {
+                    }
                     else
                         Logger.LogWarning(
                             $"TOC item ({node}) with empty name found. Missing a name?",
