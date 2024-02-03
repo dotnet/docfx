@@ -32,14 +32,14 @@
     "highlight.js": "^11.9.0",
     "idb-keyval": "^6.2.1",
     "jquery": "3.7.0",
-    "lit-html": "^3.1.1",
+    "lit-html": "^3.1.2",
     "lunr": "2.3.9",
     "lunr-languages": "^1.14.0",
     "mathjax": "^3.2.2",
     "mermaid": "^10.7.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.11",
+    "@types/jest": "^29.5.12",
     "@types/lunr": "^2.3.7",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "@typescript-eslint/parser": "^6.20.0",
