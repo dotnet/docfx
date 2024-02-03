@@ -35,7 +35,7 @@ jobs:
     - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
       if: matrix.os == 'ubuntu-latest'
 
-    - uses: codecov/codecov-action@v3
+    - uses: codecov/codecov-action@v4
       if: matrix.os == 'ubuntu-latest'
 
     - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
