@@ -43,7 +43,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23577-04" />
     <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.3.0" />
-    <PackageVersion Include="Verify.Xunit" Version="23.0.1" />
+    <PackageVersion Include="Verify.Xunit" Version="23.1.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.6" />
     <PackageVersion Include="xunit" Version="2.6.6" />
   </ItemGroup>
