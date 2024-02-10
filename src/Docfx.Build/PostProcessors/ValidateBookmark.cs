@@ -43,7 +43,7 @@ sealed class ValidateBookmark : HtmlDocumentHandler
              {
                  Title = node.InnerText,
                  Href = TransformPath(outputFile, decodedLink),
-                 Bookmark = bookmark,
+                 Bookmark = Uri.UnescapeDataString(bookmark),
                  SourceFragment = WebUtility.HtmlDecode(node.GetAttributeValue("data-raw-source", null)),
                  SourceFile = WebUtility.HtmlDecode(node.GetAttributeValue("sourceFile", null)),
                  SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0),
