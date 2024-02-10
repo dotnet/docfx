@@ -6,10 +6,6 @@ To add REST API docs, include the swagger JSON file to the `build` config in `do
 
 ```json
 {
-  "metadata": {
-    "src": [ "../src/**/bin/Release/**.dll" ],
-    "dest": "api"
-  },
   "build": {
     "content": [{
       "files": [ "**/*.swagger.json" ] // <-- Include swagger JSON files
