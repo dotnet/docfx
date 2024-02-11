@@ -3,6 +3,7 @@
 
 using Docfx.Common;
 using Esprima;
+using Jint.Runtime;
 
 namespace Docfx.Build.Engine;
 
@@ -71,9 +72,13 @@ internal class PreprocessorWithResourcePool : ITemplatePreprocessor
         {
             return lease.Resource.TransformModel(model);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            throw new InvalidPreprocessorException($"Error running Transform function inside template preprocessor: {e.Message}");
+            string message = ex is JavaScriptException jsException
+                ? jsException.GetJavaScriptErrorString()
+                : ex.Message;
+
+            throw new InvalidPreprocessorException($"Error running Transform function inside template preprocessor: {message}");
         }
     }
 }
