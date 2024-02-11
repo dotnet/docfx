@@ -124,4 +124,39 @@ public class ValidateBookmarkTest : TestBase
         var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
         Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
     }
+
+    [Fact]
+    public void TestLinkThatContainsNonAsciiChars()
+    {
+        Manifest manifest = new()
+        {
+            SourceBasePath = _outputFolder,
+            Files =
+            {
+                new ManifestItem { SourceRelativePath = "non_ascii.md", Output = { { ".html", new OutputFileInfo { RelativePath = "non_ascii.html" } } } },
+            }
+        };
+
+        File.WriteAllText(Path.Combine(_outputFolder, "non_ascii.html"), """
+<h2 id="foo">foo</h2>
+<p>Visit <a href="#qu%C3%A9bec">Québec</a>.</p>
+<h2 id="québec">Québec</h2>
+<p>The province or the city.</p>
+""");
+
+        Logger.RegisterListener(_listener);
+        try
+        {
+            new HtmlPostProcessor
+            {
+                Handlers = { new ValidateBookmark() }
+            }.Process(manifest, _outputFolder);
+        }
+        finally
+        {
+            Logger.UnregisterListener(_listener);
+        }
+        var logs = _listener.Items;
+        Assert.Empty(logs);
+    }
 }

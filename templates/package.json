@@ -36,13 +36,13 @@
     "lunr": "2.3.9",
     "lunr-languages": "^1.14.0",
     "mathjax": "^3.2.2",
-    "mermaid": "^10.7.0"
+    "mermaid": "^10.8.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/lunr": "^2.3.7",
-    "@typescript-eslint/eslint-plugin": "^6.20.0",
-    "@typescript-eslint/parser": "^6.20.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "browser-sync": "^3.0.2",
     "esbuild": "~0.20.0",
     "esbuild-sass-plugin": "~3.0.0",
