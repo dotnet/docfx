@@ -18,7 +18,7 @@ public class PublicApiContractTest
             .OrderBy(a => a.FullName)
             .Select(a => a.GeneratePublicApi(new() { IncludeAssemblyAttributes = false })));
 
-        return Verify(new Target("cs", publicApi)).UseFileName("Api").AutoVerify();
+        return Verify(new Target("cs", publicApi)).UseFileName("Api").AutoVerify(includeBuildServer: false);
 
         void GetAssemblies(Assembly assembly)
         {
