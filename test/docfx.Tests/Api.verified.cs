@@ -517,6 +517,10 @@ namespace Docfx.Build.TableOfContents
     {
         public static System.Collections.Generic.List<Docfx.DataContracts.Common.TocItemViewModel> LoadToc(string tocContent, string filePath) { }
     }
+    public static class TocHelper
+    {
+        public static Docfx.DataContracts.Common.TocItemViewModel LoadSingleToc(string file) { }
+    }
 }
 namespace Docfx.Build.Common
 {
