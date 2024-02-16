@@ -125,7 +125,6 @@ public class YamlSerializer
         {
             return new TypeAssigningEventEmitter(
                 writer,
-                IsOptionSet(SerializationOptions.Roundtrip),
                 new Dictionary<Type, TagName>(),
                 quoteNecessaryStrings: false,
                 quoteYaml1_1Strings: false,
