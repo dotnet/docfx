@@ -9,7 +9,7 @@ namespace Docfx.Common.Tests;
 public class PathUtilityTest
 {
     [Theory]
-    [MemberData(nameof(TestData.AdditionalTests), MemberType = typeof(TestData), DisableDiscoveryEnumeration = false)]
+    [MemberData(nameof(TestData.AdditionalTests), MemberType = typeof(TestData))]
     public void TestMakeRelativePath(string basePath, string targetPath, string expected)
     {
         // Act
@@ -20,7 +20,7 @@ public class PathUtilityTest
     }
 
     [Theory]
-    [MemberData(nameof(TestData.EscapedPaths), MemberType = typeof(TestData), DisableDiscoveryEnumeration = true)]
+    [MemberData(nameof(TestData.EscapedPaths), MemberType = typeof(TestData))]
     public void TestMakeRelativePathWithEncodedPath(string inputPath)
     {
         // Arrange
