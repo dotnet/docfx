@@ -327,6 +327,44 @@ namespace Test1
         Assert.Empty(class1.Items);
     }
 
+    [Fact]
+    public void TestDocsSampleFilter()
+    {
+        var code = @"
+namespace Microsoft.DevDiv
+{
+    public class Class1
+    {
+    }
+}
+namespace Microsoft.DevDiv.SpecialCase
+{
+    public class NestedClass : Class1
+    {
+    }
+}
+";
+        string configFile = "TestData/filterconfig_docs_sample.yml";
+        MetadataItem output = Verify(code, new() { FilterConfigFile = configFile });
+
+        var namespaces = output.Items;
+        Assert.Single(namespaces);
+
+        var @namespace = namespaces[0];
+        Assert.NotNull(@namespace);
+        Assert.Equal("Microsoft.DevDiv.SpecialCase", @namespace.Name);
+        Assert.Single(@namespace.Items);
+
+        var nestedClass = @namespace.Items[0];
+        Assert.Equal("Microsoft.DevDiv.SpecialCase.NestedClass", nestedClass.Name);
+    }
+
+    [Fact]
+    public void TestExtendedSymbolKindFlags()
+    {
+        Assert.True((ExtendedSymbolKind.Type | ExtendedSymbolKind.Member).Contains(new SymbolFilterData { Kind = ExtendedSymbolKind.Interface }));
+    }
+
     private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, DotnetApiOptions options = null)
     {
         var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
