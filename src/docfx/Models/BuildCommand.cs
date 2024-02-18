@@ -14,6 +14,12 @@ internal class BuildCommand : Command<BuildCommandOptions>
     {
         return CommandHelper.Run(settings, () =>
         {
+            if (settings.Serve && CommandHelper.IsTcpPortAlreadyUsed(settings.Host, settings.Port))
+            {
+                Logger.LogError($"Serve option specified. But TCP port {settings.Port ?? 8080} is already being in use.");
+                return;
+            }
+
             var (config, baseDirectory) = Docset.GetConfig(settings.ConfigFile);
             MergeOptionsToConfig(settings, config.build, baseDirectory);
             var serveDirectory = RunBuild.Exec(config.build, new(), baseDirectory, settings.OutputFolder);

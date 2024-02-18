@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using System.Reflection;
+using Docfx.Common;
 using Docfx.Dotnet;
 using Docfx.Pdf;
 using Spectre.Console.Cli;
@@ -29,6 +30,12 @@ class DefaultCommand : Command<DefaultCommand.Options>
 
         return CommandHelper.Run(options, () =>
         {
+            if (options.Serve && CommandHelper.IsTcpPortAlreadyUsed(options.Host, options.Port))
+            {
+                Logger.LogError($"Serve option specified. But TCP port {options.Port ?? 8080} is already being in use.");
+                return;
+            }
+
             var (config, configDirectory) = Docset.GetConfig(options.ConfigFile);
             var outputFolder = options.OutputFolder;
             string serveDirectory = null;
