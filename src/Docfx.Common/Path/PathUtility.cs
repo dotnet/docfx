@@ -69,13 +69,13 @@ public static class PathUtility
             return absolutePath;
         }
 
+        if (toUri.IsFile && !toUri.OriginalString.StartsWith("file://", StringComparison.InvariantCultureIgnoreCase))
+        {
+           return Path.GetRelativePath(basePath, absolutePath).BackSlashToForwardSlash();
+        }
+
         Uri relativeUri = fromUri.MakeRelativeUri(toUri);
         string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
-
-        if (string.Equals(toUri.Scheme, "FILE", StringComparison.InvariantCultureIgnoreCase))
-        {
-            relativePath = relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-        }
 
         return relativePath.BackSlashToForwardSlash();
     }
