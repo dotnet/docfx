@@ -17,7 +17,8 @@
 
 - name: Reference
 - href: ../reference/docfx-json-reference.md
-- href: ../reference/docfx-cli-reference.md
+- name: Commandline Reference
+  href: ../reference/docfx-cli-reference/toc.yml
 - href: ../reference/docfx-environment-variables-reference.md
 - href: api-page.yml
 
