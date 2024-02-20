@@ -10,6 +10,8 @@ namespace Docfx.Dotnet.Tests;
 [Collection("docfx STA")]
 public class ApiFilterUnitTest
 {
+    private static readonly Dictionary<string, string> EmptyMSBuildProperties = new();
+
     [Fact]
     public void TestApiFilter()
     {
@@ -365,9 +367,9 @@ namespace Microsoft.DevDiv.SpecialCase
         Assert.True((ExtendedSymbolKind.Type | ExtendedSymbolKind.Member).Contains(new SymbolFilterData { Kind = ExtendedSymbolKind.Interface }));
     }
 
-    private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, DotnetApiOptions options = null)
+    private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, DotnetApiOptions options = null, IDictionary<string, string> msbuildProperties = null)
     {
-        var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
+        var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, msbuildProperties ?? EmptyMSBuildProperties, "test.dll");
         Assert.Empty(compilation.GetDeclarationDiagnostics());
         return compilation.Assembly.GenerateMetadataItem(compilation, config, options);
     }

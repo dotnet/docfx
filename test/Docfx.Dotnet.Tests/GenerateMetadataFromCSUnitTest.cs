@@ -12,9 +12,11 @@ namespace Docfx.Dotnet.Tests;
 [Collection("docfx STA")]
 public class GenerateMetadataFromCSUnitTest
 {
-    private static MetadataItem Verify(string code, ExtractMetadataConfig config = null)
+    private static readonly Dictionary<string, string> EmptyMSBuildProperties = new();
+
+    private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, IDictionary<string, string> msbuildProperties = null)
     {
-        var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
+        var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, msbuildProperties ?? EmptyMSBuildProperties, "test.dll");
         var extensionMethods = compilation.Assembly.FindExtensionMethods(new(new(), new())).ToArray();
         return compilation.Assembly.GenerateMetadataItem(compilation, config, extensionMethods: extensionMethods);
     }
@@ -2136,7 +2138,7 @@ namespace Test1
 ";
         Directory.CreateDirectory(nameof(TestGenerateMetadataAsyncWithAssemblyInfoAndCrossReference));
         var referencedAssembly = CreateAssemblyFromCSharpCode(referenceCode, $"{nameof(TestGenerateMetadataAsyncWithAssemblyInfoAndCrossReference)}/reference.dll");
-        var compilation = CreateCompilationFromCSharpCode(code, MetadataReference.CreateFromFile(referencedAssembly.Location));
+        var compilation = CreateCompilationFromCSharpCode(code, references: MetadataReference.CreateFromFile(referencedAssembly.Location));
         Assert.Equal("test.dll", compilation.AssemblyName);
         MetadataItem output = Verify(code);
         Assert.Null(output.AssemblyNameList);
@@ -3104,9 +3106,9 @@ namespace Test1
         Assert.Equal("public IEnumerable<(string prefix, string uri)> Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
     }
 
-    private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
+    private static Compilation CreateCompilationFromCSharpCode(string code, IDictionary<string, string> msbuildProperties = null, params MetadataReference[] references)
     {
-        return CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll", references);
+        return CompilationHelper.CreateCompilationFromCSharpCode(code, msbuildProperties ?? EmptyMSBuildProperties, "test.dll", references);
     }
 
     private static Assembly CreateAssemblyFromCSharpCode(string code, string assemblyName)
@@ -3729,5 +3731,35 @@ namespace Test1
         var foo = output.Items[0].Items[0];
         Assert.Equal("public class Foo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
         Assert.Empty(foo.Items);
+    }
+
+    [Fact]
+    public void TestDefineConstantsMSBuildProperty()
+    {
+        var code =
+            """
+            namespace Test
+            {
+                public class Foo
+                {
+            #if TEST
+                    public void F1() {}
+            #endif
+                }
+            }
+            """;
+
+        // Test with DefineConstants
+        {
+            var output = Verify(code, msbuildProperties: new Dictionary<string, string> { ["DefineConstants"] = "TEST;DUMMY" });
+            var foo = output.Items[0].Items[0];
+            Assert.Equal("Test.Foo.F1", foo.Items[0].Name);
+        }
+        // Test without DefineConstants
+        {
+            var output = Verify(code, msbuildProperties: EmptyMSBuildProperties);
+            var foo = output.Items[0].Items[0];
+            Assert.Empty(foo.Items);
+        }
     }
 }
