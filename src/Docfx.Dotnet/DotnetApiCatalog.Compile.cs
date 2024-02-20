@@ -85,14 +85,14 @@ partial class DotnetApiCatalog
 
         if (files.TryGetValue(FileType.CSSourceCode, out var csFiles))
         {
-            var compilation = CompilationHelper.CreateCompilationFromCSharpFiles(csFiles.Select(f => f.NormalizedPath));
+            var compilation = CompilationHelper.CreateCompilationFromCSharpFiles(csFiles.Select(f => f.NormalizedPath), msbuildProperties);
             hasCompilationError |= compilation.CheckDiagnostics(config.AllowCompilationErrors);
             assemblies.Add((compilation.Assembly, compilation));
         }
 
         if (files.TryGetValue(FileType.VBSourceCode, out var vbFiles))
         {
-            var compilation = CompilationHelper.CreateCompilationFromVBFiles(vbFiles.Select(f => f.NormalizedPath));
+            var compilation = CompilationHelper.CreateCompilationFromVBFiles(vbFiles.Select(f => f.NormalizedPath), msbuildProperties);
             hasCompilationError |= compilation.CheckDiagnostics(config.AllowCompilationErrors);
             assemblies.Add((compilation.Assembly, compilation));
         }

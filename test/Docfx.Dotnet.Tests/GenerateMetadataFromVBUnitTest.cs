@@ -11,9 +11,11 @@ namespace Docfx.Dotnet.Tests;
 [Collection("docfx STA")]
 public class GenerateMetadataFromVBUnitTest
 {
-    private static MetadataItem Verify(string code, ExtractMetadataConfig options = null, params MetadataReference[] references)
+    private static readonly Dictionary<string, string> EmptyMSBuildProperties = new();
+
+    private static MetadataItem Verify(string code, ExtractMetadataConfig options = null, IDictionary<string, string> msbuildProperties = null, params MetadataReference[] references)
     {
-        var compilation = CompilationHelper.CreateCompilationFromVBCode(code, "test.dll", references);
+        var compilation = CompilationHelper.CreateCompilationFromVBCode(code, msbuildProperties ?? EmptyMSBuildProperties, "test.dll", references);
         return compilation.Assembly.GenerateMetadataItem(compilation, options);
     }
 
@@ -1613,8 +1615,32 @@ End Namespace
         Assert.Equal("Public Function Bar() As IEnumerable(Of (prefix As String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
     }
 
-    private static Compilation CreateCompilationFromVBCode(string code, params MetadataReference[] references)
+    [Fact]
+    public void TestDefineConstantsMSBuildProperty()
     {
-        return CompilationHelper.CreateCompilationFromVBCode(code, "test.dll", references);
+        var code =
+            """
+            Namespace Test
+                Public Class Foo
+            #if TEST
+                    Public Sub F1
+            #endif
+                    End Function
+                End Class
+            End Namespace
+            """;
+
+        // Test with DefineConstants
+        {
+            var output = Verify(code, msbuildProperties: new Dictionary<string, string> { ["DefineConstants"] = "TEST=DUMMYVALUE;DUMMY=DUMMYVALUE" });
+            var foo = output.Items[0].Items[0];
+            Assert.Equal("Test.Foo.F1", foo.Items[0].Name);
+        }
+        // Test without DefineConstants
+        {
+            var output = Verify(code, msbuildProperties: EmptyMSBuildProperties);
+            var foo = output.Items[0].Items[0];
+            Assert.Empty(foo.Items);
+        }
     }
 }
