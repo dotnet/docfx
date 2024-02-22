@@ -81,7 +81,7 @@ public class XRefMapDownloader
     /// </remarks>
     protected virtual async Task<IXRefContainer> DownloadBySchemeAsync(Uri uri)
     {
-        IXRefContainer result = null;
+        IXRefContainer result;
         if (uri.IsFile)
         {
             result = DownloadFromLocal(uri);
@@ -123,8 +123,6 @@ public class XRefMapDownloader
     protected static async Task<XRefMap> DownloadFromWebAsync(Uri uri)
     {
         Logger.LogVerbose($"Reading from web: {uri.OriginalString}");
-        var baseUrl = uri.GetLeftPart(UriPartial.Path);
-        baseUrl = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
 
         using var httpClient = new HttpClient(new HttpClientHandler()
         {
@@ -138,8 +136,7 @@ public class XRefMapDownloader
         using var stream = await httpClient.GetStreamAsync(uri);
         using var sr = new StreamReader(stream, bufferSize: 81920); // Default :1024 byte
         var map = YamlUtility.Deserialize<XRefMap>(sr);
-        map.BaseUrl = baseUrl;
-        UpdateHref(map, null);
+
         return map;
     }
 

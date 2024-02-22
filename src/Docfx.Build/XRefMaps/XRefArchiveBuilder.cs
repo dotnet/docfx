@@ -24,7 +24,7 @@ public class XRefArchiveBuilder
             try
             {
                 using var xa = XRefArchive.Open(outputFile, XRefArchiveMode.Create);
-                await DownloadCoreAsync(uri, xa, true);
+                await DownloadCoreAsync(uri, xa);
             }
             catch (Exception ex)
             {
@@ -36,88 +36,32 @@ public class XRefArchiveBuilder
         }
     }
 
-    private async Task<string> DownloadCoreAsync(Uri uri, XRefArchive xa, bool isMajor)
+    private async Task<string> DownloadCoreAsync(Uri uri, XRefArchive xa)
     {
         IXRefContainer container;
         container = await _downloader.DownloadAsync(uri);
         if (container is not XRefMap map)
         {
-            // not support download an xref archive, or reference to an xref archive
+            // XRefArchive is not supported by `docfx download`.
+            Logger.LogWarning($"Download an xref archive, or reference to an xref archive is not supported. URI: {uri}");
             return null;
         }
-        if (map.Redirections?.Count > 0)
+
+        // Enforce XRefMap's references are sorted by uid.
+        // Note:
+        //   Sort is not needed if `map.Sorted == true`.
+        //   But there are some xrefmap files that is not propery sorted by using InvariantCulture.
+        //   (e.g. Unity xrefmap that maintained by community)
+        if (map.References != null && map.References.Count > 0)
         {
-            await RewriteRedirections(uri, xa, map);
+            map.References.Sort(XRefSpecUidComparer.Instance);
+            map.Sorted = true;
         }
-        if (map.References?.Count > 0 && map.HrefUpdated != true)
-        {
-            if (string.IsNullOrEmpty(map.BaseUrl))
-            {
-                XRefMapDownloader.UpdateHref(map, uri);
-            }
-        }
+
+        // Write XRefMap content to `xrefmap.yml`.
         lock (_syncRoot)
         {
-            if (isMajor)
-            {
-                return xa.CreateMajor(map);
-            }
-            else
-            {
-                return xa.CreateMinor(map, GetNames(uri, map));
-            }
+            return xa.CreateMajor(map);
         }
     }
-
-    private static IEnumerable<string> GetNames(Uri uri, XRefMap map)
-    {
-        var name = uri.Segments.LastOrDefault();
-        yield return name;
-        if (map.References?.Count > 0)
-        {
-            yield return map.References[0].Uid;
-        }
-    }
-
-    #region Rewrite redirections
-
-    private async Task<List<XRefMapRedirection>> RewriteRedirections(Uri uri, XRefArchive xa, XRefMap map) =>
-        (from list in
-            await Task.WhenAll(
-                from r in map.Redirections
-                where !string.IsNullOrEmpty(r.Href)
-                group r by r.Href into g
-                let href = GetHrefUri(uri, g.Key)
-                where href != null
-                select RewriteRedirectionsCore(g.ToList(), href, xa))
-         from r in list
-         orderby (r.UidPrefix ?? string.Empty).Length descending, (r.UidPrefix ?? string.Empty)
-         select r).ToList();
-
-    private async Task<List<XRefMapRedirection>> RewriteRedirectionsCore(List<XRefMapRedirection> redirections, Uri uri, XRefArchive xa)
-    {
-        var fileRef = await DownloadCoreAsync(uri, xa, false);
-        if (fileRef == null)
-        {
-            return new List<XRefMapRedirection>();
-        }
-        return (from r in redirections
-                select new XRefMapRedirection { UidPrefix = r.UidPrefix, Href = fileRef }).ToList();
-    }
-
-    private static Uri GetHrefUri(Uri uri, string href)
-    {
-        if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out Uri hrefUri))
-        {
-            Logger.LogWarning($"Invalid redirection href: {href}.");
-            return null;
-        }
-        if (!hrefUri.IsAbsoluteUri)
-        {
-            hrefUri = new Uri(uri, hrefUri);
-        }
-        return hrefUri;
-    }
-
-    #endregion
 }
