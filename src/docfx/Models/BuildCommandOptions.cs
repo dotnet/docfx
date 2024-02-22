@@ -17,7 +17,7 @@ internal class BuildCommandOptions : LogOptions
     [CommandArgument(0, "[config]")]
     public string ConfigFile { get; set; }
 
-    [Description("Specify a list of global metadata in key value pairs (e.g., --metadata _appTitle=\"My App\" --metadata _disableContribution)")]
+    [Description("Specify a list of global metadata in key value pairs (e.g. --metadata _appTitle=\"My App\" --metadata _disableContribution)")]
     [CommandOption("-m|--metadata")]
     public string[] Metadata { get; set; }
 
