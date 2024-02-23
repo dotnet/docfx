@@ -47,6 +47,16 @@ public class XRefArchiveBuilder
             return null;
         }
 
+        // If BaseUrl is not set. Use xrefmap file download url as basePath.
+        if (string.IsNullOrEmpty(map.BaseUrl))
+        {
+            var baseUrl = uri.GetLeftPart(UriPartial.Path);
+            baseUrl = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
+            map.BaseUrl = baseUrl;
+            map.UpdateHref(new Uri(baseUrl)); // Update hrefs from relative to absolute url.
+            map.HrefUpdated = null; // Don't save this flag for downloaded XRefMap.
+        }
+
         // Enforce XRefMap's references are sorted by uid.
         // Note:
         //   Sort is not needed if `map.Sorted == true`.
