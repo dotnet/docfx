@@ -42,6 +42,14 @@
       "environmentVariables": {
       }
     },
+    // Run `docfx download` command.
+    "docfx download": {
+      "commandName": "Project",
+      "commandLineArgs": "download xrefmap.zip --xref https://github.com/dotnet/docfx/raw/main/.xrefmap.json",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
     // Run `docfx` command.
     "docfx": {
       "commandName": "Project",

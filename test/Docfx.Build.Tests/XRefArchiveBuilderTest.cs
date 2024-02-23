@@ -14,12 +14,18 @@ public class XRefArchiveBuilderTest
         const string ZipFile = "test.zip";
         var builder = new XRefArchiveBuilder();
 
+        // Download following xrefmap.yml content.
+        // ```
+        // ### YamlMime:XRefMap
+        // sorted: true
+        // references: []
+        // ```
         Assert.True(await builder.DownloadAsync(new Uri("http://dotnet.github.io/docfx/xrefmap.yml"), ZipFile));
 
         using (var xar = XRefArchive.Open(ZipFile, XRefArchiveMode.Read))
         {
             var map = xar.GetMajor();
-            Assert.True(map.HrefUpdated);
+            Assert.Null(map.HrefUpdated);
             Assert.True(map.Sorted);
             Assert.NotNull(map.References);
             Assert.Null(map.Redirections);
