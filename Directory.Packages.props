@@ -8,7 +8,7 @@
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.2.0.7535" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.7.0" />
     <PackageVersion Include="Jint" Version="3.0.0" />
-    <PackageVersion Include="JsonSchema.Net" Version="5.5.1" />
+    <PackageVersion Include="JsonSchema.Net" Version="6.0.3" />
     <PackageVersion Include="Markdig" Version="0.35.0" />
     <!-- "17.3.2" is the latest compatible version for .NET 6 -->
     <PackageVersion Include="Microsoft.Build" Version="[17.3.2]" Condition="'$(TargetFramework)' == 'net6.0'" />
@@ -28,7 +28,7 @@
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="OneOf" Version="3.0.263" />
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.263" />
-    <PackageVersion Include="PdfPig" Version="0.1.9-alpha-20240128-f886e" />
+    <PackageVersion Include="PdfPig" Version="0.1.9-alpha-20240219-c2536" />
     <PackageVersion Include="PlantUml.Net" Version="1.4.80" />
     <PackageVersion Include="Spectre.Console" Version="0.48.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.48.0" />
@@ -37,14 +37,14 @@
     <PackageVersion Include="System.Composition" Version="8.0.0" />
     <PackageVersion Include="YamlDotNet" Version="15.1.1" />
     <!-- Test only -->
-    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.1" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.6.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.3.0" />
-    <PackageVersion Include="Verify.Xunit" Version="23.2.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.6" />
-    <PackageVersion Include="xunit" Version="2.6.6" />
+    <PackageVersion Include="Verify.Xunit" Version="23.2.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7" />
+    <PackageVersion Include="xunit" Version="2.7.0" />
   </ItemGroup>
 </Project>
