@@ -4,7 +4,6 @@
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 using Docfx.MarkdigEngine.Extensions;
-using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
 
@@ -13,7 +12,6 @@ public class MarkdownServiceProperties
     /// <summary>
     /// Enables line numbers.
     /// </summary>
-    [JsonProperty("enableSourceInfo")]
     [JsonPropertyName("enableSourceInfo")]
     public bool EnableSourceInfo { get; set; } = true;
 
@@ -21,11 +19,9 @@ public class MarkdownServiceProperties
     /// Contains a list of optional Markdig extensions that are not
     /// enabled by default by DocFX.
     /// </summary>
-    [JsonProperty("markdigExtensions")]
     [JsonPropertyName("markdigExtensions")]
     public string[] MarkdigExtensions { get; set; }
 
-    [JsonProperty("fallbackFolders")]
     [JsonPropertyName("fallbackFolders")]
     public string[] FallbackFolders { get; set; }
 
@@ -33,14 +29,12 @@ public class MarkdownServiceProperties
     /// Alert keywords in markdown without the surrounding [!] and the corresponding CSS class names.
     /// E.g., TIP -> alert alert-info
     /// </summary>
-    [JsonProperty("alerts")]
     [JsonPropertyName("alerts")]
     public Dictionary<string, string> Alerts { get; set; }
 
     /// <summary>
     /// PlantUml extension configuration parameters
     /// </summary>
-    [JsonProperty("plantUml")]
     [JsonPropertyName("plantUml")]
     public PlantUmlOptions PlantUml { get; set; }
 }

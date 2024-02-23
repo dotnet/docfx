@@ -3,7 +3,6 @@
 
 using System.Text.Json.Serialization;
 using Docfx.DataContracts.ManagedReference;
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Build.ManagedReference.BuildOutputs;
@@ -11,17 +10,14 @@ namespace Docfx.Build.ManagedReference.BuildOutputs;
 public class ApiLinkInfoBuildOutput
 {
     [YamlMember(Alias = "linkType")]
-    [JsonProperty("linkType")]
     [JsonPropertyName("linkType")]
     public LinkType LinkType { get; set; }
 
     [YamlMember(Alias = "type")]
-    [JsonProperty("type")]
     [JsonPropertyName("type")]
     public ApiNames Type { get; set; }
 
     [YamlMember(Alias = "url")]
-    [JsonProperty("url")]
     [JsonPropertyName("url")]
     public string Url { get; set; }
 

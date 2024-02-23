@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 using Docfx.DataContracts.Common;
 using Docfx.YamlSerialization;
 
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.UniversalReference;
@@ -13,24 +12,20 @@ namespace Docfx.DataContracts.UniversalReference;
 public class PageViewModel
 {
     [YamlMember(Alias = "items")]
-    [JsonProperty("items")]
     [JsonPropertyName("items")]
     public List<ItemViewModel> Items { get; set; } = new List<ItemViewModel>();
 
     [YamlMember(Alias = "references")]
-    [JsonProperty("references")]
     [JsonPropertyName("references")]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
     public List<ReferenceViewModel> References { get; set; } = new List<ReferenceViewModel>();
 
     [YamlMember(Alias = "shouldSkipMarkup")]
-    [JsonProperty("shouldSkipMarkup")]
     [JsonPropertyName("shouldSkipMarkup")]
     public bool ShouldSkipMarkup { get; set; }
 
     [ExtensibleMember]
-    [Newtonsoft.Json.JsonExtensionData]
-    [System.Text.Json.Serialization.JsonExtensionData]
+    [JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 }

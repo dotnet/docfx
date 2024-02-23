@@ -3,7 +3,6 @@
 
 using System.Text.Json.Serialization;
 using Docfx.DataContracts.ManagedReference;
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Build.ManagedReference.BuildOutputs;
@@ -11,12 +10,10 @@ namespace Docfx.Build.ManagedReference.BuildOutputs;
 public class ApiExceptionInfoBuildOutput
 {
     [YamlMember(Alias = "type")]
-    [JsonProperty("type")]
     [JsonPropertyName("type")]
     public ApiNames Type { get; set; }
 
     [YamlMember(Alias = "description")]
-    [JsonProperty("description")]
     [JsonPropertyName("description")]
     public string Description { get; set; }
 

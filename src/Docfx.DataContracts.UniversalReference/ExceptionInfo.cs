@@ -6,7 +6,6 @@ using Docfx.Common.EntityMergers;
 using Docfx.DataContracts.Common;
 using Docfx.YamlSerialization;
 
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.UniversalReference;
@@ -15,19 +14,16 @@ public class ExceptionInfo
 {
     [YamlMember(Alias = "type")]
     [MergeOption(MergeOption.MergeKey)]
-    [JsonProperty("type")]
     [JsonPropertyName("type")]
     [UniqueIdentityReference]
     public string Type { get; set; }
 
     [YamlMember(Alias = "description")]
-    [JsonProperty("description")]
     [JsonPropertyName("description")]
     [MarkdownContent]
     public string Description { get; set; }
 
     [ExtensibleMember]
-    [Newtonsoft.Json.JsonExtensionData]
-    [System.Text.Json.Serialization.JsonExtensionData]
+    [JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 }

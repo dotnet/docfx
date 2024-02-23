@@ -3,7 +3,6 @@
 
 using System.Text.Json.Serialization;
 using Docfx.DataContracts.ManagedReference;
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Build.ManagedReference.BuildOutputs;
@@ -11,22 +10,18 @@ namespace Docfx.Build.ManagedReference.BuildOutputs;
 public class ApiSyntaxBuildOutput
 {
     [YamlMember(Alias = "content")]
-    [JsonProperty("content")]
     [JsonPropertyName("content")]
     public List<ApiLanguageValuePair> Content { get; set; } = new List<ApiLanguageValuePair>();
 
     [YamlMember(Alias = "parameters")]
-    [JsonProperty("parameters")]
     [JsonPropertyName("parameters")]
     public List<ApiParameterBuildOutput> Parameters { get; set; }
 
     [YamlMember(Alias = "typeParameters")]
-    [JsonProperty("typeParameters")]
     [JsonPropertyName("typeParameters")]
     public List<ApiParameterBuildOutput> TypeParameters { get; set; }
 
     [YamlMember(Alias = "return")]
-    [JsonProperty("return")]
     [JsonPropertyName("return")]
     public ApiParameterBuildOutput Return { get; set; }
 

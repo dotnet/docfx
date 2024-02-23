@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 using Docfx.Common;
 using Docfx.Plugins;
 using Docfx.YamlSerialization;
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Build.Engine;
@@ -19,7 +18,6 @@ public class XRefMap : IXRefContainer
     /// Indicate <see cref="References"/> are sorted by <see cref="XRefSpec.Uid"/> with or not.
     /// </summary>
     [YamlMember(Alias = "sorted")]
-    [JsonProperty("sorted")]
     [JsonPropertyName("sorted")]
     public bool? Sorted { get; set; }
 
@@ -27,7 +25,6 @@ public class XRefMap : IXRefContainer
     /// Indicate href links are updated or not.
     /// </summary>
     [YamlMember(Alias = "hrefUpdated")]
-    [JsonProperty("hrefUpdated")]
     [JsonPropertyName("hrefUpdated")]
     public bool? HrefUpdated { get; set; }
 
@@ -35,7 +32,6 @@ public class XRefMap : IXRefContainer
     /// Base url. It's used when href is specified as relative url.
     /// </summary>
     [YamlMember(Alias = "baseUrl")]
-    [JsonProperty("baseUrl")]
     [JsonPropertyName("baseUrl")]
     public string BaseUrl { get; set; }
 
@@ -43,7 +39,6 @@ public class XRefMap : IXRefContainer
     /// List of <see href="XRefMapRedirection"/> settings.
     /// </summary>
     [YamlMember(Alias = "redirections")]
-    [JsonProperty("redirections")]
     [JsonPropertyName("redirections")]
     public List<XRefMapRedirection> Redirections { get; set; }
 
@@ -54,13 +49,11 @@ public class XRefMap : IXRefContainer
     /// If <see cref="Sorted"/> is true. XRefSpec items must be sorted by <see cref="XRefSpec.Uid"/> with InvariantCulture.
     /// </remarks>
     [YamlMember(Alias = "references")]
-    [JsonProperty("references")]
     [JsonPropertyName("references")]
     public List<XRefSpec> References { get; set; }
 
     [ExtensibleMember]
-    [Newtonsoft.Json.JsonExtensionData]
-    [System.Text.Json.Serialization.JsonExtensionData]
+    [JsonExtensionData]
     public Dictionary<string, object> Others { get; set; } = new Dictionary<string, object>();
 
     public void Sort()
@@ -105,8 +98,7 @@ public class XRefMap : IXRefContainer
     }
 
     [YamlIgnore]
-    [Newtonsoft.Json.JsonIgnore]
-    [System.Text.Json.Serialization.JsonIgnore]
+    [JsonIgnore]
     public bool IsEmbeddedRedirections => false;
 
     public IEnumerable<XRefMapRedirection> GetRedirections() =>

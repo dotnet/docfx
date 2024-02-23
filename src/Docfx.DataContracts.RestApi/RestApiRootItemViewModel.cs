@@ -3,7 +3,6 @@
 
 using System.Text.Json.Serialization;
 using Docfx.Common.EntityMergers;
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.RestApi;
@@ -15,18 +14,15 @@ public class RestApiRootItemViewModel : RestApiItemViewModelBase
     /// `_` prefix indicates that this metadata is generated
     /// </summary>
     [YamlMember(Alias = "_raw")]
-    [JsonProperty("_raw")]
     [JsonPropertyName("_raw")]
     [MergeOption(MergeOption.Ignore)]
     public string Raw { get; set; }
 
     [YamlMember(Alias = "tags")]
-    [JsonProperty("tags")]
     [JsonPropertyName("tags")]
     public List<RestApiTagViewModel> Tags { get; set; }
 
     [YamlMember(Alias = "children")]
-    [JsonProperty("children")]
     [JsonPropertyName("children")]
     public List<RestApiChildItemViewModel> Children { get; set; }
 }

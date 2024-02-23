@@ -6,7 +6,6 @@ using Docfx.Common.EntityMergers;
 using Docfx.DataContracts.Common;
 using Docfx.YamlSerialization;
 
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.UniversalReference;
@@ -14,7 +13,6 @@ namespace Docfx.DataContracts.UniversalReference;
 public class InheritanceTree
 {
     [YamlMember(Alias = Constants.PropertyName.Type)]
-    [JsonProperty(Constants.PropertyName.Type)]
     [JsonPropertyName(Constants.PropertyName.Type)]
     [UniqueIdentityReference]
     public string Type { get; set; }
@@ -25,12 +23,10 @@ public class InheritanceTree
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Inheritance)]
     [MergeOption(MergeOption.Ignore)]
-    [JsonProperty(Constants.PropertyName.Inheritance)]
     [JsonPropertyName(Constants.PropertyName.Inheritance)]
     public List<InheritanceTree> Inheritance { get; set; }
 
     [ExtensibleMember]
-    [Newtonsoft.Json.JsonExtensionData]
-    [System.Text.Json.Serialization.JsonExtensionData]
+    [JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 }

@@ -5,8 +5,6 @@ using System.Text.Json.Serialization;
 using Docfx.Common;
 using Docfx.Plugins;
 
-using Newtonsoft.Json;
-
 namespace Docfx;
 
 /// <summary>
@@ -18,28 +16,24 @@ internal class BuildJsonConfig
     /// <summary>
     /// Contains all the files to generate documentation, including metadata yml files and conceptual md files.
     /// </summary>
-    [JsonProperty("content")]
     [JsonPropertyName("content")]
     public FileMapping Content { get; set; }
 
     /// <summary>
     /// Contains all the resource files that conceptual and metadata files dependent on, e.g. image files.
     /// </summary>
-    [JsonProperty("resource")]
     [JsonPropertyName("resource")]
     public FileMapping Resource { get; set; }
 
     /// <summary>
     /// Contains all the conceptual files which contains yaml header with uid and is intended to override the existing metadata yml files.
     /// </summary>
-    [JsonProperty("overwrite")]
     [JsonPropertyName("overwrite")]
     public FileMapping Overwrite { get; set; }
 
     /// <summary>
     /// Specifies the urls of xrefmap used by content files. Supports local file path and HTTP/HTTPS urls.
     /// </summary>
-    [JsonProperty("xref")]
     [JsonPropertyName("xref")]
     public ListWithStringFallback Xref { get; set; }
 
@@ -47,7 +41,6 @@ internal class BuildJsonConfig
     /// Defines the output folder of the generated build files.
     /// Command line --output argument prepends this value.
     /// </summary>
-    [JsonProperty("dest")]
     [JsonPropertyName("dest")]
     public string Dest { get; set; }
 
@@ -55,22 +48,18 @@ internal class BuildJsonConfig
     /// Defines the output folder of the generated build files.
     /// Command line --output argument override this value.
     /// </summary>
-    [JsonProperty("output")]
     [JsonPropertyName("output")]
     public string Output { get; set; }
 
     /// <summary>
     /// Contains metadata that will be applied to every file, in key-value pair format.
     /// </summary>
-    [JsonProperty("globalMetadata")]
     [JsonPropertyName("globalMetadata")]
-    [Newtonsoft.Json.JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
     public Dictionary<string, object> GlobalMetadata { get; set; }
 
     /// <summary>
     /// Specify a list of JSON file path containing globalMetadata settings.
     /// </summary>
-    [JsonProperty("globalMetadataFiles")]
     [JsonPropertyName("globalMetadataFiles")]
     public ListWithStringFallback GlobalMetadataFiles { get; set; } = new ListWithStringFallback();
 
@@ -81,14 +70,12 @@ internal class BuildJsonConfig
     ///     The key is the glob pattern to match the files.
     ///     The value is the value of the metadata.
     /// </summary>
-    [JsonProperty("fileMetadata")]
     [JsonPropertyName("fileMetadata")]
     public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
 
     /// <summary>
     /// Specify a list of JSON file path containing fileMetadata settings.
     /// </summary>
-    [JsonProperty("fileMetadataFiles")]
     [JsonPropertyName("fileMetadataFiles")]
     public ListWithStringFallback FileMetadataFiles { get; set; } = new ListWithStringFallback();
 
@@ -97,7 +84,6 @@ internal class BuildJsonConfig
     /// The latter ones will override the former ones if the name of the file inside the template collides.
     /// If omitted, embedded default template will be used.
     /// </summary>
-    [JsonProperty("template")]
     [JsonPropertyName("template")]
     public ListWithStringFallback Template { get; set; } = new ListWithStringFallback();
 
@@ -108,7 +94,6 @@ internal class BuildJsonConfig
     /// The latter ones will override the former ones if the name of the file inside the template collides.
     /// If omitted, no theme will be applied, the default theme inside the template will be used.
     /// </summary>
-    [JsonProperty("theme")]
     [JsonPropertyName("theme")]
     public ListWithStringFallback Theme { get; set; }
 
@@ -121,7 +106,6 @@ internal class BuildJsonConfig
     ///  "postProcessors": ["ExtractSearchIndex"]
     ///  </code>
     ///  </example>
-    [JsonProperty("postProcessors")]
     [JsonPropertyName("postProcessors")]
     public ListWithStringFallback PostProcessors { get; set; } = new ListWithStringFallback();
 
@@ -130,7 +114,6 @@ internal class BuildJsonConfig
     /// automatically when it encounters error when applying templates.
     /// If not specified, it is false
     /// </summary>
-    [JsonProperty("debug")]
     [JsonPropertyName("debug")]
     public bool? Debug { get; set; }
 
@@ -138,14 +121,12 @@ internal class BuildJsonConfig
     /// The output folder for files generated for debugging purpose when in debug mode.
     /// If not specified, it is ${TempPath}/docfx
     /// </summary>
-    [JsonProperty("debugOutput")]
     [JsonPropertyName("debugOutput")]
     public string DebugOutput { get; set; }
 
     /// <summary>
     /// If set to true, data model to run template script will be extracted in .raw.model.json extension.
     /// </summary>
-    [JsonProperty("exportRawModel")]
     [JsonPropertyName("exportRawModel")]
     public bool? ExportRawModel { get; set; }
 
@@ -153,14 +134,12 @@ internal class BuildJsonConfig
     /// Specify the output folder for the raw model.
     /// If not set, the raw model will be generated to the same folder as the output documentation.
     /// </summary>
-    [JsonProperty("rawModelOutputFolder")]
     [JsonPropertyName("rawModelOutputFolder")]
     public string RawModelOutputFolder { get; set; }
 
     /// <summary>
     /// If set to true, data model to apply template will be extracted in .view.model.json extension.
     /// </summary>
-    [JsonProperty("exportViewModel")]
     [JsonPropertyName("exportViewModel")]
     public bool? ExportViewModel { get; set; }
 
@@ -168,7 +147,6 @@ internal class BuildJsonConfig
     /// Specify the output folder for the view model.
     /// If not set, the view model will be generated to the same folder as the output documentation.
     /// </summary>
-    [JsonProperty("viewModelOutputFolder")]
     [JsonPropertyName("viewModelOutputFolder")]
     public string ViewModelOutputFolder { get; set; }
 
@@ -176,28 +154,24 @@ internal class BuildJsonConfig
     /// If set to true, template will not be actually applied to the documents.
     /// This option is always used with --exportRawModel or --exportViewModel is set so that only raw model files or view model files are generated.
     /// </summary>
-    [JsonProperty("dryRun")]
     [JsonPropertyName("dryRun")]
     public bool? DryRun { get; set; }
 
     /// <summary>
     /// Set the max parallelism, 0 is auto.
     /// </summary>
-    [JsonProperty("maxParallelism")]
     [JsonPropertyName("maxParallelism")]
     public int? MaxParallelism { get; set; }
 
     /// <summary>
     /// Set the parameters for markdown engine, value should be a JSON string.
     /// </summary>
-    [JsonProperty("markdownEngineProperties")]
     [JsonPropertyName("markdownEngineProperties")]
     public MarkdownServiceProperties MarkdownEngineProperties { get; set; }
 
     /// <summary>
     /// Set the name of ICustomHrefGenerator derived class.
     /// </summary>
-    [JsonProperty("customLinkResolver")]
     [JsonPropertyName("customLinkResolver")]
     public string CustomLinkResolver { get; set; }
 
@@ -214,14 +188,12 @@ internal class BuildJsonConfig
     /// }
     /// </code>
     /// </example>
-    [JsonProperty("groups")]
     [JsonPropertyName("groups")]
     public Dictionary<string, GroupConfig> Groups { get; set; }
 
     /// <summary>
     /// Specifies the options for the sitemap.xml file.
     /// </summary>
-    [JsonProperty("sitemap")]
     [JsonPropertyName("sitemap")]
     public SitemapOptions Sitemap { get; set; }
 
@@ -229,7 +201,6 @@ internal class BuildJsonConfig
     /// Disable fetching Git related information for articles.
     /// By default it is enabled and may have side effect on performance when the repo is large.
     /// </summary>
-    [JsonProperty("disableGitFeatures")]
     [JsonPropertyName("disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }
 }

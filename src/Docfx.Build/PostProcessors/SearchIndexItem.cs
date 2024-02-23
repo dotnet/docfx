@@ -2,21 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
 namespace Docfx.Build.Engine;
 
 class SearchIndexItem
 {
-    [JsonProperty("href")]
     [JsonPropertyName("href")]
     public string Href { get; set; }
 
-    [JsonProperty("title")]
     [JsonPropertyName("title")]
     public string Title { get; set; }
 
-    [JsonProperty("keywords")]
     [JsonPropertyName("keywords")]
     public string Keywords { get; set; }
 

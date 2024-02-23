@@ -3,7 +3,6 @@
 
 using System.Text.Json.Serialization;
 using Docfx.YamlSerialization;
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Build.RestApi.Swagger;
@@ -17,7 +16,6 @@ public class InfoObject
     /// Required. The title of the application.
     /// </summary>
     [YamlMember(Alias = "title")]
-    [JsonProperty("title")]
     [JsonPropertyName("title")]
     public string Title { get; set; }
 
@@ -25,12 +23,10 @@ public class InfoObject
     /// Required. Provides the version of the application API
     /// </summary>
     [YamlMember(Alias = "version")]
-    [JsonProperty("version")]
     [JsonPropertyName("version")]
     public string Version { get; set; }
 
     [ExtensibleMember]
-    [Newtonsoft.Json.JsonExtensionData]
-    [System.Text.Json.Serialization.JsonExtensionData]
+    [JsonExtensionData]
     public Dictionary<string, object> PatternedObjects { get; set; } = new Dictionary<string, object>();
 }

@@ -3,7 +3,6 @@
 
 using System.Text.Json.Serialization;
 using Docfx.YamlSerialization;
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Build.RestApi.Swagger;
@@ -18,12 +17,10 @@ public class PathItemObject
     /// These parameters can be overridden at the operation level, but cannot be removed there.
     /// </summary>
     [YamlMember(Alias = "parameters")]
-    [JsonProperty("parameters")]
     [JsonPropertyName("parameters")]
     public List<ParameterObject> Parameters { get; set; }
 
     [ExtensibleMember]
-    [Newtonsoft.Json.JsonExtensionData]
-    [System.Text.Json.Serialization.JsonExtensionData]
+    [JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 }

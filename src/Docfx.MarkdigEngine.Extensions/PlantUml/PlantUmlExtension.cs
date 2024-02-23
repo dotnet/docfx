@@ -2,38 +2,30 @@ using System.Text.Json.Serialization;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
-using Newtonsoft.Json;
 using PlantUml.Net;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
 public class PlantUmlOptions
 {
-    [JsonProperty("javaPath")]
     [JsonPropertyName("javaPath")]
     public string JavaPath { get; set; }
 
-    [JsonProperty("remoteUrl")]
     [JsonPropertyName("remoteUrl")]
     public string RemoteUrl { get; set; }
 
-    [JsonProperty("localPlantUmlPath")]
     [JsonPropertyName("localPlantUmlPath")]
     public string LocalPlantUmlPath { get; set; }
 
-    [JsonProperty("localGraphvizDotPath")]
     [JsonPropertyName("localGraphvizDotPath")]
     public string LocalGraphvizDotPath { get; set; }
 
-    [JsonProperty("renderingMode")]
     [JsonPropertyName("renderingMode")]
     public RenderingMode RenderingMode { get; set; }
 
-    [JsonProperty("delimitor")]
     [JsonPropertyName("delimitor")]
     public string Delimitor { get; set; }
 
-    [JsonProperty("outputFormat")]
     [JsonPropertyName("outputFormat")]
     public OutputFormat OutputFormat { get; set; } = OutputFormat.Svg;
 }

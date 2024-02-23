@@ -4,7 +4,6 @@
 using System.Text.Json.Serialization;
 using Docfx.YamlSerialization;
 
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Build.UniversalReference;
@@ -12,17 +11,14 @@ namespace Docfx.Build.UniversalReference;
 public class ApiExceptionInfoBuildOutput
 {
     [YamlMember(Alias = "type")]
-    [JsonProperty("type")]
     [JsonPropertyName("type")]
     public ApiNames Type { get; set; }
 
     [YamlMember(Alias = "description")]
-    [JsonProperty("description")]
     [JsonPropertyName("description")]
     public string Description { get; set; }
 
     [ExtensibleMember]
-    [Newtonsoft.Json.JsonExtensionData]
-    [System.Text.Json.Serialization.JsonExtensionData]
+    [JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 }
