@@ -364,10 +364,8 @@ namespace Docfx.Build.Engine
     public class TransformModelOptions
     {
         public TransformModelOptions() { }
-        [Newtonsoft.Json.JsonProperty(PropertyName="bookmarks")]
         [System.Text.Json.Serialization.JsonPropertyName("bookmarks")]
         public System.Collections.Generic.Dictionary<string, string> Bookmarks { get; set; }
-        [Newtonsoft.Json.JsonProperty(PropertyName="isShared")]
         [System.Text.Json.Serialization.JsonPropertyName("isShared")]
         public bool IsShared { get; set; }
     }
@@ -436,31 +434,24 @@ namespace Docfx.Build.Engine
     public class XRefMap : Docfx.Build.Engine.IXRefContainer
     {
         public XRefMap() { }
-        [Newtonsoft.Json.JsonProperty("baseUrl")]
         [System.Text.Json.Serialization.JsonPropertyName("baseUrl")]
         [YamlDotNet.Serialization.YamlMember(Alias="baseUrl")]
         public string BaseUrl { get; set; }
-        [Newtonsoft.Json.JsonProperty("hrefUpdated")]
         [System.Text.Json.Serialization.JsonPropertyName("hrefUpdated")]
         [YamlDotNet.Serialization.YamlMember(Alias="hrefUpdated")]
         public bool? HrefUpdated { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public bool IsEmbeddedRedirections { get; }
         [Docfx.YamlSerialization.ExtensibleMember]
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Others { get; set; }
-        [Newtonsoft.Json.JsonProperty("redirections")]
         [System.Text.Json.Serialization.JsonPropertyName("redirections")]
         [YamlDotNet.Serialization.YamlMember(Alias="redirections")]
         public System.Collections.Generic.List<Docfx.Build.Engine.XRefMapRedirection> Redirections { get; set; }
-        [Newtonsoft.Json.JsonProperty("references")]
         [System.Text.Json.Serialization.JsonPropertyName("references")]
         [YamlDotNet.Serialization.YamlMember(Alias="references")]
         public System.Collections.Generic.List<Docfx.Plugins.XRefSpec> References { get; set; }
-        [Newtonsoft.Json.JsonProperty("sorted")]
         [System.Text.Json.Serialization.JsonPropertyName("sorted")]
         [YamlDotNet.Serialization.YamlMember(Alias="sorted")]
         public bool? Sorted { get; set; }
@@ -658,39 +649,30 @@ namespace Docfx.Build.Common
     public class OverwriteDocumentModel
     {
         public OverwriteDocumentModel() { }
-        [Newtonsoft.Json.JsonProperty("conceptual")]
         [System.Text.Json.Serialization.JsonPropertyName("conceptual")]
         [YamlDotNet.Serialization.YamlMember(Alias="conceptual")]
         public string Conceptual { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Immutable.ImmutableArray<string> Dependency { get; set; }
-        [Newtonsoft.Json.JsonProperty("documentation")]
         [System.Text.Json.Serialization.JsonPropertyName("documentation")]
         [YamlDotNet.Serialization.YamlMember(Alias="documentation")]
         public Docfx.DataContracts.Common.SourceDetail Documentation { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<Docfx.Plugins.LinkSourceInfo>> FileLinkSources { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.HashSet<string> LinkToFiles { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.HashSet<string> LinkToUids { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember]
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonProperty("uid")]
         [System.Text.Json.Serialization.JsonPropertyName("uid")]
         [YamlDotNet.Serialization.YamlMember(Alias="uid")]
         public string Uid { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<Docfx.Plugins.LinkSourceInfo>> UidLinkSources { get; set; }
@@ -832,141 +814,107 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
     public class ApiBuildOutput
     {
         public ApiBuildOutput() { }
-        [Newtonsoft.Json.JsonProperty("additionalNotes")]
         [System.Text.Json.Serialization.JsonPropertyName("additionalNotes")]
         [YamlDotNet.Serialization.YamlMember(Alias="additionalNotes")]
         public Docfx.DataContracts.ManagedReference.AdditionalNotes AdditionalNotes { get; set; }
-        [Newtonsoft.Json.JsonProperty("assemblies")]
         [System.Text.Json.Serialization.JsonPropertyName("assemblies")]
         [YamlDotNet.Serialization.YamlMember(Alias="assemblies")]
         public System.Collections.Generic.List<string> AssemblyNameList { get; set; }
-        [Newtonsoft.Json.JsonProperty("attributes")]
         [System.Text.Json.Serialization.JsonPropertyName("attributes")]
         [YamlDotNet.Serialization.YamlMember(Alias="attributes")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.AttributeInfo> Attributes { get; set; }
-        [Newtonsoft.Json.JsonProperty("children")]
         [System.Text.Json.Serialization.JsonPropertyName("children")]
         [YamlDotNet.Serialization.YamlMember(Alias="children")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput> Children { get; set; }
-        [Newtonsoft.Json.JsonProperty("conceptual")]
         [System.Text.Json.Serialization.JsonPropertyName("conceptual")]
         [YamlDotNet.Serialization.YamlMember(Alias="conceptual")]
         public string Conceptual { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
-        [Newtonsoft.Json.JsonProperty("derivedClasses")]
         [System.Text.Json.Serialization.JsonPropertyName("derivedClasses")]
         [YamlDotNet.Serialization.YamlMember(Alias="derivedClasses")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput> DerivedClasses { get; set; }
-        [Newtonsoft.Json.JsonProperty("documentation")]
         [System.Text.Json.Serialization.JsonPropertyName("documentation")]
         [YamlDotNet.Serialization.YamlMember(Alias="documentation")]
         public Docfx.DataContracts.Common.SourceDetail Documentation { get; set; }
-        [Newtonsoft.Json.JsonProperty("example")]
         [System.Text.Json.Serialization.JsonPropertyName("example")]
         [YamlDotNet.Serialization.YamlMember(Alias="example")]
         public System.Collections.Generic.List<string> Examples { get; set; }
-        [Newtonsoft.Json.JsonProperty("exceptions")]
         [System.Text.Json.Serialization.JsonPropertyName("exceptions")]
         [YamlDotNet.Serialization.YamlMember(Alias="exceptions")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiExceptionInfoBuildOutput> Exceptions { get; set; }
-        [Newtonsoft.Json.JsonProperty("extensionMethods")]
         [System.Text.Json.Serialization.JsonPropertyName("extensionMethods")]
         [YamlDotNet.Serialization.YamlMember(Alias="extensionMethods")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput> ExtensionMethods { get; set; }
-        [Newtonsoft.Json.JsonProperty("fullName")]
         [System.Text.Json.Serialization.JsonPropertyName("fullName")]
         [YamlDotNet.Serialization.YamlMember(Alias="fullName")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> FullName { get; set; }
-        [Newtonsoft.Json.JsonProperty("href")]
         [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }
-        [Newtonsoft.Json.JsonProperty("implements")]
         [System.Text.Json.Serialization.JsonPropertyName("implements")]
         [YamlDotNet.Serialization.YamlMember(Alias="implements")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiNames> Implements { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
-        [Newtonsoft.Json.JsonProperty("inheritance")]
         [System.Text.Json.Serialization.JsonPropertyName("inheritance")]
         [YamlDotNet.Serialization.YamlMember(Alias="inheritance")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput> Inheritance { get; set; }
-        [Newtonsoft.Json.JsonProperty("inheritedMembers")]
         [System.Text.Json.Serialization.JsonPropertyName("inheritedMembers")]
         [YamlDotNet.Serialization.YamlMember(Alias="inheritedMembers")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput> InheritedMembers { get; set; }
-        [Newtonsoft.Json.JsonProperty("isEii")]
         [System.Text.Json.Serialization.JsonPropertyName("isEii")]
         [YamlDotNet.Serialization.YamlMember(Alias="isEii")]
         public bool IsExplicitInterfaceImplementation { get; set; }
-        [Newtonsoft.Json.JsonProperty("isExtensionMethod")]
         [System.Text.Json.Serialization.JsonPropertyName("isExtensionMethod")]
         [YamlDotNet.Serialization.YamlMember(Alias="isExtensionMethod")]
         public bool IsExtensionMethod { get; set; }
-        [Newtonsoft.Json.JsonProperty("level")]
         [System.Text.Json.Serialization.JsonPropertyName("level")]
         [YamlDotNet.Serialization.YamlMember(Alias="level")]
         public int Level { get; }
         [Docfx.YamlSerialization.ExtensibleMember]
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> Name { get; set; }
-        [Newtonsoft.Json.JsonProperty("nameWithType")]
         [System.Text.Json.Serialization.JsonPropertyName("nameWithType")]
         [YamlDotNet.Serialization.YamlMember(Alias="nameWithType")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> NameWithType { get; set; }
-        [Newtonsoft.Json.JsonProperty("namespace")]
         [System.Text.Json.Serialization.JsonPropertyName("namespace")]
         [YamlDotNet.Serialization.YamlMember(Alias="namespace")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput NamespaceName { get; set; }
-        [Newtonsoft.Json.JsonProperty("overload")]
         [System.Text.Json.Serialization.JsonPropertyName("overload")]
         [YamlDotNet.Serialization.YamlMember(Alias="overload")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiNames Overload { get; set; }
-        [Newtonsoft.Json.JsonProperty("overridden")]
         [System.Text.Json.Serialization.JsonPropertyName("overridden")]
         [YamlDotNet.Serialization.YamlMember(Alias="overridden")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiNames Overridden { get; set; }
-        [Newtonsoft.Json.JsonProperty("parent")]
         [System.Text.Json.Serialization.JsonPropertyName("parent")]
         [YamlDotNet.Serialization.YamlMember(Alias="parent")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput Parent { get; set; }
-        [Newtonsoft.Json.JsonProperty("platform")]
         [System.Text.Json.Serialization.JsonPropertyName("platform")]
         [YamlDotNet.Serialization.YamlMember(Alias="platform")]
         public System.Collections.Generic.List<string> Platform { get; set; }
-        [Newtonsoft.Json.JsonProperty("remarks")]
         [System.Text.Json.Serialization.JsonPropertyName("remarks")]
         [YamlDotNet.Serialization.YamlMember(Alias="remarks")]
         public string Remarks { get; set; }
-        [Newtonsoft.Json.JsonProperty("seealso")]
         [System.Text.Json.Serialization.JsonPropertyName("seealso")]
         [YamlDotNet.Serialization.YamlMember(Alias="seealso")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLinkInfoBuildOutput> SeeAlsos { get; set; }
-        [Newtonsoft.Json.JsonProperty("source")]
         [System.Text.Json.Serialization.JsonPropertyName("source")]
         [YamlDotNet.Serialization.YamlMember(Alias="source")]
         public Docfx.DataContracts.Common.SourceDetail Source { get; set; }
-        [Newtonsoft.Json.JsonProperty("summary")]
         [System.Text.Json.Serialization.JsonPropertyName("summary")]
         [YamlDotNet.Serialization.YamlMember(Alias="summary")]
         public string Summary { get; set; }
-        [Newtonsoft.Json.JsonProperty("langs")]
         [System.Text.Json.Serialization.JsonPropertyName("langs")]
         [YamlDotNet.Serialization.YamlMember(Alias="langs")]
         public string[] SupportedLanguages { get; set; }
-        [Newtonsoft.Json.JsonProperty("syntax")]
         [System.Text.Json.Serialization.JsonPropertyName("syntax")]
         [YamlDotNet.Serialization.YamlMember(Alias="syntax")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiSyntaxBuildOutput Syntax { get; set; }
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public Docfx.DataContracts.ManagedReference.MemberType? Type { get; set; }
-        [Newtonsoft.Json.JsonProperty("uid")]
         [System.Text.Json.Serialization.JsonPropertyName("uid")]
         [YamlDotNet.Serialization.YamlMember(Alias="uid")]
         public string Uid { get; set; }
@@ -985,11 +933,9 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
     public class ApiExceptionInfoBuildOutput
     {
         public ApiExceptionInfoBuildOutput() { }
-        [Newtonsoft.Json.JsonProperty("description")]
         [System.Text.Json.Serialization.JsonPropertyName("description")]
         [YamlDotNet.Serialization.YamlMember(Alias="description")]
         public string Description { get; set; }
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiNames Type { get; set; }
@@ -1000,11 +946,9 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
     public class ApiLanguageValuePair
     {
         public ApiLanguageValuePair() { }
-        [Newtonsoft.Json.JsonProperty("lang")]
         [System.Text.Json.Serialization.JsonPropertyName("lang")]
         [YamlDotNet.Serialization.YamlMember(Alias="lang")]
         public string Language { get; set; }
-        [Newtonsoft.Json.JsonProperty("value")]
         [System.Text.Json.Serialization.JsonPropertyName("value")]
         [YamlDotNet.Serialization.YamlMember(Alias="value")]
         public string Value { get; set; }
@@ -1012,15 +956,12 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
     public class ApiLinkInfoBuildOutput
     {
         public ApiLinkInfoBuildOutput() { }
-        [Newtonsoft.Json.JsonProperty("linkType")]
         [System.Text.Json.Serialization.JsonPropertyName("linkType")]
         [YamlDotNet.Serialization.YamlMember(Alias="linkType")]
         public Docfx.DataContracts.ManagedReference.LinkType LinkType { get; set; }
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiNames Type { get; set; }
-        [Newtonsoft.Json.JsonProperty("url")]
         [System.Text.Json.Serialization.JsonPropertyName("url")]
         [YamlDotNet.Serialization.YamlMember(Alias="url")]
         public string Url { get; set; }
@@ -1031,31 +972,24 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
     public class ApiNames
     {
         public ApiNames() { }
-        [Newtonsoft.Json.JsonProperty("definition")]
         [System.Text.Json.Serialization.JsonPropertyName("definition")]
         [YamlDotNet.Serialization.YamlMember(Alias="definition")]
         public string Definition { get; set; }
-        [Newtonsoft.Json.JsonProperty("fullName")]
         [System.Text.Json.Serialization.JsonPropertyName("fullName")]
         [YamlDotNet.Serialization.YamlMember(Alias="fullName")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> FullName { get; set; }
-        [Newtonsoft.Json.JsonProperty("id")]
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         [YamlDotNet.Serialization.YamlMember(Alias="id")]
         public string Id { get; set; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> Name { get; set; }
-        [Newtonsoft.Json.JsonProperty("nameWithType")]
         [System.Text.Json.Serialization.JsonPropertyName("nameWithType")]
         [YamlDotNet.Serialization.YamlMember(Alias="nameWithType")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> NameWithType { get; set; }
-        [Newtonsoft.Json.JsonProperty("specName")]
         [System.Text.Json.Serialization.JsonPropertyName("specName")]
         [YamlDotNet.Serialization.YamlMember(Alias="specName")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> Spec { get; set; }
-        [Newtonsoft.Json.JsonProperty("uid")]
         [System.Text.Json.Serialization.JsonPropertyName("uid")]
         [YamlDotNet.Serialization.YamlMember(Alias="uid")]
         public string Uid { get; set; }
@@ -1064,15 +998,12 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
     public class ApiParameterBuildOutput
     {
         public ApiParameterBuildOutput() { }
-        [Newtonsoft.Json.JsonProperty("description")]
         [System.Text.Json.Serialization.JsonPropertyName("description")]
         [YamlDotNet.Serialization.YamlMember(Alias="description")]
         public string Description { get; set; }
-        [Newtonsoft.Json.JsonProperty("id")]
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         [YamlDotNet.Serialization.YamlMember(Alias="id")]
         public string Name { get; set; }
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiNames Type { get; set; }
@@ -1083,135 +1014,102 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
     public class ApiReferenceBuildOutput
     {
         public ApiReferenceBuildOutput() { }
-        [Newtonsoft.Json.JsonProperty("additionalNotes")]
         [System.Text.Json.Serialization.JsonPropertyName("additionalNotes")]
         [YamlDotNet.Serialization.YamlMember(Alias="additionalNotes")]
         public Docfx.DataContracts.ManagedReference.AdditionalNotes AdditionalNotes { get; set; }
-        [Newtonsoft.Json.JsonProperty("assemblies")]
         [System.Text.Json.Serialization.JsonPropertyName("assemblies")]
         [YamlDotNet.Serialization.YamlMember(Alias="assemblies")]
         public System.Collections.Generic.List<string> AssemblyNameList { get; set; }
-        [Newtonsoft.Json.JsonProperty("attributes")]
         [System.Text.Json.Serialization.JsonPropertyName("attributes")]
         [YamlDotNet.Serialization.YamlMember(Alias="attributes")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.AttributeInfo> Attributes { get; set; }
-        [Newtonsoft.Json.JsonProperty("conceptual")]
         [System.Text.Json.Serialization.JsonPropertyName("conceptual")]
         [YamlDotNet.Serialization.YamlMember(Alias="conceptual")]
         public string Conceptual { get; set; }
-        [Newtonsoft.Json.JsonProperty("definition")]
         [System.Text.Json.Serialization.JsonPropertyName("definition")]
         [YamlDotNet.Serialization.YamlMember(Alias="definition")]
         public string Definition { get; set; }
-        [Newtonsoft.Json.JsonProperty("documentation")]
         [System.Text.Json.Serialization.JsonPropertyName("documentation")]
         [YamlDotNet.Serialization.YamlMember(Alias="documentation")]
         public Docfx.DataContracts.Common.SourceDetail Documentation { get; set; }
-        [Newtonsoft.Json.JsonProperty("example")]
         [System.Text.Json.Serialization.JsonPropertyName("example")]
         [YamlDotNet.Serialization.YamlMember(Alias="example")]
         public System.Collections.Generic.List<string> Examples { get; set; }
-        [Newtonsoft.Json.JsonProperty("exceptions")]
         [System.Text.Json.Serialization.JsonPropertyName("exceptions")]
         [YamlDotNet.Serialization.YamlMember(Alias="exceptions")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiExceptionInfoBuildOutput> Exceptions { get; set; }
-        [Newtonsoft.Json.JsonProperty("extensionMethods")]
         [System.Text.Json.Serialization.JsonPropertyName("extensionMethods")]
         [YamlDotNet.Serialization.YamlMember(Alias="extensionMethods")]
         public System.Collections.Generic.List<string> ExtensionMethods { get; set; }
-        [Newtonsoft.Json.JsonProperty("fullName")]
         [System.Text.Json.Serialization.JsonPropertyName("fullName")]
         [YamlDotNet.Serialization.YamlMember(Alias="fullName")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> FullName { get; set; }
-        [Newtonsoft.Json.JsonProperty("href")]
         [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }
-        [Newtonsoft.Json.JsonProperty("implements")]
         [System.Text.Json.Serialization.JsonPropertyName("implements")]
         [YamlDotNet.Serialization.YamlMember(Alias="implements")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiNames> Implements { get; set; }
-        [Newtonsoft.Json.JsonProperty("index")]
         [System.Text.Json.Serialization.JsonPropertyName("index")]
         [YamlDotNet.Serialization.YamlMember(Alias="index")]
         public int? Index { get; set; }
-        [Newtonsoft.Json.JsonProperty("inheritance")]
         [System.Text.Json.Serialization.JsonPropertyName("inheritance")]
         [YamlDotNet.Serialization.YamlMember(Alias="inheritance")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiReferenceBuildOutput> Inheritance { get; set; }
-        [Newtonsoft.Json.JsonProperty("inheritedMembers")]
         [System.Text.Json.Serialization.JsonPropertyName("inheritedMembers")]
         [YamlDotNet.Serialization.YamlMember(Alias="inheritedMembers")]
         public System.Collections.Generic.List<string> InheritedMembers { get; set; }
-        [Newtonsoft.Json.JsonProperty("isEii")]
         [System.Text.Json.Serialization.JsonPropertyName("isEii")]
         [YamlDotNet.Serialization.YamlMember(Alias="isEii")]
         public bool IsExplicitInterfaceImplementation { get; set; }
-        [Newtonsoft.Json.JsonProperty("isExtensionMethod")]
         [System.Text.Json.Serialization.JsonPropertyName("isExtensionMethod")]
         [YamlDotNet.Serialization.YamlMember(Alias="isExtensionMethod")]
         public bool IsExtensionMethod { get; set; }
-        [Newtonsoft.Json.JsonProperty("isExternal")]
         [System.Text.Json.Serialization.JsonPropertyName("isExternal")]
         [YamlDotNet.Serialization.YamlMember(Alias="isExternal")]
         public bool? IsExternal { get; set; }
-        [Newtonsoft.Json.JsonProperty("level")]
         [System.Text.Json.Serialization.JsonPropertyName("level")]
         [YamlDotNet.Serialization.YamlMember(Alias="level")]
         public int Level { get; }
         [Docfx.YamlSerialization.ExtensibleMember]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         [YamlDotNet.Serialization.YamlIgnore]
         public Docfx.Common.CompositeDictionary MetadataJson { get; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> Name { get; set; }
-        [Newtonsoft.Json.JsonProperty("nameWithType")]
         [System.Text.Json.Serialization.JsonPropertyName("nameWithType")]
         [YamlDotNet.Serialization.YamlMember(Alias="nameWithType")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> NameWithType { get; set; }
-        [Newtonsoft.Json.JsonProperty("namespace")]
         [System.Text.Json.Serialization.JsonPropertyName("namespace")]
         [YamlDotNet.Serialization.YamlMember(Alias="namespace")]
         public string NamespaceName { get; set; }
-        [Newtonsoft.Json.JsonProperty("overload")]
         [System.Text.Json.Serialization.JsonPropertyName("overload")]
         [YamlDotNet.Serialization.YamlMember(Alias="overload")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiNames Overload { get; set; }
-        [Newtonsoft.Json.JsonProperty("overridden")]
         [System.Text.Json.Serialization.JsonPropertyName("overridden")]
         [YamlDotNet.Serialization.YamlMember(Alias="overridden")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiNames Overridden { get; set; }
-        [Newtonsoft.Json.JsonProperty("parent")]
         [System.Text.Json.Serialization.JsonPropertyName("parent")]
         [YamlDotNet.Serialization.YamlMember(Alias="parent")]
         public string Parent { get; set; }
-        [Newtonsoft.Json.JsonProperty("remarks")]
         [System.Text.Json.Serialization.JsonPropertyName("remarks")]
         [YamlDotNet.Serialization.YamlMember(Alias="remarks")]
         public string Remarks { get; set; }
-        [Newtonsoft.Json.JsonProperty("seealso")]
         [System.Text.Json.Serialization.JsonPropertyName("seealso")]
         [YamlDotNet.Serialization.YamlMember(Alias="seealso")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLinkInfoBuildOutput> SeeAlsos { get; set; }
-        [Newtonsoft.Json.JsonProperty("source")]
         [System.Text.Json.Serialization.JsonPropertyName("source")]
         [YamlDotNet.Serialization.YamlMember(Alias="source")]
         public Docfx.DataContracts.Common.SourceDetail Source { get; set; }
-        [Newtonsoft.Json.JsonProperty("specName")]
         [System.Text.Json.Serialization.JsonPropertyName("specName")]
         [YamlDotNet.Serialization.YamlMember(Alias="specName")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> Spec { get; set; }
-        [Newtonsoft.Json.JsonProperty("syntax")]
         [System.Text.Json.Serialization.JsonPropertyName("syntax")]
         [YamlDotNet.Serialization.YamlMember(Alias="syntax")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiSyntaxBuildOutput Syntax { get; set; }
-        [Newtonsoft.Json.JsonProperty("uid")]
         [System.Text.Json.Serialization.JsonPropertyName("uid")]
         [YamlDotNet.Serialization.YamlMember(Alias="uid")]
         public string Uid { get; set; }
@@ -1224,19 +1122,15 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
     public class ApiSyntaxBuildOutput
     {
         public ApiSyntaxBuildOutput() { }
-        [Newtonsoft.Json.JsonProperty("content")]
         [System.Text.Json.Serialization.JsonPropertyName("content")]
         [YamlDotNet.Serialization.YamlMember(Alias="content")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiLanguageValuePair> Content { get; set; }
-        [Newtonsoft.Json.JsonProperty("parameters")]
         [System.Text.Json.Serialization.JsonPropertyName("parameters")]
         [YamlDotNet.Serialization.YamlMember(Alias="parameters")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiParameterBuildOutput> Parameters { get; set; }
-        [Newtonsoft.Json.JsonProperty("return")]
         [System.Text.Json.Serialization.JsonPropertyName("return")]
         [YamlDotNet.Serialization.YamlMember(Alias="return")]
         public Docfx.Build.ManagedReference.BuildOutputs.ApiParameterBuildOutput Return { get; set; }
-        [Newtonsoft.Json.JsonProperty("typeParameters")]
         [System.Text.Json.Serialization.JsonPropertyName("typeParameters")]
         [YamlDotNet.Serialization.YamlMember(Alias="typeParameters")]
         public System.Collections.Generic.List<Docfx.Build.ManagedReference.BuildOutputs.ApiParameterBuildOutput> TypeParameters { get; set; }
@@ -2224,15 +2118,12 @@ namespace Docfx.Common.Git
     public class GitDetail : System.IEquatable<Docfx.Common.Git.GitDetail>
     {
         public GitDetail() { }
-        [Newtonsoft.Json.JsonProperty("branch")]
         [System.Text.Json.Serialization.JsonPropertyName("branch")]
         [YamlDotNet.Serialization.YamlMember(Alias="branch")]
         public string Branch { get; set; }
-        [Newtonsoft.Json.JsonProperty("path")]
         [System.Text.Json.Serialization.JsonPropertyName("path")]
         [YamlDotNet.Serialization.YamlMember(Alias="path")]
         public string Path { get; set; }
-        [Newtonsoft.Json.JsonProperty("repo")]
         [System.Text.Json.Serialization.JsonPropertyName("repo")]
         [YamlDotNet.Serialization.YamlMember(Alias="repo")]
         public string Repo { get; set; }
@@ -2284,43 +2175,30 @@ namespace Docfx
     {
         public FileMappingItem() { }
         public FileMappingItem(params string[] files) { }
-        [Newtonsoft.Json.JsonProperty("case")]
         [System.Text.Json.Serialization.JsonPropertyName("case")]
         public bool? Case { get; set; }
-        [Newtonsoft.Json.JsonProperty("dest")]
         [System.Text.Json.Serialization.JsonPropertyName("dest")]
         public string Dest { get; set; }
-        [Newtonsoft.Json.JsonProperty("noNegate")]
         [System.Text.Json.Serialization.JsonPropertyName("noNegate")]
         public bool? DisableNegate { get; set; }
-        [Newtonsoft.Json.JsonProperty("dot")]
         [System.Text.Json.Serialization.JsonPropertyName("dot")]
         public bool? Dot { get; set; }
-        [Newtonsoft.Json.JsonProperty("exclude")]
         [System.Text.Json.Serialization.JsonPropertyName("exclude")]
         public Docfx.FileItems Exclude { get; set; }
-        [Newtonsoft.Json.JsonProperty("files")]
         [System.Text.Json.Serialization.JsonPropertyName("files")]
         public Docfx.FileItems Files { get; set; }
-        [Newtonsoft.Json.JsonProperty("group")]
         [System.Text.Json.Serialization.JsonPropertyName("group")]
         public string Group { get; set; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         public string Name { get; set; }
-        [Newtonsoft.Json.JsonProperty("noEscape")]
         [System.Text.Json.Serialization.JsonPropertyName("noEscape")]
         public bool? NoEscape { get; set; }
-        [Newtonsoft.Json.JsonProperty("noExpand")]
         [System.Text.Json.Serialization.JsonPropertyName("noExpand")]
         public bool? NoExpand { get; set; }
-        [Newtonsoft.Json.JsonProperty("noGlobStar")]
         [System.Text.Json.Serialization.JsonPropertyName("noGlobStar")]
         public bool? NoGlobStar { get; set; }
-        [Newtonsoft.Json.JsonProperty("rootTocPath")]
         [System.Text.Json.Serialization.JsonPropertyName("rootTocPath")]
         public string RootTocPath { get; set; }
-        [Newtonsoft.Json.JsonProperty("src")]
         [System.Text.Json.Serialization.JsonPropertyName("src")]
         public string Src { get; set; }
     }
@@ -2489,64 +2367,49 @@ namespace Docfx.DataContracts.Common
     {
         public ReferenceViewModel() { }
         [Docfx.YamlSerialization.ExtensibleMember]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.Dictionary<string, object> Additional { get; }
         [Docfx.DataContracts.Common.MarkdownContentIgnore]
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         [YamlDotNet.Serialization.YamlIgnore]
         public Docfx.Common.CompositeDictionary AdditionalJson { get; }
-        [Newtonsoft.Json.JsonProperty("commentId")]
         [System.Text.Json.Serialization.JsonPropertyName("commentId")]
         [YamlDotNet.Serialization.YamlMember(Alias="commentId")]
         public string CommentId { get; set; }
-        [Newtonsoft.Json.JsonProperty("definition")]
         [System.Text.Json.Serialization.JsonPropertyName("definition")]
         [YamlDotNet.Serialization.YamlMember(Alias="definition")]
         public string Definition { get; set; }
-        [Newtonsoft.Json.JsonProperty("fullName")]
         [System.Text.Json.Serialization.JsonPropertyName("fullName")]
         [YamlDotNet.Serialization.YamlMember(Alias="fullName")]
         public string FullName { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember("fullName.")]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.SortedList<string, string> FullNameInDevLangs { get; }
-        [Newtonsoft.Json.JsonProperty("href")]
         [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }
-        [Newtonsoft.Json.JsonProperty("isExternal")]
         [System.Text.Json.Serialization.JsonPropertyName("isExternal")]
         [YamlDotNet.Serialization.YamlMember(Alias="isExternal")]
         public bool? IsExternal { get; set; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]
         public string Name { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember("name.")]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.SortedList<string, string> NameInDevLangs { get; }
-        [Newtonsoft.Json.JsonProperty("nameWithType")]
         [System.Text.Json.Serialization.JsonPropertyName("nameWithType")]
         [YamlDotNet.Serialization.YamlMember(Alias="nameWithType")]
         public string NameWithType { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember("nameWithType.")]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.SortedList<string, string> NameWithTypeInDevLangs { get; }
-        [Newtonsoft.Json.JsonProperty("parent")]
         [System.Text.Json.Serialization.JsonPropertyName("parent")]
         [YamlDotNet.Serialization.YamlMember(Alias="parent")]
         public string Parent { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember("spec.")]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.SortedList<string, System.Collections.Generic.List<Docfx.DataContracts.Common.SpecViewModel>> Specs { get; }
-        [Newtonsoft.Json.JsonProperty("uid")]
         [System.Text.Json.Serialization.JsonPropertyName("uid")]
         [YamlDotNet.Serialization.YamlMember(Alias="uid")]
         public string Uid { get; set; }
@@ -2555,27 +2418,21 @@ namespace Docfx.DataContracts.Common
     public class SourceDetail
     {
         public SourceDetail() { }
-        [Newtonsoft.Json.JsonProperty("endLine")]
         [System.Text.Json.Serialization.JsonPropertyName("endLine")]
         [YamlDotNet.Serialization.YamlMember(Alias="endLine")]
         public int EndLine { get; set; }
-        [Newtonsoft.Json.JsonProperty("href")]
         [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }
-        [Newtonsoft.Json.JsonProperty("id")]
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         [YamlDotNet.Serialization.YamlMember(Alias="id")]
         public string Name { get; set; }
-        [Newtonsoft.Json.JsonProperty("path")]
         [System.Text.Json.Serialization.JsonPropertyName("path")]
         [YamlDotNet.Serialization.YamlMember(Alias="path")]
         public string Path { get; set; }
-        [Newtonsoft.Json.JsonProperty("remote")]
         [System.Text.Json.Serialization.JsonPropertyName("remote")]
         [YamlDotNet.Serialization.YamlMember(Alias="remote")]
         public Docfx.Common.Git.GitDetail Remote { get; set; }
-        [Newtonsoft.Json.JsonProperty("startLine")]
         [System.Text.Json.Serialization.JsonPropertyName("startLine")]
         [YamlDotNet.Serialization.YamlMember(Alias="startLine")]
         public int StartLine { get; set; }
@@ -2583,19 +2440,15 @@ namespace Docfx.DataContracts.Common
     public class SpecViewModel
     {
         public SpecViewModel() { }
-        [Newtonsoft.Json.JsonProperty("href")]
         [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }
-        [Newtonsoft.Json.JsonProperty("isExternal")]
         [System.Text.Json.Serialization.JsonPropertyName("isExternal")]
         [YamlDotNet.Serialization.YamlMember(Alias="isExternal")]
         public bool IsExternal { get; set; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]
         public string Name { get; set; }
-        [Newtonsoft.Json.JsonProperty("uid")]
         [System.Text.Json.Serialization.JsonPropertyName("uid")]
         [YamlDotNet.Serialization.YamlMember(Alias="uid")]
         public string Uid { get; set; }
@@ -2603,87 +2456,66 @@ namespace Docfx.DataContracts.Common
     public class TocItemViewModel
     {
         public TocItemViewModel() { }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string AggregatedHref { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string AggregatedUid { get; set; }
-        [Newtonsoft.Json.JsonProperty("displayName")]
         [System.Text.Json.Serialization.JsonPropertyName("displayName")]
         [YamlDotNet.Serialization.YamlMember(Alias="displayName")]
         public string DisplayName { get; set; }
-        [Newtonsoft.Json.JsonProperty("homepage")]
         [System.Text.Json.Serialization.JsonPropertyName("homepage")]
         [YamlDotNet.Serialization.YamlMember(Alias="homepage")]
         public string Homepage { get; set; }
-        [Newtonsoft.Json.JsonProperty("homepageUid")]
         [System.Text.Json.Serialization.JsonPropertyName("homepageUid")]
         [YamlDotNet.Serialization.YamlMember(Alias="homepageUid")]
         public string HomepageUid { get; set; }
-        [Newtonsoft.Json.JsonProperty("href")]
         [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }
-        [Newtonsoft.Json.JsonProperty("includedFrom")]
         [System.Text.Json.Serialization.JsonPropertyName("includedFrom")]
         [YamlDotNet.Serialization.YamlMember(Alias="includedFrom")]
         public string IncludedFrom { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public bool IsHrefUpdated { get; set; }
-        [Newtonsoft.Json.JsonProperty("items")]
         [System.Text.Json.Serialization.JsonPropertyName("items")]
         [YamlDotNet.Serialization.YamlMember(Alias="items")]
         public System.Collections.Generic.List<Docfx.DataContracts.Common.TocItemViewModel> Items { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         [YamlDotNet.Serialization.YamlIgnore]
         public Docfx.Common.CompositeDictionary MetadataJson { get; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]
         public string Name { get; set; }
-        [Newtonsoft.Json.JsonProperty("order")]
         [System.Text.Json.Serialization.JsonPropertyName("order")]
         [YamlDotNet.Serialization.YamlMember(Alias="order")]
         public int? Order { get; set; }
-        [Newtonsoft.Json.JsonProperty("originalHomepage")]
         [System.Text.Json.Serialization.JsonPropertyName("originalHomepage")]
         [YamlDotNet.Serialization.YamlMember(Alias="originalHomepage")]
         public string OriginalHomepage { get; set; }
-        [Newtonsoft.Json.JsonProperty("originalHref")]
         [System.Text.Json.Serialization.JsonPropertyName("originalHref")]
         [YamlDotNet.Serialization.YamlMember(Alias="originalHref")]
         public string OriginalHref { get; set; }
-        [Newtonsoft.Json.JsonProperty("originalTocHref")]
         [System.Text.Json.Serialization.JsonPropertyName("originalTocHref")]
         [YamlDotNet.Serialization.YamlMember(Alias="originalTocHref")]
         public string OriginalTocHref { get; set; }
-        [Newtonsoft.Json.JsonProperty("originalTopicHref")]
         [System.Text.Json.Serialization.JsonPropertyName("originalTopicHref")]
         [YamlDotNet.Serialization.YamlMember(Alias="originalTopicHref")]
         public string OriginalTopicHref { get; set; }
-        [Newtonsoft.Json.JsonProperty("tocHref")]
         [System.Text.Json.Serialization.JsonPropertyName("tocHref")]
         [YamlDotNet.Serialization.YamlMember(Alias="tocHref")]
         public string TocHref { get; set; }
-        [Newtonsoft.Json.JsonProperty("topicHref")]
         [System.Text.Json.Serialization.JsonPropertyName("topicHref")]
         [YamlDotNet.Serialization.YamlMember(Alias="topicHref")]
         public string TopicHref { get; set; }
-        [Newtonsoft.Json.JsonProperty("topicUid")]
         [System.Text.Json.Serialization.JsonPropertyName("topicUid")]
         [YamlDotNet.Serialization.YamlMember(Alias="topicUid")]
         public string TopicUid { get; set; }
-        [Newtonsoft.Json.JsonProperty("uid")]
         [System.Text.Json.Serialization.JsonPropertyName("uid")]
         [YamlDotNet.Serialization.YamlMember(Alias="uid")]
         public string Uid { get; set; }
@@ -2717,17 +2549,14 @@ namespace Docfx.DataContracts.ManagedReference
     {
         public AdditionalNotes() { }
         [Docfx.DataContracts.Common.MarkdownContent]
-        [Newtonsoft.Json.JsonProperty("caller")]
         [System.Text.Json.Serialization.JsonPropertyName("caller")]
         [YamlDotNet.Serialization.YamlMember(Alias="caller")]
         public string Caller { get; set; }
         [Docfx.DataContracts.Common.MarkdownContent]
-        [Newtonsoft.Json.JsonProperty("implementer")]
         [System.Text.Json.Serialization.JsonPropertyName("implementer")]
         [YamlDotNet.Serialization.YamlMember(Alias="implementer")]
         public string Implementer { get; set; }
         [Docfx.DataContracts.Common.MarkdownContent]
-        [Newtonsoft.Json.JsonProperty("inheritor")]
         [System.Text.Json.Serialization.JsonPropertyName("inheritor")]
         [YamlDotNet.Serialization.YamlMember(Alias="inheritor")]
         public string Inheritor { get; set; }
@@ -2736,22 +2565,18 @@ namespace Docfx.DataContracts.ManagedReference
     {
         public ApiParameter() { }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
-        [Newtonsoft.Json.JsonProperty("attributes")]
         [System.Text.Json.Serialization.JsonPropertyName("attributes")]
         [YamlDotNet.Serialization.YamlMember(Alias="attributes")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.AttributeInfo> Attributes { get; set; }
         [Docfx.DataContracts.Common.MarkdownContent]
-        [Newtonsoft.Json.JsonProperty("description")]
         [System.Text.Json.Serialization.JsonPropertyName("description")]
         [YamlDotNet.Serialization.YamlMember(Alias="description")]
         public string Description { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.MergeKey)]
-        [Newtonsoft.Json.JsonProperty("id")]
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         [YamlDotNet.Serialization.YamlMember(Alias="id")]
         public string Name { get; set; }
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public string Type { get; set; }
@@ -2760,11 +2585,9 @@ namespace Docfx.DataContracts.ManagedReference
     {
         public ArgumentInfo() { }
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public string Type { get; set; }
-        [Newtonsoft.Json.JsonProperty("value")]
         [System.Text.Json.Serialization.JsonPropertyName("value")]
         [YamlDotNet.Serialization.YamlMember(Alias="value")]
         public object Value { get; set; }
@@ -2772,20 +2595,16 @@ namespace Docfx.DataContracts.ManagedReference
     public class AttributeInfo
     {
         public AttributeInfo() { }
-        [Newtonsoft.Json.JsonProperty("arguments")]
         [System.Text.Json.Serialization.JsonPropertyName("arguments")]
         [YamlDotNet.Serialization.YamlMember(Alias="arguments")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.ArgumentInfo> Arguments { get; set; }
-        [Newtonsoft.Json.JsonProperty("ctor")]
         [System.Text.Json.Serialization.JsonPropertyName("ctor")]
         [YamlDotNet.Serialization.YamlMember(Alias="ctor")]
         public string Constructor { get; set; }
-        [Newtonsoft.Json.JsonProperty("namedArguments")]
         [System.Text.Json.Serialization.JsonPropertyName("namedArguments")]
         [YamlDotNet.Serialization.YamlMember(Alias="namedArguments")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.NamedArgumentInfo> NamedArguments { get; set; }
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public string Type { get; set; }
@@ -2794,18 +2613,15 @@ namespace Docfx.DataContracts.ManagedReference
     {
         public ExceptionInfo() { }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
-        [Newtonsoft.Json.JsonProperty("commentId")]
         [System.Text.Json.Serialization.JsonPropertyName("commentId")]
         [YamlDotNet.Serialization.YamlMember(Alias="commentId")]
         public string CommentId { get; set; }
         [Docfx.DataContracts.Common.MarkdownContent]
-        [Newtonsoft.Json.JsonProperty("description")]
         [System.Text.Json.Serialization.JsonPropertyName("description")]
         [YamlDotNet.Serialization.YamlMember(Alias="description")]
         public string Description { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.MergeKey)]
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public string Type { get; set; }
@@ -2813,215 +2629,169 @@ namespace Docfx.DataContracts.ManagedReference
     public class ItemViewModel : Docfx.DataContracts.Common.IOverwriteDocumentViewModel
     {
         public ItemViewModel() { }
-        [Newtonsoft.Json.JsonProperty("additionalNotes")]
         [System.Text.Json.Serialization.JsonPropertyName("additionalNotes")]
         [YamlDotNet.Serialization.YamlMember(Alias="additionalNotes")]
         public Docfx.DataContracts.ManagedReference.AdditionalNotes AdditionalNotes { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
-        [Newtonsoft.Json.JsonProperty("assemblies")]
         [System.Text.Json.Serialization.JsonPropertyName("assemblies")]
         [YamlDotNet.Serialization.YamlMember(Alias="assemblies")]
         public System.Collections.Generic.List<string> AssemblyNameList { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
-        [Newtonsoft.Json.JsonProperty("attributes")]
         [System.Text.Json.Serialization.JsonPropertyName("attributes")]
         [YamlDotNet.Serialization.YamlMember(Alias="attributes")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.AttributeInfo> Attributes { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("children")]
         [System.Text.Json.Serialization.JsonPropertyName("children")]
         [YamlDotNet.Serialization.YamlMember(Alias="children")]
         public System.Collections.Generic.List<string> Children { get; set; }
-        [Newtonsoft.Json.JsonProperty("commentId")]
         [System.Text.Json.Serialization.JsonPropertyName("commentId")]
         [YamlDotNet.Serialization.YamlMember(Alias="commentId")]
         public string CommentId { get; set; }
         [Docfx.DataContracts.Common.MarkdownContent]
-        [Newtonsoft.Json.JsonProperty("conceptual")]
         [System.Text.Json.Serialization.JsonPropertyName("conceptual")]
         [YamlDotNet.Serialization.YamlMember(Alias="conceptual")]
         public string Conceptual { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("derivedClasses")]
         [System.Text.Json.Serialization.JsonPropertyName("derivedClasses")]
         [YamlDotNet.Serialization.YamlMember(Alias="derivedClasses")]
         public System.Collections.Generic.List<string> DerivedClasses { get; set; }
-        [Newtonsoft.Json.JsonProperty("documentation")]
         [System.Text.Json.Serialization.JsonPropertyName("documentation")]
         [YamlDotNet.Serialization.YamlMember(Alias="documentation")]
         public Docfx.DataContracts.Common.SourceDetail Documentation { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Replace)]
         [Docfx.DataContracts.Common.MarkdownContent]
-        [Newtonsoft.Json.JsonProperty("example")]
         [System.Text.Json.Serialization.JsonPropertyName("example")]
         [YamlDotNet.Serialization.YamlMember(Alias="example")]
         public System.Collections.Generic.List<string> Examples { get; set; }
-        [Newtonsoft.Json.JsonProperty("exceptions")]
         [System.Text.Json.Serialization.JsonPropertyName("exceptions")]
         [YamlDotNet.Serialization.YamlMember(Alias="exceptions")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.ExceptionInfo> Exceptions { get; set; }
         [Docfx.DataContracts.Common.MarkdownContentIgnore]
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.IDictionary<string, object> ExtensionData { get; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("extensionMethods")]
         [System.Text.Json.Serialization.JsonPropertyName("extensionMethods")]
         [YamlDotNet.Serialization.YamlMember(Alias="extensionMethods")]
         public System.Collections.Generic.List<string> ExtensionMethods { get; set; }
-        [Newtonsoft.Json.JsonProperty("fullName")]
         [System.Text.Json.Serialization.JsonPropertyName("fullName")]
         [YamlDotNet.Serialization.YamlMember(Alias="fullName")]
         public string FullName { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string FullNameForCSharp { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string FullNameForVB { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember("fullName.")]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.SortedList<string, string> FullNames { get; set; }
-        [Newtonsoft.Json.JsonProperty("href")]
         [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }
-        [Newtonsoft.Json.JsonProperty("id")]
         [System.Text.Json.Serialization.JsonPropertyName("id")]
         [YamlDotNet.Serialization.YamlMember(Alias="id")]
         public string Id { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("implements")]
         [System.Text.Json.Serialization.JsonPropertyName("implements")]
         [YamlDotNet.Serialization.YamlMember(Alias="implements")]
         public System.Collections.Generic.List<string> Implements { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("inheritance")]
         [System.Text.Json.Serialization.JsonPropertyName("inheritance")]
         [YamlDotNet.Serialization.YamlMember(Alias="inheritance")]
         public System.Collections.Generic.List<string> Inheritance { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("inheritedMembers")]
         [System.Text.Json.Serialization.JsonPropertyName("inheritedMembers")]
         [YamlDotNet.Serialization.YamlMember(Alias="inheritedMembers")]
         public System.Collections.Generic.List<string> InheritedMembers { get; set; }
-        [Newtonsoft.Json.JsonProperty("isEii")]
         [System.Text.Json.Serialization.JsonPropertyName("isEii")]
         [YamlDotNet.Serialization.YamlMember(Alias="isEii")]
         public bool IsExplicitInterfaceImplementation { get; set; }
-        [Newtonsoft.Json.JsonProperty("isExtensionMethod")]
         [System.Text.Json.Serialization.JsonPropertyName("isExtensionMethod")]
         [YamlDotNet.Serialization.YamlMember(Alias="isExtensionMethod")]
         public bool IsExtensionMethod { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]
         public string Name { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string NameForCSharp { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string NameForVB { get; set; }
-        [Newtonsoft.Json.JsonProperty("nameWithType")]
         [System.Text.Json.Serialization.JsonPropertyName("nameWithType")]
         [YamlDotNet.Serialization.YamlMember(Alias="nameWithType")]
         public string NameWithType { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string NameWithTypeForCSharp { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string NameWithTypeForVB { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember("name.")]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.SortedList<string, string> Names { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember("nameWithType.")]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.SortedList<string, string> NamesWithType { get; set; }
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("namespace")]
         [System.Text.Json.Serialization.JsonPropertyName("namespace")]
         [YamlDotNet.Serialization.YamlMember(Alias="namespace")]
         public string NamespaceName { get; set; }
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("overload")]
         [System.Text.Json.Serialization.JsonPropertyName("overload")]
         [YamlDotNet.Serialization.YamlMember(Alias="overload")]
         public string Overload { get; set; }
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("overridden")]
         [System.Text.Json.Serialization.JsonPropertyName("overridden")]
         [YamlDotNet.Serialization.YamlMember(Alias="overridden")]
         public string Overridden { get; set; }
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("parent")]
         [System.Text.Json.Serialization.JsonPropertyName("parent")]
         [YamlDotNet.Serialization.YamlMember(Alias="parent")]
         public string Parent { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Replace)]
-        [Newtonsoft.Json.JsonProperty("platform")]
         [System.Text.Json.Serialization.JsonPropertyName("platform")]
         [YamlDotNet.Serialization.YamlMember(Alias="platform")]
         public System.Collections.Generic.List<string> Platform { get; set; }
         [Docfx.DataContracts.Common.MarkdownContent]
-        [Newtonsoft.Json.JsonProperty("remarks")]
         [System.Text.Json.Serialization.JsonPropertyName("remarks")]
         [YamlDotNet.Serialization.YamlMember(Alias="remarks")]
         public string Remarks { get; set; }
-        [Newtonsoft.Json.JsonProperty("seealso")]
         [System.Text.Json.Serialization.JsonPropertyName("seealso")]
         [YamlDotNet.Serialization.YamlMember(Alias="seealso")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.LinkInfo> SeeAlsos { get; set; }
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.List<string> SeeAlsosUidReference { get; }
-        [Newtonsoft.Json.JsonProperty("source")]
         [System.Text.Json.Serialization.JsonPropertyName("source")]
         [YamlDotNet.Serialization.YamlMember(Alias="source")]
         public Docfx.DataContracts.Common.SourceDetail Source { get; set; }
         [Docfx.DataContracts.Common.MarkdownContent]
-        [Newtonsoft.Json.JsonProperty("summary")]
         [System.Text.Json.Serialization.JsonPropertyName("summary")]
         [YamlDotNet.Serialization.YamlMember(Alias="summary")]
         public string Summary { get; set; }
-        [Newtonsoft.Json.JsonProperty("langs")]
         [System.Text.Json.Serialization.JsonPropertyName("langs")]
         [YamlDotNet.Serialization.YamlMember(Alias="langs")]
         public string[] SupportedLanguages { get; set; }
-        [Newtonsoft.Json.JsonProperty("syntax")]
         [System.Text.Json.Serialization.JsonPropertyName("syntax")]
         [YamlDotNet.Serialization.YamlMember(Alias="syntax")]
         public Docfx.DataContracts.ManagedReference.SyntaxDetailViewModel Syntax { get; set; }
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public Docfx.DataContracts.ManagedReference.MemberType? Type { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.MergeKey)]
-        [Newtonsoft.Json.JsonProperty("uid")]
         [System.Text.Json.Serialization.JsonPropertyName("uid")]
         [YamlDotNet.Serialization.YamlMember(Alias="uid")]
         public string Uid { get; set; }
@@ -3029,22 +2799,18 @@ namespace Docfx.DataContracts.ManagedReference
     public class LinkInfo
     {
         public LinkInfo() { }
-        [Newtonsoft.Json.JsonProperty("altText")]
         [System.Text.Json.Serialization.JsonPropertyName("altText")]
         [YamlDotNet.Serialization.YamlMember(Alias="altText")]
         public string AltText { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
-        [Newtonsoft.Json.JsonProperty("commentId")]
         [System.Text.Json.Serialization.JsonPropertyName("commentId")]
         [YamlDotNet.Serialization.YamlMember(Alias="commentId")]
         public string CommentId { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.MergeKey)]
-        [Newtonsoft.Json.JsonProperty("linkId")]
         [System.Text.Json.Serialization.JsonPropertyName("linkId")]
         [YamlDotNet.Serialization.YamlMember(Alias="linkId")]
         public string LinkId { get; set; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
-        [Newtonsoft.Json.JsonProperty("linkType")]
         [System.Text.Json.Serialization.JsonPropertyName("linkType")]
         [YamlDotNet.Serialization.YamlMember(Alias="linkType")]
         public Docfx.DataContracts.ManagedReference.LinkType LinkType { get; set; }
@@ -3078,16 +2844,13 @@ namespace Docfx.DataContracts.ManagedReference
     public class NamedArgumentInfo
     {
         public NamedArgumentInfo() { }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         [YamlDotNet.Serialization.YamlMember(Alias="name")]
         public string Name { get; set; }
         [Docfx.DataContracts.Common.UniqueIdentityReference]
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         [YamlDotNet.Serialization.YamlMember(Alias="type")]
         public string Type { get; set; }
-        [Newtonsoft.Json.JsonProperty("value")]
         [System.Text.Json.Serialization.JsonPropertyName("value")]
         [YamlDotNet.Serialization.YamlMember(Alias="value")]
         public object Value { get; set; }
@@ -3095,25 +2858,20 @@ namespace Docfx.DataContracts.ManagedReference
     public class PageViewModel
     {
         public PageViewModel() { }
-        [Newtonsoft.Json.JsonProperty("items")]
         [System.Text.Json.Serialization.JsonPropertyName("items")]
         [YamlDotNet.Serialization.YamlMember(Alias="items")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.ItemViewModel> Items { get; set; }
-        [Newtonsoft.Json.JsonProperty("memberLayout")]
         [System.Text.Json.Serialization.JsonPropertyName("memberLayout")]
         [YamlDotNet.Serialization.YamlMember(Alias="memberLayout")]
         public Docfx.MemberLayout MemberLayout { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember]
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
         [Docfx.DataContracts.Common.MarkdownContentIgnore]
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
-        [Newtonsoft.Json.JsonProperty("references")]
         [System.Text.Json.Serialization.JsonPropertyName("references")]
         [YamlDotNet.Serialization.YamlMember(Alias="references")]
         public System.Collections.Generic.List<Docfx.DataContracts.Common.ReferenceViewModel> References { get; set; }
-        [Newtonsoft.Json.JsonProperty("shouldSkipMarkup")]
         [System.Text.Json.Serialization.JsonPropertyName("shouldSkipMarkup")]
         [YamlDotNet.Serialization.YamlMember(Alias="shouldSkipMarkup")]
         public bool ShouldSkipMarkup { get; set; }
@@ -3121,37 +2879,29 @@ namespace Docfx.DataContracts.ManagedReference
     public class SyntaxDetailViewModel
     {
         public SyntaxDetailViewModel() { }
-        [Newtonsoft.Json.JsonProperty("content")]
         [System.Text.Json.Serialization.JsonPropertyName("content")]
         [YamlDotNet.Serialization.YamlMember(Alias="content")]
         public string Content { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string ContentForCSharp { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         [YamlDotNet.Serialization.YamlIgnore]
         public string ContentForVB { get; set; }
         [Docfx.YamlSerialization.ExtensibleMember("content.")]
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.Collections.Generic.SortedList<string, string> Contents { get; set; }
         [Docfx.DataContracts.Common.MarkdownContentIgnore]
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.IDictionary<string, object> ExtensionData { get; }
-        [Newtonsoft.Json.JsonProperty("parameters")]
         [System.Text.Json.Serialization.JsonPropertyName("parameters")]
         [YamlDotNet.Serialization.YamlMember(Alias="parameters")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.ApiParameter> Parameters { get; set; }
-        [Newtonsoft.Json.JsonProperty("return")]
         [System.Text.Json.Serialization.JsonPropertyName("return")]
         [YamlDotNet.Serialization.YamlMember(Alias="return")]
         public Docfx.DataContracts.ManagedReference.ApiParameter Return { get; set; }
-        [Newtonsoft.Json.JsonProperty("typeParameters")]
         [System.Text.Json.Serialization.JsonPropertyName("typeParameters")]
         [YamlDotNet.Serialization.YamlMember(Alias="typeParameters")]
         public System.Collections.Generic.List<Docfx.DataContracts.ManagedReference.ApiParameter> TypeParameters { get; set; }
@@ -3273,19 +3023,14 @@ namespace Docfx.Plugins
     public class MarkdownServiceProperties
     {
         public MarkdownServiceProperties() { }
-        [Newtonsoft.Json.JsonProperty("alerts")]
         [System.Text.Json.Serialization.JsonPropertyName("alerts")]
         public System.Collections.Generic.Dictionary<string, string> Alerts { get; set; }
-        [Newtonsoft.Json.JsonProperty("enableSourceInfo")]
         [System.Text.Json.Serialization.JsonPropertyName("enableSourceInfo")]
         public bool EnableSourceInfo { get; set; }
-        [Newtonsoft.Json.JsonProperty("fallbackFolders")]
         [System.Text.Json.Serialization.JsonPropertyName("fallbackFolders")]
         public string[] FallbackFolders { get; set; }
-        [Newtonsoft.Json.JsonProperty("markdigExtensions")]
         [System.Text.Json.Serialization.JsonPropertyName("markdigExtensions")]
         public string[] MarkdigExtensions { get; set; }
-        [Newtonsoft.Json.JsonProperty("plantUml")]
         [System.Text.Json.Serialization.JsonPropertyName("plantUml")]
         public Docfx.MarkdigEngine.Extensions.PlantUmlOptions PlantUml { get; set; }
     }
@@ -3687,25 +3432,18 @@ namespace Docfx.MarkdigEngine.Extensions
     public class PlantUmlOptions
     {
         public PlantUmlOptions() { }
-        [Newtonsoft.Json.JsonProperty("delimitor")]
         [System.Text.Json.Serialization.JsonPropertyName("delimitor")]
         public string Delimitor { get; set; }
-        [Newtonsoft.Json.JsonProperty("javaPath")]
         [System.Text.Json.Serialization.JsonPropertyName("javaPath")]
         public string JavaPath { get; set; }
-        [Newtonsoft.Json.JsonProperty("localGraphvizDotPath")]
         [System.Text.Json.Serialization.JsonPropertyName("localGraphvizDotPath")]
         public string LocalGraphvizDotPath { get; set; }
-        [Newtonsoft.Json.JsonProperty("localPlantUmlPath")]
         [System.Text.Json.Serialization.JsonPropertyName("localPlantUmlPath")]
         public string LocalPlantUmlPath { get; set; }
-        [Newtonsoft.Json.JsonProperty("outputFormat")]
         [System.Text.Json.Serialization.JsonPropertyName("outputFormat")]
         public PlantUml.Net.OutputFormat OutputFormat { get; set; }
-        [Newtonsoft.Json.JsonProperty("remoteUrl")]
         [System.Text.Json.Serialization.JsonPropertyName("remoteUrl")]
         public string RemoteUrl { get; set; }
-        [Newtonsoft.Json.JsonProperty("renderingMode")]
         [System.Text.Json.Serialization.JsonPropertyName("renderingMode")]
         public PlantUml.Net.RenderingMode RenderingMode { get; set; }
     }
@@ -3962,28 +3700,20 @@ namespace Docfx.Plugins
     }
     public sealed class FileAndType : System.IEquatable<Docfx.Plugins.FileAndType>
     {
-        [Newtonsoft.Json.JsonConstructor]
         [System.Text.Json.Serialization.JsonConstructor]
         public FileAndType(string baseDir, string file, Docfx.Plugins.DocumentType type, string sourceDir = null, string destinationDir = null) { }
-        [Newtonsoft.Json.JsonProperty("baseDir")]
         [System.Text.Json.Serialization.JsonPropertyName("baseDir")]
         public string BaseDir { get; }
-        [Newtonsoft.Json.JsonProperty("destinationDir")]
         [System.Text.Json.Serialization.JsonPropertyName("destinationDir")]
         public string DestinationDir { get; set; }
-        [Newtonsoft.Json.JsonProperty("file")]
         [System.Text.Json.Serialization.JsonPropertyName("file")]
         public string File { get; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public string FullPath { get; }
-        [Newtonsoft.Json.JsonProperty("sourceDir")]
         [System.Text.Json.Serialization.JsonPropertyName("sourceDir")]
         public string SourceDir { get; set; }
-        [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
         public System.StringComparer StringComparer { get; }
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         public Docfx.Plugins.DocumentType Type { get; }
         public Docfx.Plugins.FileAndType ChangeBaseDir(string baseDir) { }
@@ -4142,19 +3872,14 @@ namespace Docfx.Plugins
     {
         public Manifest() { }
         public Manifest(System.Collections.Generic.IEnumerable<Docfx.Plugins.ManifestItem> files) { }
-        [Newtonsoft.Json.JsonProperty("files")]
         [System.Text.Json.Serialization.JsonPropertyName("files")]
         public System.Collections.Generic.List<Docfx.Plugins.ManifestItem> Files { get; }
-        [Newtonsoft.Json.JsonProperty("groups")]
         [System.Text.Json.Serialization.JsonPropertyName("groups")]
         public System.Collections.Generic.List<Docfx.Plugins.ManifestGroupInfo> Groups { get; set; }
-        [Newtonsoft.Json.JsonProperty("sitemap")]
         [System.Text.Json.Serialization.JsonPropertyName("sitemap")]
         public Docfx.Plugins.SitemapOptions Sitemap { get; set; }
-        [Newtonsoft.Json.JsonProperty("source_base_path")]
         [System.Text.Json.Serialization.JsonPropertyName("source_base_path")]
         public string SourceBasePath { get; set; }
-        [Newtonsoft.Json.JsonProperty("xrefmap")]
         [System.Obsolete]
         [System.Text.Json.Serialization.JsonPropertyName("xrefmap")]
         public object Xrefmap { get; set; }
@@ -4162,38 +3887,28 @@ namespace Docfx.Plugins
     public class ManifestGroupInfo
     {
         public ManifestGroupInfo(Docfx.Plugins.GroupInfo groupInfo) { }
-        [Newtonsoft.Json.JsonProperty("dest")]
         [System.Text.Json.Serialization.JsonPropertyName("dest")]
         public string Destination { get; set; }
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         public string Name { get; set; }
-        [Newtonsoft.Json.JsonProperty("xrefmap")]
         [System.Text.Json.Serialization.JsonPropertyName("xrefmap")]
         public string XRefmap { get; set; }
     }
     public class ManifestItem
     {
         public ManifestItem() { }
-        [Newtonsoft.Json.JsonProperty("group")]
         [System.Text.Json.Serialization.JsonPropertyName("group")]
         public string Group { get; set; }
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonProperty("output")]
         [System.Text.Json.Serialization.JsonPropertyName("output")]
         public System.Collections.Generic.Dictionary<string, Docfx.Plugins.OutputFileInfo> Output { get; }
-        [Newtonsoft.Json.JsonProperty("source_relative_path")]
         [System.Text.Json.Serialization.JsonPropertyName("source_relative_path")]
         public string SourceRelativePath { get; set; }
-        [Newtonsoft.Json.JsonProperty("type")]
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         public string Type { get; set; }
-        [Newtonsoft.Json.JsonProperty("version")]
         [System.Text.Json.Serialization.JsonPropertyName("version")]
         public string Version { get; set; }
     }
@@ -4212,13 +3927,10 @@ namespace Docfx.Plugins
     public class OutputFileInfo
     {
         public OutputFileInfo() { }
-        [Newtonsoft.Json.JsonProperty("link_to_path")]
         [System.Text.Json.Serialization.JsonPropertyName("link_to_path")]
         public string LinkToPath { get; set; }
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonProperty("relative_path")]
         [System.Text.Json.Serialization.JsonPropertyName("relative_path")]
         public string RelativePath { get; set; }
     }
@@ -4270,23 +3982,18 @@ namespace Docfx.Plugins
     public class SitemapElementOptions
     {
         public SitemapElementOptions() { }
-        [Newtonsoft.Json.JsonProperty("baseUrl")]
         [System.Text.Json.Serialization.JsonPropertyName("baseUrl")]
         public string BaseUrl { get; set; }
-        [Newtonsoft.Json.JsonProperty("changefreq")]
         [System.Text.Json.Serialization.JsonPropertyName("changefreq")]
         public Docfx.Plugins.PageChangeFrequency? ChangeFrequency { get; set; }
-        [Newtonsoft.Json.JsonProperty("lastmod")]
         [System.Text.Json.Serialization.JsonPropertyName("lastmod")]
         public System.DateTime? LastModified { get; set; }
-        [Newtonsoft.Json.JsonProperty("priority")]
         [System.Text.Json.Serialization.JsonPropertyName("priority")]
         public double? Priority { get; set; }
     }
     public class SitemapOptions : Docfx.Plugins.SitemapElementOptions
     {
         public SitemapOptions() { }
-        [Newtonsoft.Json.JsonProperty("fileOptions")]
         [System.Text.Json.Serialization.JsonPropertyName("fileOptions")]
         public System.Collections.Generic.Dictionary<string, Docfx.Plugins.SitemapElementOptions> FileOptions { get; set; }
     }
@@ -4306,10 +4013,8 @@ namespace Docfx.Plugins
     public class TreeItem
     {
         public TreeItem() { }
-        [Newtonsoft.Json.JsonProperty("items")]
         [System.Text.Json.Serialization.JsonPropertyName("items")]
         public System.Collections.Generic.List<Docfx.Plugins.TreeItem> Items { get; set; }
-        [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
     }
@@ -4338,22 +4043,16 @@ namespace Docfx.Plugins
     }
     public class UidDefinition
     {
-        [Newtonsoft.Json.JsonConstructor]
         [System.Text.Json.Serialization.JsonConstructor]
         public UidDefinition(string name, string file, int? line = default, int? column = default, string path = null) { }
-        [Newtonsoft.Json.JsonProperty("column")]
         [System.Text.Json.Serialization.JsonPropertyName("column")]
         public int? Column { get; }
-        [Newtonsoft.Json.JsonProperty("file")]
         [System.Text.Json.Serialization.JsonPropertyName("file")]
         public string File { get; }
-        [Newtonsoft.Json.JsonProperty("line")]
         [System.Text.Json.Serialization.JsonPropertyName("line")]
         public int? Line { get; }
-        [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         public string Name { get; }
-        [Newtonsoft.Json.JsonProperty("path")]
         [System.Text.Json.Serialization.JsonPropertyName("path")]
         public string Path { get; }
     }

@@ -4,7 +4,6 @@
 using System.Text.Json.Serialization;
 using Docfx.YamlSerialization;
 
-using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Build.Engine.Tests;
@@ -13,17 +12,14 @@ namespace Docfx.Build.Engine.Tests;
 public class YamlDocumentModel
 {
     [YamlMember(Alias = "documentType")]
-    [JsonProperty("documentType")]
     [JsonPropertyName("documentType")]
     public string DocumentType { get; set; }
 
     [ExtensibleMember]
-    [Newtonsoft.Json.JsonExtensionData]
-    [System.Text.Json.Serialization.JsonExtensionData]
+    [JsonExtensionData]
     public Dictionary<string, object> Data { get; set; } = new Dictionary<string, object>();
 
     [YamlMember(Alias = "metadata")]
-    [JsonProperty("metadata")]
     [JsonPropertyName("metadata")]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 }
