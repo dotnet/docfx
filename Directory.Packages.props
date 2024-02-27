@@ -35,7 +35,7 @@
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
     <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
     <PackageVersion Include="System.Composition" Version="8.0.0" />
-    <PackageVersion Include="YamlDotNet" Version="15.1.1" />
+    <PackageVersion Include="YamlDotNet" Version="15.1.2" />
     <!-- Test only -->
     <PackageVersion Include="coverlet.collector" Version="6.0.1" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
