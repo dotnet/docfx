@@ -136,10 +136,14 @@ internal static class CompilationHelper
     {
         try
         {
+            // Get current .NET runtime version with `{major}.{minor}` format.
+            var dotnetMajorMinorVersion = Environment.Version.ToString(2);
+
+            // Resolve .NET SDK packs directory path. (e.g. `C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\8.0.2\ref\net8.0`)
             var dotnetExeDirectory = DotNetCorePathFinder.FindDotNetExeDirectory();
             var refDirectory = Path.Combine(dotnetExeDirectory, "packs/Microsoft.NETCore.App.Ref");
-            var version = new DirectoryInfo(refDirectory).GetDirectories().Select(d => d.Name).Max()!;
-            var moniker = new DirectoryInfo(Path.Combine(refDirectory, version, "ref")).GetDirectories().Select(d => d.Name).Max()!;
+            var version = new DirectoryInfo(refDirectory).GetDirectories().Select(d => d.Name).Where(x => x.StartsWith(dotnetMajorMinorVersion)).Max()!;
+            var moniker = new DirectoryInfo(Path.Combine(refDirectory, version, "ref")).GetDirectories().Select(d => d.Name).Where(x => x.EndsWith(dotnetMajorMinorVersion)).Max()!;
             var path = Path.Combine(refDirectory, version, "ref", moniker);
 
             Logger.LogInfo($"Compiling {language} files using .NET SDK {version} for {moniker}");
