@@ -23,7 +23,7 @@ export type NavItemContainer = {
 export async function renderNavbar(): Promise<NavItem[]> {
   const navbar = document.getElementById('navbar')
   if (!navbar) {
-    return
+    return []
   }
 
   const { iconLinks } = await options()
