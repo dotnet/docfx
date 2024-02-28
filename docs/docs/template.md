@@ -40,6 +40,10 @@ Name         | Type    | Description
 `_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
 `_gitUrlPattern`        | string  | URL pattern of git links.
 `_disableNewTab`        | bool    | Whether to render external link indicator icons and open external links in a new tab.
+`_disableNavbar`        | bool    | Whether to show the navigation bar.
+`_disableBreadcrumb`    | bool    | Whether to show the breadcrumb.
+`_disableToc`           | bool    | Whether to show the TOC.
+`_disableAffix`         | bool    | Whether to show the right rail.
 `_disableNextArticle`   | bool    | Whether to show the previous and next article link.
 `_disableTocFilter`     | bool    | Whether to show the table of content filter box.
 `_googleAnalyticsTagId` | string  | Enables Google Analytics web traffic analysis.
