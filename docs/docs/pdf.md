@@ -79,6 +79,10 @@ Indicates whether to include a "Table of Contents" pages at the beginning.
 
 A path to an HTML page relative to the root of the output directory. The HTML page will be inserted at the beginning of the PDF file as cover page.
 
+### `pdfPrintBackground`
+
+Indicates whether to include background graphics when rendering the pdf.
+
 ### `pdfHeaderTemplate`
 
 HTML template for the print header. Should be valid HTML markup with following HTML elements used to inject printing values into them:
@@ -126,7 +130,7 @@ See [this example](https://raw.githubusercontent.com/dotnet/docfx/main/samples/s
 ![Alt text](./media/pdf-cover-page.png)
 
 ### Customize TOC Page
- 
+
 When `pdfTocPage` is `true`, a Table of Content page is inserted at the beginning of the PDF file.
 
 ![Alt text](media/pdf-toc-page.png)

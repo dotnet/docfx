@@ -39,6 +39,7 @@ static class PdfBuilder
         public bool pdf { get; init; }
         public string? pdfFileName { get; init; }
         public bool pdfTocPage { get; init; }
+        public bool pdfPrintBackground { get; init; }
         public string? pdfCoverPage { get; init; }
 
         public string? pdfHeaderTemplate { get; init; }
@@ -139,7 +140,7 @@ static class PdfBuilder
             return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], pageNumbers).ToString(), "text/html");
         }
 
-        async Task<byte[]?> PrintPdf(Uri url)
+        async Task<byte[]?> PrintPdf(Outline outline, Uri url)
         {
             await pageLimiter.WaitAsync();
             var page = pagePool.TryTake(out var pooled) ? pooled : await context.NewPageAsync();
@@ -164,7 +165,7 @@ static class PdfBuilder
                     Logger.LogWarning($"Timeout waiting for page to load, generated PDF page may be incomplete: {url}");
                 }
 
-                return await page.PdfAsync();
+                return await page.PdfAsync(new PagePdfOptions { PrintBackground = outline.pdfPrintBackground });
             }
             finally
             {
@@ -215,7 +216,7 @@ static class PdfBuilder
     }
 
     static async Task CreatePdf(
-        Func<Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Task<byte[]>> printHeaderFooter, ProgressTask task,
+        Func<Outline, Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Task<byte[]>> printHeaderFooter, ProgressTask task,
         Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
@@ -233,7 +234,7 @@ static class PdfBuilder
         await Parallel.ForEachAsync(pages, async (item, _) =>
         {
             var (url, node) = item;
-            if (await printPdf(url) is { } bytes)
+            if (await printPdf(outline, url) is { } bytes)
             {
                 lock (pageBytes)
                     pageBytes[node] = bytes;
@@ -283,13 +284,13 @@ static class PdfBuilder
             if (!string.IsNullOrEmpty(outline.pdfCoverPage))
             {
                 var href = $"/{outline.pdfCoverPage}";
-                yield return (new(outlineUrl, href), new() { href = href });
+                yield return (new(outlineUrl, href), new() { href = href, pdfPrintBackground = outline.pdfPrintBackground });
             }
 
             if (outline.pdfTocPage)
             {
                 var href = $"/_pdftoc{outlineUrl.AbsolutePath}";
-                yield return (new(outlineUrl, href), new() { href = href });
+                yield return (new(outlineUrl, href), new() { href = href, pdfPrintBackground = outline.pdfPrintBackground  });
             }
 
             if (!string.IsNullOrEmpty(outline.href))
@@ -322,7 +323,7 @@ static class PdfBuilder
                 {
                     // Refresh TOC page numbers
                     updatePageNumbers(pageNumbers);
-                    bytes = await printPdf(url);
+                    bytes = await printPdf(outline, url);
                 }
 
                 using var document = PdfDocument.Open(bytes);
