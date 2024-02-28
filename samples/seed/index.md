@@ -1,5 +1,6 @@
 ---
 _disableNewTab: true
+_disableToc: false
 _lang: zh-CN
 _layout: landing
 _appLogoUrl: https://github.com/dotnet/docfx

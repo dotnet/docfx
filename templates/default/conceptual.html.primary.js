@@ -9,7 +9,9 @@ exports.transform = function (model) {
     model = extension.preTransform(model);
   }
 
-  model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
+  if(model._disableToc === undefined) {
+    model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
+  }
   model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
 
   if (extension && extension.postTransform) {

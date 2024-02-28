@@ -23,7 +23,9 @@ exports.transform = function (model) {
     model.isClass = false;
     model.isEnum = true;
   }
-  model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
+  if(model._disableToc === undefined) {
+    model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
+  }
   model._disableNextArticle = true;
 
   if (extension && extension.postTransform) {
