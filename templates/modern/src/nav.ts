@@ -112,7 +112,7 @@ async function renderAnchors() {
     icon: '#'
   }, anchorsOptions)
 
-  anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
+  anchors.add('article h1:not(.no-anchor), article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
 
   /* eslint-disable no-self-assign */
   if (location.hash) {
@@ -121,12 +121,12 @@ async function renderAnchors() {
 }
 
 function inThisArticle(): TemplateResult {
-  const headings = Array.from(document.querySelectorAll<HTMLHeadingElement>('article h2, article h3'))
+  const headings = Array.from(document.querySelectorAll<HTMLHeadingElement>('article h1, article h2, article h3'))
 
   if (headings.length > 0) {
     return html`
       <h5 class="border-bottom">${loc('inThisArticle')}</h5>
-      <ul>${headings.map(h => h.tagName === 'H2'
+      <ul>${headings.map(h => h.tagName === 'H1'
         ? html`<li><a class="link-body-emphasis" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
         : html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
     )}</ul>`
