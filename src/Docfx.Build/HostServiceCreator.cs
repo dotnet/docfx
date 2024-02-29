@@ -63,8 +63,12 @@ class HostServiceCreator
             {
                 if (e is not DocumentException)
                 {
+                    var message = e is ArgumentException or NullReferenceException
+                        ? e.ToString()
+                        : e.Message;
+
                     Logger.LogError(
-                        $"Unable to load file '{file.File}' via processor '{processor.Name}': {e.Message}",
+                        $"Unable to load file '{file.File}' via processor '{processor.Name}': {message}",
                         code: ErrorCodes.Build.InvalidInputFile);
                 }
                 return (null, false);
