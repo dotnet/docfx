@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" />
     <PackageReference Include="Microsoft.Playwright" />
     <PackageReference Include="Verify.DiffPlex" />
     <PackageReference Include="Verify.Xunit" />
