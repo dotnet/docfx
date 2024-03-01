@@ -35,6 +35,14 @@ jobs:
     - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
       if: matrix.os == 'ubuntu-latest'
 
+    - run: npm i -g @percy/cli
+      if: matrix.os == 'ubuntu-latest'
+
+    - run: percy exec -- dotnet test -c Release -f net8.0 --filter Stage=Percy --no-build --collect:"XPlat Code Coverage"
+      if: matrix.os == 'ubuntu-latest'
+      env:
+        PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+
     - uses: codecov/codecov-action@v4
       if: matrix.os == 'ubuntu-latest'
 
