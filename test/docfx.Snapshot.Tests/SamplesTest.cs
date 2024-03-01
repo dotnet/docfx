@@ -15,34 +15,32 @@ using UglyToad.PdfPig.Outline;
 
 namespace Docfx.Tests;
 
-[Trait("Stage", "Snapshot")]
 public class SamplesTest
 {
-    private class SnapshotFactAttribute : FactAttribute
+    private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
+
+    private class SamplesFactAttribute : FactAttribute
     {
-        public SnapshotFactAttribute()
+        public SamplesFactAttribute()
         {
-            Skip = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SNAPSHOT_TEST")) ? "Skip snapshot tests" : null;
+#if !NET8_0
+            Skip = "Skip by target framework";
+#endif
         }
     }
 
-    private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
-
-    static SamplesTest()
-    {
-        Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
-    }
-
-    [SnapshotFact]
+    [SamplesFact]
     public async Task Seed()
     {
         var samplePath = $"{s_samplesDir}/seed";
         Clean(samplePath);
 
+        Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
+
         if (Debugger.IsAttached)
         {
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-            Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json" }));
+            Assert.Equal(0, Program.Main([$"{samplePath}/docfx.json"]));
         }
         else
         {
@@ -52,7 +50,7 @@ public class SamplesTest
 
         Parallel.ForEach(Directory.EnumerateFiles($"{samplePath}/_site", "*.pdf", SearchOption.AllDirectories), PdfToJson);
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
 
         void PdfToJson(string path)
         {
@@ -96,19 +94,19 @@ public class SamplesTest
         }
     }
 
-    [SnapshotFact]
+    [SamplesFact]
     public async Task SeedMarkdown()
     {
         var samplePath = $"{s_samplesDir}/seed";
         var outputPath = nameof(SeedMarkdown);
         Clean(samplePath);
 
-        Program.Main(new[] { "metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath });
+        Program.Main(["metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath]);
 
-        await VerifyDirectory(outputPath, IncludeFile, fileScrubber: ScrubFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
+        await VerifyDirectory(outputPath).AutoVerify(includeBuildServer: false);
     }
 
-    [SnapshotFact]
+    [SamplesFact]
     public async Task CSharp()
     {
         var samplePath = $"{s_samplesDir}/csharp";
@@ -126,22 +124,24 @@ public class SamplesTest
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
         }
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
     }
 
-    [SnapshotFact]
+    [SamplesFact]
     public Task Extensions()
     {
         var samplePath = $"{s_samplesDir}/extensions";
         Clean(samplePath);
 
 #if DEBUG
+        Process.Start("dotnet", $"build \"{samplePath}/build\"").WaitForExit();
         Assert.Equal(0, Exec("dotnet", "run --no-build --project build", workingDirectory: samplePath));
 #else
+        Process.Start("dotnet", $"build -c Release \"{samplePath}/build\"").WaitForExit();
         Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
-        return VerifyDirectory($"{samplePath}/_site", IncludeFile).UniqueForOSPlatform().AutoVerify(includeBuildServer: false);
+        return VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
     }
 
     private static int Exec(string filename, string args, string workingDirectory = null)

@@ -63,36 +63,9 @@ jobs:
         name: dump
         path: /tmp/coredump*
 
-  snapshot:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest]
-    permissions:
-      contents: write
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        lfs: true
-
-    - uses: ./.github/actions/build
-
-    - run: dotnet build -c Release samples/extensions/build
-    - run: dotnet test -c Release -f net8.0 --no-build --filter Stage=Snapshot
-      working-directory: test/docfx.Snapshot.Tests
-      env:
-        SNAPSHOT_TEST: true
-        BUILD_SERVER: ${{ github.event_name != 'pull_request' }}
-
-    - uses: stefanzweifel/git-auto-commit-action@v5
-      if: github.event_name == 'pull_request'
-      with:
-        commit_message: 'test(snapshot): update snapshots ${{ github.sha }} for ${{ matrix.os }}'
-
   publish-docs:
     if: github.ref == 'refs/heads/main'
-    needs: [test, snapshot]
+    needs: [test]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
