@@ -28,6 +28,11 @@ partial class DotnetApiCatalog
             msbuildProperties["Configuration"] = "Release";
         }
 
+        // NOTE:
+        // logger parameter is not works when using Roslyn 4.9.0 or later.
+        // It'll be fixed in later releases.
+        // - https://github.com/dotnet/roslyn/discussions/71950
+        // - https://github.com/dotnet/roslyn/issues/72202
         var msbuildLogger = new ConsoleLogger(Logger.LogLevelThreshold switch
         {
             LogLevel.Verbose => LoggerVerbosity.Normal,

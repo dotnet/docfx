@@ -6,7 +6,6 @@ using System.Text.Json;
 using Docfx.Common;
 using Docfx.Exceptions;
 using Docfx.Plugins;
-using Microsoft.Build.Locator;
 using Newtonsoft.Json.Linq;
 using YamlDotNet.Serialization;
 
@@ -58,8 +57,6 @@ public static partial class DotnetApiCatalog
     internal static async Task Exec(MetadataJsonConfig config, DotnetApiOptions options, string configDirectory, string outputDirectory = null)
     {
         var stopwatch = Stopwatch.StartNew();
-
-        EnsureMSBuildLocator();
 
         try
         {
@@ -123,24 +120,6 @@ public static partial class DotnetApiCatalog
                     CreateManagedReference(assemblies, config, options);
                     break;
             }
-        }
-    }
-
-    private static void EnsureMSBuildLocator()
-    {
-        try
-        {
-            if (!MSBuildLocator.IsRegistered)
-            {
-                var vs = MSBuildLocator.RegisterDefaults() ?? throw new ExtractMetadataException(
-                    $"Cannot find a supported .NET Core SDK. Install .NET Core SDK {Environment.Version.Major}.{Environment.Version.Minor}.x to build .NET API docs.");
-
-                Logger.LogInfo($"Using {vs.Name} {vs.Version}");
-            }
-        }
-        catch (Exception e)
-        {
-            throw new ExtractMetadataException(e.Message, e);
         }
     }
 
