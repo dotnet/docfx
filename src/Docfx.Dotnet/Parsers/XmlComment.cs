@@ -112,6 +112,10 @@ internal class XmlComment
         }
         try
         {
+            // Format xml with indentation.
+            // It's needed to fix issue (https://github.com/dotnet/docfx/issues/9736)
+            xml = XElement.Parse(xml).ToString(SaveOptions.None);
+
             return new XmlComment(xml, context ?? new());
         }
         catch (XmlException)
