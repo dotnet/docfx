@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Docfx.Dotnet;
+using Docfx.Plugins;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Actions;
 using UglyToad.PdfPig.Annotations;
@@ -15,9 +16,23 @@ using UglyToad.PdfPig.Outline;
 
 namespace Docfx.Tests;
 
-public class SamplesTest
+[Collection("docfx STA")]
+[Trait("Stage", "Snapshot")]
+public class SamplesTest : IDisposable
 {
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
+
+    private const string DOCFX_SOURCE_REPOSITORY = nameof(DOCFX_SOURCE_REPOSITORY);
+
+    public SamplesTest()
+    {
+        Environment.SetEnvironmentVariable(DOCFX_SOURCE_REPOSITORY, "dotnet/docfx");
+    }
+
+    public void Dispose()
+    {
+        Environment.SetEnvironmentVariable(DOCFX_SOURCE_REPOSITORY, null);
+    }
 
     private class SamplesFactAttribute : FactAttribute
     {

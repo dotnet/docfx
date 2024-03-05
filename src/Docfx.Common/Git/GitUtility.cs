@@ -38,9 +38,11 @@ public static class GitUtility
         if (repo is null)
             return null;
 
+        var repoUrl = ResolveDocfxSourceRepoUrl(repo.url);
+
         return new()
         {
-            Repo = repo.url,
+            Repo = repoUrl,
             Branch = repo.branch,
             Path = Path.GetRelativePath(repo.path, filePath).Replace('\\', '/'),
         };
@@ -49,10 +51,12 @@ public static class GitUtility
     public static string? RawContentUrlToContentUrl(string rawUrl)
     {
         // GitHub
-        return Regex.Replace(
+        var url = Regex.Replace(
             rawUrl,
             @"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$",
             string.IsNullOrEmpty(s_branch) ? "https://github.com/$1/$2/blob/$3/$4" : $"https://github.com/$1/$2/blob/{s_branch}/$4");
+
+        return ResolveDocfxSourceRepoUrl(url);
     }
 
     public static string? GetSourceUrl(GitSource source)
@@ -65,7 +69,7 @@ public static class GitUtility
 
         var path = source.Path.Replace('\\', '/');
 
-        return url.Host switch
+        var sourceUrl = url.Host switch
         {
             "github.com" => $"https://github.com{url.AbsolutePath}/blob/{source.Branch}/{path}{(source.Line > 0 ? $"#L{source.Line}" : null)}",
             "bitbucket.org" => $"https://bitbucket.org{url.AbsolutePath}/src/{source.Branch}/{path}{(source.Line > 0 ? $"#lines-{source.Line}" : null)}",
@@ -73,6 +77,11 @@ public static class GitUtility
                 $"https://{url.Host}{url.AbsolutePath}?path={path}&version={(IsCommit(source.Branch) ? "GC" : "GB")}{source.Branch}{(source.Line > 0 ? $"&line={source.Line}" : null)}",
             _ => null,
         };
+
+        if (sourceUrl == null)
+            return null;
+
+        return ResolveDocfxSourceRepoUrl(sourceUrl);
 
         static bool IsCommit(string branch)
         {
@@ -171,6 +180,54 @@ public static class GitUtility
                     yield return (key, value);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Rewrite path if `DOCFX_SOURCE_REPOSITORY` environment variable is specified.
+    /// </summary>
+    private static string ResolveDocfxSourceRepoUrl(string originalUrl)
+    {
+        var docfxSourceRepoUrl = Environment.GetEnvironmentVariable("DOCFX_SOURCE_REPOSITORY");
+        if (docfxSourceRepoUrl == null)
+            return originalUrl;
+
+        // Parse value that defined with `{orgName}/{repoName}` format.
+        var parts = docfxSourceRepoUrl.Split('/', StringSplitOptions.TrimEntries);
+        if (parts.Length != 2)
+            return originalUrl;
+
+        string orgName = parts[0];
+        string repoName = parts[1];
+
+        if (!Uri.TryCreate(originalUrl, UriKind.Absolute, out var parsedUrl))
+        {
+            return originalUrl;
+        }
+
+        switch (parsedUrl.Host)
+        {
+            case "github.com":
+            case "bitbucket.org":
+            case "dev.azure.com":
+                {
+                    // Replace `/{orgName}/{repoName}` and remove `.git` suffix.
+                    var builder = new UriBuilder(parsedUrl);
+                    builder.Path = Regex.Replace(builder.Path, @"^/[^/]+/[^/]+", $"/{orgName}/{repoName}")
+                                        .TrimEnd(".git");
+                    return builder.Uri.ToString();
+                }
+
+            case string hostName when hostName.EndsWith(".visualstudio.com"):
+                {
+                    // Replace `https://{orgName}.visualstudio.com/{repoName}`.
+                    var builder = new UriBuilder(parsedUrl);
+                    builder.Host = $"{orgName}.visualstudio.com";
+                    builder.Path = Regex.Replace(builder.Path, @"^/[^/]+", $"/{repoName}");
+                    return builder.Uri.ToString();
+                }
+            default:
+                return originalUrl;
         }
     }
 }
