@@ -17,7 +17,7 @@ public static class MarkdownExtensions
     {
         return pipeline
             .UseMathematics()
-            .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
+            .UseEmphasisExtras()
             .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
             .UseMediaLinks()
             .UsePipeTables()
