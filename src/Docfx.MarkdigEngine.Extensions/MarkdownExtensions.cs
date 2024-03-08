@@ -28,7 +28,7 @@ public static class MarkdownExtensions
             .UseDFMCodeInfoPrefix()
             .UseQuoteSectionNote(context, notes)
             .UseXref()
-            .UseEmojiAndSmiley(false)
+            .UseEmojiAndSmiley()
             .UseTabGroup(context)
             .UseMonikerRange(context)
             .UseInteractiveCode()
