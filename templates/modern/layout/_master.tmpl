@@ -37,27 +37,27 @@
       <meta name="loc:changeTheme" content="{{__global.changeTheme}}">
       <meta name="loc:copy" content="{{__global.copy}}">
       <meta name="loc:downloadPdf" content="{{__global.downloadPdf}}">
+
+      <script type="module" src="./{{_rel}}public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+      {{#_googleAnalyticsTagId}}
+      <script async src="https://www.googletagmanager.com/gtag/js?id={{_googleAnalyticsTagId}}"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', '{{_googleAnalyticsTagId}}');
+      </script>
+      {{/_googleAnalyticsTagId}}
     {{/redirect_url}}
   </head>
 
   {{^redirect_url}}
-  <script type="module" src="./{{_rel}}public/docfx.min.js"></script>
-
-  <script>
-    const theme = localStorage.getItem('theme') || 'auto'
-    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
-  </script>
-
-  {{#_googleAnalyticsTagId}}
-  <script async src="https://www.googletagmanager.com/gtag/js?id={{_googleAnalyticsTagId}}"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', '{{_googleAnalyticsTagId}}');
-  </script>
-  {{/_googleAnalyticsTagId}}
-
   <body class="tex2jax_ignore" data-layout="{{_layout}}{{layout}}" data-yaml-mime="{{yamlmime}}">
     <header class="bg-body border-bottom">
       {{^_disableNavbar}}
