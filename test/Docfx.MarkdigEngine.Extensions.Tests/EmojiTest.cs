@@ -10,8 +10,8 @@ public class EmojiTest
     [Fact]
     public void EmojiTestGeneral()
     {
-        var content = @"**content :** :smile:";
-        var expected = @"<p><strong>content :</strong> 😄</p>";
+        var content = @"**content:** :smile:";
+        var expected = @"<p><strong>content:</strong> 😄</p>";
 
         TestUtility.VerifyMarkup(content, expected);
     }
