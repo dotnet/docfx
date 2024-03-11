@@ -209,6 +209,8 @@ For example. It can enable additional markdig extensions with following settings
         "advanced"
       ]
     }
+  }
+}
 ```
 
 List of available built-in markdig extensions are available at [this URL](https://github.com/xoofx/markdig/blob/fcb56fb03701cc1a07a52769908579adb8927ee2/src/Markdig/MarkdownExtensions.cs#L537-L650).
@@ -394,6 +396,7 @@ Specifies an optional set of MSBuild properties used when interpreting project f
   ]
 }
 ```
+
 > [!Note]
 > Make sure to specify `"TargetFramework": <one of the frameworks>` in your docfx.json when the project is targeting for multiple platforms.
 
