@@ -4,6 +4,7 @@
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
 using Markdig.Extensions.CustomContainers;
+using Markdig.Extensions.Emoji;
 using Markdig.Extensions.EmphasisExtras;
 using Markdig.Parsers;
 
@@ -17,7 +18,7 @@ public static class MarkdownExtensions
     {
         return pipeline
             .UseMathematics()
-            .UseEmphasisExtras()
+            .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
             .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
             .UseMediaLinks()
             .UsePipeTables()
@@ -56,9 +57,34 @@ public static class MarkdownExtensions
             return pipeline;
         }
 
+        ReplaceExistingExtensions();
+
         pipeline.Configure(string.Join("+", optionalExtensions));
 
         return pipeline;
+
+        // Some markdig extensions are added by UseDocfxExtensions with non-default settings.
+        // This methods replace these extensions with default settings.
+        void ReplaceExistingExtensions()
+        {
+            // AutoIdentifierExtension
+            if (optionalExtensions.Contains("autoidentifiers", StringComparer.OrdinalIgnoreCase))
+            {
+                pipeline.Extensions.Replace<AutoIdentifierExtension>(new AutoIdentifierExtension(AutoIdentifierOptions.Default));
+            }
+
+            // EmphasisExtraExtension
+            if (optionalExtensions.Contains("emphasisextras", StringComparer.OrdinalIgnoreCase))
+            {
+                pipeline.Extensions.Replace<EmphasisExtraExtension>(new EmphasisExtraExtension(EmphasisExtraOptions.Default));
+            }
+
+            // EmojiExtension
+            if (optionalExtensions.Contains("emojis", StringComparer.OrdinalIgnoreCase))
+            {
+                pipeline.Extensions.Replace<EmojiExtension>(new EmojiExtension(EmojiMapping.DefaultEmojisAndSmileysMapping));
+            }
+        }
     }
 
     private static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)

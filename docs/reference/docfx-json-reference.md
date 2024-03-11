@@ -199,6 +199,28 @@ Sets the max parallelism. Setting 0 (default) is the same as setting to the coun
 
 Sets the parameters for the markdown engine, value is a JSON object.
 
+For example. It can enable additional markdig extensions with following settings.
+
+```json
+{
+  "build": {
+    "markdownEngineProperties": {
+      "markdigExtensions": [
+        "advanced"
+      ]
+    }
+  }
+}
+```
+
+List of available built-in markdig extensions are available at [this URL](https://github.com/xoofx/markdig/blob/fcb56fb03701cc1a07a52769908579adb8927ee2/src/Markdig/MarkdownExtensions.cs#L537-L650).
+
+It can't remove existing markdig extensions added by docfx.
+But It can reset settings to markdig default when specifing following extension names.
+ - `AutoIdentifiers`
+ - `EmphasisExtras`
+ - `Emojis`
+
 ### `sitemap`
 
 Specifies the options for generating [sitemap.xml](https://www.sitemaps.org/protocol.html) file:

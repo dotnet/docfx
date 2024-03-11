@@ -15,4 +15,20 @@ public class EmojiTest
 
         TestUtility.VerifyMarkup(content, expected);
     }
+
+    [Fact]
+    public void EmojiTestWithSmileys()
+    {
+        var content = @":)";
+
+        // By default Docfx use `UseEmojiAndSmiley(enableSmileys:false)` setting.
+        {
+            var expected = @"<p>:)</p>";
+            TestUtility.VerifyMarkup(content, expected);
+        }
+        {
+            var expected = @"<p>😃</p>";
+            TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["Emojis"]);
+        }
+    }
 }
