@@ -28,8 +28,7 @@ public class XmlCommentUnitTest
         Assert.Equal(
             """
             a
-            <p>b</p>
-            <p>c</p>
+            <p>b</p><p>c</p>
             """,
             XmlComment.Parse("""
                 <summary>
@@ -53,8 +52,10 @@ public class XmlCommentUnitTest
     {
         var comment = XmlComment.Parse(
             """
-            <param name="args">arg1</param>
-            <param name="args">arg2</param>
+            <doc>
+              <param name="args">arg1</param>
+              <param name="args">arg2</param>
+            </doc>
             """);
         Assert.Equal("arg1", comment.Parameters["args"]);
     }
@@ -205,6 +206,7 @@ public class XmlCommentUnitTest
     {
         var comment = XmlComment.Parse(
             """
+            <doc>
             <summary>
                 public int Main(string[] args)
                 {
@@ -226,6 +228,7 @@ public class XmlCommentUnitTest
             }
             ```
             </remarks>
+            </doc>
             """);
 
         Assert.Equal("""
@@ -289,7 +292,7 @@ public class XmlCommentUnitTest
                 <remarks>
                 <see href="https://example.org"/>
                 <see href="https://example.org">example</see>
-                <para>This is <paramref name='ref'/> <paramref />a sample of exception node</para>
+                <para>This is <paramref name='ref'/><paramref /> a sample of exception node</para>
                 <list type='bullet'>
                     <item>
                         <description>
@@ -387,13 +390,13 @@ public class XmlCommentUnitTest
             <a href="https://example.org">example</a>
             <p>This is <code class="paramref">ref</code> a sample of exception node</p>
             <ul><li>
-                        <pre><code class="lang-c#">public class XmlElement
-                            : XmlLinkedNode</code></pre>
-                        <ol><li>
+                  <pre><code class="lang-c#">public class XmlElement
+                      : XmlLinkedNode</code></pre>
+                  <ol><li>
                                     word inside list-&gt;listItem-&gt;list-&gt;listItem-&gt;para.&gt;
                                     the second line.
                                 </li><li>item2 in numbered list</li></ol>
-                    </li><li>item2 in bullet list</li><li>
+                </li><li>item2 in bullet list</li><li>
                     loose text <i>not</i> wrapped in description
                 </li></ul>
             """, remarks, ignoreLineEndingDifferences: true);
