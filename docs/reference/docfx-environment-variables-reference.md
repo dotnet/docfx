@@ -14,10 +14,10 @@ If set true. Keep following debug info in output HTML.
 
 Used to override git branch name.
 
-## `DOCFX_SOURCE_REPOSITORY`
+## `DOCFX_SOURCE_REPOSITORY_URL`
 
 Used to override git organization and repository names.
-It must be defined in the `{organization}/{repository_name}` format (e.g.`dotnet/docfx`).
+It must be defined in the `https://{host_name}/{organization}/{repository_name}` format (e.g.`https://github.com/dotnet/docfx`).
 
 ## `DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST`
 

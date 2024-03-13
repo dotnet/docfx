@@ -22,16 +22,16 @@ public class SamplesTest : IDisposable
 {
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
 
-    private const string DOCFX_SOURCE_REPOSITORY = nameof(DOCFX_SOURCE_REPOSITORY);
+    private const string DOCFX_SOURCE_REPOSITORY_URL = nameof(DOCFX_SOURCE_REPOSITORY_URL);
 
     public SamplesTest()
     {
-        Environment.SetEnvironmentVariable(DOCFX_SOURCE_REPOSITORY, "dotnet/docfx");
+        Environment.SetEnvironmentVariable(DOCFX_SOURCE_REPOSITORY_URL, "https://github.com/dotnet/docfx");
     }
 
     public void Dispose()
     {
-        Environment.SetEnvironmentVariable(DOCFX_SOURCE_REPOSITORY, null);
+        Environment.SetEnvironmentVariable(DOCFX_SOURCE_REPOSITORY_URL, null);
     }
 
     private class SamplesFactAttribute : FactAttribute

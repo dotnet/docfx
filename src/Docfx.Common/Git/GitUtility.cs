@@ -184,48 +184,42 @@ public static class GitUtility
     }
 
     /// <summary>
-    /// Rewrite path if `DOCFX_SOURCE_REPOSITORY` environment variable is specified.
+    /// Rewrite path if `DOCFX_SOURCE_REPOSITORY_URL` environment variable is specified.
     /// </summary>
     private static string ResolveDocfxSourceRepoUrl(string originalUrl)
     {
-        var docfxSourceRepoUrl = Environment.GetEnvironmentVariable("DOCFX_SOURCE_REPOSITORY");
+        var docfxSourceRepoUrl = Environment.GetEnvironmentVariable("DOCFX_SOURCE_REPOSITORY_URL");
         if (docfxSourceRepoUrl == null)
             return originalUrl;
 
+        if (!Uri.TryCreate(originalUrl, UriKind.Absolute, out var parsedOriginalUrl)
+         || !Uri.TryCreate(docfxSourceRepoUrl, UriKind.Absolute, out var parsedOverrideUrl)
+         || parsedOriginalUrl.Host != parsedOverrideUrl.Host)
+        {
+            return originalUrl;
+        }
+
         // Parse value that defined with `{orgName}/{repoName}` format.
-        var parts = docfxSourceRepoUrl.Split('/', StringSplitOptions.TrimEntries);
-        if (parts.Length != 2)
+        var parts = parsedOverrideUrl.LocalPath.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length < 2)
             return originalUrl;
 
         string orgName = parts[0];
         string repoName = parts[1];
 
-        if (!Uri.TryCreate(originalUrl, UriKind.Absolute, out var parsedUrl))
-        {
-            return originalUrl;
-        }
-
-        switch (parsedUrl.Host)
+        switch (parsedOriginalUrl.Host)
         {
             case "github.com":
             case "bitbucket.org":
             case "dev.azure.com":
                 {
                     // Replace `/{orgName}/{repoName}` and remove `.git` suffix.
-                    var builder = new UriBuilder(parsedUrl);
-                    builder.Path = Regex.Replace(builder.Path, @"^/[^/]+/[^/]+", $"/{orgName}/{repoName}")
-                                        .TrimEnd(".git");
+                    var builder = new UriBuilder(parsedOriginalUrl);
+                    builder.Path = Regex.Replace(builder.Path.TrimEnd(".git"), @"^/[^/]+/[^/]+", $"/{orgName}/{repoName}");
                     return builder.Uri.ToString();
                 }
 
-            case string hostName when hostName.EndsWith(".visualstudio.com"):
-                {
-                    // Replace `https://{orgName}.visualstudio.com/{repoName}`.
-                    var builder = new UriBuilder(parsedUrl);
-                    builder.Host = $"{orgName}.visualstudio.com";
-                    builder.Path = Regex.Replace(builder.Path, @"^/[^/]+", $"/{repoName}");
-                    return builder.Uri.ToString();
-                }
+            // Currently other URL formats are not supported (e.g. visualstudio.com, GitHub Enterprise Server)
             default:
                 return originalUrl;
         }
