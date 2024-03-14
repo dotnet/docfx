@@ -4,6 +4,14 @@
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!--
+    .NET 9 preview 2 or later run tests in parallel by default.
+    It is necessary to disable this feature because there are tests that need to be executed sequentially that are marked with `[Collection("docfx STA")]`.
+    -->
+    <TestTfmsInParallel>false</TestTfmsInParallel>
+  </PropertyGroup>
+
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <ItemGroup>
