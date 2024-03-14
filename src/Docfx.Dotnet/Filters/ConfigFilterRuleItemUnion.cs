@@ -54,7 +54,10 @@ internal class ConfigFilterRuleItemUnion
             }
 
             // If kind is not specified for exclude. Set `ExtendedSymbolKind.Type` as default kind.
-            Exclude.Kind ??= ExtendedSymbolKind.Type | ExtendedSymbolKind.Member;
+            if (Exclude != null)
+            {
+                Exclude.Kind ??= ExtendedSymbolKind.Type | ExtendedSymbolKind.Member;
+            }
 
             return Exclude;
         }
