@@ -36,6 +36,9 @@ Docfx is planned to continue as a community-driven project. We hope to produce f
 
 For more information, refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
 
+> [!TIP]
+> Docfx publishes nightly builds to [GitHub Packages](https://github.com/orgs/dotnet/packages), this allows you to stay up-to-date with the latest developments in Docfx.
+
 ## Contributing
 
 Use [Discussions](https://github.com/dotnet/docfx/discussions) for questions and general discussions. 
