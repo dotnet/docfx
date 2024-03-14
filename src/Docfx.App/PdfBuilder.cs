@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using Docfx.Build;
 using Docfx.Common;
@@ -137,7 +138,7 @@ static class PdfBuilder
         IResult TocPage(string url)
         {
             var pageNumbers = pdfPageNumbers.TryGetValue(url, out var x) ? x : default;
-            return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], pageNumbers).ToString(), "text/html");
+            return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], pageNumbers).ToString(), "text/html", Encoding.UTF8);
         }
 
         async Task<byte[]?> PrintPdf(Outline outline, Uri url)
