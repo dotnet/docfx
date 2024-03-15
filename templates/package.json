@@ -44,7 +44,7 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "browser-sync": "^3.0.2",
-    "esbuild": "~0.20.1",
+    "esbuild": "~0.20.2",
     "esbuild-sass-plugin": "~3.2.0",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
