@@ -291,7 +291,7 @@ static class PdfBuilder
             if (outline.pdfTocPage)
             {
                 var href = $"/_pdftoc{outlineUrl.AbsolutePath}";
-                yield return (new(outlineUrl, href), new() { href = href, pdfPrintBackground = outline.pdfPrintBackground  });
+                yield return (new(outlineUrl, href), new() { href = href, pdfPrintBackground = outline.pdfPrintBackground });
             }
 
             if (!string.IsNullOrEmpty(outline.href))
@@ -325,6 +325,9 @@ static class PdfBuilder
                     // Refresh TOC page numbers
                     updatePageNumbers(pageNumbers);
                     bytes = await printPdf(outline, url);
+
+                    if (bytes == null)
+                        continue;
                 }
 
                 using var document = PdfDocument.Open(bytes);
