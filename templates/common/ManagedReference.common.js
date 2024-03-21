@@ -261,4 +261,9 @@ function handleItem(vm, gitContribute, gitUrlPattern) {
 
     return array;
   }
+  if(vm.syntax.typeParameters) {
+    vm.syntax.typeParameters.forEach(item => {
+      item.description = item.description || "";
+    });
+  }
 }
