@@ -11,6 +11,12 @@ public class SchemaValidator
 {
     private readonly JsonSchema _schema;
 
+    private static readonly EvaluationOptions DefaultOptions = new EvaluationOptions
+    {
+        ValidateAgainstMetaSchema = false,
+        OutputFormat = OutputFormat.List,
+    };
+
     static SchemaValidator()
     {
         SchemaRegistry.Global.Register(new("http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"), MetaSchemas.Draft7);
@@ -25,11 +31,7 @@ public class SchemaValidator
     public void Validate(object obj)
     {
         var json = JsonSerializer.Serialize(obj);
-        var result = _schema.Evaluate(JsonDocument.Parse(json), new EvaluationOptions
-        {
-            ValidateAgainstMetaSchema = false,
-            OutputFormat = OutputFormat.List,
-        });
+        var result = _schema.Evaluate(JsonDocument.Parse(json), DefaultOptions);
 
         if (result.IsValid)
             return;
