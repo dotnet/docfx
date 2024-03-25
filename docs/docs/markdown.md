@@ -50,6 +50,8 @@ Alternatively, set the `build.markdownEngineProperties.markdigExtensions` proper
 }
 ```
 
+The known extension names are listed in [MardownExtensions.Configure](https://github.com/xoofx/markdig/blob/master/src/Markdig/MarkdownExtensions.cs) method in the MarkDig project.
+
 > [!Note]
 > The custom configuration of extensions via the `build.markdownEngineProperties.markdigExtensions` property is not supported.
 
