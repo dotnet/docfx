@@ -202,14 +202,13 @@ internal class BuildJsonConfig
     public string CustomLinkResolver { get; set; }
 
     /// <summary>
-    /// Define groups.
+    /// Specifies the output folder of specified group name.
     /// </summary>
     /// <example>
     /// <code>
     /// groups:{
     ///   "v1": {
-    ///     "dest": "v1",
-    ///     "extraMetadata01": {}
+    ///     "dest": "output_dir_v1"
     ///   }
     /// }
     /// </code>
