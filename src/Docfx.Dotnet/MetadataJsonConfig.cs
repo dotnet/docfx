@@ -118,10 +118,11 @@ internal class MetadataJsonItemConfig
     [JsonPropertyName("shouldSkipMarkup")]
     public bool? ShouldSkipMarkup { get; set; }
 
-    [JsonProperty("raw")]
-    [JsonPropertyName("raw")]
-    public bool? Raw { get; set; }
-
+    /// <summary>
+    /// Specify additinal assembly reference files.
+    /// This settings is used when generating metadata from DLLs or source files.
+    /// Solution or project file-based metadata generation does not use this property.
+    /// </summary>
     [JsonProperty("references")]
     [JsonPropertyName("references")]
     public FileMapping References { get; set; }

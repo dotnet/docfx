@@ -1,0 +1,30 @@
+name: nightly
+on:
+  schedule:
+  - cron: '0 0 * * *'
+
+jobs:
+  publish-github-packages:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+ 
+    - id: version
+      uses: paulhatch/semantic-version@v5.4.0
+      with:
+        version_format: ${major}.${minor}.${patch}-preview.${increment}
+
+    - uses: ./.github/actions/build
+    
+    - name: dotnet pack
+      run: dotnet pack -c Release /p:Version=${{ steps.version.outputs.version }} -o drop/nuget
+
+    - name: dotnet nuget push
+      run: |
+        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate --source https://nuget.pkg.github.com/dotnet/index.json
+
