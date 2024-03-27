@@ -1,4 +1,4 @@
-# docfx build
+# docfx template
 
 ## Name
 
