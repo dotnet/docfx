@@ -1,10 +1,17 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics;
+using System.Text.Json;
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
+using Markdig.Extensions.AutoLinks;
 using Markdig.Extensions.CustomContainers;
+using Markdig.Extensions.Emoji;
 using Markdig.Extensions.EmphasisExtras;
+using Markdig.Extensions.MediaLinks;
+using Markdig.Extensions.SmartyPants;
+using Markdig.Extensions.Tables;
 using Markdig.Parsers;
 
 namespace Docfx.MarkdigEngine.Extensions;
@@ -17,7 +24,7 @@ public static class MarkdownExtensions
     {
         return pipeline
             .UseMathematics()
-            .UseEmphasisExtras()
+            .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
             .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
             .UseMediaLinks()
             .UsePipeTables()
@@ -49,16 +56,147 @@ public static class MarkdownExtensions
     /// <returns>The pipeline with optional extensions enabled</returns>
     public static MarkdownPipelineBuilder UseOptionalExtensions(
         this MarkdownPipelineBuilder pipeline,
-        IEnumerable<string> optionalExtensions)
+        MarkdigExtensionSetting[] optionalExtensions)
     {
         if (!optionalExtensions.Any())
         {
             return pipeline;
         }
 
-        pipeline.Configure(string.Join("+", optionalExtensions));
+        // Process markdig extensions that requires custom handling.
+        var results = new List<MarkdigExtensionSetting>();
+        foreach (var extension in optionalExtensions)
+        {
+            if (TryAddOrReplaceMarkdigExtension(pipeline, extension))
+                continue;
+
+            // If markdig extension options are specified. These extension should be handled by above method.
+            Debug.Assert(extension.Options == null);
+
+            results.Add(extension);
+        }
+        optionalExtensions = results.ToArray();
+
+        // Enable remaining markdig extensions with default options.
+        pipeline.Configure(string.Join("+", optionalExtensions.Select(x => x.Name)));
 
         return pipeline;
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns>Return true when Markdig extension is added or replaced by this method.</returns>
+    private static bool TryAddOrReplaceMarkdigExtension(
+        MarkdownPipelineBuilder pipeline,
+        MarkdigExtensionSetting extension)
+    {
+        // See: https://github.com/xoofx/markdig/blob/master/src/Markdig/MarkdownExtensions.cs
+        switch (extension.Name.ToLowerInvariant())
+        {
+            // PipeTableExtension
+            case "pipetables":
+                {
+                    var options = extension.GetOptions(fallbackValue: new PipeTableOptions());
+                    pipeline.Extensions.ReplaceOrAdd<PipeTableExtension>(new PipeTableExtension(options));
+                    return true;
+                }
+
+            // PipeTableExtension (with GitHub Flavored Markdown compatible settings)
+            case "gfm-pipetables":
+                {
+                    var options = extension.GetOptions(fallbackValue: new PipeTableOptions { UseHeaderForColumnCount = true });
+                    pipeline.Extensions.ReplaceOrAdd<PipeTableExtension>(new PipeTableExtension(options));
+                    return true;
+                }
+
+            // EmphasisExtraExtension (Docfx default: AutoIdentifierOptions.Strikethrough)
+            case "emphasisextras":
+                {
+                    var options = extension.GetOptions(fallbackValue: EmphasisExtraOptions.Default);
+                    pipeline.Extensions.ReplaceOrAdd<EmphasisExtraExtension>(new EmphasisExtraExtension(options));
+                    return true;
+                }
+
+            // EmojiExtension (Docfx default: enableSmileys: false)
+            case "emojis":
+                {
+                    var enableSmileys = extension.GetOptions(fallbackValue: true);
+                    EmojiMapping emojiMapping = enableSmileys
+                        ? EmojiMapping.DefaultEmojisAndSmileysMapping
+                        : EmojiMapping.DefaultEmojisOnlyMapping;
+                    pipeline.Extensions.ReplaceOrAdd<EmojiExtension>(new EmojiExtension(emojiMapping));
+                    return true;
+                }
+
+            // MediaLinkExtension
+            case "medialinks":
+                {
+                    var options = extension.GetOptions(fallbackValue: new MediaOptions());
+                    pipeline.Extensions.ReplaceOrAdd<MediaLinkExtension>(new MediaLinkExtension(options));
+                    return true;
+                }
+
+            // SmartyPantsExtension
+            case "smartypants":
+                {
+                    var options = extension.GetOptions(fallbackValue: new SmartyPantOptions());
+                    pipeline.Extensions.ReplaceOrAdd<SmartyPantsExtension>(new SmartyPantsExtension(options));
+                    return true;
+                }
+
+            // AutoIdentifierExtension (Docfx default:AutoIdentifierOptions.GitHub)
+            case "autoidentifiers":
+                {
+                    var options = extension.GetOptions(fallbackValue: AutoIdentifierOptions.Default);
+                    pipeline.Extensions.ReplaceOrAdd<AutoIdentifierExtension>(new AutoIdentifierExtension(options));
+                    return true;
+                }
+
+            // AutoLinkExtension
+            case "autolinks":
+                {
+                    var options = extension.GetOptions(fallbackValue: new AutoLinkOptions());
+                    pipeline.Extensions.ReplaceOrAdd<AutoLinkExtension>(new AutoLinkExtension(options));
+                    return true;
+                }
+
+            // Other builtin markdig extensions.
+            case "advanced":
+            case "alerts":
+            case "listextras":
+            case "hardlinebreak":
+            case "footnotes":
+            case "footers":
+            case "citations":
+            case "attributes":
+            case "gridtables":
+            case "abbreviations":
+            case "definitionlists":
+            case "customcontainers":
+            case "figures":
+            case "mathematics":
+            case "bootstrap":
+            case "tasklists":
+            case "diagrams":
+            case "nofollowlinks":
+            case "noopenerlinks":
+            case "noreferrerlinks":
+            case "nohtml":
+            case "yaml":
+            case "nonascii-noescape":
+            case "globalization":
+            case "common":
+            default:
+                // Throw exception if options are specified.
+                if (extension.Options != null)
+                {
+                    throw new Exception($"Unknown markdig extension({extension.Name}) is specified. {extension.Options}");
+                }
+
+                // These extensions are handled by `MarkdownPipelineBuilder.Configure` method.
+                return false;
+        }
     }
 
     private static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)

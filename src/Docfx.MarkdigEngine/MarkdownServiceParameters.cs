@@ -18,12 +18,13 @@ public class MarkdownServiceProperties
     public bool EnableSourceInfo { get; set; } = true;
 
     /// <summary>
-    /// Contains a list of optional Markdig extensions that are not
-    /// enabled by default by DocFX.
+    /// List of optional Markdig extensions to add or modify settings.
+    /// If extension is specified by name. Markdig extension will be added with default configuration.
+    /// If extension name is specified name with options. Add or Replace markdig extensions with specified options.
     /// </summary>
     [JsonProperty("markdigExtensions")]
     [JsonPropertyName("markdigExtensions")]
-    public string[] MarkdigExtensions { get; set; }
+    public MarkdigExtensionSetting[] MarkdigExtensions { get; set; }
 
     [JsonProperty("fallbackFolders")]
     [JsonPropertyName("fallbackFolders")]
