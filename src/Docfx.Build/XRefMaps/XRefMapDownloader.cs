@@ -111,13 +111,25 @@ public class XRefMapDownloader
     private static IXRefContainer ReadLocalFile(string filePath)
     {
         Logger.LogVerbose($"Reading from file: {filePath}");
-        if (".zip".Equals(Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
-        {
-            return XRefArchive.Open(filePath, XRefArchiveMode.Read);
-        }
 
-        using var sr = File.OpenText(filePath);
-        return YamlUtility.Deserialize<XRefMap>(sr);
+        switch (Path.GetExtension(filePath).ToLowerInvariant())
+        {
+            case ".zip":
+                return XRefArchive.Open(filePath, XRefArchiveMode.Read);
+
+            case ".json":
+                {
+                    using var stream = File.OpenText(filePath);
+                    return JsonUtility.Deserialize<XRefMap>(stream);
+                }
+
+            case ".yml":
+            default:
+                {
+                    using var sr = File.OpenText(filePath);
+                    return YamlUtility.Deserialize<XRefMap>(sr);
+                }
+        }
     }
 
     protected static async Task<XRefMap> DownloadFromWebAsync(Uri uri)
@@ -134,10 +146,21 @@ public class XRefMapDownloader
         };
 
         using var stream = await httpClient.GetStreamAsync(uri);
-        using var sr = new StreamReader(stream, bufferSize: 81920); // Default :1024 byte
-        var map = YamlUtility.Deserialize<XRefMap>(sr);
 
-        return map;
+        switch (Path.GetExtension(uri.AbsolutePath).ToLowerInvariant())
+        {
+            case ".json":
+                {
+                    using var sr = new StreamReader(stream, bufferSize: 81920); // Default :1024 byte
+                    return JsonUtility.Deserialize<XRefMap>(sr);
+                }
+            case ".yml":
+            default:
+                {
+                    using var sr = new StreamReader(stream, bufferSize: 81920); // Default :1024 byte
+                    return YamlUtility.Deserialize<XRefMap>(sr);
+                }
+        }
     }
 
     public static void UpdateHref(XRefMap map, Uri uri)
