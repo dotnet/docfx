@@ -15,7 +15,7 @@ public class XRefMapRedirection
     public string UidPrefix { get; set; }
 
     [YamlMember(Alias = "href")]
-    [JsonProperty("Href")]
+    [JsonProperty("href")]
     [JsonPropertyName("href")]
     public string Href { get; set; }
 }
