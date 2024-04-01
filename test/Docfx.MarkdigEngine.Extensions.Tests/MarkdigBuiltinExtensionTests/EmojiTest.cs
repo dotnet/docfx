@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Text.Json.Nodes;
 using Markdig.Extensions.Emoji;
 using Xunit;
 
@@ -41,10 +40,7 @@ public class EmojiTest
         var expected = @"<p>😃</p>";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-            new("Emojis", new JsonObject
-            {
-                ["options"] = true
-            }),
+            new("Emojis", "DefaultAndSmileys"),
         ]);
     }
 
@@ -55,10 +51,7 @@ public class EmojiTest
         var expected = @"<p>:)</p>";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-            new("Emojis", new JsonObject
-            {
-                ["options"] = false,
-            }),
+            new("Emojis", "Default"),
         ]);
     }
 }

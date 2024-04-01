@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using Docfx.MarkdigEngine.Extensions;
 using Markdig.Extensions.AutoLinks;
 using Xunit;
@@ -41,10 +40,7 @@ public class AutoLinkTest
         var expected = @"<p>Sample URL (<a href=""http://www.google.com"" target=""_blank"">http://www.google.com</a>)</p>";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-           new("AutoLinks", new JsonObject
-           {
-               ["options"] = JsonSerializer.SerializeToNode(options, MarkdigExtensionSettingConverter.DefaultSerializerOptions),
-           })
+           new("AutoLinks", JsonSerializer.SerializeToNode(options, MarkdigExtensionSettingConverter.DefaultSerializerOptions))
         ]);
     }
 }

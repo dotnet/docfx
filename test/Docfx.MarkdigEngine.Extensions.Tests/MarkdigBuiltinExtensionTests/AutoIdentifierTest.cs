@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Text.Json.Nodes;
 using Markdig.Extensions.AutoIdentifiers;
 using Xunit;
 
@@ -23,10 +22,7 @@ public class AutoIdentifierTest
 
         TestUtility.VerifyMarkup(content, expected);
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-           new("AutoIdentifiers", new JsonObject
-           {
-               ["options"] = "GitHub",
-           })
+           new("AutoIdentifiers", "GitHub")
         ]);
     }
 
@@ -40,17 +36,11 @@ public class AutoIdentifierTest
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["AutoIdentifiers"]);
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-           new("AutoIdentifiers", new JsonObject
-           {
-               ["options"] = "Default",
-           })
+           new("AutoIdentifiers", "Default")
         ]);
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-           new("AutoIdentifiers", new JsonObject
-           {
-               ["options"] = "AutoLink, AllowOnlyAscii", // Same as Default option.
-           })
+           new("AutoIdentifiers", "AutoLink, AllowOnlyAscii")
         ]);
     }
 
@@ -61,10 +51,7 @@ public class AutoIdentifierTest
         var expected = @"<h1 id=""this-is-a-heading_with.and"">This - is a &amp;@! heading _ with . and ! -</h1>";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-           new("AutoIdentifiers", new JsonObject
-           {
-               ["options"] = "None",
-           })
+           new("AutoIdentifiers", "None")
         ]);
     }
 }

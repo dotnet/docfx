@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-using System.Text.Json;
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
 using Markdig.Extensions.AutoLinks;
@@ -18,6 +17,8 @@ namespace Docfx.MarkdigEngine.Extensions;
 
 public static class MarkdownExtensions
 {
+    enum EmojiMappingOption { Default, DefaultAndSmileys }
+
     public static MarkdownPipelineBuilder UseDocfxExtensions(
         this MarkdownPipelineBuilder pipeline, MarkdownContext context,
         Dictionary<string, string> notes = null, PlantUmlOptions plantUml = null)
@@ -121,10 +122,11 @@ public static class MarkdownExtensions
             // EmojiExtension (Docfx default: enableSmileys: false)
             case "emojis":
                 {
-                    var enableSmileys = extension.GetOptions(fallbackValue: true);
-                    EmojiMapping emojiMapping = enableSmileys
-                        ? EmojiMapping.DefaultEmojisAndSmileysMapping
-                        : EmojiMapping.DefaultEmojisOnlyMapping;
+                    var emojiMapping = extension.GetOptions(fallbackValue: EmojiMappingOption.DefaultAndSmileys) switch
+                    {
+                        EmojiMappingOption.DefaultAndSmileys => EmojiMapping.DefaultEmojisAndSmileysMapping,
+                        _ => EmojiMapping.DefaultEmojisOnlyMapping,
+                    };
                     pipeline.Extensions.ReplaceOrAdd<EmojiExtension>(new EmojiExtension(emojiMapping));
                     return true;
                 }

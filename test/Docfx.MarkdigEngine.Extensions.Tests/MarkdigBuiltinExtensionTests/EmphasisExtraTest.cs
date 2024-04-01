@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Text.Json.Nodes;
 using Markdig.Extensions.EmphasisExtras;
 using Xunit;
 
@@ -63,10 +62,7 @@ public class EmphasisExtraTest
         {
             var expected = @"<p>H<sub>2</sub>O is a liquid. 2<sup>10</sup> is 1024</p>";
             TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-              new("EmphasisExtras", new JsonObject
-              {
-                  ["options"] = "Superscript, Subscript",
-              })]);
+              new("EmphasisExtras", "Superscript, Subscript")]);
         }
     }
 
@@ -84,10 +80,7 @@ public class EmphasisExtraTest
         {
             var expected = @"<p><ins>Inserted text</ins></p>";
             TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-              new("EmphasisExtras", new JsonObject
-              {
-                  ["options"] = "Inserted",
-              })]);
+              new("EmphasisExtras", "Inserted")]);
         }
     }
 
@@ -105,10 +98,7 @@ public class EmphasisExtraTest
         {
             var expected = @"<p><mark>Marked text</mark></p>";
             TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-              new("EmphasisExtras", new JsonObject
-              {
-                  ["options"] = "Marked",
-              })]);
+              new("EmphasisExtras", "Marked")]);
         }
     }
 }
