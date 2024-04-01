@@ -202,6 +202,23 @@ Sets the max parallelism. Setting 0 (default) is the same as setting to the coun
 
 Sets the parameters for the markdown engine, value is a JSON object.
 
+For example.
+It can enable additional `FootNotes` markdig extensions with following settings.
+
+```json
+{
+  "build": {
+    "markdownEngineProperties": {
+      "markdigExtensions": [
+        "FootNotes"
+      ]
+    }
+  }
+}
+```
+
+List of available built-in markdig extensions are available at [this URL](https://github.com/xoofx/markdig/blob/master/src/Markdig/MarkdownExtensions.cs#L552-L668).
+
 ### `customLinkResolver`
 
 Set the name of the `ICustomHrefGenerator` derived class.
@@ -211,7 +228,7 @@ Set the name of the `ICustomHrefGenerator` derived class.
 Specifies the output folder of specified group name.
 
 ```json
-"groups":
+"groups": {
   "v1": {
     "dest": "output_dir_v1"
   }
