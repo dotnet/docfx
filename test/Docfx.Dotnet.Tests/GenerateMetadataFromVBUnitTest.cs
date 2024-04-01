@@ -13,10 +13,10 @@ public class GenerateMetadataFromVBUnitTest
 {
     private static readonly Dictionary<string, string> EmptyMSBuildProperties = new();
 
-    private static MetadataItem Verify(string code, ExtractMetadataConfig options = null, IDictionary<string, string> msbuildProperties = null, params MetadataReference[] references)
+    private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, IDictionary<string, string> msbuildProperties = null, MetadataReference[] references = null)
     {
         var compilation = CompilationHelper.CreateCompilationFromVBCode(code, msbuildProperties ?? EmptyMSBuildProperties, "test.dll", references);
-        return compilation.Assembly.GenerateMetadataItem(compilation, options);
+        return compilation.Assembly.GenerateMetadataItem(compilation, config);
     }
 
     [Trait("Related", "Generic")]
@@ -1642,5 +1642,37 @@ End Namespace
             var foo = output.Items[0].Items[0];
             Assert.Empty(foo.Items);
         }
+    }
+
+    [Fact]
+    public void TestGenerateMetadataWithReference()
+    {
+        string code = @"
+Namespace Test
+    Public Class Foo
+      Property Tasks As TupleLibrary.XmlTasks
+    End Class
+End Namespace
+namespace Test
+{
+    public class Foo
+    {
+        public TupleLibrary.XmlTasks Tasks { get;set; }
+    }
+}
+";
+
+        var references = new string[] { "TestData/TupleLibrary.dll" }.Select(assemblyPath =>
+        {
+            var documentation = XmlDocumentationProvider.CreateFromFile(Path.ChangeExtension(assemblyPath, ".xml"));
+            return MetadataReference.CreateFromFile(assemblyPath, documentation: documentation);
+        }).ToArray();
+
+        // Act
+        var output = Verify(code, references: references);
+
+        // Assert
+        Assert.Contains("TupleLibrary", output.References.Keys);
+        Assert.Contains("TupleLibrary.XmlTasks", output.References.Keys);
     }
 }

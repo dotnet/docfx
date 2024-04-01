@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Net;
+using FluentAssertions;
 using Xunit;
 
 namespace Docfx.Build.Engine.Tests;
@@ -34,5 +35,19 @@ public class XRefMapDownloadTest
         var xrefSpec = reader.Find("str");
         Assert.NotNull(xrefSpec);
         Assert.Equal("https://docs.python.org/3.5/library/stdtypes.html#str", xrefSpec.Href);
+    }
+
+    [Fact]
+    public async Task ReadLocalXRefMapJsonFileTest()
+    {
+        // Arrange
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "xrefmap.json");
+
+        XRefMapDownloader downloader = new XRefMapDownloader();
+        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+
+        // Assert
+        xrefMap.Should().NotBeNull();
+        xrefMap.References.Should().HaveCount(1);
     }
 }
