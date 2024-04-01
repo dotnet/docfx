@@ -29,7 +29,7 @@ public class MarkdigExtensionSetting
     /// <summary>
     /// Initializes a new instance of the <see cref="MarkdigExtensionSetting"/> class.
     /// </summary>
-    public MarkdigExtensionSetting(string name, JsonObject? options = null)
+    public MarkdigExtensionSetting(string name, JsonNode? options = null)
     {
         Name = name;
         if (options != null)
@@ -58,49 +58,8 @@ public class MarkdigExtensionSetting
     /// </summary>
     public T GetOptions<T>(T fallbackValue)
     {
-        if (Options == null)
-        {
-            return fallbackValue;
-        }
-
-        var jsonObject = JsonSerializer.SerializeToNode(Options)?.AsObject();
-
-        if (jsonObject != null
-         && jsonObject.TryGetPropertyValue("options", out var optionsNode)
-         && optionsNode != null)
-        {
-            return optionsNode.Deserialize<T>(DefaultSerializerOptions)!;
-        }
-        else
-        {
-            return fallbackValue;
-        }
-    }
-
-    /// <summary>
-    /// Gets markdig extension options as specified class object.
-    /// </summary>
-    public T GetOptionsValue<T>(string key, T fallbackValue)
-    {
-        if (Options == null)
-        {
-            return fallbackValue;
-        }
-
-        var jsonNode = JsonSerializer.SerializeToNode(Options)?.AsObject();
-
-        // Try to read options property that have specified key.
-        if (jsonNode != null
-         && jsonNode.TryGetPropertyValue("options", out var optionsNode)
-         && optionsNode != null
-         && optionsNode.AsObject().TryGetPropertyValue(key, out var valueNode))
-        {
-            return valueNode!.GetValue<T>()!;
-        }
-        else
-        {
-            return fallbackValue;
-        }
+        return Options is null ? fallbackValue
+            : JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(Options), DefaultSerializerOptions) ?? fallbackValue;
     }
 
     /// <summary>

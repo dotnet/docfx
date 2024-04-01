@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using Docfx.MarkdigEngine.Extensions;
 using Markdig.Extensions.Tables;
 using Xunit;
@@ -86,10 +85,7 @@ public class PipeTableTest
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["gfm-pipetables"]);
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-            new ("PipeTables", new JsonObject
-            {
-                ["options"] = JsonSerializer.SerializeToNode(options,  MarkdigExtensionSettingConverter.DefaultSerializerOptions),
-            })
+            new ("PipeTables", JsonSerializer.SerializeToNode(options,  MarkdigExtensionSettingConverter.DefaultSerializerOptions))
         ]);
     }
 }

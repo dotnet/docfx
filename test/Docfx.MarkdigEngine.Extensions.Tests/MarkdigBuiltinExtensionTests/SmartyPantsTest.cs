@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 using Docfx.MarkdigEngine.Extensions;
 using Markdig.Extensions.SmartyPants;
 using Xunit;
@@ -52,10 +50,7 @@ public class SmartyPantsTest
         string expected = "<p>This is a <<text with>> a another text'</p>";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-            new("SmartyPants", new JsonObject
-            {
-                ["options"] = JsonSerializer.SerializeToNode(options, MarkdigExtensionSettingConverter.DefaultSerializerOptions),
-            })
+            new("SmartyPants", JsonSerializer.SerializeToNode(options, MarkdigExtensionSettingConverter.DefaultSerializerOptions))
         ]);
     }
 }

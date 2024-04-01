@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using Docfx.MarkdigEngine.Extensions;
 using Markdig.Extensions.MediaLinks;
 using Xunit;
@@ -44,10 +43,7 @@ public class MediaLinksTest
         var expected = $"""<p><video class="{options.Class}" width="{options.Width}" height="{options.Height}"><source type="video/mp4" src="https://example.com/video.mp4"></source></video></p>""";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
-            new("MediaLinks", new JsonObject
-            {
-                ["options"] = JsonSerializer.SerializeToNode(options, MarkdigExtensionSettingConverter.DefaultSerializerOptions),
-            })
+            new("MediaLinks", JsonSerializer.SerializeToNode(options, MarkdigExtensionSettingConverter.DefaultSerializerOptions))
         ]);
     }
 }

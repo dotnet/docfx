@@ -3572,11 +3572,10 @@ namespace Docfx.MarkdigEngine.Extensions
     [System.Diagnostics.DebuggerDisplay("Name = {Name}")]
     public class MarkdigExtensionSetting
     {
-        public MarkdigExtensionSetting(string name, System.Text.Json.Nodes.JsonObject? options = null) { }
+        public MarkdigExtensionSetting(string name, System.Text.Json.Nodes.JsonNode? options = null) { }
         public string Name { get; init; }
         public System.Text.Json.JsonElement? Options { get; init; }
         public T GetOptions<T>(T fallbackValue) { }
-        public T GetOptionsValue<T>(string key, T fallbackValue) { }
         public static Docfx.MarkdigEngine.Extensions.MarkdigExtensionSetting op_Implicit(string name) { }
     }
     public class MarkdownContext
