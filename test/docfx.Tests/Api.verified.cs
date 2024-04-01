@@ -486,8 +486,12 @@ namespace Docfx.Build.Engine
     public class XRefMapRedirection
     {
         public XRefMapRedirection() { }
+        [Newtonsoft.Json.JsonProperty("Href")]
+        [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }
+        [Newtonsoft.Json.JsonProperty("uidPrefix")]
+        [System.Text.Json.Serialization.JsonPropertyName("uidPrefix")]
         [YamlDotNet.Serialization.YamlMember(Alias="uidPrefix")]
         public string UidPrefix { get; set; }
     }
