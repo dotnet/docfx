@@ -2,6 +2,9 @@
 
 The `docfx.json` file indicates that the directory is the root of a docfx project.
 
+> [!IMPORTANT]
+> All relative paths specified in config file are relative to the location of `docfx.json`
+
 ```json
 {
   "build": { },
