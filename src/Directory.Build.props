@@ -3,5 +3,6 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="$(AssemblyName).Tests" />
+    <InternalsVisibleTo Include="Docfx.Benchmarks" />
   </ItemGroup>
 </Project>
