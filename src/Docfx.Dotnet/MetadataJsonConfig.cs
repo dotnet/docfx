@@ -213,9 +213,9 @@ internal class MetadataJsonItemConfig
     public MemberLayout MemberLayout { get; set; }
 
     /// <summary>
-    /// Defines how member pages are organized:
-    /// - `samePage` (default): Places members in the same page as their containing type.
-    /// - `separatePages`: Places members in separate pages.
+    /// Specifies how enum members are sorted:
+    /// - `alphabetic`(default): Sort enum members in alphabetic order.
+    /// - `declaringOrder`: Sort enum members in the order as they are declared in the source code.
     /// </summary>
     [JsonProperty("enumSortOrder")]
     [JsonPropertyName("enumSortOrder")]
