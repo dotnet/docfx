@@ -14,7 +14,7 @@ namespace Docfx.Build.TableOfContents;
 [Export(typeof(IDocumentProcessor))]
 class TocDocumentProcessor : DisposableDocumentProcessor
 {
-    private static readonly char[] QueryStringOrAnchor = new[] { '#', '?' };
+    private static readonly char[] QueryStringOrAnchor = ['#', '?'];
 
     public override string Name => nameof(TocDocumentProcessor);
 

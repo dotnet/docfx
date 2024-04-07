@@ -39,14 +39,14 @@ definitions:
         var testBlockList = Markdown.Parse("Test").ToList();
 
         string[] testOPaths =
-        {
+        [
             "summary",
             "return/description",
             "return/type",
             "function/parameters[id=\"para1\"]/description",
             "function/parameters[id=\"para1\"]/type",
             "function/parameters[id=\"para2\"]/description",
-        };
+        ];
         var contents = new List<MarkdownPropertyModel>();
         foreach (var item in testOPaths)
         {
@@ -131,11 +131,11 @@ definitions:
         var testBlockList = Markdown.Parse("Test").ToList();
 
         string[] testOPaths =
-        {
+        [
             "summary",
             "definitions[name=\"Application 1\"]/properties[name=\"displayName\"]/description",
             "definitions[name=\"Application 1\"]/properties[name=\"summary\"]/description",
-        };
+        ];
         var contents = new List<MarkdownPropertyModel>();
         foreach (var item in testOPaths)
         {
@@ -173,10 +173,10 @@ definitions:
     {
         var testBlockList = Markdown.Parse("Test").ToList();
         string[] testOPaths =
-        {
+        [
             "function/parameters/description",
             "function/parameters[id=\"para1\"]/type",
-        };
+        ];
         var contents = new List<MarkdownPropertyModel>();
         foreach (var item in testOPaths)
         {
@@ -200,10 +200,10 @@ definitions:
     {
         var testBlockList = Markdown.Parse("Test").ToList();
         string[] testOPaths =
-        {
+        [
             "function/parameters[id=\"para1\"]/type",
             "function/parameters/description",
-        };
+        ];
         var contents = new List<MarkdownPropertyModel>();
         foreach (var item in testOPaths)
         {

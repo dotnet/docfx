@@ -115,7 +115,7 @@ public static class SwaggerModelConverter
 
     private static readonly Regex HtmlEncodeRegex = new(@"\W", RegexOptions.Compiled);
     private const string TagText = "tag";
-    private static readonly string[] OperationNames = { "get", "put", "post", "delete", "options", "head", "patch" };
+    private static readonly string[] OperationNames = ["get", "put", "post", "delete", "options", "head", "patch"];
 
     /// <summary>
     /// TODO: merge with the one in XrefDetails

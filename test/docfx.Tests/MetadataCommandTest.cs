@@ -6,7 +6,6 @@ using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Dotnet;
 using Docfx.Tests.Common;
-using Xunit;
 
 namespace Docfx.Tests;
 

@@ -55,6 +55,6 @@ public class VideoTest
 ")]
     public void VideoTestBlock_InvalidVideo(string source, string expected)
     {
-        TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-video", "invalid-video" });
+        TestUtility.VerifyMarkup(source, expected, errors: ["invalid-video", "invalid-video"]);
     }
 }

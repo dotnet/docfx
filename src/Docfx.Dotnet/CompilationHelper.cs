@@ -15,8 +15,8 @@ namespace Docfx.Dotnet;
 internal static class CompilationHelper
 {
     // Bootstrap code to ensure essential types like `System.Object` is loaded for assemblies
-    private static readonly SyntaxTree[] s_assemblyBootstrap = new[]
-    {
+    private static readonly SyntaxTree[] s_assemblyBootstrap =
+    [
         CS.SyntaxFactory.ParseSyntaxTree(
             """
             class Bootstrap
@@ -24,7 +24,7 @@ internal static class CompilationHelper
                 public static void Main(string[] foo) { }
             }
             """),
-    };
+    ];
 
     public static bool CheckDiagnostics(this Compilation compilation, bool errorAsWarning)
     {

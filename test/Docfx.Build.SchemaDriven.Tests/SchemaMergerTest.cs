@@ -3,7 +3,6 @@
 
 using System.Collections.Immutable;
 using Docfx.Build.Engine;
-using Docfx.Build.TableOfContents;
 using Docfx.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;

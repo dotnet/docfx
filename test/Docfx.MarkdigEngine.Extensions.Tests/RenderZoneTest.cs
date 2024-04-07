@@ -81,7 +81,7 @@ Inline ::: should not end moniker zone.</p>
         // assert
         var expected = @"<p>::: zone target=&quot;chromeless</p>
 ";
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
     [Fact]
@@ -98,7 +98,7 @@ Inline ::: should not end moniker zone.</p>
 ";
 
         TestUtility.VerifyMarkup(source2, expected);
-        TestUtility.VerifyMarkup(source1, expected, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(source1, expected, ["invalid-zone"]);
     }
 
     [Fact]
@@ -111,7 +111,7 @@ Inline ::: should not end moniker zone.</p>
 ::: zone-end
 ";
 
-        TestUtility.VerifyMarkup(content, null, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(content, null, ["invalid-zone"]);
     }
 
     [Fact]
@@ -144,7 +144,7 @@ Inline ::: should not end moniker zone.</p>
         // assert
         var expected = @"<p>::: zone target = &quot;pdf&quot;  pivot = &quot;foo&quot;</p>
 ";
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
     [Fact]
@@ -157,7 +157,7 @@ Inline ::: should not end moniker zone.</p>
         // assert
         var expected = "<p>::: zone pivot = &quot;**&quot;\n::: zone-end</p>\n";
 
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ Inline ::: should not end moniker zone.</p>
         // assert
         var expected = "<p>::: zone pivot = &quot;a b&quot;\n::: zone-end</p>\n";
 
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
     [Fact]
@@ -195,7 +195,7 @@ Inline ::: should not end moniker zone.</p>
         // assert
         var expected = @"<p>::: zone target=&quot;pdf&quot; something</p>
 ";
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
     [Fact]
@@ -207,7 +207,7 @@ Inline ::: should not end moniker zone.</p>
         // assert
         var expected = @"<p>::: zone target=&quot;pdf&quot; target=&quot;docs&quot;</p>
 ";
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
     [Fact]
@@ -219,7 +219,7 @@ Inline ::: should not end moniker zone.</p>
         // assert
         var expected = @"<p>::: zone *=&quot;pdf&quot;</p>
 ";
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
     [Fact]
@@ -232,6 +232,6 @@ Inline ::: should not end moniker zone.</p>
         // assert
         var expected = "<p>:::zone\n:::zone-end asdjklf</p>\n";
 
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-zone" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 }

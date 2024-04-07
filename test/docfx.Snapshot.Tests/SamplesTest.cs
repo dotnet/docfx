@@ -8,7 +8,6 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Docfx.Dotnet;
-using Docfx.Plugins;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Actions;
 using UglyToad.PdfPig.Annotations;

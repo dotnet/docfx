@@ -62,7 +62,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [YamlMember(Alias = "langs")]
     [JsonProperty("langs")]
     [JsonPropertyName("langs")]
-    public string[] SupportedLanguages { get; set; } = new string[] { "csharp", "vb" };
+    public string[] SupportedLanguages { get; set; } = ["csharp", "vb"];
 
     [YamlMember(Alias = Constants.PropertyName.Name)]
     [JsonProperty(Constants.PropertyName.Name)]

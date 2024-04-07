@@ -20,7 +20,7 @@ public class CodeSnippetTest
         TestUtility.VerifyMarkup(
             source,
             expected,
-            errors: new[] { "codesnippet-not-found" },
+            errors: ["codesnippet-not-found"],
             tokens: new Dictionary<string, string>
             {
                 { "codeIncludeNotFound", "你要查找的示例似乎已移动！ 不要担心，我们正在努力解决此问题。"},
@@ -106,7 +106,7 @@ print(azureml.core.VERSION)</code></pre>";
         TestUtility.VerifyMarkup(
             source,
             expected,
-            errors: new[] { "tag-not-found" },
+            errors: ["tag-not-found"],
             files: new Dictionary<string, string>
             {
                 { "Program.ipynb", content },
@@ -152,7 +152,7 @@ print(azureml.core.VERSION)</code></pre>";
         TestUtility.VerifyMarkup(
             source,
             expected,
-            errors: new[] { "multiple-tags-with-same-name" },
+            errors: ["multiple-tags-with-same-name"],
             files: new Dictionary<string, string>
             {
                 { "Program.ipynb", content },

@@ -488,10 +488,10 @@ partial class DotnetApiCatalog
                 Heading(headingLevel, "Returns");
                 body.Add(new Parameters
                 {
-                    parameters = new[]
-                    {
+                    parameters =
+                    [
                         new Parameter() { type = FullLink(symbol.ReturnType, compilation), description = comment?.Returns }
-                    }
+                    ]
                 });
             }
 
@@ -539,10 +539,10 @@ partial class DotnetApiCatalog
                 Heading(headingLevel + 1, "Field Value");
                 body.Add(new Parameters
                 {
-                    parameters = new[]
-                    {
+                    parameters =
+                    [
                         new Parameter() { type = FullLink(symbol.Type, compilation) }
-                    }
+                    ]
                 });
 
                 Examples(comment, headingLevel + 1);
@@ -562,10 +562,10 @@ partial class DotnetApiCatalog
                 Heading(headingLevel + 1, "Property Value");
                 body.Add(new Parameters
                 {
-                    parameters = new[]
-                    {
+                    parameters =
+                    [
                         new Parameter() { type = FullLink(symbol.Type, compilation) }
-                    }
+                    ]
                 });
 
                 Examples(comment, headingLevel + 1);
@@ -585,10 +585,10 @@ partial class DotnetApiCatalog
                 Heading(headingLevel + 1, "Event Type");
                 body.Add(new Parameters
                 {
-                    parameters = new[]
-                    {
+                    parameters =
+                    [
                         new Parameter() { type = FullLink(symbol.Type, compilation) }
-                    }
+                    ]
                 });
 
                 Examples(comment, headingLevel + 1);

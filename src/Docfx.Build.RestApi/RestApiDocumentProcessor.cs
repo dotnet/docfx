@@ -28,15 +28,15 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
     // To keep backward compatibility, still support and change previous file endings by first mapping sequence.
     // Take 'a.b_swagger2.json' for an example, the json file name would be changed to 'a.b', then the html file name would be 'a.b.html'.
     private static readonly string[] SupportedFileEndings =
-    {
+    [
        "_swagger2.json",
        "_swagger.json",
        ".swagger.json",
        ".swagger2.json",
        ".json",
-    };
+    ];
 
-    protected static readonly string[] SystemKeys = {
+    protected static readonly string[] SystemKeys = [
         "uid",
         "htmlId",
         "name",
@@ -64,7 +64,7 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         "security",
         "tags",
         "externalDocs"
-    };
+    ];
 
     [ImportMany(nameof(RestApiDocumentProcessor))]
     public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }

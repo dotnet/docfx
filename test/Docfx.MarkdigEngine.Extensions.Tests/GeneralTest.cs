@@ -303,7 +303,7 @@ content-b
 </section>
 </div>
 ";
-        TestUtility.VerifyMarkup(actual, expected, new[] { "invalid-tab-group" }, lineNumber: true);
+        TestUtility.VerifyMarkup(actual, expected, ["invalid-tab-group"], lineNumber: true);
     }
 
     [Fact]

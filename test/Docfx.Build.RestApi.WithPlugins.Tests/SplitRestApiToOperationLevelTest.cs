@@ -4,7 +4,6 @@
 using System.Collections.Immutable;
 using Docfx.Build.Engine;
 using Docfx.Build.OperationLevelRestApi;
-using Docfx.Build.TableOfContents;
 using Docfx.Build.TagLevelRestApi;
 using Docfx.Common;
 using Docfx.DataContracts.Common;

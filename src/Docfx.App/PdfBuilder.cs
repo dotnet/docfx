@@ -64,7 +64,7 @@ static class PdfBuilder
         if (pdfTocs.Count == 0)
             return;
 
-        Program.Main(new[] { "install", "chromium" });
+        Program.Main(["install", "chromium"]);
 
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();

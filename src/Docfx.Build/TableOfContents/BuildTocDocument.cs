@@ -1,7 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Web;
@@ -86,7 +85,7 @@ class BuildTocDocument : BaseDocumentBuildStep
 
     private static string ParseFile(string link)
     {
-        var queryIndex = link.IndexOfAny(new[] { '?', '#' });
+        var queryIndex = link.IndexOfAny(['?', '#']);
         return queryIndex == -1 ? link : link.Remove(queryIndex);
     }
 
