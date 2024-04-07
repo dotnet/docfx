@@ -4,7 +4,6 @@
 using System.Collections.Immutable;
 using System.Reflection;
 using System.Web;
-using Docfx.Build.ConceptualDocuments;
 using Docfx.Build.Engine;
 using Docfx.Common;
 using Docfx.DataContracts.Common;

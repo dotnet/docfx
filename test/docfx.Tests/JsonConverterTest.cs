@@ -4,10 +4,8 @@
 using System.Collections;
 using System.Reflection;
 using Docfx.Common;
-using Docfx.Plugins;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Xunit;
 
 namespace Docfx.Tests;
 

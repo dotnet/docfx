@@ -6,7 +6,6 @@ using Docfx.Common;
 using Docfx.Plugins;
 using FluentAssertions;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Docfx.Build.Engine.Tests;
 

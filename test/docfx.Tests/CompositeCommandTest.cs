@@ -5,7 +5,6 @@ using System.Xml.Linq;
 using Docfx.Common;
 using Docfx.Tests.Common;
 using HtmlAgilityPack;
-using Xunit;
 
 namespace Docfx.Tests;
 
