@@ -229,12 +229,12 @@ API filter are hierarchical, if a namespace is excluded, all types/members defin
 ```yaml
 apiRules:
 - exclude:
-  hasAttribute:
-    uid: System.AttributeUsageAttribute
-    ctorArguments:
-    - System.AttributeTargets.Class
-    ctorNamedArguments:
-      Inherited: "true"
+    hasAttribute:
+      uid: System.AttributeUsageAttribute
+      ctorArguments:
+      - System.AttributeTargets.Class
+      ctorNamedArguments:
+        Inherited: "True"
 ```
 
 Where the `ctorArguments` property specifies a list of match conditions based on constructor parameters and the `ctorNamedArguments` property specifies match conditions using named constructor arguments.
