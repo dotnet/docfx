@@ -30,7 +30,7 @@ public class Class1.Issue8948 : Class1.IIssue8948
 
 ### <a id="BuildFromProject_Class1_Issue8948_DoNothing__1"></a> DoNothing<T\>\(\)
 
-Does nothing with generic type <code class="typeparamref">T</code>.
+Does nothing with generic type T.
 
 ```csharp
 public void DoNothing<T>()
