@@ -62,7 +62,7 @@ public class ReflectionEntityMergerTest
             IntValue = 1,
             NullableIntValue = 2,
             Text = "abc",
-            Array2 = new string[] { "a" },
+            Array2 = ["a"],
             Nested = new MergeOptionSample
             {
                 IntValue = 1,
@@ -74,7 +74,7 @@ public class ReflectionEntityMergerTest
         var overrides = new MergeOptionSample
         {
             IntValue = 10,
-            Array1 = new int[] { 2 },
+            Array1 = [2],
             Nested = new MergeOptionSample
             {
                 NullableIntValue = 22,

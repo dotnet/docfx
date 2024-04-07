@@ -9,14 +9,14 @@ namespace Docfx.Build.Engine;
 class RemoveDebugInfo : HtmlDocumentHandler
 {
     private readonly string[] DebugInfoAttributes =
-    {
+    [
         "sourceFile",
         "sourceStartLineNumber",
         "sourceEndLineNumber",
         "jsonPath",
         "data-raw-source",
         "nocheck",
-    };
+    ];
 
     protected override void HandleCore(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
     {

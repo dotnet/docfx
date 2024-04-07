@@ -60,7 +60,7 @@ Inline ::: should not end moniker zone.</p>
         // assert
         var expected = @"<p>::: moniker range=&quot;azure-rest-1.0</p>
 ";
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-moniker-range" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-moniker-range"]);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ Inline ::: should not end moniker zone.</p>
 </div>
 ";
         TestUtility.VerifyMarkup(source2, expected);
-        TestUtility.VerifyMarkup(source1, expected, new[] { "invalid-moniker-range" });
+        TestUtility.VerifyMarkup(source1, expected, ["invalid-moniker-range"]);
     }
 
     [Fact]

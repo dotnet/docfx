@@ -17,7 +17,7 @@ public class TripleColonBlockParser : BlockParser
 
     public TripleColonBlockParser(MarkdownContext context, IDictionary<string, ITripleColonExtensionInfo> extensions)
     {
-        OpeningCharacters = new[] { ':' };
+        OpeningCharacters = [':'];
         _context = context;
         _extensions = extensions;
     }

@@ -118,7 +118,7 @@ public static class ReflectionHelper
 
     private static Func<object[], object> GetCreateInstanceFuncCore(ConstructorInfo ctor, Type[] argumentTypes)
     {
-        var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object[]) });
+        var dm = new DynamicMethod(string.Empty, typeof(object), [typeof(object[])]);
         var il = dm.GetILGenerator();
         for (int i = 0; i < argumentTypes.Length; i++)
         {
@@ -249,7 +249,7 @@ public static class ReflectionHelper
 
     private static Func<object, object> CreateGetPropertyFunc(PropertyInfo prop)
     {
-        var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object) });
+        var dm = new DynamicMethod(string.Empty, typeof(object), [typeof(object)]);
         var il = dm.GetILGenerator();
         il.Emit(OpCodes.Ldarg_0);
         if (prop.DeclaringType.IsValueType)
@@ -281,7 +281,7 @@ public static class ReflectionHelper
 
     private static Action<object, object> CreateSetPropertyFunc(PropertyInfo prop)
     {
-        var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(object), typeof(object) });
+        var dm = new DynamicMethod(string.Empty, typeof(void), [typeof(object), typeof(object)]);
         var il = dm.GetILGenerator();
         il.Emit(OpCodes.Ldarg_0);
         if (prop.DeclaringType.IsValueType)

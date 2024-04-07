@@ -57,7 +57,7 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
         value = _objectFactory.Create(expectedType);
         if (!_actionCache.TryGetValue(gp, out var action))
         {
-            var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(IParser), typeof(Type), typeof(Func<IParser, Type, object>), typeof(object) });
+            var dm = new DynamicMethod(string.Empty, typeof(void), [typeof(IParser), typeof(Type), typeof(Func<IParser, Type, object>), typeof(object)]);
             var il = dm.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);

@@ -26,12 +26,12 @@ root
 ");
         var restructures = new List<TreeItemRestructure>
         {
-            GetRestructure(TreeItemActionType.AppendChild, "leaf2", new string[] { "leaf2.1", "leaf2.2" }),
-            GetRestructure(TreeItemActionType.PrependChild, "leaf2", new string[] {"leaf2.3", "leaf2.4" }),
-            GetRestructure(TreeItemActionType.InsertAfter, "leaf2", new string[] { "leaf4", "leaf5" }),
-            GetRestructure(TreeItemActionType.InsertBefore, "leaf2", new string[] { "node2", "node3" }),
-            GetRestructure(TreeItemActionType.DeleteSelf, "leaf3", new string[] { "leaf6", "leaf7" }),
-            GetRestructure(TreeItemActionType.ReplaceSelf, "leaf3", new string[] { "leaf6" }),
+            GetRestructure(TreeItemActionType.AppendChild, "leaf2", ["leaf2.1", "leaf2.2"]),
+            GetRestructure(TreeItemActionType.PrependChild, "leaf2", ["leaf2.3", "leaf2.4"]),
+            GetRestructure(TreeItemActionType.InsertAfter, "leaf2", ["leaf4", "leaf5"]),
+            GetRestructure(TreeItemActionType.InsertBefore, "leaf2", ["node2", "node3"]),
+            GetRestructure(TreeItemActionType.DeleteSelf, "leaf3", ["leaf6", "leaf7"]),
+            GetRestructure(TreeItemActionType.ReplaceSelf, "leaf3", ["leaf6"]),
         };
         TocRestructureUtility.Restructure(toc, restructures);
         var expected = GetTocItem(@"
@@ -72,13 +72,13 @@ root
 ");
         var restructures = new List<TreeItemRestructure>
         {
-            GetRestructure(TreeItemActionType.AppendChild, "node2", new string[] { "leaf2.1" }),
-            GetRestructure(TreeItemActionType.AppendChild, "node2", new string[] { "leaf2.2" }),
-            GetRestructure(TreeItemActionType.PrependChild, "node2", new string[] { "leaf2.3", "leaf2.4" }),
-            GetRestructure(TreeItemActionType.InsertAfter, "node2", new string[] { "leaf4", "leaf5" }),
-            GetRestructure(TreeItemActionType.InsertBefore, "node2", new string[] { "node2", "node3" }),
+            GetRestructure(TreeItemActionType.AppendChild, "node2", ["leaf2.1"]),
+            GetRestructure(TreeItemActionType.AppendChild, "node2", ["leaf2.2"]),
+            GetRestructure(TreeItemActionType.PrependChild, "node2", ["leaf2.3", "leaf2.4"]),
+            GetRestructure(TreeItemActionType.InsertAfter, "node2", ["leaf4", "leaf5"]),
+            GetRestructure(TreeItemActionType.InsertBefore, "node2", ["node2", "node3"]),
             GetRestructure(TreeItemActionType.DeleteSelf, "node3", null),
-            GetRestructure(TreeItemActionType.ReplaceSelf, "node4", new string[] { "leaf6" }),
+            GetRestructure(TreeItemActionType.ReplaceSelf, "node4", ["leaf6"]),
         };
         TocRestructureUtility.Restructure(toc, restructures);
         var expected = GetTocItem(@"
@@ -116,12 +116,12 @@ root
         var toc = GetTocItem(layout);
         var restructures = new List<TreeItemRestructure>
         {
-            GetRestructure(TreeItemActionType.AppendChild, "leaf100", new string[] {"leaf2.1", "leaf2.2" }),
-            GetRestructure(TreeItemActionType.PrependChild, "leaf100", new string[] {"leaf2.1", "leaf2.2" }),
-            GetRestructure(TreeItemActionType.InsertAfter, "leaf100", new string[] {"leaf4", "leaf5" }),
-            GetRestructure(TreeItemActionType.InsertBefore, "leaf100", new string[] {"node2", "node3" }),
-            GetRestructure(TreeItemActionType.DeleteSelf, "leaf100", new string[] {"leaf6", "leaf7" }),
-            GetRestructure(TreeItemActionType.ReplaceSelf, "leaf100", new string[] {"leaf6", "leaf7" }),
+            GetRestructure(TreeItemActionType.AppendChild, "leaf100", ["leaf2.1", "leaf2.2"]),
+            GetRestructure(TreeItemActionType.PrependChild, "leaf100", ["leaf2.1", "leaf2.2"]),
+            GetRestructure(TreeItemActionType.InsertAfter, "leaf100", ["leaf4", "leaf5"]),
+            GetRestructure(TreeItemActionType.InsertBefore, "leaf100", ["node2", "node3"]),
+            GetRestructure(TreeItemActionType.DeleteSelf, "leaf100", ["leaf6", "leaf7"]),
+            GetRestructure(TreeItemActionType.ReplaceSelf, "leaf100", ["leaf6", "leaf7"]),
         };
         TocRestructureUtility.Restructure(toc, restructures);
         var expected = GetTocItem(layout);
@@ -142,7 +142,7 @@ root
 ");
         var restructures = new List<TreeItemRestructure>
         {
-            GetRestructure(TreeItemActionType.ReplaceSelf, "node2", new string[] {"leaf4", "leaf5" }),
+            GetRestructure(TreeItemActionType.ReplaceSelf, "node2", ["leaf4", "leaf5"]),
         };
         Assert.Throws<InvalidOperationException>(() => TocRestructureUtility.Restructure(toc, restructures));
     }
@@ -161,10 +161,10 @@ root
 ");
         var restructures = new List<TreeItemRestructure>
         {
-            GetRestructure(TreeItemActionType.InsertAfter, "node2", new string[] {"leaf4", "leaf5" }),
-            GetRestructure(TreeItemActionType.DeleteSelf, "node2", new string[] {"leaf6", "leaf7" }),
-            GetRestructure(TreeItemActionType.ReplaceSelf, "node2", new string[] {"leaf8", "leaf9" }),
-            GetRestructure(TreeItemActionType.InsertBefore, "node2", new string[] {"leaf10", "leaf11" }),
+            GetRestructure(TreeItemActionType.InsertAfter, "node2", ["leaf4", "leaf5"]),
+            GetRestructure(TreeItemActionType.DeleteSelf, "node2", ["leaf6", "leaf7"]),
+            GetRestructure(TreeItemActionType.ReplaceSelf, "node2", ["leaf8", "leaf9"]),
+            GetRestructure(TreeItemActionType.InsertBefore, "node2", ["leaf10", "leaf11"]),
         };
         TocRestructureUtility.Restructure(toc, restructures);
         var expected = GetTocItem(@"
@@ -193,8 +193,8 @@ root
 ");
         var restructures = new List<TreeItemRestructure>
         {
-            GetRestructure(TreeItemActionType.AppendChild, "node1", new string[] {"leaf3", "leaf4" }),
-            GetRestructure(TreeItemActionType.InsertBefore, "leaf3", new string[] {"leaf3.1", "leaf3.2" }),
+            GetRestructure(TreeItemActionType.AppendChild, "node1", ["leaf3", "leaf4"]),
+            GetRestructure(TreeItemActionType.InsertBefore, "leaf3", ["leaf3.1", "leaf3.2"]),
         };
 
         // After leaf3 is appended as child, leaf3.1 and leaf3.2 should insert before leaf3.

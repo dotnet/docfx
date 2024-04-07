@@ -9,7 +9,7 @@ public static class UriUtility
 {
     private const char QueryMarker = '?';
     private const char FragmentMarker = '#';
-    private static readonly char[] QueryAndFragmentMarkers = { QueryMarker, FragmentMarker };
+    private static readonly char[] QueryAndFragmentMarkers = [QueryMarker, FragmentMarker];
 
     public static bool HasFragment(string uriString)
     {

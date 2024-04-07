@@ -17,7 +17,7 @@ namespace Docfx.Build.ManagedReference;
 public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
 {
     #region Fields
-    private static readonly string[] SystemKeys = {
+    private static readonly string[] SystemKeys = [
         "uid",
         "isEii",
         "isExtensionMethod",
@@ -52,7 +52,7 @@ public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
         "platform",
         "attributes",
         Constants.PropertyName.AdditionalNotes
-    };
+    ];
     #endregion
 
     #region Constructors

@@ -17,7 +17,7 @@ public class NestedColumnParser : BlockParser
 
     public NestedColumnParser(MarkdownContext context)
     {
-        OpeningCharacters = new[] { ':' };
+        OpeningCharacters = [':'];
         _context = context;
     }
 

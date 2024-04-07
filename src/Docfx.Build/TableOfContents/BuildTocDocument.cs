@@ -85,7 +85,7 @@ class BuildTocDocument : BaseDocumentBuildStep
 
     private static string ParseFile(string link)
     {
-        var queryIndex = link.IndexOfAny(new[] { '?', '#' });
+        var queryIndex = link.IndexOfAny(['?', '#']);
         return queryIndex == -1 ? link : link.Remove(queryIndex);
     }
 

@@ -132,7 +132,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         {
             var hostType = getMethod.DeclaringType;
             var propertyType = getMethod.ReturnType;
-            var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object) });
+            var dm = new DynamicMethod(string.Empty, typeof(object), [typeof(object)]);
             var il = dm.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             if (hostType.IsValueType)
@@ -157,7 +157,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         {
             var hostType = setMethod.DeclaringType;
             var propertyType = setMethod.GetParameters()[0].ParameterType;
-            var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(object), typeof(object) });
+            var dm = new DynamicMethod(string.Empty, typeof(void), [typeof(object), typeof(object)]);
             var il = dm.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             var isValueType = hostType.IsValueType;
@@ -208,7 +208,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             var hostType = getMethod.DeclaringType;
             var propertyType = getMethod.ReturnType;
             var dictType = typeof(IDictionary<,>).MakeGenericType(typeof(string), valueType);
-            var dm = new DynamicMethod(string.Empty, typeof(ICollection<string>), new[] { typeof(object) });
+            var dm = new DynamicMethod(string.Empty, typeof(ICollection<string>), [typeof(object)]);
             // var dict = (IDictionary<string, T>)((HostType)arg0).Property;
             // return dict?.Keys;
             var il = dm.GetILGenerator();
@@ -252,7 +252,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             var hostType = getMethod.DeclaringType;
             var propertyType = getMethod.ReturnType;
             var dictType = typeof(IDictionary<,>).MakeGenericType(typeof(string), valueType);
-            var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object), typeof(string) });
+            var dm = new DynamicMethod(string.Empty, typeof(object), [typeof(object), typeof(string)]);
             // var dict = (IDictionary<string, T>)((HostType)arg0).Property;
             // if (dict == null) { return null; }
             // T result;
@@ -308,7 +308,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             var hostType = getMethod.DeclaringType;
             var propertyType = getMethod.ReturnType;
             var dictType = typeof(IDictionary<,>).MakeGenericType(typeof(string), valueType);
-            var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(object), typeof(string), typeof(object) });
+            var dm = new DynamicMethod(string.Empty, typeof(void), [typeof(object), typeof(string), typeof(object)]);
             // var dict = (IDictionary<string, T>)((HostType)arg0).Property;
             // if (dict != null) { dict[arg1] = (T)arg2; }
             var il = dm.GetILGenerator();

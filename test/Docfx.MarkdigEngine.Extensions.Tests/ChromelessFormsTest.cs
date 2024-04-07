@@ -38,7 +38,7 @@ public class ChromelessFormsTest
     {
         var content = @"::: form submitText=something"" :::";
 
-        TestUtility.VerifyMarkup(content, null, new[] { "invalid-form" });
+        TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class ChromelessFormsTest
     {
         var content = @"::: form submitText=""something :::";
 
-        TestUtility.VerifyMarkup(content, null, new[] { "invalid-form" });
+        TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class ChromelessFormsTest
     {
         var content = @"::: form submitText :::";
 
-        TestUtility.VerifyMarkup(content, null, new[] { "invalid-form" });
+        TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class ChromelessFormsTest
     {
         var content = @"::: form submitText=""Do it"" :::";
 
-        TestUtility.VerifyMarkup(content, null, new[] { "invalid-form" });
+        TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class ChromelessFormsTest
     {
         var content = @"::: form action=""create-Resource"" :::";
 
-        TestUtility.VerifyMarkup(content, null, new[] { "invalid-form" });
+        TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
     [Fact]

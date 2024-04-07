@@ -87,7 +87,7 @@ public class CompositeCommandTest : TestBase
 
         var docfxJsonFile = Path.Combine(_projectFolder, "docfx.json");
         File.WriteAllText(docfxJsonFile, docfxJson);
-        Assert.Equal(0, Program.Main(new string[] { docfxJsonFile }));
+        Assert.Equal(0, Program.Main([docfxJsonFile]));
         var filePath = Path.Combine(_outputFolder, "site", "api", "Hello.HelloWorld.html");
         Assert.True(File.Exists(filePath));
         var html = new HtmlDocument();
