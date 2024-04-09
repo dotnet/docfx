@@ -30,6 +30,18 @@ jobs:
       shell: bash
       working-directory: templates
 
+    # Install `tre` command
+    - name: Install `tre` command
+      run: |
+        cargo install tre-command
+
+    # Output Summary
+    - name: Output Summary
+      if: matrix.os == 'ubuntu-latest'
+      working-directory: test/Docfx.Snapshot.Tests/SamplesTest.Seed/md
+      run: |
+        tre --all > $env:GITHUB_STEP_SUMMARY
+
     - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage"
 
     - run: dotnet test -c Release -f net7.0 --no-build --collect:"XPlat Code Coverage"
