@@ -18,7 +18,7 @@ public class MonikerRangeParser : BlockParser
 
     public MonikerRangeParser(MarkdownContext context)
     {
-        OpeningCharacters = new[] { ':' };
+        OpeningCharacters = [':'];
         _context = context;
     }
 

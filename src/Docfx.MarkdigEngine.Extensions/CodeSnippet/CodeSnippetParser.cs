@@ -13,7 +13,7 @@ public class CodeSnippetParser : BlockParser
 
     public CodeSnippetParser()
     {
-        OpeningCharacters = new[] { '[' };
+        OpeningCharacters = ['['];
     }
 
     public override BlockState TryOpen(BlockProcessor processor)
@@ -283,13 +283,13 @@ public class CodeSnippetParser : BlockParser
     {
         if (string.IsNullOrEmpty(queryString)) return false;
 
-        var splitQueryItems = queryString.Split(new[] { '&' });
+        var splitQueryItems = queryString.Split(['&']);
 
         int start = -1, end = -1;
 
         foreach (var queryItem in splitQueryItems)
         {
-            var keyValueSplit = queryItem.Split(new[] { '=' });
+            var keyValueSplit = queryItem.Split(['=']);
             if (keyValueSplit.Length != 2) return false;
             var key = keyValueSplit[0];
             var value = keyValueSplit[1];

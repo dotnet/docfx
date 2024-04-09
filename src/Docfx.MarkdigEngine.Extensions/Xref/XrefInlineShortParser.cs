@@ -15,7 +15,7 @@ class XrefInlineShortParser : InlineParser
 
     public XrefInlineShortParser()
     {
-        OpeningCharacters = new[] { '@' };
+        OpeningCharacters = ['@'];
     }
 
     public override bool Match(InlineProcessor processor, ref StringSlice slice)

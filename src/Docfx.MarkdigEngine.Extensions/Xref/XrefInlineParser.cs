@@ -14,7 +14,7 @@ public class XrefInlineParser : InlineParser
 
     public XrefInlineParser()
     {
-        OpeningCharacters = new[] { '<' };
+        OpeningCharacters = ['<'];
     }
 
     public override bool Match(InlineProcessor processor, ref StringSlice slice)

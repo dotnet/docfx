@@ -9,7 +9,7 @@ namespace Docfx.Build.OverwriteDocuments;
 
 public static class OverwriteUtility
 {
-    private static readonly string[] UidWrappers = { "`", "``", "```", "````", "`````", "``````" };
+    private static readonly string[] UidWrappers = ["`", "``", "```", "````", "`````", "``````"];
 
     private static readonly Regex OPathRegex =
         new(

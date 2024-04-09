@@ -121,11 +121,11 @@ public class ModelAttributeHandlerTest
         {
             Content = "Hello *world*, @xref, [link](link.md)",
             Content2 = "Content2",
-            Content3 = new string[]
-             {
+            Content3 =
+             [
                  "Content3",
                  "Content3.1"
-             }
+             ]
         };
 
         var context = Handle(model);
@@ -151,10 +151,10 @@ public class ModelAttributeHandlerTest
             {
                 Content = "*content",
                 Content2 = "*content",
-                Content3 = new string[]
-                {
+                Content3 =
+                [
                     "*content"
-                },
+                ],
                 Content4 = new Dictionary<string, object>
                 {
                     ["key1"] = "*content"
@@ -197,11 +197,11 @@ public class ModelAttributeHandlerTest
             {
                 Content = "*content",
                 Content2 = "*content",
-                Content3 = new string[]
-                {
+                Content3 =
+                [
                     "Identity1",
                     "Identity2"
-                },
+                ],
                 Content4 = new Dictionary<string, object>
                 {
                     ["key1"] = "*content"
@@ -239,7 +239,7 @@ public class ModelAttributeHandlerTest
         var model = new MarkdownModelWithIList
         {
             ListContent = new List<string> { "*list*" },
-            ArrayContent = new[] { "@xref", "*content" }
+            ArrayContent = ["@xref", "*content"]
         };
 
         var context = GetDefaultContext();

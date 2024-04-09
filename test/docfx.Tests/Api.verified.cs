@@ -486,8 +486,12 @@ namespace Docfx.Build.Engine
     public class XRefMapRedirection
     {
         public XRefMapRedirection() { }
+        [Newtonsoft.Json.JsonProperty("Href")]
+        [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }
+        [Newtonsoft.Json.JsonProperty("uidPrefix")]
+        [System.Text.Json.Serialization.JsonPropertyName("uidPrefix")]
         [YamlDotNet.Serialization.YamlMember(Alias="uidPrefix")]
         public string UidPrefix { get; set; }
     }
@@ -3284,7 +3288,7 @@ namespace Docfx.Plugins
         public string[] FallbackFolders { get; set; }
         [Newtonsoft.Json.JsonProperty("markdigExtensions")]
         [System.Text.Json.Serialization.JsonPropertyName("markdigExtensions")]
-        public string[] MarkdigExtensions { get; set; }
+        public Docfx.MarkdigEngine.Extensions.MarkdigExtensionSetting[] MarkdigExtensions { get; set; }
         [Newtonsoft.Json.JsonProperty("plantUml")]
         [System.Text.Json.Serialization.JsonPropertyName("plantUml")]
         public Docfx.MarkdigEngine.Extensions.PlantUmlOptions PlantUml { get; set; }
@@ -3564,6 +3568,16 @@ namespace Docfx.MarkdigEngine.Extensions
         public void Setup(Markdig.MarkdownPipelineBuilder pipeline) { }
         public void Setup(Markdig.MarkdownPipeline pipeline, Markdig.Renderers.IMarkdownRenderer renderer) { }
     }
+    [Newtonsoft.Json.JsonConverter(typeof(Docfx.MarkdigEngine.Extensions.MarkdigExtensionSettingConverter))]
+    [System.Diagnostics.DebuggerDisplay("Name = {Name}")]
+    public class MarkdigExtensionSetting
+    {
+        public MarkdigExtensionSetting(string name, System.Text.Json.Nodes.JsonNode? options = null) { }
+        public string Name { get; init; }
+        public System.Text.Json.JsonElement? Options { get; init; }
+        public T GetOptions<T>(T fallbackValue) { }
+        public static Docfx.MarkdigEngine.Extensions.MarkdigExtensionSetting op_Implicit(string name) { }
+    }
     public class MarkdownContext
     {
         public MarkdownContext(System.Func<string, string> getToken = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logInfo = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logSuggestion = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logWarning = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.LogActionDelegate logError = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.ReadFileDelegate readFile = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetLinkDelegate getLink = null, Docfx.MarkdigEngine.Extensions.MarkdownContext.GetImageLinkDelegate getImageLink = null) { }
@@ -3606,7 +3620,7 @@ namespace Docfx.MarkdigEngine.Extensions
         public static Markdig.MarkdownPipelineBuilder UseMonikerRange(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseNestedColumn(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }
         public static Markdig.MarkdownPipelineBuilder UseNoloc(this Markdig.MarkdownPipelineBuilder pipeline) { }
-        public static Markdig.MarkdownPipelineBuilder UseOptionalExtensions(this Markdig.MarkdownPipelineBuilder pipeline, System.Collections.Generic.IEnumerable<string> optionalExtensions) { }
+        public static Markdig.MarkdownPipelineBuilder UseOptionalExtensions(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdigExtensionSetting[] optionalExtensions) { }
         public static Markdig.MarkdownPipelineBuilder UsePlantUml(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context, Docfx.MarkdigEngine.Extensions.PlantUmlOptions options = null) { }
         public static Markdig.MarkdownPipelineBuilder UseQuoteSectionNote(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context, System.Collections.Generic.Dictionary<string, string> notes = null) { }
         public static Markdig.MarkdownPipelineBuilder UseResolveLink(this Markdig.MarkdownPipelineBuilder pipeline, Docfx.MarkdigEngine.Extensions.MarkdownContext context) { }

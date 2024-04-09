@@ -40,7 +40,7 @@ partial class DotnetApiCatalog
             _ => LoggerVerbosity.Quiet,
         });
 
-        var workspace = MSBuildWorkspace.Create(msbuildProperties);
+        using var workspace = MSBuildWorkspace.Create(msbuildProperties);
         workspace.WorkspaceFailed += (sender, e) => Logger.LogWarning($"{e.Diagnostic}");
 
         if (files.TryGetValue(FileType.NotSupported, out var unsupportedFiles))
@@ -88,26 +88,36 @@ partial class DotnetApiCatalog
             assemblies.Add((compilation.Assembly, compilation));
         }
 
+        var references = config.References ?? [];
+        var metadataReferences = references.Select(assemblyPath =>
+        {
+            var documentation = XmlDocumentationProvider.CreateFromFile(Path.ChangeExtension(assemblyPath, ".xml"));
+            return MetadataReference.CreateFromFile(assemblyPath, documentation: documentation);
+        }).ToArray();
+
+        // LoadCompilationFrom C# source files
         if (files.TryGetValue(FileType.CSSourceCode, out var csFiles))
         {
-            var compilation = CompilationHelper.CreateCompilationFromCSharpFiles(csFiles.Select(f => f.NormalizedPath), msbuildProperties);
+            var compilation = CompilationHelper.CreateCompilationFromCSharpFiles(csFiles.Select(f => f.NormalizedPath), msbuildProperties, metadataReferences);
             hasCompilationError |= compilation.CheckDiagnostics(config.AllowCompilationErrors);
             assemblies.Add((compilation.Assembly, compilation));
         }
 
+        // LoadCompilationFrom VB source files
         if (files.TryGetValue(FileType.VBSourceCode, out var vbFiles))
         {
-            var compilation = CompilationHelper.CreateCompilationFromVBFiles(vbFiles.Select(f => f.NormalizedPath), msbuildProperties);
+            var compilation = CompilationHelper.CreateCompilationFromVBFiles(vbFiles.Select(f => f.NormalizedPath), msbuildProperties, metadataReferences);
             hasCompilationError |= compilation.CheckDiagnostics(config.AllowCompilationErrors);
             assemblies.Add((compilation.Assembly, compilation));
         }
 
+        // Load Compilation from assembly files
         if (files.TryGetValue(FileType.Assembly, out var assemblyFiles))
         {
             foreach (var assemblyFile in assemblyFiles)
             {
                 Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
-                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, config.References);
+                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, metadataReferences);
                 hasCompilationError |= compilation.CheckDiagnostics(config.AllowCompilationErrors);
                 assemblies.Add((assembly, compilation));
             }

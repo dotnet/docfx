@@ -43,10 +43,10 @@ public class GeneralTest
 <li class=""task-list-item"">Not contain a special character: \ ! # $ % &amp; * + / = ? ^ ` { } | ~ &lt; &gt; ( ) ' ; : , <input disabled=""disabled"" type=""checkbox"" /> &quot; @ _</li>
 </ul>
 ";
-        TestUtility.VerifyMarkup(source, expected, optionalExtensions: new List<string>
-        {
-            "tasklists"
-        });
+        TestUtility.VerifyMarkup(source, expected, optionalExtensions:
+        [
+            "tasklists",
+        ]);
     }
 
     [Fact]
@@ -68,11 +68,11 @@ Term 1
 </dl>
 ";
 
-        TestUtility.VerifyMarkup(source, expected, optionalExtensions: new List<string>
-        {
+        TestUtility.VerifyMarkup(source, expected, optionalExtensions:
+        [
             "tasklists",
-            "definitionlists"
-        });
+            "definitionlists",
+        ]);
     }
 
     [Fact]
@@ -303,7 +303,7 @@ content-b
 </section>
 </div>
 ";
-        TestUtility.VerifyMarkup(actual, expected, new[] { "invalid-tab-group" }, lineNumber: true);
+        TestUtility.VerifyMarkup(actual, expected, ["invalid-tab-group"], lineNumber: true);
     }
 
     [Fact]

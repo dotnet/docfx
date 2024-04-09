@@ -6,8 +6,6 @@ using System.Text.Json;
 using System.Xml.Linq;
 using Docfx.Tests.Common;
 
-using Xunit;
-
 namespace Docfx.Tests;
 
 [Collection("docfx STA")]

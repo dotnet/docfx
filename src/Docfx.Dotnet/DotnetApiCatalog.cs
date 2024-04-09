@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using System.Text.Json;
 using Docfx.Common;
-using Docfx.Exceptions;
 using Docfx.Plugins;
 using Newtonsoft.Json.Linq;
 using YamlDotNet.Serialization;

@@ -117,7 +117,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         }
         else
         {
-            globs = new string[] { pattern };
+            globs = [pattern];
         }
 
         // **.cs is a shortcut for **/*.cs

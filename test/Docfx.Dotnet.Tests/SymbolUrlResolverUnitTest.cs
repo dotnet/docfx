@@ -32,16 +32,16 @@ public class SymbolUrlResolverUnitTest
                 },
 
                 // Overload methods and ordinary methods have different URL schemas
-                'M' => new[]
-                {
+                'M' =>
+                [
                     new Uri(SymbolUrlResolver.GetMicrosoftLearnUrl(commentId, isEnumMember: false, hasOverloads: false)),
                     new Uri(SymbolUrlResolver.GetMicrosoftLearnUrl(commentId, isEnumMember: false, hasOverloads: true)),
-                },
+                ],
 
-                _ => new[]
-                {
+                _ =>
+                [
                     new Uri(SymbolUrlResolver.GetMicrosoftLearnUrl(commentId, isEnumMember: false, hasOverloads: false)),
-                },
+                ],
             };
 
             if (!actualUrls.Contains(expectedUrl))

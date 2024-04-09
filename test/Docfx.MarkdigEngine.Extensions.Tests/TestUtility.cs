@@ -19,14 +19,14 @@ public static class TestUtility
         string filePath = "test.md",
         Dictionary<string, string> tokens = null,
         Dictionary<string, string> files = null,
-        IEnumerable<string> optionalExtensions = null,
+        MarkdigExtensionSetting[] optionalExtensions = null,
         Dictionary<string, string> notes = null,
         PlantUmlOptions plantUml = null)
     {
         errors ??= Array.Empty<string>();
         tokens ??= new Dictionary<string, string>();
         files ??= new Dictionary<string, string>();
-        optionalExtensions ??= new List<string>();
+        optionalExtensions ??= [];
 
         var actualErrors = new List<string>();
         var actualDependencies = new HashSet<string>();

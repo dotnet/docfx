@@ -28,7 +28,7 @@ public class QuoteSectionNoteTest
 <h5>WARNING</h5>
 </div>
 ";
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-note-section" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-note-section"]);
     }
 
     [Fact]
@@ -405,7 +405,7 @@ no-note text 2-2</p>
 We should support that.</p>
 </blockquote>
 ";
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-note-section" });
+        TestUtility.VerifyMarkup(source, expected, ["invalid-note-section"]);
     }
 
     [Fact]

@@ -15,8 +15,8 @@ namespace Docfx.Dotnet;
 internal static class CompilationHelper
 {
     // Bootstrap code to ensure essential types like `System.Object` is loaded for assemblies
-    private static readonly SyntaxTree[] s_assemblyBootstrap = new[]
-    {
+    private static readonly SyntaxTree[] s_assemblyBootstrap =
+    [
         CS.SyntaxFactory.ParseSyntaxTree(
             """
             class Bootstrap
@@ -24,7 +24,7 @@ internal static class CompilationHelper
                 public static void Main(string[] foo) { }
             }
             """),
-    };
+    ];
 
     public static bool CheckDiagnostics(this Compilation compilation, bool errorAsWarning)
     {
@@ -54,7 +54,7 @@ internal static class CompilationHelper
         return errorCount > 0;
     }
 
-    public static Compilation CreateCompilationFromCSharpFiles(IEnumerable<string> files, IDictionary<string, string> msbuildProperties)
+    public static Compilation CreateCompilationFromCSharpFiles(IEnumerable<string> files, IDictionary<string, string> msbuildProperties, MetadataReference[] references)
     {
         var parserOption = GetCSharpParseOptions(msbuildProperties);
         var syntaxTrees = files.Select(path => CS.CSharpSyntaxTree.ParseText(File.ReadAllText(path), parserOption, path: path));
@@ -63,7 +63,7 @@ internal static class CompilationHelper
             assemblyName: null,
             options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
             syntaxTrees: syntaxTrees,
-            references: GetDefaultMetadataReferences("C#"));
+            references: GetDefaultMetadataReferences("C#").Concat(references));
     }
 
     public static Compilation CreateCompilationFromCSharpCode(string code, IDictionary<string, string> msbuildProperties, string? name = null, params MetadataReference[] references)
@@ -75,10 +75,10 @@ internal static class CompilationHelper
             name,
             options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
             syntaxTrees: [syntaxTree],
-            references: GetDefaultMetadataReferences("C#").Concat(references));
+            references: GetDefaultMetadataReferences("C#").Concat(references ?? []));
     }
 
-    public static Compilation CreateCompilationFromVBFiles(IEnumerable<string> files, IDictionary<string, string> msbuildProperties)
+    public static Compilation CreateCompilationFromVBFiles(IEnumerable<string> files, IDictionary<string, string> msbuildProperties, MetadataReference[] references)
     {
         var parserOption = GetVisualBasicParseOptions(msbuildProperties);
         var syntaxTrees = files.Select(path => VB.VisualBasicSyntaxTree.ParseText(File.ReadAllText(path), parserOption, path: path));
@@ -87,7 +87,7 @@ internal static class CompilationHelper
             assemblyName: null,
             options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
             syntaxTrees: syntaxTrees,
-            references: GetDefaultMetadataReferences("VB"));
+            references: GetDefaultMetadataReferences("VB").Concat(references));
     }
 
     public static Compilation CreateCompilationFromVBCode(string code, IDictionary<string, string> msbuildProperties, string? name = null, params MetadataReference[] references)
@@ -99,10 +99,10 @@ internal static class CompilationHelper
             name,
             options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
             syntaxTrees: [syntaxTree],
-            references: GetDefaultMetadataReferences("VB").Concat(references));
+            references: GetDefaultMetadataReferences("VB").Concat(references ?? []));
     }
 
-    public static (Compilation, IAssemblySymbol) CreateCompilationFromAssembly(string assemblyPath, IEnumerable<string>? references = null)
+    public static (Compilation, IAssemblySymbol) CreateCompilationFromAssembly(string assemblyPath, params MetadataReference[] references)
     {
         var metadataReference = CreateMetadataReference(assemblyPath);
         var compilation = CS.CSharpCompilation.Create(
@@ -110,8 +110,8 @@ internal static class CompilationHelper
             options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
             syntaxTrees: s_assemblyBootstrap,
             references: GetReferenceAssemblies(assemblyPath)
-                .Concat(references ?? Enumerable.Empty<string>())
                 .Select(CreateMetadataReference)
+                .Concat(references ?? [])
                 .Append(metadataReference));
 
         var assembly = (IAssemblySymbol)compilation.GetAssemblyOrModuleSymbol(metadataReference)!;

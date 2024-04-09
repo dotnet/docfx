@@ -4,10 +4,7 @@
 using System.Collections.Immutable;
 using System.Net;
 using System.Reflection;
-using Docfx.Build.ConceptualDocuments;
 using Docfx.Build.ManagedReference;
-using Docfx.Build.ResourceFiles;
-using Docfx.Build.TableOfContents;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
