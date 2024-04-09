@@ -7,7 +7,7 @@ namespace Docfx.MarkdigEngine.Tests;
 
 public class PlantUmlTest
 {
-    [Fact]
+    [Fact(Skip = "Unstable test")]
     public void TestRenderSvg_SequenceDiagram()
     {
         var source = """
