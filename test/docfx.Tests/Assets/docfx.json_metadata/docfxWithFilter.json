@@ -4,7 +4,7 @@
       "src": [
         {
           "files": [ "**/*.csproj" ],
-          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `cwd`
+          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `src`
           "src": "../src"
         }
       ],

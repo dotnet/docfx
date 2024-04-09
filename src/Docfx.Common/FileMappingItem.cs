@@ -19,21 +19,21 @@ public class FileMappingItem
     public string Name { get; set; }
 
     /// <summary>
-    /// The file glob pattern collection, with path relative to property `src`/`cwd` is value is set
+    /// The file glob pattern collection, with path relative to property `src` is value is set
     /// </summary>
     [JsonProperty("files")]
     [JsonPropertyName("files")]
     public FileItems Files { get; set; }
 
     /// <summary>
-    /// The file glob pattern collection for files that should be excluded, with path relative to property `src`/`cwd` is value is set
+    /// The file glob pattern collection for files that should be excluded, with path relative to property `src` is value is set
     /// </summary>
     [JsonProperty("exclude")]
     [JsonPropertyName("exclude")]
     public FileItems Exclude { get; set; }
 
     /// <summary>
-    /// `src` defines the root folder for the source files, it has the same meaning as `cwd`
+    /// `src` defines the root folder for the source files.
     /// </summary>
     [JsonProperty("src")]
     [JsonPropertyName("src")]

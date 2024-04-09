@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/toc.schema.json",
+  "title": "JSON Schema for docfx TOC file.",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/tocItem"
+    },
+    {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tocItem"
+      }
+    }
+  ],
+  "$defs": {
+    "tocItem": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The uid of the article. Can be used instead of href."
+        },
+        "name": {
+          "type": "string",
+          "description": ""
+        },
+        "displayName": {
+          "type": "string",
+          "description": "An optional display name for the TOC node. When not specified, uses the title metadata or the first Heading 1 element from the referenced article as the display name."
+        },
+        "href": {
+          "type": "string",
+          "description": "The path the TOC node leads to. Optional because a node can exist just to parent other nodes."
+        },
+        "originalHref": {
+          "type": "string",
+          "description": ""
+        },
+        "tocHref": {
+          "type": "string",
+          "description": ""
+        },
+        "originalTocHref": {
+          "type": "string",
+          "description": ""
+        },
+        "topicHref": {
+          "type": "string",
+          "description": "Specify the topic href of the TOC Item. It is useful when href is linking to a folder or TOC file or tocHref is used."
+        },
+        "originalTopicHref": {
+          "type": "string",
+          "description": ""
+        },
+        "includedFrom": {
+          "type": "string",
+          "description": ""
+        },
+        "homepage": {
+          "type": "string",
+          "description": "(Deprecated)",
+          "deprecated": true
+        },
+        "originalHomepage": {
+          "type": "string",
+          "description": "(Deprecated).",
+          "deprecated": true
+        },
+        "homepageUid": {
+          "type": "string",
+          "description": "(Deprecated).",
+          "deprecated": true
+        },
+        "topicUid": {
+          "type": "string",
+          "description": "Specify the uid of the referenced file. If the value is set, it overwrites the value of topicHref."
+        },
+        "order": {
+          "type": "integer",
+          "default": 0,
+          "description": "Specify the order of toc item, TOCs with a smaller order value are picked first."
+        },
+        "items": {
+          "type": "array",
+          "description": "List of TOC items.",
+          "items": {
+            "$ref": "#/$defs/tocItem"
+          }
+        },
+        "expanded": {
+          "type": "boolean",
+          "default": false,
+          "description": "If set to true, Child items are displayed as expanded."
+        },
+        "dropdown": {
+          "type": "boolean",
+          "default": false,
+          "description": "If set to true, Child items are displayed as dropdown on top navigation bar."
+        }
+      }
+    }
+  }
+}
