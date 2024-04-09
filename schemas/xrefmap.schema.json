@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/xrefmap.schema.json",
+  "title": "JSON Schema for docfx xrefmap file.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "sorted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indicate references are sorted by uid or not."
+    },
+    "hrefUpdated": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indicate href links are updated or not."
+    },
+    "baseUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Base url. It's used when href is specified as relative url."
+    },
+    "redirections": {
+      "type": "array",
+      "description": "List of XRefMapRedirection items.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "uidPrefix": {
+            "type": "string",
+            "description": "Prefix of the UID to redirect."
+          },
+          "href": {
+            "type": "string",
+            "format": "uri-reference",
+            "description": "URL to redirect."
+          }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "description": "List of XRefSpec items.",
+      "items": {
+        "$ref": "#/$defs/xrefSpec"
+      }
+    }
+  },
+  "$defs": {
+    "xrefSpec": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": true,
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "UID to a conceptual topic or API reference."
+        },
+        "name": {
+          "type": "string",
+          "description": "Title of the topic."
+        },
+        "href": {
+          "type": "string",
+          "description": "URL to the topic, which is an absolute url or relative path to current file (xrefmap.yml)"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The fully qualified name of API. For example, for String class, its name is String and fully qualified name is System.String. This property is not used in link title resolve for now but reserved for future use."
+        },
+        "nameWithType": {
+          "type": "string",
+          "description": "Display name of type."
+        },
+        "commentId": {
+          "type": "string",
+          "description": "The id of API comment."
+        },
+        "isSpec": {
+          "type": "string",
+          "description": ""
+        }
+      }
+    }
+  }
+}

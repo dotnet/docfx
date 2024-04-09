@@ -4,8 +4,8 @@
       "src": [
         {
           "files": ["**/*.csproj"],
-          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `cwd`
-          "cwd": "../src"
+          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `src`
+          "src": "../src"
         }
       ],
       "dest": "obj/docfx/api/dotnet"
@@ -14,7 +14,7 @@
       "src": [
         {
           "files": ["**/*.js"],
-          "cwd": "../src"
+          "src": "../src"
         }
       ],
       "dest": "obj/docfx/api/js" // throw error when dest is not unique
@@ -25,7 +25,7 @@
       [
         {
           "files": ["**/*.yml"],
-          "cwd": "obj/docfx"
+          "src": "obj/docfx"
         },
         {
           "files": ["tutorial/**/*.md", "spec/**/*.md"]
@@ -52,12 +52,11 @@
       }
     },
     "overwrite": "apispec/*.md",
-    "externalReference": [
+    "xref": [
       "external/*.yml.zip"
     ],
     "dest": "_site",
     "template": "default",
-    "theme": "happy",
-    "title": "Doc-as-code documentation"
+    "theme": "happy"
   }
 }
