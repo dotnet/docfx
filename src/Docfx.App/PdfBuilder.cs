@@ -64,7 +64,7 @@ static class PdfBuilder
         if (pdfTocs.Count == 0)
             return;
 
-        Program.Main(new[] { "install", "chromium" });
+        Program.Main(["install", "chromium"]);
 
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
@@ -166,7 +166,11 @@ static class PdfBuilder
                     Logger.LogWarning($"Timeout waiting for page to load, generated PDF page may be incomplete: {url}");
                 }
 
-                return await page.PdfAsync(new PagePdfOptions { PrintBackground = outline.pdfPrintBackground });
+                return await page.PdfAsync(new PagePdfOptions
+                {
+                    PreferCSSPageSize = true,
+                    PrintBackground = outline.pdfPrintBackground,
+                });
             }
             finally
             {

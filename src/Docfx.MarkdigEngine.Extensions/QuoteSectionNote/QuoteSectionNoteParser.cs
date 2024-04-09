@@ -14,7 +14,7 @@ public class QuoteSectionNoteParser : BlockParser
 
     public QuoteSectionNoteParser(MarkdownContext context, string[] noteTypes = null)
     {
-        OpeningCharacters = new[] { '>' };
+        OpeningCharacters = ['>'];
         _context = context;
         _noteTypes = noteTypes.Select(s => $"[!{s}]").ToList();
     }

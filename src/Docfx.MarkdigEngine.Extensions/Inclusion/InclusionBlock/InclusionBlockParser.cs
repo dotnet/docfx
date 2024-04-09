@@ -12,7 +12,7 @@ public class InclusionBlockParser : BlockParser
 
     public InclusionBlockParser()
     {
-        OpeningCharacters = new char[] { '[' };
+        OpeningCharacters = ['['];
     }
 
     public override BlockState TryOpen(BlockProcessor processor)

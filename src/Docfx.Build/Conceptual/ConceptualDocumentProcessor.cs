@@ -14,7 +14,7 @@ namespace Docfx.Build.ConceptualDocuments;
 [Export(typeof(IDocumentProcessor))]
 class ConceptualDocumentProcessor : DisposableDocumentProcessor
 {
-    private readonly string[] SystemKeys = {
+    private readonly string[] SystemKeys = [
         "conceptual",
         "type",
         "source",
@@ -23,7 +23,7 @@ class ConceptualDocumentProcessor : DisposableDocumentProcessor
         "title",
         "rawTitle",
         "wordCount"
-    };
+    ];
 
     public ConceptualDocumentProcessor()
     {

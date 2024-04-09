@@ -43,7 +43,7 @@ class OneOfJsonConverterFactory : JsonConverterFactory
                     Utf8JsonReader readerCopy = reader;
                     var result = JsonSerializer.Deserialize(ref readerCopy, type, options);
                     reader.Skip();
-                    return (T)cast.Invoke(null, new[] { result })!;
+                    return (T)cast.Invoke(null, [result])!;
                 }
                 catch (JsonException)
                 {

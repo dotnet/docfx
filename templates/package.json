@@ -41,8 +41,8 @@
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/lunr": "^2.3.7",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
-    "@typescript-eslint/parser": "^7.4.0",
+    "@typescript-eslint/eslint-plugin": "^7.5.0",
+    "@typescript-eslint/parser": "^7.5.0",
     "browser-sync": "^3.0.2",
     "esbuild": "~0.20.2",
     "esbuild-sass-plugin": "~3.2.0",
@@ -52,7 +52,7 @@
     "stylelint": "^15.10.3",
     "stylelint-config-standard-scss": "^11.1.0",
     "ts-jest": "^29.1.2",
-    "typescript": "^5.4.3",
+    "typescript": "^5.4.4",
     "yargs": "^17.7.2"
   }
 }

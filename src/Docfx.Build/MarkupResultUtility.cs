@@ -11,7 +11,7 @@ namespace Docfx.Build.Engine;
 
 public static class MarkupUtility
 {
-    private static readonly char[] UriFragmentOrQueryString = new char[] { '#', '?' };
+    private static readonly char[] UriFragmentOrQueryString = ['#', '?'];
 
     public static MarkupResult Parse(MarkupResult markupResult, FileAndType ft, ImmutableDictionary<string, FileAndType> sourceFiles)
     {

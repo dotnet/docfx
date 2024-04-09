@@ -174,7 +174,7 @@ Lorem Ipsum is simply dummy text `code` of the printing and [link](https://micro
         var expected = @"<p>:::image type=&quot;icon&quot;:::</p>
 ";
 
-        TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image" });
+        TestUtility.VerifyMarkup(source, expected, errors: ["invalid-image", "invalid-image"]);
     }
 
     [Fact]
@@ -187,7 +187,7 @@ Lorem Ipsum is simply dummy text `code` of the printing and [link](https://micro
         var expected = @"<p>:::image source=&quot;example.svg&quot;:::</p>
 ";
 
-        TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image" });
+        TestUtility.VerifyMarkup(source, expected, errors: ["invalid-image", "invalid-image"]);
     }
 
     [Fact]

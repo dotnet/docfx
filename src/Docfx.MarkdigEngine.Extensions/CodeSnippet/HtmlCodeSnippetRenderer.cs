@@ -128,27 +128,27 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
         BuildFileExtensionLanguageMap();
 
-        AddExtractorItems(new[] { "vb", "vbhtml" },
+        AddExtractorItems(["vb", "vbhtml"],
             new CodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineTemplate, BasicFamilyCodeSnippetCommentEndLineTemplate));
-        AddExtractorItems(new[] { "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript" },
+        AddExtractorItems(["actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript"],
             new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate));
-        AddExtractorItems(new[] { "xml", "xaml", "handlebars", "html", "cshtml", "php", "react", "ruby", "vbhtml" },
+        AddExtractorItems(["xml", "xaml", "handlebars", "html", "cshtml", "php", "react", "ruby", "vbhtml"],
             new CodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate, MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate));
-        AddExtractorItems(new[] { "haskell", "lua", "sql" },
+        AddExtractorItems(["haskell", "lua", "sql"],
             new CodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineTemplate, SqlFamilyCodeSnippetCommentEndLineTemplate));
-        AddExtractorItems(new[] { "perl", "powershell", "python", "r", "ruby", "shell" },
+        AddExtractorItems(["perl", "powershell", "python", "r", "ruby", "shell"],
             new CodeSnippetExtractor(ScriptFamilyCodeSnippetCommentStartLineTemplate, ScriptFamilyCodeSnippetCommentEndLineTemplate));
-        AddExtractorItems(new[] { "batchfile" },
+        AddExtractorItems(["batchfile"],
             new CodeSnippetExtractor(BatchFileCodeSnippetRegionStartLineTemplate, BatchFileCodeSnippetRegionEndLineTemplate));
-        AddExtractorItems(new[] { "csharp", "cshtml" },
+        AddExtractorItems(["csharp", "cshtml"],
             new CodeSnippetExtractor(CSharpCodeSnippetRegionStartLineTemplate, CSharpCodeSnippetRegionEndLineTemplate, false));
-        AddExtractorItems(new[] { "erlang", "matlab" },
+        AddExtractorItems(["erlang", "matlab"],
             new CodeSnippetExtractor(ErlangCodeSnippetRegionStartLineTemplate, ErlangCodeSnippetRegionEndLineTemplate));
-        AddExtractorItems(new[] { "lisp" },
+        AddExtractorItems(["lisp"],
             new CodeSnippetExtractor(LispCodeSnippetRegionStartLineTemplate, LispCodeSnippetRegionEndLineTemplate));
-        AddExtractorItems(new[] { "vb", "vbhtml" },
+        AddExtractorItems(["vb", "vbhtml"],
             new CodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, false));
-        AddExtractorItems(new[] { "css" },
+        AddExtractorItems(["css"],
             new CodeSnippetExtractor(CSSCodeSnippetRegionStartLineTemplate, CSSCodeSnippetRegionEndLineTemplate, false));
 
         static void BuildFileExtensionLanguageMap()
@@ -478,7 +478,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         codeRanges = null;
         if (string.IsNullOrEmpty(query)) return false;
 
-        var rangesSplit = query.Split(new[] { ',' });
+        var rangesSplit = query.Split([',']);
 
         foreach (var range in rangesSplit)
         {
@@ -502,7 +502,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
 
         int endLine;
 
-        var splitLine = query.Split(new[] { '-' });
+        var splitLine = query.Split(['-']);
         if (splitLine.Length > 2) return false;
 
         var result = TryGetLineNumber(splitLine[0], out var startLine, withL);

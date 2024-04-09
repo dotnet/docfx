@@ -6,7 +6,6 @@ using System.Composition.Hosting;
 using Docfx.Common;
 using Docfx.Exceptions;
 using Docfx.Plugins;
-using Spectre.Console;
 
 namespace Docfx.Build.Engine;
 

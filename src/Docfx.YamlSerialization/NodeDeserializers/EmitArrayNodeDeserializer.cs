@@ -40,7 +40,7 @@ public class EmitArrayNodeDeserializer : INodeDeserializer
 
     private static Func<IParser, Type, Func<IParser, Type, object>, object> AddItem(Type expectedType)
     {
-        var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(IParser), typeof(Type), typeof(Func<IParser, Type, object>) });
+        var dm = new DynamicMethod(string.Empty, typeof(object), [typeof(IParser), typeof(Type), typeof(Func<IParser, Type, object>)]);
         var il = dm.GetILGenerator();
         il.Emit(OpCodes.Ldarg_0);
         il.Emit(OpCodes.Ldarg_1);

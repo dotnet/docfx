@@ -53,7 +53,7 @@ public class HandleGenericItemsHelper
         var genericType = ReflectionHelper.GetGenericType(type, genericInterface);
         if (genericType != null)
         {
-            var instance = (IHandleItems)ReflectionHelper.CreateInstance(implHandlerType, genericType.GenericTypeArguments, new[] { genericType }, new object[] { currentObj });
+            var instance = (IHandleItems)ReflectionHelper.CreateInstance(implHandlerType, genericType.GenericTypeArguments, [genericType], [currentObj]);
             if (instance != null)
             {
                 instance.Handle(handler);

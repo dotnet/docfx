@@ -17,7 +17,7 @@ public class RowParser : BlockParser
 
     public RowParser(MarkdownContext context)
     {
-        OpeningCharacters = new[] { ':' };
+        OpeningCharacters = [':'];
         _context = context;
     }
 
