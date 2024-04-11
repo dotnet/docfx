@@ -274,7 +274,7 @@ static class PdfBuilder
         if (numberOfPages is 0)
             return;
 
-        var producer = $"docfx ({typeof(PdfBuilder).Assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version})";
+        var producer = $"docfx ({typeof(PdfBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version})";
 
         using var output = File.Create(outputPath);
         using var builder = new PdfDocumentBuilder(output);
