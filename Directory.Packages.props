@@ -9,7 +9,7 @@
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.7.0" />
     <PackageVersion Include="Jint" Version="3.0.1" />
     <PackageVersion Include="JsonSchema.Net" Version="6.0.7" />
-    <PackageVersion Include="Markdig" Version="0.36.2" />
+    <PackageVersion Include="Markdig" Version="0.37.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.9.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
