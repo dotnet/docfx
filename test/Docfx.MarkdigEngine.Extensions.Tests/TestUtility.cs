@@ -10,7 +10,7 @@ namespace Docfx.MarkdigEngine.Tests;
 
 public static class TestUtility
 {
-    public static void VerifyMarkup(
+    public static string VerifyMarkup(
         string markdown,
         string html,
         string[] errors = null,
@@ -68,6 +68,7 @@ public static class TestUtility
             {
                 Assert.Equal(dependencies.OrderBy(_ => _), actualDependencies.OrderBy(_ => _));
             }
+            return actualHtml;
         }
 
         MarkdownContext.LogActionDelegate Log(string level)
