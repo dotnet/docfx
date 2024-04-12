@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/filterconfig.schema.json",
+  "title": "JSON Schema for docfx TOC file.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "apiRules": {
+      "type": "array",
+      "description": "Include/exclude rules using uid.",
+      "items": {
+        "$ref": "#/$defs/configFilterRuleItemUnion"
+      }
+    },
+    "attributeRules": {
+      "type": "array",
+      "description": "Include/exclude rules using attribute.",
+      "items": {
+        "$ref": "#/$defs/configFilterRuleItemUnion"
+      }
+    }
+  },
+  "$defs": {
+    "configFilterRuleItemUnion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "include": {
+          "type": "object",
+          "properties": {
+            "uidRegex": {
+              "type": "string"
+            },
+            "kind": {
+              "$ref": "#/$defs/extendedSymbolKind"
+            },
+            "attribute": {
+              "$ref": "#/$defs/attributeFilterInfo"
+            }
+          }
+        },
+        "exclude": {
+          "type": "object",
+          "properties": {
+            "uidRegex": {
+              "type": "string"
+            },
+            "kind": {
+              "$ref": "#/$defs/extendedSymbolKind"
+            },
+            "attribute": {
+              "$ref": "#/$defs/attributeFilterInfo"
+            }
+          }
+        }
+      }
+    },
+    "extendedSymbolKind": {
+      "enum": [
+        "assembly",
+        "namespace",
+        "class",
+        "struct",
+        "enum",
+        "interface",
+        "delegate",
+        "type",
+        "event",
+        "field",
+        "method",
+        "property",
+        "member"
+      ]
+    },
+    "attributeFilterInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "ctorArguments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ctorNamedArguments": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

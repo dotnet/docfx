@@ -2379,6 +2379,13 @@ namespace Docfx.DataContracts.Common
             public const string Source = "source.";
             public const string Spec = "spec.";
         }
+        public static class JsonSchemas
+        {
+            public const string Docfx = "schemas/docfx.schema.json";
+            public const string FilterConfig = "schemas/filterconfig.schema.json";
+            public const string Toc = "schemas/toc.schema.json";
+            public const string XrefMap = "schemas/xrefmap.schema.json";
+        }
         public static class MetadataName
         {
             public const string Version = "version";

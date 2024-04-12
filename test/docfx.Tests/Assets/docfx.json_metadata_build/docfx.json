@@ -3,9 +3,9 @@
     {
       "src": [
         {
-          "files": ["**/*.csproj"],
-          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `cwd`
-          "cwd": "../src"
+          "files": [ "**/*.csproj" ],
+          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `src`
+          "src": "../src"
         }
       ],
       "dest": "obj/docfx/api/dotnet"
@@ -13,31 +13,30 @@
     {
       "src": [
         {
-          "files": ["**/*.js"],
-          "cwd": "../src"
+          "files": [ "**/*.js" ],
+          "src": "../src"
         }
       ],
       "dest": "obj/docfx/api/js" // throw error when dest is not unique
     }
   ],
   "build": { // input could be YAML or MARKDOWN files, outputs are Final-YAML files
-    "content":
-      [
-        {
-          "files": ["**/*.yml"],
-          "cwd": "obj/docfx"
-        },
-        {
-          "files": ["tutorial/**/*.md", "spec/**/*.md"]
-        },
-        {
-          "files": ["toc.yml"]
-        }
-      ],
+    "content": [
+      {
+        "files": [ "**/*.yml" ],
+        "src": "obj/docfx"
+      },
+      {
+        "files": [ "tutorial/**/*.md", "spec/**/*.md" ]
+      },
+      {
+        "files": [ "toc.yml" ]
+      }
+    ],
     "resource": [
-        {
-          "files": ["images/**"]
-        }
+      {
+        "files": [ "images/**" ]
+      }
     ],
     "globalMetadata": {
       "key": "value"
@@ -47,17 +46,16 @@
         "filepattern1": "string",
         "filePattern2": 2,
         "filePattern3": true,
-        "filePattern4": [ ],
-        "filePattern5": { }
+        "filePattern4": [],
+        "filePattern5": {}
       }
     },
     "overwrite": "apispec/*.md",
-    "externalReference": [
+    "xref": [
       "external/*.yml.zip"
     ],
-    "dest": "_site",
+    "output": "_site",
     "template": "default",
-    "theme": "happy",
-    "title": "Doc-as-code documentation"
+    "theme": "happy"
   }
 }

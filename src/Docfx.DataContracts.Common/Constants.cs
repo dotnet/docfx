@@ -114,6 +114,14 @@ public static class Constants
         public const string YamlTocFileName = "toc.yml";
     }
 
+    public static class JsonSchemas
+    {
+        public const string Docfx = "schemas/docfx.schema.json";
+        public const string Toc = "schemas/toc.schema.json";
+        public const string XrefMap = "schemas/xrefmap.schema.json";
+        public const string FilterConfig = "schemas/filterconfig.schema.json";
+    }
+
     public static class EnvironmentVariables
     {
 #pragma warning disable format
