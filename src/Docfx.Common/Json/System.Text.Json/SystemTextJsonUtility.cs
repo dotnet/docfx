@@ -29,7 +29,7 @@ internal static class SystemTextJsonUtility
         {
             // DefaultBufferSize = 1024 * 16, // TODO: Set appropriate buffer size based on benchmark.(Default: 16KB)
             AllowTrailingCommas = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull | JsonIgnoreCondition.WhenWritingDefault,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             // DictionaryKeyPolicy = JsonNamingPolicy.CamelCase, // This setting is not compatible to `Newtonsoft.Json` serialize result.
