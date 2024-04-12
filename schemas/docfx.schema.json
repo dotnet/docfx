@@ -1,0 +1,783 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "title": "JSON Schema for docfx configuration file.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "build": {
+      "$ref": "#/$defs/buildConfig"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadataConfig"
+    },
+    "merge": {
+      "$ref": "#/$defs/mergeConfig"
+    },
+    "rules": {
+      "$ref": "#/$defs/ruleConfig"
+    }
+  },
+  "$defs": {
+    "buildConfig": {
+      "title": "BuildJsonConfig",
+      "type": "object",
+      "description": "Build section defines configuration values for the build command.",
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/contentFileMapping"
+        },
+        "resource": {
+          "$ref": "#/$defs/resourceFileMapping"
+        },
+        "overwrite": {
+          "$ref": "#/$defs/overwriteFileMapping"
+        },
+        "xref": {
+          "$ref": "#/$defs/xref"
+        },
+        "dest": {
+          "type": "string",
+          "description": "(Deprecated) Defines the output folder of the generated build files.",
+          "deprecated": true
+        },
+        "output": {
+          "type": "string",
+          "description": "Defines the output folder of the generated build files."
+        },
+        "globalMetadata": {
+          "$ref": "#/$defs/globalMetadata"
+        },
+        "globalMetadataFiles": {
+          "$ref": "#/$defs/globalMetadataFiles"
+        },
+        "fileMetadata": {
+          "$ref": "#/$defs/fileMetadata"
+        },
+        "fileMetadataFiles": {
+          "$ref": "#/$defs/fileMetadataFiles"
+        },
+        "template": {
+          "$ref": "#/$defs/template"
+        },
+        "theme": {
+          "$ref": "#/$defs/theme"
+        },
+        "postProcessors": {
+          "$ref": "#/$defs/postProcessors"
+        },
+        "debug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Run in debug mode."
+        },
+        "debugOutput": {
+          "type": "string",
+          "description": "The output folder for files generated for debugging purpose when in debug mode."
+        },
+        "exportRawModel": {
+          "type": "boolean",
+          "default": false,
+          "description": "If set to true, data model to run template script will be extracted in .raw.model.json extension."
+        },
+        "rawModelOutputFolder": {
+          "type": "string",
+          "description": "Specify the output folder for the raw model."
+        },
+        "exportViewModel": {
+          "type": "boolean",
+          "default": false,
+          "description": "If set to true, data model to apply template will be extracted in .view.model.json extension."
+        },
+        "viewModelOutputFolder": {
+          "type": "string",
+          "description": "Specify the output folder for the view model."
+        },
+        "dryRun": {
+          "type": "boolean",
+          "default": false,
+          "description": "If set to true, template will not be actually applied to the documents."
+        },
+        "maxParallelism": {
+          "type": "integer",
+          "description": "Set the max parallelism, 0 is auto."
+        },
+        "markdownEngineProperties": {
+          "$ref": "#/$defs/markdownEngineProperties"
+        },
+        "customLinkResolver": {
+          "type": "string",
+          "description": "Set the name of ICustomHrefGenerator derived class."
+        },
+        "groups": {
+          "$ref": "#/$defs/groups"
+        },
+        "sitemap": {
+          "$ref": "#/$defs/sitemap"
+        },
+        "disableGitFeatures": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable fetching Git related information for articles."
+        }
+      }
+    },
+    "contentFileMapping": {
+      "title": "Content",
+      "description": "Contains all the files to generate documentation, including metadata yml files and conceptual md files.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileMappingItem"
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "#/$defs/fileMappingItem"
+        }
+      ]
+    },
+    "resourceFileMapping": {
+      "title": "Resource",
+      "description": "Contains all the resource files that conceptual and metadata files dependent on, e.g. image files.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileMappingItem"
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "#/$defs/fileMappingItem"
+        }
+      ]
+    },
+    "overwriteFileMapping": {
+      "title": "Overwrite",
+      "description": "Contains all the conceptual files which contains yaml header with uid and is intended to override the existing metadata yml files.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileMappingItem"
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "#/$defs/fileMappingItem"
+        }
+      ]
+    },
+    "fileMappingItem": {
+      "type": "object",
+      "description": "FileMappingItem",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of current item, the value is not used for now"
+        },
+        "files": {
+          "$ref": "#/$defs/fileItems"
+        },
+        "exclude": {
+          "$ref": "#/$defs/excludeFileItems"
+        },
+        "src": {
+          "type": "string",
+          "description": "`src` defines the root folder for the source files."
+        },
+        "dest": {
+          "type": "string",
+          "description": "The destination folder for the files if copy/transform is used."
+        },
+        "group": {
+          "type": "string",
+          "description": "Group name for the current file-mapping item."
+        },
+        "rootTocPath": {
+          "type": "string",
+          "description": "The Root TOC Path used for navbar in current group, relative to output root."
+        },
+        "case": {
+          "type": "boolean",
+          "description": "Pattern match will be case sensitive."
+        },
+        "noNegate": {
+          "type": "boolean",
+          "description": "Disable pattern begin with `!` to mean negate."
+        },
+        "noExpand": {
+          "type": "boolean",
+          "description": "Disable `{a,b}c` => `[\"ac\", \"bc\"]`."
+        },
+        "noEscape": {
+          "type": "boolean",
+          "description": "Disable the usage of `\\` to escape values."
+        },
+        "noGlobStar": {
+          "type": "boolean",
+          "description": "Disable the usage of `**` to match everything including `/` when it is the beginning of the pattern or is after `/`."
+        },
+        "dot": {
+          "type": "boolean",
+          "description": "Allow files start with `.` to be matched even if `.` is not explicitly specified in the pattern."
+        }
+      }
+    },
+    "fileItems": {
+      "description": "The file glob pattern collection, with path relative to property `src` is value is set.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "excludeFileItems": {
+      "description": "The file glob pattern collection for files that should be excluded, with path relative to property `src` is value is set.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "globalMetadata": {
+      "type": "object",
+      "description": "Contains metadata that will be applied to every file, in key-value pair format.",
+      "additionalProperties": true
+    },
+    "globalMetadataFiles": {
+      "description": "Specify a list of JSON file path containing globalMetadata settings.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "xref": {
+      "description": "Specifies the urls of xrefmap used by content files. Supports local file path and HTTP/HTTPS urls.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "fileMetadata": {
+      "type": "object",
+      "description": "Metadata that applies to some specific files.",
+      "additionalProperties": true
+    },
+    "fileMetadataFiles": {
+      "description": "Specify a list of JSON file path containing fileMetadata settings.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "template": {
+      "description": "The templates applied to each file in the documentation.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "theme": {
+      "description": "The themes applied to the documentation.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "postProcessors": {
+      "description": "Specify PostProcessor array. Build-in HtmlProcessor is automatically added by default.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "groups": {
+      "type": "object",
+      "description": "Specifies the output folder and metadata of specified group name.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "dest": {
+            "type": "string",
+            "description": "Defines the output folder of the generated build files."
+          }
+        }
+      }
+    },
+    "sitemap": {
+      "type": "object",
+      "description": "Specifies the options for the sitemap.xml file.",
+      "properties": {
+        "baseUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Base URL for the website. It should start with http or https."
+        },
+        "changefreq": {
+          "$ref": "#/$defs/changefreq"
+        },
+        "priority": {
+          "type": "number",
+          "default": 0.5,
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "the priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0."
+        },
+        "lastmod": {
+          "type": "string",
+          "description": "The date of last modification of the page. If not specified, docfx sets the date to the build time."
+        },
+        "fileOptions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "baseUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Base URL for the website. It should start with http or https."
+              },
+              "changefreq": {
+                "$ref": "#/$defs/changefreq"
+              },
+              "priority": {
+                "type": "number",
+                "default": 0.5,
+                "minimum": 0.0,
+                "maximum": 1.0,
+                "description": "the priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0."
+              },
+              "lastmod": {
+                "type": "string",
+                "description": "The date of last modification of the page. If not specified, docfx sets the date to the build time."
+              }
+            }
+          }
+        }
+      }
+    },
+    "changefreq": {
+      "type": "string",
+      "description": "Determines how frequently the page is likely to change. Valid values are always, hourly, daily, weekly, monthly, yearly, never.",
+      "default": "daily",
+      "enum": [
+        "always",
+        "hourly",
+        "daily",
+        "weekly",
+        "monthly",
+        "yearly",
+        "never"
+      ]
+    },
+    "markdownEngineProperties": {
+      "description": "Set the parameters for markdown engine, value should be a JSON string.",
+      "type": "object",
+      "properties": {
+        "enableSourceInfo": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enables line numbers"
+        },
+        "markdigExtensions": {
+          "description": "List of optional Markdig extensions to add or modify settings.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/markdigExtensionSetting"
+          }
+        },
+        "fallbackFolders": {
+          "description": "Fallback folders",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "alerts": {
+          "title": "Alerts",
+          "description": "Alert keywords in markdown without the surrounding [!] and the corresponding CSS class names.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "plantUml": {
+          "$ref": "#/$defs/plantUmlOptions"
+        }
+      }
+    },
+    "markdigExtensionSetting": {
+      "description": "Markdig extension setting.",
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "String"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "markdig extension name",
+              "additionalProperties": {}
+            }
+          }
+        }
+      ]
+    },
+    "plantUmlOptions": {
+      "type": "object",
+      "description": "PlantUml extension configuration parameters",
+      "properties": {
+        "javaPath": {
+          "type": "string",
+          "description": ""
+        },
+        "remoteUrl": {
+          "type": "string",
+          "description": ""
+        },
+        "localPlantUmlPath": {
+          "type": "string",
+          "description": ""
+        },
+        "localGraphvizDotPath": {
+          "type": "string",
+          "description": ""
+        },
+        "renderingMode": {
+          "type": "string",
+          "description": "",
+          "enum": [
+            "Remote",
+            "Local"
+          ]
+        },
+        "delimitor": {
+          "type": "string",
+          "description": ""
+        },
+        "outputFormat": {
+          "type": "string",
+          "description": "",
+          "enum": [
+            "Png",
+            "Svg",
+            "Eps",
+            "Pdf",
+            "Vdx",
+            "Xmi",
+            "Scxml",
+            "Html",
+            "Ascii",
+            "Ascii_Unicode",
+            "LaTeX"
+          ]
+        }
+      }
+    },
+    "metadataConfig": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "src": {
+            "$ref": "#/$defs/srcFileMapping"
+          },
+          "dest": {
+            "type": "string",
+            "description": "(Deprecated) Defines the output folder of the generated metadata files.",
+            "deprecated": true
+          },
+          "output": {
+            "type": "string",
+            "description": "Defines the output folder of the generated metadata files."
+          },
+          "outputFormat": {
+            "type": "string",
+            "description": "Defines the output file format.",
+            "default": "mref",
+            "enum": [
+              "mref",
+              "markdown",
+              "apiPage"
+            ]
+          },
+          "shouldSkipMarkup": {
+            "type": "boolean",
+            "default": false,
+            "description": "If set to true, DocFX would not render triple-slash-comments in source code as markdown."
+          },
+          "references": {
+            "$ref": "#/$defs/referencesFileMapping",
+            "description": "Specify additinal assembly reference files."
+          },
+          "filter": {
+            "type": "string",
+            "description": "Defines the filter configuration file."
+          },
+          "includePrivateMembers": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include private or internal APIs."
+          },
+          "includeExplicitInterfaceImplementations": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include explicit interface implementations."
+          },
+          "globalNamespaceId": {
+            "type": "string",
+            "description": "Specify the name to use for the global namespace."
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "disableGitFeatures": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disables generation of view source links."
+          },
+          "codeSourceBasePath": {
+            "type": "string",
+            "description": "Specify the base directory that is used to resolve code source."
+          },
+          "disableDefaultFilter": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disables the default filter configuration file."
+          },
+          "noRestore": {
+            "type": "boolean",
+            "default": false,
+            "description": "Do not run dotnet restore before building the projects."
+          },
+          "namespaceLayout": {
+            "type": "string",
+            "description": "Defines how namespaces in TOC are organized.",
+            "default": "flattened",
+            "enum": [
+              "flattened",
+              "nested"
+            ]
+          },
+          "memberLayout": {
+            "type": "string",
+            "description": "Defines how member pages are organized.",
+            "default": "samePage",
+            "enum": [
+              "samePage",
+              "separatePages"
+            ]
+          },
+          "enumSortOrder": {
+            "type": "string",
+            "description": "Defines enum sort orders.",
+            "default": "alphabetic",
+            "enum": [
+              "alphabetic",
+              "declaringOrder"
+            ]
+          },
+          "allowCompilationErrors": {
+            "type": "boolean",
+            "default": false,
+            "description": "When enabled, continues documentation generation in case of compilation errors."
+          }
+        }
+      }
+    },
+    "srcFileMapping": {
+      "description": "Defines the source projects to have metadata generated.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileMappingItem"
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "#/$defs/fileMappingItem"
+        }
+      ]
+    },
+    "referencesFileMapping": {
+      "description": "Specify additinal assembly reference files.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fileMappingItem"
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "$ref": "#/$defs/fileMappingItem"
+        }
+      ]
+    },
+    "mergeConfig": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "$ref": "#/$defs/contentFileMapping"
+          },
+          "dest": {
+            "type": "string",
+            "description": "Defines the output folder of the generated merge files."
+          },
+          "globalMetadata": {
+            "type": "object",
+            "description": "Contains metadata that will be applied to every file, in key-value pair format.",
+            "additionalProperties": {}
+          },
+          "fileMetadata": {
+            "$ref": "#/$defs/fileMetadata"
+          },
+          "tocMetadata": {
+            "description": "Metadata that applies to toc files.",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            ]
+          }
+        }
+      }
+    },
+    "ruleConfig": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "verbose",
+          "info",
+          "suggestion",
+          "warning",
+          "error",
+          "diagnostic"
+        ]
+      }
+    }
+  }
+}

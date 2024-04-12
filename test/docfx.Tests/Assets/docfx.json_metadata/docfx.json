@@ -3,9 +3,9 @@
     {
       "src": [
         {
-          "files": ["**/*.csproj"],
-          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `cwd`
-          "cwd": "../src"
+          "files": [ "**/*.csproj" ],
+          "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `src`
+          "src": "../src"
         }
       ],
       "dest": "obj/docfx/api/dotnet"
@@ -13,8 +13,8 @@
     {
       "src": [
         {
-          "files": ["**/*.js"],
-          "cwd": "../src"
+          "files": [ "**/*.js" ],
+          "src": "../src"
         }
       ],
       "dest": "obj/docfx/api/js" // throw error when dest is not unique
