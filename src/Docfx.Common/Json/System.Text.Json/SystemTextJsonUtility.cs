@@ -11,7 +11,7 @@ namespace Docfx.Common;
 /// <summary>
 /// Utility class for JSON serialization/deserialization.
 /// </summary>
-public static class SystemTextJsonUtility
+internal static class SystemTextJsonUtility
 {
     /// <summary>
     /// Default JsonSerializerOptions options.

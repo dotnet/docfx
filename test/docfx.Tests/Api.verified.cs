@@ -2053,16 +2053,6 @@ namespace Docfx.Common
             public const string EmptyInputFiles = "EmptyInputFiles";
         }
     }
-    public static class SystemTextJsonUtility
-    {
-        public static readonly System.Text.Json.JsonSerializerOptions DefaultSerializerOptions;
-        public static readonly System.Text.Json.JsonSerializerOptions IndentedSerializerOptions;
-        public static T? Deserialize<T>(System.IO.Stream stream) { }
-        public static T? Deserialize<T>(string json) { }
-        public static System.Threading.Tasks.ValueTask<T?> DeserializeAsync<T>(System.IO.Stream stream, System.Threading.CancellationToken token = default) { }
-        public static string Serialize<T>(System.IO.Stream stream, bool indented = false) { }
-        public static string Serialize<T>(T model, bool indented = false) { }
-    }
     public static class TreeIterator
     {
         public static void Preorder<T>(T current, T parent, System.Func<T, System.Collections.Generic.IEnumerable<T>> childrenGetter, System.Func<T, T, bool> action) { }
