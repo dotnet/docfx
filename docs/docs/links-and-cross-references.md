@@ -148,7 +148,7 @@ Since `@` is a common character in a document, a warning would appear if the UID
 
 ## Cross reference to .NET basic class library
 
-To cross reference .NET basic class libary types from markdown using the `xref` syntax, add `https://learn.microsoft.com/en-us/dotnet/.xrefmap.json` to the `xref` property in `docfx.json`, which contains all the BCL types published from <https://github.com/dotnet/dotnet-api-docs>.
+To cross reference .NET basic class library types from markdown using the `xref` syntax, add `https://learn.microsoft.com/en-us/dotnet/.xrefmap.json` to the `xref` property in `docfx.json`, which contains all the BCL types published from <https://github.com/dotnet/dotnet-api-docs>.
 
 ```json
 {
