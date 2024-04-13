@@ -50,4 +50,58 @@ public class XRefMapDownloadTest
         xrefMap.Should().NotBeNull();
         xrefMap.References.Should().HaveCount(1);
     }
+
+    /// <summary>
+    /// XrefmapDownloader test for xrefmap that has no baseUrl and href is defined by relative path.
+    /// </summary>
+    [Fact(Skip = "Has dependency to external site content.")]
+    public async Task ReadRemoteXRefMapYamlFileTest1()
+    {
+        // Arrange
+        var path = "https://horizongir.github.io/ZedGraph/xrefmap.yml";
+
+        XRefMapDownloader downloader = new XRefMapDownloader();
+        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+
+        // Assert
+        xrefMap.Sorted.Should().BeTrue();
+        xrefMap.HrefUpdated.Should().BeNull();
+
+        // If baseUrl is not exists. Set download URL is set automatically.
+        xrefMap.BaseUrl.Should().Be("https://horizongir.github.io/ZedGraph/");
+
+        // Test relative URL is preserved.
+        xrefMap.References[0].Href.Should().Be("api/ZedGraph.html");
+        xrefMap.References[0].Href = "https://horizongir.github.io/ZedGraph/api/ZedGraph.html";
+        xrefMap.BaseUrl = "http://localhost";
+
+        // Test url is resolved as absolute URL.
+        var reader = xrefMap.GetReader();
+        reader.Find("ZedGraph").Href.Should().Be("https://horizongir.github.io/ZedGraph/api/ZedGraph.html");
+    }
+
+    /// <summary>
+    /// XrefmapDownloader test for xrefmap that has no baseUrl, and href is defined by absolute path.
+    /// </summary>
+    [Fact(Skip = "Has dependency to external site content.")]
+    public async Task ReadRemoteXRefMapJsonFileTest2()
+    {
+        // Arrange
+        var path = "https://normanderwan.github.io/UnityXrefMaps/xrefmap.yml";
+
+        XRefMapDownloader downloader = new XRefMapDownloader();
+        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+
+        // Assert
+        xrefMap.Sorted.Should().BeTrue();
+        xrefMap.HrefUpdated.Should().BeNull();
+
+        // If baseUrl is not exists. XrefMap download URL is set automatically.
+        xrefMap.BaseUrl.Should().Be("https://normanderwan.github.io/UnityXrefMaps/");
+
+        // If href is absolute URL. baseURL is ignored.
+        var xrefSpec = xrefMap.References[0];
+        xrefSpec.Href.Should().Be("https://docs.unity3d.com/ScriptReference/index.html");
+        xrefMap.GetReader().Find(xrefSpec.Uid).Href.Should().Be("https://docs.unity3d.com/ScriptReference/index.html");
+    }
 }

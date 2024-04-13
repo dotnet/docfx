@@ -1,6 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System;
+using System.Diagnostics;
 using System.Net;
 using Docfx.Common;
 
@@ -152,33 +154,29 @@ public class XRefMapDownloader
             case ".json":
                 {
                     using var sr = new StreamReader(stream, bufferSize: 81920); // Default :1024 byte
-                    return JsonUtility.Deserialize<XRefMap>(sr);
+                    var xrefMap = JsonUtility.Deserialize<XRefMap>(sr);
+                    xrefMap.BaseUrl = ResolveBaseUrl(xrefMap, uri);
+                    return xrefMap;
                 }
             case ".yml":
             default:
                 {
                     using var sr = new StreamReader(stream, bufferSize: 81920); // Default :1024 byte
-                    return YamlUtility.Deserialize<XRefMap>(sr);
+                    var xrefMap = YamlUtility.Deserialize<XRefMap>(sr);
+                    xrefMap.BaseUrl = ResolveBaseUrl(xrefMap, uri);
+                    return xrefMap;
                 }
         }
     }
 
-    public static void UpdateHref(XRefMap map, Uri uri)
+    private static string ResolveBaseUrl(XRefMap map, Uri uri)
     {
         if (!string.IsNullOrEmpty(map.BaseUrl))
-        {
-            if (!Uri.TryCreate(map.BaseUrl, UriKind.Absolute, out Uri baseUri))
-            {
-                throw new InvalidDataException($"Xref map file (from {uri.AbsoluteUri}) has an invalid base url: {map.BaseUrl}.");
-            }
-            map.UpdateHref(baseUri);
-            return;
-        }
-        if (uri.Scheme == "http" || uri.Scheme == "https")
-        {
-            map.UpdateHref(uri);
-            return;
-        }
-        throw new InvalidDataException($"Xref map file (from {uri.AbsoluteUri}) missing base url.");
+            return map.BaseUrl;
+
+        // If downloaded xrefmap has no baseUrl.
+        // Use xrefmap file download url as basePath.
+        var baseUrl = uri.GetLeftPart(UriPartial.Path);
+        return baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
     }
 }
