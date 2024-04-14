@@ -1,6 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System;
+using System.Diagnostics;
 using System.Net;
 using Docfx.Common;
 
@@ -151,14 +153,29 @@ public sealed class XRefMapDownloader
         {
             case ".json":
                 {
-                    return await SystemTextJsonUtility.DeserializeAsync<XRefMap>(stream, token);
+                    var xrefMap = await SystemTextJsonUtility.DeserializeAsync<XRefMap>(stream, token);
+                    xrefMap.BaseUrl = ResolveBaseUrl(xrefMap, uri);
+                    return xrefMap;
                 }
             case ".yml":
             default:
                 {
                     using var sr = new StreamReader(stream, bufferSize: 81920); // Default :1024 byte
-                    return YamlUtility.Deserialize<XRefMap>(sr);
+                    var xrefMap = YamlUtility.Deserialize<XRefMap>(sr);
+                    xrefMap.BaseUrl = ResolveBaseUrl(xrefMap, uri);
+                    return xrefMap;
                 }
         }
+    }
+
+    private static string ResolveBaseUrl(XRefMap map, Uri uri)
+    {
+        if (!string.IsNullOrEmpty(map.BaseUrl))
+            return map.BaseUrl;
+
+        // If downloaded xrefmap has no baseUrl.
+        // Use xrefmap file download url as basePath.
+        var baseUrl = uri.GetLeftPart(UriPartial.Path);
+        return baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
     }
 }
