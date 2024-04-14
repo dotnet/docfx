@@ -476,7 +476,6 @@ namespace Docfx.Build.Engine
         protected virtual System.Threading.Tasks.Task<Docfx.Build.Engine.IXRefContainer> DownloadBySchemeAsync(System.Uri uri) { }
         protected static Docfx.Build.Engine.IXRefContainer DownloadFromLocal(System.Uri uri) { }
         protected static System.Threading.Tasks.Task<Docfx.Build.Engine.XRefMap> DownloadFromWebAsync(System.Uri uri) { }
-        public static void UpdateHref(Docfx.Build.Engine.XRefMap map, System.Uri uri) { }
     }
     public sealed class XRefMapReader : Docfx.Build.Engine.XRefRedirectionReader
     {
