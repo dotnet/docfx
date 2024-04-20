@@ -45,6 +45,9 @@
       "priority": 0.5,
       "changefreq": "daily"
     },
+    "xref": [
+      "../.xrefmap.json"
+    ], 
     "output": "_site",
     "template": [
       "default",
