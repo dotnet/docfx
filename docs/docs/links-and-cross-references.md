@@ -7,13 +7,13 @@ Docfx provides several mechanisms to help you create links in markdown files.
 To create hyperlinks, you can use the [Markdown link syntax](https://daringfireball.net/projects/markdown/syntax#link):
 
 ```md
-[docfx](https://https://dotnet.github.io/docfx)
+[docfx](https://dotnet.github.io/docfx)
 ```
 
-This will render as 
+This will render as
 
 ```html
-<a href="http://www.bing.com">bing</a>
+<a href="https://dotnet.github.io/docfx">docfx</a>
 ```
 
 The link can be either an absolute URL pointing to another website or a relative URL pointing to a local resource on the same server.
