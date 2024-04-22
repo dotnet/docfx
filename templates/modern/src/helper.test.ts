@@ -19,6 +19,7 @@ test('is same URL', () => {
   expect(isSameURL({ pathname: '/a/foo.html' }, { pathname: '/a/foo' })).toBeTruthy()
   expect(isSameURL({ pathname: '/a/foo/' }, { pathname: '/a/foo' })).toBeTruthy()
   expect(isSameURL({ pathname: '/a/foo/index.html' }, { pathname: '/a/foo' })).toBeTruthy()
+  expect(isSameURL({ pathname: '/a/index.html' }, { pathname: '/A/Index.html' })).toBeTruthy()
 
   expect(isSameURL({ pathname: '/a/foo/index.html' }, { pathname: '/a/bar' })).toBeFalsy()
 })

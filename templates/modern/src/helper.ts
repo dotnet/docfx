@@ -89,5 +89,6 @@ export function isSameURL(a: { pathname: string }, b: { pathname: string }): boo
       .replace(/\/index\.html$/gi, '/')
       .replace(/\.html$/gi, '')
       .replace(/\/$/gi, '')
+      .toLowerCase()
   }
 }
