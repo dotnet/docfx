@@ -4,6 +4,8 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
 
+#nullable enable
+
 namespace Docfx;
 
 internal class Program
@@ -35,7 +37,7 @@ internal class Program
 
         return app.Run(args);
 
-        static void OnException(Exception e)
+        static void OnException(Exception e, ITypeResolver? resolver)
         {
             if (e is CommandAppException cae)
             {
