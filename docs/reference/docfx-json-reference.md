@@ -306,7 +306,7 @@ Specifies the value of [priority](https://www.sitemaps.org/protocol.html#priorit
 
 #### `fileOptions`
 
-This property can be used when some specific files have different sitemap settings. It is a set of key-value pairs, where key is the [*glob* pattern](#23-glob-pattern) for input files, and value is the sitemap options. Order matters and the latter matching option overwrites the former ones.
+This property can be used when some specific files have different sitemap settings. It is a set of key-value pairs, where key is the [glob patterns](#glob-patterns) for input files, and value is the sitemap options. Order matters and the latter matching option overwrites the former ones.
 
 ### `disableGitFeatures`
 
