@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+#pragma warning disable CS0659 // 'class' overrides Object.Equals(object o) but does not override Object.GetHashCode()
+
 namespace CatLibrary
 {
     using System.Diagnostics;
