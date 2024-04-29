@@ -38,7 +38,7 @@
     <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.3.0" />
     <PackageVersion Include="Verify.Xunit" Version="24.1.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.8" />
-    <PackageVersion Include="xunit" Version="2.7.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.0" />
+    <PackageVersion Include="xunit" Version="2.8.0" />
   </ItemGroup>
 </Project>
