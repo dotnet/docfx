@@ -63,7 +63,7 @@ class HostServiceCreator
             {
                 if (e is not DocumentException)
                 {
-                    var message = e is ArgumentException or NullReferenceException
+                    var message = e is ArgumentException or NullReferenceException or IndexOutOfRangeException
                         ? e.ToString()
                         : e.Message;
 
