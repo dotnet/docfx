@@ -11,6 +11,12 @@
       "ignoreFontFamilies": [
         "bootstrap-icons"
       ]
+    }],
+    "property-no-unknown": [ true, {
+      "ignoreProperties": [ "navigation" ]
+    }],
+    "scss/at-rule-no-unknown": [ true, {
+      "ignoreAtRules": [ "view-transition" ]
     }]
   }
 }
