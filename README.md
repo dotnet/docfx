@@ -49,7 +49,7 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 ### Prerequisites
 
 - Install [Visual Studio 2022 (Community or higher)](https://www.visualstudio.com/) and make sure you have the latest updates.
-- Install [.NET SDK](https://dotnet.microsoft.com/download/dotnet) 6.x, 7.x and 8.x.
+- Install [.NET SDK](https://dotnet.microsoft.com/download/dotnet) 6.x and 8.x.
 - Install NodeJS (20.x.x).
 
 ### Build and Test

@@ -51,7 +51,7 @@ jobs:
         name: nuget
         path: drop/nuget
 
-    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23530.1
+    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.24170.3
 
     - run: >
         ./sign code azure-key-vault
