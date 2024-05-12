@@ -63,7 +63,8 @@ class HostServiceCreator
             {
                 if (e is not DocumentException)
                 {
-                    var message = e is ArgumentException or NullReferenceException
+                    // Log detailed exception messages for specific type of exception.
+                    var message = e is ArgumentException or NullReferenceException or IndexOutOfRangeException or InvalidOperationException
                         ? e.ToString()
                         : e.Message;
 
