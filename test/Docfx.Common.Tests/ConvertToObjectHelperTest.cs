@@ -67,7 +67,7 @@ public class ConvertToObjectHelperTest
         Assert.Same(converted.key1, converted);
         Assert.Equal("value", converted.key1.key);
 
-        Dictionary<string, object> obj = ConvertToObjectHelper.ConvertExpandoObjectToObject(converted);
+        Dictionary<string, object> obj = (Dictionary<string, object>)ConvertToObjectHelper.ConvertExpandoObjectToObject(converted);
         Assert.True(ReferenceEquals(obj["key1"], obj));
         Assert.Equal("value", ((Dictionary<string, object>)obj["key1"])["key"]);
     }
