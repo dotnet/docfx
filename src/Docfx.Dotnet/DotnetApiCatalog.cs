@@ -57,6 +57,8 @@ public static partial class DotnetApiCatalog
     {
         var stopwatch = Stopwatch.StartNew();
 
+        EnsureMSBuildLocator();
+
         try
         {
             string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
@@ -120,6 +122,26 @@ public static partial class DotnetApiCatalog
                     break;
             }
         }
+    }
+
+    private static void EnsureMSBuildLocator()
+    {
+#if NET6_0
+        try
+        {
+            if (!Microsoft.Build.Locator.MSBuildLocator.IsRegistered)
+            {
+                var vs = Microsoft.Build.Locator.MSBuildLocator.RegisterDefaults() ?? throw new Docfx.Exceptions.ExtractMetadataException(
+                    $"Cannot find a supported .NET Core SDK. Install .NET Core SDK {Environment.Version.Major}.{Environment.Version.Minor}.x to build .NET API docs.");
+
+                Logger.LogInfo($"Using {vs.Name} {vs.Version}");
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Docfx.Exceptions.ExtractMetadataException(e.Message, e);
+        }
+#endif
     }
 
     private static ExtractMetadataConfig ConvertConfig(MetadataJsonItemConfig configModel, string configDirectory, string outputDirectory)
