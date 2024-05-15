@@ -10,14 +10,6 @@
     <PackageVersion Include="Jint" Version="3.1.0" />
     <PackageVersion Include="JsonSchema.Net" Version="7.0.2" />
     <PackageVersion Include="Markdig" Version="0.37.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.9.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="4.9.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.9.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.9.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.9.2" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.43.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
@@ -31,6 +23,34 @@
     <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
     <PackageVersion Include="System.Composition" Version="8.0.0" />
     <PackageVersion Include="YamlDotNet" Version="15.1.4" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <!-- "17.3.2" is the latest compatible version for .NET 6 -->
+    <PackageVersion Include="Microsoft.Build" Version="[17.3.2]" />
+    <PackageVersion Include="Microsoft.Build.Locator" Version="1.7.8" />
+    <PackageVersion Include="Microsoft.CodeAnalysis" Version="[4.8.0]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="[4.8.0]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="[4.8.0]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="[4.8.0]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="[4.8.0]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="[4.8.0]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="[4.8.0]" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="[4.8.0]" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' != 'net6.0'">
+    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.9.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="4.9.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.9.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.9.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Test only -->
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
