@@ -33,7 +33,7 @@ jobs:
       run: dotnet test -c Release -f net9.0 --no-build
     
     - name: dotnet pack
-      run: dotnet pack -c Release /p:Version=${{ steps.version.outputs.version }} -o drop/nuget
+      run: dotnet pack -c Release /p:Version=${{ steps.version.outputs.version }} /p:ApiCompatGenerateSuppressionFile=true -o drop/nuget
 
     - name: dotnet nuget push
       run: |
