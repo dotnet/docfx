@@ -41,7 +41,19 @@ partial class DotnetApiCatalog
         });
 
         using var workspace = MSBuildWorkspace.Create(msbuildProperties);
-        workspace.WorkspaceFailed += (sender, e) => Logger.LogWarning($"{e.Diagnostic}");
+        workspace.WorkspaceFailed += (sender, e) =>
+        {
+            var message = e.Diagnostic.ToString();
+            switch (e.Diagnostic.Kind)
+            {
+                case WorkspaceDiagnosticKind.Failure when !config.AllowCompilationErrors:
+                    Logger.LogError(message);
+                    break;
+                default:
+                    Logger.LogWarning(message);
+                    break;
+            }
+        };
 
         if (files.TryGetValue(FileType.NotSupported, out var unsupportedFiles))
         {

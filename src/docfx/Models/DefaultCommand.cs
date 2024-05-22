@@ -45,7 +45,7 @@ class DefaultCommand : Command<DefaultCommand.Options>
                 DotnetApiCatalog.Exec(config.metadata, new(), configDirectory).GetAwaiter().GetResult();
             }
 
-            if (config.build is not null)
+            if (config.build is not null && !Logger.HasError)
             {
                 BuildCommand.MergeOptionsToConfig(options, config.build, configDirectory);
                 serveDirectory = RunBuild.Exec(config.build, new(), configDirectory, outputFolder);
@@ -53,7 +53,7 @@ class DefaultCommand : Command<DefaultCommand.Options>
                 PdfBuilder.CreatePdf(serveDirectory).GetAwaiter().GetResult();
             }
 
-            if (options.Serve && serveDirectory is not null)
+            if (options.Serve && serveDirectory is not null && !Logger.HasError)
             {
                 RunServe.Exec(serveDirectory, options.Host, options.Port, options.OpenBrowser, options.OpenFile);
             }
