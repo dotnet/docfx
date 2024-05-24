@@ -123,6 +123,8 @@ public class ReflectionEntityMerger : IMerger
                     };
 
                     prop.Prop.SetValue(source, s);
+
+                    continue;
                 }
 
 
