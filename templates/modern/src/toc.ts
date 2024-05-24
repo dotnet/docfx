@@ -29,11 +29,12 @@ export async function renderToc(): Promise<TocNode[]> {
   const tocFilterUrl = disableTocFilter ? '' : (localStorage?.getItem('tocFilterUrl') || '')
   let tocFilter = disableTocFilter ? '' : (localStorage?.getItem('tocFilter') || '')
 
-  if (tocFilterUrl !== tocUrl.toString()) {
+  if (tocFilterUrl === '' || tocFilterUrl !== tocUrl.toString()) {
     tocFilter = ''
-    localStorage?.setItem('tocFilterUrl', '')
-  } else {
-    localStorage?.setItem('tocFilterUrl', tocUrl.toString())
+    if (!disableTocFilter) {
+      localStorage?.setItem('tocFilter', '')
+      localStorage?.setItem('tocFilterUrl', tocUrl.toString())
+    }
   }
 
   const activeNodes = []
