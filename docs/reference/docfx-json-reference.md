@@ -346,6 +346,7 @@ Specifies the output folder of the generated metadata files relative to `docfx.j
 Specifies the generated output file format.
 
 - `mref` (default): output as ManagedReference YAML files.
+- `apiPage`: Output as ApiPage YAML files.
 - `markdown`: Output as common-mark compliant markdown file.
 
 ### `dest`
@@ -432,6 +433,10 @@ Specifies whether private or internal APIs are included in the generated docs. T
 ### `includeExplicitInterfaceImplementations`
 
 Specifies whether explicit interface implementations are included in the generated docs. The default value is `false`.
+
+### `globalNamespaceId`
+
+Specify the name to use for the global namespace. The default value is an empty string.
 
 ## File Mappings
 

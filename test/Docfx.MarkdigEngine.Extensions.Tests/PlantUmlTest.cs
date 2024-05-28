@@ -25,7 +25,7 @@ public class PlantUmlTest
             RemoteUrl = "https://www.plantuml.com/plantuml",
         }).TrimEnd();
 
-        result.Should().StartWith("""<div class="lang-plantUml"><?xml version="1.0" encoding="us-ascii" standalone="no"?><svg""");
+        result.Should().StartWith("""<div class="lang-plantUml"><svg""");
         result.Should().EndWith("""hello</text><!--SRC=[SyfFKj2rKt3CoKnELR1Io4ZDoSa70000]--></g></svg></div>""");
     }
 }

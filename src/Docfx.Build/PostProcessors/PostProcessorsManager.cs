@@ -16,7 +16,6 @@ class PostProcessorsManager : IDisposable
     public PostProcessorsManager(CompositionHost container, ImmutableArray<string> postProcessorNames)
     {
         ArgumentNullException.ThrowIfNull(container);
-        ArgumentNullException.ThrowIfNull(postProcessorNames);
 
         _postProcessors = GetPostProcessor(container, postProcessorNames);
     }

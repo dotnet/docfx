@@ -4,6 +4,7 @@ on:
     branches: [ main, feature/*, hotfix/* ]
   push:
     branches: [ main, feature/*, hotfix/* ]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -31,9 +32,6 @@ jobs:
       working-directory: templates
 
     - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage"
-
-    - run: dotnet test -c Release -f net7.0 --no-build --collect:"XPlat Code Coverage"
-      if: matrix.os == 'ubuntu-latest'
 
     - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
       if: matrix.os == 'ubuntu-latest'
