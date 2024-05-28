@@ -50,9 +50,7 @@ public class DocumentBuilder : IDisposable
 
         var markdownService = CreateMarkdigMarkdownService(parameters[0]);
 
-#if NET7_0_OR_GREATER
         Processors = Processors.Append(new ApiPage.ApiPageDocumentProcessor(markdownService));
-#endif
 
         Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
         foreach (var processor in Processors)

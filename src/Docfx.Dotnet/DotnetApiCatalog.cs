@@ -89,20 +89,15 @@ public static partial class DotnetApiCatalog
             switch (config.OutputFormat)
             {
                 case MetadataOutputFormat.Markdown:
-#if NET7_0_OR_GREATER
                     CreatePages(WriteMarkdown, assemblies, config, options);
 
                     void WriteMarkdown(string outputFolder, string id, Build.ApiPage.ApiPage apiPage)
                     {
                         File.WriteAllText(Path.Combine(outputFolder, $"{id}.md"), Docfx.Build.ApiPage.ApiPageMarkdownTemplate.Render(apiPage));
                     }
-#else
-                    Logger.LogError($"Markdown output format is only supported for docfx built against .NET 7 or greater.");
-#endif
                     break;
 
                 case MetadataOutputFormat.ApiPage:
-#if NET7_0_OR_GREATER
                     var serializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
                     CreatePages(WriteYaml, assemblies, config, options);
 
@@ -112,9 +107,6 @@ public static partial class DotnetApiCatalog
                         var obj = serializer.Deserialize(json);
                         YamlUtility.Serialize(Path.Combine(outputFolder, $"{id}.yml"), obj, "YamlMime:ApiPage");
                     }
-#else
-                    Logger.LogError($"ApiPage output format is only supported for docfx built against .NET 7 or greater.");
-#endif
                     break;
 
                 case MetadataOutputFormat.Mref:
