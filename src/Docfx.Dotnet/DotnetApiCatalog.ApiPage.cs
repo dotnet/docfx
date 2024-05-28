@@ -1,8 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-#if NET7_0_OR_GREATER
-
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Docfx.Build.ApiPage;
@@ -774,5 +772,3 @@ partial class DotnetApiCatalog
         return doc.DocumentNode.InnerText;
     }
 }
-
-#endif
