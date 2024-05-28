@@ -469,13 +469,10 @@ namespace Docfx.Build.Engine
         public void Sort() { }
         public void UpdateHref(System.Uri baseUri) { }
     }
-    public class XRefMapDownloader
+    public sealed class XRefMapDownloader
     {
         public XRefMapDownloader(string baseFolder = null, System.Collections.Generic.IReadOnlyList<string> fallbackFolders = null, int maxParallelism = 16) { }
-        public System.Threading.Tasks.Task<Docfx.Build.Engine.IXRefContainer> DownloadAsync(System.Uri uri) { }
-        protected virtual System.Threading.Tasks.Task<Docfx.Build.Engine.IXRefContainer> DownloadBySchemeAsync(System.Uri uri) { }
-        protected static Docfx.Build.Engine.IXRefContainer DownloadFromLocal(System.Uri uri) { }
-        protected static System.Threading.Tasks.Task<Docfx.Build.Engine.XRefMap> DownloadFromWebAsync(System.Uri uri) { }
+        public System.Threading.Tasks.Task<Docfx.Build.Engine.IXRefContainer> DownloadAsync(System.Uri uri, System.Threading.CancellationToken token = default) { }
     }
     public sealed class XRefMapReader : Docfx.Build.Engine.XRefRedirectionReader
     {
@@ -485,7 +482,7 @@ namespace Docfx.Build.Engine
     public class XRefMapRedirection
     {
         public XRefMapRedirection() { }
-        [Newtonsoft.Json.JsonProperty("Href")]
+        [Newtonsoft.Json.JsonProperty("href")]
         [System.Text.Json.Serialization.JsonPropertyName("href")]
         [YamlDotNet.Serialization.YamlMember(Alias="href")]
         public string Href { get; set; }

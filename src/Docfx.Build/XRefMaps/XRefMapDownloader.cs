@@ -10,7 +10,7 @@ using EnvironmentVariables = Docfx.DataContracts.Common.Constants.EnvironmentVar
 
 namespace Docfx.Build.Engine;
 
-public class XRefMapDownloader
+public sealed class XRefMapDownloader
 {
     private readonly SemaphoreSlim _semaphore;
     private readonly IReadOnlyList<string> _localFileFolders;
@@ -40,22 +40,22 @@ public class XRefMapDownloader
     /// <param name="uri">The uri of xref map file.</param>
     /// <returns>An instance of <see cref="XRefMap"/>.</returns>
     /// <threadsafety>This method is thread safe.</threadsafety>
-    public async Task<IXRefContainer> DownloadAsync(Uri uri)
+    public async Task<IXRefContainer> DownloadAsync(Uri uri, CancellationToken token = default)
     {
         ArgumentNullException.ThrowIfNull(uri);
 
-        await _semaphore.WaitAsync();
+        await _semaphore.WaitAsync(token);
         return await Task.Run(async () =>
         {
             try
             {
                 if (uri.IsAbsoluteUri)
                 {
-                    return await DownloadBySchemeAsync(uri);
+                    return await DownloadBySchemeAsync(uri, token);
                 }
                 else
                 {
-                    return ReadLocalFileWithFallback(uri);
+                    return await ReadLocalFileWithFallback(uri, token);
                 }
             }
             finally
@@ -65,14 +65,14 @@ public class XRefMapDownloader
         });
     }
 
-    private IXRefContainer ReadLocalFileWithFallback(Uri uri)
+    private ValueTask<IXRefContainer> ReadLocalFileWithFallback(Uri uri, CancellationToken token = default)
     {
         foreach (var localFileFolder in _localFileFolders)
         {
             var localFilePath = Path.Combine(localFileFolder, uri.OriginalString);
             if (File.Exists(localFilePath))
             {
-                return ReadLocalFile(localFilePath);
+                return ReadLocalFileAsync(localFilePath, token);
             }
         }
         throw new FileNotFoundException($"Cannot find xref map file {uri.OriginalString} in path: {string.Join(",", _localFileFolders)}", uri.OriginalString);
@@ -81,17 +81,17 @@ public class XRefMapDownloader
     /// <remarks>
     /// Support scheme: http, https, file.
     /// </remarks>
-    protected virtual async Task<IXRefContainer> DownloadBySchemeAsync(Uri uri)
+    private async ValueTask<IXRefContainer> DownloadBySchemeAsync(Uri uri, CancellationToken token = default)
     {
         IXRefContainer result;
         if (uri.IsFile)
         {
-            result = DownloadFromLocal(uri);
+            result = await DownloadFromLocalAsync(uri, token);
         }
         else if (uri.Scheme == Uri.UriSchemeHttp ||
             uri.Scheme == Uri.UriSchemeHttps)
         {
-            result = await DownloadFromWebAsync(uri);
+            result = await DownloadFromWebAsync(uri, token);
         }
         else
         {
@@ -104,13 +104,13 @@ public class XRefMapDownloader
         return result;
     }
 
-    protected static IXRefContainer DownloadFromLocal(Uri uri)
+    private static ValueTask<IXRefContainer> DownloadFromLocalAsync(Uri uri, CancellationToken token = default)
     {
         var filePath = uri.LocalPath;
-        return ReadLocalFile(filePath);
+        return ReadLocalFileAsync(filePath, token);
     }
 
-    private static IXRefContainer ReadLocalFile(string filePath)
+    private static async ValueTask<IXRefContainer> ReadLocalFileAsync(string filePath, CancellationToken token = default)
     {
         Logger.LogVerbose($"Reading from file: {filePath}");
 
@@ -121,8 +121,8 @@ public class XRefMapDownloader
 
             case ".json":
                 {
-                    using var stream = File.OpenText(filePath);
-                    return JsonUtility.Deserialize<XRefMap>(stream);
+                    using var stream = File.OpenRead(filePath);
+                    return await SystemTextJsonUtility.DeserializeAsync<XRefMap>(stream, token);
                 }
 
             case ".yml":
@@ -134,7 +134,7 @@ public class XRefMapDownloader
         }
     }
 
-    protected static async Task<XRefMap> DownloadFromWebAsync(Uri uri)
+    private static async Task<XRefMap> DownloadFromWebAsync(Uri uri, CancellationToken token = default)
     {
         Logger.LogVerbose($"Reading from web: {uri.OriginalString}");
 
@@ -147,14 +147,13 @@ public class XRefMapDownloader
             Timeout = TimeSpan.FromMinutes(30), // Default: 100 seconds
         };
 
-        using var stream = await httpClient.GetStreamAsync(uri);
+        using var stream = await httpClient.GetStreamAsync(uri, token);
 
         switch (Path.GetExtension(uri.AbsolutePath).ToLowerInvariant())
         {
             case ".json":
                 {
-                    using var sr = new StreamReader(stream, bufferSize: 81920); // Default :1024 byte
-                    var xrefMap = JsonUtility.Deserialize<XRefMap>(sr);
+                    var xrefMap = await SystemTextJsonUtility.DeserializeAsync<XRefMap>(stream, token);
                     xrefMap.BaseUrl = ResolveBaseUrl(xrefMap, uri);
                     return xrefMap;
                 }
