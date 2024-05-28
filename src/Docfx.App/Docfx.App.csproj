@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <Content Include="templates/**" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" PackagePath="contentFiles/any/any/templates" />
-    <None Include="Build\docfx.app.props" Pack="true" PackagePath="build\" />
+    <None Include="Build\Docfx.App.props" Pack="true" PackagePath="build/" />
   </ItemGroup>
 
   <ItemGroup>
