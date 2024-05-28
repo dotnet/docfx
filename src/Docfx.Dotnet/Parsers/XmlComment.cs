@@ -384,7 +384,8 @@ internal class XmlComment
                     {
                         detailedInfo.Append(", member name is ");
                         detailedInfo.Append(memberName);
-                    }                }
+                    }
+                }
 
                 Logger.Log(LogLevel.Warning, $"Invalid cref value \"{cref}\" found in XML documentation comment{detailedInfo}.", code: "InvalidCref");
 
