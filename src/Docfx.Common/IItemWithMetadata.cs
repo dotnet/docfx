@@ -8,7 +8,7 @@ namespace Docfx.Common;
 /// <summary>
 ///   An item that contains metadate
 /// </summary>
-public interface IItemWithMetadata
+internal interface IItemWithMetadata
 {
 
     /// <summary>

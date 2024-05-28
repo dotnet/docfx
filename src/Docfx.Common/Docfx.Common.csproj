@@ -7,4 +7,10 @@
     <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
     <ProjectReference Include="..\Docfx.YamlSerialization\Docfx.YamlSerialization.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Docfx.Build.ManagedReference"/>
+    <InternalsVisibleTo Include="Docfx.Dotnet"/>
+  </ItemGroup>
+
 </Project>
