@@ -45,6 +45,10 @@ internal class MetadataCommandOptions : LogOptions
     [CommandOption("--disableDefaultFilter")]
     public bool DisableDefaultFilter { get; set; }
 
+    [Description("Determines the category layout in table of contents.")]
+    [CommandOption("--categoryLayout")]
+    public CategoryLayout? CategoryLayout { get; set; }
+
     [Description("Determines the namespace layout in table of contents.")]
     [CommandOption("--namespaceLayout")]
     public NamespaceLayout? NamespaceLayout { get; set; }
