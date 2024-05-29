@@ -10,7 +10,7 @@ using Xunit;
 namespace Docfx.Build.Engine.Tests;
 
 public class XRefMapSerializationTest
-{  
+{
     [Fact]
     public void XRefMapSerializationRoundTripTest()
     {
@@ -43,17 +43,49 @@ public class XRefMapSerializationTest
             },
             Others = new Dictionary<string, object>
             {
-                ["Other1"] = "Dummy",
+                ["StringValue"] = "Dummy",
+                ["BooleanValue"] = true,
+                ["IntValue"] = int.MaxValue,
+                ["LongValue"] = long.MaxValue,
+                ["DoubleValue"] = 1.234d,
+
+                //// YamlDotNet don't deserialize dictionary's null value.
+                // ["NullValue"] = null,
+
+                //// Following types has no deserialize compatibility (NewtonsoftJson deserialize value to JArray/Jvalue)
+                // ["ArrayValue"] = new object[] { 1, 2, 3 },
+                // ["ObjectValue"] = new Dictionary<string, string>{["Prop1"="Dummy"]}
             }
         };
 
-        // Arrange
-        var jsonResult = RoundtripByNewtonsoftJson(model);
-        var yamlResult = RoundtripWithYamlDotNet(model);
+        // Validate serialized JSON text.
+        {
+            // Arrange
+            var systemTextJson = SystemTextJsonUtility.Serialize(model);
+            var newtonsoftJson = JsonUtility.Serialize(model);
 
-        // Assert
-        jsonResult.Should().BeEquivalentTo(model);
-        yamlResult.Should().BeEquivalentTo(model);
+            // Assert
+            systemTextJson.Should().Be(newtonsoftJson);
+        }
+
+        // Validate roundtrip result.
+        {
+            // Arrange
+            var systemTextJsonResult = RoundtripBySystemTextJson(model);
+            var newtonsoftJsonResult = RoundtripByNewtonsoftJson(model);
+            var yamlResult = RoundtripWithYamlDotNet(model);
+
+            // Assert
+            systemTextJsonResult.Should().BeEquivalentTo(model);
+            newtonsoftJsonResult.Should().BeEquivalentTo(model);
+            yamlResult.Should().BeEquivalentTo(model);
+        }
+    }
+
+    private static T RoundtripBySystemTextJson<T>(T model)
+    {
+        var json = SystemTextJsonUtility.Serialize(model);
+        return SystemTextJsonUtility.Deserialize<T>(json);
     }
 
     private static T RoundtripByNewtonsoftJson<T>(T model)
