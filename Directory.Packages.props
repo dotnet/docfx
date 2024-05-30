@@ -23,7 +23,7 @@
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
     <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
     <PackageVersion Include="System.Composition" Version="8.0.0" />
-    <PackageVersion Include="YamlDotNet" Version="15.1.4" />
+    <PackageVersion Include="YamlDotNet" Version="15.1.6" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
