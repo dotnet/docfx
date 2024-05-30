@@ -401,6 +401,17 @@ Specifies an optional set of MSBuild properties used when interpreting project f
 
 Do not run `dotnet restore` before building the projects.
 
+### `categoryLayout`
+
+Specifies how categories in TOC are organized:
+
+- `flattened` (default): Renders the namespaces as a plain label.
+- `nested`: Renders the categories in a nested tree form.
+- `none`: Don't render categoriy labels.
+
+> [!NOTE]
+> This setting is valid when using `apiPage` or `markdown` output format. `mref` format don't support categories.
+
 ### `namespaceLayout`
 
 Specifies how namespaces in TOC are organized:

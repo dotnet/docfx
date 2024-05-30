@@ -647,6 +647,16 @@
             "default": false,
             "description": "Do not run dotnet restore before building the projects."
           },
+          "categoryLayout": {
+            "type": "string",
+            "description": "Defines how categories in TOC are organized. This setting is valid when using `apiPage` or `markdown` output format. `mref` format don't support categories.",
+            "default": "flattened",
+            "enum": [
+              "flattened",
+              "nested",
+              "none"
+            ]
+          },
           "namespaceLayout": {
             "type": "string",
             "description": "Defines how namespaces in TOC are organized.",

@@ -27,6 +27,7 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
             item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
             item.DisableGitFeatures |= options.DisableGitFeatures;
             item.DisableDefaultFilter |= options.DisableDefaultFilter;
+            item.CategoryLayout = options.CategoryLayout ?? item.CategoryLayout;
             item.NamespaceLayout = options.NamespaceLayout ?? item.NamespaceLayout;
             item.MemberLayout = options.MemberLayout ?? item.MemberLayout;
             item.OutputFormat = options.OutputFormat ?? item.OutputFormat;

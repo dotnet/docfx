@@ -23,6 +23,27 @@ public enum MemberLayout
 }
 
 /// <summary>
+/// Specifies the layout of categories.
+/// </summary>
+internal enum CategoryLayout
+{
+    /// <summary>
+    /// Renders the categories as a a plain label.
+    /// </summary>
+    Flattened,
+
+    /// <summary>
+    /// Renders the categories in a nested tree form.
+    /// </summary>
+    Nested,
+
+    /// <summary>
+    /// Don't render category labels.
+    /// </summary>
+    None,
+}
+
+/// <summary>
 /// Specifies the layout of namepsaces.
 /// </summary>
 internal enum NamespaceLayout
@@ -193,6 +214,16 @@ internal class MetadataJsonItemConfig
     [JsonProperty("noRestore")]
     [JsonPropertyName("noRestore")]
     public bool NoRestore { get; set; }
+
+    /// <summary>
+    /// Defines how categories in TOC are organized:
+    /// - `flattened` (default): Renders categories as a plain label.
+    /// - `nested`: Renders categories in a nested tree form.
+    /// - `none`: Don't render category labels.
+    /// </summary>
+    [JsonProperty("categoryLayout")]
+    [JsonPropertyName("categoryLayout")]
+    public CategoryLayout CategoryLayout { get; set; }
 
     /// <summary>
     /// Defines how namespaces in TOC are organized:
