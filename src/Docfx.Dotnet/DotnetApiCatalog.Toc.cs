@@ -49,7 +49,7 @@ partial class DotnetApiCatalog
         var ext = config.OutputFormat is MetadataOutputFormat.Markdown ? ".md" : ".yml";
         var toc = assemblies.SelectMany(a => CreateToc(a.symbol.GlobalNamespace, a.compilation)).ToList();
 
-        SortToc(toc, root: true);
+        SortToc(toc, null);
 
         YamlUtility.Serialize(Path.Combine(config.OutputFolder, "toc.yml"), toc, YamlMime.TableOfContent);
         return toc;
@@ -211,11 +211,11 @@ partial class DotnetApiCatalog
             }
         }
 
-        static void SortToc(List<TocNode> items, bool root)
+        void SortToc(List<TocNode> items, TocNode? parentTocNode)
         {
             items.Sort((a, b) => a.type.CompareTo(b.type) is var r && r is 0 ? a.name.CompareTo(b.name) : r);
 
-            if (!root)
+            if (parentTocNode != null)
             {
                 InsertCategory(TocNodeType.Class, "Classes");
                 InsertCategory(TocNodeType.Struct, "Structs");
@@ -233,13 +233,43 @@ partial class DotnetApiCatalog
             foreach (var item in items)
             {
                 if (item.items is not null)
-                    SortToc(item.items, root: false);
+                    SortToc(item.items, item);
             }
 
             void InsertCategory(TocNodeType type, string name)
             {
-                if (items.FirstOrDefault(i => i.type == type) is { } node)
-                    items.Insert(items.IndexOf(node), new() { name = name });
+                switch (config.CategoryLayout)
+                {
+                    // Don't insert category.
+                    case CategoryLayout.None:
+                        return;
+
+                    // Insert category as clickable TocNode.
+                    case CategoryLayout.Nested:
+                        {
+                            // Skip when parent node is category node.
+                            if (parentTocNode != null && parentTocNode.type == TocNodeType.None)
+                                return;
+
+                            // If items contains specified type node. Create new TocNode for category. and move related node to child node.
+                            if (items.FirstOrDefault(i => i.type == type) is { } node)
+                            {
+                                var head = new TocNode { name = name, items = items.Where(x => x.type == type).ToList() };
+                                items.Insert(items.IndexOf(node), head);
+                                items.RemoveAll(x => x.type == type);
+                            }
+                            return;
+                        }
+
+                    // Insert category as text label.
+                    case CategoryLayout.Flattened:
+                    default:                    
+                        {
+                            if (items.FirstOrDefault(i => i.type == type) is { } node)
+                                items.Insert(items.IndexOf(node), new() { name = name });
+                            return;
+                        }
+                }
             }
         }
     }
