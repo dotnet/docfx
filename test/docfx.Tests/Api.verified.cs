@@ -2123,13 +2123,6 @@ namespace Docfx.Common
     {
         public static bool TryGetXrefStringValue(this Docfx.Plugins.XRefSpec spec, string key, out string value) { }
     }
-    public class YamlDeserializerWithFallback
-    {
-        public object Deserialize(System.Func<System.IO.TextReader> reader) { }
-        public object Deserialize(string filePath) { }
-        public Docfx.Common.YamlDeserializerWithFallback WithFallback<T>() { }
-        public static Docfx.Common.YamlDeserializerWithFallback Create<T>() { }
-    }
     public static class YamlMime
     {
         public const string ManagedReference = "YamlMime:ManagedReference";
