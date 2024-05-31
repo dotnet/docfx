@@ -117,7 +117,7 @@ partial class DotnetApiCatalog
             foreach (var assemblyFile in assemblyFiles)
             {
                 Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
-                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, config, metadataReferences);
+                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, config.IncludePrivateMembers, metadataReferences);
                 hasCompilationError |= compilation.CheckDiagnostics(config.AllowCompilationErrors);
                 assemblies.Add((assembly, compilation));
             }
