@@ -181,7 +181,13 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         item.Items = new List<MetadataItem>();
-        foreach (var member in symbol.GetMembers().Where(s => s is not INamedTypeSymbol))
+        foreach (
+            var member in symbol.GetMembers()
+            .Where(static s =>
+                s is not INamedTypeSymbol
+                && ! s.Name.StartsWith('<')
+                && (s is not IMethodSymbol ms || ms.MethodKind != MethodKind.StaticConstructor)
+            ))
         {
             var memberItem = member.Accept(this);
             if (memberItem != null)
