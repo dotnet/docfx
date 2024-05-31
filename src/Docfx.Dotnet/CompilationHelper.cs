@@ -1,6 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+
+using System.Reflection;
 using Docfx.Common;
 using Docfx.Exceptions;
 using ICSharpCode.Decompiler.Metadata;
@@ -102,12 +104,22 @@ internal static class CompilationHelper
             references: GetDefaultMetadataReferences("VB").Concat(references ?? []));
     }
 
-    public static (Compilation, IAssemblySymbol) CreateCompilationFromAssembly(string assemblyPath, params MetadataReference[] references)
+    public static (Compilation, IAssemblySymbol) CreateCompilationFromAssembly(string assemblyPath, ExtractMetadataConfig? config = null, params MetadataReference[] references)
     {
+        var options = new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+
+        if (config?.IncludePrivateMembers ?? false)
+        {
+            var propertyInfo = typeof (CS.CSharpCompilationOptions).GetProperty ("MetadataImportOptions", BindingFlags.Public | BindingFlags.Instance);
+
+            propertyInfo?.SetValue(options, (byte)2);
+
+        }
+
         var metadataReference = CreateMetadataReference(assemblyPath);
         var compilation = CS.CSharpCompilation.Create(
             assemblyName: null,
-            options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+            options: options,
             syntaxTrees: s_assemblyBootstrap,
             references: GetReferenceAssemblies(assemblyPath)
                 .Select(CreateMetadataReference)
