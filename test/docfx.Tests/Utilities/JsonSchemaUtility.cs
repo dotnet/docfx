@@ -5,7 +5,7 @@ using Json.Schema;
 using System.Text;
 using System.Text.Json;
 
-namespace Docfx.JsonSchemaGenerator.Tests;
+namespace Docfx.Tests;
 
 internal static class JsonSchemaUtility
 {
