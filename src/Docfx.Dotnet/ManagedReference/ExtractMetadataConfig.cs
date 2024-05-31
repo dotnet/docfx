@@ -31,6 +31,8 @@ internal class ExtractMetadataConfig
 
     public bool NoRestore { get; init; }
 
+    public CategoryLayout CategoryLayout { get; init; }
+
     public NamespaceLayout NamespaceLayout { get; init; }
 
     public MemberLayout MemberLayout { get; init; }
