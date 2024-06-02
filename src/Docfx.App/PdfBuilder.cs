@@ -53,9 +53,12 @@ static class PdfBuilder
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null, CancellationToken cancellationToken = default)
     {
-        var outputFolder = Path.GetFullPath(Path.Combine(
-            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(configDirectory, config.Output ?? "") : outputDirectory,
-            config.Dest ?? ""));
+#pragma warning disable CS0618
+        var outputFolder = Path.GetFullPath(
+            string.IsNullOrEmpty(outputDirectory)
+              ? Path.Combine(configDirectory, config.Output ?? config.Dest ?? "")
+              : outputDirectory);
+#pragma warning restore CS0618
 
         Logger.LogInfo($"Searching for manifest in {outputFolder}");
         return CreatePdf(outputFolder, cancellationToken);
