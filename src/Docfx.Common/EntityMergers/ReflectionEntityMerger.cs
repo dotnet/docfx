@@ -80,8 +80,55 @@ public class ReflectionEntityMerger : IMerger
             {
                 return;
             }
+
+
+            // Gets the placement of the override
+            var placement = MergePlacement.None;
+
+            {
+                if (overrides is IItemWithMetadata ovr
+                    && ovr.Metadata.TryGetValue("placement", out var placementValue))
+                {
+                    placement =
+                        placementValue switch
+                        {
+                            "after"   => MergePlacement.After,
+                            "before"  => MergePlacement.Before,
+                            "replace" => MergePlacement.Replace,
+                            _         => MergePlacement.None
+                        };
+                }
+            }
+
+
             foreach (var prop in Props)
             {
+
+                // Placement specified in the override file
+                if (placement != MergePlacement.None
+                    && prop.Prop.Name is "Remarks" or "Summary")
+                {
+                    var o = prop.Prop.GetValue(overrides);
+
+                    if (o is null)
+                        continue;
+
+                    var s = prop.Prop.GetValue(source);
+
+                    s = placement switch
+                    {
+                        MergePlacement.After   => $"{s}{o}",
+                        MergePlacement.Before  => $"{o}{s}",
+                        MergePlacement.Replace => o.ToString()
+                    };
+
+                    prop.Prop.SetValue(source, s);
+
+                    continue;
+                }
+
+
+                // Placement specified in the property
                 switch (prop.Option)
                 {
                     case MergeOption.Merge:
