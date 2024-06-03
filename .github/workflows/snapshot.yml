@@ -1,0 +1,63 @@
+# This workflow update snapshot.
+name: snapshot
+on:
+  workflow_dispatch:
+    inputs:
+      dryrun:
+        type: boolean
+        description: Set `true` to skip commit diffs.
+        default: true
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    environment: ci
+    strategy:
+      fail-fast: false
+    permissions:
+      actions: write    # Required to invoke another workflow with `createWorkflowDispatch`.
+      contents: write   # Required to commit snapshot diffs.
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref_name }}
+        lfs: true
+
+    # Build projects
+    - uses: ./.github/actions/build
+
+    # Update snapshots & accept changes
+    - run: dotnet test -c Release -f net8.0 --no-build --filter Stage=Snapshot
+      working-directory: test/docfx.Snapshot.Tests
+      env:
+        BUILD_SERVER: false # Need to accept file changes automatically.
+
+    # Show diff file names (It's required when using dryrun option)
+    - name: Show diff file names
+      run: |
+        git diff --name-only
+
+    # Commit updated snapshot contents
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      id: auto-commit-action
+      if: ${{ github.event.inputs.dryrun == 'false'}} 
+      with:
+        commit_message: 'test(snapshot): update snapshots ${{ github.sha }}'
+
+    # Invoke CI workflow if changes are committed.
+    - uses: actions/github-script@v7
+      if: ${{ steps.auto-commit-action.outputs.changes_detected == 'true' }} 
+      with:
+        script: |
+          try {
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'ci.yml',
+              ref: '${{ github.ref_name }}',
+            })
+           }
+           catch(error) {
+             console.error(error)
+             core.setFailed(error)
+           }
