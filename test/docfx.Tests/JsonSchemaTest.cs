@@ -4,7 +4,6 @@
 using System.Text.Json;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
-using Docfx.JsonSchemaGenerator.Tests;
 using Docfx.Tests.Common;
 using FluentAssertions;
 using Json.Schema;

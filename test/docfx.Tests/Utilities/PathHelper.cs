@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace Docfx.JsonSchemaGenerator.Tests;
+namespace Docfx.Tests;
 
 internal class PathHelper
 {
