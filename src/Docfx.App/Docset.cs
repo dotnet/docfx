@@ -32,7 +32,7 @@ public static class Docset
     {
         return Exec(configPath, (config, configDirectory) =>
         {
-            RunBuild.Exec(config.build, options, configDirectory);
+            RunBuild.Exec(config.build, options, configDirectory, options.OutputDirectory);
             return Task.CompletedTask;
         });
     }
