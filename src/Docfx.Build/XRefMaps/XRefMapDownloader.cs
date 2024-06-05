@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Net;
 using Docfx.Common;
 
@@ -118,6 +119,24 @@ public sealed class XRefMapDownloader
         {
             case ".zip":
                 return XRefArchive.Open(filePath, XRefArchiveMode.Read);
+
+            case ".gz":
+                {
+                    using var fileStream = File.OpenRead(filePath);
+                    using var stream = new GZipStream(fileStream, CompressionMode.Decompress);
+
+                    switch (Path.GetExtension(Path.GetFileNameWithoutExtension(filePath)).ToLowerInvariant())
+                    {
+                        case ".json":
+                            return await SystemTextJsonUtility.DeserializeAsync<XRefMap>(stream, token);
+                        case ".yml":
+                        default:
+                            {
+                                using var reader = new StreamReader(stream);
+                                return YamlUtility.Deserialize<XRefMap>(reader);
+                            };
+                    }
+                }
 
             case ".json":
                 {
