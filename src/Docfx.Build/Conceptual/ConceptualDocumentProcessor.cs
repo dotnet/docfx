@@ -104,9 +104,14 @@ class ConceptualDocumentProcessor : DisposableDocumentProcessor
             FileLinkSources = model.FileLinkSources,
             UidLinkSources = model.UidLinkSources,
         };
-        if (model.Properties.XrefSpec != null)
+
+        if (((IDictionary<string, object>)model.Properties).TryGetValue("XrefSpec", out var value))
         {
-            result.XRefSpecs = ImmutableArray.Create(model.Properties.XrefSpec);
+            var xrefSpec = value as XRefSpec;
+            if (xrefSpec != null)
+            {
+                result.XRefSpecs = [xrefSpec];
+            }
         }
 
         return result;

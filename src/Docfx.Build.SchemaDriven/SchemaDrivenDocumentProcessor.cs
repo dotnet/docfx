@@ -183,9 +183,13 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
             ExternalXRefSpecs = ImmutableArray.CreateRange(model.Properties.ExternalXRefSpecs)
         };
 
-        if (((IDictionary<string, object>)model.Properties).ContainsKey("XrefSpec"))
+        if (((IDictionary<string, object>)model.Properties).TryGetValue("XrefSpec", out var value))
         {
-            result.XRefSpecs = ImmutableArray.Create(model.Properties.XrefSpec);
+            var xrefSpec = value as XRefSpec;
+            if (xrefSpec != null)
+            {
+                result.XRefSpecs = [xrefSpec];
+            }
         }
 
         return result;
