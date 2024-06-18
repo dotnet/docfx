@@ -161,6 +161,11 @@ body[data-layout="landing"] {
             display: flex;
             align-items: flex-start;
             margin-top: .5rem;
+            
+            >button {
+              margin-top: -.65em;
+              margin-left: -.8em
+            }
           }
 
           article {
