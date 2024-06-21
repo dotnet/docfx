@@ -102,7 +102,7 @@ internal static class YamlMetadataResolver
                         };
                         missingNamespace.DisplayNames.Add(SyntaxLanguage.Default, partialParentNamespace);
                         namespacedItems[partialParentNamespace] = missingNamespace;
-                        allReferences.Add(partialParentNamespace, new());
+                        allReferences.TryAdd(partialParentNamespace, new());
 
                         if (!partialParentNamespace.Contains('.'))
                         {
@@ -137,10 +137,18 @@ internal static class YamlMetadataResolver
         }
 
         foreach (var member in namespacedItems.Values)
+        {
             member.Items = member.Items
                 .OrderBy(x => x.Type == MemberType.Namespace ? 0 : 1)
                 .ThenBy(x => x.Name)
                 .ToList();
+
+            if (member.Type == MemberType.Namespace
+             && member.Items.All(x => x.Type == MemberType.Namespace))
+            {
+                allReferences[member.Name] = new();
+            }
+        }
 
         return root;
     }
