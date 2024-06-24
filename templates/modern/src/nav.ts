@@ -73,7 +73,9 @@ export async function renderNavbar(): Promise<NavItem[]> {
       return []
     }
 
-    const navUrl = new URL(navrel.replace(/.html$/gi, '.json'), window.location.href)
+    const navUrl = navrel.startsWith('/')
+      ? new URL(navrel.replace(/.html$/gi, '.json'), document.baseURI)
+      : new URL(navrel.replace(/.html$/gi, '.json'), window.location.href)
     const { items } = await fetch(navUrl).then(res => res.json())
     return items.map((a: NavItem | NavItemContainer) => {
       if ('items' in a) {

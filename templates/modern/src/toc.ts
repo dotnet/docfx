@@ -23,7 +23,9 @@ export async function renderToc(): Promise<TocNode[]> {
 
   const disableTocFilter = meta('docfx:disabletocfilter') === 'true'
 
-  const tocUrl = new URL(tocrel.replace(/.html$/gi, '.json'), window.location.href)
+  const tocUrl = tocrel.startsWith('/')
+    ? new URL(tocrel.replace(/.html$/gi, '.json'), document.baseURI)
+    : new URL(tocrel.replace(/.html$/gi, '.json'), window.location.href)
   const { items, pdf, pdfFileName } = await (await fetch(tocUrl)).json()
 
   const tocFilterUrl = disableTocFilter ? '' : (localStorage?.getItem('tocFilterUrl') || '')
