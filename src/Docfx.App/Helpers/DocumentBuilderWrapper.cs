@@ -47,7 +47,10 @@ internal static class DocumentBuilderWrapper
         if (!Directory.Exists(pluginDirectory))
             yield break;
 
-        Logger.LogInfo($"Searching custom plugins in directory {pluginDirectory}...");
+        if (pluginDirectory == AppContext.BaseDirectory)
+            Logger.LogInfo($"Searching built-in plugins in directory {pluginDirectory}...");
+        else
+            Logger.LogInfo($"Searching custom plugins in directory {pluginDirectory}...");
 
         foreach (string assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
         {
