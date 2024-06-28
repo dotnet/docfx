@@ -8,7 +8,7 @@
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.2.0.7535" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.7.0" />
     <PackageVersion Include="Jint" Version="3.1.4" />
-    <PackageVersion Include="JsonSchema.Net" Version="7.1.0" />
+    <PackageVersion Include="JsonSchema.Net" Version="7.1.1" />
     <PackageVersion Include="Markdig" Version="0.37.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.44.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
