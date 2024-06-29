@@ -41,6 +41,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     private readonly GlobRegexItem[][] _items;
     private readonly bool _negate = false;
+    private readonly bool _allowDotMatch = false;
     private readonly bool _ignoreCase = false;
     #endregion
 
@@ -54,6 +55,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
         Options = options;
         Raw = pattern;
+        _allowDotMatch = Options.HasFlag(GlobMatcherOptions.AllowDotMatch);
         _ignoreCase = Options.HasFlag(GlobMatcherOptions.IgnoreCase);
         _negate = ParseNegate(ref pattern, Options);
         _items = Compile(pattern).ToArray();
@@ -172,7 +174,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         // .abc will not be matched unless . is explicitly specified
         if (globPart.Length > 0 && globPart[0] != '.')
         {
-            patternStart = Options.HasFlag(GlobMatcherOptions.AllowDotMatch) ? PatternStartWithDotAllowed : PatternStartWithoutDotAllowed;
+            patternStart = _allowDotMatch ? PatternStartWithDotAllowed : PatternStartWithoutDotAllowed;
         }
 
         for (int i = 0; i < globPart.Length; i++)
@@ -295,7 +297,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
                 {
                     return SingleStarToRegex;
                 }
-                if (Options.HasFlag(GlobMatcherOptions.AllowDotMatch))
+                if (_allowDotMatch)
                 {
                     // ** when dots are allowed, allows anything except .. and .
                     // not (^ or / followed by one or two dots followed by $ or /)
@@ -385,7 +387,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
                         break;
                     case GlobRegexItemType.PlainText:
                         StringComparison comparison = StringComparison.Ordinal;
-                        if (Options.HasFlag(GlobMatcherOptions.IgnoreCase))
+                        if (_ignoreCase)
                         {
                             comparison = StringComparison.OrdinalIgnoreCase;
                         }
@@ -408,7 +410,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
     {
         if (filePart == "."
             || filePart == ".."
-            || (!Options.HasFlag(GlobMatcherOptions.AllowDotMatch) && filePart.StartsWith(".", StringComparison.Ordinal)))
+            || (!_allowDotMatch && filePart.StartsWith(".", StringComparison.Ordinal)))
         {
             return true;
         }
