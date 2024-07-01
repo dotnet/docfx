@@ -51,12 +51,24 @@ async function buildModernTemplate() {
     entryPoints: [
       'modern/src/docfx.ts',
       'modern/src/search-worker.ts',
+      'modern/src/search.ts',
     ],
     external: [
       './main.js'
     ],
     plugins: [
-      sassPlugin()
+      sassPlugin(),
+      {
+        name: 'Exclude `./search` script from bundle',
+        setup(build) {
+          build.onResolve({ filter: /^\.\/search$/ }, args => {
+            return {
+              path: './search.min.js',
+              external: true
+            };
+          });
+        }
+      }
     ],
     loader,
   }
