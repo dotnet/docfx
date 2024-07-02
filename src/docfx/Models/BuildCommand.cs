@@ -29,7 +29,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
         });
     }
 
-    internal static void MergeOptionsToConfig(BuildCommandOptions options, BuildJsonConfig config, string configDirectory)
+    internal static void MergeOptionsToConfig(DefaultBuildCommandOptions options, BuildJsonConfig config, string configDirectory)
     {
         // base directory for content from command line is current directory
         // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"

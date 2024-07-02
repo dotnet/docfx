@@ -25,6 +25,7 @@ internal class Program
             config.AddCommand<BuildCommand>("build");
             config.AddCommand<MetadataCommand>("metadata");
             config.AddCommand<ServeCommand>("serve");
+            config.AddCommand<WatchCommand>("watch");
             config.AddCommand<PdfCommand>("pdf");
             config.AddBranch("template", template =>
             {
