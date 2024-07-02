@@ -51,12 +51,24 @@ async function buildModernTemplate() {
     entryPoints: [
       'modern/src/docfx.ts',
       'modern/src/search-worker.ts',
+      'modern/src/search.ts',
     ],
     external: [
       './main.js'
     ],
     plugins: [
-      sassPlugin()
+      sassPlugin(),
+      {
+        name: 'Exclude `./search` script from bundle',
+        setup(build) {
+          build.onResolve({ filter: /^\.\/search$/ }, args => {
+            return {
+              path: './search.min.js',
+              external: true
+            };
+          });
+        }
+      }
     ],
     loader,
   }
@@ -113,8 +125,8 @@ function copyToDist() {
 }
 
 function buildContent() {
-  exec(`dotnet run -f net7.0 --project ../src/docfx/docfx.csproj -- metadata ${project}/docfx.json`)
-  exec(`dotnet run -f net7.0 --project ../src/docfx/docfx.csproj --no-build -- build ${project}/docfx.json`)
+  exec(`dotnet run -f net8.0 --project ../src/docfx/docfx.csproj -- metadata ${project}/docfx.json`)
+  exec(`dotnet run -f net8.0 --project ../src/docfx/docfx.csproj --no-build -- build ${project}/docfx.json`)
 
   function exec(cmd) {
     if (spawnSync(cmd, { stdio: 'inherit', shell: true }).status !== 0) {
