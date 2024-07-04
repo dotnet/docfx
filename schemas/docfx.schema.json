@@ -399,6 +399,7 @@
     "sitemap": {
       "type": "object",
       "description": "Specifies the options for the sitemap.xml file.",
+      "additionalProperties": false,
       "properties": {
         "baseUrl": {
           "type": "string",
@@ -465,6 +466,7 @@
     "markdownEngineProperties": {
       "description": "Set the parameters for markdown engine, value should be a JSON string.",
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "enableSourceInfo": {
           "type": "boolean",
@@ -520,6 +522,7 @@
     "plantUmlOptions": {
       "type": "object",
       "description": "PlantUml extension configuration parameters",
+      "additionalProperties": false,
       "properties": {
         "javaPath": {
           "type": "string",
@@ -572,6 +575,7 @@
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
           "src": {
             "$ref": "#/$defs/srcFileMapping"
@@ -742,6 +746,7 @@
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "properties": {
           "content": {
             "$ref": "#/$defs/contentFileMapping"
