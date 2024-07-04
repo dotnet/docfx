@@ -10,7 +10,7 @@
     <PackageVersion Include="Jint" Version="3.1.4" />
     <PackageVersion Include="JsonSchema.Net" Version="7.1.2" />
     <PackageVersion Include="Markdig" Version="0.37.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.44.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.45.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
