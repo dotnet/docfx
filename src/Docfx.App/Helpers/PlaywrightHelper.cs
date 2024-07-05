@@ -25,7 +25,7 @@ internal static class PlaywrightHelper
             throw new DocfxException("Node.js executable is not found. Try to install Node.js or set the `PLAYWRIGHT_NODEJS_PATH` environment variable.");
         }
 
-        Logger.LogInfo($"Using custom Node.js {nodeVersion} executable.");
+        Logger.LogInfo($"Using Node.js {nodeVersion} executable.");
         Logger.LogVerbose($"Path: {exePath}");
 
         Environment.SetEnvironmentVariable("PLAYWRIGHT_NODEJS_PATH", exePath, EnvironmentVariableTarget.Process);
