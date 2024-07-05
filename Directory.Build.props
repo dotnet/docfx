@@ -59,4 +59,12 @@
     </PackageReference>
   </ItemGroup>
 
+
+  <!-- Remove Node.js runtime dependencies that used by playwright -->
+  <Target Name="RemoveNodeJsRuntimes" AfterTargets="CopyPlaywrightFilesToOutput">
+    <ItemGroup>
+      <Content Remove="@(Content)" Condition="$([System.String]::Copy('%(Content.PlaywrightFolder)').Contains('node\'))" />
+    </ItemGroup>
+  </Target>
+
 </Project>
