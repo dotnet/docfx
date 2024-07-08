@@ -148,24 +148,6 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
             (uid, old) => old + spec);
     }
 
-    internal void SaveExternalXRefSpec(TextWriter writer)
-    {
-        JsonUtility.Serialize(writer, ExternalXRefSpec);
-    }
-
-    internal void LoadExternalXRefSpec(TextReader reader)
-    {
-        if (!ExternalXRefSpec.IsEmpty)
-        {
-            throw new InvalidOperationException("Cannot load after reporting external xref spec.");
-        }
-        var dict = JsonUtility.Deserialize<Dictionary<string, XRefSpec>>(reader);
-        foreach (var pair in dict)
-        {
-            ExternalXRefSpec[pair.Key] = pair.Value;
-        }
-    }
-
     public void ResolveExternalXRefSpec()
     {
         Task.WaitAll(

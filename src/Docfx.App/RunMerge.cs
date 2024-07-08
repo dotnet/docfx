@@ -83,17 +83,6 @@ internal static class RunMerge
         return new FileMetadata(baseDirectory, result);
     }
 
-    private static IEnumerable<string> GetFilesFromFileMapping(FileMapping mapping)
-    {
-        if (mapping == null)
-        {
-            return Enumerable.Empty<string>();
-        }
-        return from file in mapping.Items
-               from item in file.Files
-               select Path.Combine(file.Src ?? Directory.GetCurrentDirectory(), item);
-    }
-
     private static FileCollection GetFileCollectionFromFileMapping(string baseDirectory, DocumentType type, FileMapping files)
     {
         var result = new FileCollection(baseDirectory);

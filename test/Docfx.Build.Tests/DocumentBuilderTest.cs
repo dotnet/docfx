@@ -674,11 +674,6 @@ exports.getOptions = function (){
     {
         private readonly Dictionary<Uri, HttpResponseMessage> _fakeResponses = new();
 
-        public void AddFakeResponse(Uri uri, HttpResponseMessage responseMessage)
-        {
-            _fakeResponses.Add(uri, responseMessage);
-        }
-
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (_fakeResponses.ContainsKey(request.RequestUri))

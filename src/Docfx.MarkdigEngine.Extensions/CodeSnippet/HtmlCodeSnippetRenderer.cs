@@ -432,35 +432,6 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         return false;
     }
 
-    private static int GetTagLineNumber(string[] lines, string tagLine)
-    {
-        for (int index = 0; index < lines.Length; index++)
-        {
-            var line = lines[index];
-            var targetColumn = 0;
-            var match = true;
-
-            for (int column = 0; column < line.Length; column++)
-            {
-                var c = line[column];
-                if (c != ' ')
-                {
-                    if (targetColumn >= tagLine.Length || tagLine[targetColumn] != char.ToUpper(c))
-                    {
-                        match = false;
-                        break;
-                    }
-
-                    targetColumn++;
-                }
-            }
-
-            if (match && targetColumn == tagLine.Length) return index + 1;
-        }
-
-        return -1;
-    }
-
     private string GetWarning()
     {
         var warningTitle = _context.GetToken(WarningTitleId) ?? DefaultWarningTitle;
