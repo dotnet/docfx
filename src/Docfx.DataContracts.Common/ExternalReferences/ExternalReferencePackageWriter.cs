@@ -12,7 +12,7 @@ public class ExternalReferencePackageWriter : IDisposable
     private readonly string _packageFile;
     private readonly ZipArchive _zip;
 
-    private ExternalReferencePackageWriter(string packageFile, Uri baseUri, bool append)
+    private ExternalReferencePackageWriter(string packageFile, bool append)
     {
         _packageFile = packageFile;
         if (append && File.Exists(packageFile))
@@ -27,12 +27,12 @@ public class ExternalReferencePackageWriter : IDisposable
 
     public static ExternalReferencePackageWriter Create(string packageFile, Uri baseUri)
     {
-        return new ExternalReferencePackageWriter(packageFile, baseUri, false);
+        return new ExternalReferencePackageWriter(packageFile, false);
     }
 
     public static ExternalReferencePackageWriter Append(string packageFile, Uri baseUri)
     {
-        return new ExternalReferencePackageWriter(packageFile, baseUri, true);
+        return new ExternalReferencePackageWriter(packageFile, true);
     }
 
     public void AddOrUpdateEntry(string entryName, List<ReferenceViewModel> vm)

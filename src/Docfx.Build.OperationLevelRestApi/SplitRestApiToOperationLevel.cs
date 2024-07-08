@@ -73,7 +73,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
             operationModel.Metadata["_isSplittedToOperation"] = true;
             var newModel = GenerateNewFileModel(model, operationModel);
             splittedModels.Add(newModel);
-            treeItems.Add(ConvertToTreeItem(operationModel, newModel.Key));
+            treeItems.Add(ConvertToTreeItem(operationModel));
         }
 
         // Reset children
@@ -167,7 +167,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         return newModel;
     }
 
-    private static TreeItem ConvertToTreeItem(RestApiRootItemViewModel root, string fileKey)
+    private static TreeItem ConvertToTreeItem(RestApiRootItemViewModel root)
     {
         return new TreeItem
         {

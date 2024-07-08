@@ -61,7 +61,7 @@ internal class YamlModelGenerator
         syntax.Content[SyntaxLanguage.VB] = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.VB, filter);
     }
 
-    public string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
+    public string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references)
     {
         var id = VisitorHelper.GetId(symbol);
         var reference = new ReferenceItem
@@ -143,7 +143,7 @@ internal class YamlModelGenerator
 
         if (!reference.IsDefinition.Value && rawId != null)
         {
-            reference.Definition = AddReference(originalSymbol.OriginalDefinition, references, adapter);
+            reference.Definition = AddReference(originalSymbol.OriginalDefinition, references);
         }
 
         reference.Parent = GetReferenceParent(originalSymbol, typeGenericParameters, methodGenericParameters, references, adapter);
