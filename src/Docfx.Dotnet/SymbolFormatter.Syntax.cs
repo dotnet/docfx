@@ -38,8 +38,10 @@ partial class SymbolFormatter
                 SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier |
                 SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
                 SymbolDisplayMiscellaneousOptions.AllowDefaultLiteral |
-                SymbolDisplayMiscellaneousOptions.UseSpecialTypes |
-                SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix,
+                SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix |
+                (ExtractMetadataConfig.UseClrTypeNames
+                    ? SymbolDisplayMiscellaneousOptions.None
+                    : SymbolDisplayMiscellaneousOptions.UseSpecialTypes),
             localOptions: SymbolDisplayLocalOptions.IncludeType,
             propertyStyle: SymbolDisplayPropertyStyle.ShowReadWriteDescriptor,
             delegateStyle: SymbolDisplayDelegateStyle.NameAndSignature,
@@ -47,8 +49,13 @@ partial class SymbolFormatter
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes);
 
         private static readonly SymbolDisplayFormat s_syntaxTypeNameFormat = new(
-            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes,
+            genericsOptions:
+                SymbolDisplayGenericsOptions.IncludeTypeParameters,
+            miscellaneousOptions:
+                SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier |
+                (ExtractMetadataConfig.UseClrTypeNames
+                    ? SymbolDisplayMiscellaneousOptions.None
+                    : SymbolDisplayMiscellaneousOptions.UseSpecialTypes),
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes);
 
         private static readonly SymbolDisplayFormat s_syntaxEnumConstantFormat = s_syntaxFormat
