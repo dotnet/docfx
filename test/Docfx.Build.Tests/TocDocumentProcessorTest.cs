@@ -846,7 +846,7 @@ items:
     public void UrlDecodeHrefInMarkdownToc()
     {
         // Arrange
-        var tocContent = @"# [NAME](a%20b.md)";
+        var tocContent = "# [NAME](a%20b.md)";
         var files = new FileCollection(_inputFolder);
         var tocFile = _fileCreator.CreateFile(tocContent, FileType.MarkdownToc);
         var markdownFile = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileNameWithoutExtension: "a b");

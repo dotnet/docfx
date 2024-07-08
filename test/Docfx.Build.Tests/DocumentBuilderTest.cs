@@ -224,7 +224,7 @@ public class DocumentBuilderTest : TestBase
                         $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"32\">GitHub</a>",
                         $"Test href generator: <a href=\"Git.md?shouldBeAbbreviated=true#test\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"33\">Git</a></p>",
                         "<p>",
-                        @"test",
+                        "test",
                         "</p>"),
                     model["conceptual"]);
                 Assert.Equal(

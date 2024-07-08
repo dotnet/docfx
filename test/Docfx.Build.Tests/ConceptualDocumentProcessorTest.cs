@@ -44,7 +44,7 @@ public class ConceptualDocumentProcessorTest : TestBase
 
         // Prepare conceptual template
         var templateCreator = new FileCreator(_templateFolder);
-        var file = templateCreator.CreateFile(@"{{{conceptual}}}", "conceptual.html.tmpl", "default");
+        var file = templateCreator.CreateFile("{{{conceptual}}}", "conceptual.html.tmpl", "default");
         _templateManager = new TemplateManager(new List<string> { "default" }, null, _templateFolder);
     }
 
@@ -370,7 +370,7 @@ Some content";
 
         // Add template for redirection.
         var templateCreator = new FileCreator(_templateFolder);
-        templateCreator.CreateFile(@"{{{redirect_url}}}", "redirection.html.tmpl", "default");
+        templateCreator.CreateFile("{{{redirect_url}}}", "redirection.html.tmpl", "default");
 
         // act
         BuildDocument(files, metadata);

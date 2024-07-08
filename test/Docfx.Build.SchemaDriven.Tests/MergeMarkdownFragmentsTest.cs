@@ -351,7 +351,7 @@ With [!include[invalid](invalid.md)]",
         // modify fragments
         UpdateFile(
             "Suppressions.yml.md",
-            new string[] { @"# `management.azure.com.advisor.suppressions`",
+            new string[] { "# `management.azure.com.advisor.suppressions`",
                 "## ``summary``",
                 "I update a summary.",
                 "With [!include[invalid](invalid.md)]",
