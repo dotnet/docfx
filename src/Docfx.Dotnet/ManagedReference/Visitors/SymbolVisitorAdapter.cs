@@ -406,7 +406,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             case MemberType.Constructor:
             case MemberType.Method:
             case MemberType.Operator:
-                return _generator.AddOverloadReference(symbol, _references, this);
+                return _generator.AddOverloadReference(symbol, _references);
             default:
                 Debug.Fail("Unexpected member type.");
                 throw new InvalidOperationException("Unexpected member type.");

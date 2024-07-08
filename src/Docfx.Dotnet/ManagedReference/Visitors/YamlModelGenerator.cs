@@ -86,7 +86,7 @@ internal class YamlModelGenerator
         return id;
     }
 
-    public string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
+    public string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references)
     {
         var uidBody = VisitorHelper.GetOverloadIdBody(symbol);
         var reference = new ReferenceItem

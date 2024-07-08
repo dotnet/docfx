@@ -16,7 +16,7 @@ namespace Docfx.Dotnet;
 
 partial class DotnetApiCatalog
 {
-    private static async Task<List<(IAssemblySymbol symbol, Compilation compilation)>> Compile(ExtractMetadataConfig config, DotnetApiOptions options)
+    private static async Task<List<(IAssemblySymbol symbol, Compilation compilation)>> Compile(ExtractMetadataConfig config)
     {
         var files = config.Files?.Select(s => new FileInformation(s))
             .GroupBy(f => f.Type)
