@@ -4,3 +4,6 @@
 .xrefmap.json filter=lfs diff=lfs merge=lfs -text
 # Use LF for templates files.
 templates/** eol=lf
+
+# VerifyTests
+*.verified.txt text eol=lf working-tree-encoding=UTF-8
