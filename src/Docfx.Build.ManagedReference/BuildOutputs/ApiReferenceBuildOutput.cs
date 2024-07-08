@@ -39,7 +39,7 @@ public class ApiReferenceBuildOutput
     [JsonProperty("definition")]
     [JsonPropertyName("definition")]
     public string Definition { get; set; }
-      
+
     [YamlMember(Alias = "isExternal")]
     [JsonProperty("isExternal")]
     [JsonPropertyName("isExternal")]
@@ -173,7 +173,7 @@ public class ApiReferenceBuildOutput
     [ExtensibleMember]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> Metadata { get; set; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]

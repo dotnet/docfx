@@ -9,5 +9,5 @@ public class GroupInfo
 
     public string Destination { get; set; }
 
-    public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> Metadata { get; set; } = new();
 }
