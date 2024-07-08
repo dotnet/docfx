@@ -70,7 +70,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
     public Regex GetRegex()
     {
         var regexParts = _items.Select(ConvertSingleGlob);
-        var content = string.Join("|", regexParts);
+        var content = string.Join('|', regexParts);
         // Matches the entire pattern
         content = $"^(?:{content})$";
         if (_negate)

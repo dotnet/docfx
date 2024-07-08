@@ -36,7 +36,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
                 var duplicateKeys = tocRestructions.Where(t => treeItemRestructions.Any(i => i.Key == t.Key)).Select(i => i.Key);
                 if (duplicateKeys.Any())
                 {
-                    Logger.LogWarning($"Model with the key {string.Join(",", duplicateKeys)} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
+                    Logger.LogWarning($"Model with the key {string.Join(',', duplicateKeys)} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
                 }
                 else
                 {
@@ -129,7 +129,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
             };
 
             // Reset child's uid to "originalUid/operation", that is to say, overwrite of original Uid will show in operation page.
-            child.Uid = string.Join("/", child.Uid, "operation");
+            child.Uid = string.Join('/', child.Uid, "operation");
 
             // Reset html id, which is set by template
             child.HtmlId = null;

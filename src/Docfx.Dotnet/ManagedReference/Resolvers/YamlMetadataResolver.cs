@@ -20,7 +20,7 @@ internal static class YamlMetadataResolver
     };
 
     /// <summary>
-    /// TODO: input Namespace list instead; 
+    /// TODO: input Namespace list instead;
     /// TODO: Save to ...yml.map
     /// </summary>
     /// <param name="allMembers"></param>
@@ -155,7 +155,7 @@ internal static class YamlMetadataResolver
 
     private static IEnumerable<string> GetParentNamespaces(string originalNamespace)
     {
-        var namespaces = originalNamespace.Split(".");
+        var namespaces = originalNamespace.Split('.');
         var fullNamespace = "";
         foreach (var @namespace in namespaces)
         {
