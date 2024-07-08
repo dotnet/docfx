@@ -47,6 +47,11 @@ static class PdfBuilder
         public string? pdfFooterTemplate { get; init; }
     }
 
+    static PdfBuilder()
+    {
+        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
+    }
+
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
     {
         var outputFolder = Path.GetFullPath(Path.Combine(

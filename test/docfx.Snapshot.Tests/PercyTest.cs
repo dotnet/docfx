@@ -38,6 +38,7 @@ public class PercyTest
 
     static PercyTest()
     {
+        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
         Microsoft.Playwright.Program.Main(["install", "chromium"]);
     }
 
