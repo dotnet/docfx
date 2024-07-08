@@ -49,37 +49,13 @@ public class ExternalReferencePackageCollection : IDisposable
         return false;
     }
 
-    #region IDisposable Support
-
-    private bool disposedValue = false;
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                foreach (var reader in Readers)
-                {
-                    reader.Dispose();
-                }
-            }
-            disposedValue = true;
-        }
-    }
-
-    ~ExternalReferencePackageCollection()
-    {
-        Dispose(false);
-    }
-
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        foreach (var reader in Readers)
+        {
+            reader.Dispose();
+        }
     }
-
-    #endregion
 
     private sealed class ReferenceViewModelCacheItem : IEquatable<ReferenceViewModelCacheItem>
     {

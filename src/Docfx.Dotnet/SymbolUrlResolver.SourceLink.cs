@@ -115,7 +115,6 @@ partial class SymbolUrlResolver
 
         public void Dispose()
         {
-            GC.SuppressFinalize(this);
             _peReader.Dispose();
             _pdbReaderProvider.Dispose();
         }
