@@ -261,14 +261,10 @@ internal class XmlComment
             string description = GetXmlValue(nav);
             if (!string.IsNullOrEmpty(name))
             {
-                if (result.ContainsKey(name))
+                if (!result.TryAdd(name, description))
                 {
                     string path = context.Source?.Remote != null ? Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Remote.Path) : context.Source?.Path;
                     Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", file: StringExtension.ToDisplayPath(path), line: context.Source?.StartLine.ToString());
-                }
-                else
-                {
-                    result.Add(name, description);
                 }
             }
         }

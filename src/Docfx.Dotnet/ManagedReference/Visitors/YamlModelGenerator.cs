@@ -74,11 +74,7 @@ internal class YamlModelGenerator
         };
         GenerateReference(symbol, reference, false);
 
-        if (!references.ContainsKey(id))
-        {
-            references[id] = reference;
-        }
-        else
+        if (!references.TryAdd(id, reference))
         {
             references[id].Merge(reference);
         }
@@ -101,11 +97,7 @@ internal class YamlModelGenerator
         GenerateReference(symbol, reference, true);
 
         var uid = uidBody + "*";
-        if (!references.ContainsKey(uid))
-        {
-            references[uid] = reference;
-        }
-        else
+        if (!references.TryAdd(uid, reference))
         {
             references[uid].Merge(reference);
         }
@@ -149,11 +141,7 @@ internal class YamlModelGenerator
         reference.Parent = GetReferenceParent(originalSymbol, typeGenericParameters, methodGenericParameters, references, adapter);
         reference.CommentId = VisitorHelper.GetCommentId(originalSymbol);
 
-        if (!references.ContainsKey(id))
-        {
-            references[id] = reference;
-        }
-        else
+        if (!references.TryAdd(id, reference))
         {
             references[id].Merge(reference);
         }
