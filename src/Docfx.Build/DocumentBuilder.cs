@@ -92,11 +92,11 @@ public class DocumentBuilder : IDisposable
 
             if (parameter.Files.Count == 0)
             {
-                manifests.Add(new Manifest() { SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory) });
+                manifests.Add(new Manifest { SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory) });
             }
             else
             {
-                if (!parameter.Files.EnumerateFiles().Any(s => s.Type == DocumentType.Article))
+                if (!parameter.Files.EnumerateFiles().Any(static s => s.Type == DocumentType.Article))
                 {
                     if (!string.IsNullOrEmpty(parameter.GroupInfo?.Name))
                     {

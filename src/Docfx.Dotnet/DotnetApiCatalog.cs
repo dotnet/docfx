@@ -169,8 +169,8 @@ public static partial class DotnetApiCatalog
             MemberLayout = configModel?.MemberLayout ?? default,
             EnumSortOrder = configModel?.EnumSortOrder ?? default,
             AllowCompilationErrors = configModel?.AllowCompilationErrors ?? false,
-            Files = expandedFiles.Items.SelectMany(s => s.Files).ToList(),
-            References = expandedReferences?.Items.SelectMany(s => s.Files).ToList(),
+            Files = expandedFiles.Items.SelectMany(static s => s.Files).ToList(),
+            References = expandedReferences?.Items.SelectMany(static s => s.Files).ToList()
         };
     }
 }
