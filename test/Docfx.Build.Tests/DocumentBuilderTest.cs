@@ -681,9 +681,9 @@ exports.getOptions = function (){
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (_fakeResponses.ContainsKey(request.RequestUri))
+            if (_fakeResponses.TryGetValue(request.RequestUri, out HttpResponseMessage response))
             {
-                return Task.FromResult(_fakeResponses[request.RequestUri]);
+                return Task.FromResult(response);
             }
             else
             {

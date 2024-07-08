@@ -59,9 +59,9 @@ public class SchemaFragmentsIterator
                 var propSchema = schema.Properties[key];
                 if (propSchema.Type == SchemaValueType.Object || propSchema.Type == SchemaValueType.Array)
                 {
-                    if (map.Children.ContainsKey(key))
+                    if (map.Children.TryGetValue(key, out YamlNode child))
                     {
-                        TraverseCore(map.Children[key], fragments, propSchema, oPathPrefix + key, uid);
+                        TraverseCore(child, fragments, propSchema, oPathPrefix + key, uid);
                     }
                 }
                 else
@@ -88,9 +88,9 @@ public class SchemaFragmentsIterator
                 {
                     if (item is YamlMappingNode mapNode)
                     {
-                        if (mapNode.Children.ContainsKey(mergeKey))
+                        if (mapNode.Children.TryGetValue(mergeKey, out YamlNode child))
                         {
-                            var opath = $"{parentOPath}[{mergeKey}=\"{mapNode.Children[mergeKey]}\"]";
+                            var opath = $"{parentOPath}[{mergeKey}=\"{child}\"]";
                             TraverseCore(item, fragments, schema.Items, opath, uid);
                         }
                         else
