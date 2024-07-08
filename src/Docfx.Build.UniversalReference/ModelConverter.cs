@@ -394,7 +394,7 @@ public static class ModelConverter
             result.Add(new ApiLanguageValuePair<T>
             {
                 Language = language,
-                Value = values.ContainsKey(language) ? values[language] : defaultValue,
+                Value = values.GetValueOrDefault(language, defaultValue),
             });
         }
 
