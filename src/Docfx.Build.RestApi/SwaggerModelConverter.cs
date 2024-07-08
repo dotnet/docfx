@@ -94,14 +94,7 @@ public static class SwaggerModelConverter
                         };
 
                         // TODO: line number
-                        if (swagger.Metadata.TryGetValue(Constants.PropertyName.Source, out object value))
-                        {
-                            itemVm.Metadata[Constants.PropertyName.Source] = value;
-                        }
-                        else
-                        {
-                            itemVm.Metadata[Constants.PropertyName.Source] = null;
-                        }
+                        itemVm.Metadata[Constants.PropertyName.Source] = swagger.Metadata.GetValueOrDefault(Constants.PropertyName.Source);
                         vm.Children.Add(itemVm);
                     }
                 }
