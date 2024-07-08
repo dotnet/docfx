@@ -9,19 +9,17 @@ namespace Docfx.DataContracts.Common;
 
 public class ExternalReferencePackageWriter : IDisposable
 {
-    private readonly string _packageFile;
     private readonly ZipArchive _zip;
 
     private ExternalReferencePackageWriter(string packageFile, Uri baseUri, bool append)
     {
-        _packageFile = packageFile;
         if (append && File.Exists(packageFile))
         {
-            _zip = new ZipArchive(new FileStream(_packageFile, FileMode.Open, FileAccess.ReadWrite), ZipArchiveMode.Update);
+            _zip = new ZipArchive(new FileStream(packageFile, FileMode.Open, FileAccess.ReadWrite), ZipArchiveMode.Update);
         }
         else
         {
-            _zip = new ZipArchive(new FileStream(_packageFile, FileMode.Create, FileAccess.ReadWrite), ZipArchiveMode.Create);
+            _zip = new ZipArchive(new FileStream(packageFile, FileMode.Create, FileAccess.ReadWrite), ZipArchiveMode.Create);
         }
     }
 
