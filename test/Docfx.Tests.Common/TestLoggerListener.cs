@@ -7,7 +7,7 @@ namespace Docfx.Tests.Common;
 
 public class TestLoggerListener : ILoggerListener
 {
-    public List<ILogItem> Items { get; } = new List<ILogItem>();
+    public List<ILogItem> Items { get; } = new();
 
     private readonly Func<ILogItem, bool> _filter;
 

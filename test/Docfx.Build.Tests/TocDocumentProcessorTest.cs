@@ -62,7 +62,7 @@ public class TocDocumentProcessorTest : TestBase
         {
             Items = new List<TocItemViewModel>
             {
-                new TocItemViewModel
+                new()
                 {
                     Name = "Constructor",
                     Href = $"{href}.md",
@@ -96,19 +96,19 @@ public class TocDocumentProcessorTest : TestBase
         {
             Items = new List<TocItemViewModel>
             {
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic1 Language",
                     Href = "/href1",
                     TopicHref = "/href1",
                     Items = new List<TocItemViewModel>
                     {
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.1 Language C#",
                             Items = new List<TocItemViewModel>
                             {
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "Topic1.1.1",
                                     Href = "/href1.1.1",
@@ -116,7 +116,7 @@ public class TocDocumentProcessorTest : TestBase
                                 }
                             }
                         },
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.2",
                             Href = string.Empty,
@@ -124,7 +124,7 @@ public class TocDocumentProcessorTest : TestBase
                         }
                     }
                 },
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic2",
                     Href = "http://href.com",
@@ -160,21 +160,21 @@ public class TocDocumentProcessorTest : TestBase
         {
             Items = new List<TocItemViewModel>
             {
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic1",
                     Href = "/href1",
                     TopicHref = "/href1",
                     Items = new List<TocItemViewModel>
                     {
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.1",
                             Href = file1,
                             TopicHref = file1,
                             Items = new List<TocItemViewModel>
                             {
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "Topic1.1.1",
                                     Href = file2,
@@ -182,7 +182,7 @@ public class TocDocumentProcessorTest : TestBase
                                 }
                             }
                         },
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.2",
                             Href = string.Empty,
@@ -190,13 +190,13 @@ public class TocDocumentProcessorTest : TestBase
                         }
                     }
                 },
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic2",
                     Href = "http://href.com",
                     TopicHref = "http://href.com"
                 },
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic3",
                     Href = "invalid.md",
@@ -240,21 +240,21 @@ public class TocDocumentProcessorTest : TestBase
         {
             Items = new List<TocItemViewModel>
             {
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic1",
                     Href = file1,
                     TopicHref = file1,
                     Items = new List<TocItemViewModel>
                     {
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.1",
                             Href = file1, // For relative file, href keeps unchanged
                             Homepage = file2, // Homepage always keeps unchanged
                             TopicHref = file2,
                         },
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.2",
                             Href = file1, // For relative folder, href should be overwritten by homepage
@@ -264,7 +264,7 @@ public class TocDocumentProcessorTest : TestBase
                         }
                     }
                 },
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic2",
                     Href = file2,
@@ -310,14 +310,14 @@ items:
         {
             Items = new List<TocItemViewModel>
             {
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic1",
                     Href = file1,
                     TopicHref = file1,
                     Items = new List<TocItemViewModel>
                     {
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.1",
                             Href = file1, // For relative file, href keeps unchanged
@@ -379,14 +379,14 @@ items:
         {
             Items = new List<TocItemViewModel>
             {
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic1",
                     Href = file1,
                     TopicHref = file1,
                     Items = new List<TocItemViewModel>
                     {
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.1",
                             IncludedFrom = "~/sub1/toc.md",
@@ -394,25 +394,25 @@ items:
                             TopicHref = null,
                             Items = new List<TocItemViewModel>
                             {
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "Topic",
                                     Href = file2,
                                     TopicHref = file2,
                                 },
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "ReferencedToc",
                                     IncludedFrom = "~/sub1/sub2/toc.yml",
                                     Items = new List<TocItemViewModel>
                                     {
-                                        new TocItemViewModel
+                                        new()
                                         {
                                             Name = "Topic",
                                             Href = file3,
                                             TopicHref = file3,
                                         },
-                                        new TocItemViewModel
+                                        new()
                                         {
                                             Name = "NotExistTopic",
                                             Href = "sub1/sub2/a/b/c.md",
@@ -421,13 +421,13 @@ items:
                                     }
                                 },
 
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "ReferencedToc2",
                                     IncludedFrom = "~/sub1/sub3/toc.md",
                                     Items = new List<TocItemViewModel>
                                     {
-                                        new TocItemViewModel
+                                        new()
                                         {
                                             Name = "Not-existed-md",
                                             Href = "sub1/sub3/sub2/notexist.md",
@@ -435,7 +435,7 @@ items:
                                         },
                                     }
                                 },
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "Not-existed-md",
                                     Href = "sub1/sub2/notexist.md",
@@ -443,7 +443,7 @@ items:
                                 }
                             }
                         },
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.2",
                             Href = file1, // For referenced toc, href should be overwritten by homepage
@@ -452,25 +452,25 @@ items:
                             Homepage = file1,
                             Items = new List<TocItemViewModel>
                             {
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "Topic",
                                     Href = file2,
                                     TopicHref = file2,
                                 },
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "ReferencedToc",
                                     IncludedFrom = "~/sub1/sub2/toc.yml",
                                     Items = new List<TocItemViewModel>
                                     {
-                                        new TocItemViewModel
+                                        new()
                                         {
                                             Name = "Topic",
                                             Href = file3,
                                             TopicHref = file3,
                                         },
-                                        new TocItemViewModel
+                                        new()
                                         {
                                             Name = "NotExistTopic",
                                             Href = "sub1/sub2/a/b/c.md",
@@ -478,13 +478,13 @@ items:
                                         }
                                     }
                                 },
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "ReferencedToc2",
                                     IncludedFrom = "~/sub1/sub3/toc.md",
                                     Items = new List<TocItemViewModel>
                                     {
-                                        new TocItemViewModel
+                                        new()
                                         {
                                             Name = "Not-existed-md",
                                             Href = "sub1/sub3/sub2/notexist.md",
@@ -492,7 +492,7 @@ items:
                                         }
                                     }
                                 },
-                                new TocItemViewModel
+                                new()
                                 {
                                     Name = "Not-existed-md",
                                     Href = "sub1/sub2/notexist.md",
@@ -502,20 +502,20 @@ items:
                         }
                     }
                 },
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic2",
                     IncludedFrom = "~/sub1/sub2/toc.yml",
                     Href = null,
                     Items = new List<TocItemViewModel>
                     {
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic",
                             Href = file3,
                             TopicHref = file3,
                         },
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "NotExistTopic",
                             Href = "sub1/sub2/a/b/c.md",
@@ -638,7 +638,7 @@ items:
         {
             Items = new List<TocItemViewModel>
             {
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic1",
                     Href = "/Topic1/",
@@ -647,7 +647,7 @@ items:
                     TopicHref = "/Topic1/index.html",
                     Items = new List<TocItemViewModel>
                     {
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.1",
                             Href = "/Topic1.1/",
@@ -655,7 +655,7 @@ items:
                             Homepage = "/Topic1.1/index.html",
                             TopicHref = "/Topic1.1/index.html",
                         },
-                        new TocItemViewModel
+                        new()
                         {
                             Name = "Topic1.2",
                             Href = "/Topic1.2/",
@@ -665,7 +665,7 @@ items:
                         }
                     }
                 },
-                new TocItemViewModel
+                new()
                 {
                     Name = "Topic2",
                     TocHref = referencedToc,
