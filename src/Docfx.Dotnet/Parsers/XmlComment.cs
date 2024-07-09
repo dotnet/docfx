@@ -126,12 +126,12 @@ internal class XmlComment
 
     public string GetParameter(string name)
     {
-        return Parameters.TryGetValue(name, out var value) ? value : null;
+        return Parameters.GetValueOrDefault(name);
     }
 
     public string GetTypeParameter(string name)
     {
-        return TypeParameters.TryGetValue(name, out var value) ? value : null;
+        return TypeParameters.GetValueOrDefault(name);
     }
 
     private void ResolveCode(XDocument doc, XmlCommentParserContext context)

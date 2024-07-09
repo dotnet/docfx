@@ -275,12 +275,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         {
             throw new ArgumentException("Key cannot be empty.", nameof(key));
         }
-        if (FileMap.TryGetValue(key, out string filePath))
-        {
-            return filePath;
-        }
-
-        return null;
+        return FileMap.GetValueOrDefault(key);
     }
 
     // TODO: use this method instead of directly accessing FileMap
