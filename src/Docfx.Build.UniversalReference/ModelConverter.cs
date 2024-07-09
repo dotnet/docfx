@@ -100,12 +100,12 @@ public static class ModelConverter
                 var specs = src.Specs;
                 foreach (var language in supportedLanguages)
                 {
-                    if (specs?.ContainsKey(language) == true)
+                    if (specs?.TryGetValue(language, out List<SpecViewModel> spec) is true)
                     {
                         result.Add(new ApiLanguageValuePair<string>
                         {
                             Language = language,
-                            Value = GetSpecName(specs[language])
+                            Value = GetSpecName(spec)
                         });
                     }
                     else
