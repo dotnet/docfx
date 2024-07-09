@@ -688,6 +688,11 @@
             "type": "boolean",
             "default": false,
             "description": "When enabled, continues documentation generation in case of compilation errors."
+          },
+          "useClrTypeNames": {
+            "type": "boolean",
+            "default": false,
+            "description": "When enabled, use CLR type names instead of language aliases."
           }
         }
       }
