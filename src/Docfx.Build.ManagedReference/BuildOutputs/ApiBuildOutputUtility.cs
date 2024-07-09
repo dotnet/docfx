@@ -82,7 +82,7 @@ public static class ApiBuildOutputUtility
         var result = new List<ApiLanguageValuePair>();
         foreach (var language in supportedLanguages)
         {
-            var value = values.ContainsKey(language) ? values[language] : defaultValue;
+            var value = values.GetValueOrDefault(language, defaultValue);
 
             // TODO: Sometimes output contains undeterministic \n\n sequences
             value = value.Replace("\n\n", "\n");

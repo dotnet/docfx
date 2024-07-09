@@ -314,7 +314,7 @@ public sealed class RelativePath : IEquatable<RelativePath>
     public override string ToString() =>
         (_isFromWorkingFolder ? NormalizedWorkingFolder : "") +
         string.Concat(Enumerable.Repeat(ParentDirectory, _parentDirectoryCount)) +
-        string.Join("/", _parts);
+        string.Join('/', _parts);
 
     /// <summary>
     /// Test whether a relative path starts with another folder relative path

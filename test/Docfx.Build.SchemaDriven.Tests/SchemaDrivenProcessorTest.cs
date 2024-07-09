@@ -125,7 +125,7 @@ items:
         // arrange
         var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
         var templateXref = CreateFile(
-            "template/partials/overview.tmpl", @"{{name}}:{{{summary}}}|{{#boolProperty}}{{intProperty}}{{/boolProperty}}|{{#monikers}}<span>{{.}}</span>{{/monikers}}",
+            "template/partials/overview.tmpl", "{{name}}:{{{summary}}}|{{#boolProperty}}{{intProperty}}{{/boolProperty}}|{{#monikers}}<span>{{.}}</span>{{/monikers}}",
             _templateFolder);
         var templateFile = CreateFile("template/ManagedReference.html.tmpl", @"
 {{#items}}

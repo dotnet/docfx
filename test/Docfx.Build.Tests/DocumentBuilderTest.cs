@@ -224,7 +224,7 @@ public class DocumentBuilderTest : TestBase
                         $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"32\">GitHub</a>",
                         $"Test href generator: <a href=\"Git.md?shouldBeAbbreviated=true#test\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"33\">Git</a></p>",
                         "<p>",
-                        @"test",
+                        "test",
                         "</p>"),
                     model["conceptual"]);
                 Assert.Equal(
@@ -681,9 +681,9 @@ exports.getOptions = function (){
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (_fakeResponses.ContainsKey(request.RequestUri))
+            if (_fakeResponses.TryGetValue(request.RequestUri, out HttpResponseMessage response))
             {
-                return Task.FromResult(_fakeResponses[request.RequestUri]);
+                return Task.FromResult(response);
             }
             else
             {

@@ -131,7 +131,7 @@ public class DocumentBuilder : IDisposable
         else if (emptyContentGroups.Count > 0)
         {
             Logger.LogSuggestion(
-                $"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.",
+                $"No content file found in group: {string.Join(',', emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.",
                 code: SuggestionCodes.Build.EmptyInputContents);
         }
 

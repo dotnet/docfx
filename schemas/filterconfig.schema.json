@@ -27,28 +27,30 @@
       "properties": {
         "include": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "uidRegex": {
               "type": "string"
             },
-            "kind": {
+            "type": {
               "$ref": "#/$defs/extendedSymbolKind"
             },
-            "attribute": {
+            "hasAttribute": {
               "$ref": "#/$defs/attributeFilterInfo"
             }
           }
         },
         "exclude": {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "uidRegex": {
               "type": "string"
             },
-            "kind": {
+            "type": {
               "$ref": "#/$defs/extendedSymbolKind"
             },
-            "attribute": {
+            "hasAttribute": {
               "$ref": "#/$defs/attributeFilterInfo"
             }
           }
@@ -57,19 +59,19 @@
     },
     "extendedSymbolKind": {
       "enum": [
-        "assembly",
-        "namespace",
-        "class",
-        "struct",
-        "enum",
-        "interface",
-        "delegate",
-        "type",
-        "event",
-        "field",
-        "method",
-        "property",
-        "member"
+        "Assembly",
+        "Namespace",
+        "Class",
+        "Struct",
+        "Enum",
+        "Interface",
+        "Delegate",
+        "Type",
+        "Event",
+        "Field",
+        "Method",
+        "Property",
+        "Member"
       ]
     },
     "attributeFilterInfo": {
