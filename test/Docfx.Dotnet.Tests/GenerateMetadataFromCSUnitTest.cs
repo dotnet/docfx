@@ -3130,7 +3130,7 @@ namespace Test1
             result = compilation.Emit(stream);
         }
 
-        Assert.True(result.Success, string.Join(",", result.Diagnostics.Select(s => s.GetMessage())));
+        Assert.True(result.Success, string.Join(',', result.Diagnostics.Select(s => s.GetMessage())));
         return Assembly.LoadFile(Path.GetFullPath(assemblyName));
     }
 
@@ -3470,11 +3470,11 @@ namespace Test1
         public readonly void M() {}
 
         public readonly int P1 { get => throw null; set => throw null; }
-    
+
         public readonly int P2 { get => throw null; }
-    
+
         public readonly int P3 { set => throw null; }
-    
+
         public int P4 { readonly get => throw null; set => throw null; }
 
         public int P5 { get => throw null; readonly set => throw null; }

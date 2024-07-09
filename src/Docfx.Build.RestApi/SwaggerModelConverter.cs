@@ -143,7 +143,7 @@ public static class SwaggerModelConverter
     /// <returns></returns>
     private static string GenerateUid(params string[] segments)
     {
-        return string.Join("/", segments.Where(s => !string.IsNullOrEmpty(s)).Select(s => s.Trim('/')));
+        return string.Join('/', segments.Where(s => !string.IsNullOrEmpty(s)).Select(s => s.Trim('/')));
     }
 
     /// <summary>

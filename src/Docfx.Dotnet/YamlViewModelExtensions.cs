@@ -271,7 +271,7 @@ internal static class YamlViewModelExtensions
 
         if (model.Parent != null && model.Parent.Name != null && !model.Name.StartsWith(model.Parent.Name))
         {
-            result.Id = model.Name.Substring(model.Name.LastIndexOf(".") + 1);
+            result.Id = model.Name.Substring(model.Name.LastIndexOf('.') + 1);
         }
         else
         {
