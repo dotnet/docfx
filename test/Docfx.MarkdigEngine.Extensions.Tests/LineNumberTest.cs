@@ -40,7 +40,7 @@ http://spec.commonmark.org/0.27/)";
 line1
 // </tag>";
 
-        var source = @"[!code[tag-test](LineNumber/Program.cs#Tag)]";
+        var source = "[!code[tag-test](LineNumber/Program.cs#Tag)]";
 
         var expected = @"<pre><code sourceFile=""Topic.md"" sourceStartLineNumber=""1"" name=""tag-test"">line1
 </code></pre>";

@@ -36,8 +36,8 @@ public class MarkdownInterpreter : IInterpreter
         (context.UidLinkSources).Merge(mr.UidLinkSources);
         (context.Dependency).UnionWith(mr.Dependency);
 
-        if (mr.Html.StartsWith(@"<p"))
-            mr.Html = mr.Html.Insert(mr.Html.IndexOf(@">"), " jsonPath=\"" + path + "\"");
+        if (mr.Html.StartsWith("<p"))
+            mr.Html = mr.Html.Insert(mr.Html.IndexOf(">"), " jsonPath=\"" + path + "\"");
         return mr.Html;
     }
 }

@@ -36,7 +36,7 @@ public class AutoLinkTest
             ValidPreviousCharacters = "*_~("  // Default: *_~("
         };
 
-        var content = @"Sample URL (http://www.google.com)";
+        var content = "Sample URL (http://www.google.com)";
         var expected = @"<p>Sample URL (<a href=""http://www.google.com"" target=""_blank"">http://www.google.com</a>)</p>";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [

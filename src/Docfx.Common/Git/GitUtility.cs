@@ -215,7 +215,7 @@ public static class GitUtility
                 {
                     // Replace `/{orgName}/{repoName}` and remove `.git` suffix.
                     var builder = new UriBuilder(parsedOriginalUrl);
-                    builder.Path = Regex.Replace(builder.Path.TrimEnd(".git"), @"^/[^/]+/[^/]+", $"/{orgName}/{repoName}");
+                    builder.Path = Regex.Replace(builder.Path.TrimEnd(".git"), "^/[^/]+/[^/]+", $"/{orgName}/{repoName}");
                     return builder.Uri.ToString();
                 }
 

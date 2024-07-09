@@ -23,7 +23,7 @@ public class PreprocessorLoader
     public IEnumerable<ITemplatePreprocessor> LoadStandalones()
     {
         // Only files under root folder are allowed
-        foreach (var res in _reader.GetResources($@"^[^/]*{Regex.Escape(TemplateJintPreprocessor.StandaloneExtension)}$"))
+        foreach (var res in _reader.GetResources($"^[^/]*{Regex.Escape(TemplateJintPreprocessor.StandaloneExtension)}$"))
         {
             var name = Path.GetFileNameWithoutExtension(res.Path.Remove(res.Path.LastIndexOf('.')));
             var preprocessor = Load(res, name);
