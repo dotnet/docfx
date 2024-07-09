@@ -602,10 +602,12 @@ partial class DotnetApiCatalog
                     return;
 
                 if (config.EnumSortOrder is EnumSortOrder.Alphabetic)
-                    items = items.OrderBy(m => m.Name).ToList();
+                    items = items.OrderBy(static m => m.Name).ToList();
 
                 body.Add((Heading)new H2 { h2 = "Fields" });
                 body.Add(new Parameters { parameters = items.Select(ToParameter).ToArray() });
+
+                return;
 
                 Parameter ToParameter(IFieldSymbol item)
                 {
@@ -613,7 +615,8 @@ partial class DotnetApiCatalog
 
                     return new()
                     {
-                        name = item.Name, @default = $"{item.ConstantValue}",
+                        name = item.Name,
+                        @default = $"{item.ConstantValue}",
                         deprecated = Deprecated(item),
                         preview = Preview(item),
                         description = docs,
