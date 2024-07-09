@@ -223,11 +223,20 @@ static class PdfBuilder
                     .Replace("<span class=\"totalPages\"></span>", $"<span>{totalPages}</span>");
             }
 
-            static string? GetHeaderFooter(string? template)
+            string? GetHeaderFooter(string? template)
             {
-                return File.Exists(template)
-                    ? File.ReadAllText(template)
-                    : template;
+                if (string.IsNullOrEmpty(template))
+                    return template;
+
+                try
+                {
+                    var path = Path.Combine(outputFolder, template);
+                    return File.Exists(path) ? File.ReadAllText(path) : template;
+                }
+                catch
+                {
+                    return template;
+                }
             }
         }
     }
