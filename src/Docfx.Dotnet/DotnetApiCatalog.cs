@@ -148,6 +148,8 @@ public static partial class DotnetApiCatalog
         var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
         var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
 
+        ExtractMetadataConfig.UseClrTypeNames = configModel?.UseClrTypeNames ?? false;
+
         return new ExtractMetadataConfig
         {
             ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
