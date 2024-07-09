@@ -90,7 +90,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
 
     private static void RenewDupeFileModels(FileModel dupeModel, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
     {
-        var page = dupeModel.Content as PageViewModel;
+        var page = (PageViewModel)dupeModel.Content;
         var memberType = page.Items[0]?.Type;
         var newFileName = Path.GetFileNameWithoutExtension(dupeModel.File);
 
