@@ -20,5 +20,5 @@ runs:
     shell: bash
     working-directory: templates
 
-  - run: dotnet build -c Release --warnAsError
+  - run: dotnet build -c Release --warnAsError --maxcpucount
     shell: bash

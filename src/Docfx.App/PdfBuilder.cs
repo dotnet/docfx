@@ -47,6 +47,11 @@ static class PdfBuilder
         public string? pdfFooterTemplate { get; init; }
     }
 
+    static PdfBuilder()
+    {
+        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
+    }
+
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
     {
         var outputFolder = Path.GetFullPath(Path.Combine(
@@ -137,7 +142,7 @@ static class PdfBuilder
 
         IResult TocPage(string url)
         {
-            var pageNumbers = pdfPageNumbers.TryGetValue(url, out var x) ? x : default;
+            var pageNumbers = pdfPageNumbers.GetValueOrDefault(url);
             return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], pageNumbers).ToString(), "text/html", Encoding.UTF8);
         }
 

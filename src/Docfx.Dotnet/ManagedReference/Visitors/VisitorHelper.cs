@@ -113,7 +113,7 @@ internal static class VisitorHelper
         return uidBody;
     }
 
-    public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, XmlCommentParserContext context)
+    public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn)
     {
         string comment = isReturn ? item.CommentModel?.Returns : item.CommentModel?.GetParameter(symbol.Name);
         return new ApiParameter
@@ -124,7 +124,7 @@ internal static class VisitorHelper
         };
     }
 
-    public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item, XmlCommentParserContext context)
+    public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item)
     {
         string comment = item.CommentModel?.GetTypeParameter(symbol.Name);
         return new ApiParameter

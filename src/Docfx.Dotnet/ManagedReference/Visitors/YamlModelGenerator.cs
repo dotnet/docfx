@@ -61,7 +61,7 @@ internal class YamlModelGenerator
         syntax.Content[SyntaxLanguage.VB] = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.VB, filter);
     }
 
-    public string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
+    public string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references)
     {
         var id = VisitorHelper.GetId(symbol);
         var reference = new ReferenceItem
@@ -74,11 +74,7 @@ internal class YamlModelGenerator
         };
         GenerateReference(symbol, reference, false);
 
-        if (!references.ContainsKey(id))
-        {
-            references[id] = reference;
-        }
-        else
+        if (!references.TryAdd(id, reference))
         {
             references[id].Merge(reference);
         }
@@ -86,7 +82,7 @@ internal class YamlModelGenerator
         return id;
     }
 
-    public string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
+    public string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references)
     {
         var uidBody = VisitorHelper.GetOverloadIdBody(symbol);
         var reference = new ReferenceItem
@@ -101,11 +97,7 @@ internal class YamlModelGenerator
         GenerateReference(symbol, reference, true);
 
         var uid = uidBody + "*";
-        if (!references.ContainsKey(uid))
-        {
-            references[uid] = reference;
-        }
-        else
+        if (!references.TryAdd(uid, reference))
         {
             references[uid].Merge(reference);
         }
@@ -143,17 +135,13 @@ internal class YamlModelGenerator
 
         if (!reference.IsDefinition.Value && rawId != null)
         {
-            reference.Definition = AddReference(originalSymbol.OriginalDefinition, references, adapter);
+            reference.Definition = AddReference(originalSymbol.OriginalDefinition, references);
         }
 
         reference.Parent = GetReferenceParent(originalSymbol, typeGenericParameters, methodGenericParameters, references, adapter);
         reference.CommentId = VisitorHelper.GetCommentId(originalSymbol);
 
-        if (!references.ContainsKey(id))
-        {
-            references[id] = reference;
-        }
-        else
+        if (!references.TryAdd(id, reference))
         {
             references[id].Merge(reference);
         }

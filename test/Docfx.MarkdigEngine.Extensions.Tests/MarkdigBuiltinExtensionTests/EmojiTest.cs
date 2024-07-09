@@ -16,7 +16,7 @@ public class EmojiTest
     [Fact]
     public void EmojiTest_DocfxDefault()
     {
-        var content = @"**content :** :smile:";
+        var content = "**content :** :smile:";
         var expected = @"<p><strong>content :</strong> 😄</p>";
 
         // By default. `UseEmojiAndSmiley(enableSmileys: false)` option used.
@@ -26,7 +26,7 @@ public class EmojiTest
     [Fact]
     public void EmojiTest_MarkdigDefault()
     {
-        var content = @":)";
+        var content = ":)";
         var expected = @"<p>😃</p>";
 
         // `UseEmojiAndSmiley(enableSmileys: true)` option is used when enable `Emojis` extension by name. 
@@ -36,7 +36,7 @@ public class EmojiTest
     [Fact]
     public void EmojiTest_Smileys_Enabled()
     {
-        var content = @":)";
+        var content = ":)";
         var expected = @"<p>😃</p>";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
@@ -47,8 +47,8 @@ public class EmojiTest
     [Fact]
     public void EmojiTest_Smileys_Disabled()
     {
-        var content = @":)";
-        var expected = @"<p>:)</p>";
+        var content = ":)";
+        var expected = "<p>:)</p>";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
             new("Emojis", "Default"),

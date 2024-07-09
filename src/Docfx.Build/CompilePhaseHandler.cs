@@ -26,7 +26,7 @@ internal class CompilePhaseHandler
         Prepare(hostServices, maxParallelism);
         hostServices.RunAll(hostService =>
         {
-            var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
+            var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(static step => step.BuildOrder).Select(static s => s.Name));
             Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
             Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
             Prebuild(hostService);
@@ -144,7 +144,7 @@ internal class CompilePhaseHandler
     {
         if (buildSteps != null)
         {
-            foreach (var buildStep in buildSteps.OrderBy(step => step.BuildOrder))
+            foreach (var buildStep in buildSteps.OrderBy(static step => step.BuildOrder))
             {
                 action(buildStep);
             }

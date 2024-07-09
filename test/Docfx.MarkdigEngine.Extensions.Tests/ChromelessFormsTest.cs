@@ -52,7 +52,7 @@ public class ChromelessFormsTest
     [Fact]
     public void ChromelessFormsAttributeValueRequired()
     {
-        var content = @"::: form submitText :::";
+        var content = "::: form submitText :::";
 
         TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }

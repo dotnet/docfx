@@ -21,7 +21,7 @@ public class RendererLoader
     public IEnumerable<ITemplateRenderer> LoadAll()
     {
         // Only files under root folder are allowed
-        foreach (var res in _reader.GetResources($@"^[^/]*({Regex.Escape(MustacheTemplateRenderer.Extension)})$"))
+        foreach (var res in _reader.GetResources($"^[^/]*({Regex.Escape(MustacheTemplateRenderer.Extension)})$"))
         {
             var renderer = Load(res);
             if (renderer != null)

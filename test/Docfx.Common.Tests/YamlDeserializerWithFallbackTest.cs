@@ -14,7 +14,7 @@ public class YamlDeserializerWithFallbackTest
         var deserializer = YamlDeserializerWithFallback.Create<string>()
             .WithFallback<List<string>>();
         {
-            var obj = deserializer.Deserialize(() => new StringReader(@"A"));
+            var obj = deserializer.Deserialize(() => new StringReader("A"));
             Assert.NotNull(obj);
             var a = Assert.IsType<string>(obj);
             Assert.Equal("A", a);
@@ -42,13 +42,13 @@ public class YamlDeserializerWithFallbackTest
             .WithFallback<string>()
             .WithFallback<string[]>();
         {
-            var obj = deserializer.Deserialize(() => new StringReader(@"1"));
+            var obj = deserializer.Deserialize(() => new StringReader("1"));
             Assert.NotNull(obj);
             var a = Assert.IsType<int>(obj);
             Assert.Equal(1, a);
         }
         {
-            var obj = deserializer.Deserialize(() => new StringReader(@"A"));
+            var obj = deserializer.Deserialize(() => new StringReader("A"));
             Assert.NotNull(obj);
             var a = Assert.IsType<string>(obj);
             Assert.Equal("A", a);

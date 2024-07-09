@@ -331,8 +331,8 @@ href:
 xref: uid1
 reference: ../inc/inc.md
 ", _inputFolder);
-        var includeFile = CreateFile("inc/inc.md", @"[parent](../src/src.yml)", _inputFolder);
-        var includeFile2 = CreateFile("inc/inc2.md", @"[overwrite](../src/src.yml)", _inputFolder);
+        var includeFile = CreateFile("inc/inc.md", "[parent](../src/src.yml)", _inputFolder);
+        var includeFile2 = CreateFile("inc/inc2.md", "[overwrite](../src/src.yml)", _inputFolder);
         var overwriteFile = CreateFile("overwrite/a.md", @"---
 uid: uid1
 summary: *content
