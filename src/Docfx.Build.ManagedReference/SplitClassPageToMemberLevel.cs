@@ -634,11 +634,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
 
     private static void AddModelToDict(FileModel model, Dictionary<string, FileModel> models, List<FileModel> dupeModels)
     {
-        if (!models.ContainsKey(model.File))
-        {
-            models[model.File] = model;
-        }
-        else
+        if (!models.TryAdd(model.File, model))
         {
             dupeModels.Add(model);
         }

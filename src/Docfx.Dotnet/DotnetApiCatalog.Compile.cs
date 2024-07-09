@@ -23,10 +23,7 @@ partial class DotnetApiCatalog
             .ToDictionary(s => s.Key, s => s.Distinct().ToList()) ?? new();
 
         var msbuildProperties = config.MSBuildProperties ?? new Dictionary<string, string>();
-        if (!msbuildProperties.ContainsKey("Configuration"))
-        {
-            msbuildProperties["Configuration"] = "Release";
-        }
+        msbuildProperties.TryAdd("Configuration", "Release");
 
         // NOTE:
         // logger parameter is not works when using Roslyn 4.9.0 or later.
