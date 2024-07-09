@@ -84,7 +84,7 @@ public static partial class DotnetApiCatalog
 
         async Task Build(ExtractMetadataConfig config, DotnetApiOptions options)
         {
-            var assemblies = await Compile(config, options);
+            var assemblies = await Compile(config);
 
             switch (config.OutputFormat)
             {
@@ -147,6 +147,8 @@ public static partial class DotnetApiCatalog
 
         var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
         var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
+
+        ExtractMetadataConfig.UseClrTypeNames = configModel?.UseClrTypeNames ?? false;
 
         return new ExtractMetadataConfig
         {

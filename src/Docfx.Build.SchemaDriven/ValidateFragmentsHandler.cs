@@ -14,9 +14,9 @@ public class ValidateFragmentsHandler : ISchemaFragmentsHandler
 
     public void HandleUid(string uidKey, YamlMappingNode node, Dictionary<string, MarkdownFragment> fragments, BaseSchema schema, string oPathPrefix, string uid)
     {
-        if (!fragments.ContainsKey(uid) && !_isMissingUidsLogged.ContainsKey(uid))
+        if (!fragments.ContainsKey(uid))
         {
-            _isMissingUidsLogged[uid] = false;
+            _isMissingUidsLogged.TryAdd(uid, false);
         }
     }
 

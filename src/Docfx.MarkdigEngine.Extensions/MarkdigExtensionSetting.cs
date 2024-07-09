@@ -13,7 +13,7 @@ namespace Docfx.MarkdigEngine.Extensions;
 /// <summary>
 /// Markdig extension setting.
 /// </summary>
-[DebuggerDisplay(@"Name = {Name}")]
+[DebuggerDisplay("Name = {Name}")]
 [Newtonsoft.Json.JsonConverter(typeof(MarkdigExtensionSettingConverter))]
 public class MarkdigExtensionSetting
 {
