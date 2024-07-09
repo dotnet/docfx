@@ -591,14 +591,6 @@ exports.transform = function (model){
         }
     }
 
-    private static void WriteModel(string path, object model)
-    {
-        var dir = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(dir))
-            Directory.CreateDirectory(dir);
-        JsonUtility.Serialize(path, model);
-    }
-
     private static void AssertEqualIgnoreCrlf(string expected, string actual)
     {
         Assert.Equal(expected.Replace("\r\n", "\n"), actual.Replace("\r\n", "\n"));

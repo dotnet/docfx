@@ -19,9 +19,6 @@ namespace Docfx.Build.SchemaDriven.Tests;
 [Collection("docfx STA")]
 public class SchemaDrivenProcessorTest : TestBase
 {
-    private static readonly Regex InputMatcher = new(@"```(yml|yaml)\s*(### YamlMime:[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex SchemaMatcher = new(@"```json\s*(\{\s*""\$schema""[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
     private readonly string _outputFolder;
     private readonly string _inputFolder;
     private readonly string _templateFolder;
@@ -410,11 +407,6 @@ searchScope:
     private string GetRawModelFilePath(string fileName)
     {
         return Path.Combine(_outputFolder, Path.ChangeExtension(fileName, RawModelFileExtension));
-    }
-
-    private string GetOutputFilePath(string fileName)
-    {
-        return Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(fileName, "html")));
     }
 
     [Export(nameof(SchemaDrivenDocumentProcessor) + ".NotExist", typeof(IDocumentBuildStep))]

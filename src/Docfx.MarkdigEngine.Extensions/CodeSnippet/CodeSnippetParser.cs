@@ -85,23 +85,6 @@ public class CodeSnippetParser : BlockParser
         return BlockState.None;
     }
 
-    private static bool MatchStart(ref StringSlice slice)
-    {
-        var pc = slice.PeekCharExtra(-1);
-        if (pc == '\\') return false;
-
-        var c = slice.CurrentChar;
-        var index = 0;
-
-        while (c != '\0' && index < StartString.Length && char.ToLower(c) == StartString[index])
-        {
-            c = slice.NextChar();
-            index++;
-        }
-
-        return index == StartString.Length;
-    }
-
     private static bool MatchLanguage(ref StringSlice slice, ref CodeSnippet codeSnippet)
     {
         if (slice.CurrentChar != '-') return false;
