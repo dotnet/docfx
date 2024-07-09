@@ -48,13 +48,13 @@ public class ValidateBookmarkTest : TestBase
             }
         };
 
-        File.WriteAllText(Path.Combine(_outputFolder, "a.html"), @"<a href='http://bing.com#top'>Microsoft Bing</a> <p id='b1'>section</p><a href='#b1'/>");
-        File.WriteAllText(Path.Combine(_outputFolder, "b.html"), @"<a href='a.html#b1' sourceFile='b.md' sourceStartLineNumber='1'>bookmark existed</a><a href='a.html#b2' data-raw-source='[link with source info](a.md#b2)' sourceFile='b.md' sourceStartLineNumber='1'>link with source info</a> <a href='a.html#b3' data-raw-source='[link in token file](a.md#b3)' sourceFile='token.md' sourceStartLineNumber='1'>link in token file</a><a href='a.html#b4'>link without source info</a>");
-        File.WriteAllText(Path.Combine(_outputFolder, "c.html"), @"<a href='illegal_path_%3Cillegal character%3E.html#b1'>Test illegal link path</a>");
-        File.WriteAllText(Path.Combine(_outputFolder, "d.html"), @"<a href='illegal_path_*illegal character.html#b1'>Test illegal link path with wildchar *</a>");
-        File.WriteAllText(Path.Combine(_outputFolder, "e.html"), @"<a href='illegal_path_%3Fillegal character.html#b1'>Test illegal link path with wildchar ?</a>");
-        File.WriteAllText(Path.Combine(_outputFolder, "Dir/f.html"), @"<a href='#b1'>Test local link</a>");
-        File.WriteAllText(Path.Combine(_outputFolder, "g.html"), @"<a href='#b3' data-raw-source='[local link in token file](#b3)' sourceFile='token.md' sourceStartLineNumber='1'>local link in token file</a>");
+        File.WriteAllText(Path.Combine(_outputFolder, "a.html"), "<a href='http://bing.com#top'>Microsoft Bing</a> <p id='b1'>section</p><a href='#b1'/>");
+        File.WriteAllText(Path.Combine(_outputFolder, "b.html"), "<a href='a.html#b1' sourceFile='b.md' sourceStartLineNumber='1'>bookmark existed</a><a href='a.html#b2' data-raw-source='[link with source info](a.md#b2)' sourceFile='b.md' sourceStartLineNumber='1'>link with source info</a> <a href='a.html#b3' data-raw-source='[link in token file](a.md#b3)' sourceFile='token.md' sourceStartLineNumber='1'>link in token file</a><a href='a.html#b4'>link without source info</a>");
+        File.WriteAllText(Path.Combine(_outputFolder, "c.html"), "<a href='illegal_path_%3Cillegal character%3E.html#b1'>Test illegal link path</a>");
+        File.WriteAllText(Path.Combine(_outputFolder, "d.html"), "<a href='illegal_path_*illegal character.html#b1'>Test illegal link path with wildchar *</a>");
+        File.WriteAllText(Path.Combine(_outputFolder, "e.html"), "<a href='illegal_path_%3Fillegal character.html#b1'>Test illegal link path with wildchar ?</a>");
+        File.WriteAllText(Path.Combine(_outputFolder, "Dir/f.html"), "<a href='#b1'>Test local link</a>");
+        File.WriteAllText(Path.Combine(_outputFolder, "g.html"), "<a href='#b3' data-raw-source='[local link in token file](#b3)' sourceFile='token.md' sourceStartLineNumber='1'>local link in token file</a>");
         File.WriteAllText(Path.Combine(_outputFolder, "h.html"), @"<p><a href=""#welcome"">Test if raw title can be loaded as bookmark from metadata of manifest item</a></p>");
 
         Logger.RegisterListener(_listener);
@@ -74,11 +74,11 @@ public class ValidateBookmarkTest : TestBase
         Assert.True(logs.All(l => l.Code == WarningCodes.Build.InvalidBookmark));
         var expected = new[]
         {
-            Tuple.Create(@"Invalid link: '[link with source info](a.md#b2)'. The file a.md doesn't contain a bookmark named 'b2'.", "b.md"),
-            Tuple.Create(@"Invalid link: '[link in token file](a.md#b3)'. The file a.md doesn't contain a bookmark named 'b3'.", "token.md"),
+            Tuple.Create("Invalid link: '[link with source info](a.md#b2)'. The file a.md doesn't contain a bookmark named 'b2'.", "b.md"),
+            Tuple.Create("Invalid link: '[link in token file](a.md#b3)'. The file a.md doesn't contain a bookmark named 'b3'.", "token.md"),
             Tuple.Create(@"Invalid link: '<a href=""a.md#b4"">link without source info</a>'. The file a.md doesn't contain a bookmark named 'b4'.", "b.md"),
             Tuple.Create(@"Invalid link: '<a href=""#b1"">Test local link</a>'. The file f.md doesn't contain a bookmark named 'b1'.", "f.md"),
-            Tuple.Create(@"Invalid link: '[local link in token file](#b3)'. The file g.md doesn't contain a bookmark named 'b3'.", "token.md"),
+            Tuple.Create("Invalid link: '[local link in token file](#b3)'. The file g.md doesn't contain a bookmark named 'b3'.", "token.md"),
         };
         var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
         Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
@@ -97,8 +97,8 @@ public class ValidateBookmarkTest : TestBase
                 new ManifestItem { SourceRelativePath = "testNoCheckBookmark.md", Output = { { ".html", new OutputFileInfo { RelativePath = "testNoCheckBookmark.html" } } } },
             }
         };
-        File.WriteAllText(Path.Combine(_outputFolder, "test.html"), @"<a href='test.html#invalid'>test</a>");
-        File.WriteAllText(Path.Combine(_outputFolder, "testNoCheckBookmark.html"), @"<a href='test.html#invalid' nocheck='bookmark'>test</a>");
+        File.WriteAllText(Path.Combine(_outputFolder, "test.html"), "<a href='test.html#invalid'>test</a>");
+        File.WriteAllText(Path.Combine(_outputFolder, "testNoCheckBookmark.html"), "<a href='test.html#invalid' nocheck='bookmark'>test</a>");
 
         // Act
         Logger.RegisterListener(_listener);

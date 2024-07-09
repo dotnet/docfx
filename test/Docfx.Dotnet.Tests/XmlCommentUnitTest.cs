@@ -486,7 +486,7 @@ public class XmlCommentUnitTest
     [Fact]
     public void ParseXmlCommentWithoutRootNode()
     {
-        var input = @"<summary>A</summary>";
+        var input = "<summary>A</summary>";
         var commentModel = XmlComment.Parse(input, new XmlCommentParserContext());
         Assert.Equal("A", commentModel.Summary);
     }

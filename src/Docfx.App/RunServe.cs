@@ -41,7 +41,8 @@ internal static class RunServe
             builder.Logging.ClearProviders();
             builder.WebHost.UseUrls(url);
 
-            Console.WriteLine($"Serving \"{folder}\" on {url}. Press Ctrl+C to shut down.");
+            Console.WriteLine($"Serving \"{folder}\" on {url}");
+            Console.WriteLine("Press Ctrl+C to shut down");
             using var app = builder.Build();
             app.UseServe(folder);
 

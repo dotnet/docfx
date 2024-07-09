@@ -51,6 +51,34 @@ public class XRefMapDownloadTest
         xrefMap.References.Should().HaveCount(1);
     }
 
+    [Fact]
+    public async Task ReadLocalXRefMapGZippedJsonFileTest()
+    {
+        // Arrange
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "xrefmap.json.gz");
+
+        XRefMapDownloader downloader = new XRefMapDownloader();
+        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+
+        // Assert
+        xrefMap.Should().NotBeNull();
+        xrefMap.References.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task ReadLocalXRefMapGZippedYamlFileTest()
+    {
+        // Arrange
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "xrefmap.yml.gz");
+
+        XRefMapDownloader downloader = new XRefMapDownloader();
+        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+
+        // Assert
+        xrefMap.Should().NotBeNull();
+        xrefMap.References.Should().HaveCount(1);
+    }
+
     /// <summary>
     /// XrefmapDownloader test for xrefmap that has no baseUrl and href is defined by relative path.
     /// </summary>

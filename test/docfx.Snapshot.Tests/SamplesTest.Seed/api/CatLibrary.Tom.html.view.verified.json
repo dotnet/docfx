@@ -266,7 +266,7 @@
             },
             "id": "TomMethod",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 297.0,
+            "startLine": 299.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -463,7 +463,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">This is a Tom Method with complex type as return</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__.md&value=---%0Auid%3A%20CatLibrary.Tom.TomMethod(CatLibrary.Complex%7BCatLibrary.TomFromBaseClass%2CCatLibrary.TomFromBaseClass%7D%2CSystem.Tuple%7BSystem.String%2CCatLibrary.Tom%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L298",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L300",
           "description": "",
           "remarks": "",
           "conceptual": "",
@@ -519,7 +519,7 @@
     },
     "id": "Tom",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 286.0,
+    "startLine": 288.0,
     "endLine": 0.0
   },
   "assemblies": [
@@ -1018,7 +1018,7 @@
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Tom.md&value=---%0Auid%3A%20CatLibrary.Tom%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L287",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L289",
   "description": "Tom class is only inherit from Object. Not any member inside itself.",
   "remarks": "",
   "conceptual": "",

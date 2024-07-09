@@ -21,7 +21,7 @@ public class XRefMapSerializationTest
             HrefUpdated = null,
             Redirections = new List<XRefMapRedirection>
             {
-                new XRefMapRedirection
+                new()
                 {
                     Href = "Dummy",
                     UidPrefix = "Dummy"
@@ -29,7 +29,7 @@ public class XRefMapSerializationTest
             },
             References = new List<XRefSpec>
             {
-                new XRefSpec(new Dictionary<string,object>
+                new(new Dictionary<string,object>
                 {
                     ["Additional1"] = "Dummy",
                 })

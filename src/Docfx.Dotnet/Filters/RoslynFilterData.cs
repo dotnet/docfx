@@ -109,7 +109,7 @@ internal class RoslynFilterData
                 return "";
             }
 
-            return string.Join(",", constant.Values.Select(GetLiteralString));
+            return string.Join(',', constant.Values.Select(GetLiteralString));
         }
 
         var value = constant.Value;

@@ -50,7 +50,7 @@ public class ReferenceViewModel
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> NameInDevLangs { get; private set; } = new SortedList<string, string>();
+    public SortedList<string, string> NameInDevLangs { get; private set; } = new();
 
     [YamlMember(Alias = Constants.PropertyName.NameWithType)]
     [JsonProperty(Constants.PropertyName.NameWithType)]
@@ -60,7 +60,7 @@ public class ReferenceViewModel
     [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> NameWithTypeInDevLangs { get; private set; } = new SortedList<string, string>();
+    public SortedList<string, string> NameWithTypeInDevLangs { get; private set; } = new();
 
     [YamlMember(Alias = Constants.PropertyName.FullName)]
     [JsonProperty(Constants.PropertyName.FullName)]
@@ -70,17 +70,17 @@ public class ReferenceViewModel
     [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> FullNameInDevLangs { get; private set; } = new SortedList<string, string>();
+    public SortedList<string, string> FullNameInDevLangs { get; private set; } = new();
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Spec)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, List<SpecViewModel>> Specs { get; private set; } = new SortedList<string, List<SpecViewModel>>();
+    public SortedList<string, List<SpecViewModel>> Specs { get; private set; } = new();
 
     [ExtensibleMember]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public Dictionary<string, object> Additional { get; private set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> Additional { get; private set; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]

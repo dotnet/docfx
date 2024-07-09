@@ -13,6 +13,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="docfx" />
     <InternalsVisibleTo Include="docfx.Tests" />
+    <InternalsVisibleTo Include="docfx.Snapshot.Tests" />
   </ItemGroup>
   
   <ItemGroup>

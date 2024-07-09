@@ -9,10 +9,19 @@ namespace Docfx.Dotnet;
 internal static partial class SymbolFormatter
 {
     private static readonly SymbolDisplayFormat s_nameFormat = new(
-        memberOptions: SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeExplicitInterface,
-        genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-        parameterOptions: SymbolDisplayParameterOptions.IncludeType,
-        miscellaneousOptions: SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.AllowDefaultLiteral | SymbolDisplayMiscellaneousOptions.UseSpecialTypes,
+        memberOptions:
+            SymbolDisplayMemberOptions.IncludeParameters |
+            SymbolDisplayMemberOptions.IncludeExplicitInterface,
+        genericsOptions:
+            SymbolDisplayGenericsOptions.IncludeTypeParameters,
+        parameterOptions:
+            SymbolDisplayParameterOptions.IncludeType,
+        miscellaneousOptions:
+            SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier |
+            SymbolDisplayMiscellaneousOptions.AllowDefaultLiteral |
+            (ExtractMetadataConfig.UseClrTypeNames
+                ? SymbolDisplayMiscellaneousOptions.None
+                : SymbolDisplayMiscellaneousOptions.UseSpecialTypes),
         extensionMethodStyle: SymbolDisplayExtensionMethodStyle.StaticMethod);
 
     private static readonly SymbolDisplayFormat s_nameWithTypeFormat = s_nameFormat

@@ -16,17 +16,14 @@ namespace Docfx.Dotnet;
 
 partial class DotnetApiCatalog
 {
-    private static async Task<List<(IAssemblySymbol symbol, Compilation compilation)>> Compile(ExtractMetadataConfig config, DotnetApiOptions options)
+    private static async Task<List<(IAssemblySymbol symbol, Compilation compilation)>> Compile(ExtractMetadataConfig config)
     {
         var files = config.Files?.Select(s => new FileInformation(s))
             .GroupBy(f => f.Type)
             .ToDictionary(s => s.Key, s => s.Distinct().ToList()) ?? new();
 
         var msbuildProperties = config.MSBuildProperties ?? new Dictionary<string, string>();
-        if (!msbuildProperties.ContainsKey("Configuration"))
-        {
-            msbuildProperties["Configuration"] = "Release";
-        }
+        msbuildProperties.TryAdd("Configuration", "Release");
 
         // NOTE:
         // logger parameter is not works when using Roslyn 4.9.0 or later.
@@ -117,7 +114,7 @@ partial class DotnetApiCatalog
             foreach (var assemblyFile in assemblyFiles)
             {
                 Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
-                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, metadataReferences);
+                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, config.IncludePrivateMembers, metadataReferences);
                 hasCompilationError |= compilation.CheckDiagnostics(config.AllowCompilationErrors);
                 assemblies.Add((assembly, compilation));
             }

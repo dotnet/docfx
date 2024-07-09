@@ -31,9 +31,9 @@ jobs:
       shell: bash
       working-directory: templates
 
-    - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage"
+    - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:Summary;Verbosity=Minimal
 
-    - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
+    - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:Summary;Verbosity=Minimal
       if: matrix.os == 'ubuntu-latest'
 
     - run: npm i -g @percy/cli
@@ -43,9 +43,6 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       env:
         PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-
-    - uses: codecov/codecov-action@v4
-      if: matrix.os == 'ubuntu-latest'
 
     - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
       if: matrix.os == 'ubuntu-latest'

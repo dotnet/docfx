@@ -4,7 +4,6 @@
 using System.Text.Json;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
-using Docfx.JsonSchemaGenerator.Tests;
 using Docfx.Tests.Common;
 using FluentAssertions;
 using Json.Schema;
@@ -176,14 +175,5 @@ public class JsonSchemaTest : TestBase
             default:
                 throw new NotSupportedException(path);
         }
-    }
-
-    private void WriteFailedResultsDetails(EvaluationResults result)
-    {
-        if (result.IsValid)
-            return;
-
-        var json = JsonSerializer.Serialize(result, JsonSerializerOptions.Default);
-        output.WriteLine(json);
     }
 }

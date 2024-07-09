@@ -19,6 +19,10 @@ partial class SymbolFormatter
 
         public bool IsParams => false;
 
+        public bool IsParamsArray => false;
+
+        public bool IsParamsCollection => false;
+
         public bool IsOptional => false;
 
         public bool IsThis => false;

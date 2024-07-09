@@ -13,7 +13,7 @@ public class AggregatorTest
 {
     [Theory]
     [InlineData(
-@"# Test",
+"# Test",
 @"<h1>Test</h1>
 ")]
     [InlineData(

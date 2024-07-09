@@ -169,7 +169,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
             foreach (var p in symbol.TypeParameters)
             {
-                var param = VisitorHelper.GetTypeParameterDescription(p, item, GetXmlCommentParserContext(item));
+                var param = VisitorHelper.GetTypeParameterDescription(p, item);
                 item.Syntax.TypeParameters.Add(param);
             }
         }
@@ -181,7 +181,13 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         item.Items = new List<MetadataItem>();
-        foreach (var member in symbol.GetMembers().Where(s => s is not INamedTypeSymbol))
+        foreach (
+            var member in symbol.GetMembers()
+            .Where(static s =>
+                s is not INamedTypeSymbol
+                && ! s.Name.StartsWith('<')
+                && (s is not IMethodSymbol ms || ms.MethodKind != MethodKind.StaticConstructor)
+            ))
         {
             var memberItem = member.Accept(this);
             if (memberItem != null)
@@ -215,7 +221,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
             foreach (var p in symbol.TypeParameters)
             {
-                var param = VisitorHelper.GetTypeParameterDescription(p, result, GetXmlCommentParserContext(result));
+                var param = VisitorHelper.GetTypeParameterDescription(p, result);
                 result.Syntax.TypeParameters.Add(param);
             }
         }
@@ -266,7 +272,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
         var id = AddSpecReference(symbol.Type, typeGenericParameters);
-        result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result));
+        result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true);
         Debug.Assert(result.Syntax.Return.Type != null);
 
         result.Attributes = GetAttributeInfo(symbol.GetAttributes());
@@ -296,7 +302,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         var id = AddSpecReference(symbol.Type, typeGenericParameters);
-        result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result));
+        result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true);
         Debug.Assert(result.Syntax.Return.Type != null);
 
         AddMemberImplements(symbol, result, typeGenericParameters);
@@ -333,14 +339,14 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             foreach (var p in symbol.Parameters)
             {
                 var id = AddSpecReference(p.Type, typeGenericParameters);
-                var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetXmlCommentParserContext(result));
+                var param = VisitorHelper.GetParameterDescription(p, result, id, false);
                 Debug.Assert(param.Type != null);
                 result.Syntax.Parameters.Add(param);
             }
         }
         {
             var id = AddSpecReference(symbol.Type, typeGenericParameters);
-            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result));
+            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true);
             Debug.Assert(result.Syntax.Return.Type != null);
         }
 
@@ -368,7 +374,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             Debug.Fail("Unexpected member type.");
             throw new InvalidOperationException("Unexpected member type.");
         }
-        return _generator.AddReference(symbol, _references, this);
+        return _generator.AddReference(symbol, _references);
     }
 
     public string AddReference(string id, string commentId)
@@ -400,7 +406,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             case MemberType.Constructor:
             case MemberType.Method:
             case MemberType.Operator:
-                return _generator.AddOverloadReference(symbol, _references, this);
+                return _generator.AddOverloadReference(symbol, _references);
             default:
                 Debug.Fail("Unexpected member type.");
                 throw new InvalidOperationException("Unexpected member type.");
@@ -676,7 +682,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         if (!symbol.ReturnsVoid)
         {
             var id = AddSpecReference(symbol.ReturnType, typeGenericParameters, methodGenericParameters);
-            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result));
+            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true);
             result.Syntax.Return.Attributes = GetAttributeInfo(symbol.GetReturnTypeAttributes());
         }
 
@@ -690,7 +696,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             foreach (var p in symbol.Parameters)
             {
                 var id = AddSpecReference(p.Type, typeGenericParameters, methodGenericParameters);
-                var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetXmlCommentParserContext(result));
+                var param = VisitorHelper.GetParameterDescription(p, result, id, false);
                 Debug.Assert(param.Type != null);
                 param.Attributes = GetAttributeInfo(p.GetAttributes());
                 result.Syntax.Parameters.Add(param);

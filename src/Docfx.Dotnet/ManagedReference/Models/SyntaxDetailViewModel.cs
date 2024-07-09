@@ -22,7 +22,7 @@ public class SyntaxDetailViewModel
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Content)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> Contents { get; set; } = new SortedList<string, string>();
+    public SortedList<string, string> Contents { get; set; } = new();
 
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]

@@ -11,8 +11,6 @@ public class Template
     private const string Primary = ".primary";
     private const string Auxiliary = ".aux";
 
-    private readonly object _locker = new();
-
     public string Name { get; }
     public string ScriptName { get; }
     public string Extension { get; }
@@ -62,7 +60,7 @@ public class Template
     ///         },
     ///         isShared: true
     ///     }
-    /// 
+    ///
     /// }
     /// </summary>
     /// <param name="model"></param>

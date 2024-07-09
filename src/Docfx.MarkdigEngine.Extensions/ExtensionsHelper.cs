@@ -10,7 +10,7 @@ namespace Docfx.MarkdigEngine.Extensions;
 
 public static class ExtensionsHelper
 {
-    public static readonly Regex HtmlEscapeWithEncode = new(@"&", RegexOptions.Compiled);
+    public static readonly Regex HtmlEscapeWithEncode = new("&", RegexOptions.Compiled);
     public static readonly Regex HtmlEscapeWithoutEncode = new(@"&(?!#?\w+;)", RegexOptions.Compiled);
     public static readonly Regex HtmlUnescape = new(@"&([#\w]+);", RegexOptions.Compiled);
 
@@ -170,26 +170,6 @@ public static class ExtensionsHelper
     }
 
     #region private methods
-    private static string GetAbsolutePathWithTildeCore(string basePath, string tildePath)
-    {
-        var index = 1;
-        var ch = tildePath[index];
-        while (ch == '/' || ch == '\\')
-        {
-            index++;
-            ch = tildePath[index];
-        }
-
-        if (index == tildePath.Length)
-        {
-            return basePath;
-        }
-
-        var pathWithoutTilde = tildePath.Substring(index);
-
-        return NormalizePath(Path.Combine(basePath, pathWithoutTilde));
-    }
-
     private static bool CharEqual(char ch1, char ch2, bool isCaseSensitive)
     {
         return isCaseSensitive ? ch1 == ch2 : char.ToLower(ch1) == char.ToLower(ch2);

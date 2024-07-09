@@ -167,7 +167,7 @@
             },
             "id": "Red",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 408.0,
+            "startLine": 410.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -180,7 +180,7 @@
           "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">this color is red</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MRef_Demo_Enumeration_ColorType_Red.md&value=---%0Auid%3A%20MRef.Demo.Enumeration.ColorType.Red%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L409",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L411",
           "description": "",
           "remarks": "",
           "conceptual": "",
@@ -302,7 +302,7 @@
             },
             "id": "Blue",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 412.0,
+            "startLine": 414.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -315,7 +315,7 @@
           "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">blue like river</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MRef_Demo_Enumeration_ColorType_Blue.md&value=---%0Auid%3A%20MRef.Demo.Enumeration.ColorType.Blue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L413",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L415",
           "description": "",
           "remarks": "",
           "conceptual": "",
@@ -437,7 +437,7 @@
             },
             "id": "Yellow",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 416.0,
+            "startLine": 418.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -450,7 +450,7 @@
           "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">yellow comes from desert</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MRef_Demo_Enumeration_ColorType_Yellow.md&value=---%0Auid%3A%20MRef.Demo.Enumeration.ColorType.Yellow%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L417",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L419",
           "description": "",
           "remarks": "",
           "conceptual": "",
@@ -506,7 +506,7 @@
     },
     "id": "ColorType",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 403.0,
+    "startLine": 405.0,
     "endLine": 0.0
   },
   "assemblies": [
@@ -640,7 +640,7 @@
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MRef_Demo_Enumeration_ColorType.md&value=---%0Auid%3A%20MRef.Demo.Enumeration.ColorType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L404",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L406",
   "description": "Enumeration ColorType",
   "conceptual": "",
   "implements": "",

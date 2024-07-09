@@ -12,7 +12,7 @@ public class InteractiveCodeTest
     public void TestInteractiveCode_CodeSnippetSimple()
     {
         TestUtility.VerifyMarkup(
-            @"[!code-azurecli-interactive[](InteractiveCode/sample.code)]",
+            "[!code-azurecli-interactive[](InteractiveCode/sample.code)]",
             @"<pre><code class=""lang-azurecli"" data-interactive=""azurecli"">hello world!
 </code></pre>",
             files: new Dictionary<string, string>

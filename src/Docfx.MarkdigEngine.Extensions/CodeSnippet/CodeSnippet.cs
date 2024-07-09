@@ -113,7 +113,7 @@ public class CodeSnippet : LeafBlock
     {
         if (HighlightRanges != null && HighlightRanges.Any())
         {
-            return string.Join(",", HighlightRanges.Select(highlight =>
+            return string.Join(',', HighlightRanges.Select(highlight =>
             {
                 if (highlight.Start == highlight.End) return highlight.Start.ToString();
 

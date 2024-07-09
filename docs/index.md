@@ -98,7 +98,9 @@ jobs:
 You can also use docfx as a NuGet library:
 
 ```xml
-<PackageReference Include="Docfx.App" Version="2.73.2" />
+<PackageReference Include="Docfx.App" Version="2.76.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.9.2" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
 ```
 
 Then build a docset using:

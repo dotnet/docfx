@@ -10,10 +10,10 @@ namespace Docfx.Dotnet;
 internal class ConfigFilterRule
 {
     [YamlMember(Alias = "apiRules")]
-    public List<ConfigFilterRuleItemUnion> ApiRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
+    public List<ConfigFilterRuleItemUnion> ApiRules { get; set; } = new();
 
     [YamlMember(Alias = "attributeRules")]
-    public List<ConfigFilterRuleItemUnion> AttributeRules { get; set; } = new List<ConfigFilterRuleItemUnion>();
+    public List<ConfigFilterRuleItemUnion> AttributeRules { get; set; } = new();
 
     public bool CanVisitApi(SymbolFilterData symbol)
     {

@@ -385,7 +385,7 @@ no-note text 2-2</p>
 
     [Theory]
     [Trait("Related", "DfmMarkdown")]
-    [InlineData(@"> [!div]", "<div>\n</div>\n")]
+    [InlineData("> [!div]", "<div>\n</div>\n")]
     [InlineData(@"> [!div `id=""error""]", "<div>\n</div>\n")]
     [InlineData(@"> [!div `id=""right""`]", "<div id=\"right\">\n</div>\n")]
     public void TestSectionCornerCase(string source, string expected)

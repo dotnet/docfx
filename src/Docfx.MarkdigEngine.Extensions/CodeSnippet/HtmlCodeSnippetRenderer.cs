@@ -210,7 +210,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
 
     public static string GetLanguageByFileExtension(string extension)
     {
-        return s_languageByFileExtension.TryGetValue(extension, out var result) ? result : null;
+        return s_languageByFileExtension.GetValueOrDefault(extension);
     }
 
     protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
@@ -240,7 +240,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
         catch (JsonReaderException ex)
         {
-            _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex.ToString(), obj);
+            _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex, obj);
             return string.Empty;
         }
 
@@ -430,35 +430,6 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
 
         return false;
-    }
-
-    private static int GetTagLineNumber(string[] lines, string tagLine)
-    {
-        for (int index = 0; index < lines.Length; index++)
-        {
-            var line = lines[index];
-            var targetColumn = 0;
-            var match = true;
-
-            for (int column = 0; column < line.Length; column++)
-            {
-                var c = line[column];
-                if (c != ' ')
-                {
-                    if (targetColumn >= tagLine.Length || tagLine[targetColumn] != char.ToUpper(c))
-                    {
-                        match = false;
-                        break;
-                    }
-
-                    targetColumn++;
-                }
-            }
-
-            if (match && targetColumn == tagLine.Length) return index + 1;
-        }
-
-        return -1;
     }
 
     private string GetWarning()
