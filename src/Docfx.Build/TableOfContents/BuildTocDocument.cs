@@ -31,11 +31,11 @@ class BuildTocDocument : BaseDocumentBuildStep
     {
         var toc = (TocItemViewModel)model.Content;
         TocRestructureUtility.Restructure(toc, host.TableOfContentRestructions);
-        BuildCore(toc, model, host);
+        BuildCore(toc, model);
         // todo : metadata.
     }
 
-    private static void BuildCore(TocItemViewModel item, FileModel model, IHostService hostService, string includedFrom = null)
+    private static void BuildCore(TocItemViewModel item, FileModel model, string includedFrom = null)
     {
         if (item == null)
         {
@@ -70,7 +70,7 @@ class BuildTocDocument : BaseDocumentBuildStep
         {
             foreach (var i in item.Items)
             {
-                BuildCore(i, model, hostService, includedFrom);
+                BuildCore(i, model, includedFrom);
             }
         }
 

@@ -138,7 +138,7 @@ public class OverwriteDocumentModelCreator
         {
             if (string.IsNullOrEmpty(segment.Key))
             {
-                nextObject = CreateDictionaryObject(segment);
+                nextObject = CreateDictionaryObject();
                 currentObject[segment.SegmentName] = nextObject;
             }
             else
@@ -200,7 +200,7 @@ public class OverwriteDocumentModelCreator
         return result;
     }
 
-    private static Dictionary<object, object> CreateDictionaryObject(OPathSegment segment)
+    private static Dictionary<object, object> CreateDictionaryObject()
     {
         return new Dictionary<object, object>();
     }

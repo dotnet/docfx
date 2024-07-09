@@ -84,7 +84,7 @@ public static partial class DotnetApiCatalog
 
         async Task Build(ExtractMetadataConfig config, DotnetApiOptions options)
         {
-            var assemblies = await Compile(config, options);
+            var assemblies = await Compile(config);
 
             switch (config.OutputFormat)
             {
