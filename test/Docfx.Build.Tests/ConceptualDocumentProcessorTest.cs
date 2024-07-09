@@ -18,7 +18,6 @@ namespace Docfx.Build.ManagedReference.Tests;
 public class ConceptualDocumentProcessorTest : TestBase
 {
     private readonly string _outputFolder;
-    private readonly string _inputFolder;
     private readonly string _templateFolder;
     private readonly FileCollection _defaultFiles;
     private readonly FileCreator _fileCreator;
@@ -29,17 +28,17 @@ public class ConceptualDocumentProcessorTest : TestBase
     public ConceptualDocumentProcessorTest()
     {
         _outputFolder = GetRandomFolder();
-        _inputFolder = GetRandomFolder();
+        string inputFolder = GetRandomFolder();
         _templateFolder = GetRandomFolder();
-        _fileCreator = new FileCreator(_inputFolder);
-        _defaultFiles = new FileCollection(_inputFolder);
+        _fileCreator = new FileCreator(inputFolder);
+        _defaultFiles = new FileCollection(inputFolder);
 
-        _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
+        _applyTemplateSettings = new ApplyTemplateSettings(inputFolder, _outputFolder)
         {
             RawModelExportSettings = { Export = true },
             TransformDocument = true
         };
-        EnvironmentContext.SetBaseDirectory(_inputFolder);
+        EnvironmentContext.SetBaseDirectory(inputFolder);
         EnvironmentContext.SetOutputDirectory(_outputFolder);
 
         // Prepare conceptual template

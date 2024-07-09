@@ -14,8 +14,6 @@ public class MergeMarkdownFragmentsTest : TestBase
 {
     private readonly string _outputFolder;
     private readonly string _inputFolder;
-    private readonly string _templateFolder;
-    private readonly FileCollection _defaultFiles;
     private readonly ApplyTemplateSettings _applyTemplateSettings;
     private readonly TemplateManager _templateManager;
     private readonly FileCollection _files;
@@ -29,17 +27,17 @@ public class MergeMarkdownFragmentsTest : TestBase
     {
         _outputFolder = GetRandomFolder();
         _inputFolder = GetRandomFolder();
-        _templateFolder = GetRandomFolder();
-        _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
+        string templateFolder = GetRandomFolder();
+        var defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
         _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder) { RawModelExportSettings = { Export = true }, TransformDocument = true, };
 
-        _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
+        _templateManager = new TemplateManager(new List<string> { "template" }, null, templateFolder);
 
         _rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
 
-        var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), _templateFolder);
+        var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), templateFolder);
         var yamlFile = CreateFile("Suppressions.yml", File.ReadAllText("TestData/inputs/Suppressions.yml"), _inputFolder);
-        _files = new FileCollection(_defaultFiles);
+        _files = new FileCollection(defaultFiles);
         _files.Add(DocumentType.Article, new[] { yamlFile }, _inputFolder);
     }
 
