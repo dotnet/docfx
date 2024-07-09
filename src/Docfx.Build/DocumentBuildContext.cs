@@ -115,13 +115,13 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public int MaxParallelism { get; }
 
-    public ConcurrentDictionary<string, string> FileMap { get; } = new ConcurrentDictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
+    public ConcurrentDictionary<string, string> FileMap { get; } = new(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-    public ConcurrentDictionary<string, XRefSpec> XRefSpecMap { get; } = new ConcurrentDictionary<string, XRefSpec>();
+    public ConcurrentDictionary<string, XRefSpec> XRefSpecMap { get; } = new();
 
-    public ConcurrentDictionary<string, HashSet<string>> TocMap { get; } = new ConcurrentDictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
+    public ConcurrentDictionary<string, HashSet<string>> TocMap { get; } = new(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-    public HashSet<string> XRef { get; } = new HashSet<string>();
+    public HashSet<string> XRef { get; } = new();
 
     public string RootTocPath { get; }
 
@@ -129,11 +129,11 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public ICustomHrefGenerator HrefGenerator { get; }
 
-    internal ConcurrentBag<ManifestItem> ManifestItems { get; } = new ConcurrentBag<ManifestItem>();
+    internal ConcurrentBag<ManifestItem> ManifestItems { get; } = new();
 
-    private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
+    private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new();
 
-    private ConcurrentDictionary<string, object> UnknownUids { get; } = new ConcurrentDictionary<string, object>();
+    private ConcurrentDictionary<string, object> UnknownUids { get; } = new();
 
     public void ReportExternalXRefSpec(XRefSpec spec)
     {
@@ -257,12 +257,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         {
             throw new ArgumentException("Key cannot be empty.", nameof(key));
         }
-        if (FileMap.TryGetValue(key, out string filePath))
-        {
-            return filePath;
-        }
-
-        return null;
+        return FileMap.GetValueOrDefault(key);
     }
 
     // TODO: use this method instead of directly accessing FileMap

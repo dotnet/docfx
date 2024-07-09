@@ -54,7 +54,7 @@ public class TemplateUtility
             Logger.LogWarning($"Invalid file link: ({originalHref})", file: sourceFileKey, code: WarningCodes.Build.InvalidFileLink);
             return originalHref;
         }
-        return file.UrlEncode().ToString() + UriUtility.GetQueryStringAndFragment(originalHref);
+        return file.UrlEncode() + UriUtility.GetQueryStringAndFragment(originalHref);
     }
 
     public string Markup(string markdown, string sourceFileKey)

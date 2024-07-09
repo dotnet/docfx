@@ -116,7 +116,7 @@ public static class GitUtility
 
         static Repo? GetRepoInfoCore(string directory, string gitRoot)
         {
-            var remoteUrls = ParseRemoteUrls(directory, gitRoot).ToArray();
+            var remoteUrls = ParseRemoteUrls(gitRoot).ToArray();
             var url = remoteUrls.FirstOrDefault(r => r.key == "origin").value ?? remoteUrls.FirstOrDefault().value;
             if (string.IsNullOrEmpty(url))
                 return null;
@@ -158,7 +158,7 @@ public static class GitUtility
 
         }
 
-        static IEnumerable<(string key, string value)> ParseRemoteUrls(string directory, string gitRoot)
+        static IEnumerable<(string key, string value)> ParseRemoteUrls(string gitRoot)
         {
             var configPath = Path.Combine(gitRoot, "config");
             if (!File.Exists(configPath))
@@ -215,7 +215,7 @@ public static class GitUtility
                 {
                     // Replace `/{orgName}/{repoName}` and remove `.git` suffix.
                     var builder = new UriBuilder(parsedOriginalUrl);
-                    builder.Path = Regex.Replace(builder.Path.TrimEnd(".git"), @"^/[^/]+/[^/]+", $"/{orgName}/{repoName}");
+                    builder.Path = Regex.Replace(builder.Path.TrimEnd(".git"), "^/[^/]+/[^/]+", $"/{orgName}/{repoName}");
                     return builder.Uri.ToString();
                 }
 

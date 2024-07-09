@@ -210,7 +210,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
 
     public static string GetLanguageByFileExtension(string extension)
     {
-        return s_languageByFileExtension.TryGetValue(extension, out var result) ? result : null;
+        return s_languageByFileExtension.GetValueOrDefault(extension);
     }
 
     protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
@@ -240,7 +240,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
         catch (JsonReaderException ex)
         {
-            _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex.ToString(), obj);
+            _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex, obj);
             return string.Empty;
         }
 

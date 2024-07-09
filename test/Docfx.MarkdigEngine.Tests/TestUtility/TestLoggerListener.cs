@@ -7,7 +7,7 @@ namespace Docfx.MarkdigEngine.Tests;
 
 internal class TestLoggerListener : ILoggerListener
 {
-    public List<ILogItem> Items { get; } = new List<ILogItem>();
+    public List<ILogItem> Items { get; } = new();
 
     public void Dispose()
     {

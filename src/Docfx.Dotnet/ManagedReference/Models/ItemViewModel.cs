@@ -72,7 +72,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> Names { get; set; } = new SortedList<string, string>();
+    public SortedList<string, string> Names { get; set; } = new();
 
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
@@ -128,7 +128,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> NamesWithType { get; set; } = new SortedList<string, string>();
+    public SortedList<string, string> NamesWithType { get; set; } = new();
 
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
@@ -184,7 +184,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> FullNames { get; set; } = new SortedList<string, string>();
+    public SortedList<string, string> FullNames { get; set; } = new();
 
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
@@ -314,7 +314,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
     [UniqueIdentityReference]
-    public List<string> SeeAlsosUidReference => SeeAlsos?.Where(s => s.LinkType == LinkType.CRef)?.Select(s => s.LinkId).ToList();
+    public List<string> SeeAlsosUidReference => SeeAlsos?.Where(s => s.LinkType == LinkType.CRef).Select(s => s.LinkId).ToList();
 
     [YamlMember(Alias = Constants.PropertyName.Inheritance)]
     [MergeOption(MergeOption.Ignore)]
@@ -372,7 +372,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [ExtensibleMember]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> Metadata { get; set; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]

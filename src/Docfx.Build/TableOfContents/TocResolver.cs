@@ -23,15 +23,15 @@ class TocResolver
         return ResolveItem(_collection[file], new Stack<FileAndType>());
     }
 
-    private TocItemInfo ResolveItem(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRoot = true)
+    private TocItemInfo ResolveItem(TocItemInfo wrapper, Stack<FileAndType> stack)
     {
         using (new LoggerFileScope(wrapper.File.File))
         {
-            return ResolveItemCore(wrapper, stack, isRoot);
+            return ResolveItemCore(wrapper, stack);
         }
     }
 
-    private TocItemInfo ResolveItemCore(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRoot)
+    private TocItemInfo ResolveItemCore(TocItemInfo wrapper, Stack<FileAndType> stack)
     {
         if (wrapper.IsResolved)
         {
@@ -125,7 +125,7 @@ class TocResolver
                 if (item.Items != null && item.Items.Count > 0)
                 {
                     item.Items = new List<TocItemViewModel>(from i in item.Items
-                                                  select ResolveItem(new TocItemInfo(file, i), stack, false) into r
+                                                  select ResolveItem(new TocItemInfo(file, i), stack) into r
                                                   where r != null
                                                   select r.Content);
                     if (string.IsNullOrEmpty(item.TopicHref) && string.IsNullOrEmpty(item.TopicUid))
@@ -207,7 +207,7 @@ class TocResolver
                     {
                         for (int i = 0; i < item.Items.Count; i++)
                         {
-                            item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack, false).Content;
+                            item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack).Content;
                         }
                     }
                 }

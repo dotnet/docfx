@@ -47,12 +47,12 @@ public class SyntaxDetailViewModel
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Return)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, ApiParameter> ReturnInDevLangs { get; set; } = new SortedList<string, ApiParameter>();
+    public SortedList<string, ApiParameter> ReturnInDevLangs { get; set; } = new();
 
     [ExtensibleMember]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> Metadata { get; set; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]

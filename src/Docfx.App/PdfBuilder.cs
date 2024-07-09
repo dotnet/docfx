@@ -142,7 +142,7 @@ static class PdfBuilder
 
         IResult TocPage(string url)
         {
-            var pageNumbers = pdfPageNumbers.TryGetValue(url, out var x) ? x : default;
+            var pageNumbers = pdfPageNumbers.GetValueOrDefault(url);
             return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], pageNumbers).ToString(), "text/html", Encoding.UTF8);
         }
 

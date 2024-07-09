@@ -298,9 +298,9 @@ Paragraph1
 [!include-[link2](../link/link2.md)]
 ![Image](img/img.jpg)
 [!include-[root](../root.md)]";
-                var link2 = @"[link](md/c.md)";
+                var link2 = "[link](md/c.md)";
                 var refc = @"[!include[c](../c/c.md ""This is root"")]";
-                var c = @"**Hello**";
+                var c = "**Hello**";
                 TestUtility.WriteToFile("r/root.md", root);
 
                 TestUtility.WriteToFile("r/a/refc.md", refc);
@@ -389,7 +389,7 @@ Paragraph1
                 dependency.Clear();
                 marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
                 dependency = marked.Dependency;
-                Assert.Equal($@"{expected}{expected}", marked.Html);
+                Assert.Equal($"{expected}{expected}", marked.Html);
                 Assert.Equal(
                     new[] { "a/a.md", "b/token.md", "c/d/d.md" },
                     dependency.OrderBy(x => x).ToArray());
@@ -403,12 +403,12 @@ Paragraph1
                 //  |- root.md
                 //  |- b
                 //  |  |- linkAndRefRoot.md
-                var root = @"[!include[linkAndRefRoot](~/r/b/linkAndRefRoot.md)]";
-                var linkAndRefRoot = @"Paragraph1";
+                var root = "[!include[linkAndRefRoot](~/r/b/linkAndRefRoot.md)]";
+                var linkAndRefRoot = "Paragraph1";
                 TestUtility.WriteToFile("r/root.md", root);
                 TestUtility.WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
                 var marked = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
-                var expected = @"<p>Paragraph1</p>" + "\n";
+                var expected = "<p>Paragraph1</p>" + "\n";
                 Assert.Equal(expected, marked.Html);
         }
 
@@ -449,7 +449,7 @@ markdown a.md main content end.";
 
 markdown token1.md content end.";
 
-                var token2 = @"**1markdown token2.md main content**";
+                var token2 = "**1markdown token2.md main content**";
 
                 TestUtility.WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/root_{uniqueFolderName}.md", root);
                 TestUtility.WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", a);
@@ -529,11 +529,11 @@ code_in_a in a.md content end
 
 markdown a.md a.md content end.";
 
-                var code_in_a = @"namespace code_in_a{}";
+                var code_in_a = "namespace code_in_a{}";
 
-                var sample1 = @"namespace sample1{}";
+                var sample1 = "namespace sample1{}";
 
-                var sample2 = @"namespace sample2{}";
+                var sample2 = "namespace sample2{}";
 
                 var uniqueFolderName = Path.GetRandomFileName();
                 TestUtility.WriteToFile($"{uniqueFolderName}/root_folder/root.md", root);
@@ -602,7 +602,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
                 var ref1 = @"[!include[ref2](ref2.md ""This is root"")]";
                 var ref2 = @"## Inline inclusion do not parse header [!include[root](root.md ""This is root"")]";
-                var ref3 = @"**Hello**  ";
+                var ref3 = "**Hello**  ";
                 File.WriteAllText("root.md", root);
                 File.WriteAllText("ref1.md", ref1);
                 File.WriteAllText("ref2.md", ref2);
@@ -635,9 +635,9 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 <p>inc3</p>
 ";
 
-                var inc1 = @"inc1";
-                var inc2 = @"inc2";
-                var inc3 = @"inc3";
+                var inc1 = "inc1";
+                var inc2 = "inc2";
+                var inc3 = "inc3";
                 File.WriteAllText("root.md", root);
                 File.WriteAllText("inc1.md", inc1);
                 File.WriteAllText("inc2.md", inc2);
@@ -791,7 +791,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         [Fact]
         public void ImageTestBlockGeneralWithInclude()
         {
-                var source = @"[!include[](includes/source.md)]";
+                var source = "[!include[](includes/source.md)]";
                 var includeContent = @":::image type=""content"" source=""../media/example.jpg"" alt-text=""example"" lightbox=""../media/example.jpg"":::
 
 :::image type=""content"" source=""~/media/example.jpg"" alt-text=""example"" lightbox=""~/media/example.jpg"":::
