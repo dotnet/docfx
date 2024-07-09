@@ -439,7 +439,7 @@ test2
         // https://github.com/sebastienros/jint/issues/357
 
         var templateName = "TemplateFolder.html";
-        string defaultTemplate = @"{{name}}";
+        string defaultTemplate = "{{name}}";
         var name = "this is a looooooooooooooooooooooooooooooooooooog name";
         var longName = string.Concat(Enumerable.Repeat(name, 20000));
         string script = @"
@@ -480,7 +480,7 @@ exports.transform = function (model){
         // https://github.com/sebastienros/jint/issues/364
 
         var templateName = "TemplateFolder.html";
-        string defaultTemplate = @"{{result1}},{{result2}}";
+        string defaultTemplate = "{{result1}},{{result2}}";
         string script = @"
 exports.transform = function (model){
     var url = 'https://www.example.com';
@@ -518,7 +518,7 @@ exports.transform = function (model){
     public void JsCreateDateShouldNotThrowError()
     {
         var templateName = "TemplateFolder.html";
-        string defaultTemplate = @"{{date}}";
+        string defaultTemplate = "{{date}}";
         string script = @"
 exports.transform = function (model){
     return {
@@ -589,14 +589,6 @@ exports.transform = function (model){
                 Directory.CreateDirectory(directory);
             File.WriteAllText(filePath, file.Item2);
         }
-    }
-
-    private static void WriteModel(string path, object model)
-    {
-        var dir = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(dir))
-            Directory.CreateDirectory(dir);
-        JsonUtility.Serialize(path, model);
     }
 
     private static void AssertEqualIgnoreCrlf(string expected, string actual)

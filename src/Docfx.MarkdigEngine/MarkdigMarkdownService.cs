@@ -8,6 +8,7 @@ using Docfx.Plugins;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
+using CollectionExtensions = System.Collections.Generic.CollectionExtensions;
 
 namespace Docfx.MarkdigEngine;
 
@@ -26,7 +27,7 @@ public class MarkdigMarkdownService : IMarkdownService
         _parameters = parameters;
         _configureMarkdig = configureMarkdig;
         _context = new MarkdownContext(
-            key => _parameters.Tokens.TryGetValue(key, out var value) ? value : null,
+            key => CollectionExtensions.GetValueOrDefault(_parameters.Tokens, key),
             (code, message, origin, line) => Logger.LogInfo(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
             (code, message, origin, line) => Logger.LogSuggestion(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
             (code, message, origin, line) => Logger.LogWarning(message, null, InclusionContext.File.ToString(), line?.ToString(), code),

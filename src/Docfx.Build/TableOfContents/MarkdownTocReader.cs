@@ -9,10 +9,10 @@ public static class MarkdownTocReader
 {
     private const string ContinuableCharacters = ".,;:!?~";
     private const string StopCharacters = @"\s\""\'<>";
-    private const string XrefAutoLinkRegexString = @"(<xref:([^ >]+)>)";
+    private const string XrefAutoLinkRegexString = "(<xref:([^ >]+)>)";
     private const string XrefAutoLinkRegexWithQuoteString = @"<xref:(['""])(\s*?\S+?[\s\S]*?)\1>";
     private const string XrefShortcutRegexWithQuoteString = @"@(?:(['""])(?<uid>\s*?\S+?[\s\S]*?)\1)";
-    private const string XrefShortcutRegexString = $@"@(?<uid>[a-zA-Z](?:[{ContinuableCharacters}]?[^{StopCharacters}{ContinuableCharacters}])*)";
+    private const string XrefShortcutRegexString = $"@(?<uid>[a-zA-Z](?:[{ContinuableCharacters}]?[^{StopCharacters}{ContinuableCharacters}])*)";
 
     public static List<TocItemViewModel> LoadToc(string tocContent, string filePath)
     {

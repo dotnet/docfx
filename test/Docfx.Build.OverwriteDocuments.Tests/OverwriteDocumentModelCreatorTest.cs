@@ -224,11 +224,11 @@ definitions:
 
     private static string ExtractDictionaryKeys(Dictionary<object, object> dict)
     {
-        return string.Join(",", dict.Keys.ToArray());
+        return string.Join(',', dict.Keys.ToArray());
     }
 
     private static string ExtractDictionaryKeys(Dictionary<string, object> dict)
     {
-        return string.Join(",", dict.Keys.ToArray());
+        return string.Join(',', dict.Keys.ToArray());
     }
 }

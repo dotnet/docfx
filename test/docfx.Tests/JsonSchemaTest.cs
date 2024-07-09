@@ -176,13 +176,4 @@ public class JsonSchemaTest : TestBase
                 throw new NotSupportedException(path);
         }
     }
-
-    private void WriteFailedResultsDetails(EvaluationResults result)
-    {
-        if (result.IsValid)
-            return;
-
-        var json = JsonSerializer.Serialize(result, JsonSerializerOptions.Default);
-        output.WriteLine(json);
-    }
 }

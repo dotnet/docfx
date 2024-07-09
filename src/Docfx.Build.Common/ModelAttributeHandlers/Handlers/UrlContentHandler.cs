@@ -93,7 +93,7 @@ public class UrlContentHandler : IModelAttributeHandler
             var file = path.GetPathFromWorkingFolder().UrlDecode();
             if (context.Host.SourceFiles.ContainsKey(file))
             {
-                result = file.UrlEncode().ToString() + UriUtility.GetQueryStringAndFragment(originalHref);
+                result = file.UrlEncode() + UriUtility.GetQueryStringAndFragment(originalHref);
             }
 
             if (!context.FileLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))

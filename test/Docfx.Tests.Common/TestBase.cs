@@ -24,20 +24,6 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
         return folder;
     }
 
-    protected string MoveToRandomFolder(string origin)
-    {
-        var folder = GetFolder();
-
-        lock (_locker)
-        {
-            _folderCollection.Remove(folder);
-            _folderCollection.Add(folder);
-        }
-
-        Directory.Move(origin, folder);
-        return folder;
-    }
-
     private static string GetFolder()
     {
         var folder = Path.GetRandomFileName();
@@ -84,16 +70,6 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
 
         File.Delete(Path.Combine(baseFolder, fileName));
         return CreateFile(fileName, lines, baseFolder);
-    }
-
-    protected static string UpdateFile(string fileName, string content, string baseFolder)
-    {
-        ArgumentNullException.ThrowIfNull(fileName);
-        ArgumentNullException.ThrowIfNull(content);
-        ArgumentNullException.ThrowIfNull(baseFolder);
-
-        File.Delete(Path.Combine(baseFolder, fileName));
-        return CreateFile(fileName, content, baseFolder);
     }
 
     protected static string CreateDirectory(string dir, string baseFolder)

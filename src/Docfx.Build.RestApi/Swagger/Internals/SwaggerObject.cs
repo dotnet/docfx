@@ -7,7 +7,7 @@ internal class SwaggerObject : SwaggerObjectBase
 {
     public override SwaggerObjectType ObjectType => SwaggerObjectType.Object;
 
-    public Dictionary<string, SwaggerObjectBase> Dictionary { get; set; } = new Dictionary<string, SwaggerObjectBase>();
+    public Dictionary<string, SwaggerObjectBase> Dictionary { get; set; } = new();
 
     public override SwaggerObjectBase Clone()
     {

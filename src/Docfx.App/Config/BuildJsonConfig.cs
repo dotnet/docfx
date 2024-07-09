@@ -72,7 +72,7 @@ internal class BuildJsonConfig
     /// </summary>
     [JsonProperty("globalMetadataFiles")]
     [JsonPropertyName("globalMetadataFiles")]
-    public ListWithStringFallback GlobalMetadataFiles { get; set; } = new ListWithStringFallback();
+    public ListWithStringFallback GlobalMetadataFiles { get; set; } = new();
 
     /// <summary>
     /// Metadata that applies to some specific files.
@@ -90,7 +90,7 @@ internal class BuildJsonConfig
     /// </summary>
     [JsonProperty("fileMetadataFiles")]
     [JsonPropertyName("fileMetadataFiles")]
-    public ListWithStringFallback FileMetadataFiles { get; set; } = new ListWithStringFallback();
+    public ListWithStringFallback FileMetadataFiles { get; set; } = [];
 
     /// <summary>
     /// The templates applied to each file in the documentation. It can be a string or an array.
@@ -99,7 +99,7 @@ internal class BuildJsonConfig
     /// </summary>
     [JsonProperty("template")]
     [JsonPropertyName("template")]
-    public ListWithStringFallback Template { get; set; } = new ListWithStringFallback();
+    public ListWithStringFallback Template { get; set; } = new();
 
     /// <summary>
     /// The themes applied to the documentation.
@@ -123,7 +123,7 @@ internal class BuildJsonConfig
     ///  </example>
     [JsonProperty("postProcessors")]
     [JsonPropertyName("postProcessors")]
-    public ListWithStringFallback PostProcessors { get; set; } = new ListWithStringFallback();
+    public ListWithStringFallback PostProcessors { get; set; } = new();
 
     /// <summary>
     /// Run in debug mode. With debug mode, raw model and view model will be exported

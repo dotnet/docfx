@@ -49,31 +49,6 @@ public class DocsetBuildTest : TestBase
                             f => new Func<string>(() => File.ReadAllText(f)));
     }
 
-    private static async Task<Dictionary<string, Func<string>>> Pdf(Dictionary<string, string> files, [CallerMemberName] string testName = null)
-    {
-        var testDirectory = $"{nameof(DocsetBuildTest)}/{testName}";
-        var outputDirectory = $"{testDirectory}/_pdf";
-
-        if (Directory.Exists(testDirectory))
-            Directory.Delete(testDirectory, recursive: true);
-
-        Directory.CreateDirectory(testDirectory);
-        foreach (var (path, content) in files)
-        {
-            var targetPath = Path.Combine(testDirectory, path);
-            Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
-
-            File.WriteAllText(targetPath, content);
-        }
-
-        await Docset.Pdf($"{testDirectory}/docfx.json");
-
-        return Directory.GetFiles(outputDirectory, "*", SearchOption.AllDirectories)
-            .ToDictionary(
-                f => Path.GetRelativePath(outputDirectory, f),
-                f => new Func<string>(() => File.ReadAllText(f)));
-    }
-
     [Fact]
     public static async Task CustomLogo_Override_LogoFromTemplate()
     {
