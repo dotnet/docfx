@@ -225,7 +225,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
                         else if (c == ']' && !escaping)
                         {
                             // current char class ends when meeting the first non-escaping ]
-                            builder.Append(currentCharClass.ToString());
+                            builder.Append(currentCharClass);
                             currentCharClass = null;
                             break;
                         }

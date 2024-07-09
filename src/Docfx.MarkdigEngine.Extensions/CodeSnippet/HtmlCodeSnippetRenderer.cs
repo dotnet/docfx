@@ -240,7 +240,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
         catch (JsonReaderException ex)
         {
-            _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex.ToString(), obj);
+            _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex, obj);
             return string.Empty;
         }
 
