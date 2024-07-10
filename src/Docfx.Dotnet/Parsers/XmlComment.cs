@@ -22,7 +22,7 @@ namespace Docfx.Dotnet;
 internal class XmlComment
 {
     private const string IdSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
-    private static readonly Regex CommentIdRegex = new(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + IdSelector + ")$", RegexOptions.Compiled);
+    private static readonly Regex CommentIdRegex = new("^(?<type>N|T|M|P|F|E|Overload):(?<id>" + IdSelector + ")$", RegexOptions.Compiled);
     private static readonly Regex RegionRegex = new(@"^\s*#region\s*(.*)$");
     private static readonly Regex XmlRegionRegex = new(@"^\s*<!--\s*<([^/\s].*)>\s*-->$");
     private static readonly Regex EndRegionRegex = new(@"^\s*#endregion\s*.*$");
@@ -126,12 +126,12 @@ internal class XmlComment
 
     public string GetParameter(string name)
     {
-        return Parameters.TryGetValue(name, out var value) ? value : null;
+        return Parameters.GetValueOrDefault(name);
     }
 
     public string GetTypeParameter(string name)
     {
-        return TypeParameters.TryGetValue(name, out var value) ? value : null;
+        return TypeParameters.GetValueOrDefault(name);
     }
 
     private void ResolveCode(XDocument doc, XmlCommentParserContext context)
@@ -261,14 +261,10 @@ internal class XmlComment
             string description = GetXmlValue(nav);
             if (!string.IsNullOrEmpty(name))
             {
-                if (result.ContainsKey(name))
+                if (!result.TryAdd(name, description))
                 {
                     string path = context.Source?.Remote != null ? Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Remote.Path) : context.Source?.Path;
                     Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", file: StringExtension.ToDisplayPath(path), line: context.Source?.StartLine.ToString());
-                }
-                else
-                {
-                    result.Add(name, description);
                 }
             }
         }

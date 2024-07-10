@@ -13,7 +13,7 @@ namespace Docfx.Build.Engine;
 
 sealed class HtmlPostProcessor : IPostProcessor
 {
-    public List<IHtmlDocumentHandler> Handlers { get; } = new List<IHtmlDocumentHandler>();
+    public List<IHtmlDocumentHandler> Handlers { get; } = new();
 
     private bool _handlerInitialized;
 

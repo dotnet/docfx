@@ -70,7 +70,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
     public Regex GetRegex()
     {
         var regexParts = _items.Select(ConvertSingleGlob);
-        var content = string.Join("|", regexParts);
+        var content = string.Join('|', regexParts);
         // Matches the entire pattern
         content = $"^(?:{content})$";
         if (_negate)
@@ -225,7 +225,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
                         else if (c == ']' && !escaping)
                         {
                             // current char class ends when meeting the first non-escaping ]
-                            builder.Append(currentCharClass.ToString());
+                            builder.Append(currentCharClass);
                             currentCharClass = null;
                             break;
                         }

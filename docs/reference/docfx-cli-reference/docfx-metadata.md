@@ -95,6 +95,15 @@ Run `docfx metadata --help` or `docfx -h` to get a list of all available options
   - `SeparatePages`
     - Place members in separate pages.
 
+- **--useClrTypeNames**
+
+  Indicates whether the CLR type names or the language aliases must be used.
+
+    - not specified or `false`
+        - The language aliases are used: `int`.
+    - `true`
+        - The CLR type names are used: `Int32`.
+
 ## Examples
 
 - Generate YAML files with default config.
@@ -102,4 +111,3 @@ Run `docfx metadata --help` or `docfx -h` to get a list of all available options
 ```pwsh
 docfx metadata
 ```
-

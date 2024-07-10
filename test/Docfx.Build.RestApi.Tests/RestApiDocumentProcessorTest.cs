@@ -19,7 +19,6 @@ namespace Docfx.Build.RestApi.Tests;
 public class RestApiDocumentProcessorTest : TestBase
 {
     private readonly string _outputFolder;
-    private readonly string _inputFolder;
     private readonly FileCollection _defaultFiles;
     private readonly ApplyTemplateSettings _applyTemplateSettings;
 
@@ -29,10 +28,10 @@ public class RestApiDocumentProcessorTest : TestBase
     public RestApiDocumentProcessorTest()
     {
         _outputFolder = GetRandomFolder();
-        _inputFolder = GetRandomFolder();
+        string inputFolder = GetRandomFolder();
         _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
         _defaultFiles.Add(DocumentType.Article, new[] { "TestData/swagger/contacts.json" }, "TestData/");
-        _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
+        _applyTemplateSettings = new ApplyTemplateSettings(inputFolder, _outputFolder)
         {
             RawModelExportSettings = { Export = true }
         };

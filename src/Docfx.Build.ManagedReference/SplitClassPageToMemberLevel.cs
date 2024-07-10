@@ -90,7 +90,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
 
     private static void RenewDupeFileModels(FileModel dupeModel, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
     {
-        var page = dupeModel.Content as PageViewModel;
+        var page = (PageViewModel)dupeModel.Content;
         var memberType = page.Items[0]?.Type;
         var newFileName = Path.GetFileNameWithoutExtension(dupeModel.File);
 
@@ -634,11 +634,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
 
     private static void AddModelToDict(FileModel model, Dictionary<string, FileModel> models, List<FileModel> dupeModels)
     {
-        if (!models.ContainsKey(model.File))
-        {
-            models[model.File] = model;
-        }
-        else
+        if (!models.TryAdd(model.File, model))
         {
             dupeModels.Add(model);
         }

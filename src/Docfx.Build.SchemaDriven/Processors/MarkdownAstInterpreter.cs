@@ -29,13 +29,13 @@ public class MarkdownAstInterpreter : IInterpreter
 
         if (value is MarkdownDocument val)
         {
-            return MarkupCore(val, context, path);
+            return MarkupCore(val, context);
         }
 
         return _inner.Interpret(schema, value, context, path);
     }
 
-    private static string MarkupCore(MarkdownDocument document, IProcessContext context, string path)
+    private static string MarkupCore(MarkdownDocument document, IProcessContext context)
     {
         var host = context.Host;
 

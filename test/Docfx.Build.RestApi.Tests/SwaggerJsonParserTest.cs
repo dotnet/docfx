@@ -14,7 +14,7 @@ public class SwaggerJsonParserTest
     [Fact]
     public void ParseSimpleSwaggerJsonShouldSucceed()
     {
-        var swaggerFile = @"TestData/swagger/simple_swagger2.json";
+        var swaggerFile = "TestData/swagger/simple_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
         Assert.Single(swagger.Paths.Values);
@@ -34,7 +34,7 @@ public class SwaggerJsonParserTest
     [Fact]
     public void ParseSwaggerJsonWithReferenceShouldSucceed()
     {
-        var swaggerFile = @"TestData/swagger/ref_swagger2.json";
+        var swaggerFile = "TestData/swagger/ref_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
         Assert.Single(swagger.Paths);
@@ -72,7 +72,7 @@ public class SwaggerJsonParserTest
     [Fact]
     public void ParseSwaggerJsonWithTagShouldSucceed()
     {
-        const string swaggerFile = @"TestData/swagger/tag_swagger2.json";
+        const string swaggerFile = "TestData/swagger/tag_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
         Assert.Equal(3, swagger.Tags.Count);
@@ -90,7 +90,7 @@ public class SwaggerJsonParserTest
     [Fact]
     public void ParseSwaggerJsonWithPathParametersShouldSucceed()
     {
-        const string swaggerFile = @"TestData/swagger/pathParameters_swagger2.json";
+        const string swaggerFile = "TestData/swagger/pathParameters_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
         Assert.Single(swagger.Paths.Values);
@@ -111,7 +111,7 @@ public class SwaggerJsonParserTest
     [Fact]
     public void ParseSwaggerJsonWithLoopReferenceShouldSucceed()
     {
-        const string swaggerFile = @"TestData/swagger/loopref_swagger2.json";
+        const string swaggerFile = "TestData/swagger/loopref_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
         Assert.Single(swagger.Paths.Values);
@@ -150,7 +150,7 @@ public class SwaggerJsonParserTest
     [Fact]
     public void ParseSwaggerJsonWithExternalLoopReferenceShouldSucceed()
     {
-        const string swaggerFile = @"TestData/swagger/externalLoopRef_A.json";
+        const string swaggerFile = "TestData/swagger/externalLoopRef_A.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
         Assert.Single(swagger.Paths.Values);
@@ -188,7 +188,7 @@ public class SwaggerJsonParserTest
     [Fact]
     public void ParseKeyWordSwaggerJsonShouldSucceed()
     {
-        var swaggerFile = @"TestData/swagger/resolveKeywordWithRefInside.json";
+        var swaggerFile = "TestData/swagger/resolveKeywordWithRefInside.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
         ///test x-ms-examples: unresolved.
