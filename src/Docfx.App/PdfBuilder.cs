@@ -187,8 +187,8 @@ static class PdfBuilder
 
         Task<byte[]> PrintHeaderFooter(Outline toc, int pageNumber, int totalPages, Page contentPage)
         {
-            var headerTemplate = ExpandTemplate(toc.pdfHeaderTemplate, pageNumber, totalPages);
-            var footerTemplate = ExpandTemplate(toc.pdfFooterTemplate ?? DefaultFooterTemplate, pageNumber, totalPages);
+            var headerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfHeaderTemplate), pageNumber, totalPages);
+            var footerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfFooterTemplate) ?? DefaultFooterTemplate, pageNumber, totalPages);
 
             return headerFooterCache.GetOrAdd((headerTemplate, footerTemplate), _ => PrintHeaderFooterCore());
 
@@ -237,6 +237,22 @@ static class PdfBuilder
                     .Replace("<span class=\"pageNumber\"></span>", $"<span>{pageNumber}</span>")
                     .Replace("<span class='totalPages'></span>", $"<span>{totalPages}</span>")
                     .Replace("<span class=\"totalPages\"></span>", $"<span>{totalPages}</span>");
+            }
+
+            string? GetHeaderFooter(string? template)
+            {
+                if (string.IsNullOrEmpty(template))
+                    return template;
+
+                try
+                {
+                    var path = Path.Combine(outputFolder, template);
+                    return File.Exists(path) ? File.ReadAllText(path) : template;
+                }
+                catch
+                {
+                    return template;
+                }
             }
         }
     }
