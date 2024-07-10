@@ -18,6 +18,7 @@ using Spectre.Console;
 
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Actions;
+using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Graphics.Operations.SpecialGraphicsState;
 using UglyToad.PdfPig.Outline;
 using UglyToad.PdfPig.Outline.Destinations;
@@ -184,10 +185,10 @@ static class PdfBuilder
             }
         }
 
-        Task<byte[]> PrintHeaderFooter(Outline toc, int pageNumber, int totalPages)
+        Task<byte[]> PrintHeaderFooter(Outline toc, int pageNumber, int totalPages, Page contentPage)
         {
-            var headerTemplate = ExpandTemplate(toc.pdfHeaderTemplate, pageNumber, totalPages);
-            var footerTemplate = ExpandTemplate(toc.pdfFooterTemplate ?? DefaultFooterTemplate, pageNumber, totalPages);
+            var headerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfHeaderTemplate), pageNumber, totalPages);
+            var footerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfFooterTemplate) ?? DefaultFooterTemplate, pageNumber, totalPages);
 
             return headerFooterCache.GetOrAdd((headerTemplate, footerTemplate), _ => PrintHeaderFooterCore());
 
@@ -200,12 +201,27 @@ static class PdfBuilder
                 {
                     await page.GotoAsync("about:blank");
 
-                    return await page.PdfAsync(new()
+                    PagePdfOptions options = new PagePdfOptions
                     {
                         DisplayHeaderFooter = true,
                         HeaderTemplate = headerTemplate,
                         FooterTemplate = footerTemplate,
-                    });
+                    };
+
+                    if (TryGetPlaywrightPageFormat(contentPage.Size, out var pageFormat))
+                    {
+                        options.Format = pageFormat;
+                        options.Landscape = contentPage.Width > contentPage.Height;
+                    }
+                    else
+                    {
+                        var customPageSize = GetPageSizeSettings(contentPage);
+                        options.Width = customPageSize.Width;
+                        options.Height = customPageSize.Height;
+                        options.Landscape = customPageSize.Landscape;
+                    }
+
+                    return await page.PdfAsync(options);
                 }
                 finally
                 {
@@ -222,11 +238,27 @@ static class PdfBuilder
                     .Replace("<span class='totalPages'></span>", $"<span>{totalPages}</span>")
                     .Replace("<span class=\"totalPages\"></span>", $"<span>{totalPages}</span>");
             }
+
+            string? GetHeaderFooter(string? template)
+            {
+                if (string.IsNullOrEmpty(template))
+                    return template;
+
+                try
+                {
+                    var path = Path.Combine(outputFolder, template);
+                    return File.Exists(path) ? File.ReadAllText(path) : template;
+                }
+                catch
+                {
+                    return template;
+                }
+            }
         }
     }
 
     static async Task CreatePdf(
-        Func<Outline, Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Task<byte[]>> printHeaderFooter, ProgressTask task,
+        Func<Outline, Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Page, Task<byte[]>> printHeaderFooter, ProgressTask task,
         Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
@@ -349,7 +381,7 @@ static class PdfBuilder
                     if (isTocPage)
                         continue;
 
-                    var headerFooter = await printHeaderFooter(outline, pageNumber, numberOfPages);
+                    var headerFooter = await printHeaderFooter(outline, pageNumber, numberOfPages, document.GetPage(i));
                     using var headerFooterDocument = PdfDocument.Open(headerFooter);
 
                     pageBuilder.NewContentStreamBefore();
@@ -528,4 +560,62 @@ static class PdfBuilder
           </div>
         </div>
         """;
+
+    /// <summary>
+    /// Gets playwright page format from PdfPig's PageSize.
+    /// </summary>
+    private static bool TryGetPlaywrightPageFormat(PageSize pageSize, out string? pageFormat)
+    {
+        // List of supported formats: https://playwright.dev/dotnet/docs/api/class-page#page-pdf
+        switch (pageSize)
+        {
+            case PageSize.Letter:
+            case PageSize.Legal:
+            case PageSize.Tabloid:
+            case PageSize.Ledger:
+            case PageSize.A0:
+            case PageSize.A1:
+            case PageSize.A2:
+            case PageSize.A3:
+            case PageSize.A4:
+            case PageSize.A5:
+            case PageSize.A6:
+                pageFormat = pageSize.ToString();
+                return true;
+
+            // Following format is not supported format by playwright. 
+            // It need to use Width/Height settings.
+            case PageSize.A7:
+            case PageSize.A8:
+            case PageSize.A9:
+            case PageSize.A10:
+            case PageSize.Custom:
+            case PageSize.Executive:
+            default:
+                pageFormat = null;
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// Gets page size settings from PdfPig's Page object.
+    /// </summary>
+    private static (string Width, string Height, bool Landscape) GetPageSizeSettings(Page contentPage)
+    {
+        var isLandscape = contentPage.Width > contentPage.Height;
+        var width = getMillimeter(contentPage.Width);
+        var height = getMillimeter(contentPage.Height);
+
+        return isLandscape
+            ? (height, width, true) // On Landscape mode. It need to swap width/height.
+            : (width, height, false);
+
+        // Gets millimeter string representation from `pt` value.
+        static string getMillimeter(double pt)
+        {
+            const double MillimeterPerInch = 25.4d;
+            const double Dpi = 72d; // Use Default DPI of PDF.
+            return $"{Math.Round(pt * MillimeterPerInch / Dpi)}mm";
+        }
+    }
 }

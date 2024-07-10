@@ -85,7 +85,7 @@ Indicates whether to include background graphics when rendering the pdf.
 
 ### `pdfHeaderTemplate`
 
-HTML template for the print header. Should be valid HTML markup with following HTML elements used to inject printing values into them:
+HTML template for the print header, or a path to an HTML page relative to the root of the output directory. Should be valid HTML markup with following HTML elements used to inject printing values into them:
 
 - `<span class='pageNumber'></span>`: current page number.
 - `<span class='totalPages'></span>`: total pages in the document.
@@ -95,7 +95,7 @@ HTML template for the print header. Should be valid HTML markup with following H
 
 ### `pdfFooterTemplate`
 
-HTML template for the print footer. Should use the same format as the [header template](#pdfheadertemplate). Uses the following default footer template if unspecified:
+HTML template for the print footer, or a path to an HTML page relative to the root of the output directory. Should use the same format as the [header template](#pdfheadertemplate). Uses the following default footer template if unspecified:
 
 ```html
 <div style="width: 100%; font-size: 12px;">
