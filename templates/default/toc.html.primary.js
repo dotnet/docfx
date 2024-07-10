@@ -51,6 +51,11 @@ function transformMemberPage(model) {
       "event":       { key: "eventsInSubtitle" },
       "operator":    { key: "operatorsInSubtitle" },
       "eii":         { key: "eiisInSubtitle" },
+      "class":       { key: "classesInSubtitle" },
+      "struct":      { key: "structsInSubtitle" },
+      "enum":        { key: "enumsInSubtitle" },
+      "interface":   { key: "interfacesInSubtitle" },
+      "namespace":   { key: "namespacesInSubtitle" },
   };
 
   groupChildren(model);
