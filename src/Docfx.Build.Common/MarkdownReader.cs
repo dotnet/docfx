@@ -129,7 +129,7 @@ public class MarkdownReader
         if (notExistsKeys.Count > 0)
         {
             message =
-                $"Required properties {{{{{string.Join(",", notExistsKeys)}}}}} are not set. Note that keys are case sensitive.";
+                $"Required properties {{{{{string.Join(',', notExistsKeys)}}}}} are not set. Note that keys are case sensitive.";
             return false;
         }
 

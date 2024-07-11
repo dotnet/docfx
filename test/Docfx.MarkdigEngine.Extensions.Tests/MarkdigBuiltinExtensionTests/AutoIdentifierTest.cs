@@ -17,7 +17,7 @@ public class AutoIdentifierTest
     public void AutoIdentifierTest_DocfxDefault()
     {
         // docfx use `AutoIdentifierOptions.GitHub` as default options.
-        var content = @"# This - is a &@! heading _ with . and ! -";
+        var content = "# This - is a &@! heading _ with . and ! -";
         var expected = @"<h1 id=""this---is-a--heading-_-with--and---"">This - is a &amp;@! heading _ with . and ! -</h1>";
 
         TestUtility.VerifyMarkup(content, expected);
@@ -29,7 +29,7 @@ public class AutoIdentifierTest
     [Fact]
     public void AutoIdentifierTest_MarkdigDefault()
     {
-        var content = @"# This - is a &@! heading _ with . and ! -";
+        var content = "# This - is a &@! heading _ with . and ! -";
         var expected = @"<h1 id=""this-is-a-heading_with.and"">This - is a &amp;@! heading _ with . and ! -</h1>";
 
         // Default option is used when 
@@ -47,7 +47,7 @@ public class AutoIdentifierTest
     [Fact]
     public void AutoIdentifierTest_None()
     {
-        var content = @"# This - is a &@! heading _ with . and ! -";
+        var content = "# This - is a &@! heading _ with . and ! -";
         var expected = @"<h1 id=""this-is-a-heading_with.and"">This - is a &amp;@! heading _ with . and ! -</h1>";
 
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: [

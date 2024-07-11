@@ -325,11 +325,11 @@ bar: bar
     public class ClassWithExtensibleMembers : BasicClass
     {
         [ExtensibleMember("s.")]
-        public SortedDictionary<string, string> StringExtensions { get; } = new SortedDictionary<string, string>();
+        public SortedDictionary<string, string> StringExtensions { get; } = new();
         [ExtensibleMember("i.")]
-        public SortedList<string, int> IntegerExtensions { get; } = new SortedList<string, int>();
+        public SortedList<string, int> IntegerExtensions { get; } = new();
         [ExtensibleMember()]
-        public Dictionary<string, object> ObjectExtensions { get; } = new Dictionary<string, object>();
+        public Dictionary<string, object> ObjectExtensions { get; } = new();
     }
 
     [Fact]

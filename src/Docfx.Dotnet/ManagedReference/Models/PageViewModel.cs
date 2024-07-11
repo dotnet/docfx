@@ -14,14 +14,14 @@ public class PageViewModel
     [YamlMember(Alias = "items")]
     [JsonProperty("items")]
     [JsonPropertyName("items")]
-    public List<ItemViewModel> Items { get; set; } = new List<ItemViewModel>();
+    public List<ItemViewModel> Items { get; set; } = new();
 
     [YamlMember(Alias = "references")]
     [JsonProperty("references")]
     [JsonPropertyName("references")]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
-    public List<ReferenceViewModel> References { get; set; } = new List<ReferenceViewModel>();
+    public List<ReferenceViewModel> References { get; set; } = new();
 
     [YamlMember(Alias = "shouldSkipMarkup")]
     [JsonProperty("shouldSkipMarkup")]
@@ -36,5 +36,5 @@ public class PageViewModel
     [ExtensibleMember]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
-    public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> Metadata { get; set; } = new();
 }
