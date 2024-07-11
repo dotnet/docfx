@@ -1,0 +1,27 @@
+name: Report failed tests
+description: Report failed tests
+runs:
+  using: "composite"
+  steps:
+  - name: Report failed tests
+    shell: pwsh
+    run: |
+      $trxFiles = Get-ChildItem test -Filter *.trx -Recurse
+      $failedTests = @()
+      foreach($trxFile in $trxFiles)
+      {
+        [xml]$trx = Get-Content $trxFile -Raw
+        if($trx.TestRun.ResultSummary.outcome -eq 'Failed')
+        {
+          $failedTests += $trx.TestRun.Results.UnitTestResult | where { $_.outcome -eq 'Failed' }
+        }
+      }
+
+      if($failedTests.Length -gt 0)
+      {
+        Write-Output "## Failed Tests" >> $env:GITHUB_STEP_SUMMARY
+        foreach($failedTest in $failedTests)
+        {
+          Write-Output "<details><summary>$($failedTest.testName)</summary><pre>$($failedTest.Output.ErrorInfo.Message)`nStackTrace:`n"$($failedTest.Output.ErrorInfo.StackTrace)"</pre></details>" >> $env:GITHUB_STEP_SUMMARY
+        }
+      }
