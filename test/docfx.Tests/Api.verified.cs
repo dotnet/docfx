@@ -2690,6 +2690,10 @@ namespace Docfx.DataContracts.Common
         [System.Text.Json.Serialization.JsonPropertyName("topicUid")]
         [YamlDotNet.Serialization.YamlMember(Alias="topicUid")]
         public string TopicUid { get; set; }
+        [Newtonsoft.Json.JsonProperty("type")]
+        [System.Text.Json.Serialization.JsonPropertyName("type")]
+        [YamlDotNet.Serialization.YamlMember(Alias="type")]
+        public string Type { get; set; }
         [Newtonsoft.Json.JsonProperty("uid")]
         [System.Text.Json.Serialization.JsonPropertyName("uid")]
         [YamlDotNet.Serialization.YamlMember(Alias="uid")]
