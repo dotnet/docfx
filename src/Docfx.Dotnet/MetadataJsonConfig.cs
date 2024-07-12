@@ -258,6 +258,13 @@ internal class MetadataJsonItemConfig
     [JsonProperty("allowCompilationErrors")]
     [JsonPropertyName("allowCompilationErrors")]
     public bool AllowCompilationErrors { get; set; }
+
+    /// <summary>
+    ///   When enabled, the types uses the CLR type names instead of the C# aliases.
+    /// </summary>
+    [JsonProperty("useClrTypeNames")]
+    [JsonPropertyName("useClrTypeNames")]
+    public bool UseClrTypeNames { get; init; }
 }
 
 /// <summary>

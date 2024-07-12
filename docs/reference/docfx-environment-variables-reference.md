@@ -27,3 +27,8 @@ This setting is intended to be used on offline environment.
 ## `DOCFX_PDF_TIMEOUT`
 
 Maximum time in milliseconds to override the default [Playwright timeout](https://playwright.dev/docs/api/class-browsercontext#browser-context-set-default-timeout) for PDF generation.
+
+## `PLAYWRIGHT_NODEJS_PATH`
+
+Custom Node.js executable path that will be used by the `docfx pdf' command.
+By default, docfx automatically detect installed Node.js from `PATH`.

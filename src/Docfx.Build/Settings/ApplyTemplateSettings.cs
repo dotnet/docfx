@@ -18,10 +18,10 @@ public class ApplyTemplateSettings
     public string OutputFolder { get; }
     public bool DebugMode { get; }
     public bool TransformDocument { get; set; } = true;
-    public ExportSettings RawModelExportSettingsForDebug { get; set; } = new ExportSettings(DefaultRawModelExportSettings);
-    public ExportSettings ViewModelExportSettingsForDebug { get; set; } = new ExportSettings(DefaultRawModelExportSettings);
-    public ExportSettings RawModelExportSettings { get; set; } = new ExportSettings(DefaultRawModelExportSettings);
-    public ExportSettings ViewModelExportSettings { get; set; } = new ExportSettings(DefaultViewModelExportSettings);
+    public ExportSettings RawModelExportSettingsForDebug { get; set; } = new(DefaultRawModelExportSettings);
+    public ExportSettings ViewModelExportSettingsForDebug { get; set; } = new(DefaultRawModelExportSettings);
+    public ExportSettings RawModelExportSettings { get; set; } = new(DefaultRawModelExportSettings);
+    public ExportSettings ViewModelExportSettings { get; set; } = new(DefaultViewModelExportSettings);
     public ICustomHrefGenerator HrefGenerator { get; set; }
 
     public ApplyTemplateSettings(string inputFolder, string outputFolder) : this(inputFolder, outputFolder, null, false)

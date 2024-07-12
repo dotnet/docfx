@@ -28,14 +28,14 @@ public class FillReferenceInformation : BaseDocumentBuildStep
                 {
                     continue;
                 }
-                FillCore((PageViewModel)model.Content, host, model.OriginalFileAndType.File);
+                FillCore((PageViewModel)model.Content, host);
             }
         }
     }
 
     #region Private methods
 
-    private static void FillCore(PageViewModel model, IHostService host, string file)
+    private static void FillCore(PageViewModel model, IHostService host)
     {
         if (model.References == null || model.References.Count == 0)
         {

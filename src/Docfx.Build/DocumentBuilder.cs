@@ -92,11 +92,11 @@ public class DocumentBuilder : IDisposable
 
             if (parameter.Files.Count == 0)
             {
-                manifests.Add(new Manifest() { SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory) });
+                manifests.Add(new Manifest { SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory) });
             }
             else
             {
-                if (!parameter.Files.EnumerateFiles().Any(s => s.Type == DocumentType.Article))
+                if (!parameter.Files.EnumerateFiles().Any(static s => s.Type == DocumentType.Article))
                 {
                     if (!string.IsNullOrEmpty(parameter.GroupInfo?.Name))
                     {
@@ -131,7 +131,7 @@ public class DocumentBuilder : IDisposable
         else if (emptyContentGroups.Count > 0)
         {
             Logger.LogSuggestion(
-                $"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.",
+                $"No content file found in group: {string.Join(',', emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.",
                 code: SuggestionCodes.Build.EmptyInputContents);
         }
 

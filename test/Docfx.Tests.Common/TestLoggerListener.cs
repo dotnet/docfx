@@ -7,7 +7,7 @@ namespace Docfx.Tests.Common;
 
 public class TestLoggerListener : ILoggerListener
 {
-    public List<ILogItem> Items { get; } = new List<ILogItem>();
+    public List<ILogItem> Items { get; } = new();
 
     private readonly Func<ILogItem, bool> _filter;
 
@@ -35,7 +35,7 @@ public class TestLoggerListener : ILoggerListener
     }
 
     public static TestLoggerListener CreateLoggerListenerWithCodeFilter(string code, LogLevel logLevel = LogLevel.Warning)
-        => new(i => i.LogLevel >= logLevel && i?.Code == code);
+        => new(i => i.LogLevel >= logLevel && i.Code == code);
 
     public static TestLoggerListener CreateLoggerListenerWithCodesFilter(List<string> codes, LogLevel logLevel = LogLevel.Warning)
         => new(i => i.LogLevel >= logLevel && codes.Contains(i.Code));

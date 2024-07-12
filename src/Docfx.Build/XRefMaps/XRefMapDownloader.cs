@@ -76,7 +76,7 @@ public sealed class XRefMapDownloader
                 return ReadLocalFileAsync(localFilePath, token);
             }
         }
-        throw new FileNotFoundException($"Cannot find xref map file {uri.OriginalString} in path: {string.Join(",", _localFileFolders)}", uri.OriginalString);
+        throw new FileNotFoundException($"Cannot find xref map file {uri.OriginalString} in path: {string.Join(',', _localFileFolders)}", uri.OriginalString);
     }
 
     /// <remarks>

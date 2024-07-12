@@ -77,7 +77,7 @@ public class OverwriteDocumentModelCreator
     private static void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, MarkdownDocument propertyValue, Dictionary<object, object> contentsMetadata)
     {
         FindOrCreateObject(contentsMetadata, codeHeaderBlock, OPathSegments, 0, propertyValue,
-            string.Join("/", OPathSegments.Select(o => o.OriginalSegmentString)));
+            string.Join('/', OPathSegments.Select(o => o.OriginalSegmentString)));
     }
 
     private static void FindOrCreateObject(Dictionary<object, object> currentObject, Block codeHeaderBlock, List<OPathSegment> OPathSegments, int index, MarkdownDocument propertyValue, string originalOPathString)
@@ -138,7 +138,7 @@ public class OverwriteDocumentModelCreator
         {
             if (string.IsNullOrEmpty(segment.Key))
             {
-                nextObject = CreateDictionaryObject(segment);
+                nextObject = CreateDictionaryObject();
                 currentObject[segment.SegmentName] = nextObject;
             }
             else
@@ -200,7 +200,7 @@ public class OverwriteDocumentModelCreator
         return result;
     }
 
-    private static Dictionary<object, object> CreateDictionaryObject(OPathSegment segment)
+    private static Dictionary<object, object> CreateDictionaryObject()
     {
         return new Dictionary<object, object>();
     }

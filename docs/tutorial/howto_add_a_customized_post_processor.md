@@ -9,8 +9,7 @@ In this topic, we will show how to add a customized post-processor.
 
 * Create a new C# class library project in `Visual Studio`.
 * Add nuget packages:
-    * [`System.Collections.Immutable`](https://www.nuget.org/packages/System.Collections.Immutable/1.3.1) with version 1.3.1
-    * [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/1.0.31) with version 1.0.31
+    * [`System.Composition`](https://www.nuget.org/packages/System.Composition/8.0.0) with version 8.0.0
 * Add `Docfx.Plugins`
 If you are building DocFX from source code, add this reference to the project,
 otherwise add the nuget package `Docfx.Plugins` with the same version as DocFX.
@@ -58,8 +57,8 @@ Using `ExtractSearchIndex` for example again, we traverse all HTML files, extrac
 
 ## Step4: Build your project and copy the output dll files to:
 
-* Global: the folder with name `Plugins` under the folder containing the Docfx executable
-* Non-global: the folder with name `Plugins` under a template folder, then run `DocFX build` command with parameter `-t {template}`.
+* Global: the folder that contains the Docfx executable.
+* Non-global: the folder with name `plugins` under a template folder, then run `DocFX build` command with parameter `-t {template}`.
 
     *Hint*: DocFX can merge templates, so we can specify multiple template folders as `DocFX build -t {templateForRender},{templateForPlugins}`. Each of the template folders should have a subfolder named `Plugins` with exported assemblies.
 

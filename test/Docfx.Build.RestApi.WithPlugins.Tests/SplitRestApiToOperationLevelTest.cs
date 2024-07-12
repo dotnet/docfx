@@ -18,7 +18,6 @@ namespace Docfx.Build.RestApi.WithPlugins.Tests;
 [Collection("docfx STA")]
 public class SplitRestApiToOperationLevelTest : TestBase
 {
-    private readonly string _inputFolder;
     private readonly string _outputFolder;
     private readonly FileCollection _defaultFiles;
     private readonly ApplyTemplateSettings _applyTemplateSettings;
@@ -28,11 +27,11 @@ public class SplitRestApiToOperationLevelTest : TestBase
 
     public SplitRestApiToOperationLevelTest()
     {
-        _inputFolder = GetRandomFolder();
+        string inputFolder = GetRandomFolder();
         _outputFolder = GetRandomFolder();
         _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
         _defaultFiles.Add(DocumentType.Article, new[] { "TestData/swagger/petstore.json" }, "TestData/");
-        _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
+        _applyTemplateSettings = new ApplyTemplateSettings(inputFolder, _outputFolder)
         {
             RawModelExportSettings = { Export = true },
             TransformDocument = true,

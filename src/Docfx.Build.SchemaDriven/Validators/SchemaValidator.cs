@@ -11,7 +11,7 @@ public class SchemaValidator
 {
     private readonly JsonSchema _schema;
 
-    private static readonly EvaluationOptions DefaultOptions = new EvaluationOptions
+    private static readonly EvaluationOptions DefaultOptions = new()
     {
         ValidateAgainstMetaSchema = false,
         OutputFormat = OutputFormat.List,

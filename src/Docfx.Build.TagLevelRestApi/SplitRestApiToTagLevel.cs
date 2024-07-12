@@ -77,7 +77,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
             tagModel.Metadata["_isSplittedToTag"] = true;
             var newModel = GenerateNewFileModel(model, tagModel);
             splittedModels.Add(newModel);
-            treeItems.Add(ConvertToTreeItem(tagModel, newModel.Key));
+            treeItems.Add(ConvertToTreeItem(tagModel));
         }
 
         // Only keep not tagged children in root model
@@ -173,7 +173,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         }
     }
 
-    private static TreeItem ConvertToTreeItem(RestApiRootItemViewModel root, string fileKey)
+    private static TreeItem ConvertToTreeItem(RestApiRootItemViewModel root)
     {
         return new TreeItem
         {

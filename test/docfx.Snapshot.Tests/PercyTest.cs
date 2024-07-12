@@ -38,6 +38,7 @@ public class PercyTest
 
     static PercyTest()
     {
+        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
         Microsoft.Playwright.Program.Main(["install", "chromium"]);
     }
 
@@ -57,7 +58,7 @@ public class PercyTest
         var _ = Task.Run(() => Program.Main(["serve", "--port", $"{port}", $"{samplePath}/_site"]))
                     .ContinueWith(x =>
                     {
-                        Logger.LogError("Failed to run `dotnet serve` command. " + x.Exception.ToString());
+                        Logger.LogError("Failed to run `dotnet serve` command. " + x.Exception);
                     }, TaskContinuationOptions.OnlyOnFaulted);
 
         // Wait until web server started.

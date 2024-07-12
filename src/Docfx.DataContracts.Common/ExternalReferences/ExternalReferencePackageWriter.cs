@@ -9,30 +9,28 @@ namespace Docfx.DataContracts.Common;
 
 public class ExternalReferencePackageWriter : IDisposable
 {
-    private readonly string _packageFile;
     private readonly ZipArchive _zip;
 
-    private ExternalReferencePackageWriter(string packageFile, Uri baseUri, bool append)
+    private ExternalReferencePackageWriter(string packageFile, bool append)
     {
-        _packageFile = packageFile;
         if (append && File.Exists(packageFile))
         {
-            _zip = new ZipArchive(new FileStream(_packageFile, FileMode.Open, FileAccess.ReadWrite), ZipArchiveMode.Update);
+            _zip = new ZipArchive(new FileStream(packageFile, FileMode.Open, FileAccess.ReadWrite), ZipArchiveMode.Update);
         }
         else
         {
-            _zip = new ZipArchive(new FileStream(_packageFile, FileMode.Create, FileAccess.ReadWrite), ZipArchiveMode.Create);
+            _zip = new ZipArchive(new FileStream(packageFile, FileMode.Create, FileAccess.ReadWrite), ZipArchiveMode.Create);
         }
     }
 
     public static ExternalReferencePackageWriter Create(string packageFile, Uri baseUri)
     {
-        return new ExternalReferencePackageWriter(packageFile, baseUri, false);
+        return new ExternalReferencePackageWriter(packageFile, false);
     }
 
     public static ExternalReferencePackageWriter Append(string packageFile, Uri baseUri)
     {
-        return new ExternalReferencePackageWriter(packageFile, baseUri, true);
+        return new ExternalReferencePackageWriter(packageFile, true);
     }
 
     public void AddOrUpdateEntry(string entryName, List<ReferenceViewModel> vm)

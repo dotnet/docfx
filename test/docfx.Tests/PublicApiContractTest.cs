@@ -14,7 +14,7 @@ public class PublicApiContractTest
         var assemblies = new HashSet<Assembly>();
         GetAssemblies(typeof(Docset).Assembly);
 
-        var publicApi = string.Join("\n", assemblies
+        var publicApi = string.Join('\n', assemblies
             .OrderBy(a => a.FullName)
             .Select(a => a.GeneratePublicApi(new() { IncludeAssemblyAttributes = false })));
 

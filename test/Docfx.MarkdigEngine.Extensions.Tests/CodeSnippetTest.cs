@@ -10,7 +10,7 @@ public class CodeSnippetTest
     [Fact]
     public void CodeSnippetNotFound()
     {
-        var source = @"[!code-csharp[name](Program1.cs)]";
+        var source = "[!code-csharp[name](Program1.cs)]";
 
         var expected = @"<div class=""WARNING"">
 <h5>警告</h5>
@@ -38,7 +38,7 @@ public class CodeSnippetTest
     // </tag1>
 " + " \tline for indent & range";
 
-        var source = @"[!code-csharp[name](Program.cs?start=1&end=1&name=tag&range=5-&highlight=1,2-2,4-&dedent=3#tag1)]";
+        var source = "[!code-csharp[name](Program.cs?start=1&end=1&name=tag&range=5-&highlight=1,2-2,4-&dedent=3#tag1)]";
 
         // assert
         var expected = @"<pre><code class=""lang-csharp"" name=""name"" highlight-lines=""1,2,4-""> line1
@@ -69,7 +69,7 @@ public class CodeSnippetTest
   }
  ]
 }";
-        var source = @"[!notebook-python[](Program.ipynb?name=import)]";
+        var source = "[!notebook-python[](Program.ipynb?name=import)]";
 
         var expected = @"<pre><code class=""lang-python"">import azureml.core
 print(azureml.core.VERSION)</code></pre>";
@@ -100,7 +100,7 @@ print(azureml.core.VERSION)</code></pre>";
  ]
 }";
 
-        var source = @"[!notebook-python[](Program.ipynb?name=nonexistent)]";
+        var source = "[!notebook-python[](Program.ipynb?name=nonexistent)]";
         var expected = @"<pre><code class=""lang-python""></code></pre>";
 
         TestUtility.VerifyMarkup(
@@ -146,7 +146,7 @@ print(azureml.core.VERSION)</code></pre>";
  ]
 }";
 
-        var source = @"[!notebook-python[](Program.ipynb?name=import)]";
+        var source = "[!notebook-python[](Program.ipynb?name=import)]";
         var expected = @"<pre><code class=""lang-python""></code></pre>";
 
         TestUtility.VerifyMarkup(
@@ -294,7 +294,7 @@ public class MyClass
     [Theory]
     [Trait("Related", "Markdown")]
     #region Inline Data
-    [InlineData(@"[!code-csharp[Main](Program.cs)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
+    [InlineData("[!code-csharp[Main](Program.cs)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
     using System;
@@ -422,7 +422,7 @@ namespace ConsoleApplication1
             int i = 100;
         }
 </code></pre>")]
-    [InlineData(@"[!code-csharp[Main](Program.cs?highlight=1)]", @"<pre><code class=""lang-csharp"" name=""Main"" highlight-lines=""1"">namespace ConsoleApplication1
+    [InlineData("[!code-csharp[Main](Program.cs?highlight=1)]", @"<pre><code class=""lang-csharp"" name=""Main"" highlight-lines=""1"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
     using System;
@@ -487,7 +487,7 @@ namespace ConsoleApplication1
             int i = 100;
         }
 </code></pre>")]
-    [InlineData(@"[!code-csharp[Main](Program.cs?dedent=0)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
+    [InlineData("[!code-csharp[Main](Program.cs?dedent=0)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
     using System;
@@ -658,7 +658,7 @@ public static void Foo()
     [Trait("Related", "Markdown")]
     public void TestFencesBlockLevelWithWorkingFolder()
     {
-        var root = @"[!code-REST[REST](~/api.json)]";
+        var root = "[!code-REST[REST](~/api.json)]";
         var apiJsonContent = @"
 {
    ""method"": ""GET"",
@@ -698,7 +698,7 @@ public static void Foo()
     // </tag1>
 " + " \tline for indent & range";
 
-        var markdown = @"[!code-csharp[name](Program.cs#tag1)]";
+        var markdown = "[!code-csharp[name](Program.cs#tag1)]";
 
         // assert
         var expected = @"<pre><code class=""lang-csharp"" name=""name"">line1

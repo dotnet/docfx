@@ -205,12 +205,7 @@ public class JsonPointer
             return parent.Items;
         }
 
-        if (parent.Properties.TryGetValue(part, out var bs))
-        {
-            return bs;
-        }
-
-        return null;
+        return parent.Properties.GetValueOrDefault(part);
     }
 
     private static string UnescapeReference(string reference)

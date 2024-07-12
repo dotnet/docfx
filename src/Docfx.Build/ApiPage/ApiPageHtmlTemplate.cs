@@ -44,7 +44,7 @@ static class ApiPageHtmlTemplate
             var value = (ApiBase)api.Value;
             var attributes = value.metadata is null
                 ? default
-                : UnsafeHtml(string.Join(" ", value.metadata.Select(m => $"data-{WebUtility.HtmlEncode(m.Key)}='{WebUtility.HtmlEncode(m.Value)}'")));
+                : UnsafeHtml(string.Join(' ', value.metadata.Select(m => $"data-{WebUtility.HtmlEncode(m.Key)}='{WebUtility.HtmlEncode(m.Value)}'")));
 
             var (level, title) = api.Value switch
             {

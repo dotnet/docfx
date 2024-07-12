@@ -38,12 +38,12 @@ public class PathUtilityTest
     {
         public static TheoryData<string, string, string> AdditionalTests = new()
         {
-            { @"/a/b/d",          @"/a/b/file.md",            @"../file.md"},            // root relative path
-            { @"~/a/b/d",         @"~/a/b/file.md",           @"../file.md"},            // user home directory relative path
-            { @"./",              @"\\UNCPath\file.md",       @"//UNCPath/file.md"},     // UNC path
-            { @"./",              @"file:///C:/temp/test.md", @"file:/C:/temp/test.md"}, // `file:` Uri path
-            { @"file:///C:/temp", @"file:///C:/temp/test.md", @"test.md"},               // `file:` Uri relative path
-            { @"/temp/dir",       @"/temp/dir/subdir/",       @"subdir/"},               // If target path endsWith directory separator char. resolved path should contain directory separator.
+            { "/a/b/d",          "/a/b/file.md",            "../file.md"},            // root relative path
+            { "~/a/b/d",         "~/a/b/file.md",           "../file.md"},            // user home directory relative path
+            { "./",              @"\\UNCPath\file.md",       "//UNCPath/file.md"},     // UNC path
+            { "./",              "file:///C:/temp/test.md", "file:/C:/temp/test.md"}, // `file:` Uri path
+            { "file:///C:/temp", "file:///C:/temp/test.md", "test.md"},               // `file:` Uri relative path
+            { "/temp/dir",       "/temp/dir/subdir/",       "subdir/"},               // If target path endsWith directory separator char. resolved path should contain directory separator.
         };
 
         public static TheoryData<string> EscapedPaths = new()

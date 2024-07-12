@@ -43,8 +43,8 @@ key: value
         //  |- root.md
         //  |- b
         //  |  |- linkAndRefRoot.md
-        var root = @"[!include[linkAndRefRoot](~/x/b/linkAndRefRoot.md)]";
-        var linkAndRefRoot = @"Paragraph1";
+        var root = "[!include[linkAndRefRoot](~/x/b/linkAndRefRoot.md)]";
+        var linkAndRefRoot = "Paragraph1";
         TestUtility.WriteToFile("x/root.md", root);
         TestUtility.WriteToFile("x/b/linkAndRefRoot.md", linkAndRefRoot);
 
@@ -55,7 +55,7 @@ key: value
         Assert.IsType<InclusionBlock>(document[0]);
 
         var mr = service.Render(document);
-        var expected = @"<p>Paragraph1</p>" + "\n";
+        var expected = "<p>Paragraph1</p>" + "\n";
         Assert.Equal(expected, mr.Html);
 
         var expectedDependency = new List<string> { "b/linkAndRefRoot.md" };
@@ -66,7 +66,7 @@ key: value
     [Trait("Related", "MarkdigService")]
     public void MarkdigServiceTest_ParseInline()
     {
-        var content = @"# I am a heading";
+        var content = "# I am a heading";
         var service = TestUtility.CreateMarkdownService();
         var document = service.Parse(content, "topic.md", true);
         var result = service.Render(document, true).Html;

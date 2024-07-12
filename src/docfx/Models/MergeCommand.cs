@@ -36,8 +36,7 @@ internal class MergeCommand : Command<MergeCommandOptions>
         // base directory for content from command line is current directory
         // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
         // for `--content "*.cs*`, base directory should be `C:\folder1`
-        string optionsBaseDirectory = Directory.GetCurrentDirectory();
-
+        // hence GetFullPath used
         if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = Path.GetFullPath(Path.Combine(options.OutputFolder, config.Destination ?? string.Empty));
     }
 }

@@ -79,7 +79,7 @@ public static class MarkdownExtensions
         optionalExtensions = results.ToArray();
 
         // Enable remaining markdig extensions with default options.
-        pipeline.Configure(string.Join("+", optionalExtensions.Select(x => x.Name)));
+        pipeline.Configure(string.Join('+', optionalExtensions.Select(x => x.Name)));
 
         return pipeline;
     }

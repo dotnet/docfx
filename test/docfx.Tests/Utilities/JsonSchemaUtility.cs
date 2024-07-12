@@ -9,7 +9,7 @@ namespace Docfx.Tests;
 
 internal static class JsonSchemaUtility
 {
-    public static readonly JsonSerializerOptions DefaultSerializerOptions = new JsonSerializerOptions
+    public static readonly JsonSerializerOptions DefaultSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
         AllowTrailingCommas = true,
@@ -19,7 +19,7 @@ internal static class JsonSchemaUtility
         WriteIndented = true,
     };
 
-    public static readonly EvaluationOptions DefaultEvaluationOptions = new EvaluationOptions
+    public static readonly EvaluationOptions DefaultEvaluationOptions = new()
     {
         ValidateAgainstMetaSchema = false,
         OutputFormat = OutputFormat.List,

@@ -34,7 +34,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
         // base directory for content from command line is current directory
         // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
         // for `--content "*.cs*`, base directory should be `C:\folder1`
-        string optionsBaseDirectory = Directory.GetCurrentDirectory();
+        // hence GetFullPath used below
 
         // Override config file with options from command line
         if (options.Templates != null && options.Templates.Any())

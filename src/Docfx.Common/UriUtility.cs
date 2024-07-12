@@ -93,7 +93,7 @@ public static class UriUtility
     {
         ArgumentNullException.ThrowIfNull(uri);
 
-        if (uri?.Length == 0)
+        if (uri.Length == 0)
         {
             return (string.Empty, string.Empty, string.Empty);
         }

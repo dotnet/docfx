@@ -16,8 +16,8 @@ public class EmphasisExtraTest
     [Fact]
     public void EmphasisExtraTest_DocfxDefault()
     {
-        var content = @"The following text ~~is deleted~~";
-        var expected = @"<p>The following text <del>is deleted</del></p>";
+        var content = "The following text ~~is deleted~~";
+        var expected = "<p>The following text <del>is deleted</del></p>";
 
         // `Strikethrough` is enabled by default.
         TestUtility.VerifyMarkup(content, expected);
@@ -51,7 +51,7 @@ public class EmphasisExtraTest
     [Fact]
     public void EmphasisExtraTest_SuperscriptAndSubscript()
     {
-        var content = @"H~2~O is a liquid. 2^10^ is 1024";
+        var content = "H~2~O is a liquid. 2^10^ is 1024";
 
         // `Superscript` and `Subscript` are disabled by default.
         {
@@ -60,7 +60,7 @@ public class EmphasisExtraTest
         }
         // `Superscript` and `Subscript` is enabled when using default options or option is explicitly specified.
         {
-            var expected = @"<p>H<sub>2</sub>O is a liquid. 2<sup>10</sup> is 1024</p>";
+            var expected = "<p>H<sub>2</sub>O is a liquid. 2<sup>10</sup> is 1024</p>";
             TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
               new("EmphasisExtras", "Superscript, Subscript")]);
         }
@@ -69,7 +69,7 @@ public class EmphasisExtraTest
     [Fact]
     public void EmphasisExtraTest_Inserted()
     {
-        var content = @"++Inserted text++";
+        var content = "++Inserted text++";
 
         // `Inserted` is disabled by default.
         {
@@ -78,7 +78,7 @@ public class EmphasisExtraTest
         }
         // `Inserted` is enabled when using default options or option is explicitly specified.
         {
-            var expected = @"<p><ins>Inserted text</ins></p>";
+            var expected = "<p><ins>Inserted text</ins></p>";
             TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
               new("EmphasisExtras", "Inserted")]);
         }
@@ -87,7 +87,7 @@ public class EmphasisExtraTest
     [Fact]
     public void EmphasisExtraTest_Marked()
     {
-        var content = @"==Marked text==";
+        var content = "==Marked text==";
 
         // `Marked` is disabled by default.
         {
@@ -96,7 +96,7 @@ public class EmphasisExtraTest
         }
         // `Marked` is enabled when using default options or option is explicitly specified.
         {
-            var expected = @"<p><mark>Marked text</mark></p>";
+            var expected = "<p><mark>Marked text</mark></p>";
             TestUtility.VerifyMarkup(content, expected, optionalExtensions: [
               new("EmphasisExtras", "Marked")]);
         }

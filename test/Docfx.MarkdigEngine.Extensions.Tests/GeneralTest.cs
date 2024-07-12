@@ -12,7 +12,7 @@ public class GeneralTest
     public void MarkdigWithDefaultFAL()
     {
         var source = "[!INCLUDE [title](~/token1573.md)]";
-        var expected = @"<p><strong>token content</strong></p>";
+        var expected = "<p><strong>token content</strong></p>";
 
         TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
         {
@@ -79,7 +79,7 @@ Term 1
     [Trait("Related", "DfmMarkdown")]
     public void TestDfm_HeadingId()
     {
-        var source = @" ### 1. Deploying the network";
+        var source = " ### 1. Deploying the network";
         var expected = @"<h3 id=""1-deploying-the-network"">1. Deploying the network</h3>
 ";
         TestUtility.VerifyMarkup(source, expected);
@@ -137,7 +137,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 "<h1 id=\"hello--dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'CrossLink2'\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@World\"></xref></p>\n")]
     [InlineData("a\n```\nc\n```",
 "<p>a</p>\n<pre><code>c\n</code></pre>\n")]
-    [InlineData(@" *hello* abc @api__1",
+    [InlineData(" *hello* abc @api__1",
 "<p><em>hello</em> abc <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref></p>\n")]
     [InlineData("@1abc", "<p>@1abc</p>\n")]
     [InlineData(@"@api1 @api__1 @api!1 @api@a <abc@api.com> <a.b.c@api.com> @'a p ';@""a!pi"",@api...@api",
@@ -146,7 +146,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
     [InlineData("<xref:uid>text", "<p><xref href=\"uid\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:uid&gt;\"></xref>text</p>\n")]
     [InlineData("<xref:'uid with space'>text", "<p><xref href=\"uid with space\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:'uid with space'&gt;\"></xref>text</p>\n")]
     [InlineData(
-@"[*a*](xref:uid)",
+"[*a*](xref:uid)",
 "<p><a href=\"xref:uid\"><em>a</em></a></p>\n")]
     [InlineData(
 @"# <a id=""x""></a>Y",
@@ -415,7 +415,7 @@ http://your.company.abc, abc
 
 Update without force build, while a.md include b.md and b.md updated.";
 
-        string testtoken = @"terry & jack";
+        string testtoken = "terry & jack";
 
         string code = @"// <snippet1>
 using System;
