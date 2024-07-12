@@ -1,6 +1,8 @@
 # Build your docs with docfx
 
 [![NuGet](https://img.shields.io/nuget/v/docfx)](https://www.nuget.org/packages/docfx)
+[![ci](https://github.com/dotnet/docfx/actions/workflows/ci.yml/badge.svg)](https://github.com/dotnet/docfx/actions/workflows/ci.yml)
+[![nightly](https://github.com/dotnet/docfx/actions/workflows/nightly.yml/badge.svg)](https://github.com/dotnet/docfx/actions/workflows/nightly.yml)
 [![Help Wanted](https://img.shields.io/github/issues/dotnet/docfx/help-wanted?label=help-wanted)](https://github.com/dotnet/docfx/labels/help-wanted)
 
 * [Getting Started](#getting-started)

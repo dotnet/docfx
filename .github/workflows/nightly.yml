@@ -41,6 +41,7 @@ jobs:
       run: dotnet pack -c Release /p:Version=${{ steps.version.outputs.version }} /p:ApiCompatGenerateSuppressionFile=true -o drop/nuget
 
     - name: dotnet nuget push
+      if: github.repository == 'dotnet/docfx'
       run: |
         dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate --source https://nuget.pkg.github.com/dotnet/index.json
 
