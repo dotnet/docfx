@@ -134,6 +134,7 @@ internal static class YamlViewModelExtensions
         {
             Uid = item.Name,
             Name = item.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default),
+            Type = item.Type.ToString(),
         };
 
         if (item.Type is MemberType.Namespace)
