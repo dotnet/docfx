@@ -30,12 +30,18 @@ jobs:
     - uses: ./.github/actions/build
 
     - name: dotnet test
+      id: test-net90
       run: dotnet test -c Release -f net9.0 --no-build
+
+    - name: Report failed tests
+      if: ${{ failure() && steps.test-net90.outcome == 'failure' }}
+      uses: ./.github/actions/report-failed-tests
     
     - name: dotnet pack
       run: dotnet pack -c Release /p:Version=${{ steps.version.outputs.version }} /p:ApiCompatGenerateSuppressionFile=true -o drop/nuget
 
     - name: dotnet nuget push
+      if: github.repository == 'dotnet/docfx'
       run: |
         dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate --source https://nuget.pkg.github.com/dotnet/index.json
 
