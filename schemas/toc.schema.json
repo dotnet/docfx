@@ -82,6 +82,10 @@
           "default": 0,
           "description": "Specify the order of toc item, TOCs with a smaller order value are picked first."
         },
+        "type": {
+          "type": "string",
+          "description": "Specify the type of toc item."
+        },
         "items": {
           "type": "array",
           "description": "List of TOC items.",
