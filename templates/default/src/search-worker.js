@@ -40,7 +40,7 @@
     var results = [];
     hits.forEach(function (hit) {
       var item = searchData[hit.ref];
-      results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
+      results.push({ 'href': item.href, 'title': item.title, 'summary': item.summary, 'keywords': item.keywords });
     });
     postMessage({ e: 'query-ready', q: q, d: results });
   }
@@ -51,7 +51,8 @@
         this.pipeline.remove(lunr.stopWordFilter);
         this.ref('href');
         this.field('title', { boost: 50 });
-        this.field('keywords', { boost: 20 });
+        this.field('keywords', { boost: 40 });
+        this.field('summary', { boost: 20 });
 
         for (var prop in searchData) {
           if (searchData.hasOwnProperty(prop)) {

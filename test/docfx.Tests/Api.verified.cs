@@ -783,6 +783,14 @@ namespace Docfx.Build.ManagedReference
         protected override void BuildArticle(Docfx.Plugins.IHostService host, Docfx.Plugins.FileModel model) { }
     }
     [System.Composition.Export("ManagedReferenceDocumentProcessor", typeof(Docfx.Plugins.IDocumentBuildStep))]
+    public class FillMetadata : Docfx.Build.Common.BaseDocumentBuildStep
+    {
+        public FillMetadata() { }
+        public override int BuildOrder { get; }
+        public override string Name { get; }
+        public override void Postbuild(System.Collections.Immutable.ImmutableList<Docfx.Plugins.FileModel> models, Docfx.Plugins.IHostService host) { }
+    }
+    [System.Composition.Export("ManagedReferenceDocumentProcessor", typeof(Docfx.Plugins.IDocumentBuildStep))]
     public class FillReferenceInformation : Docfx.Build.Common.BaseDocumentBuildStep
     {
         public FillReferenceInformation() { }

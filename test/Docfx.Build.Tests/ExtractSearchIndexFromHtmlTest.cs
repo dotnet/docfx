@@ -39,7 +39,47 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Hello World, Microsoft This is article title docfx can do anything..." }, item);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Hello World, Microsoft This is article title docfx can do anything..." }, item);
+    }
+
+    [Fact]
+    public void TestMRefMetadata()
+    {
+        var rawHtml = @"
+<html>
+    <head>
+        <title>This is title in head metadata</title>
+    </head>
+    <body>
+        <h1> This is Title </h1>
+        <p class='data-searchable'> Hello World,
+        Microsoft
+        </p>
+        <article>
+            <h1>
+                This is article title
+            </h1>
+            docfx can do anything...
+        </article>
+    </body>
+</html>
+";
+        var html = new HtmlDocument();
+        html.LoadHtml(rawHtml);
+        var href = "http://dotnet.github.io/docfx";
+        var item = _extractor.ExtractItem(html, href, new()
+        {
+            ["IsMRef"] = true,
+            ["Title"] = "ManagedReferenceExample",
+            ["Summary"] = "Lorem Ipsum",
+        });
+        Assert.Equal(new SearchIndexItem
+        {
+            Href = href,
+            Title = "ManagedReferenceExample",
+            Keywords = "Managed ManagedReference ManagedReferenceExample ManagedExample Reference ReferenceExample Example",
+            Summary = "Lorem Ipsum"
+        }, item);
     }
 
     [Fact]
@@ -59,7 +99,7 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Cooooooool!" }, item);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Cooooooool!" }, item);
     }
 
     [Fact]
@@ -107,7 +147,7 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once." }, item);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Only index once." }, item);
     }
 
     [Fact]
@@ -150,7 +190,7 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = string.Empty }, item);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = string.Empty }, item);
     }
 
     [Fact]
@@ -170,7 +210,7 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "", Keywords = "Insert space in block level html tags Donotinsertspaceininlinehtmltags" }, item);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "", Summary = "Insert space in block level html tags Donotinsertspaceininlinehtmltags" }, item);
     }
 
     [Fact]
@@ -225,7 +265,7 @@ public class ExtractSearchIndexFromHtmlTest
   ""index.html"": {
     ""href"": ""index.html"",
     ""title"": ""This is title in head metadata"",
-    ""keywords"": ""Hello World, Microsoft This is article title docfx can do anything... and it supports non-english characters like these: ãâáà êé í õôó Типы шрифтов 人物 文字""
+    ""summary"": ""Hello World, Microsoft This is article title docfx can do anything... and it supports non-english characters like these: ãâáà êé í õôó Типы шрифтов 人物 文字""
   }
 }";
         var actualIndexJSON = File.ReadAllText(Path.Combine(tempTestFolder, "index.json"), Encoding.UTF8);

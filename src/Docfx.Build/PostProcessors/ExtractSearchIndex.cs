@@ -17,6 +17,7 @@ namespace Docfx.Build.Engine;
 class ExtractSearchIndex : IPostProcessor
 {
     private static readonly Regex s_regexWhiteSpace = new(@"\s+", RegexOptions.Compiled);
+    private static readonly Regex s_regexCase = new(@"[a-z0-9]+|[A-Z0-9]+[a-z0-9]*|[0-9]+", RegexOptions.Compiled);
     private static readonly HashSet<string> s_htmlInlineTags = new(StringComparer.OrdinalIgnoreCase)
     {
         "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
@@ -48,14 +49,15 @@ class ExtractSearchIndex : IPostProcessor
         var htmlFiles = (from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                          from output in item.Output
                          where item.Type != "Toc" && output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
-                         select output.Value.RelativePath).ToList();
+                         select (output.Value.RelativePath, item.Metadata)).ToList();
+
         if (htmlFiles.Count == 0)
         {
             return manifest;
         }
 
         Logger.LogInfo($"Extracting index data from {htmlFiles.Count} html files");
-        foreach (var relativePath in htmlFiles)
+        foreach ((string relativePath, Dictionary<string, object> metadata) in htmlFiles)
         {
             var filePath = Path.Combine(outputFolder, relativePath);
             var html = new HtmlDocument();
@@ -73,13 +75,14 @@ class ExtractSearchIndex : IPostProcessor
                     Logger.LogWarning($"Warning: Can't load content from {filePath}: {ex.Message}");
                     continue;
                 }
-                var indexItem = ExtractItem(html, relativePath);
+                var indexItem = ExtractItem(html, relativePath, metadata);
                 if (indexItem != null)
                 {
                     indexData[relativePath] = indexItem;
                 }
             }
         }
+
         JsonUtility.Serialize(indexDataFilePath, indexData, Formatting.Indented);
 
         // add index.json to manifest as resource file
@@ -96,7 +99,7 @@ class ExtractSearchIndex : IPostProcessor
         return manifest;
     }
 
-    internal SearchIndexItem ExtractItem(HtmlDocument html, string href)
+    internal SearchIndexItem ExtractItem(HtmlDocument html, string href, Dictionary<string, object> metadata = null)
     {
         var contentBuilder = new StringBuilder();
 
@@ -114,10 +117,35 @@ class ExtractSearchIndex : IPostProcessor
             ExtractTextFromNode(node, contentBuilder);
         }
 
-        var content = NormalizeContent(contentBuilder.ToString());
-        var title = ExtractTitleFromHtml(html);
+        var isMRef = metadata != null && metadata.TryGetValue("IsMRef", out var isMRefMetadata) && (bool)isMRefMetadata;
 
-        return new SearchIndexItem { Href = href, Title = title, Keywords = content };
+        string title;
+        string summary = null;
+        string keywords = null;
+        if (isMRef)
+        {
+            title = (string)metadata["Title"] ?? ExtractTitleFromHtml(html);
+
+            var htmlSummary = (string)metadata["Summary"];
+            if (!string.IsNullOrEmpty(htmlSummary))
+            {
+                var htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(htmlSummary);
+                var htmlRootNode = htmlDocument.DocumentNode.FirstChild;
+                var summaryBuilder = new StringBuilder();
+                ExtractTextFromNode(htmlRootNode, summaryBuilder);
+                summary = NormalizeContent(summaryBuilder.ToString());
+            }
+
+            keywords = string.Join(' ', GetStemAggregations(title.Split('.')[^1]));
+        }
+        else
+        {
+            title = ExtractTitleFromHtml(html);
+            summary = NormalizeContent(contentBuilder.ToString());
+        }
+
+        return new SearchIndexItem { Href = href, Title = title, Summary = summary, Keywords = keywords };
     }
 
     private static string ExtractTitleFromHtml(HtmlDocument html)
@@ -135,6 +163,41 @@ class ExtractSearchIndex : IPostProcessor
         }
         str = WebUtility.HtmlDecode(str);
         return s_regexWhiteSpace.Replace(str, " ").Trim();
+    }
+
+    private static string[] GetStems(string str)
+    {
+        if (string.IsNullOrEmpty(str))
+        {
+            return [string.Empty];
+        }
+        str = WebUtility.HtmlDecode(str);
+        return s_regexCase.Matches(str).Select(m => m.Value).ToArray();
+    }
+
+    private static List<string> GetStemAggregations(string str)
+    {
+        var stems = GetStems(str);
+
+        var results = new List<string>();
+        Aggregate(stems, [], results, 0);
+        return results;
+
+        static void Aggregate(string[] input, List<string> current, List<string> results, int index)
+        {
+            if (index == input.Length)
+            {
+                return;
+            }
+
+            for (int i = index; i < input.Length; i++)
+            {
+                current.Add(input[i]);
+                results.Add(string.Join(string.Empty, current));
+                Aggregate(input, current, results, i + 1);
+                current.RemoveAt(current.Count - 1);
+            }
+        }
     }
 
     private static void ExtractTextFromNode(HtmlNode node, StringBuilder contentBuilder)
