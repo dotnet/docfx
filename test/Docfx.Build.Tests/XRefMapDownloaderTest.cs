@@ -12,9 +12,6 @@ public class XRefMapDownloadTest
     [Fact(Skip = "Flaky SSL connection problems on GH windows CI")]
     public async Task BaseUrlIsSet()
     {
-        // GitHub doesn't support TLS 1.1 since Feb 23, 2018. See: https://github.com/blog/2507-weak-cryptographic-standards-removed
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
         var downloader = new XRefMapDownloader();
         var xrefs = await downloader.DownloadAsync(new Uri("https://dotnet.github.io/docfx/xrefmap.yml")) as XRefMap;
         Assert.NotNull(xrefs);

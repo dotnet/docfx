@@ -92,6 +92,11 @@ public class TocItemViewModel
     [JsonPropertyName("order")]
     public int? Order { get; set; }
 
+    [YamlMember(Alias = Constants.PropertyName.Type)]
+    [JsonProperty(Constants.PropertyName.Type)]
+    [JsonPropertyName(Constants.PropertyName.Type)]
+    public string Type { get; set; }
+
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
