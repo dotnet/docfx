@@ -29,12 +29,20 @@ class ExtractSearchIndex : IPostProcessor
     public string Name => nameof(ExtractSearchIndex);
     public const string IndexFileName = "index.json";
 
+    internal bool UseMetadata { get; set; } = false;
+    internal bool UseMetadataTitle { get; set; } = true;
+
     public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
     {
         if (!metadata.ContainsKey("_enableSearch"))
         {
             metadata = metadata.Add("_enableSearch", true);
         }
+
+        UseMetadata = metadata.TryGetValue("_searchIndexUseMetadata", out var useMetadataObject) && (bool)useMetadataObject;
+        UseMetadataTitle = !metadata.TryGetValue("_searchIndexUseMetadataTitle", out var useMetadataTitleObject) || (bool)useMetadataTitleObject;
+
+        Logger.LogInfo($"{Name}: {nameof(UseMetadata)} = {UseMetadata}, {nameof(UseMetadataTitle)} = {UseMetadataTitle}");
         return metadata;
     }
 
@@ -117,14 +125,16 @@ class ExtractSearchIndex : IPostProcessor
             ExtractTextFromNode(node, contentBuilder);
         }
 
-        var isMRef = metadata != null && metadata.TryGetValue("IsMRef", out var isMRefMetadata) && (bool)isMRefMetadata;
-
         string title;
         string summary = null;
         string keywords = null;
-        if (isMRef)
+
+        var isMRef = metadata != null && metadata.TryGetValue("IsMRef", out var isMRefMetadata) && (bool)isMRefMetadata;
+        if (UseMetadata && isMRef)
         {
-            title = (string)metadata["Title"] ?? ExtractTitleFromHtml(html);
+            title = UseMetadataTitle
+                ? (string)metadata["Title"] ?? ExtractTitleFromHtml(html)
+                : ExtractTitleFromHtml(html);
 
             var htmlSummary = (string)metadata["Summary"];
             if (!string.IsNullOrEmpty(htmlSummary))
@@ -137,7 +147,7 @@ class ExtractSearchIndex : IPostProcessor
                 summary = NormalizeContent(summaryBuilder.ToString());
             }
 
-            keywords = string.Join(' ', GetStemAggregations(title.Split('.')[^1]));
+            keywords = string.Join(' ', title.Split(' ').Select(word => string.Join(' ', GetStemAggregations(word.Split('.')[^1]))));
         }
         else
         {

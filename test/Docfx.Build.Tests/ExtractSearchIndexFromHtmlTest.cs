@@ -67,7 +67,18 @@ public class ExtractSearchIndexFromHtmlTest
         var html = new HtmlDocument();
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
-        var item = _extractor.ExtractItem(html, href, new()
+        _extractor.UseMetadata = false;
+        _extractor.UseMetadataTitle = false;
+        var itemNoMetadata = _extractor.ExtractItem(html, href, new()
+        {
+            ["IsMRef"] = true,
+            ["Title"] = "ManagedReferenceExample",
+            ["Summary"] = "Lorem Ipsum",
+        });
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Hello World, Microsoft This is article title docfx can do anything..." }, itemNoMetadata);
+        _extractor.UseMetadata = true;
+        _extractor.UseMetadataTitle = true;
+        var itemWithMetadata = _extractor.ExtractItem(html, href, new()
         {
             ["IsMRef"] = true,
             ["Title"] = "ManagedReferenceExample",
@@ -79,7 +90,21 @@ public class ExtractSearchIndexFromHtmlTest
             Title = "ManagedReferenceExample",
             Keywords = "Managed ManagedReference ManagedReferenceExample ManagedExample Reference ReferenceExample Example",
             Summary = "Lorem Ipsum"
-        }, item);
+        }, itemWithMetadata);
+        _extractor.UseMetadataTitle = false;
+        var itemWithMetadataNoTitle = _extractor.ExtractItem(html, href, new()
+        {
+            ["IsMRef"] = true,
+            ["Title"] = "ManagedReferenceExample",
+            ["Summary"] = "Lorem Ipsum",
+        });
+        Assert.Equal(new SearchIndexItem
+        {
+            Href = href,
+            Title = "This is title in head metadata",
+            Keywords = "This is title in head metadata",
+            Summary = "Lorem Ipsum"
+        }, itemWithMetadataNoTitle);
     }
 
     [Fact]
