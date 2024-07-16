@@ -10,7 +10,7 @@ namespace Docfx;
 internal class PdfCommandOptions : LogOptions
 {
     [Description("Specify the output base directory")]
-    [CommandOption("-o|--output")]
+    [CommandOption("-o|--output", IsHidden = true)]
     public string OutputFolder { get; set; }
 
     [Description("Path to docfx.json")]
