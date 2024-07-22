@@ -41,6 +41,7 @@ exports.transform = function (model) {
         "enum":        { key: "enumsInSubtitle" },
         "interface":   { key: "interfacesInSubtitle" },
         "namespace":   { key: "namespacesInSubtitle" },
+        "delegate":    { key: "delegatesInSubtitle" },
     };
   
     groupChildren(model);
