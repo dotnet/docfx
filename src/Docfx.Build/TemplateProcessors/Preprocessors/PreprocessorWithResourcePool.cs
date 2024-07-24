@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Common;
-using Esprima;
 using Jint.Runtime;
 
 namespace Docfx.Build.Engine;
@@ -26,11 +25,7 @@ internal class PreprocessorWithResourcePool : ITemplatePreprocessor
         catch (Exception e)
         {
             _preprocessorPool = null;
-            Logger.LogWarning(
-                e.InnerException is ParserException parserEx
-                ? $"\"{parserEx.Source}\" not a valid template preprocessor, ignored: {parserEx.Message}"
-                : $"Not a valid template preprocessor, ignored: {e.Message}"
-            );
+            Logger.LogWarning($"Not a valid template preprocessor, ignored: {e.Message}");
         }
     }
 
