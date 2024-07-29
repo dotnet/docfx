@@ -18,18 +18,19 @@ public static class JintProcessorHelper
             }
             return jsObject;
         }
-        else if (raw is IList<object> list)
+
+        if (raw is IList<object> list)
         {
-            var jsArray = new JsArray(engine, (uint)list.Count);
-            foreach (var item in list)
+            // allow Jint to take ownership of the array
+            var elements = new JsValue[list.Count];
+            for (int i = 0; i < (uint) elements.Length; i++)
             {
-                jsArray.Push(ConvertObjectToJsValue(engine, item));
+                elements[i] = ConvertObjectToJsValue(engine, list[i]);
             }
-            return jsArray;
+
+            return new JsArray(engine, elements);
         }
-        else
-        {
-            return JsValue.FromObject(engine, raw);
-        }
+
+        return JsValue.FromObject(engine, raw);
     }
 }
