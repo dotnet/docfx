@@ -155,7 +155,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
 
         engine.SetValue(RequireFuncVariableName, requireAction);
         engineCache[rootPath] = engine;
-        engine.Execute(scriptResource.Content);
+        engine.Execute(scriptResource.Content, scriptResource.Path);
 
         var value = engine.GetValue(ExportsVariableName);
         if (value.IsObject())
