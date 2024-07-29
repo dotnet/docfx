@@ -22,12 +22,15 @@ internal class WatchCommand : Command<WatchCommandOptions>
                 RunBuild.Exec(config.build, conf, baseDirectory, settings.OutputFolder);
             }
 
-            if (settings is { Serve: true, Watch: true })
+            // always do an initial rendering to start from something
+            onChange();
+
+            if (!settings.NoServe)
             {
                 using var watcher = Watch(baseDirectory, config.build, onChange);
                 Serve(serveDirectory, settings.Host, settings.Port, settings.OpenBrowser, settings.OpenFile);
             }
-            else if (settings.Watch)
+            else
             {
                 using var watcher = Watch(baseDirectory, config.build, onChange);
 
@@ -36,14 +39,6 @@ internal class WatchCommand : Command<WatchCommandOptions>
                 using var canceller = new CancellationTokenSource();
                 Console.CancelKeyPress += (sender, args) => canceller.Cancel();
                 Task.Delay(Timeout.Infinite, canceller.Token).Wait();
-            }
-            else if (settings.Serve)
-            {
-                RunServe.Exec(serveDirectory, settings.Host, settings.Port, settings.OpenBrowser, settings.OpenFile);
-            }
-            else
-            {
-                onChange();
             }
         });
     }

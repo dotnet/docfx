@@ -9,15 +9,10 @@ namespace Docfx;
 [Description("Generate client-only website combining API in YAML files and conceptual files and watch them for changes")]
 internal class WatchCommandOptions : DefaultBuildCommandOptions
 {
-    [Description("Should directory be watched and website re-rendered on changes.")]
-    [CommandOption("-w|--watch")]
-    [DefaultValue("true")]
-    public bool Watch { get; set; }
-
     [Description("Host the generated documentation to a website")]
-    [CommandOption("-s|--serve")]
+    [CommandOption("--no-serve")]
     [DefaultValue("true")]
-    public bool Serve { get; set; }
+    public bool NoServe { get; set; }
 
     [Description("Open a web browser when the hosted website starts.")]
     [CommandOption("--open-browser")]
