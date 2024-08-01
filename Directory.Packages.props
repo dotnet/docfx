@@ -4,7 +4,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="HtmlAgilityPack" Version="1.11.61" />
+    <PackageVersion Include="HtmlAgilityPack" Version="1.11.62" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.2.0.7535" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.7.0" />
     <PackageVersion Include="Jint" Version="4.0.0" />
