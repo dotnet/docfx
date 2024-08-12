@@ -7,7 +7,7 @@
     <PackageVersion Include="HtmlAgilityPack" Version="1.11.62" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.2.0.7535" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.7.0" />
-    <PackageVersion Include="Jint" Version="4.0.0" />
+    <PackageVersion Include="Jint" Version="4.0.1" />
     <PackageVersion Include="JsonSchema.Net" Version="7.2.0" />
     <PackageVersion Include="Markdig" Version="0.37.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.45.1" />
