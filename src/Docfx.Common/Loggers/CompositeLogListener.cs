@@ -39,6 +39,14 @@ public class CompositeLogListener : ILoggerListener
         }
     }
 
+    public IEnumerable<ILoggerListener> GetAllListeners()
+    {
+        lock (_sync)
+        {
+            return _listeners.ToArray();
+        }
+    }
+
     public ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
     {
         ArgumentNullException.ThrowIfNull(predicate);
