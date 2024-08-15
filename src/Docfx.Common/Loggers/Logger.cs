@@ -27,6 +27,18 @@ public static class Logger
         _syncListener.AddListener(listener);
     }
 
+    public static void RegisterListeners(IEnumerable<ILoggerListener> listeners)
+    {
+        ArgumentNullException.ThrowIfNull(listeners);
+
+        _syncListener.AddListeners(listeners);
+    }
+
+    public static IEnumerable<ILoggerListener> GetAllListeners()
+    {
+        return _syncListener.GetAllListeners();
+    }
+
     public static ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
     {
         ArgumentNullException.ThrowIfNull(predicate);
@@ -171,6 +183,13 @@ public static class Logger
         AnsiConsole.WriteLine($"    {_warningCount} warning(s)");
         AnsiConsole.Foreground = _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White;
         AnsiConsole.WriteLine($"    {_errorCount} error(s)\n");
+    }
+
+    public static void ResetCount()
+    {
+        _warningCount = 0;
+        _errorCount = 0;
+        HasError = false;
     }
 
     class LogItem : ILogItem
