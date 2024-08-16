@@ -2918,8 +2918,8 @@
           "Goto": {
             "PageNumber": 30,
             "Coordinates": {
-              "Left": 28,
-              "Top": 395.75
+              "Left": 0,
+              "Top": 423.75
             }
           }
         }
@@ -3878,8 +3878,8 @@
           "Goto": {
             "PageNumber": 43,
             "Coordinates": {
-              "Left": 28,
-              "Top": 383.75
+              "Left": 0,
+              "Top": 411.75
             }
           }
         },
@@ -4544,8 +4544,8 @@
           "Goto": {
             "PageNumber": 51,
             "Coordinates": {
-              "Left": 28,
-              "Top": 452
+              "Left": 0,
+              "Top": 480
             }
           }
         },
@@ -4553,8 +4553,8 @@
           "Goto": {
             "PageNumber": 51,
             "Coordinates": {
-              "Left": 28,
-              "Top": 318.5
+              "Left": 0,
+              "Top": 346.5
             }
           }
         }
@@ -4760,8 +4760,8 @@
           "Goto": {
             "PageNumber": 66,
             "Coordinates": {
-              "Left": 28,
-              "Top": 362
+              "Left": 0,
+              "Top": 390
             }
           }
         },
@@ -4769,8 +4769,8 @@
           "Goto": {
             "PageNumber": 66,
             "Coordinates": {
-              "Left": 28,
-              "Top": 108.499939
+              "Left": 0,
+              "Top": 136.5
             }
           }
         }
@@ -5899,8 +5899,8 @@
           "Goto": {
             "PageNumber": 68,
             "Coordinates": {
-              "Left": 28,
-              "Top": 365.75
+              "Left": 0,
+              "Top": 393.75
             }
           }
         }
@@ -5989,8 +5989,8 @@
           "Goto": {
             "PageNumber": 66,
             "Coordinates": {
-              "Left": 28,
-              "Top": 362
+              "Left": 0,
+              "Top": 390
             }
           }
         },
@@ -5998,8 +5998,8 @@
           "Goto": {
             "PageNumber": 66,
             "Coordinates": {
-              "Left": 28,
-              "Top": 108.499939
+              "Left": 0,
+              "Top": 136.5
             }
           }
         }
