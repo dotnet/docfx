@@ -4,6 +4,7 @@
     {
         public BuildOptions() { }
         public System.Func<Markdig.MarkdownPipelineBuilder, Markdig.MarkdownPipelineBuilder>? ConfigureMarkdig { get; init; }
+        public string? OutputDirectory { get; init; }
     }
     public static class Docset
     {
