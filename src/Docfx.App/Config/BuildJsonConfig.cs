@@ -47,6 +47,7 @@ internal class BuildJsonConfig
     /// Defines the output folder of the generated build files.
     /// Command line --output argument prepends this value.
     /// </summary>
+    [Obsolete("Use `Output` property instead. This property will be removed in a future release.")]
     [JsonProperty("dest")]
     [JsonPropertyName("dest")]
     public string Dest { get; set; }
