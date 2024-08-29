@@ -211,6 +211,12 @@ partial class SymbolFormatter
         public string ToDisplayString(SymbolDisplayFormat format = null) => Inner.ToDisplayString(format);
         public ImmutableArray<SymbolDisplayPart> ToMinimalDisplayParts(SemanticModel semanticModel, int position, SymbolDisplayFormat format = null) => Inner.ToMinimalDisplayParts(semanticModel, position, format);
         public string ToMinimalDisplayString(SemanticModel semanticModel, int position, SymbolDisplayFormat format = null) => Inner.ToMinimalDisplayString(semanticModel, position, format);
+
+#if NET8_0_OR_GREATER
+        public IPropertySymbol PartialDefinitionPart => Inner.PartialDefinitionPart;
+        public IPropertySymbol PartialImplementationPart => Inner.PartialImplementationPart;
+        public bool IsPartialDefinition => Inner.IsPartialDefinition;
+#endif
     }
 
     public class MethodSymbol : IMethodSymbol
