@@ -1,9 +1,8 @@
-using static System.Text.Encoding;
-
 using Markdig.Renderers;
-using Markdig.Syntax;
 using Markdig.Renderers.Html;
+using Markdig.Syntax;
 using PlantUml.Net;
+using static System.Text.Encoding;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
