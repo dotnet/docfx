@@ -92,10 +92,10 @@ public class ReflectionEntityMerger : IMerger
                     placement =
                         placementValue switch
                         {
-                            "after"   => MergePlacement.After,
-                            "before"  => MergePlacement.Before,
+                            "after" => MergePlacement.After,
+                            "before" => MergePlacement.Before,
                             "replace" => MergePlacement.Replace,
-                            _         => MergePlacement.None
+                            _ => MergePlacement.None
                         };
                 }
             }
@@ -117,8 +117,8 @@ public class ReflectionEntityMerger : IMerger
 
                     s = placement switch
                     {
-                        MergePlacement.After   => $"{s}{o}",
-                        MergePlacement.Before  => $"{o}{s}",
+                        MergePlacement.After => $"{s}{o}",
+                        MergePlacement.Before => $"{o}{s}",
                         MergePlacement.Replace => o.ToString()
                     };
 

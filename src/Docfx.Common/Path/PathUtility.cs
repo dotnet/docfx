@@ -71,7 +71,7 @@ public static class PathUtility
 
         if (toUri.IsFile && !toUri.OriginalString.StartsWith("file://", StringComparison.InvariantCultureIgnoreCase))
         {
-           return Path.GetRelativePath(basePath, absolutePath).BackSlashToForwardSlash();
+            return Path.GetRelativePath(basePath, absolutePath).BackSlashToForwardSlash();
         }
 
         Uri relativeUri = fromUri.MakeRelativeUri(toUri);

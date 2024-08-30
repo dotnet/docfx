@@ -125,9 +125,9 @@ class TocResolver
                 if (item.Items != null && item.Items.Count > 0)
                 {
                     item.Items = new List<TocItemViewModel>(from i in item.Items
-                                                  select ResolveItem(new TocItemInfo(file, i), stack) into r
-                                                  where r != null
-                                                  select r.Content);
+                                                            select ResolveItem(new TocItemInfo(file, i), stack) into r
+                                                            where r != null
+                                                            select r.Content);
                     if (string.IsNullOrEmpty(item.TopicHref) && string.IsNullOrEmpty(item.TopicUid))
                     {
                         var defaultItem = GetDefaultHomepageItem(item);

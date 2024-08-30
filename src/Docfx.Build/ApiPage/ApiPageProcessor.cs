@@ -46,7 +46,7 @@ class ApiPageDocumentProcessor(IMarkdownService markdownService) : IDocumentProc
             foreach (var (key, value) in data.metadata.OrderBy(item => item.Key))
                 content[key] = value.Value;
         }
-        
+
         content["title"] = data.title;
         content["content"] = ApiPageHtmlTemplate.Render(data, Markup).ToString();
         content["yamlmime"] = "ApiPage";

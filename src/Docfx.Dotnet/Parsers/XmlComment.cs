@@ -374,9 +374,9 @@ internal class XmlComment
 
                 if (detailedInfo.Length == 0 && node is XDocument doc)
                 {
-                    var memberName = (string) doc.Element("member")?.Attribute("name");
+                    var memberName = (string)doc.Element("member")?.Attribute("name");
 
-                    if (! string.IsNullOrEmpty(memberName))
+                    if (!string.IsNullOrEmpty(memberName))
                     {
                         detailedInfo.Append(", member name is ");
                         detailedInfo.Append(memberName);
