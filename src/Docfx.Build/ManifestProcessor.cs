@@ -87,7 +87,8 @@ internal class ManifestProcessor
                 }
             }
         },
-        _context.MaxParallelism);
+        _context.MaxParallelism,
+        _context.CancellationToken);
     }
 
     private void FeedOptions()
@@ -113,7 +114,8 @@ internal class ManifestProcessor
                 }
             }
         },
-        _context.MaxParallelism);
+        _context.MaxParallelism,
+        _context.CancellationToken);
     }
 
     private void UpdateHref()
@@ -130,7 +132,8 @@ internal class ManifestProcessor
                 m.Item.Content = m.FileModel.Content;
             }
         },
-        _context.MaxParallelism);
+        _context.MaxParallelism,
+        _context.CancellationToken);
     }
 
     private void ApplySystemMetadata()
@@ -171,7 +174,8 @@ internal class ManifestProcessor
                 }
             }
         },
-        _context.MaxParallelism);
+        _context.MaxParallelism,
+        _context.CancellationToken);
 
         _globalMetadata["_shared"] = sharedObjects;
     }

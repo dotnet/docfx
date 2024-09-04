@@ -77,7 +77,7 @@ internal class LinkPhaseHandler
                     }
                 }
             }
-        });
+        }, Context.CancellationToken);
         return manifestItems;
     }
 
@@ -136,7 +136,7 @@ internal class LinkPhaseHandler
                     Logger.LogWarning($"Invalid file link:({fileLink}).", code: WarningCodes.Build.InvalidFileLink);
                 }
             }
-        });
+        }, Context.CancellationToken);
     }
 
     private void HandleUids(SaveResult result)
