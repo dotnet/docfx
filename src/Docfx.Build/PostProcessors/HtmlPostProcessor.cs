@@ -62,7 +62,10 @@ sealed class HtmlPostProcessor : IPostProcessor
             {
                 continue;
             }
-            var document = new HtmlDocument();
+            var document = new HtmlDocument
+            {
+                OptionWriteEmptyNodes = true, // generate valid XHTML
+            };
             try
             {
                 using var stream = EnvironmentContext.FileAbstractLayer.OpenRead(tuple.OutputFile);

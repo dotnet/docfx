@@ -220,8 +220,8 @@ public class DocsetBuildTest : TestBase
             <!DOCTYPE html>
             <html>
               <head>
-                <meta charset="utf-8">
-                <meta http-equiv="refresh" content="0;URL='redirected.html'">
+                <meta charset="utf-8" />
+                <meta http-equiv="refresh" content="0;URL='redirected.html'" />
               </head>
             </html>
             """.Replace("\r\n","\n"), result.Trim());
