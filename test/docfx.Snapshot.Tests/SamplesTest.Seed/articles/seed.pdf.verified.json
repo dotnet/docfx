@@ -220,8 +220,8 @@
           "Goto": {
             "PageNumber": 17,
             "Coordinates": {
-              "Left": 28,
-              "Top": 211.24994
+              "Left": 0,
+              "Top": 239.25
             }
           }
         }
@@ -253,8 +253,8 @@
           "Goto": {
             "PageNumber": 18,
             "Coordinates": {
-              "Left": 28,
-              "Top": 574.99994
+              "Left": 0,
+              "Top": 603
             }
           }
         }
@@ -268,8 +268,8 @@
           "Goto": {
             "PageNumber": 19,
             "Coordinates": {
-              "Left": 28,
-              "Top": 684.49994
+              "Left": 0,
+              "Top": 712.5
             }
           }
         }

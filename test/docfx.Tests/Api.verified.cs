@@ -1704,6 +1704,7 @@ namespace Docfx.Common
         public void Dispose() { }
         public Docfx.Common.ILoggerListener FindListener(System.Predicate<Docfx.Common.ILoggerListener> predicate) { }
         public void Flush() { }
+        public System.Collections.Generic.IEnumerable<Docfx.Common.ILoggerListener> GetAllListeners() { }
         public void RemoveAllListeners() { }
         public void RemoveListener(Docfx.Common.ILoggerListener listener) { }
         public void WriteLine(Docfx.Common.ILogItem item) { }
@@ -1895,6 +1896,7 @@ namespace Docfx.Common
         public static int WarningCount { get; }
         public static Docfx.Common.ILoggerListener FindListener(System.Predicate<Docfx.Common.ILoggerListener> predicate) { }
         public static void Flush() { }
+        public static System.Collections.Generic.IEnumerable<Docfx.Common.ILoggerListener> GetAllListeners() { }
         public static Docfx.Common.ILogItem GetLogItem(Docfx.Common.LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null) { }
         public static void Log(object result) { }
         public static void Log(Docfx.Common.LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null) { }
@@ -1906,6 +1908,8 @@ namespace Docfx.Common
         public static void LogWarning(string message, string phase = null, string file = null, string line = null, string code = null) { }
         public static void PrintSummary() { }
         public static void RegisterListener(Docfx.Common.ILoggerListener listener) { }
+        public static void RegisterListeners(System.Collections.Generic.IEnumerable<Docfx.Common.ILoggerListener> listeners) { }
+        public static void ResetCount() { }
         public static void UnregisterAllListeners() { }
         public static void UnregisterListener(Docfx.Common.ILoggerListener listener) { }
     }
