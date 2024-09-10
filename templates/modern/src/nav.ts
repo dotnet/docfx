@@ -142,10 +142,9 @@ function findActiveItem(items: (NavItem | NavItemContainer)[]): NavItem {
       continue
     }
     const prefix = commonUrlPrefix(url, item.href)
-    if (prefix == maxPrefix) {
+    if (prefix === maxPrefix) {
       activeItem = undefined
-    }
-    else if (prefix > maxPrefix) {
+    } else if (prefix > maxPrefix) {
       maxPrefix = prefix
       activeItem = item
     }
