@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Docfx.Build.ManagedReference"/>
-    <InternalsVisibleTo Include="Docfx.Dotnet"/>
+    <InternalsVisibleTo Include="Docfx.Build.ManagedReference" />
+    <InternalsVisibleTo Include="Docfx.Dotnet" />
   </ItemGroup>
 
   <!-- TODO: Following settings will be removed after NewtonsoftJson dependencies are removed. -->

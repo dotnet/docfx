@@ -1857,14 +1857,12 @@ namespace Docfx.Common
     }
     public static class JsonUtility
     {
-        public static readonly System.Threading.ThreadLocal<Newtonsoft.Json.JsonSerializer> DefaultSerializer;
-        public static T Deserialize<T>(System.IO.TextReader reader, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static T Deserialize<T>(string path, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static T FromJsonString<T>(this string json, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static string Serialize(object graph, Newtonsoft.Json.Formatting formatting = 0, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static void Serialize(System.IO.TextWriter writer, object graph, Newtonsoft.Json.Formatting formatting = 0, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static void Serialize(string path, object graph, Newtonsoft.Json.Formatting formatting = 0, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static string ToJsonString(this object graph, Newtonsoft.Json.Formatting formatting = 0, Newtonsoft.Json.JsonSerializer serializer = null) { }
+        public static T Deserialize<T>(System.IO.TextReader reader) { }
+        public static T Deserialize<T>(string path) { }
+        public static T FromJsonString<T>(this string json) { }
+        public static string Serialize<T>(T graph, bool indented = false) { }
+        public static void Serialize<T>(string path, T graph, bool indented = false) { }
+        public static string ToJsonString<T>(this T graph) { }
     }
     public enum LogLevel
     {
