@@ -159,7 +159,7 @@ public class DocumentBuilder : IDisposable
             .Create();
 
         generatedManifest.Files.Sort((a, b) => (a.SourceRelativePath ?? "").CompareTo(b.SourceRelativePath ?? ""));
-        JsonUtility.Serialize("manifest.json", generatedManifest, Formatting.Indented);
+        JsonUtility.Serialize("manifest.json", generatedManifest, indented: true);
 
         EnvironmentContext.FileAbstractLayerImpl = null;
 

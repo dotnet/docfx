@@ -42,7 +42,7 @@ public static partial class DotnetApiCatalog
             if (config.TryGetValue("metadata", out var value))
             {
                 Logger.Rules = config["rules"]?.ToObject<Dictionary<string, LogLevel>>();
-                await Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), options, configDirectory);
+                await Exec(value.ToObject<MetadataJsonConfig>(NewtonsoftJsonUtility.DefaultSerializer.Value), options, configDirectory);
             }
         }
         finally

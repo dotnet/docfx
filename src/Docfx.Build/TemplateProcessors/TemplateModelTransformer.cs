@@ -260,7 +260,7 @@ public class TemplateModelTransformer
         var outputFolder = settings.OutputFolder ?? string.Empty;
         var modelPath = Path.GetFullPath(Path.Combine(outputFolder, settings.PathRewriter(modelFileRelativePath)));
 
-        JsonUtility.Serialize(modelPath, model, Formatting.Indented);
+        JsonUtility.Serialize(modelPath, model, indented: true);
         return StringExtension.ToDisplayPath(modelPath);
     }
 

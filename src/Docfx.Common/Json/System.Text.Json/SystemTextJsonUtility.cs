@@ -1,8 +1,11 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Docfx.Plugins;
 
 #nullable enable
 
@@ -30,13 +33,14 @@ internal static class SystemTextJsonUtility
             // DefaultBufferSize = 1024 * 16, // TODO: Set appropriate buffer size based on benchmark.(Default: 16KB)
             AllowTrailingCommas = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            // Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // Some chars are escaped by this settings (e.g. `+`, `　`(full width space)
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             // DictionaryKeyPolicy = JsonNamingPolicy.CamelCase, // This setting is not compatible to `Newtonsoft.Json` serialize result.
             NumberHandling = JsonNumberHandling.AllowReadingFromString,
             Converters =
             {
-                new JsonStringEnumConverter(),
+                // new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
                 new ObjectToInferredTypesConverter(), // Required for `Dictionary<string, object>` type deserialization.
             },
             WriteIndented = false,
@@ -49,7 +53,7 @@ internal static class SystemTextJsonUtility
     }
 
     /// <summary>
-    /// Converts the value of a type specified by a generic type parameter into a JSON string.
+    /// Serialize model to JSON string.
     /// </summary>
     public static string Serialize<T>(T model, bool indented = false)
     {
@@ -61,7 +65,7 @@ internal static class SystemTextJsonUtility
     }
 
     /// <summary>
-    /// Converts the value of a type specified by a generic type parameter into a JSON string.
+    /// Serialize stream to JSON string.
     /// </summary>
     public static string Serialize<T>(Stream stream, bool indented = false)
     {
@@ -73,8 +77,7 @@ internal static class SystemTextJsonUtility
     }
 
     /// <summary>
-    /// Reads the UTF-8 encoded text representing a single JSON value into a TValue.
-    /// The Stream will be read to completion.
+    /// Deserialize model from JSON string.
     /// </summary>
     public static T? Deserialize<T>(string json)
     {
@@ -82,8 +85,7 @@ internal static class SystemTextJsonUtility
     }
 
     /// <summary>
-    /// Reads the UTF-8 encoded text representing a single JSON value into a TValue.
-    /// The Stream will be read to completion.
+    /// Deserialize model from stream.
     /// </summary>
     public static T? Deserialize<T>(Stream stream)
     {
@@ -91,11 +93,31 @@ internal static class SystemTextJsonUtility
     }
 
     /// <summary>
-    /// Asynchronously reads the UTF-8 encoded text representing a single JSON value
-    //  into an instance of a type specified by a generic type parameter. The stream
-    //  will be read to completion.
+    /// Deserialize model from stream.
+    /// </summary>
     public static async ValueTask<T?> DeserializeAsync<T>(Stream stream, CancellationToken token = default)
     {
         return await JsonSerializer.DeserializeAsync<T>(stream, DefaultSerializerOptions, cancellationToken: token);
+    }
+
+    /// <summary>
+    /// Serialize specified model to file.
+    /// </summary>
+    public static void SerializeToFile<T>(string path, T model, bool indented = false)
+    {
+        var options = indented
+            ? IndentedSerializerOptions
+            : DefaultSerializerOptions;
+        using var stream = EnvironmentContext.FileAbstractLayer.Create(path);
+        JsonSerializer.Serialize(stream, model, options);
+    }
+
+    /// <summary>
+    /// Deserialize specified model from JSON file.
+    /// </summary>
+    public static T? DeserializeFromFile<T>(string path)
+    {
+        using var stream = EnvironmentContext.FileAbstractLayer.OpenRead(path);
+        return JsonSerializer.Deserialize<T>(stream, DefaultSerializerOptions);
     }
 }

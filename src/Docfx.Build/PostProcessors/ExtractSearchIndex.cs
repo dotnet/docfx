@@ -82,7 +82,7 @@ class ExtractSearchIndex : IPostProcessor
                 }
             }
         }
-        JsonUtility.Serialize(indexDataFilePath, indexData, Formatting.Indented);
+        JsonUtility.Serialize(indexDataFilePath, indexData, indented: true);
 
         // add index.json to manifest as resource file
         var manifestItem = new ManifestItem
