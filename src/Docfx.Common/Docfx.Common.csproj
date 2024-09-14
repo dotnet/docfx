@@ -18,5 +18,6 @@
   <ItemGroup>
     <InternalsVisibleTo Include="docfx.Build" />
     <InternalsVisibleTo Include="Docfx.Build.Tests" />
+    <InternalsVisibleTo Include="docfx.Tests" />
   </ItemGroup>
 </Project>
