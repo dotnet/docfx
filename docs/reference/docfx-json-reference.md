@@ -397,6 +397,13 @@ Specifies an optional set of MSBuild properties used when interpreting project f
 > [!Note]
 > Make sure to specify `"TargetFramework": <one of the frameworks>` in your docfx.json when the project is targeting for multiple platforms.
 
+> [!Note]
+> When generating metadata from source code files.
+> Supported properties are limited to the following.
+>   - `DefineConstants`
+>   - `AllowUnsafeBlocks`
+> If other properties are specified. These properties are ignored silently.
+
 ### `noRestore`
 
 Do not run `dotnet restore` before building the projects.

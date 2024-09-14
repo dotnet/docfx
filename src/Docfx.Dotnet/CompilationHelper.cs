@@ -62,7 +62,7 @@ internal static class CompilationHelper
 
         return CS.CSharpCompilation.Create(
             assemblyName: null,
-            options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+            options: GetCSharpCompilationOptions(msbuildProperties),
             syntaxTrees: syntaxTrees,
             references: GetDefaultMetadataReferences("C#").Concat(references));
     }
@@ -74,7 +74,7 @@ internal static class CompilationHelper
 
         return CS.CSharpCompilation.Create(
             name,
-            options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+            options: GetCSharpCompilationOptions(msbuildProperties),
             syntaxTrees: [syntaxTree],
             references: GetDefaultMetadataReferences("C#").Concat(references ?? []));
     }
@@ -86,7 +86,7 @@ internal static class CompilationHelper
 
         return VB.VisualBasicCompilation.Create(
             assemblyName: null,
-            options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
+            options: GetVisualBasicCompilationOptions(msbuildProperties),
             syntaxTrees: syntaxTrees,
             references: GetDefaultMetadataReferences("VB").Concat(references));
     }
@@ -98,7 +98,7 @@ internal static class CompilationHelper
 
         return VB.VisualBasicCompilation.Create(
             name,
-            options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
+            options: GetVisualBasicCompilationOptions(msbuildProperties),
             syntaxTrees: [syntaxTree],
             references: GetDefaultMetadataReferences("VB").Concat(references ?? []));
     }
@@ -230,5 +230,27 @@ internal static class CompilationHelper
         }
 
         return new VB.VisualBasicParseOptions(preprocessorSymbols: preprocessorSymbols);
+    }
+
+    private static CS.CSharpCompilationOptions GetCSharpCompilationOptions(IDictionary<string, string> msbuildProperties)
+    {
+        var options = new CS.CSharpCompilationOptions(
+            OutputKind.DynamicallyLinkedLibrary,
+            xmlReferenceResolver: XmlFileResolver.Default);
+
+        if (msbuildProperties.TryGetValue("AllowUnsafeBlocks", out var valueText) && bool.TryParse(valueText, out var allowUnsafe))
+        {
+            options = options.WithAllowUnsafe(allowUnsafe);
+        }
+
+        return options;
+    }
+
+    private static VB.VisualBasicCompilationOptions GetVisualBasicCompilationOptions(IDictionary<string, string> msbuildProperties)
+    {
+        return new VB.VisualBasicCompilationOptions(
+            OutputKind.DynamicallyLinkedLibrary,
+            globalImports: GetVBGlobalImports(),
+            xmlReferenceResolver: XmlFileResolver.Default);
     }
 }
