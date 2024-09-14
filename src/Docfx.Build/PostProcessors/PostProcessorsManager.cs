@@ -34,11 +34,11 @@ class PostProcessorsManager : IDisposable
         return updatedMetadata;
     }
 
-    public void Process(Manifest manifest, string outputFolder)
+    public void Process(Manifest manifest, string outputFolder, CancellationToken cancellationToken = default)
     {
         foreach (var postProcessor in _postProcessors)
         {
-            manifest = postProcessor.Processor.Process(manifest, outputFolder) ??
+            manifest = postProcessor.Processor.Process(manifest, outputFolder, cancellationToken) ??
                 throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null manifest");
 
             // To make sure post processor won't generate duplicate output files

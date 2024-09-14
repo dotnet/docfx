@@ -37,7 +37,7 @@ class ExtractSearchIndex : IPostProcessor
         return metadata;
     }
 
-    public Manifest Process(Manifest manifest, string outputFolder)
+    public Manifest Process(Manifest manifest, string outputFolder, CancellationToken cancellationToken = default)
     {
         if (outputFolder == null)
         {
@@ -57,6 +57,8 @@ class ExtractSearchIndex : IPostProcessor
         Logger.LogInfo($"Extracting index data from {htmlFiles.Count} html files");
         foreach (var relativePath in htmlFiles)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var filePath = Path.Combine(outputFolder, relativePath);
             var html = new HtmlDocument();
             Logger.LogDiagnostic($"Extracting index data from {filePath}");

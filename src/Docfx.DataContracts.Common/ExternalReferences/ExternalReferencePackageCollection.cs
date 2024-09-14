@@ -11,11 +11,14 @@ public class ExternalReferencePackageCollection : IDisposable
 {
     private readonly LruList<ReferenceViewModelCacheItem> _cache = LruList<ReferenceViewModelCacheItem>.Create(0x100);
 
-    public ExternalReferencePackageCollection(IEnumerable<string> packageFiles, int maxParallelism)
+    public ExternalReferencePackageCollection(IEnumerable<string> packageFiles, int maxParallelism, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(packageFiles);
 
-        Readers = (from file in packageFiles.AsParallel().WithDegreeOfParallelism(maxParallelism).AsOrdered()
+        Readers = (from file in packageFiles.AsParallel()
+                                            .WithDegreeOfParallelism(maxParallelism)
+                                            .WithCancellation(cancellationToken)
+                                            .AsOrdered()
                    let reader = ExternalReferencePackageReader.CreateNoThrow(file)
                    where reader != null
                    select reader).ToImmutableList();

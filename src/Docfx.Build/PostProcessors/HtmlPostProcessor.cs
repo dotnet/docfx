@@ -39,7 +39,7 @@ sealed class HtmlPostProcessor : IPostProcessor
         return metadata;
     }
 
-    public Manifest Process(Manifest manifest, string outputFolder)
+    public Manifest Process(Manifest manifest, string outputFolder, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(manifest);
         ArgumentNullException.ThrowIfNull(outputFolder);
@@ -58,6 +58,8 @@ sealed class HtmlPostProcessor : IPostProcessor
                                   OutputFile = output.Value.RelativePath,
                               })
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (!EnvironmentContext.FileAbstractLayer.Exists(tuple.OutputFile))
             {
                 continue;

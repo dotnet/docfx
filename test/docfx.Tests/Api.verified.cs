@@ -58,13 +58,11 @@ namespace Docfx.Build.Engine
     }
     public sealed class DocumentBuildContext : Docfx.Plugins.IDocumentBuildContext
     {
-        public DocumentBuildContext(Docfx.Build.Engine.DocumentBuildParameters parameters) { }
-        public DocumentBuildContext(string buildOutputFolder) { }
-        public DocumentBuildContext(string buildOutputFolder, System.Collections.Generic.IEnumerable<Docfx.Plugins.FileAndType> allSourceFiles, System.Collections.Immutable.ImmutableArray<string> externalReferencePackages, System.Collections.Immutable.ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, Docfx.Build.Engine.ApplyTemplateSettings applyTemplateSetting, string rootTocPath) { }
-        public DocumentBuildContext(string buildOutputFolder, System.Collections.Generic.IEnumerable<Docfx.Plugins.FileAndType> allSourceFiles, System.Collections.Immutable.ImmutableArray<string> externalReferencePackages, System.Collections.Immutable.ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, Docfx.Build.Engine.ApplyTemplateSettings applyTemplateSetting, string rootTocPath, string versionFolder, Docfx.Plugins.GroupInfo groupInfo) { }
+        public DocumentBuildContext(Docfx.Build.Engine.DocumentBuildParameters parameters, System.Threading.CancellationToken cancellationToken) { }
         public System.Collections.Immutable.ImmutableDictionary<string, Docfx.Plugins.FileAndType> AllSourceFiles { get; }
         public Docfx.Build.Engine.ApplyTemplateSettings ApplyTemplateSettings { get; set; }
         public string BuildOutputFolder { get; }
+        public System.Threading.CancellationToken CancellationToken { get; }
         public System.Collections.Immutable.ImmutableArray<string> ExternalReferencePackages { get; }
         public System.Collections.Concurrent.ConcurrentDictionary<string, string> FileMap { get; }
         public Docfx.Plugins.GroupInfo GroupInfo { get; }
@@ -120,7 +118,7 @@ namespace Docfx.Build.Engine
     {
         public DocumentBuilder(System.Collections.Generic.IEnumerable<System.Reflection.Assembly> assemblies, System.Collections.Immutable.ImmutableArray<string> postProcessorNames) { }
         public void Build(Docfx.Build.Engine.DocumentBuildParameters parameter) { }
-        public void Build(System.Collections.Generic.IList<Docfx.Build.Engine.DocumentBuildParameters> parameters, string outputDirectory) { }
+        public void Build(System.Collections.Generic.IList<Docfx.Build.Engine.DocumentBuildParameters> parameters, string outputDirectory, System.Threading.CancellationToken cancellationToken = default) { }
         public void Dispose() { }
     }
     public sealed class EmptyResourceReader : Docfx.Build.Engine.ResourceFileReader
@@ -391,7 +389,7 @@ namespace Docfx.Build.Engine
     public class XRefArchiveBuilder
     {
         public XRefArchiveBuilder() { }
-        public System.Threading.Tasks.Task<bool> DownloadAsync(System.Uri uri, string outputFile) { }
+        public System.Threading.Tasks.Task<bool> DownloadAsync(System.Uri uri, string outputFile, System.Threading.CancellationToken cancellationToken = default) { }
     }
     public enum XRefArchiveMode
     {
@@ -2452,7 +2450,7 @@ namespace Docfx.DataContracts.Common
     }
     public class ExternalReferencePackageCollection : System.IDisposable
     {
-        public ExternalReferencePackageCollection(System.Collections.Generic.IEnumerable<string> packageFiles, int maxParallelism) { }
+        public ExternalReferencePackageCollection(System.Collections.Generic.IEnumerable<string> packageFiles, int maxParallelism, System.Threading.CancellationToken cancellationToken) { }
         public System.Collections.Immutable.ImmutableList<Docfx.DataContracts.Common.ExternalReferencePackageReader> Readers { get; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
@@ -3954,11 +3952,11 @@ namespace Docfx.Plugins
     }
     public static class DocumentExceptionExtensions
     {
-        public static void RunAll<TElement>(this System.Collections.Generic.IEnumerable<TElement> elements, System.Action<TElement> action) { }
-        public static void RunAll<TElement>(this System.Collections.Generic.IReadOnlyList<TElement> elements, System.Action<TElement> action) { }
-        public static void RunAll<TElement>(this System.Collections.Generic.IEnumerable<TElement> elements, System.Action<TElement> action, int parallelism) { }
-        public static void RunAll<TElement>(this System.Collections.Generic.IReadOnlyList<TElement> elements, System.Action<TElement> action, int parallelism) { }
-        public static TResult[] RunAll<TElement, TResult>(this System.Collections.Generic.IReadOnlyList<TElement> elements, System.Func<TElement, TResult> func) { }
+        public static void RunAll<TElement>(this System.Collections.Generic.IEnumerable<TElement> elements, System.Action<TElement> action, System.Threading.CancellationToken cancellationToken = default) { }
+        public static void RunAll<TElement>(this System.Collections.Generic.IReadOnlyList<TElement> elements, System.Action<TElement> action, System.Threading.CancellationToken cancellationToken = default) { }
+        public static void RunAll<TElement>(this System.Collections.Generic.IEnumerable<TElement> elements, System.Action<TElement> action, int parallelism, System.Threading.CancellationToken cancellationToken = default) { }
+        public static void RunAll<TElement>(this System.Collections.Generic.IReadOnlyList<TElement> elements, System.Action<TElement> action, int parallelism, System.Threading.CancellationToken cancellationToken = default) { }
+        public static TResult[] RunAll<TElement, TResult>(this System.Collections.Generic.IReadOnlyList<TElement> elements, System.Func<TElement, TResult> func, System.Threading.CancellationToken cancellationToken = default) { }
     }
     public enum DocumentType
     {
@@ -4064,6 +4062,7 @@ namespace Docfx.Plugins
     }
     public interface IDocumentBuildContext
     {
+        System.Threading.CancellationToken CancellationToken { get; }
         Docfx.Plugins.GroupInfo GroupInfo { get; }
         Docfx.Plugins.ICustomHrefGenerator HrefGenerator { get; }
         string RootTocPath { get; }
@@ -4154,7 +4153,7 @@ namespace Docfx.Plugins
     public interface IPostProcessor
     {
         System.Collections.Immutable.ImmutableDictionary<string, object> PrepareMetadata(System.Collections.Immutable.ImmutableDictionary<string, object> metadata);
-        Docfx.Plugins.Manifest Process(Docfx.Plugins.Manifest manifest, string outputFolder);
+        Docfx.Plugins.Manifest Process(Docfx.Plugins.Manifest manifest, string outputFolder, System.Threading.CancellationToken cancellationToken);
     }
     public readonly struct LinkSourceInfo
     {

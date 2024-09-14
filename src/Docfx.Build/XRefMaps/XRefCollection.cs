@@ -20,10 +20,10 @@ internal sealed class XRefCollection
 
     public ImmutableList<Uri> Uris { get; set; }
 
-    public Task<IXRefContainerReader> GetReaderAsync(string baseFolder, IReadOnlyList<string> fallbackFolders = null)
+    public Task<IXRefContainerReader> GetReaderAsync(string baseFolder, IReadOnlyList<string> fallbackFolders = null, CancellationToken cancellationToken = default)
     {
         var creator = new ReaderCreator(Uris, MaxParallelism, baseFolder, fallbackFolders);
-        return creator.CreateAsync();
+        return creator.CreateAsync(cancellationToken);
     }
 
     private sealed class ReaderCreator
@@ -39,13 +39,18 @@ internal sealed class XRefCollection
             _downloader = new XRefMapDownloader(baseFolder, fallbackFolders, maxParallelism);
         }
 
-        public async Task<IXRefContainerReader> CreateAsync()
+        public async Task<IXRefContainerReader> CreateAsync(CancellationToken cancellationToken)
         {
-            AddToDownloadList(_uris);
+            AddToDownloadList(_uris, cancellationToken);
             var dict = new Dictionary<string, IXRefContainer>();
+
             while (_processing.Any())
             {
-                Task<IXRefContainer> task = await Task.WhenAny(_processing.Keys);
+                Task<IXRefContainer> task = await Task.WhenAny(_processing.Keys)
+                                                      .WaitAsync(cancellationToken);
+
+                cancellationToken.ThrowIfCancellationRequested();
+
                 Uri uri = _processing[task];
                 _processing.Remove(task);
                 try
@@ -58,7 +63,8 @@ internal sealed class XRefCollection
                             where r != null
                             select GetUri(uri, r.Href) into u
                             where u != null
-                            select u);
+                            select u,
+                            cancellationToken);
                     }
                     dict[uri.IsAbsoluteUri ? uri.AbsoluteUri : uri.OriginalString] = container;
                 }
@@ -97,7 +103,7 @@ internal sealed class XRefCollection
             return new Uri(baseUri, uri);
         }
 
-        private void AddToDownloadList(IEnumerable<Uri> uris)
+        private void AddToDownloadList(IEnumerable<Uri> uris, CancellationToken cancellationToken)
         {
             foreach (var uri in uris)
             {
@@ -105,13 +111,13 @@ internal sealed class XRefCollection
                 {
                     if (_set.Add(uri.AbsoluteUri))
                     {
-                        var task = _downloader.DownloadAsync(uri);
+                        var task = _downloader.DownloadAsync(uri, cancellationToken);
                         _processing[task] = uri;
                     }
                 }
                 else if (_set.Add(uri.OriginalString))
                 {
-                    var task = _downloader.DownloadAsync(uri);
+                    var task = _downloader.DownloadAsync(uri, cancellationToken);
                     _processing[task] = uri;
                 }
             }

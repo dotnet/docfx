@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
+using System.Threading;
 using Docfx.Common;
 using Docfx.Plugins;
 
@@ -16,7 +17,10 @@ class SingleDocumentBuilder : IDisposable
     public IEnumerable<IDocumentProcessor> Processors { get; set; }
     public IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
 
-    public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
+    public static ImmutableList<FileModel> Build(
+        IDocumentProcessor processor,
+        DocumentBuildParameters parameters,
+        IMarkdownService markdownService)
     {
         var hostServiceCreator = new HostServiceCreator(null);
         var hostService = hostServiceCreator.CreateHostService(
@@ -32,7 +36,7 @@ class SingleDocumentBuilder : IDisposable
         return hostService.Models;
     }
 
-    public Manifest Build(DocumentBuildParameters parameters, IMarkdownService markdownService)
+    public Manifest Build(DocumentBuildParameters parameters, IMarkdownService markdownService, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(parameters);
 
@@ -52,14 +56,14 @@ class SingleDocumentBuilder : IDisposable
 
         Directory.CreateDirectory(parameters.OutputBaseDir);
 
-        var context = new DocumentBuildContext(parameters);
+        var context = new DocumentBuildContext(parameters, cancellationToken);
 
         // Start building document...
         var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
                 ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
 
         var hostServiceCreator = new HostServiceCreator(context);
-        var hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
+        var hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService, cancellationToken);
 
         templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
 
@@ -86,9 +90,14 @@ class SingleDocumentBuilder : IDisposable
         IEnumerable<IDocumentProcessor> processors,
         TemplateProcessor templateProcessor,
         HostServiceCreator creator,
-        IMarkdownService markdownService)
+        IMarkdownService markdownService,
+        CancellationToken cancellationToken)
     {
-        var files = (from file in parameters.Files.EnumerateFiles().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var files = (from file in parameters.Files.EnumerateFiles().AsParallel()
+                                                                   .WithDegreeOfParallelism(parameters.MaxParallelism)
+                                                                   .WithCancellation(cancellationToken)
                      from p in (from processor in processors
                                 let priority = processor.GetProcessingPriority(file)
                                 where priority != ProcessingPriority.NotSupported
@@ -114,7 +123,9 @@ class SingleDocumentBuilder : IDisposable
 
         try
         {
-            return (from processor in processors.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+            return (from processor in processors.AsParallel()
+                                                .WithDegreeOfParallelism(parameters.MaxParallelism)
+                                                .WithCancellation(cancellationToken)
                     join item in toHandleItems.AsParallel() on processor equals item.Key into g
                     from item in g.DefaultIfEmpty()
                     where item != null && item.Any(s => s.Type != DocumentType.Overwrite) // when normal file exists then processing is needed
@@ -138,9 +149,14 @@ class SingleDocumentBuilder : IDisposable
     private static string ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
     {
         Logger.LogVerbose("Exporting xref map...");
+
+        context.CancellationToken.ThrowIfCancellationRequested();
+
         var xrefMap = new XRefMap
         {
-            References = (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+            References = (from xref in context.XRefSpecMap.Values.AsParallel()
+                                                                 .WithDegreeOfParallelism(parameters.MaxParallelism)
+                                                                 .WithCancellation(context.CancellationToken)
                           select new XRefSpec(xref)
                           {
                               Href = context.UpdateHref(xref.Href, RelativePath.WorkingFolder)
