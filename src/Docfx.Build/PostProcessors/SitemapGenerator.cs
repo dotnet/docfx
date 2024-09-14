@@ -26,7 +26,7 @@ class SitemapGenerator : IPostProcessor
         return metadata;
     }
 
-    public Manifest Process(Manifest manifest, string outputFolder)
+    public Manifest Process(Manifest manifest, string outputFolder, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(manifest.Sitemap?.BaseUrl))
         {

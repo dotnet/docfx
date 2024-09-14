@@ -104,6 +104,8 @@ public class TemplateProcessor
     {
         foreach (var resourceInfo in templateBundles.SelectMany(s => s.Resources).Distinct())
         {
+            _context.CancellationToken.ThrowIfCancellationRequested();
+
             var resourceKey = resourceInfo.ResourceKey;
 
             try
@@ -194,7 +196,8 @@ public class TemplateProcessor
                     manifest.Add(transformer.Transform(item));
                 }
             },
-            _maxParallelism);
+            _maxParallelism,
+            _context.CancellationToken);
         return manifest.ToList();
 
     }

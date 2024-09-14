@@ -97,7 +97,9 @@ class HostServiceCreator
             {
                 invalidFiles.Add(file.File);
             }
-        }, _context.MaxParallelism);
+        },
+        _context.MaxParallelism,
+        _context.CancellationToken);
 
         return (models.OrderBy(m => m.File, StringComparer.Ordinal).ToArray(), invalidFiles);
     }

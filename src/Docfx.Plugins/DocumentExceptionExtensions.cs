@@ -1,8 +1,13 @@
-﻿namespace Docfx.Plugins;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Runtime.ExceptionServices;
+
+namespace Docfx.Plugins;
 
 public static class DocumentExceptionExtensions
 {
-    public static TResult[] RunAll<TElement, TResult>(this IReadOnlyList<TElement> elements, Func<TElement, TResult> func)
+    public static TResult[] RunAll<TElement, TResult>(this IReadOnlyList<TElement> elements, Func<TElement, TResult> func, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(elements);
         ArgumentNullException.ThrowIfNull(func);
@@ -11,6 +16,8 @@ public static class DocumentExceptionExtensions
         DocumentException firstException = null;
         for (int i = 0; i < elements.Count; i++)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 results[i] = func(elements[i]);
@@ -27,12 +34,12 @@ public static class DocumentExceptionExtensions
         return results;
     }
 
-    public static void RunAll<TElement>(this IReadOnlyList<TElement> elements, Action<TElement> action)
+    public static void RunAll<TElement>(this IReadOnlyList<TElement> elements, Action<TElement> action, CancellationToken cancellationToken = default)
     {
-        RunAll((IEnumerable<TElement>)elements, action);
+        RunAll((IEnumerable<TElement>)elements, action, cancellationToken);
     }
 
-    public static void RunAll<TElement>(this IEnumerable<TElement> elements, Action<TElement> action)
+    public static void RunAll<TElement>(this IEnumerable<TElement> elements, Action<TElement> action, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(elements);
         ArgumentNullException.ThrowIfNull(action);
@@ -40,6 +47,7 @@ public static class DocumentExceptionExtensions
         DocumentException firstException = null;
         foreach (var element in elements)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             try
             {
                 action(element);
@@ -55,12 +63,12 @@ public static class DocumentExceptionExtensions
         }
     }
 
-    public static void RunAll<TElement>(this IReadOnlyList<TElement> elements, Action<TElement> action, int parallelism)
+    public static void RunAll<TElement>(this IReadOnlyList<TElement> elements, Action<TElement> action, int parallelism, CancellationToken cancellationToken = default)
     {
-        RunAll((IEnumerable<TElement>)elements, action, parallelism);
+        RunAll((IEnumerable<TElement>)elements, action, parallelism, cancellationToken);
     }
 
-    public static void RunAll<TElement>(this IEnumerable<TElement> elements, Action<TElement> action, int parallelism)
+    public static void RunAll<TElement>(this IEnumerable<TElement> elements, Action<TElement> action, int parallelism, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(elements);
         ArgumentNullException.ThrowIfNull(action);
@@ -69,24 +77,43 @@ public static class DocumentExceptionExtensions
         {
             throw new ArgumentOutOfRangeException(nameof(parallelism));
         }
-        DocumentException firstException = null;
-        Parallel.ForEach(
-            elements,
-            new ParallelOptions { MaxDegreeOfParallelism = parallelism },
-            s =>
-            {
-                try
-                {
-                    action(s);
-                }
-                catch (DocumentException ex)
-                {
-                    Interlocked.CompareExchange(ref firstException, ex, null);
-                }
-            });
-        if (firstException != null)
+
+        try
         {
-            throw new DocumentException(firstException.Message, firstException);
+            DocumentException firstException = null;
+            Parallel.ForEach(
+                elements,
+                new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = parallelism,
+                    CancellationToken = cancellationToken,
+                },
+                s =>
+                {
+                    try
+                    {
+                        action(s);
+                    }
+                    catch (DocumentException ex)
+                    {
+                        Interlocked.CompareExchange(ref firstException, ex, null);
+                    }
+                });
+
+            if (firstException != null)
+            {
+                throw new DocumentException(firstException.Message, firstException);
+            }
         }
+        catch (AggregateException ex)
+        {
+            // If exceptions are OperationCanceledException. throw only first exception.
+            var innerExceptions = ex.Flatten().InnerExceptions.ToArray();
+            if (innerExceptions.All(x => x is OperationCanceledException))
+                ExceptionDispatchInfo.Throw(innerExceptions[0]);
+
+            throw;
+        }
+
     }
 }
