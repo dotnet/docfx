@@ -44,6 +44,14 @@ public static class JsonUtility
             return NewtonsoftJsonUtility.Deserialize<T>(reader);
     }
 
+    internal static ValueTask<T> DeserializeAsync<T>(Stream stream, CancellationToken cancellationToken)
+    {
+        if (IsSystemTextJsonSupported<T>())
+            return SystemTextJsonUtility.DeserializeAsync<T>(stream, cancellationToken);
+        else
+            throw new NotSupportedException();
+    }
+
     public static string ToJsonString<T>(this T graph)
     {
         if (IsSystemTextJsonSupported<T>())
@@ -79,9 +87,12 @@ public static class JsonUtility
             var type = typeof(T);
             var fullName = type.FullName;
 
+            // TODO: Return `true` for types that support serialize/deserializenon with System.Text.Json.
             switch (fullName)
             {
-                // TODO: Return `true` for types that support serialize/deserializenon with System.Text.Json.
+                case "Docfx.Build.Engine.XRefMap":
+                    return true;
+                
                 default:
                     return false;
             }
