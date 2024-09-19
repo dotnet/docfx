@@ -141,7 +141,8 @@ csharp_prefer_simple_using_statement = false:none                       # IDE006
 csharp_using_directive_placement = outside_namespace:suggestion         # IDE0065: using directive placement
 
 # File header preferences
-file_header_template = unset                                            # IDE0073: Require file header
+dotnet_diagnostic.IDE0073.severity = warning                            # IDE0073: Require file header
+file_header_template = Licensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file to you under the MIT license.
 
 # Namespace naming preferences
 dotnet_style_namespace_match_folder = true:suggestion                   # IDE0130: Namespace does not match folder structure

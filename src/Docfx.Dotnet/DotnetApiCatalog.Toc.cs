@@ -263,7 +263,7 @@ partial class DotnetApiCatalog
 
                     // Insert category as text label.
                     case CategoryLayout.Flattened:
-                    default:                    
+                    default:
                         {
                             if (items.FirstOrDefault(i => i.type == type) is { } node)
                                 items.Insert(items.IndexOf(node), new() { name = name });

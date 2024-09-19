@@ -23,7 +23,7 @@ public static class JintProcessorHelper
         {
             // allow Jint to take ownership of the array
             var elements = new JsValue[list.Count];
-            for (int i = 0; i < (uint) elements.Length; i++)
+            for (int i = 0; i < (uint)elements.Length; i++)
             {
                 elements[i] = ConvertObjectToJsValue(engine, list[i]);
             }

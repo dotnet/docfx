@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.Build.Common\Docfx.Build.Common.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Common\Docfx.Common.csproj" />

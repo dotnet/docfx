@@ -49,7 +49,7 @@ public class MarkdigMarkdownService : IMarkdownService
 #if NET7_0_OR_GREATER
         ArgumentException.ThrowIfNullOrEmpty(filePath);
 #else
-        if(string.IsNullOrEmpty(filePath))
+        if (string.IsNullOrEmpty(filePath))
             throw new ArgumentNullException(nameof(filePath));
 #endif
 

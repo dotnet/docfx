@@ -40,8 +40,8 @@ static class ManifestUtility
         ArgumentNullException.ThrowIfNull(manifests);
 
         var xrefMaps = (from manifest in manifests
-                                where manifest.Xrefmap != null
-                                select manifest.Xrefmap).ToList();
+                        where manifest.Xrefmap != null
+                        select manifest.Xrefmap).ToList();
         var manifestGroupInfos = (from manifest in manifests
                                   from g in manifest.Groups ?? Enumerable.Empty<ManifestGroupInfo>()
                                   select g).ToList();

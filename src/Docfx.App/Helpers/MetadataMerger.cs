@@ -31,11 +31,11 @@ internal class MetadataMerger
         }
         parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
-            Directory.CreateDirectory(parameters.OutputBaseDir);
-            Logger.LogInfo("Start merge metadata...");
-            MergePageViewModel(parameters);
-            MergeToc(parameters);
-            Logger.LogInfo("Merge metadata completed.");
+        Directory.CreateDirectory(parameters.OutputBaseDir);
+        Logger.LogInfo("Start merge metadata...");
+        MergePageViewModel(parameters);
+        MergeToc(parameters);
+        Logger.LogInfo("Merge metadata completed.");
     }
 
     private void MergePageViewModel(MetadataMergeParameters parameters)

@@ -109,8 +109,8 @@ internal static class CompilationHelper
         var compilation = CS.CSharpCompilation.Create(
             assemblyName: null,
             options: new CS.CSharpCompilationOptions(
-                outputKind            : OutputKind.DynamicallyLinkedLibrary,
-                metadataImportOptions : includePrivateMembers
+                outputKind: OutputKind.DynamicallyLinkedLibrary,
+                metadataImportOptions: includePrivateMembers
                     ? MetadataImportOptions.All
                     : MetadataImportOptions.Public
             ),

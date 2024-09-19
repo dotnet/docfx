@@ -96,7 +96,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             {
                 { SyntaxLanguage.Default, symbol.MetadataName },
             },
-                DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
+            DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
             {
                 { SyntaxLanguage.Default, symbol.MetadataName },
             },
@@ -185,7 +185,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             var member in symbol.GetMembers()
             .Where(static s =>
                 s is not INamedTypeSymbol
-                && ! s.Name.StartsWith('<')
+                && !s.Name.StartsWith('<')
                 && (s is not IMethodSymbol ms || ms.MethodKind != MethodKind.StaticConstructor)
             ))
         {

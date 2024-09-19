@@ -1,9 +1,11 @@
-using static System.Text.Encoding;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Markdig.Renderers;
-using Markdig.Syntax;
 using Markdig.Renderers.Html;
+using Markdig.Syntax;
 using PlantUml.Net;
+using static System.Text.Encoding;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
