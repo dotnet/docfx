@@ -98,14 +98,16 @@ jobs:
 You can also use docfx as a NuGet library:
 
 ```xml
-<PackageReference Include="Docfx.App" Version="2.76.0" />
-<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.9.2" />
-<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.9.2" />
+<PackageReference Include="Docfx.App" Version="2.77.0" />
+<!-- the versions of Microsoft.CodeAnalysis.* must match exactly what Docfx.App was built against, not the latest stable version -->
+<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.10.0" />
+<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.10.0" />
 ```
 
 Then build a docset using:
 
 ```cs
+await Docfx.Dotnet.DotnetApiCatalog.GenerateManagedReferenceYamlFiles("docfx.json");
 await Docfx.Docset.Build("docfx.json");
 ```
 
