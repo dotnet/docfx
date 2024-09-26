@@ -179,11 +179,21 @@ public class ApiReferenceBuildOutput
     [YamlIgnore]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
-    public CompositeDictionary MetadataJson =>
-        CompositeDictionary
+    [System.Text.Json.Serialization.JsonInclude]
+    public CompositeDictionary MetadataJson
+    {
+        get
+        {
+            return CompositeDictionary
             .CreateBuilder()
             .Add(string.Empty, Metadata)
             .Create();
+        }
+        private init
+        {
+            // init or getter is required for deserialize data with System.Text.Json.
+        }
+    }
 
     private bool _needExpand = true;
 

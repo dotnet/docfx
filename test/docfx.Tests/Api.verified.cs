@@ -1163,6 +1163,7 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public Docfx.Common.CompositeDictionary MetadataJson { get; }
         [Newtonsoft.Json.JsonProperty("name")]
@@ -2503,6 +2504,7 @@ namespace Docfx.DataContracts.Common
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public Docfx.Common.CompositeDictionary AdditionalJson { get; }
         [Newtonsoft.Json.JsonProperty("commentId")]
@@ -2877,6 +2879,7 @@ namespace Docfx.DataContracts.ManagedReference
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.IDictionary<string, object> ExtensionData { get; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
@@ -3152,6 +3155,7 @@ namespace Docfx.DataContracts.ManagedReference
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.IDictionary<string, object> ExtensionData { get; }
         [Newtonsoft.Json.JsonProperty("parameters")]

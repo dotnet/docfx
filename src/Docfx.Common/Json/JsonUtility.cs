@@ -91,8 +91,10 @@ public static class JsonUtility
             {
                 // TODO: Return `true` for types that support serialize/deserializenon with System.Text.Json.
                 case "Docfx.Build.Engine.XRefMap":
-                case "Docfx.DataContracts.ManagedReference.PageViewModel":
                     return true;
+
+                case "Docfx.DataContracts.ManagedReference.PageViewModel":
+                    return true; // TODO: Need to support ExtensionData
 
                 // Intermediate types for tests. it's expected to be removed later (And return true by default).
                 case "Docfx.Plugins.MarkdownServiceProperties":

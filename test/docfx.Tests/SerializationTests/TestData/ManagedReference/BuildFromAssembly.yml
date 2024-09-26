@@ -1,0 +1,32 @@
+### YamlMime:ManagedReference
+items:
+- uid: BuildFromAssembly
+  commentId: N:BuildFromAssembly
+  id: BuildFromAssembly
+  children:
+  - BuildFromAssembly.Class1
+  - BuildFromAssembly.Issue5432
+  langs:
+  - csharp
+  - vb
+  name: BuildFromAssembly
+  nameWithType: BuildFromAssembly
+  fullName: BuildFromAssembly
+  type: Namespace
+  assemblies:
+  - BuildFromAssembly
+references:
+- uid: BuildFromAssembly.Class1
+  commentId: T:BuildFromAssembly.Class1
+  isExternal: true
+  href: BuildFromAssembly.Class1.html
+  name: Class1
+  nameWithType: Class1
+  fullName: BuildFromAssembly.Class1
+- uid: BuildFromAssembly.Issue5432
+  commentId: T:BuildFromAssembly.Issue5432
+  isExternal: true
+  href: BuildFromAssembly.Issue5432.html
+  name: Issue5432
+  nameWithType: Issue5432
+  fullName: BuildFromAssembly.Issue5432
