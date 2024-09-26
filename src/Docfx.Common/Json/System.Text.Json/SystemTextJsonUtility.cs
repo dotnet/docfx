@@ -40,7 +40,7 @@ internal static class SystemTextJsonUtility
             NumberHandling = JsonNumberHandling.AllowReadingFromString,
             Converters =
             {
-                // new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
                 new ObjectToInferredTypesConverter(), // Required for `Dictionary<string, object>` type deserialization.
             },
             WriteIndented = false,

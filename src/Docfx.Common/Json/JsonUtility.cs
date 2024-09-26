@@ -87,12 +87,18 @@ public static class JsonUtility
             var type = typeof(T);
             var fullName = type.FullName;
 
-            // TODO: Return `true` for types that support serialize/deserializenon with System.Text.Json.
             switch (fullName)
             {
+                // TODO: Return `true` for types that support serialize/deserializenon with System.Text.Json.
                 case "Docfx.Build.Engine.XRefMap":
+                case "Docfx.DataContracts.ManagedReference.PageViewModel":
                     return true;
-                
+
+                // Intermediate types for tests. it's expected to be removed later (And return true by default).
+                case "Docfx.Plugins.MarkdownServiceProperties":
+                    return true;
+
+                // TODO: default to true
                 default:
                     return false;
             }
