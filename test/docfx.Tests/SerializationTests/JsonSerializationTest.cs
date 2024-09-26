@@ -30,6 +30,11 @@ public partial class JsonSerializationTest
         systemTextJsonModel.Should().BeEquivalentTo(model, assertionOptions);
         newtonsoftJsonModel.Should().BeEquivalentTo(model, assertionOptions);
 
+        // 3. Validate JsonUtility roundtrip result.
+        json = JsonUtility.Serialize(model);
+        var result = JsonUtility.Deserialize<T>(new StringReader(json));
+        result.Should().BeEquivalentTo(model, assertionOptions);
+
         // Helper local function
         static EquivalencyAssertionOptions<T> assertionOptions(EquivalencyAssertionOptions<T> opt)
         {
