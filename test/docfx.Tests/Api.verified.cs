@@ -3575,8 +3575,9 @@ namespace Docfx.MarkdigEngine.Extensions
         public void Setup(Markdig.MarkdownPipelineBuilder pipeline) { }
         public void Setup(Markdig.MarkdownPipeline pipeline, Markdig.Renderers.IMarkdownRenderer renderer) { }
     }
-    [Newtonsoft.Json.JsonConverter(typeof(Docfx.MarkdigEngine.Extensions.MarkdigExtensionSettingConverter))]
+    [Newtonsoft.Json.JsonConverter(typeof(Docfx.MarkdigEngine.Extensions.MarkdigExtensionSettingConverter.NewtonsoftJsonConverter))]
     [System.Diagnostics.DebuggerDisplay("Name = {Name}")]
+    [System.Text.Json.Serialization.JsonConverter(typeof(Docfx.MarkdigEngine.Extensions.MarkdigExtensionSettingConverter.SystemTextJsonConverter))]
     public class MarkdigExtensionSetting
     {
         public MarkdigExtensionSetting(string name, System.Text.Json.Nodes.JsonNode? options = null) { }
