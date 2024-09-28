@@ -363,10 +363,14 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonInclude]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
-    public CompositeDictionary ExtensionData =>
-        CompositeDictionary
+    public CompositeDictionary ExtensionData
+    {
+        get
+        {
+            return CompositeDictionary
             .CreateBuilder()
             .Add(Constants.ExtensionMemberPrefix.Parent, ParentInDevLangs, JTokenConverter.Convert<string>)
             .Add("package" + Constants.PrefixSeparator, PackageInDevLangs, JTokenConverter.Convert<string>)
@@ -387,6 +391,12 @@ public class ItemViewModel : IOverwriteDocumentViewModel
             .Add(Constants.ExtensionMemberPrefix.FullName, FullNames, JTokenConverter.Convert<string>)
             .Add(string.Empty, Metadata)
             .Create();
+        }
+        private init
+        {
+            // init or getter is required for deserialize data with System.Text.Json.
+        }
+    }
 
     private IEnumerable<string> GetInheritanceUidReference(List<InheritanceTree> items)
     {
