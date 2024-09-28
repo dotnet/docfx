@@ -28,11 +28,6 @@
     <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Locator" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Formats.Asn1" />
     <PackageReference Include="HtmlAgilityPack" />

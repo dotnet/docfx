@@ -69,7 +69,7 @@ public class MetadataCommandTest : TestBase
             {
                 Dest = _outputFolder,
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
-                Properties = new() { ["TargetFramework"] = "net6.0" },
+                Properties = new() { ["TargetFramework"] = "net8.0" },
             }),
             new(), Directory.GetCurrentDirectory());
 
