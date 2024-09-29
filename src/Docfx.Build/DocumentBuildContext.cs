@@ -437,13 +437,9 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public void RegisterToc(string tocFileKey, string fileKey)
     {
-#if NET7_0_OR_GREATER
         ArgumentException.ThrowIfNullOrEmpty(fileKey);
         ArgumentException.ThrowIfNullOrEmpty(tocFileKey);
-#else
-        if (string.IsNullOrEmpty(fileKey)) throw new ArgumentNullException(nameof(fileKey));
-        if (string.IsNullOrEmpty(tocFileKey)) throw new ArgumentNullException(nameof(tocFileKey));
-#endif
+
         TocMap.AddOrUpdate(
             fileKey,
             new HashSet<string>(FilePathComparer.OSPlatformSensitiveRelativePathComparer) { tocFileKey },
