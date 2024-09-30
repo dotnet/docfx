@@ -106,7 +106,7 @@ definitions:
         }
 
         var logs = _listener.Items;
-        Assert.Single(logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments));
+        Assert.Single(logs, l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
         Assert.Single(contentsMetadata);
         Assert.Equal("test2",
             ((ParagraphBlock)((MarkdownDocument)((Dictionary<object, object>)contentsMetadata["function"])["parameters"])[0]).Inline.FirstChild.ToString());
