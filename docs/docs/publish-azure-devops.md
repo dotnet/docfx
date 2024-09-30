@@ -1,4 +1,4 @@
-# Setting up DocFX with Azure DevOps to Deploy to GitHub Pages
+# Deploy to GitHub Pages from Azure DevOps
 
 
 ### 1. **Create a GitHub Personal Access Token (PAT)**
