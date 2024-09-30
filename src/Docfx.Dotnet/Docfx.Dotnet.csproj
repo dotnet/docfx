@@ -39,7 +39,7 @@
     <PackageReference Include="ICSharpCode.Decompiler" />
     <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
     <PackageReference Include="OneOf" />
-    <PackageReference Include="OneOf.SourceGenerator" />
+    <PackageReference Include="OneOf.SourceGenerator" PrivateAssets="All" />
     <PackageReference Include="Markdig" />
     <PackageReference Include="Microsoft.CodeAnalysis" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" />
