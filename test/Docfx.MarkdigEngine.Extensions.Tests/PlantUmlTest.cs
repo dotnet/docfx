@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.RegularExpressions;
 using FluentAssertions;
 using Xunit;
 
@@ -26,6 +27,10 @@ public class PlantUmlTest
         }).TrimEnd();
 
         result.Should().StartWith("""<div class="lang-plantUml"><svg""");
+
+        // Temporary workaround to remove <script> tags (See: https://github.com/plantuml/plantuml-server/issues/342)
+        result = Regex.Replace(result, @"<script(.+?)*</script>", "");
+
         result.Should().EndWith("""hello</text><!--SRC=[SyfFKj2rKt3CoKnELR1Io4ZDoSa70000]--></g></svg></div>""");
     }
 }
