@@ -1,6 +1,6 @@
 name: ci
 on:
-  pull_request_target:
+  pull_request:
     branches: [ main, feature/*, hotfix/* ]
   push:
     branches: [ main, feature/*, hotfix/* ]
