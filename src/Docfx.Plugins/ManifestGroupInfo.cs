@@ -24,6 +24,9 @@ public class ManifestGroupInfo
     [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new();
 
+    // Default constructor for System.Text.Json deserialization
+    public ManifestGroupInfo() { }
+
     public ManifestGroupInfo(GroupInfo groupInfo)
     {
         if (groupInfo == null)
