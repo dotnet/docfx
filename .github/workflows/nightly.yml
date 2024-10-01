@@ -13,11 +13,6 @@ jobs:
     permissions:
       packages: write
     steps:
-    - uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: |
-          9.x
-
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0

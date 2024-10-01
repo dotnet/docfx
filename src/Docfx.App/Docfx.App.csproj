@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageValidationBaselineVersion>2.70.0</PackageValidationBaselineVersion>
+    <!-- TODO: Enable package validation after v2.78.0 packages are published --> 
+    <EnablePackageValidation>false</EnablePackageValidation>
+    <PackageValidationBaselineVersion>2.78.0</PackageValidationBaselineVersion>
     <Description>Docfx published as a library for extensibility and advanced customization</Description>
   </PropertyGroup>
 

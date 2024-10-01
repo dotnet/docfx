@@ -87,7 +87,7 @@ If your project targets multiple target frameworks, docfx internally builds each
     }],
     "dest": "api",
     "properties": {
-      "TargetFramework": "net6.0"
+      "TargetFramework": "net8.0"
     }
   },
 }
