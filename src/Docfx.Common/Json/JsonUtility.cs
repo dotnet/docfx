@@ -93,6 +93,7 @@ public static class JsonUtility
                 case "Docfx.Build.Engine.XRefMap":
                 case "Docfx.DataContracts.UniversalReference.PageViewModel":
                 case "Docfx.DataContracts.ManagedReference.PageViewModel":
+                case "Docfx.Plugins.Manifest":
                     return true;
 
                 // Intermediate types for tests. it's expected to be removed later (And return true by default).

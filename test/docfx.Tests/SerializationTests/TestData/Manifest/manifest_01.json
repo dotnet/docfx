@@ -1,0 +1,1159 @@
+{
+  "sitemap": {
+    "baseUrl": "https://dotnet.github.io/docfx/",
+    "changefreq": "daily",
+    "priority": 0.5
+  },
+  "source_base_path": "/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.BuildOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.BuildOptions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.AdditionalNotes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.AdditionalNotes.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.ApiParameter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.ApiParameter.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.ArgumentInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.ArgumentInfo.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.AttributeInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.AttributeInfo.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.ExceptionInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.ExceptionInfo.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.ItemViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.ItemViewModel.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.LinkInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.LinkInfo.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.LinkType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.LinkType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.MemberType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.MemberType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.NamedArgumentInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.NamedArgumentInfo.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.PageViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.PageViewModel.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.SyntaxDetailViewModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.SyntaxDetailViewModel.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.SyntaxLanguage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.SyntaxLanguage.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.DataContracts.ManagedReference.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.DataContracts.ManagedReference.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.Docset.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.Docset.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.Dotnet.DotnetApiCatalog.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.Dotnet.DotnetApiCatalog.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.Dotnet.DotnetApiOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.Dotnet.DotnetApiOptions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.Dotnet.SymbolIncludeState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.Dotnet.SymbolIncludeState.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.Dotnet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.Dotnet.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.MemberLayout.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.MemberLayout.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Docfx.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Docfx.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs",
+      "output": {
+        "resource": {
+          "relative_path": "codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "codesnippet/Rtf/RtfBuildStep.cs",
+      "output": {
+        "resource": {
+          "relative_path": "codesnippet/Rtf/RtfBuildStep.cs"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "codesnippet/Rtf/RtfDocumentProcessor.cs",
+      "output": {
+        "resource": {
+          "relative_path": "codesnippet/Rtf/RtfDocumentProcessor.cs"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/additional-languages.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/additional-languages.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ApiPage",
+      "source_relative_path": "docs/api-page.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/api-page.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/basic-concepts.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/basic-concepts.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/config.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/config.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/dotnet-api-docs.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/dotnet-api-docs.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/dotnet-yaml-format.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/dotnet-yaml-format.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/links-and-cross-references.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/links-and-cross-references.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/markdown.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/markdown.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "docs/media/Program.cs",
+      "output": {
+        "resource": {
+          "relative_path": "docs/media/Program.cs"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "docs/media/pdf-cover-page.png",
+      "output": {
+        "resource": {
+          "relative_path": "docs/media/pdf-cover-page.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "docs/media/pdf-toc-page.png",
+      "output": {
+        "resource": {
+          "relative_path": "docs/media/pdf-toc-page.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/pdf.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/pdf.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/rest-api-docs.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/rest-api-docs.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/table-of-contents.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/table-of-contents.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/template.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/template.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/toc.html"
+        },
+        ".json": {
+          "relative_path": "docs/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/cake-contrib-addin-large.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/cake-contrib-addin-large.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/darkfx.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/darkfx.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/default.green.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/default.green.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/default.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/default.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/discordfx.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/discordfx.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/docfx.plantuml.plugin.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/docfx.plantuml.plugin.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/docfxquickstart.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/docfxquickstart.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/docfxtocgenerator.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/docfxtocgenerator.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/doclanguagetranslator.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/doclanguagetranslator.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/doclinkchecker.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/doclinkchecker.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/material.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/material.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/mathew.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/mathew.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/memberpage.default.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/memberpage.default.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/minimal.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/minimal.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/modern.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/modern.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/rest.operationpage.default.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/rest.operationpage.default.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/rest.tagpage.default.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/rest.tagpage.default.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/roel4ez-feather.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/roel4ez-feather.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/roel4ez-modal.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/roel4ez-modal.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/singulinkfx.screenshot.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/singulinkfx.screenshot.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "extensions/images/unityfx.png",
+      "output": {
+        "resource": {
+          "relative_path": "extensions/images/unityfx.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "dashboard",
+      "source_relative_path": "extensions/packages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "extensions/packages.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "dashboard",
+      "source_relative_path": "extensions/templates.yml",
+      "output": {
+        ".html": {
+          "relative_path": "extensions/templates.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "extensions/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "extensions/toc.html"
+        },
+        ".json": {
+          "relative_path": "extensions/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "dashboard",
+      "source_relative_path": "extensions/tools.yml",
+      "output": {
+        ".html": {
+          "relative_path": "extensions/tools.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/output-example.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/output-example.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/docfx-build.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/docfx-build.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/docfx-download.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/docfx-download.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/docfx-init.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/docfx-init.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/docfx-merge.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/docfx-merge.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/docfx-metadata.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/docfx-metadata.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/docfx-pdf.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/docfx-pdf.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/docfx-serve.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/docfx-serve.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/docfx-template.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/docfx-template.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/docfx.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/docfx.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-cli-reference/overview.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/overview.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "reference/docfx-cli-reference/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-cli-reference/toc.html"
+        },
+        ".json": {
+          "relative_path": "reference/docfx-cli-reference/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-environment-variables-reference.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-environment-variables-reference.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/docfx-json-reference.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/docfx-json-reference.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "spec/docfx_document_schema.md",
+      "output": {
+        ".html": {
+          "relative_path": "spec/docfx_document_schema.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "spec/docfx_flavored_markdown.md",
+      "output": {
+        ".html": {
+          "relative_path": "spec/docfx_flavored_markdown.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "spec/images/docfx_workflow.png",
+      "output": {
+        "resource": {
+          "relative_path": "spec/images/docfx_workflow.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "spec/images/docfx_workflow.vsdx",
+      "output": {
+        "resource": {
+          "relative_path": "spec/images/docfx_workflow.vsdx"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "spec/images/docfx_workflow_highlevel.png",
+      "output": {
+        "resource": {
+          "relative_path": "spec/images/docfx_workflow_highlevel.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "spec/images/sdp_workflow.png",
+      "output": {
+        "resource": {
+          "relative_path": "spec/images/sdp_workflow.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "spec/metadata_dotnet_spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "spec/metadata_dotnet_spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "spec/metadata_format_spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "spec/metadata_format_spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "spec/sdp_design_spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "spec/sdp_design_spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "spec/triple_slash_comments_spec.md",
+      "output": {
+        ".html": {
+          "relative_path": "spec/triple_slash_comments_spec.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "tutorial/advanced_support_hyperlink.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/advanced_support_hyperlink.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/docfx_getting_started.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/docfx_getting_started.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "tutorial/howto_add_a_customized_post_processor.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/howto_add_a_customized_post_processor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "tutorial/howto_create_custom_template.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/howto_create_custom_template.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/howto_filter_out_unwanted_apis_attributes.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/howto_filter_out_unwanted_apis_attributes.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "tutorial/images/simple_web_page.png",
+      "output": {
+        "resource": {
+          "relative_path": "tutorial/images/simple_web_page.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "tutorial/images/toc_web_page.png",
+      "output": {
+        "resource": {
+          "relative_path": "tutorial/images/toc_web_page.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "tutorial/images/web_page_with_extra_property.png",
+      "output": {
+        "resource": {
+          "relative_path": "tutorial/images/web_page_with_extra_property.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "tutorial/intro_overwrite_files.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/intro_overwrite_files.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/intro_rest_api_documentation.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/intro_rest_api_documentation.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "tutorial/intro_template.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/intro_template.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/intro_toc.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/intro_toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/links_and_cross_references.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/links_and_cross_references.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/walkthrough/advanced_walkthrough.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/walkthrough/advanced_walkthrough.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/walkthrough/walkthrough_create_a_docfx_project.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/walkthrough/walkthrough_create_a_docfx_project.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/walkthrough/walkthrough_create_a_docfx_project_2.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/walkthrough/walkthrough_create_a_docfx_project_2.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/walkthrough/walkthrough_generate_pdf.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/walkthrough/walkthrough_generate_pdf.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Redirection",
+      "source_relative_path": "tutorial/walkthrough/walkthrough_overview.md",
+      "output": {
+        ".html": {
+          "relative_path": "tutorial/walkthrough/walkthrough_overview.html"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

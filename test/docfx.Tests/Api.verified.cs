@@ -4169,9 +4169,6 @@ namespace Docfx.Plugins
     {
         public Manifest() { }
         public Manifest(System.Collections.Generic.IEnumerable<Docfx.Plugins.ManifestItem> files) { }
-        [Newtonsoft.Json.JsonProperty("files")]
-        [System.Text.Json.Serialization.JsonPropertyName("files")]
-        public System.Collections.Generic.List<Docfx.Plugins.ManifestItem> Files { get; }
         [Newtonsoft.Json.JsonProperty("groups")]
         [System.Text.Json.Serialization.JsonPropertyName("groups")]
         public System.Collections.Generic.List<Docfx.Plugins.ManifestGroupInfo> Groups { get; set; }
@@ -4185,9 +4182,13 @@ namespace Docfx.Plugins
         [System.Obsolete]
         [System.Text.Json.Serialization.JsonPropertyName("xrefmap")]
         public object Xrefmap { get; set; }
+        [Newtonsoft.Json.JsonProperty("files")]
+        [System.Text.Json.Serialization.JsonPropertyName("files")]
+        public System.Collections.Generic.List<Docfx.Plugins.ManifestItem> Files { get; init; }
     }
     public class ManifestGroupInfo
     {
+        public ManifestGroupInfo() { }
         public ManifestGroupInfo(Docfx.Plugins.GroupInfo groupInfo) { }
         [Newtonsoft.Json.JsonProperty("dest")]
         [System.Text.Json.Serialization.JsonPropertyName("dest")]
@@ -4211,9 +4212,6 @@ namespace Docfx.Plugins
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonProperty("output")]
-        [System.Text.Json.Serialization.JsonPropertyName("output")]
-        public System.Collections.Generic.Dictionary<string, Docfx.Plugins.OutputFileInfo> Output { get; }
         [Newtonsoft.Json.JsonProperty("source_relative_path")]
         [System.Text.Json.Serialization.JsonPropertyName("source_relative_path")]
         public string SourceRelativePath { get; set; }
@@ -4223,6 +4221,9 @@ namespace Docfx.Plugins
         [Newtonsoft.Json.JsonProperty("version")]
         [System.Text.Json.Serialization.JsonPropertyName("version")]
         public string Version { get; set; }
+        [Newtonsoft.Json.JsonProperty("output")]
+        [System.Text.Json.Serialization.JsonPropertyName("output")]
+        public System.Collections.Generic.Dictionary<string, Docfx.Plugins.OutputFileInfo> Output { get; init; }
     }
     public class MarkupResult
     {
