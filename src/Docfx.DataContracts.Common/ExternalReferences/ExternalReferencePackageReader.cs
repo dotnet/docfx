@@ -137,36 +137,10 @@ public class ExternalReferencePackageReader : IDisposable
         return GetReferenceViewModels(index);
     }
 
-    #region IDisposable Support
-
-    private bool disposedValue = false;
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                _zip.Dispose();
-            }
-            disposedValue = true;
-        }
-    }
-
-    ~ExternalReferencePackageReader()
-    {
-        // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        Dispose(false);
-    }
-
-    // This code added to correctly implement the disposable pattern.
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        _zip.Dispose();
     }
-
-    #endregion
 
     internal sealed class PackageEntry
     {
