@@ -1160,6 +1160,7 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
         [Docfx.YamlSerialization.ExtensibleMember]
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
@@ -2651,6 +2652,7 @@ namespace Docfx.DataContracts.Common
         [Docfx.YamlSerialization.ExtensibleMember]
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
@@ -2942,6 +2944,7 @@ namespace Docfx.DataContracts.ManagedReference
         [Docfx.YamlSerialization.ExtensibleMember]
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
         [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
