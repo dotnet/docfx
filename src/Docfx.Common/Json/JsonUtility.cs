@@ -68,7 +68,7 @@ public static class JsonUtility
             return NewtonsoftJsonUtility.FromJsonString<T>(json);
     }
 
-    private static bool IsSystemTextJsonSupported<T>()
+    internal static bool IsSystemTextJsonSupported<T>()
     {
         return StaticTypeCache<T>.Supported;
     }
@@ -91,6 +91,7 @@ public static class JsonUtility
             {
                 // TODO: Return `true` for types that support serialize/deserializenon with System.Text.Json.
                 case "Docfx.Build.Engine.XRefMap":
+                case "Docfx.DataContracts.Common.TocItemViewModel":
                 case "Docfx.DataContracts.UniversalReference.PageViewModel":
                 case "Docfx.DataContracts.ManagedReference.PageViewModel":
                 case "Docfx.Plugins.Manifest":

@@ -2654,6 +2654,7 @@ namespace Docfx.DataContracts.Common
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public Docfx.Common.CompositeDictionary MetadataJson { get; }
         [Newtonsoft.Json.JsonProperty("name")]

@@ -45,7 +45,7 @@ public static class TestData
         var directoryInfo = new DirectoryInfo(testDataDir);
 
         // Gets TestData directory relative paths
-        var relativePaths = directoryInfo.EnumerateFiles()
+        var relativePaths = directoryInfo.EnumerateFiles("*", new EnumerationOptions { RecurseSubdirectories = true })
                                          .Select(x => x.FullName)
                                          .Select(x => x.Substring(basePathLength));
 
