@@ -1,0 +1,295 @@
+{
+  "items": [
+    {
+      "uid": "BuildFromAssembly",
+      "name": "BuildFromAssembly",
+      "type": "Namespace",
+      "items": [
+        {
+          "uid": "BuildFromAssembly.Class1",
+          "name": "Class1",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromAssembly.Issue5432",
+          "name": "Issue5432",
+          "type": "Struct"
+        }
+      ]
+    },
+    {
+      "uid": "BuildFromCSharpSourceCode",
+      "name": "BuildFromCSharpSourceCode",
+      "type": "Namespace",
+      "items": [
+        {
+          "uid": "BuildFromCSharpSourceCode.CSharp",
+          "name": "CSharp",
+          "type": "Class"
+        }
+      ]
+    },
+    {
+      "uid": "BuildFromProject",
+      "name": "BuildFromProject",
+      "type": "Namespace",
+      "items": [
+        {
+          "uid": "BuildFromProject.Issue8540",
+          "name": "Issue8540",
+          "type": "Namespace",
+          "items": [
+            {
+              "uid": "BuildFromProject.Issue8540.A",
+              "name": "A",
+              "type": "Namespace",
+              "items": [
+                {
+                  "uid": "BuildFromProject.Issue8540.A.A",
+                  "name": "A",
+                  "type": "Class"
+                }
+              ]
+            },
+            {
+              "uid": "BuildFromProject.Issue8540.B",
+              "name": "B",
+              "type": "Namespace",
+              "items": [
+                {
+                  "uid": "BuildFromProject.Issue8540.B.B",
+                  "name": "B",
+                  "type": "Class"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "uid": "BuildFromProject.Class1",
+          "name": "Class1",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Class1.IIssue8948",
+          "name": "Class1.IIssue8948",
+          "type": "Interface"
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue8665",
+          "name": "Class1.Issue8665",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue8696Attribute",
+          "name": "Class1.Issue8696Attribute",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue8948",
+          "name": "Class1.Issue8948",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue9260",
+          "name": "Class1.Issue9260",
+          "type": "Enum"
+        },
+        {
+          "uid": "BuildFromProject.Class1.Test`1",
+          "name": "Class1.Test<T>",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Dog",
+          "name": "Dog",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.IInheritdoc",
+          "name": "IInheritdoc",
+          "type": "Interface"
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc",
+          "name": "Inheritdoc",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue6366",
+          "name": "Inheritdoc.Issue6366",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue6366.Class1`1",
+          "name": "Inheritdoc.Issue6366.Class1<T>",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue6366.Class2",
+          "name": "Inheritdoc.Issue6366.Class2",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue7035",
+          "name": "Inheritdoc.Issue7035",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue7484",
+          "name": "Inheritdoc.Issue7484",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue8101",
+          "name": "Inheritdoc.Issue8101",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue8129",
+          "name": "Inheritdoc.Issue8129",
+          "type": "Struct"
+        },
+        {
+          "uid": "BuildFromProject.Issue8725",
+          "name": "Issue8725",
+          "type": "Class"
+        }
+      ]
+    },
+    {
+      "uid": "BuildFromVBSourceCode",
+      "name": "BuildFromVBSourceCode",
+      "type": "Namespace",
+      "items": [
+        {
+          "uid": "BuildFromVBSourceCode.BaseClass1",
+          "name": "BaseClass1",
+          "type": "Class"
+        },
+        {
+          "uid": "BuildFromVBSourceCode.Class1",
+          "name": "Class1",
+          "type": "Class"
+        }
+      ]
+    },
+    {
+      "uid": "CatLibrary",
+      "name": "CatLibrary",
+      "type": "Namespace",
+      "items": [
+        {
+          "uid": "CatLibrary.Core",
+          "name": "Core",
+          "type": "Namespace",
+          "items": [
+            {
+              "uid": "CatLibrary.Core.ContainersRefType",
+              "name": "ContainersRefType",
+              "type": "Struct"
+            },
+            {
+              "uid": "CatLibrary.Core.ContainersRefType.ColorType",
+              "name": "ContainersRefType.ColorType",
+              "type": "Enum"
+            },
+            {
+              "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
+              "name": "ContainersRefType.ContainersRefTypeChild",
+              "type": "Class"
+            },
+            {
+              "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface",
+              "name": "ContainersRefType.ContainersRefTypeChildInterface",
+              "type": "Interface"
+            },
+            {
+              "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
+              "name": "ContainersRefType.ContainersRefTypeDelegate",
+              "type": "Delegate"
+            },
+            {
+              "uid": "CatLibrary.Core.ExplicitLayoutClass",
+              "name": "ExplicitLayoutClass",
+              "type": "Class"
+            },
+            {
+              "uid": "CatLibrary.Core.Issue231",
+              "name": "Issue231",
+              "type": "Class"
+            }
+          ]
+        },
+        {
+          "uid": "CatLibrary.CatException`1",
+          "name": "CatException<T>",
+          "type": "Class"
+        },
+        {
+          "uid": "CatLibrary.Cat`2",
+          "name": "Cat<T, K>",
+          "type": "Class"
+        },
+        {
+          "uid": "CatLibrary.Complex`2",
+          "name": "Complex<T, J>",
+          "type": "Class"
+        },
+        {
+          "uid": "CatLibrary.FakeDelegate`1",
+          "name": "FakeDelegate<T>",
+          "type": "Delegate"
+        },
+        {
+          "uid": "CatLibrary.IAnimal",
+          "name": "IAnimal",
+          "type": "Interface"
+        },
+        {
+          "uid": "CatLibrary.ICat",
+          "name": "ICat",
+          "type": "Interface"
+        },
+        {
+          "uid": "CatLibrary.ICatExtension",
+          "name": "ICatExtension",
+          "type": "Class"
+        },
+        {
+          "uid": "CatLibrary.MRefDelegate`3",
+          "name": "MRefDelegate<K, T, L>",
+          "type": "Delegate"
+        },
+        {
+          "uid": "CatLibrary.MRefNormalDelegate",
+          "name": "MRefNormalDelegate",
+          "type": "Delegate"
+        },
+        {
+          "uid": "CatLibrary.Tom",
+          "name": "Tom",
+          "type": "Class"
+        },
+        {
+          "uid": "CatLibrary.TomFromBaseClass",
+          "name": "TomFromBaseClass",
+          "type": "Class"
+        }
+      ]
+    },
+    {
+      "uid": "MRef.Demo.Enumeration",
+      "name": "MRef.Demo.Enumeration",
+      "type": "Namespace",
+      "items": [
+        {
+          "uid": "MRef.Demo.Enumeration.ColorType",
+          "name": "ColorType",
+          "type": "Enum"
+        }
+      ]
+    }
+  ],
+  "memberLayout": "SamePage"
+}

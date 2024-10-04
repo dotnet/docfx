@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using Docfx;
 using Docfx.Common;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
+using FluentAssertions.Equivalency.Tracing;
 
 namespace docfx.Tests;
 
@@ -25,21 +25,19 @@ public partial class JsonSerializationTest
         var json = systemTextJson;
         var systemTextJsonModel = SystemTextJsonUtility.Deserialize<T>(json);
         var newtonsoftJsonModel = NewtonsoftJsonUtility.Deserialize<T>(new StringReader(json));
-
-        // Assert
-        systemTextJsonModel.Should().BeEquivalentTo(model, assertionOptions);
-        newtonsoftJsonModel.Should().BeEquivalentTo(model, assertionOptions);
+        systemTextJsonModel.Should().BeEquivalentTo(model, customAssertionOptions);
+        newtonsoftJsonModel.Should().BeEquivalentTo(model, customAssertionOptions);
 
         // 3. Validate JsonUtility roundtrip result.
         json = JsonUtility.Serialize(model);
         var result = JsonUtility.Deserialize<T>(new StringReader(json));
-        result.Should().BeEquivalentTo(model, assertionOptions);
+        result.Should().BeEquivalentTo(model, customAssertionOptions);
+    }
 
-        // Helper local function
-        static EquivalencyAssertionOptions<T> assertionOptions(EquivalencyAssertionOptions<T> opt)
-        {
-            // By default. JsonElement is compared by reference because JsonElement don't override Equals.
-            return opt.ComparingByMembers<JsonElement>();
-        }
+    private static EquivalencyAssertionOptions<T> customAssertionOptions<T>(EquivalencyAssertionOptions<T> opt)
+    {
+        // By default. JsonElement is compared by reference because JsonElement don't override Equals.
+        return opt.ComparingByMembers<JsonElement>()
+                  .Using(new CustomEqualityEquivalencyStep());
     }
 }
