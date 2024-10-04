@@ -33,7 +33,7 @@ internal static class SystemTextJsonUtility
             // DefaultBufferSize = 1024 * 16, // TODO: Set appropriate buffer size based on benchmark.(Default: 16KB)
             AllowTrailingCommas = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            // Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // Some chars are escaped by this settings (e.g. `+`, `　`(full width space)
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // TODO: Replace with custom encoder that encode minimal chars (https://github.com/dotnet/runtime/issues/87153)
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             // DictionaryKeyPolicy = JsonNamingPolicy.CamelCase, // This setting is not compatible to `Newtonsoft.Json` serialize result.
