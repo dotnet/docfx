@@ -173,6 +173,7 @@ public class ApiReferenceBuildOutput
     [ExtensibleMember]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
+    [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
     public Dictionary<string, object> Metadata { get; set; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
