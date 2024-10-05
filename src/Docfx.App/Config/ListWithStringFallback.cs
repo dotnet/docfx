@@ -6,7 +6,8 @@ namespace Docfx;
 /// <summary>
 /// ListWithStringFallback.
 /// </summary>
-[Newtonsoft.Json.JsonConverter(typeof(ListWithStringFallbackConverter))]
+[Newtonsoft.Json.JsonConverter(typeof(ListWithStringFallbackConverter.NewtonsoftJsonConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(ListWithStringFallbackConverter.SystemTextJsonConverter))]
 internal class ListWithStringFallback : List<string>
 {
     /// <summary>
