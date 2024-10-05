@@ -2265,13 +2265,15 @@ namespace Docfx.Exceptions
 }
 namespace Docfx
 {
+    [System.Text.Json.Serialization.JsonConverter(typeof(Docfx.FileItemsConverter))]
     public class FileItems : System.Collections.Generic.List<string>
     {
         public FileItems(System.Collections.Generic.IEnumerable<string> files) { }
         public FileItems(string file) { }
         public static Docfx.FileItems op_Explicit(string input) { }
     }
-    [Newtonsoft.Json.JsonConverter(typeof(Docfx.FileMappingConverter))]
+    [Newtonsoft.Json.JsonConverter(typeof(Docfx.FileMappingConverter.NewtonsoftJsonConverter))]
+    [System.Text.Json.Serialization.JsonConverter(typeof(Docfx.FileMappingConverter.SystemTextJsonConverter))]
     public class FileMapping
     {
         public FileMapping() { }

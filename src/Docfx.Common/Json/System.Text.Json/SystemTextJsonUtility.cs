@@ -32,6 +32,7 @@ internal static class SystemTextJsonUtility
         {
             // DefaultBufferSize = 1024 * 16, // TODO: Set appropriate buffer size based on benchmark.(Default: 16KB)
             AllowTrailingCommas = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // TODO: Replace with custom encoder that encode minimal chars (https://github.com/dotnet/runtime/issues/87153)
             PropertyNameCaseInsensitive = true,

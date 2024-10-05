@@ -98,6 +98,7 @@ public static class JsonUtility
                     return true;
 
                 // Intermediate types for tests. it's expected to be removed later (And return true by default).
+                case "Docfx.FileMapping":
                 case "Docfx.Plugins.MarkdownServiceProperties":
                     return true;
 

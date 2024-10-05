@@ -1,0 +1,7 @@
+[
+  "reference1.dll",
+  {
+    "files": [ "reference2.dll", "reference3.dll" ]
+  },
+  "reference4.dll"
+]
