@@ -66,7 +66,7 @@ internal partial class MarkdigExtensionSettingConverter
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName(model.Name);
-                var json = model.Options.ToString();
+                var json = JsonSerializer.Serialize(model.Options, DefaultSerializerOptions);
                 writer.WriteRawValue(json);
                 writer.WriteEndObject();
             }

@@ -47,7 +47,7 @@ internal partial class MarkdigExtensionSettingConverter
                         }
 
                         // Convert JToken to JsonElement.
-                        var json = options.ToString();
+                        var json = options.ToString(Formatting.None);
                         using var doc = System.Text.Json.JsonDocument.Parse(json);
                         var jsonElement = doc.RootElement.Clone();
 
@@ -78,7 +78,7 @@ internal partial class MarkdigExtensionSettingConverter
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName(model.Name);
-                var json = model.Options.ToString();
+                var json = System.Text.Json.JsonSerializer.Serialize(model.Options, DefaultSerializerOptions);
                 writer.WriteRawValue(json);
                 writer.WriteEndObject();
             }
