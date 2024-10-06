@@ -1,0 +1,165 @@
+### YamlMime:ApiPage
+title: Class Class1.Issue8696Attribute
+body:
+- api1: Class Class1.Issue8696Attribute
+  id: BuildFromProject_Class1_Issue8696Attribute
+  preview: "[DOCFX001](https://example.org/DOCFX001): 'BuildFromProject.Class1.Issue8696Attribute' is for evaluation purposes only and is subject to change or removal in future updates."
+  src: https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L126
+  metadata:
+    uid: BuildFromProject.Class1.Issue8696Attribute
+    commentId: T:BuildFromProject.Class1.Issue8696Attribute
+- facts:
+  - name: Namespace
+    value:
+      text: BuildFromProject
+      url: BuildFromProject.html
+  - name: Assembly
+    value: BuildFromProject.dll
+- code: 'public class Class1.Issue8696Attribute : Attribute'
+- h4: Inheritance
+- inheritance:
+  - text: object
+    url: https://learn.microsoft.com/dotnet/api/system.object
+  - text: Attribute
+    url: https://learn.microsoft.com/dotnet/api/system.attribute
+  - text: Class1.Issue8696Attribute
+    url: BuildFromProject.Class1.Issue8696Attribute.html
+- h4: Inherited Members
+- list:
+  - text: Attribute.Equals(object?)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.equals
+  - text: Attribute.GetCustomAttribute(Assembly, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type)
+  - text: Attribute.GetCustomAttribute(Assembly, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type-system-boolean)
+  - text: Attribute.GetCustomAttribute(MemberInfo, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type)
+  - text: Attribute.GetCustomAttribute(MemberInfo, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type-system-boolean)
+  - text: Attribute.GetCustomAttribute(Module, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type)
+  - text: Attribute.GetCustomAttribute(Module, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type-system-boolean)
+  - text: Attribute.GetCustomAttribute(ParameterInfo, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type)
+  - text: Attribute.GetCustomAttribute(ParameterInfo, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type-system-boolean)
+  - text: Attribute.GetCustomAttributes(Assembly)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly)
+  - text: Attribute.GetCustomAttributes(Assembly, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-boolean)
+  - text: Attribute.GetCustomAttributes(Assembly, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type)
+  - text: Attribute.GetCustomAttributes(Assembly, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type-system-boolean)
+  - text: Attribute.GetCustomAttributes(MemberInfo)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo)
+  - text: Attribute.GetCustomAttributes(MemberInfo, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-boolean)
+  - text: Attribute.GetCustomAttributes(MemberInfo, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type)
+  - text: Attribute.GetCustomAttributes(MemberInfo, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type-system-boolean)
+  - text: Attribute.GetCustomAttributes(Module)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module)
+  - text: Attribute.GetCustomAttributes(Module, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-boolean)
+  - text: Attribute.GetCustomAttributes(Module, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type)
+  - text: Attribute.GetCustomAttributes(Module, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type-system-boolean)
+  - text: Attribute.GetCustomAttributes(ParameterInfo)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo)
+  - text: Attribute.GetCustomAttributes(ParameterInfo, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-boolean)
+  - text: Attribute.GetCustomAttributes(ParameterInfo, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type)
+  - text: Attribute.GetCustomAttributes(ParameterInfo, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type-system-boolean)
+  - text: Attribute.GetHashCode()
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.gethashcode
+  - text: Attribute.IsDefaultAttribute()
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.isdefaultattribute
+  - text: Attribute.IsDefined(Assembly, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type)
+  - text: Attribute.IsDefined(Assembly, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type-system-boolean)
+  - text: Attribute.IsDefined(MemberInfo, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type)
+  - text: Attribute.IsDefined(MemberInfo, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type-system-boolean)
+  - text: Attribute.IsDefined(Module, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type)
+  - text: Attribute.IsDefined(Module, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type-system-boolean)
+  - text: Attribute.IsDefined(ParameterInfo, Type)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type)
+  - text: Attribute.IsDefined(ParameterInfo, Type, bool)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type-system-boolean)
+  - text: Attribute.Match(object?)
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.match
+  - text: Attribute.TypeId
+    url: https://learn.microsoft.com/dotnet/api/system.attribute.typeid
+  - text: object.Equals(object?)
+    url: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - text: object.Equals(object?, object?)
+    url: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - text: object.GetHashCode()
+    url: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - text: object.GetType()
+    url: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - text: object.MemberwiseClone()
+    url: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - text: object.ReferenceEquals(object?, object?)
+    url: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - text: object.ToString()
+    url: https://learn.microsoft.com/dotnet/api/system.object.tostring
+- h2: Constructors
+- api3: Issue8696Attribute(string?, int, int, string[]?, bool, Type?)
+  id: BuildFromProject_Class1_Issue8696Attribute__ctor_System_String_System_Int32_System_Int32_System_String___System_Boolean_System_Type_
+  src: https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L128
+  metadata:
+    uid: BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)
+    commentId: M:BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)
+- code: >-
+    [Class1.Issue8696("Changes the name of the server in the server list", 0, 0, null, false, null)]
+
+    public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, string[]? validGameModes = null, bool hasMultipleSelections = false, Type? enumType = null)
+- h4: Parameters
+- parameters:
+  - name: description
+    type:
+    - text: string
+      url: https://learn.microsoft.com/dotnet/api/system.string
+    - '?'
+    optional: true
+  - name: boundsMin
+    type:
+    - text: int
+      url: https://learn.microsoft.com/dotnet/api/system.int32
+    optional: true
+  - name: boundsMax
+    type:
+    - text: int
+      url: https://learn.microsoft.com/dotnet/api/system.int32
+    optional: true
+  - name: validGameModes
+    type:
+    - text: string
+      url: https://learn.microsoft.com/dotnet/api/system.string
+    - '['
+    - ']'
+    - '?'
+    optional: true
+  - name: hasMultipleSelections
+    type:
+    - text: bool
+      url: https://learn.microsoft.com/dotnet/api/system.boolean
+    optional: true
+  - name: enumType
+    type:
+    - text: Type
+      url: https://learn.microsoft.com/dotnet/api/system.type
+    - '?'
+    optional: true
+languageId: csharp

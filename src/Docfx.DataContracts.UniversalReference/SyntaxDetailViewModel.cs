@@ -52,19 +52,30 @@ public class SyntaxDetailViewModel
     [ExtensibleMember]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
+    [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
     public Dictionary<string, object> Metadata { get; set; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonInclude]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
-    public CompositeDictionary ExtensionData =>
-        CompositeDictionary
+    public CompositeDictionary ExtensionData
+    {
+        get
+        {
+            return CompositeDictionary
             .CreateBuilder()
             .Add(Constants.ExtensionMemberPrefix.Content, Contents, JTokenConverter.Convert<string>)
             .Add(Constants.ExtensionMemberPrefix.Return, ReturnInDevLangs, JTokenConverter.Convert<ApiParameter>)
             .Add(string.Empty, Metadata)
             .Create();
+        }
+        private init
+        {
+            // init or getter is required for deserialize data with System.Text.Json.
+        }
+    }
 }

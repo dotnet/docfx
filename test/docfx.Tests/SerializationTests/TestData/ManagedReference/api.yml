@@ -1,0 +1,23 @@
+### YamlMime:ManagedReference
+items:
+- uid: dummy1
+  source:
+    remote:
+      path: dummy1.cs
+      branch: main
+      repo: https://github.com/dotnet/docfx
+- uid: dummy2
+  source:
+    remote:
+      path: dummy2.cs
+      branch: main
+      repo: https://github.com/dotnet/docfx
+references:
+  - uid: System.String
+    name: string
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.string
+shouldSkipMarkup: false
+memberLayout: separatePages
+additionalMetadata1: 1
+additionalMetadata2: 2

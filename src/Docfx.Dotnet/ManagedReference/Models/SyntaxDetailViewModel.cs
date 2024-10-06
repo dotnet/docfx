@@ -89,11 +89,21 @@ public class SyntaxDetailViewModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonInclude]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
-    public IDictionary<string, object> ExtensionData =>
-        CompositeDictionary
+    public IDictionary<string, object> ExtensionData
+    {
+        get
+        {
+            return CompositeDictionary
             .CreateBuilder()
             .Add(Constants.ExtensionMemberPrefix.Content, Contents, JTokenConverter.Convert<string>)
             .Create();
+        }
+        private init
+        {
+            // init or getter is required for deserialize data with System.Text.Json.
+        }
+    }
 }

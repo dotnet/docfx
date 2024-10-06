@@ -1,0 +1,1612 @@
+### YamlMime:XRefMap
+sorted: true
+references:
+- uid: BuildFromAssembly
+  name: BuildFromAssembly
+  href: api/BuildFromAssembly.html
+  commentId: N:BuildFromAssembly
+  fullName: BuildFromAssembly
+  nameWithType: BuildFromAssembly
+- uid: BuildFromAssembly.Class1
+  name: Class1
+  href: api/BuildFromAssembly.Class1.html
+  commentId: T:BuildFromAssembly.Class1
+  fullName: BuildFromAssembly.Class1
+  nameWithType: Class1
+- uid: BuildFromAssembly.Class1.#ctor
+  name: Class1()
+  href: api/BuildFromAssembly.Class1.html#BuildFromAssembly_Class1__ctor
+  commentId: M:BuildFromAssembly.Class1.#ctor
+  name.vb: New()
+  fullName: BuildFromAssembly.Class1.Class1()
+  fullName.vb: BuildFromAssembly.Class1.New()
+  nameWithType: Class1.Class1()
+  nameWithType.vb: Class1.New()
+- uid: BuildFromAssembly.Class1.#ctor*
+  name: Class1
+  href: api/BuildFromAssembly.Class1.html#BuildFromAssembly_Class1__ctor_
+  commentId: Overload:BuildFromAssembly.Class1.#ctor
+  name.vb: New
+  fullName: BuildFromAssembly.Class1.Class1
+  fullName.vb: BuildFromAssembly.Class1.New
+  nameWithType: Class1.Class1
+  nameWithType.vb: Class1.New
+- uid: BuildFromAssembly.Class1.HelloWorld
+  name: HelloWorld()
+  href: api/BuildFromAssembly.Class1.html#BuildFromAssembly_Class1_HelloWorld
+  commentId: M:BuildFromAssembly.Class1.HelloWorld
+  fullName: BuildFromAssembly.Class1.HelloWorld()
+  nameWithType: Class1.HelloWorld()
+- uid: BuildFromAssembly.Class1.HelloWorld*
+  name: HelloWorld
+  href: api/BuildFromAssembly.Class1.html#BuildFromAssembly_Class1_HelloWorld_
+  commentId: Overload:BuildFromAssembly.Class1.HelloWorld
+  fullName: BuildFromAssembly.Class1.HelloWorld
+  nameWithType: Class1.HelloWorld
+- uid: BuildFromAssembly.Issue5432
+  name: Issue5432
+  href: api/BuildFromAssembly.Issue5432.html
+  commentId: T:BuildFromAssembly.Issue5432
+  fullName: BuildFromAssembly.Issue5432
+  nameWithType: Issue5432
+- uid: BuildFromAssembly.Issue5432.Name
+  name: Name
+  href: api/BuildFromAssembly.Issue5432.html#BuildFromAssembly_Issue5432_Name
+  commentId: P:BuildFromAssembly.Issue5432.Name
+  fullName: BuildFromAssembly.Issue5432.Name
+  nameWithType: Issue5432.Name
+- uid: BuildFromAssembly.Issue5432.Name*
+  name: Name
+  href: api/BuildFromAssembly.Issue5432.html#BuildFromAssembly_Issue5432_Name_
+  commentId: Overload:BuildFromAssembly.Issue5432.Name
+  fullName: BuildFromAssembly.Issue5432.Name
+  nameWithType: Issue5432.Name
+- uid: BuildFromCSharpSourceCode
+  name: BuildFromCSharpSourceCode
+  href: api/BuildFromCSharpSourceCode.html
+  commentId: N:BuildFromCSharpSourceCode
+  fullName: BuildFromCSharpSourceCode
+  nameWithType: BuildFromCSharpSourceCode
+- uid: BuildFromCSharpSourceCode.CSharp
+  name: CSharp
+  href: api/BuildFromCSharpSourceCode.CSharp.html
+  commentId: T:BuildFromCSharpSourceCode.CSharp
+  fullName: BuildFromCSharpSourceCode.CSharp
+  nameWithType: CSharp
+- uid: BuildFromCSharpSourceCode.CSharp.Main(System.String[])
+  name: Main(string[])
+  href: api/BuildFromCSharpSourceCode.CSharp.html#BuildFromCSharpSourceCode_CSharp_Main_System_String___
+  commentId: M:BuildFromCSharpSourceCode.CSharp.Main(System.String[])
+  name.vb: Main(String())
+  fullName: BuildFromCSharpSourceCode.CSharp.Main(string[])
+  fullName.vb: BuildFromCSharpSourceCode.CSharp.Main(String())
+  nameWithType: CSharp.Main(string[])
+  nameWithType.vb: CSharp.Main(String())
+- uid: BuildFromCSharpSourceCode.CSharp.Main*
+  name: Main
+  href: api/BuildFromCSharpSourceCode.CSharp.html#BuildFromCSharpSourceCode_CSharp_Main_
+  commentId: Overload:BuildFromCSharpSourceCode.CSharp.Main
+  isSpec: "True"
+  fullName: BuildFromCSharpSourceCode.CSharp.Main
+  nameWithType: CSharp.Main
+- uid: BuildFromProject
+  name: BuildFromProject
+  href: api/BuildFromProject.html
+  commentId: N:BuildFromProject
+  fullName: BuildFromProject
+  nameWithType: BuildFromProject
+- uid: BuildFromProject.Class1
+  name: Class1
+  href: api/BuildFromProject.Class1.html
+  commentId: T:BuildFromProject.Class1
+  fullName: BuildFromProject.Class1
+  nameWithType: Class1
+- uid: BuildFromProject.Class1.IIssue8948
+  name: Class1.IIssue8948
+  href: api/BuildFromProject.Class1.IIssue8948.html
+  commentId: T:BuildFromProject.Class1.IIssue8948
+  fullName: BuildFromProject.Class1.IIssue8948
+  nameWithType: Class1.IIssue8948
+- uid: BuildFromProject.Class1.IIssue8948.DoNothing*
+  name: DoNothing
+  href: api/BuildFromProject.Class1.IIssue8948.html#BuildFromProject_Class1_IIssue8948_DoNothing_
+  commentId: Overload:BuildFromProject.Class1.IIssue8948.DoNothing
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.IIssue8948.DoNothing
+  nameWithType: Class1.IIssue8948.DoNothing
+- uid: BuildFromProject.Class1.IIssue8948.DoNothing``1
+  name: DoNothing<T>()
+  href: api/BuildFromProject.Class1.IIssue8948.html#BuildFromProject_Class1_IIssue8948_DoNothing__1
+  commentId: M:BuildFromProject.Class1.IIssue8948.DoNothing``1
+  name.vb: DoNothing(Of T)()
+  fullName: BuildFromProject.Class1.IIssue8948.DoNothing<T>()
+  fullName.vb: BuildFromProject.Class1.IIssue8948.DoNothing(Of T)()
+  nameWithType: Class1.IIssue8948.DoNothing<T>()
+  nameWithType.vb: Class1.IIssue8948.DoNothing(Of T)()
+- uid: BuildFromProject.Class1.Issue1651
+  name: Issue1651()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue1651
+  commentId: M:BuildFromProject.Class1.Issue1651
+  fullName: BuildFromProject.Class1.Issue1651()
+  nameWithType: Class1.Issue1651()
+- uid: BuildFromProject.Class1.Issue1651*
+  name: Issue1651
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue1651_
+  commentId: Overload:BuildFromProject.Class1.Issue1651
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue1651
+  nameWithType: Class1.Issue1651
+- uid: BuildFromProject.Class1.Issue1887
+  name: Issue1887()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue1887
+  commentId: M:BuildFromProject.Class1.Issue1887
+  fullName: BuildFromProject.Class1.Issue1887()
+  nameWithType: Class1.Issue1887()
+- uid: BuildFromProject.Class1.Issue1887*
+  name: Issue1887
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue1887_
+  commentId: Overload:BuildFromProject.Class1.Issue1887
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue1887
+  nameWithType: Class1.Issue1887
+- uid: BuildFromProject.Class1.Issue2623
+  name: Issue2623()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2623
+  commentId: M:BuildFromProject.Class1.Issue2623
+  fullName: BuildFromProject.Class1.Issue2623()
+  nameWithType: Class1.Issue2623()
+- uid: BuildFromProject.Class1.Issue2623*
+  name: Issue2623
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2623_
+  commentId: Overload:BuildFromProject.Class1.Issue2623
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue2623
+  nameWithType: Class1.Issue2623
+- uid: BuildFromProject.Class1.Issue2723
+  name: Issue2723()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2723
+  commentId: M:BuildFromProject.Class1.Issue2723
+  fullName: BuildFromProject.Class1.Issue2723()
+  nameWithType: Class1.Issue2723()
+- uid: BuildFromProject.Class1.Issue2723*
+  name: Issue2723
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2723_
+  commentId: Overload:BuildFromProject.Class1.Issue2723
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue2723
+  nameWithType: Class1.Issue2723
+- uid: BuildFromProject.Class1.Issue4017
+  name: Issue4017()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue4017
+  commentId: M:BuildFromProject.Class1.Issue4017
+  fullName: BuildFromProject.Class1.Issue4017()
+  nameWithType: Class1.Issue4017()
+- uid: BuildFromProject.Class1.Issue4017*
+  name: Issue4017
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue4017_
+  commentId: Overload:BuildFromProject.Class1.Issue4017
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue4017
+  nameWithType: Class1.Issue4017
+- uid: BuildFromProject.Class1.Issue4392
+  name: Issue4392()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue4392
+  commentId: M:BuildFromProject.Class1.Issue4392
+  fullName: BuildFromProject.Class1.Issue4392()
+  nameWithType: Class1.Issue4392()
+- uid: BuildFromProject.Class1.Issue4392*
+  name: Issue4392
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue4392_
+  commentId: Overload:BuildFromProject.Class1.Issue4392
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue4392
+  nameWithType: Class1.Issue4392
+- uid: BuildFromProject.Class1.Issue7484
+  name: Issue7484()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue7484
+  commentId: M:BuildFromProject.Class1.Issue7484
+  fullName: BuildFromProject.Class1.Issue7484()
+  nameWithType: Class1.Issue7484()
+- uid: BuildFromProject.Class1.Issue7484*
+  name: Issue7484
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue7484_
+  commentId: Overload:BuildFromProject.Class1.Issue7484
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue7484
+  nameWithType: Class1.Issue7484
+- uid: BuildFromProject.Class1.Issue8665
+  name: Class1.Issue8665
+  href: api/BuildFromProject.Class1.Issue8665.html
+  commentId: T:BuildFromProject.Class1.Issue8665
+  fullName: BuildFromProject.Class1.Issue8665
+  nameWithType: Class1.Issue8665
+- uid: BuildFromProject.Class1.Issue8665.#ctor
+  name: Issue8665()
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor
+  name.vb: New()
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665()
+  fullName.vb: BuildFromProject.Class1.Issue8665.New()
+  nameWithType: Class1.Issue8665.Issue8665()
+  nameWithType.vb: Class1.Issue8665.New()
+- uid: BuildFromProject.Class1.Issue8665.#ctor(System.Int32)
+  name: Issue8665(int)
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_System_Int32_
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor(System.Int32)
+  name.vb: New(Integer)
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665(int)
+  fullName.vb: BuildFromProject.Class1.Issue8665.New(Integer)
+  nameWithType: Class1.Issue8665.Issue8665(int)
+  nameWithType.vb: Class1.Issue8665.New(Integer)
+- uid: BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char)
+  name: Issue8665(int, char)
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_System_Int32_System_Char_
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char)
+  name.vb: New(Integer, Char)
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665(int, char)
+  fullName.vb: BuildFromProject.Class1.Issue8665.New(Integer, Char)
+  nameWithType: Class1.Issue8665.Issue8665(int, char)
+  nameWithType.vb: Class1.Issue8665.New(Integer, Char)
+- uid: BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char,System.String)
+  name: Issue8665(int, char, string)
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_System_Int32_System_Char_System_String_
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char,System.String)
+  name.vb: New(Integer, Char, String)
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665(int, char, string)
+  fullName.vb: BuildFromProject.Class1.Issue8665.New(Integer, Char, String)
+  nameWithType: Class1.Issue8665.Issue8665(int, char, string)
+  nameWithType.vb: Class1.Issue8665.New(Integer, Char, String)
+- uid: BuildFromProject.Class1.Issue8665.#ctor*
+  name: Issue8665
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665
+  fullName.vb: BuildFromProject.Class1.Issue8665.New
+  nameWithType: Class1.Issue8665.Issue8665
+  nameWithType.vb: Class1.Issue8665.New
+- uid: BuildFromProject.Class1.Issue8665.Bar
+  name: Bar
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Bar
+  commentId: P:BuildFromProject.Class1.Issue8665.Bar
+  fullName: BuildFromProject.Class1.Issue8665.Bar
+  nameWithType: Class1.Issue8665.Bar
+- uid: BuildFromProject.Class1.Issue8665.Bar*
+  name: Bar
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Bar_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.Bar
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8665.Bar
+  nameWithType: Class1.Issue8665.Bar
+- uid: BuildFromProject.Class1.Issue8665.Baz
+  name: Baz
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Baz
+  commentId: P:BuildFromProject.Class1.Issue8665.Baz
+  fullName: BuildFromProject.Class1.Issue8665.Baz
+  nameWithType: Class1.Issue8665.Baz
+- uid: BuildFromProject.Class1.Issue8665.Baz*
+  name: Baz
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Baz_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.Baz
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8665.Baz
+  nameWithType: Class1.Issue8665.Baz
+- uid: BuildFromProject.Class1.Issue8665.Foo
+  name: Foo
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Foo
+  commentId: P:BuildFromProject.Class1.Issue8665.Foo
+  fullName: BuildFromProject.Class1.Issue8665.Foo
+  nameWithType: Class1.Issue8665.Foo
+- uid: BuildFromProject.Class1.Issue8665.Foo*
+  name: Foo
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Foo_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.Foo
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8665.Foo
+  nameWithType: Class1.Issue8665.Foo
+- uid: BuildFromProject.Class1.Issue8696Attribute
+  name: Class1.Issue8696Attribute
+  href: api/BuildFromProject.Class1.Issue8696Attribute.html
+  commentId: T:BuildFromProject.Class1.Issue8696Attribute
+  fullName: BuildFromProject.Class1.Issue8696Attribute
+  nameWithType: Class1.Issue8696Attribute
+- uid: BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)
+  name: Issue8696Attribute(string?, int, int, string[]?, bool, Type?)
+  href: api/BuildFromProject.Class1.Issue8696Attribute.html#BuildFromProject_Class1_Issue8696Attribute__ctor_System_String_System_Int32_System_Int32_System_String___System_Boolean_System_Type_
+  commentId: M:BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)
+  name.vb: New(String, Integer, Integer, String(), Boolean, Type)
+  fullName: BuildFromProject.Class1.Issue8696Attribute.Issue8696Attribute(string?, int, int, string[]?, bool, System.Type?)
+  fullName.vb: BuildFromProject.Class1.Issue8696Attribute.New(String, Integer, Integer, String(), Boolean, System.Type)
+  nameWithType: Class1.Issue8696Attribute.Issue8696Attribute(string?, int, int, string[]?, bool, Type?)
+  nameWithType.vb: Class1.Issue8696Attribute.New(String, Integer, Integer, String(), Boolean, Type)
+- uid: BuildFromProject.Class1.Issue8696Attribute.#ctor*
+  name: Issue8696Attribute
+  href: api/BuildFromProject.Class1.Issue8696Attribute.html#BuildFromProject_Class1_Issue8696Attribute__ctor_
+  commentId: Overload:BuildFromProject.Class1.Issue8696Attribute.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Class1.Issue8696Attribute.Issue8696Attribute
+  fullName.vb: BuildFromProject.Class1.Issue8696Attribute.New
+  nameWithType: Class1.Issue8696Attribute.Issue8696Attribute
+  nameWithType.vb: Class1.Issue8696Attribute.New
+- uid: BuildFromProject.Class1.Issue8764*
+  name: Issue8764
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue8764_
+  commentId: Overload:BuildFromProject.Class1.Issue8764
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8764
+  nameWithType: Class1.Issue8764
+- uid: BuildFromProject.Class1.Issue8764``1
+  name: Issue8764<T>()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue8764__1
+  commentId: M:BuildFromProject.Class1.Issue8764``1
+  name.vb: Issue8764(Of T)()
+  fullName: BuildFromProject.Class1.Issue8764<T>()
+  fullName.vb: BuildFromProject.Class1.Issue8764(Of T)()
+  nameWithType: Class1.Issue8764<T>()
+  nameWithType.vb: Class1.Issue8764(Of T)()
+- uid: BuildFromProject.Class1.Issue8948
+  name: Class1.Issue8948
+  href: api/BuildFromProject.Class1.Issue8948.html
+  commentId: T:BuildFromProject.Class1.Issue8948
+  fullName: BuildFromProject.Class1.Issue8948
+  nameWithType: Class1.Issue8948
+- uid: BuildFromProject.Class1.Issue8948.DoNothing*
+  name: DoNothing
+  href: api/BuildFromProject.Class1.Issue8948.html#BuildFromProject_Class1_Issue8948_DoNothing_
+  commentId: Overload:BuildFromProject.Class1.Issue8948.DoNothing
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8948.DoNothing
+  nameWithType: Class1.Issue8948.DoNothing
+- uid: BuildFromProject.Class1.Issue8948.DoNothing``1
+  name: DoNothing<T>()
+  href: api/BuildFromProject.Class1.Issue8948.html#BuildFromProject_Class1_Issue8948_DoNothing__1
+  commentId: M:BuildFromProject.Class1.Issue8948.DoNothing``1
+  name.vb: DoNothing(Of T)()
+  fullName: BuildFromProject.Class1.Issue8948.DoNothing<T>()
+  fullName.vb: BuildFromProject.Class1.Issue8948.DoNothing(Of T)()
+  nameWithType: Class1.Issue8948.DoNothing<T>()
+  nameWithType.vb: Class1.Issue8948.DoNothing(Of T)()
+- uid: BuildFromProject.Class1.Issue896
+  name: Issue896()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue896
+  commentId: M:BuildFromProject.Class1.Issue896
+  fullName: BuildFromProject.Class1.Issue896()
+  nameWithType: Class1.Issue896()
+- uid: BuildFromProject.Class1.Issue896*
+  name: Issue896
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue896_
+  commentId: Overload:BuildFromProject.Class1.Issue896
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue896
+  nameWithType: Class1.Issue896
+- uid: BuildFromProject.Class1.Issue9216
+  name: Issue9216()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue9216
+  commentId: M:BuildFromProject.Class1.Issue9216
+  fullName: BuildFromProject.Class1.Issue9216()
+  nameWithType: Class1.Issue9216()
+- uid: BuildFromProject.Class1.Issue9216*
+  name: Issue9216
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue9216_
+  commentId: Overload:BuildFromProject.Class1.Issue9216
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue9216
+  nameWithType: Class1.Issue9216
+- uid: BuildFromProject.Class1.Issue9260
+  name: Class1.Issue9260
+  href: api/BuildFromProject.Class1.Issue9260.html
+  commentId: T:BuildFromProject.Class1.Issue9260
+  fullName: BuildFromProject.Class1.Issue9260
+  nameWithType: Class1.Issue9260
+- uid: BuildFromProject.Class1.Issue9260.OldAndUnusedValue
+  name: OldAndUnusedValue
+  href: api/BuildFromProject.Class1.Issue9260.html#BuildFromProject_Class1_Issue9260_OldAndUnusedValue
+  commentId: F:BuildFromProject.Class1.Issue9260.OldAndUnusedValue
+  fullName: BuildFromProject.Class1.Issue9260.OldAndUnusedValue
+  nameWithType: Class1.Issue9260.OldAndUnusedValue
+- uid: BuildFromProject.Class1.Issue9260.OldAndUnusedValue2
+  name: OldAndUnusedValue2
+  href: api/BuildFromProject.Class1.Issue9260.html#BuildFromProject_Class1_Issue9260_OldAndUnusedValue2
+  commentId: F:BuildFromProject.Class1.Issue9260.OldAndUnusedValue2
+  fullName: BuildFromProject.Class1.Issue9260.OldAndUnusedValue2
+  nameWithType: Class1.Issue9260.OldAndUnusedValue2
+- uid: BuildFromProject.Class1.Issue9260.Value
+  name: Value
+  href: api/BuildFromProject.Class1.Issue9260.html#BuildFromProject_Class1_Issue9260_Value
+  commentId: F:BuildFromProject.Class1.Issue9260.Value
+  fullName: BuildFromProject.Class1.Issue9260.Value
+  nameWithType: Class1.Issue9260.Value
+- uid: BuildFromProject.Class1.Test`1
+  name: Class1.Test<T>
+  href: api/BuildFromProject.Class1.Test-1.html
+  commentId: T:BuildFromProject.Class1.Test`1
+  name.vb: Class1.Test(Of T)
+  fullName: BuildFromProject.Class1.Test<T>
+  fullName.vb: BuildFromProject.Class1.Test(Of T)
+  nameWithType: Class1.Test<T>
+  nameWithType.vb: Class1.Test(Of T)
+- uid: BuildFromProject.Class1.XmlCommentIncludeTag
+  name: XmlCommentIncludeTag()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_XmlCommentIncludeTag
+  commentId: M:BuildFromProject.Class1.XmlCommentIncludeTag
+  fullName: BuildFromProject.Class1.XmlCommentIncludeTag()
+  nameWithType: Class1.XmlCommentIncludeTag()
+- uid: BuildFromProject.Class1.XmlCommentIncludeTag*
+  name: XmlCommentIncludeTag
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_XmlCommentIncludeTag_
+  commentId: Overload:BuildFromProject.Class1.XmlCommentIncludeTag
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.XmlCommentIncludeTag
+  nameWithType: Class1.XmlCommentIncludeTag
+- uid: BuildFromProject.Dog
+  name: Dog
+  href: api/BuildFromProject.Dog.html
+  commentId: T:BuildFromProject.Dog
+  fullName: BuildFromProject.Dog
+  nameWithType: Dog
+- uid: BuildFromProject.Dog.#ctor(System.String,System.Int32)
+  name: Dog(string, int)
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog__ctor_System_String_System_Int32_
+  commentId: M:BuildFromProject.Dog.#ctor(System.String,System.Int32)
+  name.vb: New(String, Integer)
+  fullName: BuildFromProject.Dog.Dog(string, int)
+  fullName.vb: BuildFromProject.Dog.New(String, Integer)
+  nameWithType: Dog.Dog(string, int)
+  nameWithType.vb: Dog.New(String, Integer)
+- uid: BuildFromProject.Dog.#ctor*
+  name: Dog
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog__ctor_
+  commentId: Overload:BuildFromProject.Dog.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Dog.Dog
+  fullName.vb: BuildFromProject.Dog.New
+  nameWithType: Dog.Dog
+  nameWithType.vb: Dog.New
+- uid: BuildFromProject.Dog.Age
+  name: Age
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog_Age
+  commentId: P:BuildFromProject.Dog.Age
+  fullName: BuildFromProject.Dog.Age
+  nameWithType: Dog.Age
+- uid: BuildFromProject.Dog.Age*
+  name: Age
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog_Age_
+  commentId: Overload:BuildFromProject.Dog.Age
+  isSpec: "True"
+  fullName: BuildFromProject.Dog.Age
+  nameWithType: Dog.Age
+- uid: BuildFromProject.Dog.Name
+  name: Name
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog_Name
+  commentId: P:BuildFromProject.Dog.Name
+  fullName: BuildFromProject.Dog.Name
+  nameWithType: Dog.Name
+- uid: BuildFromProject.Dog.Name*
+  name: Name
+  href: api/BuildFromProject.Dog.html#BuildFromProject_Dog_Name_
+  commentId: Overload:BuildFromProject.Dog.Name
+  isSpec: "True"
+  fullName: BuildFromProject.Dog.Name
+  nameWithType: Dog.Name
+- uid: BuildFromProject.IInheritdoc
+  name: IInheritdoc
+  href: api/BuildFromProject.IInheritdoc.html
+  commentId: T:BuildFromProject.IInheritdoc
+  fullName: BuildFromProject.IInheritdoc
+  nameWithType: IInheritdoc
+- uid: BuildFromProject.IInheritdoc.Issue7629
+  name: Issue7629()
+  href: api/BuildFromProject.IInheritdoc.html#BuildFromProject_IInheritdoc_Issue7629
+  commentId: M:BuildFromProject.IInheritdoc.Issue7629
+  fullName: BuildFromProject.IInheritdoc.Issue7629()
+  nameWithType: IInheritdoc.Issue7629()
+- uid: BuildFromProject.IInheritdoc.Issue7629*
+  name: Issue7629
+  href: api/BuildFromProject.IInheritdoc.html#BuildFromProject_IInheritdoc_Issue7629_
+  commentId: Overload:BuildFromProject.IInheritdoc.Issue7629
+  isSpec: "True"
+  fullName: BuildFromProject.IInheritdoc.Issue7629
+  nameWithType: IInheritdoc.Issue7629
+- uid: BuildFromProject.Inheritdoc
+  name: Inheritdoc
+  href: api/BuildFromProject.Inheritdoc.html
+  commentId: T:BuildFromProject.Inheritdoc
+  fullName: BuildFromProject.Inheritdoc
+  nameWithType: Inheritdoc
+- uid: BuildFromProject.Inheritdoc.Dispose
+  name: Dispose()
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Dispose
+  commentId: M:BuildFromProject.Inheritdoc.Dispose
+  fullName: BuildFromProject.Inheritdoc.Dispose()
+  nameWithType: Inheritdoc.Dispose()
+- uid: BuildFromProject.Inheritdoc.Dispose*
+  name: Dispose
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Dispose_
+  commentId: Overload:BuildFromProject.Inheritdoc.Dispose
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Dispose
+  nameWithType: Inheritdoc.Dispose
+- uid: BuildFromProject.Inheritdoc.Issue6366
+  name: Inheritdoc.Issue6366
+  href: api/BuildFromProject.Inheritdoc.Issue6366.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue6366
+  fullName: BuildFromProject.Inheritdoc.Issue6366
+  nameWithType: Inheritdoc.Issue6366
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class1`1
+  name: Inheritdoc.Issue6366.Class1<T>
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue6366.Class1`1
+  name.vb: Inheritdoc.Issue6366.Class1(Of T)
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class1<T>
+  fullName.vb: BuildFromProject.Inheritdoc.Issue6366.Class1(Of T)
+  nameWithType: Inheritdoc.Issue6366.Class1<T>
+  nameWithType.vb: Inheritdoc.Issue6366.Class1(Of T)
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class1`1.TestMethod1(`0,System.Int32)
+  name: TestMethod1(T, int)
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html#BuildFromProject_Inheritdoc_Issue6366_Class1_1_TestMethod1__0_System_Int32_
+  commentId: M:BuildFromProject.Inheritdoc.Issue6366.Class1`1.TestMethod1(`0,System.Int32)
+  name.vb: TestMethod1(T, Integer)
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class1<T>.TestMethod1(T, int)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue6366.Class1(Of T).TestMethod1(T, Integer)
+  nameWithType: Inheritdoc.Issue6366.Class1<T>.TestMethod1(T, int)
+  nameWithType.vb: Inheritdoc.Issue6366.Class1(Of T).TestMethod1(T, Integer)
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class1`1.TestMethod1*
+  name: TestMethod1
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html#BuildFromProject_Inheritdoc_Issue6366_Class1_1_TestMethod1_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue6366.Class1`1.TestMethod1
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class1<T>.TestMethod1
+  fullName.vb: BuildFromProject.Inheritdoc.Issue6366.Class1(Of T).TestMethod1
+  nameWithType: Inheritdoc.Issue6366.Class1<T>.TestMethod1
+  nameWithType.vb: Inheritdoc.Issue6366.Class1(Of T).TestMethod1
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class2
+  name: Inheritdoc.Issue6366.Class2
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class2.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue6366.Class2
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class2
+  nameWithType: Inheritdoc.Issue6366.Class2
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1(System.Boolean,System.Int32)
+  name: TestMethod1(bool, int)
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class2.html#BuildFromProject_Inheritdoc_Issue6366_Class2_TestMethod1_System_Boolean_System_Int32_
+  commentId: M:BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1(System.Boolean,System.Int32)
+  name.vb: TestMethod1(Boolean, Integer)
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1(bool, int)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1(Boolean, Integer)
+  nameWithType: Inheritdoc.Issue6366.Class2.TestMethod1(bool, int)
+  nameWithType.vb: Inheritdoc.Issue6366.Class2.TestMethod1(Boolean, Integer)
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1*
+  name: TestMethod1
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class2.html#BuildFromProject_Inheritdoc_Issue6366_Class2_TestMethod1_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1
+  nameWithType: Inheritdoc.Issue6366.Class2.TestMethod1
+- uid: BuildFromProject.Inheritdoc.Issue7035
+  name: Inheritdoc.Issue7035
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue7035
+  fullName: BuildFromProject.Inheritdoc.Issue7035
+  nameWithType: Inheritdoc.Issue7035
+- uid: BuildFromProject.Inheritdoc.Issue7035.A
+  name: A()
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html#BuildFromProject_Inheritdoc_Issue7035_A
+  commentId: M:BuildFromProject.Inheritdoc.Issue7035.A
+  fullName: BuildFromProject.Inheritdoc.Issue7035.A()
+  nameWithType: Inheritdoc.Issue7035.A()
+- uid: BuildFromProject.Inheritdoc.Issue7035.A*
+  name: A
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html#BuildFromProject_Inheritdoc_Issue7035_A_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7035.A
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7035.A
+  nameWithType: Inheritdoc.Issue7035.A
+- uid: BuildFromProject.Inheritdoc.Issue7035.B
+  name: B()
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html#BuildFromProject_Inheritdoc_Issue7035_B
+  commentId: M:BuildFromProject.Inheritdoc.Issue7035.B
+  fullName: BuildFromProject.Inheritdoc.Issue7035.B()
+  nameWithType: Inheritdoc.Issue7035.B()
+- uid: BuildFromProject.Inheritdoc.Issue7035.B*
+  name: B
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html#BuildFromProject_Inheritdoc_Issue7035_B_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7035.B
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7035.B
+  nameWithType: Inheritdoc.Issue7035.B
+- uid: BuildFromProject.Inheritdoc.Issue7484
+  name: Inheritdoc.Issue7484
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue7484
+  fullName: BuildFromProject.Inheritdoc.Issue7484
+  nameWithType: Inheritdoc.Issue7484
+- uid: BuildFromProject.Inheritdoc.Issue7484.#ctor
+  name: Issue7484()
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484__ctor
+  commentId: M:BuildFromProject.Inheritdoc.Issue7484.#ctor
+  name.vb: New()
+  fullName: BuildFromProject.Inheritdoc.Issue7484.Issue7484()
+  fullName.vb: BuildFromProject.Inheritdoc.Issue7484.New()
+  nameWithType: Inheritdoc.Issue7484.Issue7484()
+  nameWithType.vb: Inheritdoc.Issue7484.New()
+- uid: BuildFromProject.Inheritdoc.Issue7484.#ctor*
+  name: Issue7484
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484__ctor_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7484.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Inheritdoc.Issue7484.Issue7484
+  fullName.vb: BuildFromProject.Inheritdoc.Issue7484.New
+  nameWithType: Inheritdoc.Issue7484.Issue7484
+  nameWithType.vb: Inheritdoc.Issue7484.New
+- uid: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod(System.Boolean)
+  name: BoolReturningMethod(bool)
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484_BoolReturningMethod_System_Boolean_
+  commentId: M:BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod(System.Boolean)
+  name.vb: BoolReturningMethod(Boolean)
+  fullName: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod(bool)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod(Boolean)
+  nameWithType: Inheritdoc.Issue7484.BoolReturningMethod(bool)
+  nameWithType.vb: Inheritdoc.Issue7484.BoolReturningMethod(Boolean)
+- uid: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod*
+  name: BoolReturningMethod
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484_BoolReturningMethod_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod
+  nameWithType: Inheritdoc.Issue7484.BoolReturningMethod
+- uid: BuildFromProject.Inheritdoc.Issue7484.DoDad
+  name: DoDad
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484_DoDad
+  commentId: P:BuildFromProject.Inheritdoc.Issue7484.DoDad
+  fullName: BuildFromProject.Inheritdoc.Issue7484.DoDad
+  nameWithType: Inheritdoc.Issue7484.DoDad
+- uid: BuildFromProject.Inheritdoc.Issue7484.DoDad*
+  name: DoDad
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484_DoDad_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7484.DoDad
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7484.DoDad
+  nameWithType: Inheritdoc.Issue7484.DoDad
+- uid: BuildFromProject.Inheritdoc.Issue7628
+  name: Issue7628()
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Issue7628
+  commentId: M:BuildFromProject.Inheritdoc.Issue7628
+  fullName: BuildFromProject.Inheritdoc.Issue7628()
+  nameWithType: Inheritdoc.Issue7628()
+- uid: BuildFromProject.Inheritdoc.Issue7628*
+  name: Issue7628
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Issue7628_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7628
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7628
+  nameWithType: Inheritdoc.Issue7628
+- uid: BuildFromProject.Inheritdoc.Issue7629
+  name: Issue7629()
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Issue7629
+  commentId: M:BuildFromProject.Inheritdoc.Issue7629
+  fullName: BuildFromProject.Inheritdoc.Issue7629()
+  nameWithType: Inheritdoc.Issue7629()
+- uid: BuildFromProject.Inheritdoc.Issue7629*
+  name: Issue7629
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Issue7629_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7629
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7629
+  nameWithType: Inheritdoc.Issue7629
+- uid: BuildFromProject.Inheritdoc.Issue8101
+  name: Inheritdoc.Issue8101
+  href: api/BuildFromProject.Inheritdoc.Issue8101.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue8101
+  fullName: BuildFromProject.Inheritdoc.Issue8101
+  nameWithType: Inheritdoc.Issue8101
+- uid: BuildFromProject.Inheritdoc.Issue8101.Tween(System.Int32,System.Int32,System.Single,System.Action{System.Int32})
+  name: Tween(int, int, float, Action<int>)
+  href: api/BuildFromProject.Inheritdoc.Issue8101.html#BuildFromProject_Inheritdoc_Issue8101_Tween_System_Int32_System_Int32_System_Single_System_Action_System_Int32__
+  commentId: M:BuildFromProject.Inheritdoc.Issue8101.Tween(System.Int32,System.Int32,System.Single,System.Action{System.Int32})
+  name.vb: Tween(Integer, Integer, Single, Action(Of Integer))
+  fullName: BuildFromProject.Inheritdoc.Issue8101.Tween(int, int, float, System.Action<int>)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue8101.Tween(Integer, Integer, Single, System.Action(Of Integer))
+  nameWithType: Inheritdoc.Issue8101.Tween(int, int, float, Action<int>)
+  nameWithType.vb: Inheritdoc.Issue8101.Tween(Integer, Integer, Single, Action(Of Integer))
+- uid: BuildFromProject.Inheritdoc.Issue8101.Tween(System.Single,System.Single,System.Single,System.Action{System.Single})
+  name: Tween(float, float, float, Action<float>)
+  href: api/BuildFromProject.Inheritdoc.Issue8101.html#BuildFromProject_Inheritdoc_Issue8101_Tween_System_Single_System_Single_System_Single_System_Action_System_Single__
+  commentId: M:BuildFromProject.Inheritdoc.Issue8101.Tween(System.Single,System.Single,System.Single,System.Action{System.Single})
+  name.vb: Tween(Single, Single, Single, Action(Of Single))
+  fullName: BuildFromProject.Inheritdoc.Issue8101.Tween(float, float, float, System.Action<float>)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue8101.Tween(Single, Single, Single, System.Action(Of Single))
+  nameWithType: Inheritdoc.Issue8101.Tween(float, float, float, Action<float>)
+  nameWithType.vb: Inheritdoc.Issue8101.Tween(Single, Single, Single, Action(Of Single))
+- uid: BuildFromProject.Inheritdoc.Issue8101.Tween*
+  name: Tween
+  href: api/BuildFromProject.Inheritdoc.Issue8101.html#BuildFromProject_Inheritdoc_Issue8101_Tween_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue8101.Tween
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue8101.Tween
+  nameWithType: Inheritdoc.Issue8101.Tween
+- uid: BuildFromProject.Inheritdoc.Issue8129
+  name: Inheritdoc.Issue8129
+  href: api/BuildFromProject.Inheritdoc.Issue8129.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue8129
+  fullName: BuildFromProject.Inheritdoc.Issue8129
+  nameWithType: Inheritdoc.Issue8129
+- uid: BuildFromProject.Inheritdoc.Issue8129.#ctor(System.String)
+  name: Issue8129(string)
+  href: api/BuildFromProject.Inheritdoc.Issue8129.html#BuildFromProject_Inheritdoc_Issue8129__ctor_System_String_
+  commentId: M:BuildFromProject.Inheritdoc.Issue8129.#ctor(System.String)
+  name.vb: New(String)
+  fullName: BuildFromProject.Inheritdoc.Issue8129.Issue8129(string)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue8129.New(String)
+  nameWithType: Inheritdoc.Issue8129.Issue8129(string)
+  nameWithType.vb: Inheritdoc.Issue8129.New(String)
+- uid: BuildFromProject.Inheritdoc.Issue8129.#ctor*
+  name: Issue8129
+  href: api/BuildFromProject.Inheritdoc.Issue8129.html#BuildFromProject_Inheritdoc_Issue8129__ctor_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue8129.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Inheritdoc.Issue8129.Issue8129
+  fullName.vb: BuildFromProject.Inheritdoc.Issue8129.New
+  nameWithType: Inheritdoc.Issue8129.Issue8129
+  nameWithType.vb: Inheritdoc.Issue8129.New
+- uid: BuildFromProject.Issue8540
+  name: BuildFromProject.Issue8540
+  href: api/BuildFromProject.Issue8540.html
+- uid: BuildFromProject.Issue8540.A
+  name: BuildFromProject.Issue8540.A
+  href: api/BuildFromProject.Issue8540.A.html
+  commentId: N:BuildFromProject.Issue8540.A
+  fullName: BuildFromProject.Issue8540.A
+  nameWithType: BuildFromProject.Issue8540.A
+- uid: BuildFromProject.Issue8540.A.A
+  name: A
+  href: api/BuildFromProject.Issue8540.A.A.html
+  commentId: T:BuildFromProject.Issue8540.A.A
+  fullName: BuildFromProject.Issue8540.A.A
+  nameWithType: A
+- uid: BuildFromProject.Issue8540.B
+  name: BuildFromProject.Issue8540.B
+  href: api/BuildFromProject.Issue8540.B.html
+  commentId: N:BuildFromProject.Issue8540.B
+  fullName: BuildFromProject.Issue8540.B
+  nameWithType: BuildFromProject.Issue8540.B
+- uid: BuildFromProject.Issue8540.B.B
+  name: B
+  href: api/BuildFromProject.Issue8540.B.B.html
+  commentId: T:BuildFromProject.Issue8540.B.B
+  fullName: BuildFromProject.Issue8540.B.B
+  nameWithType: B
+- uid: BuildFromProject.Issue8725
+  name: Issue8725
+  href: api/BuildFromProject.Issue8725.html
+  commentId: T:BuildFromProject.Issue8725
+  fullName: BuildFromProject.Issue8725
+  nameWithType: Issue8725
+- uid: BuildFromProject.Issue8725.MoreOperations
+  name: MoreOperations()
+  href: api/BuildFromProject.Issue8725.html#BuildFromProject_Issue8725_MoreOperations
+  commentId: M:BuildFromProject.Issue8725.MoreOperations
+  fullName: BuildFromProject.Issue8725.MoreOperations()
+  nameWithType: Issue8725.MoreOperations()
+- uid: BuildFromProject.Issue8725.MoreOperations*
+  name: MoreOperations
+  href: api/BuildFromProject.Issue8725.html#BuildFromProject_Issue8725_MoreOperations_
+  commentId: Overload:BuildFromProject.Issue8725.MoreOperations
+  isSpec: "True"
+  fullName: BuildFromProject.Issue8725.MoreOperations
+  nameWithType: Issue8725.MoreOperations
+- uid: BuildFromProject.Issue8725.MyOperation
+  name: MyOperation()
+  href: api/BuildFromProject.Issue8725.html#BuildFromProject_Issue8725_MyOperation
+  commentId: M:BuildFromProject.Issue8725.MyOperation
+  fullName: BuildFromProject.Issue8725.MyOperation()
+  nameWithType: Issue8725.MyOperation()
+- uid: BuildFromProject.Issue8725.MyOperation*
+  name: MyOperation
+  href: api/BuildFromProject.Issue8725.html#BuildFromProject_Issue8725_MyOperation_
+  commentId: Overload:BuildFromProject.Issue8725.MyOperation
+  isSpec: "True"
+  fullName: BuildFromProject.Issue8725.MyOperation
+  nameWithType: Issue8725.MyOperation
+- uid: BuildFromVBSourceCode
+  name: BuildFromVBSourceCode
+  href: api/BuildFromVBSourceCode.html
+  commentId: N:BuildFromVBSourceCode
+  fullName: BuildFromVBSourceCode
+  nameWithType: BuildFromVBSourceCode
+- uid: BuildFromVBSourceCode.BaseClass1
+  name: BaseClass1
+  href: api/BuildFromVBSourceCode.BaseClass1.html
+  commentId: T:BuildFromVBSourceCode.BaseClass1
+  fullName: BuildFromVBSourceCode.BaseClass1
+  nameWithType: BaseClass1
+- uid: BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  name: WithDeclarationKeyword(Class1)
+  href: api/BuildFromVBSourceCode.BaseClass1.html#BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_
+  commentId: M:BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  fullName: BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  nameWithType: BaseClass1.WithDeclarationKeyword(Class1)
+- uid: BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword*
+  name: WithDeclarationKeyword
+  href: api/BuildFromVBSourceCode.BaseClass1.html#BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_
+  commentId: Overload:BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword
+  isSpec: "True"
+  fullName: BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword
+  nameWithType: BaseClass1.WithDeclarationKeyword
+- uid: BuildFromVBSourceCode.Class1
+  name: Class1
+  href: api/BuildFromVBSourceCode.Class1.html
+  commentId: T:BuildFromVBSourceCode.Class1
+  fullName: BuildFromVBSourceCode.Class1
+  nameWithType: Class1
+- uid: BuildFromVBSourceCode.Class1.Keyword
+  name: Keyword
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_Keyword
+  commentId: P:BuildFromVBSourceCode.Class1.Keyword
+  fullName: BuildFromVBSourceCode.Class1.Keyword
+  nameWithType: Class1.Keyword
+- uid: BuildFromVBSourceCode.Class1.Keyword*
+  name: Keyword
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_Keyword_
+  commentId: Overload:BuildFromVBSourceCode.Class1.Keyword
+  isSpec: "True"
+  fullName: BuildFromVBSourceCode.Class1.Keyword
+  nameWithType: Class1.Keyword
+- uid: BuildFromVBSourceCode.Class1.Value(System.String)
+  name: Value(string)
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_Value_System_String_
+  commentId: M:BuildFromVBSourceCode.Class1.Value(System.String)
+  name.vb: Value(String)
+  fullName: BuildFromVBSourceCode.Class1.Value(string)
+  fullName.vb: BuildFromVBSourceCode.Class1.Value(String)
+  nameWithType: Class1.Value(string)
+  nameWithType.vb: Class1.Value(String)
+- uid: BuildFromVBSourceCode.Class1.Value*
+  name: Value
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_Value_
+  commentId: Overload:BuildFromVBSourceCode.Class1.Value
+  isSpec: "True"
+  fullName: BuildFromVBSourceCode.Class1.Value
+  nameWithType: Class1.Value
+- uid: BuildFromVBSourceCode.Class1.ValueClass
+  name: ValueClass
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_ValueClass
+  commentId: F:BuildFromVBSourceCode.Class1.ValueClass
+  fullName: BuildFromVBSourceCode.Class1.ValueClass
+  nameWithType: Class1.ValueClass
+- uid: BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  name: WithDeclarationKeyword(Class1)
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_
+  commentId: M:BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  fullName: BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  nameWithType: Class1.WithDeclarationKeyword(Class1)
+- uid: BuildFromVBSourceCode.Class1.WithDeclarationKeyword*
+  name: WithDeclarationKeyword
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_WithDeclarationKeyword_
+  commentId: Overload:BuildFromVBSourceCode.Class1.WithDeclarationKeyword
+  isSpec: "True"
+  fullName: BuildFromVBSourceCode.Class1.WithDeclarationKeyword
+  nameWithType: Class1.WithDeclarationKeyword
+- uid: CatLibrary
+  name: CatLibrary
+  href: api/CatLibrary.html
+  commentId: N:CatLibrary
+  fullName: CatLibrary
+  nameWithType: CatLibrary
+- uid: CatLibrary.CatException`1
+  name: CatException<T>
+  href: api/CatLibrary.CatException-1.html
+  commentId: T:CatLibrary.CatException`1
+  name.vb: CatException(Of T)
+  fullName: CatLibrary.CatException<T>
+  fullName.vb: CatLibrary.CatException(Of T)
+  nameWithType: CatException<T>
+  nameWithType.vb: CatException(Of T)
+- uid: CatLibrary.Cat`2
+  name: Cat<T, K>
+  href: api/CatLibrary.Cat-2.html
+  commentId: T:CatLibrary.Cat`2
+  name.vb: Cat(Of T, K)
+  fullName: CatLibrary.Cat<T, K>
+  fullName.vb: CatLibrary.Cat(Of T, K)
+  nameWithType: Cat<T, K>
+  nameWithType.vb: Cat(Of T, K)
+- uid: CatLibrary.Cat`2.#ctor
+  name: Cat()
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor
+  commentId: M:CatLibrary.Cat`2.#ctor
+  name.vb: New()
+  fullName: CatLibrary.Cat<T, K>.Cat()
+  fullName.vb: CatLibrary.Cat(Of T, K).New()
+  nameWithType: Cat<T, K>.Cat()
+  nameWithType.vb: Cat(Of T, K).New()
+- uid: CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
+  name: Cat(string, out int, string, bool)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_
+  commentId: M:CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
+  name.vb: New(String, Integer, String, Boolean)
+  fullName: CatLibrary.Cat<T, K>.Cat(string, out int, string, bool)
+  fullName.vb: CatLibrary.Cat(Of T, K).New(String, Integer, String, Boolean)
+  nameWithType: Cat<T, K>.Cat(string, out int, string, bool)
+  nameWithType.vb: Cat(Of T, K).New(String, Integer, String, Boolean)
+- uid: CatLibrary.Cat`2.#ctor(`0)
+  name: Cat(T)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor__0_
+  commentId: M:CatLibrary.Cat`2.#ctor(`0)
+  name.vb: New(T)
+  fullName: CatLibrary.Cat<T, K>.Cat(T)
+  fullName.vb: CatLibrary.Cat(Of T, K).New(T)
+  nameWithType: Cat<T, K>.Cat(T)
+  nameWithType.vb: Cat(Of T, K).New(T)
+- uid: CatLibrary.Cat`2.#ctor*
+  name: Cat
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_
+  commentId: Overload:CatLibrary.Cat`2.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CatLibrary.Cat<T, K>.Cat
+  fullName.vb: CatLibrary.Cat(Of T, K).New
+  nameWithType: Cat<T, K>.Cat
+  nameWithType.vb: Cat(Of T, K).New
+- uid: CatLibrary.Cat`2.Age
+  name: Age
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Age
+  commentId: P:CatLibrary.Cat`2.Age
+  fullName: CatLibrary.Cat<T, K>.Age
+  fullName.vb: CatLibrary.Cat(Of T, K).Age
+  nameWithType: Cat<T, K>.Age
+  nameWithType.vb: Cat(Of T, K).Age
+- uid: CatLibrary.Cat`2.Age*
+  name: Age
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Age_
+  commentId: Overload:CatLibrary.Cat`2.Age
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Age
+  fullName.vb: CatLibrary.Cat(Of T, K).Age
+  nameWithType: Cat<T, K>.Age
+  nameWithType.vb: Cat(Of T, K).Age
+- uid: CatLibrary.Cat`2.CalculateFood(System.DateTime)
+  name: Override CalculateFood Name
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CalculateFood_System_DateTime_
+  commentId: M:CatLibrary.Cat`2.CalculateFood(System.DateTime)
+  name.vb: CalculateFood(Date)
+  fullName: CatLibrary.Cat<T, K>.CalculateFood(System.DateTime)
+  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood(Date)
+  nameWithType: Cat<T, K>.CalculateFood(DateTime)
+  nameWithType.vb: Cat(Of T, K).CalculateFood(Date)
+- uid: CatLibrary.Cat`2.CalculateFood*
+  name: CalculateFood
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CalculateFood_
+  commentId: Overload:CatLibrary.Cat`2.CalculateFood
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.CalculateFood
+  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood
+  nameWithType: Cat<T, K>.CalculateFood
+  nameWithType.vb: Cat(Of T, K).CalculateFood
+- uid: CatLibrary.Cat`2.Equals(System.Object)
+  name: Equals(object)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Equals_System_Object_
+  commentId: M:CatLibrary.Cat`2.Equals(System.Object)
+  name.vb: Equals(Object)
+  fullName: CatLibrary.Cat<T, K>.Equals(object)
+  fullName.vb: CatLibrary.Cat(Of T, K).Equals(Object)
+  nameWithType: Cat<T, K>.Equals(object)
+  nameWithType.vb: Cat(Of T, K).Equals(Object)
+- uid: CatLibrary.Cat`2.Equals*
+  name: Equals
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Equals_
+  commentId: Overload:CatLibrary.Cat`2.Equals
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Equals
+  fullName.vb: CatLibrary.Cat(Of T, K).Equals
+  nameWithType: Cat<T, K>.Equals
+  nameWithType.vb: Cat(Of T, K).Equals
+- uid: CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
+  name: GetTailLength(int*, params object[])
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___
+  commentId: M:CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
+  name.vb: GetTailLength(Integer*, ParamArray Object())
+  fullName: CatLibrary.Cat<T, K>.GetTailLength(int*, params object[])
+  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength(Integer*, ParamArray Object())
+  nameWithType: Cat<T, K>.GetTailLength(int*, params object[])
+  nameWithType.vb: Cat(Of T, K).GetTailLength(Integer*, ParamArray Object())
+- uid: CatLibrary.Cat`2.GetTailLength*
+  name: GetTailLength
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_GetTailLength_
+  commentId: Overload:CatLibrary.Cat`2.GetTailLength
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.GetTailLength
+  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength
+  nameWithType: Cat<T, K>.GetTailLength
+  nameWithType.vb: Cat(Of T, K).GetTailLength
+- uid: CatLibrary.Cat`2.Item(System.String)
+  name: this[string]
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Item_System_String_
+  commentId: P:CatLibrary.Cat`2.Item(System.String)
+  name.vb: this[](String)
+  fullName: CatLibrary.Cat<T, K>.this[string]
+  fullName.vb: CatLibrary.Cat(Of T, K).this[](String)
+  nameWithType: Cat<T, K>.this[string]
+  nameWithType.vb: Cat(Of T, K).this[](String)
+- uid: CatLibrary.Cat`2.Item*
+  name: this
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Item_
+  commentId: Overload:CatLibrary.Cat`2.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: CatLibrary.Cat<T, K>.this
+  fullName.vb: CatLibrary.Cat(Of T, K).this[]
+  nameWithType: Cat<T, K>.this
+  nameWithType.vb: Cat(Of T, K).this[]
+- uid: CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
+  name: Jump(T, K, ref bool)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Jump__0__1_System_Boolean__
+  commentId: M:CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
+  name.vb: Jump(T, K, Boolean)
+  fullName: CatLibrary.Cat<T, K>.Jump(T, K, ref bool)
+  fullName.vb: CatLibrary.Cat(Of T, K).Jump(T, K, Boolean)
+  nameWithType: Cat<T, K>.Jump(T, K, ref bool)
+  nameWithType.vb: Cat(Of T, K).Jump(T, K, Boolean)
+- uid: CatLibrary.Cat`2.Jump*
+  name: Jump
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Jump_
+  commentId: Overload:CatLibrary.Cat`2.Jump
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Jump
+  fullName.vb: CatLibrary.Cat(Of T, K).Jump
+  nameWithType: Cat<T, K>.Jump
+  nameWithType.vb: Cat(Of T, K).Jump
+- uid: CatLibrary.Cat`2.Name
+  name: Name
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Name
+  commentId: P:CatLibrary.Cat`2.Name
+  fullName: CatLibrary.Cat<T, K>.Name
+  fullName.vb: CatLibrary.Cat(Of T, K).Name
+  nameWithType: Cat<T, K>.Name
+  nameWithType.vb: Cat(Of T, K).Name
+- uid: CatLibrary.Cat`2.Name*
+  name: Name
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Name_
+  commentId: Overload:CatLibrary.Cat`2.Name
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Name
+  fullName.vb: CatLibrary.Cat(Of T, K).Name
+  nameWithType: Cat<T, K>.Name
+  nameWithType.vb: Cat(Of T, K).Name
+- uid: CatLibrary.Cat`2.isHealthy
+  name: isHealthy
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_isHealthy
+  commentId: F:CatLibrary.Cat`2.isHealthy
+  fullName: CatLibrary.Cat<T, K>.isHealthy
+  fullName.vb: CatLibrary.Cat(Of T, K).isHealthy
+  nameWithType: Cat<T, K>.isHealthy
+  nameWithType.vb: Cat(Of T, K).isHealthy
+- uid: CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
+  name: operator +(Cat<T, K>, int)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_
+  commentId: M:CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
+  name.vb: +(Cat(Of T, K), Integer)
+  fullName: CatLibrary.Cat<T, K>.operator +(CatLibrary.Cat<T, K>, int)
+  fullName.vb: CatLibrary.Cat(Of T, K).+(CatLibrary.Cat(Of T, K), Integer)
+  nameWithType: Cat<T, K>.operator +(Cat<T, K>, int)
+  nameWithType.vb: Cat(Of T, K).+(Cat(Of T, K), Integer)
+- uid: CatLibrary.Cat`2.op_Addition*
+  name: operator +
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Addition_
+  commentId: Overload:CatLibrary.Cat`2.op_Addition
+  isSpec: "True"
+  name.vb: +
+  fullName: CatLibrary.Cat<T, K>.operator +
+  fullName.vb: CatLibrary.Cat(Of T, K).+
+  nameWithType: Cat<T, K>.operator +
+  nameWithType.vb: Cat(Of T, K).+
+- uid: CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
+  name: explicit operator Tom(Cat<T, K>)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom
+  commentId: M:CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
+  name.vb: CType(Cat(Of T, K))
+  fullName: CatLibrary.Cat<T, K>.explicit operator CatLibrary.Tom(CatLibrary.Cat<T, K>)
+  fullName.vb: CatLibrary.Cat(Of T, K).CType(CatLibrary.Cat(Of T, K))
+  nameWithType: Cat<T, K>.explicit operator Tom(Cat<T, K>)
+  nameWithType.vb: Cat(Of T, K).CType(Cat(Of T, K))
+- uid: CatLibrary.Cat`2.op_Explicit*
+  name: explicit operator
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Explicit_
+  commentId: Overload:CatLibrary.Cat`2.op_Explicit
+  isSpec: "True"
+  name.vb: CType
+  fullName: CatLibrary.Cat<T, K>.explicit operator
+  fullName.vb: CatLibrary.Cat(Of T, K).CType
+  nameWithType: Cat<T, K>.explicit operator
+  nameWithType.vb: Cat(Of T, K).CType
+- uid: CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
+  name: operator -(Cat<T, K>, int)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_
+  commentId: M:CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
+  name.vb: -(Cat(Of T, K), Integer)
+  fullName: CatLibrary.Cat<T, K>.operator -(CatLibrary.Cat<T, K>, int)
+  fullName.vb: CatLibrary.Cat(Of T, K).-(CatLibrary.Cat(Of T, K), Integer)
+  nameWithType: Cat<T, K>.operator -(Cat<T, K>, int)
+  nameWithType.vb: Cat(Of T, K).-(Cat(Of T, K), Integer)
+- uid: CatLibrary.Cat`2.op_Subtraction*
+  name: operator -
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Subtraction_
+  commentId: Overload:CatLibrary.Cat`2.op_Subtraction
+  isSpec: "True"
+  name.vb: '-'
+  fullName: CatLibrary.Cat<T, K>.operator -
+  fullName.vb: CatLibrary.Cat(Of T, K).-
+  nameWithType: Cat<T, K>.operator -
+  nameWithType.vb: Cat(Of T, K).-
+- uid: CatLibrary.Cat`2.ownEat
+  name: ownEat
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_ownEat
+  commentId: E:CatLibrary.Cat`2.ownEat
+  fullName: CatLibrary.Cat<T, K>.ownEat
+  fullName.vb: CatLibrary.Cat(Of T, K).ownEat
+  nameWithType: Cat<T, K>.ownEat
+  nameWithType.vb: Cat(Of T, K).ownEat
+- uid: CatLibrary.Complex`2
+  name: Complex<T, J>
+  href: api/CatLibrary.Complex-2.html
+  commentId: T:CatLibrary.Complex`2
+  name.vb: Complex(Of T, J)
+  fullName: CatLibrary.Complex<T, J>
+  fullName.vb: CatLibrary.Complex(Of T, J)
+  nameWithType: Complex<T, J>
+  nameWithType.vb: Complex(Of T, J)
+- uid: CatLibrary.Core
+  name: CatLibrary.Core
+  href: api/CatLibrary.Core.html
+  commentId: N:CatLibrary.Core
+  fullName: CatLibrary.Core
+  nameWithType: CatLibrary.Core
+- uid: CatLibrary.Core.ContainersRefType
+  name: ContainersRefType
+  href: api/CatLibrary.Core.ContainersRefType.html
+  commentId: T:CatLibrary.Core.ContainersRefType
+  fullName: CatLibrary.Core.ContainersRefType
+  nameWithType: ContainersRefType
+- uid: CatLibrary.Core.ContainersRefType.ColorCount
+  name: ColorCount
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_ColorCount
+  commentId: F:CatLibrary.Core.ContainersRefType.ColorCount
+  fullName: CatLibrary.Core.ContainersRefType.ColorCount
+  nameWithType: ContainersRefType.ColorCount
+- uid: CatLibrary.Core.ContainersRefType.ColorType
+  name: ContainersRefType.ColorType
+  href: api/CatLibrary.Core.ContainersRefType.ColorType.html
+  commentId: T:CatLibrary.Core.ContainersRefType.ColorType
+  fullName: CatLibrary.Core.ContainersRefType.ColorType
+  nameWithType: ContainersRefType.ColorType
+- uid: CatLibrary.Core.ContainersRefType.ColorType.Blue
+  name: Blue
+  href: api/CatLibrary.Core.ContainersRefType.ColorType.html#CatLibrary_Core_ContainersRefType_ColorType_Blue
+  commentId: F:CatLibrary.Core.ContainersRefType.ColorType.Blue
+  fullName: CatLibrary.Core.ContainersRefType.ColorType.Blue
+  nameWithType: ContainersRefType.ColorType.Blue
+- uid: CatLibrary.Core.ContainersRefType.ColorType.Red
+  name: Red
+  href: api/CatLibrary.Core.ContainersRefType.ColorType.html#CatLibrary_Core_ContainersRefType_ColorType_Red
+  commentId: F:CatLibrary.Core.ContainersRefType.ColorType.Red
+  fullName: CatLibrary.Core.ContainersRefType.ColorType.Red
+  nameWithType: ContainersRefType.ColorType.Red
+- uid: CatLibrary.Core.ContainersRefType.ColorType.Yellow
+  name: Yellow
+  href: api/CatLibrary.Core.ContainersRefType.ColorType.html#CatLibrary_Core_ContainersRefType_ColorType_Yellow
+  commentId: F:CatLibrary.Core.ContainersRefType.ColorType.Yellow
+  fullName: CatLibrary.Core.ContainersRefType.ColorType.Yellow
+  nameWithType: ContainersRefType.ColorType.Yellow
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeChild
+  name: ContainersRefType.ContainersRefTypeChild
+  href: api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html
+  commentId: T:CatLibrary.Core.ContainersRefType.ContainersRefTypeChild
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeChild
+  nameWithType: ContainersRefType.ContainersRefTypeChild
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface
+  name: ContainersRefType.ContainersRefTypeChildInterface
+  href: api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html
+  commentId: T:CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface
+  nameWithType: ContainersRefType.ContainersRefTypeChildInterface
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate
+  name: ContainersRefType.ContainersRefTypeDelegate
+  href: api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html
+  commentId: T:CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate
+  nameWithType: ContainersRefType.ContainersRefTypeDelegate
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler
+  name: ContainersRefTypeEventHandler
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler
+  commentId: E:CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler
+  nameWithType: ContainersRefType.ContainersRefTypeEventHandler
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
+  name: ContainersRefTypeNonRefMethod(params object[])
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___
+  commentId: M:CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
+  name.vb: ContainersRefTypeNonRefMethod(ParamArray Object())
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(params object[])
+  fullName.vb: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())
+  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod(params object[])
+  nameWithType.vb: ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod*
+  name: ContainersRefTypeNonRefMethod
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_
+  commentId: Overload:CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod
+  isSpec: "True"
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod
+  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod
+- uid: CatLibrary.Core.ContainersRefType.GetColorCount
+  name: GetColorCount
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_GetColorCount
+  commentId: P:CatLibrary.Core.ContainersRefType.GetColorCount
+  fullName: CatLibrary.Core.ContainersRefType.GetColorCount
+  nameWithType: ContainersRefType.GetColorCount
+- uid: CatLibrary.Core.ContainersRefType.GetColorCount*
+  name: GetColorCount
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_GetColorCount_
+  commentId: Overload:CatLibrary.Core.ContainersRefType.GetColorCount
+  isSpec: "True"
+  fullName: CatLibrary.Core.ContainersRefType.GetColorCount
+  nameWithType: ContainersRefType.GetColorCount
+- uid: CatLibrary.Core.ExplicitLayoutClass
+  name: ExplicitLayoutClass
+  href: api/CatLibrary.Core.ExplicitLayoutClass.html
+  commentId: T:CatLibrary.Core.ExplicitLayoutClass
+  fullName: CatLibrary.Core.ExplicitLayoutClass
+  nameWithType: ExplicitLayoutClass
+- uid: CatLibrary.Core.Issue231
+  name: Issue231
+  href: api/CatLibrary.Core.Issue231.html
+  commentId: T:CatLibrary.Core.Issue231
+  fullName: CatLibrary.Core.Issue231
+  nameWithType: Issue231
+- uid: CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)
+  name: Bar(ContainersRefType)
+  href: api/CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_
+  commentId: M:CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)
+  fullName: CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)
+  nameWithType: Issue231.Bar(ContainersRefType)
+- uid: CatLibrary.Core.Issue231.Bar*
+  name: Bar
+  href: api/CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_
+  commentId: Overload:CatLibrary.Core.Issue231.Bar
+  isSpec: "True"
+  fullName: CatLibrary.Core.Issue231.Bar
+  nameWithType: Issue231.Bar
+- uid: CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)
+  name: Foo(ContainersRefType)
+  href: api/CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_
+  commentId: M:CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)
+  fullName: CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)
+  nameWithType: Issue231.Foo(ContainersRefType)
+- uid: CatLibrary.Core.Issue231.Foo*
+  name: Foo
+  href: api/CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_
+  commentId: Overload:CatLibrary.Core.Issue231.Foo
+  isSpec: "True"
+  fullName: CatLibrary.Core.Issue231.Foo
+  nameWithType: Issue231.Foo
+- uid: CatLibrary.FakeDelegate`1
+  name: FakeDelegate<T>
+  href: api/CatLibrary.FakeDelegate-1.html
+  commentId: T:CatLibrary.FakeDelegate`1
+  name.vb: FakeDelegate(Of T)
+  fullName: CatLibrary.FakeDelegate<T>
+  fullName.vb: CatLibrary.FakeDelegate(Of T)
+  nameWithType: FakeDelegate<T>
+  nameWithType.vb: FakeDelegate(Of T)
+- uid: CatLibrary.IAnimal
+  name: IAnimal
+  href: api/CatLibrary.IAnimal.html
+  commentId: T:CatLibrary.IAnimal
+  fullName: CatLibrary.IAnimal
+  nameWithType: IAnimal
+- uid: CatLibrary.IAnimal.Eat
+  name: Eat()
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat
+  commentId: M:CatLibrary.IAnimal.Eat
+  fullName: CatLibrary.IAnimal.Eat()
+  nameWithType: IAnimal.Eat()
+- uid: CatLibrary.IAnimal.Eat(System.String)
+  name: Eat(string)
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_System_String_
+  commentId: M:CatLibrary.IAnimal.Eat(System.String)
+  name.vb: Eat(String)
+  fullName: CatLibrary.IAnimal.Eat(string)
+  fullName.vb: CatLibrary.IAnimal.Eat(String)
+  nameWithType: IAnimal.Eat(string)
+  nameWithType.vb: IAnimal.Eat(String)
+- uid: CatLibrary.IAnimal.Eat*
+  name: Eat
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_
+  commentId: Overload:CatLibrary.IAnimal.Eat
+  isSpec: "True"
+  fullName: CatLibrary.IAnimal.Eat
+  nameWithType: IAnimal.Eat
+- uid: CatLibrary.IAnimal.Eat``1(``0)
+  name: Eat<Tool>(Tool)
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat__1___0_
+  commentId: M:CatLibrary.IAnimal.Eat``1(``0)
+  name.vb: Eat(Of Tool)(Tool)
+  fullName: CatLibrary.IAnimal.Eat<Tool>(Tool)
+  fullName.vb: CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  nameWithType: IAnimal.Eat<Tool>(Tool)
+  nameWithType.vb: IAnimal.Eat(Of Tool)(Tool)
+- uid: CatLibrary.IAnimal.Item(System.Int32)
+  name: this[int]
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_System_Int32_
+  commentId: P:CatLibrary.IAnimal.Item(System.Int32)
+  name.vb: this[](Integer)
+  fullName: CatLibrary.IAnimal.this[int]
+  fullName.vb: CatLibrary.IAnimal.this[](Integer)
+  nameWithType: IAnimal.this[int]
+  nameWithType.vb: IAnimal.this[](Integer)
+- uid: CatLibrary.IAnimal.Item*
+  name: this
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_
+  commentId: Overload:CatLibrary.IAnimal.Item
+  isSpec: "True"
+  name.vb: this[]
+  fullName: CatLibrary.IAnimal.this
+  fullName.vb: CatLibrary.IAnimal.this[]
+  nameWithType: IAnimal.this
+  nameWithType.vb: IAnimal.this[]
+- uid: CatLibrary.IAnimal.Name
+  name: Name
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Name
+  commentId: P:CatLibrary.IAnimal.Name
+  fullName: CatLibrary.IAnimal.Name
+  nameWithType: IAnimal.Name
+- uid: CatLibrary.IAnimal.Name*
+  name: Name
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Name_
+  commentId: Overload:CatLibrary.IAnimal.Name
+  isSpec: "True"
+  fullName: CatLibrary.IAnimal.Name
+  nameWithType: IAnimal.Name
+- uid: CatLibrary.ICat
+  name: ICat
+  href: api/CatLibrary.ICat.html
+  commentId: T:CatLibrary.ICat
+  fullName: CatLibrary.ICat
+  nameWithType: ICat
+- uid: CatLibrary.ICat.eat
+  name: eat
+  href: api/CatLibrary.ICat.html#CatLibrary_ICat_eat
+  commentId: E:CatLibrary.ICat.eat
+  fullName: CatLibrary.ICat.eat
+  nameWithType: ICat.eat
+- uid: CatLibrary.ICatExtension
+  name: ICatExtension
+  href: api/CatLibrary.ICatExtension.html
+  commentId: T:CatLibrary.ICatExtension
+  fullName: CatLibrary.ICatExtension
+  nameWithType: ICatExtension
+- uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)
+  name: Play(ICat, ColorType)
+  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_
+  commentId: M:CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)
+  fullName: CatLibrary.ICatExtension.Play(CatLibrary.ICat, CatLibrary.Core.ContainersRefType.ColorType)
+  nameWithType: ICatExtension.Play(ICat, ContainersRefType.ColorType)
+- uid: CatLibrary.ICatExtension.Play*
+  name: Play
+  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_
+  commentId: Overload:CatLibrary.ICatExtension.Play
+  isSpec: "True"
+  fullName: CatLibrary.ICatExtension.Play
+  nameWithType: ICatExtension.Play
+- uid: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  name: Sleep(ICat, long)
+  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_
+  commentId: M:CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  name.vb: Sleep(ICat, Long)
+  fullName: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, long)
+  fullName.vb: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, Long)
+  nameWithType: ICatExtension.Sleep(ICat, long)
+  nameWithType.vb: ICatExtension.Sleep(ICat, Long)
+- uid: CatLibrary.ICatExtension.Sleep*
+  name: Sleep
+  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_
+  commentId: Overload:CatLibrary.ICatExtension.Sleep
+  isSpec: "True"
+  fullName: CatLibrary.ICatExtension.Sleep
+  nameWithType: ICatExtension.Sleep
+- uid: CatLibrary.MRefDelegate`3
+  name: MRefDelegate<K, T, L>
+  href: api/CatLibrary.MRefDelegate-3.html
+  commentId: T:CatLibrary.MRefDelegate`3
+  name.vb: MRefDelegate(Of K, T, L)
+  fullName: CatLibrary.MRefDelegate<K, T, L>
+  fullName.vb: CatLibrary.MRefDelegate(Of K, T, L)
+  nameWithType: MRefDelegate<K, T, L>
+  nameWithType.vb: MRefDelegate(Of K, T, L)
+- uid: CatLibrary.MRefNormalDelegate
+  name: MRefNormalDelegate
+  href: api/CatLibrary.MRefNormalDelegate.html
+  commentId: T:CatLibrary.MRefNormalDelegate
+  fullName: CatLibrary.MRefNormalDelegate
+  nameWithType: MRefNormalDelegate
+- uid: CatLibrary.Tom
+  name: Tom
+  href: api/CatLibrary.Tom.html
+  commentId: T:CatLibrary.Tom
+  fullName: CatLibrary.Tom
+  nameWithType: Tom
+- uid: CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})
+  name: TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)
+  href: api/CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__
+  commentId: M:CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})
+  name.vb: TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))
+  fullName: CatLibrary.Tom.TomMethod(CatLibrary.Complex<CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass>, System.Tuple<string, CatLibrary.Tom>)
+  fullName.vb: CatLibrary.Tom.TomMethod(CatLibrary.Complex(Of CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass), System.Tuple(Of String, CatLibrary.Tom))
+  nameWithType: Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)
+  nameWithType.vb: Tom.TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))
+- uid: CatLibrary.Tom.TomMethod*
+  name: TomMethod
+  href: api/CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_
+  commentId: Overload:CatLibrary.Tom.TomMethod
+  isSpec: "True"
+  fullName: CatLibrary.Tom.TomMethod
+  nameWithType: Tom.TomMethod
+- uid: CatLibrary.TomFromBaseClass
+  name: TomFromBaseClass
+  href: api/CatLibrary.TomFromBaseClass.html
+  commentId: T:CatLibrary.TomFromBaseClass
+  fullName: CatLibrary.TomFromBaseClass
+  nameWithType: TomFromBaseClass
+- uid: CatLibrary.TomFromBaseClass.#ctor(System.Int32)
+  name: TomFromBaseClass(int)
+  href: api/CatLibrary.TomFromBaseClass.html#CatLibrary_TomFromBaseClass__ctor_System_Int32_
+  commentId: M:CatLibrary.TomFromBaseClass.#ctor(System.Int32)
+  name.vb: New(Integer)
+  fullName: CatLibrary.TomFromBaseClass.TomFromBaseClass(int)
+  fullName.vb: CatLibrary.TomFromBaseClass.New(Integer)
+  nameWithType: TomFromBaseClass.TomFromBaseClass(int)
+  nameWithType.vb: TomFromBaseClass.New(Integer)
+- uid: CatLibrary.TomFromBaseClass.#ctor*
+  name: TomFromBaseClass
+  href: api/CatLibrary.TomFromBaseClass.html#CatLibrary_TomFromBaseClass__ctor_
+  commentId: Overload:CatLibrary.TomFromBaseClass.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: CatLibrary.TomFromBaseClass.TomFromBaseClass
+  fullName.vb: CatLibrary.TomFromBaseClass.New
+  nameWithType: TomFromBaseClass.TomFromBaseClass
+  nameWithType.vb: TomFromBaseClass.New
+- uid: MRef.Demo.Enumeration
+  name: MRef.Demo.Enumeration
+  href: api/MRef.Demo.Enumeration.html
+  commentId: N:MRef.Demo.Enumeration
+  fullName: MRef.Demo.Enumeration
+  nameWithType: MRef.Demo.Enumeration
+- uid: MRef.Demo.Enumeration.ColorType
+  name: ColorType
+  href: api/MRef.Demo.Enumeration.ColorType.html
+  commentId: T:MRef.Demo.Enumeration.ColorType
+  fullName: MRef.Demo.Enumeration.ColorType
+  nameWithType: ColorType
+- uid: MRef.Demo.Enumeration.ColorType.Blue
+  name: Blue
+  href: api/MRef.Demo.Enumeration.ColorType.html#MRef_Demo_Enumeration_ColorType_Blue
+  commentId: F:MRef.Demo.Enumeration.ColorType.Blue
+  fullName: MRef.Demo.Enumeration.ColorType.Blue
+  nameWithType: ColorType.Blue
+- uid: MRef.Demo.Enumeration.ColorType.Red
+  name: Red
+  href: api/MRef.Demo.Enumeration.ColorType.html#MRef_Demo_Enumeration_ColorType_Red
+  commentId: F:MRef.Demo.Enumeration.ColorType.Red
+  fullName: MRef.Demo.Enumeration.ColorType.Red
+  nameWithType: ColorType.Red
+- uid: MRef.Demo.Enumeration.ColorType.Yellow
+  name: Yellow
+  href: api/MRef.Demo.Enumeration.ColorType.html#MRef_Demo_Enumeration_ColorType_Yellow
+  commentId: F:MRef.Demo.Enumeration.ColorType.Yellow
+  fullName: MRef.Demo.Enumeration.ColorType.Yellow
+  nameWithType: ColorType.Yellow
+- uid: graph.windows.net/myorganization/Contacts/1.6
+  name: Contacts
+  href: restapi/contacts.html
+- uid: graph.windows.net/myorganization/Contacts/1.6/delete contact
+  name: delete contact
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_delete_contact
+- uid: graph.windows.net/myorganization/Contacts/1.6/delete contact manager by id
+  name: delete contact manager by id
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact by id
+  name: get contact by id
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact direct reports links
+  name: get contact direct reports links
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact manager link
+  name: get contact manager link
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact memberOf links
+  name: get contact memberOf links
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contacts
+  name: get contacts
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contacts
+- uid: graph.windows.net/myorganization/Contacts/1.6/update contact
+  name: update contact
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_update_contact
+- uid: graph.windows.net/myorganization/Contacts/1.6/update contact manager
+  name: update contact manager
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_update_contact_manager
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0
+  name: Swagger Petstore
+  href: restapi/petstore.html
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet
+  name: addPet
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUser
+  name: createUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithArrayInput
+  name: createUsersWithArrayInput
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithListInput
+  name: createUsersWithListInput
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteOrder
+  name: deleteOrder
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/deletePet
+  name: deletePet
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteUser
+  name: deleteUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByStatus
+  name: findPetsByStatus
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByTags
+  name: findPetsByTags
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/getInventory
+  name: getInventory
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/getOrderById
+  name: getOrderById
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/getPetById
+  name: getPetById
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/getUserByName
+  name: getUserByName
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/loginUser
+  name: loginUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/logoutUser
+  name: logoutUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/placeOrder
+  name: placeOrder
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet
+  name: pet
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/store
+  name: store
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/user
+  name: user
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePet
+  name: updatePet
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePetWithForm
+  name: updatePetWithForm
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/updateUser
+  name: updateUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/uploadFile
+  name: uploadFile
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile

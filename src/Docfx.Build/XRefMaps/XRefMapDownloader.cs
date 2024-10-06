@@ -128,7 +128,7 @@ public sealed class XRefMapDownloader
                     switch (Path.GetExtension(Path.GetFileNameWithoutExtension(filePath)).ToLowerInvariant())
                     {
                         case ".json":
-                            return await SystemTextJsonUtility.DeserializeAsync<XRefMap>(stream, token);
+                            return await JsonUtility.DeserializeAsync<XRefMap>(stream, token);
                         case ".yml":
                         default:
                             {
@@ -141,7 +141,7 @@ public sealed class XRefMapDownloader
             case ".json":
                 {
                     using var stream = File.OpenRead(filePath);
-                    return await SystemTextJsonUtility.DeserializeAsync<XRefMap>(stream, token);
+                    return await JsonUtility.DeserializeAsync<XRefMap>(stream, token);
                 }
 
             case ".yml":
@@ -172,7 +172,7 @@ public sealed class XRefMapDownloader
         {
             case ".json":
                 {
-                    var xrefMap = await SystemTextJsonUtility.DeserializeAsync<XRefMap>(stream, token);
+                    var xrefMap = await JsonUtility.DeserializeAsync<XRefMap>(stream, token);
                     xrefMap.BaseUrl = ResolveBaseUrl(xrefMap, uri);
                     return xrefMap;
                 }

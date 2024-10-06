@@ -1,0 +1,15 @@
+### YamlMime:ApiPage
+title: Class Class1
+body:
+- api1: Class Class1
+  id: BuildFromAssembly_Class1
+  metadata:
+    uid: BuildFromAssembly.Class1
+    commentId: T:BuildFromAssembly.Class1
+languageId: csharp
+metadata:
+  description: This is a test class.
+  listOfString:
+    - aaa
+    - bbb
+    - ccc 

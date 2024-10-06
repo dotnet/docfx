@@ -1,0 +1,43 @@
+### YamlMime:ApiPage
+title: Struct Issue5432
+body:
+- api1: Struct Issue5432
+  id: BuildFromAssembly_Issue5432
+  metadata:
+    uid: BuildFromAssembly.Issue5432
+    commentId: T:BuildFromAssembly.Issue5432
+- facts:
+  - name: Namespace
+    value:
+      text: BuildFromAssembly
+      url: BuildFromAssembly.html
+  - name: Assembly
+    value: BuildFromAssembly.dll
+- code: public struct Issue5432
+- h4: Inherited Members
+- list:
+  - text: object.GetType()
+    url: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - text: object.ToString()
+    url: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - text: object.Equals(object?)
+    url: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - text: object.Equals(object?, object?)
+    url: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - text: object.ReferenceEquals(object?, object?)
+    url: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - text: object.GetHashCode()
+    url: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+- h2: Properties
+- api3: Name
+  id: BuildFromAssembly_Issue5432_Name
+  metadata:
+    uid: BuildFromAssembly.Issue5432.Name
+    commentId: P:BuildFromAssembly.Issue5432.Name
+- code: public string Name { get; }
+- h4: Property Value
+- parameters:
+  - type:
+    - text: string
+      url: https://learn.microsoft.com/dotnet/api/system.string
+languageId: csharp
