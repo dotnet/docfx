@@ -99,6 +99,7 @@ public static class JsonUtility
 
                 // Intermediate types for tests. it's expected to be removed later (And return true by default).
                 case "Docfx.FileMapping":
+                case "Docfx.FileMetadataPairs":
                 case "Docfx.ListWithStringFallback":
                 case "Docfx.Plugins.MarkdownServiceProperties":
                     return true;

@@ -8,7 +8,8 @@ namespace Docfx;
 /// </summary>
 /// <see cref="BuildJsonConfig.FileMetadata"/>
 /// <see cref="MergeJsonItemConfig.FileMetadata"/>
-[Newtonsoft.Json.JsonConverter(typeof(FileMetadataPairsConverter))]
+[Newtonsoft.Json.JsonConverter(typeof(FileMetadataPairsConverter.NewtonsoftJsonConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(FileMetadataPairsConverter.SystemTextJsonConverter))]
 internal class FileMetadataPairs
 {
     // Order matters, the latter one overrides the former one
@@ -28,9 +29,9 @@ internal class FileMetadataPairs
     /// <summary>
     /// Initializes a new instance of the <see cref="FileMetadataPairs"/> class.
     /// </summary>
-    public FileMetadataPairs(List<FileMetadataPairsItem> items)
+    public FileMetadataPairs(IEnumerable<FileMetadataPairsItem> items)
     {
-        _items = items;
+        _items = items.ToList();
     }
 
     /// <summary>
