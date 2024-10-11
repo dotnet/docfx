@@ -90,6 +90,7 @@ public static class JsonUtility
             switch (fullName)
             {
                 // TODO: Return `true` for types that support serialize/deserializenon with System.Text.Json.
+                case "Docfx.BuildJsonConfig":
                 case "Docfx.MergeJsonConfig":
 
                 case "Docfx.Build.Engine.XRefMap":
