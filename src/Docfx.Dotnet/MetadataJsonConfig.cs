@@ -272,6 +272,9 @@ internal class MetadataJsonItemConfig
 /// </summary>
 internal class MetadataJsonConfig : List<MetadataJsonItemConfig>
 {
+    // Constructor that required for System.Text.Json deserialization.
+    public MetadataJsonConfig() { }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MetadataJsonConfig"/> class.
     /// </summary>
