@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection.PortableExecutable;
 using System.Text.RegularExpressions;
@@ -84,34 +85,19 @@ public static class JsonUtility
 
         private static bool IsSupported()
         {
-            var type = typeof(T);
-            var fullName = type.FullName;
-
+            var fullName = typeof(T).FullName;
             switch (fullName)
             {
-                // TODO: Return `true` for types that support serialize/deserializenon with System.Text.Json.
-                case "Docfx.DocfxConfig":
-                case "Docfx.BuildJsonConfig":
-                case "Docfx.MetadataJsonConfig":
-                case "Docfx.MergeJsonConfig":
-
-                case "Docfx.Build.Engine.XRefMap":
-                case "Docfx.DataContracts.Common.TocItemViewModel":
-                case "Docfx.DataContracts.UniversalReference.PageViewModel":
-                case "Docfx.DataContracts.ManagedReference.PageViewModel":
-                case "Docfx.Plugins.Manifest":
-                    return true;
-
-                // Intermediate types for tests. it's expected to be removed later (And return true by default).
-                case "Docfx.FileMapping":
-                case "Docfx.FileMetadataPairs":
-                case "Docfx.ListWithStringFallback":
-                case "Docfx.Plugins.MarkdownServiceProperties":
-                    return true;
-
-                // TODO: default to true
-                default:
+                // Use Newtonsoft.Json for RestAPI models.
+                case "Docfx.DataContracts.RestApi.RestApiRootItemViewModel":
                     return false;
+
+                // Some unit tests using Newtonsoft.Json types.
+                case "Newtonsoft.Json.Linq.JObject":
+                    return false;
+
+                default:
+                    return true;
             }
         }
     }

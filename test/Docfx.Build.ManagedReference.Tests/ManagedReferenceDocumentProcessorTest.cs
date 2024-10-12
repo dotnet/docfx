@@ -281,7 +281,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
         var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.yml");
         Assert.True(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        var systemKeys = (JArray)model[Constants.PropertyName.SystemKeys];
+        var systemKeys = ToList(model[Constants.PropertyName.SystemKeys]);
         Assert.NotEmpty(systemKeys);
         foreach (var key in model.Keys.Where(key => key[0] != '_' && key != "meta" && key != "anotherMeta"))
         {
@@ -340,5 +340,12 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     private string GetOutputFilePath(string fileName)
     {
         return Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(fileName, "html")));
+    }
+
+    private static List<object> ToList(object value)
+    {
+        return value is List<object> list
+            ? list
+            : ((JArray)value).Cast<object>().ToList();
     }
 }
