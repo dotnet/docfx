@@ -71,7 +71,7 @@ internal partial class FileMetadataPairsConverter
                     return elem.GetDouble();
                 case JsonValueKind.Undefined:
                 default:
-                    throw new NotSupportedException($"{elem.ValueKind}");
+                    throw new JsonException($"JsonValueKind({elem.ValueKind}) is not supported.");
             }
         }
     }

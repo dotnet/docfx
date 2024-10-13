@@ -45,9 +45,8 @@ internal partial class MarkdigExtensionSettingConverter
                             Options = value,
                         };
                     }
-
                 default:
-                    return null;
+                    throw new JsonException($"TokenType({reader.TokenType}) is not supported.");
             }
         }
 

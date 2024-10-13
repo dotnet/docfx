@@ -33,7 +33,7 @@ internal partial class MergeJsonConfigConverter
                         return new MergeJsonConfig(item);
                     }
                 default:
-                    throw new NotSupportedException($"TokenType({tokenType}) is not supported.");
+                    throw new JsonException($"TokenType({tokenType}) is not supported.");
             }
         }
 

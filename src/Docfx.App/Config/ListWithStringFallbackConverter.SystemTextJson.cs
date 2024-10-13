@@ -39,7 +39,7 @@ internal partial class ListWithStringFallbackConverter
                         return new ListWithStringFallback(values);
                     }
                 default:
-                    throw new NotSupportedException($"TokenType({reader.TokenType}) is not supported.");
+                    throw new JsonException($"TokenType({reader.TokenType}) is not supported.");
             }
         }
 
