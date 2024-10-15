@@ -52,29 +52,11 @@ public class ResourcePoolManager<TResource>
         }
     }
 
-    #region IDisposable
-
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    ~ResourcePoolManager()
-    {
-        Dispose(false);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
+        foreach (var resource in _resources)
         {
-            foreach (var resource in _resources)
-            {
-                (resource as IDisposable)?.Dispose();
-            }
+            (resource as IDisposable)?.Dispose();
         }
     }
-
-    #endregion
 }
