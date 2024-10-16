@@ -38,7 +38,7 @@ public class TemplateModelTransformer
     /// <returns></returns>
     internal ManifestItem Transform(InternalManifestItem item)
     {
-        if (item == null || item.Content == null)
+        if (item?.Content == null)
         {
             throw new ArgumentNullException(nameof(item), "Content for item.Model should not be null!");
         }

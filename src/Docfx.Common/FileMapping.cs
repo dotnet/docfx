@@ -69,7 +69,7 @@ public class FileMapping
     /// <param name="item"></param>
     public void Add(FileMappingItem item)
     {
-        if (item == null || item.Files == null || item.Files.Count == 0) return;
+        if (item?.Files == null || item.Files.Count == 0) return;
 
         _items.Add(item);
     }
