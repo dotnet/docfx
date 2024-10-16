@@ -1,0 +1,15 @@
+apiRules:
+- exclude:
+    uidRegex: Test1
+    hasAttribute:
+      ctorArguments:
+      - System.ComponentModel.EditorBrowsableState.Never
+      ctorNamedArguments: {}
+- exclude:
+    uidRegex: Test2
+    type: Type, Member
+    hasAttribute:
+      ctorArguments:
+      - System.ComponentModel.EditorBrowsableState.Never
+      ctorNamedArguments: {}
+attributeRules: []

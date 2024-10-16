@@ -86,10 +86,14 @@ public class ReferenceViewModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonInclude]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
-    public CompositeDictionary AdditionalJson =>
-        CompositeDictionary
+    public CompositeDictionary AdditionalJson
+    {
+        get
+        {
+            return CompositeDictionary
             .CreateBuilder()
             .Add(Constants.ExtensionMemberPrefix.Name, NameInDevLangs, JTokenConverter.Convert<string>)
             .Add(Constants.ExtensionMemberPrefix.NameWithType, NameWithTypeInDevLangs, JTokenConverter.Convert<string>)
@@ -97,6 +101,12 @@ public class ReferenceViewModel
             .Add(Constants.ExtensionMemberPrefix.Spec, Specs, JTokenConverter.Convert<List<SpecViewModel>>)
             .Add(string.Empty, Additional)
             .Create();
+        }
+        private init
+        {
+            // init or getter is required for deserialize data with System.Text.Json.
+        }
+    }
 
     public ReferenceViewModel Clone()
     {

@@ -84,7 +84,7 @@ partial class DotnetApiCatalog
             }
 
             // generate manifest file
-            JsonUtility.Serialize(Path.Combine(config.OutputFolder, ".manifest"), indexer, Newtonsoft.Json.Formatting.Indented);
+            JsonUtility.Serialize(Path.Combine(config.OutputFolder, ".manifest"), indexer, indented: true);
         }
     }
 

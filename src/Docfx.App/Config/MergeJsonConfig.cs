@@ -6,7 +6,8 @@ namespace Docfx;
 /// <summary>
 /// MergeJsonConfig.
 /// </summary>
-[Newtonsoft.Json.JsonConverter(typeof(MergeJsonConfigConverter))]
+[Newtonsoft.Json.JsonConverter(typeof(MergeJsonConfigConverter.NewtonsoftJsonConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(MergeJsonConfigConverter.SystemTextJsonConverter))]
 internal class MergeJsonConfig : List<MergeJsonItemConfig>
 {
     /// <summary>

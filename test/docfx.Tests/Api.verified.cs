@@ -1160,9 +1160,11 @@ namespace Docfx.Build.ManagedReference.BuildOutputs
         [Docfx.YamlSerialization.ExtensibleMember]
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public Docfx.Common.CompositeDictionary MetadataJson { get; }
         [Newtonsoft.Json.JsonProperty("name")]
@@ -1857,14 +1859,12 @@ namespace Docfx.Common
     }
     public static class JsonUtility
     {
-        public static readonly System.Threading.ThreadLocal<Newtonsoft.Json.JsonSerializer> DefaultSerializer;
-        public static T Deserialize<T>(System.IO.TextReader reader, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static T Deserialize<T>(string path, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static T FromJsonString<T>(this string json, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static string Serialize(object graph, Newtonsoft.Json.Formatting formatting = 0, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static void Serialize(System.IO.TextWriter writer, object graph, Newtonsoft.Json.Formatting formatting = 0, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static void Serialize(string path, object graph, Newtonsoft.Json.Formatting formatting = 0, Newtonsoft.Json.JsonSerializer serializer = null) { }
-        public static string ToJsonString(this object graph, Newtonsoft.Json.Formatting formatting = 0, Newtonsoft.Json.JsonSerializer serializer = null) { }
+        public static T Deserialize<T>(System.IO.TextReader reader) { }
+        public static T Deserialize<T>(string path) { }
+        public static T FromJsonString<T>(this string json) { }
+        public static string Serialize<T>(T graph, bool indented = false) { }
+        public static void Serialize<T>(string path, T graph, bool indented = false) { }
+        public static string ToJsonString<T>(this T graph) { }
     }
     public enum LogLevel
     {
@@ -2265,13 +2265,15 @@ namespace Docfx.Exceptions
 }
 namespace Docfx
 {
+    [System.Text.Json.Serialization.JsonConverter(typeof(Docfx.FileItemsConverter))]
     public class FileItems : System.Collections.Generic.List<string>
     {
         public FileItems(System.Collections.Generic.IEnumerable<string> files) { }
         public FileItems(string file) { }
         public static Docfx.FileItems op_Explicit(string input) { }
     }
-    [Newtonsoft.Json.JsonConverter(typeof(Docfx.FileMappingConverter))]
+    [Newtonsoft.Json.JsonConverter(typeof(Docfx.FileMappingConverter.NewtonsoftJsonConverter))]
+    [System.Text.Json.Serialization.JsonConverter(typeof(Docfx.FileMappingConverter.SystemTextJsonConverter))]
     public class FileMapping
     {
         public FileMapping() { }
@@ -2505,6 +2507,7 @@ namespace Docfx.DataContracts.Common
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public Docfx.Common.CompositeDictionary AdditionalJson { get; }
         [Newtonsoft.Json.JsonProperty("commentId")]
@@ -2651,9 +2654,11 @@ namespace Docfx.DataContracts.Common
         [Docfx.YamlSerialization.ExtensibleMember]
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public Docfx.Common.CompositeDictionary MetadataJson { get; }
         [Newtonsoft.Json.JsonProperty("name")]
@@ -2879,6 +2884,7 @@ namespace Docfx.DataContracts.ManagedReference
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.IDictionary<string, object> ExtensionData { get; }
         [Docfx.Common.EntityMergers.MergeOption(Docfx.Common.EntityMergers.MergeOption.Ignore)]
@@ -2940,6 +2946,7 @@ namespace Docfx.DataContracts.ManagedReference
         [Docfx.YamlSerialization.ExtensibleMember]
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]
+        [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
         [Newtonsoft.Json.JsonProperty("name")]
         [System.Text.Json.Serialization.JsonPropertyName("name")]
@@ -3154,6 +3161,7 @@ namespace Docfx.DataContracts.ManagedReference
         [Docfx.DataContracts.Common.UniqueIdentityReferenceIgnore]
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
+        [System.Text.Json.Serialization.JsonInclude]
         [YamlDotNet.Serialization.YamlIgnore]
         public System.Collections.Generic.IDictionary<string, object> ExtensionData { get; }
         [Newtonsoft.Json.JsonProperty("parameters")]
@@ -3577,8 +3585,9 @@ namespace Docfx.MarkdigEngine.Extensions
         public void Setup(Markdig.MarkdownPipelineBuilder pipeline) { }
         public void Setup(Markdig.MarkdownPipeline pipeline, Markdig.Renderers.IMarkdownRenderer renderer) { }
     }
-    [Newtonsoft.Json.JsonConverter(typeof(Docfx.MarkdigEngine.Extensions.MarkdigExtensionSettingConverter))]
+    [Newtonsoft.Json.JsonConverter(typeof(Docfx.MarkdigEngine.Extensions.MarkdigExtensionSettingConverter.NewtonsoftJsonConverter))]
     [System.Diagnostics.DebuggerDisplay("Name = {Name}")]
+    [System.Text.Json.Serialization.JsonConverter(typeof(Docfx.MarkdigEngine.Extensions.MarkdigExtensionSettingConverter.SystemTextJsonConverter))]
     public class MarkdigExtensionSetting
     {
         public MarkdigExtensionSetting(string name, System.Text.Json.Nodes.JsonNode? options = null) { }
@@ -4166,9 +4175,6 @@ namespace Docfx.Plugins
     {
         public Manifest() { }
         public Manifest(System.Collections.Generic.IEnumerable<Docfx.Plugins.ManifestItem> files) { }
-        [Newtonsoft.Json.JsonProperty("files")]
-        [System.Text.Json.Serialization.JsonPropertyName("files")]
-        public System.Collections.Generic.List<Docfx.Plugins.ManifestItem> Files { get; }
         [Newtonsoft.Json.JsonProperty("groups")]
         [System.Text.Json.Serialization.JsonPropertyName("groups")]
         public System.Collections.Generic.List<Docfx.Plugins.ManifestGroupInfo> Groups { get; set; }
@@ -4182,9 +4188,13 @@ namespace Docfx.Plugins
         [System.Obsolete]
         [System.Text.Json.Serialization.JsonPropertyName("xrefmap")]
         public object Xrefmap { get; set; }
+        [Newtonsoft.Json.JsonProperty("files")]
+        [System.Text.Json.Serialization.JsonPropertyName("files")]
+        public System.Collections.Generic.List<Docfx.Plugins.ManifestItem> Files { get; init; }
     }
     public class ManifestGroupInfo
     {
+        public ManifestGroupInfo() { }
         public ManifestGroupInfo(Docfx.Plugins.GroupInfo groupInfo) { }
         [Newtonsoft.Json.JsonProperty("dest")]
         [System.Text.Json.Serialization.JsonPropertyName("dest")]
@@ -4208,9 +4218,6 @@ namespace Docfx.Plugins
         [Newtonsoft.Json.JsonExtensionData]
         [System.Text.Json.Serialization.JsonExtensionData]
         public System.Collections.Generic.Dictionary<string, object> Metadata { get; set; }
-        [Newtonsoft.Json.JsonProperty("output")]
-        [System.Text.Json.Serialization.JsonPropertyName("output")]
-        public System.Collections.Generic.Dictionary<string, Docfx.Plugins.OutputFileInfo> Output { get; }
         [Newtonsoft.Json.JsonProperty("source_relative_path")]
         [System.Text.Json.Serialization.JsonPropertyName("source_relative_path")]
         public string SourceRelativePath { get; set; }
@@ -4220,6 +4227,9 @@ namespace Docfx.Plugins
         [Newtonsoft.Json.JsonProperty("version")]
         [System.Text.Json.Serialization.JsonPropertyName("version")]
         public string Version { get; set; }
+        [Newtonsoft.Json.JsonProperty("output")]
+        [System.Text.Json.Serialization.JsonPropertyName("output")]
+        public System.Collections.Generic.Dictionary<string, Docfx.Plugins.OutputFileInfo> Output { get; init; }
     }
     public class MarkupResult
     {

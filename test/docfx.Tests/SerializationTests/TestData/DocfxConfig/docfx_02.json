@@ -1,0 +1,99 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "assembly/bin/**/*.dll",
+            "project/**/*.csproj",
+            "solution/**/*.sln",
+            "csharp/**/*.cs",
+            "vb/**/*.vb"
+          ],
+          "exclude": [
+            "project/Project.Core/**"
+          ],
+          "src": "dotnet"
+        }
+      ],
+      "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
+      "output": "obj/api"
+    },
+    {
+      "src": [
+        {
+          "files": [
+            "assembly/bin/**/*.dll",
+            "project/**/*.csproj",
+            "solution/**/*.sln",
+            "csharp/**/*.cs",
+            "vb/**/*.vb"
+          ],
+          "exclude": [
+            "project/Project.Core/**"
+          ],
+          "src": "dotnet"
+        }
+      ],
+      "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
+      "outputFormat": "markdown",
+      "output": "obj/md"
+    },
+    {
+      "src": [
+        {
+          "files": [
+            "assembly/bin/**/*.dll",
+            "project/**/*.csproj",
+            "solution/**/*.sln",
+            "csharp/**/*.cs",
+            "vb/**/*.vb"
+          ],
+          "exclude": [
+            "project/Project.Core/**"
+          ],
+          "src": "dotnet"
+        }
+      ],
+      "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
+      "outputFormat": "apiPage",
+      "output": "obj/apipage"
+    }
+  ],
+  "build": {
+    "content": [
+      { "files": [ "**/*.yml" ], "src": "obj/api", "dest": "api" },
+      { "files": [ "**" ], "src": "obj/md", "dest": "md" },
+      { "files": [ "**" ], "src": "obj/apipage", "dest": "apipage" },
+      { "files": [ "articles/**/*.{md,yml}", "*.md", "toc.yml", "restapi/**" ] },
+      { "files": [ "pdf/**" ] }
+    ],
+    "resource": [
+      {
+        "files": [ "articles/images/**"]
+      }
+    ],
+    "overwrite": "specs/*.md",
+    "globalMetadata": {
+      "_appTitle": "docfx seed website",
+      "_appName": "Seed",
+      "_enableSearch": true,
+      "pdf": true,
+      "pdfTocPage": true
+    },
+    "output": "_site",
+    "exportViewModel": true,
+    "template": ["default", "modern", "template"],
+    "markdownEngineProperties": {
+      "alerts": {
+        "TODO": "alert alert-secondary"
+      }
+    }
+  },
+  "rules": {
+    "InvalidCref": "info"
+  }
+}

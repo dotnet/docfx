@@ -1,0 +1,57 @@
+### YamlMime:ApiPage
+title: Class Class1
+body:
+- api1: Class Class1
+  id: BuildFromAssembly_Class1
+  metadata:
+    uid: BuildFromAssembly.Class1
+    commentId: T:BuildFromAssembly.Class1
+- facts:
+  - name: Namespace
+    value:
+      text: BuildFromAssembly
+      url: BuildFromAssembly.html
+  - name: Assembly
+    value: BuildFromAssembly.dll
+- markdown: This is a test class.
+- code: public class Class1
+- h4: Inheritance
+- inheritance:
+  - text: object
+    url: https://learn.microsoft.com/dotnet/api/system.object
+  - text: Class1
+    url: BuildFromAssembly.Class1.html
+- h4: Inherited Members
+- list:
+  - text: object.GetType()
+    url: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - text: object.MemberwiseClone()
+    url: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - text: object.ToString()
+    url: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - text: object.Equals(object?)
+    url: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - text: object.Equals(object?, object?)
+    url: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - text: object.ReferenceEquals(object?, object?)
+    url: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - text: object.GetHashCode()
+    url: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+- h2: Constructors
+- api3: Class1()
+  id: BuildFromAssembly_Class1__ctor
+  metadata:
+    uid: BuildFromAssembly.Class1.#ctor
+    commentId: M:BuildFromAssembly.Class1.#ctor
+- code: public Class1()
+- h2: Methods
+- api3: HelloWorld()
+  id: BuildFromAssembly_Class1_HelloWorld
+  metadata:
+    uid: BuildFromAssembly.Class1.HelloWorld
+    commentId: M:BuildFromAssembly.Class1.HelloWorld
+- markdown: Hello World.
+- code: public static void HelloWorld()
+languageId: csharp
+metadata:
+  description: This is a test class.

@@ -1,0 +1,41 @@
+{
+  "order": 100,
+  "items": [
+    {
+      "name": "Getting Started with docfx",
+      "href": "docfx_getting_started.html",
+      "topicHref": "docfx_getting_started.html"
+    },
+    {
+      "name": "Engineering Docs",
+      "items": [
+        { "name": "Section 1" },
+        {
+          "name": "Engineering Guidelines",
+          "href": "engineering_guidelines.html",
+          "topicHref": "engineering_guidelines.html"
+        },
+        {
+          "name": "C# Coding Standards",
+          "href": "csharp_coding_standards.html",
+          "topicHref": "csharp_coding_standards.html"
+        }
+      ],
+      "expanded": true
+    },
+    {
+      "name": "Markdown",
+      "href": "markdown.html",
+      "topicHref": "markdown.html"
+    },
+    {
+      "name": "Microsoft Docs",
+      "href": "https://docs.microsoft.com/en-us/",
+      "topicHref": "https://docs.microsoft.com/en-us/"
+    }
+  ],
+  "pdfFileName": "seed.pdf",
+  "pdfCoverPage": "pdf/cover.html",
+  "pdf": true,
+  "pdfTocPage": true
+}

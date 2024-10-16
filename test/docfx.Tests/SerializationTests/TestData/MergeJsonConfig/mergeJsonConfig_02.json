@@ -1,0 +1,52 @@
+[
+  {
+    "content": [
+      {
+        "files": "*.yml",
+        "src": "obj/netstandard2.0/api"
+      },
+      {
+        "files": "*.yml",
+        "src": "obj/net8/api"
+      }
+    ],
+    "globalMetadata": {},
+    "fileMetadata": {
+      "platform1": {
+        "obj/netstandard2.0/api/*.yml": [
+          "netstandard2.0"
+        ],
+        "obj/net8/api/*.yml": [
+          "net8"
+        ]
+      }
+    },
+    "dest": "obj/api",
+    "tocMetadata": []
+  },
+  {
+    "content": [
+      {
+        "files": "*.yml",
+        "src": "obj/netstandard2.0/api"
+      },
+      {
+        "files": "*.yml",
+        "src": "obj/net8/api"
+      }
+    ],
+    "globalMetadata": {},
+    "fileMetadata": {
+      "platform2": {
+        "obj/netstandard2.0/api/*.yml": [
+          "netstandard2.0"
+        ],
+        "obj/net8/api/*.yml": [
+          "net8"
+        ]
+      }
+    },
+    "dest": "obj/api",
+    "tocMetadata": []
+  }
+]

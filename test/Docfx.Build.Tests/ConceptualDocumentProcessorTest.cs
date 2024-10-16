@@ -144,7 +144,7 @@ content);
             var outputRawModelPath = GetRawModelFilePath(file);
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-            var systemKeys = (JArray)model[Constants.PropertyName.SystemKeys];
+            var systemKeys = ToList(model[Constants.PropertyName.SystemKeys]);
             Assert.NotEmpty(systemKeys);
             foreach (var key in model.Keys.Where(key => key[0] != '_' && key != "meta"))
             {
@@ -445,6 +445,13 @@ Some content";
             File.WriteAllText(filePath, content);
             return fileName.Replace('\\', '/');
         }
+    }
+
+    private static List<object> ToList(object value)
+    {
+        return value is List<object> list
+            ? list
+            : ((JArray)value).Cast<object>().ToList();
     }
 
     #endregion

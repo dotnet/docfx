@@ -8,7 +8,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Docfx.Common;
 
-public static class JsonUtility
+internal static class NewtonsoftJsonUtility
 {
     public static readonly ThreadLocal<JsonSerializer> DefaultSerializer = new(
         () => new JsonSerializer
@@ -55,14 +55,14 @@ public static class JsonUtility
         return (serializer ?? DefaultSerializer.Value).Deserialize<T>(json);
     }
 
-    public static string ToJsonString(this object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
+    public static string ToJsonString(object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
     {
         var sw = new StringWriter();
         Serialize(sw, graph, formatting, serializer);
         return sw.ToString();
     }
 
-    public static T FromJsonString<T>(this string json, JsonSerializer serializer = null)
+    public static T FromJsonString<T>(string json, JsonSerializer serializer = null)
     {
         return Deserialize<T>(new StringReader(json), serializer);
     }
