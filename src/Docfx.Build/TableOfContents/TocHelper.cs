@@ -46,14 +46,7 @@ public static class TocHelper
 
     public static TocItemViewModel LoadSingleToc(string file)
     {
-#if NET7_0_OR_GREATER
         ArgumentException.ThrowIfNullOrEmpty(file);
-#else
-        if (string.IsNullOrEmpty(file))
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
-#endif
 
         if (!EnvironmentContext.FileAbstractLayer.Exists(file))
         {

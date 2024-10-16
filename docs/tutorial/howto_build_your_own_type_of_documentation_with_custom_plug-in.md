@@ -15,7 +15,7 @@ Goal and limitation
 
 Preparation
 -----------
-1.  Create a new C# class library targeting `net6.0` or later.
+1.  Create a new C# class library targeting `net8.0` or later.
 
 2.  Add NuGet package reference to `System.Composition`, `Docfx.Plugins` and `Docfx.Common`.
 

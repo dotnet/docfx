@@ -8,13 +8,7 @@ namespace Docfx.Build.ConceptualDocuments;
 internal static class WordCounter
 {
     private static readonly string[] ExcludeNodeXPaths = ["//title"];
-
-#if NET8_0_OR_GREATER
     private static readonly System.Buffers.SearchValues<char> SpecialChars = System.Buffers.SearchValues.Create(".?!;:,()[]");
-#else
-    private static readonly string SpecialChars = ".?!;:,()[]";
-#endif
-
     private static readonly char[] DelimiterChars = [' ', '\t', '\n'];
 
     public static long CountWord(string html)

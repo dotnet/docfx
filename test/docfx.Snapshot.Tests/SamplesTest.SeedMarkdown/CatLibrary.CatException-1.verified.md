@@ -24,7 +24,6 @@ public class CatException<T> : Exception, ISerializable
 #### Inherited Members
 
 [Exception.GetBaseException\(\)](https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception), 
-[Exception.GetObjectData\(SerializationInfo, StreamingContext\)](https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata), 
 [Exception.GetType\(\)](https://learn.microsoft.com/dotnet/api/system.exception.gettype), 
 [Exception.ToString\(\)](https://learn.microsoft.com/dotnet/api/system.exception.tostring), 
 [Exception.Data](https://learn.microsoft.com/dotnet/api/system.exception.data), 

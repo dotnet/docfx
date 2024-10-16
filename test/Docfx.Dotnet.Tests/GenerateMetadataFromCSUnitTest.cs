@@ -2580,12 +2580,7 @@ namespace Test1
 
         var undefined = output.Items[0].Items[0].Items[1];
         Assert.NotNull(undefined);
-
-#if NET8_0_OR_GREATER
         Assert.Equal("public void Undefined(ConsoleKey key = ConsoleKey.None)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
-#else
-        Assert.Equal("public void Undefined(ConsoleKey key = default)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
-#endif
     }
 
     [Fact]
@@ -2653,12 +2648,8 @@ namespace Test1
 
         var enumUndefinedDefault = output.Items[0].Items[0].Items[3];
         Assert.NotNull(enumUndefinedDefault);
-
-#if NET8_0_OR_GREATER
         Assert.Equal("public void EnumUndefinedDefault(ConsoleKey? key = ConsoleKey.None)", enumUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
-#else
-        Assert.Equal("public void EnumUndefinedDefault(ConsoleKey? key = null)", enumUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
-#endif
+
         var enumUndefinedValue = output.Items[0].Items[0].Items[4];
         Assert.NotNull(enumUndefinedValue);
         Assert.Equal("public void EnumUndefinedValue(ConsoleKey? key = (ConsoleKey)999)", enumUndefinedValue.Syntax.Content[SyntaxLanguage.CSharp]);
