@@ -51,7 +51,7 @@ Replace [new URL] with the URL that you want to redirect users to. You can use a
 
 ## Metadata
 
-Metadata are attributes attached to an file. It helps shape the look and feel of a page and provides extra context to the article.
+Metadata are attributes attached to a file. It helps shape the look and feel of a page and provides extra context to the article.
 
 To add metadata to an article, use "YAML Front Matter" markdown extension syntax:
 
