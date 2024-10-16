@@ -155,10 +155,9 @@ public class VideoExtension : ITripleColonExtensionInfo
             renderer.WriteLine("<div class=\"embeddedvideo\">");
             renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine("></iframe>");
             renderer.WriteLine("</div>");
-            if (tripleColonObj is ContainerBlock
-                && (tripleColonObj as ContainerBlock).LastChild != null)
+            if (tripleColonObj is ContainerBlock {LastChild: not null} block)
             {
-                var inline = ((tripleColonObj as ContainerBlock).LastChild as ParagraphBlock).Inline;
+                var inline = (block.LastChild as ParagraphBlock).Inline;
                 renderer.WriteChildren(inline);
             }
         }

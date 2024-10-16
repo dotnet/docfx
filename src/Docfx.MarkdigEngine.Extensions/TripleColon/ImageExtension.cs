@@ -158,10 +158,9 @@ public class ImageExtension : ITripleColonExtensionInfo
         {
             renderer.Write("<img").WriteAttributes(htmlAttributes).WriteLine(">");
 
-            if (tripleColonObj is ContainerBlock
-                && (tripleColonObj as ContainerBlock).LastChild != null)
+            if (tripleColonObj is ContainerBlock {LastChild: not null} block)
             {
-                var inline = ((tripleColonObj as ContainerBlock).LastChild as ParagraphBlock).Inline;
+                var inline = (block.LastChild as ParagraphBlock).Inline;
                 renderer.WriteChildren(inline);
             }
         }
