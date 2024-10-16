@@ -142,7 +142,8 @@ partial class DotnetApiCatalog
                 Logger.LogInfo($"Loading project {path}");
                 if (!config.NoRestore)
                 {
-                    await Process.Start("dotnet", $"restore \"{path}\"").WaitForExitAsync();
+                    using var process = Process.Start("dotnet", $"restore \"{path}\"");
+                    await process.WaitForExitAsync();
                 }
                 project = await workspace.OpenProjectAsync(path, msbuildLogger);
 
