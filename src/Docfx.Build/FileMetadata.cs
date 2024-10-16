@@ -11,7 +11,7 @@ public sealed class FileMetadata : Dictionary<string, ImmutableArray<FileMetadat
 {
     public string BaseDir { get; }
 
-    public FileMetadata(string baseDir) : base()
+    public FileMetadata(string baseDir)
     {
         BaseDir = baseDir;
     }

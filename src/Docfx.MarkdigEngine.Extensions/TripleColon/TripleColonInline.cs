@@ -12,7 +12,7 @@ public class TripleColonInline : Inline, ITripleColon
     public string Body { get; set; }
 
     public TripleColonInline()
-        : base() { }
+    { }
 
     public bool Closed { get; set; }
 

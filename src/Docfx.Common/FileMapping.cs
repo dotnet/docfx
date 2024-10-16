@@ -45,7 +45,8 @@ public class FileMapping
     /// <summary>
     /// Initializes a new instance of the <see cref="FileMapping"/> class.
     /// </summary>
-    public FileMapping() : base() { }
+    public FileMapping()
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FileMapping"/> class.
