@@ -5,6 +5,10 @@
   "type": "object",
   "additionalProperties": true,
   "properties": {
+    "$schema": {
+      "type": "string",
+      "default": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/xrefmap.schema.json"
+    },
     "sorted": {
       "type": "boolean",
       "default": false,

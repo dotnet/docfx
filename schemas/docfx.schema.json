@@ -5,6 +5,10 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "$schema": {
+      "type": "string",
+      "default": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json"
+    },
     "build": {
       "$ref": "#/$defs/buildConfig"
     },

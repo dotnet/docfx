@@ -5,6 +5,10 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "$schema": {
+      "type": "string",
+      "default": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/filterconfig.schema.json"
+    },
     "apiRules": {
       "type": "array",
       "description": "Include/exclude rules using uid.",
