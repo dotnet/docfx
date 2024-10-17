@@ -115,7 +115,6 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             {
                 // new file path already exist and have suffix
                 newFileName += $"_{suffix}";
-                suffix++;
             }
             else
             {

@@ -165,10 +165,8 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         }
 
         StringBuilder builder = new();
-        bool escaping = false;
         bool disableEscape = !Options.HasFlag(GlobMatcherOptions.AllowEscape);
         bool hasMagic = false;
-        CharClass currentCharClass = null;
         string patternStart = string.Empty;
 
         // .abc will not be matched unless . is explicitly specified
@@ -215,8 +213,8 @@ public class GlobMatcher : IEquatable<GlobMatcher>
                     hasMagic = true;
                     break;
                 case '[':
-                    escaping = false;
-                    currentCharClass = new CharClass();
+                    bool escaping = false;
+                    CharClass currentCharClass = new();
                     int cur = i + 1;
                     while (cur < globPart.Length)
                     {
