@@ -116,7 +116,7 @@ public class RestApiDocumentProcessorTest : TestBase
         Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\">The request body <em sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\">contains</em> a single property that specifies the URL of the user or contact to add as manager.</p>\n",
             item5.Parameters[2].Description);
         Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\"><strong sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\">uri</strong> description.</p>\n",
-            ((string)parameter2["description"]));
+            (string)parameter2["description"]);
         Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\">No Content. Indicates <strong sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\">success</strong>. No response body is returned.</p>\n",
             item5.Responses[0].Description);
 
@@ -335,7 +335,7 @@ public class RestApiDocumentProcessorTest : TestBase
         var bodyparam = parametersForUpdate.Single(p => p.Name == "bodyparam");
         Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.parameters.md\" sourcestartlinenumber=\"1\">The new bodyparam description</p>\n",
             bodyparam.Description);
-        var properties = (JObject)(((JObject)bodyparam.Metadata["schema"])["properties"]);
+        var properties = (JObject)((JObject)bodyparam.Metadata["schema"])["properties"];
         var objectType = properties["objectType"];
         Assert.Equal("string", objectType["type"]);
         Assert.Equal("this is overwrite objectType description", objectType["description"]);
