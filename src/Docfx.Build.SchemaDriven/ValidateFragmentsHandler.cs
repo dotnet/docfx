@@ -37,9 +37,10 @@ public class ValidateFragmentsHandler : ISchemaFragmentsHandler
             return;
         }
         var opath = oPathPrefix + propertyKey;
-        if (!fragments[uid].Properties.ContainsKey(opath))
+        var fragment = fragments[uid];
+        if (!fragment.Properties.ContainsKey(opath))
         {
-            if (string.IsNullOrEmpty(oPathPrefix) && fragments[uid].Metadata?.ContainsKey(opath) == true)
+            if (string.IsNullOrEmpty(oPathPrefix) && fragment.Metadata?.ContainsKey(opath) == true)
             {
                 return;
             }

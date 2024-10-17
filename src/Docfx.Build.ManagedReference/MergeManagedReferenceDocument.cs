@@ -169,10 +169,7 @@ public class MergeManagedReferenceDocument : BaseDocumentBuildStep
     {
         foreach (var pair in mergeFrom)
         {
-            if (!mergeTo.ContainsKey(pair.Key))
-            {
-                mergeTo[pair.Key] = pair.Value;
-            }
+            mergeTo.TryAdd(pair.Key, pair.Value);
         }
     }
 

@@ -46,13 +46,9 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             var result = SplitModelToOverloadLevel(model, modelsDict, dupeModels);
             if (result != null)
             {
-                if (treeMapping.ContainsKey(result.Uid))
+                if (!treeMapping.TryAdd(result.Uid, Tuple.Create(model.OriginalFileAndType, result.TreeItems)))
                 {
                     Logger.LogWarning($"Model with the UID {result.Uid} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
-                }
-                else
-                {
-                    treeMapping.Add(result.Uid, Tuple.Create(model.OriginalFileAndType, result.TreeItems));
                 }
             }
             else
@@ -120,7 +116,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             }
             else
             {
-                // new file path already exist but doesn't have suffix (special case) 
+                // new file path already exist but doesn't have suffix (special case)
                 newFileName += "_1";
                 newFilePaths[newFilePath] = 2;
             }
