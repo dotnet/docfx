@@ -10,6 +10,7 @@ runs:
   - uses: actions/setup-dotnet@v4
     with:
       dotnet-version: |
+        6.x
         8.x
 
   - run: npm install
