@@ -23,8 +23,9 @@ public static class DocumentExceptionExtensions
                 results[i] = func(elements[i]);
             }
             catch (DocumentException ex)
+                when (firstException == null)
             {
-                firstException ??= ex;
+                firstException = ex;
             }
         }
         if (firstException != null)
@@ -53,8 +54,9 @@ public static class DocumentExceptionExtensions
                 action(element);
             }
             catch (DocumentException ex)
+                when (firstException == null)
             {
-                firstException ??= ex;
+                firstException = ex;
             }
         }
         if (firstException != null)
