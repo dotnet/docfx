@@ -49,7 +49,8 @@ public class SamplesTest : IDisposable
         var samplePath = $"{s_samplesDir}/seed";
         Clean(samplePath);
 
-        Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
+        using var process = Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"");
+        process.WaitForExit();
 
         if (Debugger.IsAttached)
         {
@@ -148,10 +149,12 @@ public class SamplesTest : IDisposable
         Clean(samplePath);
 
 #if DEBUG
-        Process.Start("dotnet", $"build \"{samplePath}/build\"").WaitForExit();
+        using var process = Process.Start("dotnet", $"build \"{samplePath}/build\"");
+        process.WaitForExit();
         Assert.Equal(0, Exec("dotnet", "run --no-build --project build", workingDirectory: samplePath));
 #else
-        Process.Start("dotnet", $"build -c Release \"{samplePath}/build\"").WaitForExit();
+        using var process = Process.Start("dotnet", $"build -c Release \"{samplePath}/build\"");
+        process.WaitForExit();
         Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
@@ -164,7 +167,7 @@ public class SamplesTest : IDisposable
         psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
         if (workingDirectory != null)
             psi.WorkingDirectory = Path.GetFullPath(workingDirectory);
-        var process = Process.Start(psi);
+        using var process = Process.Start(psi);
         process.WaitForExit();
         return process.ExitCode;
     }

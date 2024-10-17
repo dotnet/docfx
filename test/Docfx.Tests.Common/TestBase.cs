@@ -43,7 +43,7 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
         ArgumentNullException.ThrowIfNull(lines);
 
         var dir = Path.GetDirectoryName(fileName);
-        dir = CreateDirectory(dir, baseFolder);
+        CreateDirectory(dir, baseFolder);
         var file = Path.Combine(baseFolder, fileName);
         File.WriteAllLines(file, lines);
         return file;
@@ -56,7 +56,7 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
         ArgumentNullException.ThrowIfNull(baseFolder);
 
         var dir = Path.GetDirectoryName(fileName);
-        dir = CreateDirectory(dir, baseFolder);
+        CreateDirectory(dir, baseFolder);
         var file = Path.Combine(baseFolder, fileName);
         File.WriteAllText(file, content);
         return file.Replace('\\', '/');

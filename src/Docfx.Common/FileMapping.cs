@@ -45,7 +45,8 @@ public class FileMapping
     /// <summary>
     /// Initializes a new instance of the <see cref="FileMapping"/> class.
     /// </summary>
-    public FileMapping() : base() { }
+    public FileMapping()
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FileMapping"/> class.
@@ -69,7 +70,7 @@ public class FileMapping
     /// <param name="item"></param>
     public void Add(FileMappingItem item)
     {
-        if (item == null || item.Files == null || item.Files.Count == 0) return;
+        if (item?.Files == null || item.Files.Count == 0) return;
 
         _items.Add(item);
     }

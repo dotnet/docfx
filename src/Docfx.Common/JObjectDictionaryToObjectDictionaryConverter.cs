@@ -23,7 +23,7 @@ public class JObjectDictionaryToObjectDictionaryConverter : JsonConverter
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         writer.WriteStartObject();
-        foreach (var item in ((Dictionary<string, object>)value))
+        foreach (var item in (Dictionary<string, object>)value)
         {
             writer.WritePropertyName(item.Key);
             serializer.Serialize(writer, item.Value);

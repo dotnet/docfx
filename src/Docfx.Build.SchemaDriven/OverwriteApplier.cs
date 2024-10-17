@@ -84,7 +84,7 @@ public class OverwriteApplier
         dynamic overwriteObject = ConvertToObjectHelper.ConvertToDynamic(overwrite.Metadata);
         overwriteObject.uid = overwrite.Uid;
         var overwriteModel = new FileModel(owModel.FileAndType, overwriteObject, owModel.OriginalFileAndType);
-        var context = (((IDictionary<string, object>)(owModel.Properties)).TryGetValue("MarkdigMarkdownService", out var service))
+        var context = ((IDictionary<string, object>)owModel.Properties).TryGetValue("MarkdigMarkdownService", out var service)
             ? new ProcessContext(_host, overwriteModel, null, (MarkdigMarkdownService)service)
             : new ProcessContext(_host, overwriteModel);
         if (_overwriteModelType == OverwriteModelType.Classic)
@@ -115,8 +115,8 @@ public class OverwriteApplier
             };
         }
 
-        owModel.LinkToUids = owModel.LinkToUids.Union((context.UidLinkSources).Keys);
-        owModel.LinkToFiles = owModel.LinkToFiles.Union((context.FileLinkSources).Keys);
+        owModel.LinkToUids = owModel.LinkToUids.Union(context.UidLinkSources.Keys);
+        owModel.LinkToFiles = owModel.LinkToFiles.Union(context.FileLinkSources.Keys);
         owModel.FileLinkSources = owModel.FileLinkSources.Merge(context.FileLinkSources);
         owModel.UidLinkSources = owModel.UidLinkSources.Merge(context.UidLinkSources);
         owModel.Uids = owModel.Uids.AddRange(context.Uids);
