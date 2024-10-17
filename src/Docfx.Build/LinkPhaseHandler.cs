@@ -55,7 +55,7 @@ internal class LinkPhaseHandler
                     m.BaseDir = Context.BuildOutputFolder;
                     if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
                     {
-                        m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
+                        m.File = (RelativePath)m.FileAndType.DestinationDir + ((RelativePath)m.File - (RelativePath)m.FileAndType.SourceDir);
                     }
                     m.File = Path.Combine(Context.VersionFolder ?? string.Empty, m.File);
                     var result = hostService.Processor.Save(m);

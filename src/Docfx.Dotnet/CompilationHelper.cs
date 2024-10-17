@@ -204,7 +204,7 @@ internal static class CompilationHelper
 
     private static CS.CSharpParseOptions GetCSharpParseOptions(IDictionary<string, string> msbuildProperties)
     {
-        var preprocessorSymbols = (msbuildProperties.TryGetValue("DefineConstants", out var defineConstants))
+        var preprocessorSymbols = msbuildProperties.TryGetValue("DefineConstants", out var defineConstants)
             ? defineConstants.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             : null;
 
@@ -214,7 +214,7 @@ internal static class CompilationHelper
     private static VB.VisualBasicParseOptions GetVisualBasicParseOptions(IDictionary<string, string> msbuildProperties)
     {
         IEnumerable<KeyValuePair<string, object>>? preprocessorSymbols = null;
-        if ((msbuildProperties.TryGetValue("DefineConstants", out var defineConstants)))
+        if (msbuildProperties.TryGetValue("DefineConstants", out var defineConstants))
         {
             // Visual Basic use symbol/value pairs that are separated by semicolons. And are `key = value` pair syntax:
             // https://learn.microsoft.com/en-us/visualstudio/msbuild/vbc-task?view=vs-2022
