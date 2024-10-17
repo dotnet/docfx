@@ -110,7 +110,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
 
             static (string key, object value) ParseMetadata(string metadata)
             {
-                if (metadata.IndexOf('=') is int i && i < 0)
+                if (metadata.IndexOf('=') is int i and < 0)
                     return (metadata, true);
 
                 var key = metadata.Substring(0, i);

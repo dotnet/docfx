@@ -19,7 +19,7 @@ public class FileInterpreter : IInterpreter
 
     public bool CanInterpret(BaseSchema schema)
     {
-        return schema != null && schema.ContentType == ContentType.File;
+        return schema is {ContentType: ContentType.File};
     }
 
     public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)

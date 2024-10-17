@@ -33,7 +33,7 @@ internal static class SymbolHelper
 
     public static bool IsClass(this ISymbol symbol)
     {
-        return symbol.Kind is SymbolKind.NamedType && symbol is INamedTypeSymbol type && type.TypeKind is TypeKind.Class;
+        return symbol.Kind is SymbolKind.NamedType && symbol is INamedTypeSymbol {TypeKind: TypeKind.Class};
     }
 
     public static bool IsEnumMember(this ISymbol symbol)

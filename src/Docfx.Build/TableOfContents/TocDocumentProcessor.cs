@@ -91,7 +91,7 @@ class TocDocumentProcessor : DisposableDocumentProcessor
         toc.OriginalTopicHref = null;
 
         includedFrom = toc.IncludedFrom ?? includedFrom;
-        if (toc.Items != null && toc.Items.Count > 0)
+        if (toc.Items is {Count: > 0})
         {
             foreach (var item in toc.Items)
             {

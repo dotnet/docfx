@@ -122,7 +122,7 @@ class TocResolver
         {
             case HrefType.AbsolutePath:
             case HrefType.RelativeFile:
-                if (item.Items != null && item.Items.Count > 0)
+                if (item.Items is {Count: > 0})
                 {
                     item.Items = new List<TocItemViewModel>(from i in item.Items
                                                             select ResolveItem(new TocItemInfo(file, i), stack) into r

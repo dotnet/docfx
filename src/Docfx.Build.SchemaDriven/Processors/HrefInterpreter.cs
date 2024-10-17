@@ -21,7 +21,7 @@ public class HrefInterpreter : IInterpreter
 
     public bool CanInterpret(BaseSchema schema)
     {
-        return schema != null && schema.ContentType == ContentType.Href;
+        return schema is {ContentType: ContentType.Href};
     }
 
     public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)

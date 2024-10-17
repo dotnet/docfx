@@ -180,7 +180,7 @@ internal static class YamlViewModelExtensions
             Parent = model.Value.Parent,
             Definition = model.Value.Definition,
         };
-        if (model.Value.NameParts != null && model.Value.NameParts.Count > 0)
+        if (model.Value.NameParts is {Count: > 0})
         {
             result.Name = GetName(model.Value.NameParts, SyntaxLanguage.Default);
             var nameForCSharp = GetName(model.Value.NameParts, SyntaxLanguage.CSharp);
@@ -270,7 +270,7 @@ internal static class YamlViewModelExtensions
             Attributes = model.Attributes,
         };
 
-        if (model.Parent != null && model.Parent.Name != null && !model.Name.StartsWith(model.Parent.Name))
+        if (model.Parent is {Name: not null} && !model.Name.StartsWith(model.Parent.Name))
         {
             result.Id = model.Name.Substring(model.Name.LastIndexOf('.') + 1);
         }
@@ -330,7 +330,7 @@ internal static class YamlViewModelExtensions
             TypeParameters = model.TypeParameters,
             Return = model.Return,
         };
-        if (model.Content != null && model.Content.Count > 0)
+        if (model.Content is {Count: > 0})
         {
             result.Content = model.Content.GetLanguageProperty(SyntaxLanguage.Default);
             var contentForCSharp = model.Content.GetLanguageProperty(SyntaxLanguage.CSharp);
@@ -379,7 +379,7 @@ internal static class YamlViewModelExtensions
 
     private static void AddChildren(MetadataItem model, PageViewModel result, ExtractMetadataConfig config)
     {
-        if (model.Items != null && model.Items.Count > 0)
+        if (model.Items is {Count: > 0})
         {
             foreach (var item in model.Items)
             {
