@@ -116,11 +116,10 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             {
                 // new file path already exist and have suffix
                 newFileName += $"_{suffix}";
-                suffix++;
             }
             else
             {
-                // new file path already exist but doesn't have suffix (special case) 
+                // new file path already exist but doesn't have suffix (special case)
                 newFileName += "_1";
                 newFilePaths[newFilePath] = 2;
             }

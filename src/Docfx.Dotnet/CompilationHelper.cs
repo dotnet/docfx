@@ -213,7 +213,7 @@ internal static class CompilationHelper
 
     private static VB.VisualBasicParseOptions GetVisualBasicParseOptions(IDictionary<string, string> msbuildProperties)
     {
-        IEnumerable<KeyValuePair<string, object>>? preprocessorSymbols = null;
+        IEnumerable<KeyValuePair<string, object>>? preprocessorSymbols;
         if ((msbuildProperties.TryGetValue("DefineConstants", out var defineConstants)))
         {
             // Visual Basic use symbol/value pairs that are separated by semicolons. And are `key = value` pair syntax:
