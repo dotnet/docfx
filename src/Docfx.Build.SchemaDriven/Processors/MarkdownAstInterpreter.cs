@@ -40,9 +40,9 @@ public class MarkdownAstInterpreter : IInterpreter
         var host = context.Host;
 
         var mr = context.MarkdigMarkdownService.Render(document);
-        (context.FileLinkSources).Merge(mr.FileLinkSources);
-        (context.UidLinkSources).Merge(mr.UidLinkSources);
-        (context.Dependency).UnionWith(mr.Dependency);
+        context.FileLinkSources.Merge(mr.FileLinkSources);
+        context.UidLinkSources.Merge(mr.UidLinkSources);
+        context.Dependency.UnionWith(mr.Dependency);
         return mr.Html;
     }
 }

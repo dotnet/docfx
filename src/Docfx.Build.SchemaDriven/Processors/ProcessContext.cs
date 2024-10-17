@@ -58,7 +58,7 @@ public class ProcessContext : IProcessContext
         XRefSpecs = new List<XRefSpec>();
         ExternalXRefSpecs = new List<XRefSpec>();
         Metadata = new Dictionary<string, object>();
-        if (((IDictionary<string, object>)(fm.Properties)).TryGetValue("PathProperties", out var properties))
+        if (((IDictionary<string, object>)fm.Properties).TryGetValue("PathProperties", out var properties))
         {
             var pathProperties = properties as Dictionary<string, Dictionary<string, object>>;
             PathProperties = pathProperties ?? throw new ArgumentException($"PathProperties is expecting a dictionary however is a {pathProperties.GetType()}");
