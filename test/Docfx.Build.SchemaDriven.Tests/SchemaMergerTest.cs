@@ -121,7 +121,7 @@ public class SchemaMergerTest : TestBase
                 }
             },
         };
-        var schemaFile = CreateFile("template/schemas/testmerger.schema.json", JsonUtility.Serialize(schema), _templateFolder);
+        CreateFile("template/schemas/testmerger.schema.json", JsonUtility.Serialize(schema), _templateFolder);
         var inputFileName = "src.yml";
         var inputFile = CreateFile(inputFileName, @"### YamlMime:testmerger
 uid: uid1
@@ -290,7 +290,7 @@ Overwrite with content
     public void TestSchemaOverwriteWithGeneralSchemaOptions()
     {
         using var listener = new TestListenerScope();
-        var templateFile = CreateFile("template/testmerger2.html.tmpl", @"<xref uid=""{{xref}}""/>", _templateFolder);
+        CreateFile("template/testmerger2.html.tmpl", @"<xref uid=""{{xref}}""/>", _templateFolder);
         var schema = new Dictionary<string, object>
         {
             ["type"] = "object",

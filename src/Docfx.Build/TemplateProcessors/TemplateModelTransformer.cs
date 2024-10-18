@@ -59,7 +59,6 @@ public class TemplateModelTransformer
             Version = _context.VersionName,
             Group = _context.GroupInfo?.Name,
         };
-        var outputDirectory = _settings.OutputFolder ?? Directory.GetCurrentDirectory();
 
         // 1. process resource
         if (item.ResourceFile != null)

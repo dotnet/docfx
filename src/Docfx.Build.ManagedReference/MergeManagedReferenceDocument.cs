@@ -42,7 +42,6 @@ public class MergeManagedReferenceDocument : BaseDocumentBuildStep
                 return m;
             }
             processedUid.Add(mainUid);
-            var vm = (PageViewModel)m.Content;
             m.Content = MergeCore(
                 mainUid,
                 m,

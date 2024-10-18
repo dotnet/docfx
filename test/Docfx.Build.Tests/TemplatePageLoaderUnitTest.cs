@@ -25,18 +25,18 @@ public class TemplatePageLoaderUnitTest : TestBase
         Assert.Empty(listener.Items);
         Assert.Empty(templates);
 
-        var file1 = CreateFile("a.js", string.Empty, _inputFolder);
+        CreateFile("a.js", string.Empty, _inputFolder);
         templates = LoadAllTemplates();
         Assert.Empty(listener.Items);
         Assert.Empty(templates);
 
         // only allows file under root folder
-        var file2 = CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
+        CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
         templates = LoadAllTemplates();
         Assert.Empty(listener.Items);
         Assert.Empty(templates);
 
-        var file3 = CreateFile("a.tmpl.js", string.Empty, _inputFolder);
+        CreateFile("a.tmpl.js", string.Empty, _inputFolder);
         templates = LoadAllTemplates();
         Assert.Empty(listener.Items);
         Assert.Empty(templates);
@@ -45,7 +45,7 @@ public class TemplatePageLoaderUnitTest : TestBase
     [Fact]
     public void TestLoaderWhenRendererExists()
     {
-        var file1 = CreateFile("a.tmpl", string.Empty, _inputFolder);
+        CreateFile("a.tmpl", string.Empty, _inputFolder);
 
         using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
@@ -67,8 +67,8 @@ public class TemplatePageLoaderUnitTest : TestBase
     [Fact]
     public void TestLoaderWhenPreprocessorExists()
     {
-        var file1 = CreateFile("a.primary.tmpl", string.Empty, _inputFolder);
-        var file2 = CreateFile("a.primary.js", "exports.transform = function(){}", _inputFolder);
+        CreateFile("a.primary.tmpl", string.Empty, _inputFolder);
+        CreateFile("a.primary.js", "exports.transform = function(){}", _inputFolder);
 
         using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
@@ -93,7 +93,7 @@ public class TemplatePageLoaderUnitTest : TestBase
     [Fact]
     public void TestLoaderWhenStandalonePreprocessorExists()
     {
-        var file1 = CreateFile("a.ext.TMPL.js", "exports.transform = function(){}", _inputFolder);
+        CreateFile("a.ext.TMPL.js", "exports.transform = function(){}", _inputFolder);
 
         using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();

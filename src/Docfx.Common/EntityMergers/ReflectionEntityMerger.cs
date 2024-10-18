@@ -173,7 +173,6 @@ public class ReflectionEntityMerger : IMerger
                     case MergeOption.Replace:
                     case MergeOption.ReplaceNullOrDefault:
                         {
-                            var s = prop.Prop.GetValue(source);
                             var o = prop.Prop.GetValue(overrides);
                             if (prop.Option == MergeOption.Replace)
                             {
