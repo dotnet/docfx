@@ -728,7 +728,7 @@ exports.getOptions = function (){
         string templateFolder = null,
         string versionDir = null)
     {
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
         if (applyTemplateSettings == null)
         {
             applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
