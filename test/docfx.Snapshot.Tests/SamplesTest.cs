@@ -50,7 +50,7 @@ public class SamplesTest : IDisposable
         Clean(samplePath);
 
         using var process = Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"");
-        process.WaitForExit();
+        await process.WaitForExitAsync();
 
         if (Debugger.IsAttached)
         {
