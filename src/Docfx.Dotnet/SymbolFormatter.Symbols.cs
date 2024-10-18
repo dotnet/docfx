@@ -36,9 +36,9 @@ partial class SymbolFormatter
 
         public NullableAnnotation NullableAnnotation => default;
 
-        public ImmutableArray<CustomModifier> CustomModifiers => ImmutableArray<CustomModifier>.Empty;
+        public ImmutableArray<CustomModifier> CustomModifiers => [];
 
-        public ImmutableArray<CustomModifier> RefCustomModifiers => ImmutableArray<CustomModifier>.Empty;
+        public ImmutableArray<CustomModifier> RefCustomModifiers => [];
 
         public int Ordinal => 0;
 

@@ -34,14 +34,14 @@ public class MergeMarkdownFragmentsTest : TestBase
         var defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
         _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder) { RawModelExportSettings = { Export = true }, TransformDocument = true, };
 
-        _templateManager = new TemplateManager(new List<string> { "template" }, null, templateFolder);
+        _templateManager = new TemplateManager(["template"], null, templateFolder);
 
         _rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
 
         var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), templateFolder);
         var yamlFile = CreateFile("Suppressions.yml", File.ReadAllText("TestData/inputs/Suppressions.yml"), _inputFolder);
         _files = new FileCollection(defaultFiles);
-        _files.Add(DocumentType.Article, new[] { yamlFile }, _inputFolder);
+        _files.Add(DocumentType.Article, [yamlFile], _inputFolder);
     }
 
     [Fact]
@@ -352,11 +352,12 @@ With [!include[invalid](invalid.md)]",
         // modify fragments
         UpdateFile(
             "Suppressions.yml.md",
-            new string[] { "# `management.azure.com.advisor.suppressions`",
+            [
+                "# `management.azure.com.advisor.suppressions`",
                 "## ``summary``",
                 "I update a summary.",
-                "With [!include[invalid](invalid.md)]",
-            },
+                "With [!include[invalid](invalid.md)]"
+            ],
             _inputFolder);
 
         BuildDocument(_files);
@@ -402,7 +403,7 @@ With [!include[invalid](invalid.md)]",
             TemplateManager = _templateManager,
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
         builder.Build(parameters);
     }
 

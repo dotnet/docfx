@@ -30,14 +30,14 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
         _outputFolder = GetRandomFolder();
         string inputFolder = GetRandomFolder();
         _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
-        _defaultFiles.Add(DocumentType.Article, new[] { "TestData/mref/CatLibrary.Cat-2.yml" }, "TestData/");
+        _defaultFiles.Add(DocumentType.Article, ["TestData/mref/CatLibrary.Cat-2.yml"], "TestData/");
         _applyTemplateSettings = new ApplyTemplateSettings(inputFolder, _outputFolder)
         {
             RawModelExportSettings = { Export = true },
             TransformDocument = true,
         };
 
-        _templateManager = new TemplateManager(new List<string> { "template" }, null, "TestData/");
+        _templateManager = new TemplateManager(["template"], null, "TestData/");
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     {
         FileCollection files = new(_defaultFiles);
         files.RemoveAll(s => true);
-        files.Add(DocumentType.Article, new string[] { "TestData/mref/Namespace1.Class1`2.yml", "TestData/mref/Namespace1.Class1`2.#ctor.yml" }, "TestData/");
+        files.Add(DocumentType.Article, ["TestData/mref/Namespace1.Class1`2.yml", "TestData/mref/Namespace1.Class1`2.#ctor.yml"], "TestData/");
         BuildDocument(files);
 
         var outputRawModelPath = GetRawModelFilePath("Namespace1.Class1`2.yml");
@@ -129,7 +129,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     public void ProcessMrefWithDefaultOverwriteShouldSucceed()
     {
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.default.md" });
+        files.Add(DocumentType.Overwrite, ["TestData/overwrite/mref.overwrite.default.md"]);
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.yml");
@@ -144,7 +144,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     public void ProcessMrefWithSimpleOverwriteShouldSucceed()
     {
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.simple.md" });
+        files.Add(DocumentType.Overwrite, ["TestData/overwrite/mref.overwrite.simple.md"]);
         BuildDocument(files);
         var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.yml");
         Assert.True(File.Exists(outputRawModelPath));
@@ -157,7 +157,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     public void ProcessMrefWithParametersOverwriteShouldSucceed()
     {
         var files = new FileCollection(_defaultFiles);
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.parameters.md" });
+        files.Add(DocumentType.Overwrite, ["TestData/overwrite/mref.overwrite.parameters.md"]);
         BuildDocument(files);
         var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.yml");
         Assert.True(File.Exists(outputRawModelPath));
@@ -176,7 +176,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     public void ProcessMrefWithNotPredefinedOverwriteShouldSucceed()
     {
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.not.predefined.md" });
+        files.Add(DocumentType.Overwrite, ["TestData/overwrite/mref.overwrite.not.predefined.md"]);
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.yml");
@@ -193,7 +193,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     {
         FileCollection files = new(_defaultFiles);
         files.RemoveAll(s => true);
-        files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
+        files.Add(DocumentType.Article, ["TestData/mref/System.String.yml"], "TestData/");
 
         BuildDocument(files);
 
@@ -214,8 +214,8 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     public void ProcessMrefWithInvalidCrossReferenceShouldWarn()
     {
         var files = new FileCollection(Directory.GetCurrentDirectory());
-        files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.invalid.ref.md" });
+        files.Add(DocumentType.Article, ["TestData/mref/System.String.yml"], "TestData/");
+        files.Add(DocumentType.Overwrite, ["TestData/overwrite/mref.overwrite.invalid.ref.md"]);
 
         using var listener = new TestListenerScope(LogLevel.Info);
 
@@ -238,7 +238,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     public void ProcessMrefWithInvalidOverwriteShouldFail()
     {
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.invalid.md" });
+        files.Add(DocumentType.Overwrite, ["TestData/overwrite/mref.overwrite.invalid.md"]);
         Assert.Throws<DocumentException>(() => BuildDocument(files));
     }
 
@@ -246,7 +246,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     public void ProcessMrefWithRemarksOverwriteShouldSucceed()
     {
         var files = new FileCollection(_defaultFiles);
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.remarks.md" });
+        files.Add(DocumentType.Overwrite, ["TestData/overwrite/mref.overwrite.remarks.md"]);
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.yml");
@@ -261,7 +261,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     public void ProcessMrefWithMultiUidOverwriteShouldSucceed()
     {
         var files = new FileCollection(_defaultFiles);
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.multi.uid.md" });
+        files.Add(DocumentType.Overwrite, ["TestData/overwrite/mref.overwrite.multi.uid.md"]);
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.yml");
@@ -323,7 +323,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
             TemplateManager = _templateManager
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
         builder.Build(parameters);
     }
 

@@ -108,7 +108,7 @@ internal static partial class SymbolFormatter
         }
         catch (InvalidOperationException)
         {
-            return ImmutableArray<SymbolDisplayPart>.Empty;
+            return [];
         }
     }
 
@@ -168,7 +168,7 @@ internal static partial class SymbolFormatter
         }
         catch
         {
-            return ImmutableArray<SymbolDisplayPart>.Empty;
+            return [];
         }
 
         static ImmutableArray<SymbolDisplayPart> GetCastOperatorOverloadDisplayParts(ImmutableArray<SymbolDisplayPart> parts)

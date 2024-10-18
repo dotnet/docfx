@@ -21,9 +21,9 @@ public class YamlHtmlPart
 
     public int EndLine { get; set; }
 
-    public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
+    public ImmutableArray<string> LinkToFiles { get; set; } = [];
 
-    public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
+    public ImmutableHashSet<string> LinkToUids { get; set; } = [];
 
     public ImmutableDictionary<string, object> YamlHeader { get; set; } = ImmutableDictionary<string, object>.Empty;
 

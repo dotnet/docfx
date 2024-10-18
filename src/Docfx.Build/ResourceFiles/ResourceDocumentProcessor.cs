@@ -43,7 +43,7 @@ class ResourceDocumentProcessor : DisposableDocumentProcessor
     {
         return new FileModel(file, new Dictionary<string, object>())
         {
-            Uids = ImmutableArray<UidDefinition>.Empty,
+            Uids = [],
             LocalPathFromRoot = PathUtility.MakeRelativePath(
                 EnvironmentContext.BaseDirectory,
                 EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File)),

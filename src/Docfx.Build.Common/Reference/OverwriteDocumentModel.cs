@@ -81,7 +81,7 @@ public class OverwriteDocumentModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public ImmutableArray<string> Dependency { get; set; } = ImmutableArray<string>.Empty;
+    public ImmutableArray<string> Dependency { get; set; } = [];
 
     public T ConvertTo<T>() where T : class
     {

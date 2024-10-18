@@ -55,7 +55,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
     #region Constructors that used by test code.
 
     internal DocumentBuildContext(string buildOutputFolder)
-        : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
+        : this(buildOutputFolder, [], [], [], 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
 
     private DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)
         : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, null) { }
@@ -114,7 +114,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
-    public ImmutableArray<string> ExternalReferencePackages { get; } = ImmutableArray<string>.Empty;
+    public ImmutableArray<string> ExternalReferencePackages { get; } = [];
 
     public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 

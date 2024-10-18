@@ -193,7 +193,7 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
             TemplateManager = _templateManager
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
         builder.Build(parameters);
     }
 

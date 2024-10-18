@@ -242,7 +242,7 @@ public class SplitRestApiToOperationLevelTest : TestBase
             TemplateManager = _templateManager
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(enableTagLevel), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(enableTagLevel), []);
         builder.Build(parameters);
     }
 

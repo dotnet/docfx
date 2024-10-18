@@ -181,7 +181,7 @@ partial class SymbolFormatter
         private ImmutableArray<SymbolDisplayPart> RemoveNamedTypeConstraints(ISymbol symbol)
         {
             if (symbol.Kind is not SymbolKind.NamedType)
-                return ImmutableArray<SymbolDisplayPart>.Empty;
+                return [];
 
             var result = ImmutableArray.CreateBuilder<SymbolDisplayPart>();
 
@@ -524,7 +524,7 @@ partial class SymbolFormatter
             }
             catch
             {
-                return ImmutableArray<SymbolDisplayPart>.Empty;
+                return [];
             }
         }
     }

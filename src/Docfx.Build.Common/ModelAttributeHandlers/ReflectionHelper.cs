@@ -36,7 +36,7 @@ public static class ReflectionHelper
         ArgumentNullException.ThrowIfNull(arguments);
 
         var func = _createInstanceCache.GetOrAdd(
-            Tuple.Create(type, typeArguments ?? Type.EmptyTypes, argumentTypes),
+            Tuple.Create(type, typeArguments ?? [], argumentTypes),
             GetCreateInstanceFunc);
         return func(arguments);
     }
@@ -150,7 +150,7 @@ public static class ReflectionHelper
     {
         if (!type.IsVisible)
         {
-            return Enumerable.Empty<PropertyInfo>();
+            return [];
         }
         return GetProperties(type, BindingFlags.Public | BindingFlags.Instance);
     }

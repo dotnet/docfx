@@ -31,13 +31,13 @@ public class SplitRestApiToTagLevelTest : TestBase
         string inputFolder = GetRandomFolder();
         _outputFolder = GetRandomFolder();
         _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
-        _defaultFiles.Add(DocumentType.Article, new[] { "TestData/swagger/petstore.json" }, "TestData/");
+        _defaultFiles.Add(DocumentType.Article, ["TestData/swagger/petstore.json"], "TestData/");
         _applyTemplateSettings = new ApplyTemplateSettings(inputFolder, _outputFolder)
         {
             RawModelExportSettings = { Export = true },
             TransformDocument = true,
         };
-        _templateManager = new TemplateManager(new List<string> { "template" }, null, "TestData/");
+        _templateManager = new TemplateManager(["template"], null, "TestData/");
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public class SplitRestApiToTagLevelTest : TestBase
             TemplateManager = _templateManager
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
         builder.Build(parameters);
     }
 

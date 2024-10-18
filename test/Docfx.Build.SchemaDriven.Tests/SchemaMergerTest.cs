@@ -36,7 +36,7 @@ public class SchemaMergerTest : TestBase
             TransformDocument = true,
         };
 
-        _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
+        _templateManager = new TemplateManager(["template"], null, _templateFolder);
     }
 
     [Fact]
@@ -216,8 +216,8 @@ summary: *content
 Overwrite with content
 ", _inputFolder);
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-        files.Add(DocumentType.Overwrite, new[] { overwriteFile }, _inputFolder);
+        files.Add(DocumentType.Article, [inputFile], _inputFolder);
+        files.Add(DocumentType.Overwrite, [overwriteFile], _inputFolder);
         BuildDocument(files);
 
         // One plugin warning for yml and one plugin warning for overwrite file
@@ -343,8 +343,8 @@ reference: ../inc/inc2.md
 Nice
 ", _inputFolder);
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-        files.Add(DocumentType.Overwrite, new[] { overwriteFile }, _inputFolder);
+        files.Add(DocumentType.Article, [inputFile], _inputFolder);
+        files.Add(DocumentType.Overwrite, [overwriteFile], _inputFolder);
         BuildDocument(files);
 
         // One plugin warning for yml and one plugin warning for overwrite file
@@ -378,7 +378,7 @@ Nice
             TemplateManager = _templateManager,
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
         builder.Build(parameters);
     }
 
