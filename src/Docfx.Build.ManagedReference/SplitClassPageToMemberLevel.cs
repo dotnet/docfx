@@ -66,9 +66,8 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
 
         foreach (var dupeModel in dupeModels)
         {
-            if (modelsDict.TryGetValue(dupeModel.File, out var dupe))
+            if (modelsDict.Remove(dupeModel.File, out var dupe))
             {
-                modelsDict.Remove(dupeModel.File);
                 RenewDupeFileModels(dupe, newFilePaths, modelsDict);
             }
             RenewDupeFileModels(dupeModel, newFilePaths, modelsDict);
@@ -116,11 +115,10 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             {
                 // new file path already exist and have suffix
                 newFileName += $"_{suffix}";
-                suffix++;
             }
             else
             {
-                // new file path already exist but doesn't have suffix (special case) 
+                // new file path already exist but doesn't have suffix (special case)
                 newFileName += "_1";
                 newFilePaths[newFilePath] = 2;
             }

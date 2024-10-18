@@ -34,7 +34,7 @@ internal sealed class SystemMetadataGenerator
         attrs.Key = ((RelativePath)key).RemoveWorkingFolder();
         var file = (RelativePath)(item.FileWithoutExtension + item.Extension);
 
-        attrs.Rel = (RelativePath.Empty).MakeRelativeTo(file);
+        attrs.Rel = RelativePath.Empty.MakeRelativeTo(file);
         var fileWithoutWorkingFolder = file.RemoveWorkingFolder();
         attrs.Path = fileWithoutWorkingFolder;
 

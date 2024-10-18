@@ -233,7 +233,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
 
     private string GetNoteBookContent(string content, string tagName, CodeSnippet obj)
     {
-        JObject contentObject = null;
+        JObject contentObject;
         try
         {
             contentObject = JObject.Parse(content);
@@ -245,7 +245,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
 
         string sourceJsonPath = $"$..cells[?(@.metadata.name=='{tagName}')].source";
-        JToken sourceObject = null;
+        JToken sourceObject;
         try
         {
             sourceObject = contentObject.SelectToken(sourceJsonPath);

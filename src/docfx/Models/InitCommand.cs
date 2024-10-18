@@ -33,6 +33,7 @@ class InitCommand : Command<InitCommandOptions>
 
         var docfx = new
         {
+            schema = "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
             metadata = dotnetApi ? new[]
             {
                 new
@@ -72,7 +73,7 @@ class InitCommand : Command<InitCommandOptions>
             {
                 WriteIndented = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            }),
+            }).Replace("\"schema\"", "\"$schema\""),
 
             ["toc.yml"] = dotnetApi ?
                 $"""

@@ -67,7 +67,7 @@ internal class MetadataMerger
                 }));
         foreach (var m in models)
         {
-            m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
+            m.File = (RelativePath)m.FileAndType.DestinationDir + ((RelativePath)m.File - (RelativePath)m.FileAndType.SourceDir);
             Console.WriteLine($"File:{m.OriginalFileAndType.File} from:{m.FileAndType.SourceDir} to:{m.FileAndType.DestinationDir} => {m.File}");
         }
         foreach (var m in models)
@@ -88,7 +88,7 @@ internal class MetadataMerger
             select YamlUtility.Deserialize<List<TocItemViewModel>>(f.File));
         CopyMetadataToToc(vm);
         YamlUtility.Serialize(
-            ((RelativePath)tocFiles[0].DestinationDir + (((RelativePath)tocFiles[0].File) - (RelativePath)tocFiles[0].SourceDir)).ToString(),
+            ((RelativePath)tocFiles[0].DestinationDir + ((RelativePath)tocFiles[0].File - (RelativePath)tocFiles[0].SourceDir)).ToString(),
             vm,
             YamlMime.TableOfContent);
     }
