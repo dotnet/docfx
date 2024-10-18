@@ -73,10 +73,6 @@ jobs:
         name: dump
         path: /tmp/coredump*
 
-    - name: Report failed tests
-      if: ${{ failure() && (steps.test-net80.outcome == 'failure' || steps.test-net60.outcome == 'failure') }}
-      uses: ./.github/actions/report-failed-tests
-
   publish-docs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [test]
