@@ -70,8 +70,6 @@ public class CodeExtension : ITripleColonExtensionInfo
     {
         htmlAttributes = null;
         var source = "";
-        var range = "";
-        var id = "";
         var highlight = "";
         var language = "";
         var interactive = "";
@@ -86,10 +84,7 @@ public class CodeExtension : ITripleColonExtensionInfo
                     source = value;
                     break;
                 case "range":
-                    range = value;
-                    break;
                 case "id":
-                    id = value;
                     break;
                 case "highlight":
                     highlight = value;

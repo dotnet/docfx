@@ -27,9 +27,8 @@ public class ApplyPlatformVersion : BaseDocumentBuildStep
             }
             var page = m.Content as PageViewModel;
             if (page?.Metadata != null &&
-                page.Metadata.TryGetValue("platform", out object value))
+                page.Metadata.Remove("platform", out object value))
             {
-                page.Metadata.Remove("platform");
                 var list = GetPlatformVersionFromMetadata(value);
                 if (list != null)
                 {

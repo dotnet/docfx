@@ -92,7 +92,7 @@ public class TemplateModelTransformer
 
             var extension = template.Extension;
             string outputFile = item.FileWithoutExtension + extension;
-            object viewModel = null;
+            object viewModel;
             try
             {
                 viewModel = template.TransformModel(model);
