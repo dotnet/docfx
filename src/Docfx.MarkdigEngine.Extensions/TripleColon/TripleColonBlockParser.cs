@@ -104,10 +104,12 @@ public class TripleColonBlockParser : BlockParser
     public override BlockState TryContinue(BlockProcessor processor, Block block)
     {
         var slice = processor.Line;
-        var endingTripleColons = ((TripleColonBlock)block).EndingTripleColons;
+        var colonBlock = (TripleColonBlock) block;
+        var endingTripleColons = colonBlock.EndingTripleColons;
 
-        if (((TripleColonBlock)block).Extension.GetType() != typeof(ImageExtension) || ((TripleColonBlock)block).Extension.GetType() != typeof(VideoExtension)
-            || endingTripleColons)
+        if (colonBlock.Extension.GetType() != typeof(ImageExtension) ||
+            colonBlock.Extension.GetType() != typeof(VideoExtension) ||
+            endingTripleColons)
         {
             if (processor.IsBlankLine)
             {
@@ -119,14 +121,14 @@ public class TripleColonBlockParser : BlockParser
             if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
                 // create a block for the image long description
-                ((TripleColonBlock)block).Body = slice.ToString();
+                colonBlock.Body = slice.ToString();
                 ExtensionsHelper.ResetLineIndent(processor);
                 return BlockState.Continue;
             }
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            var extensionName = ((TripleColonBlock)block).Extension.Name;
+            var extensionName = colonBlock.Extension.Name;
 
             if (!ExtensionsHelper.MatchStart(ref slice, extensionName) || !ExtensionsHelper.MatchStart(ref slice, "-end"))
             {
@@ -155,13 +157,13 @@ public class TripleColonBlockParser : BlockParser
 
             block.UpdateSpanEnd(slice.End);
             block.IsOpen = false;
-            (block as TripleColonBlock).Closed = true;
+            colonBlock.Closed = true;
 
             return BlockState.BreakDiscard;
         }
 
         block.IsOpen = false;
-        (block as TripleColonBlock).Closed = true;
+        colonBlock.Closed = true;
 
         if (!processor.IsBlankLine)
         {
