@@ -39,12 +39,12 @@ public class CodeSnippetExtractor
                     tagName = tagStack.Count > 0 ? tagStack.Pop() : string.Empty;
                 }
 
-                if (result.ContainsKey(tagName))
+                if (result.TryGetValue(tagName, out var range))
                 {
-                    if (result[tagName].End == 0)
+                    if (range.End == 0)
                     {
                         // we meet the first end tag, ignore the following ones
-                        result[tagName].End = index;
+                        range.End = index;
                     }
                 }
 

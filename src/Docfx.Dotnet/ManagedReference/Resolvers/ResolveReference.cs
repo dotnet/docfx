@@ -56,7 +56,7 @@ internal class ResolveReference : IResolverPipeline
         {
             if (context.References.TryGetValue(key, out ReferenceItem item))
             {
-                var reference = context.References[key].Clone();
+                var reference = item.Clone();
                 page.References.Add(key, reference);
                 addingReferences.Add(reference);
             }

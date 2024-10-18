@@ -191,10 +191,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         foreach (var pair in root.Metadata)
         {
             // Tag metadata wins for the same key
-            if (!result.ContainsKey(pair.Key))
-            {
-                result[pair.Key] = pair.Value;
-            }
+            result.TryAdd(pair.Key, pair.Value);
         }
         return result;
     }
