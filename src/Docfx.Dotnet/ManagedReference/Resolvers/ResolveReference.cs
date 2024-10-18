@@ -52,11 +52,14 @@ internal class ResolveReference : IResolverPipeline
 
     private static void TryAddReference(ResolverContext context, MetadataItem page, List<ReferenceItem> addingReferences, string key)
     {
-        if (context.References.TryGetValue(key, out ReferenceItem item))
+        if (!page.References.ContainsKey(key))
         {
-            var reference = item.Clone();
-            page.References.Add(key, reference);
-            addingReferences.Add(reference);
+            if (context.References.TryGetValue(key, out ReferenceItem item))
+            {
+                var reference = item.Clone();
+                page.References.Add(key, reference);
+                addingReferences.Add(reference);
+            }
         }
     }
 
