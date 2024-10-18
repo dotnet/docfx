@@ -27,7 +27,7 @@ internal class ResolveReference : IResolverPipeline
                     page = parent;
                     current.References = null;
                 }
-                if (documentReferences != null && documentReferences.Count > 0)
+                if (documentReferences is {Count: > 0})
                 {
                     foreach (var key in documentReferences.Keys)
                     {

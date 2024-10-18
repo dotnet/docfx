@@ -23,7 +23,7 @@ internal static class DocumentBuilderWrapper
         // Ensure "_enableSearch" adds the right post processor
         if (metadata != null && metadata.TryGetValue("_enableSearch", out object value))
         {
-            if (value is bool isSearchable && isSearchable && !postProcessorNames.Contains("ExtractSearchIndex"))
+            if (value is true && !postProcessorNames.Contains("ExtractSearchIndex"))
             {
                 postProcessorNames = postProcessorNames.Add("ExtractSearchIndex");
             }

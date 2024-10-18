@@ -131,7 +131,7 @@ internal static partial class SymbolFormatter
             if (symbol is null || part.Kind is SymbolDisplayPartKind.TypeParameterName)
                 return new() { DisplayName = part.ToString() };
 
-            if (symbol is INamedTypeSymbol type && type.IsGenericType)
+            if (symbol is INamedTypeSymbol {IsGenericType: true} type)
                 symbol = type.ConstructedFrom;
 
             return new()

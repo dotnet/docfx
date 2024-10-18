@@ -61,7 +61,7 @@ partial class DotnetApiCatalog
 
             switch (symbol)
             {
-                case INamespaceSymbol ns when ns.IsGlobalNamespace:
+                case INamespaceSymbol {IsGlobalNamespace: true} ns:
                     foreach (var child in ns.GetNamespaceMembers())
                         foreach (var item in CreateToc(child, compilation))
                             yield return item;
@@ -248,7 +248,7 @@ partial class DotnetApiCatalog
                     case CategoryLayout.Nested:
                         {
                             // Skip when parent node is category node.
-                            if (parentTocNode != null && parentTocNode.type == TocNodeType.None)
+                            if (parentTocNode is {type: TocNodeType.None})
                                 return;
 
                             // If items contains specified type node. Create new TocNode for category. and move related node to child node.

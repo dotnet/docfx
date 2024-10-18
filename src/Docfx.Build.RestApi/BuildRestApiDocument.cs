@@ -102,7 +102,7 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
             {
                 if (MarkupKeys.Contains(pair.Key) && pair.Value != null)
                 {
-                    if (pair.Value is JValue jValue && jValue.Type == JTokenType.String)
+                    if (pair.Value is JValue {Type: JTokenType.String} jValue)
                     {
                         jObject[pair.Key] = Markup(host, (string)jValue, model, filter);
                     }

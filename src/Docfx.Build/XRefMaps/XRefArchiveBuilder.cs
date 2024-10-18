@@ -53,7 +53,7 @@ public class XRefArchiveBuilder
         //   Sort is not needed if `map.Sorted == true`.
         //   But there are some xrefmap files that is not propery sorted by using InvariantCulture.
         //   (e.g. Unity xrefmap that maintained by community)
-        if (map.References != null && map.References.Count > 0)
+        if (map.References is {Count: > 0})
         {
             map.References.Sort(XRefSpecUidComparer.Instance);
             map.Sorted = true;

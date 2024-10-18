@@ -43,7 +43,7 @@ public class MarkdownDocumentVisitor
         for (var i = 0; i < blocks.Count; i++)
         {
             var block = blocks[i];
-            if (block is LeafBlock leafBlock && leafBlock.Inline != null)
+            if (block is LeafBlock {Inline: not null} leafBlock)
             {
                 RewriteContainerInline(leafBlock.Inline);
             }

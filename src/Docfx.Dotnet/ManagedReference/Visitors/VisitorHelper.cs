@@ -29,7 +29,7 @@ internal static class VisitorHelper
             return null;
         }
 
-        if (symbol is INamespaceSymbol namespaceSymbol && namespaceSymbol.IsGlobalNamespace)
+        if (symbol is INamespaceSymbol {IsGlobalNamespace: true})
         {
             return GlobalNamespaceId;
         }

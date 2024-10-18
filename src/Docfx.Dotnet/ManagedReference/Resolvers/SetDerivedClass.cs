@@ -11,7 +11,7 @@ internal class SetDerivedClass : IResolverPipeline
 
     public void Run(MetadataModel yaml, ResolverContext context)
     {
-        if (yaml.Members != null && yaml.Members.Count > 0)
+        if (yaml.Members is {Count: > 0})
         {
             UpdateDerivedClassMapping(yaml.Members, context.References);
             AppendDerivedClass(yaml.Members);
@@ -23,7 +23,7 @@ internal class SetDerivedClass : IResolverPipeline
         foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
         {
             var inheritance = item.Inheritance;
-            if (inheritance != null && inheritance.Count > 0)
+            if (inheritance is {Count: > 0})
             {
                 var superClass = inheritance[inheritance.Count - 1];
 

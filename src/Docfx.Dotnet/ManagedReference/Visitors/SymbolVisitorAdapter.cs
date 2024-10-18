@@ -238,7 +238,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
         _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
-        if (symbol.IsOverride && symbol.OverriddenMethod != null)
+        if (symbol is {IsOverride: true, OverriddenMethod: not null})
         {
             result.Overridden = AddSpecReference(symbol.OverriddenMethod, typeGenericParameters, methodGenericParameters);
         }
@@ -296,7 +296,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
         var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
-        if (symbol.IsOverride && symbol.OverriddenEvent != null)
+        if (symbol is {IsOverride: true, OverriddenEvent: not null})
         {
             result.Overridden = AddSpecReference(symbol.OverriddenEvent, typeGenericParameters);
         }
@@ -350,7 +350,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             Debug.Assert(result.Syntax.Return.Type != null);
         }
 
-        if (symbol.IsOverride && symbol.OverriddenProperty != null)
+        if (symbol is {IsOverride: true, OverriddenProperty: not null})
         {
             result.Overridden = AddSpecReference(symbol.OverriddenProperty, typeGenericParameters);
         }

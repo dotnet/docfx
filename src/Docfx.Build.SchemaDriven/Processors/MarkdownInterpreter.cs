@@ -9,7 +9,7 @@ public class MarkdownInterpreter : IInterpreter
 {
     public bool CanInterpret(BaseSchema schema)
     {
-        return schema != null && schema.ContentType == ContentType.Markdown;
+        return schema is {ContentType: ContentType.Markdown};
     }
 
     public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
