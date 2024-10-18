@@ -49,7 +49,7 @@ public class PercyTest
         Clean(samplePath);
 
         using var process = Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"");
-        process.WaitForExit();
+        await process.WaitForExitAsync();
 
         var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
         Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
