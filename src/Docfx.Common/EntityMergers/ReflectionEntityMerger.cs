@@ -142,9 +142,11 @@ public class ReflectionEntityMerger : IMerger
                                 {
                                     continue;
                                 }
-                                if (o.GetType().IsValueType)
+
+                                var type = o.GetType();
+                                if (type.IsValueType)
                                 {
-                                    var defaultValue = Activator.CreateInstance(o.GetType());
+                                    var defaultValue = Activator.CreateInstance(type);
                                     if (object.Equals(defaultValue, o))
                                     {
                                         continue;
@@ -181,9 +183,11 @@ public class ReflectionEntityMerger : IMerger
                                 {
                                     continue;
                                 }
-                                if (o.GetType().IsValueType)
+
+                                var type = o.GetType();
+                                if (type.IsValueType)
                                 {
-                                    var defaultValue = Activator.CreateInstance(o.GetType());
+                                    var defaultValue = Activator.CreateInstance(type);
                                     if (object.Equals(defaultValue, o))
                                     {
                                         continue;

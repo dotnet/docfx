@@ -66,7 +66,8 @@ public class TripleColonBlockParser : BlockParser
             block.SetData(typeof(HtmlAttributes), htmlAttributes);
         }
 
-        if (extension.GetType() == typeof(ImageExtension))
+        var type = extension.GetType();
+        if (type == typeof(ImageExtension))
         {
             if (!ImageExtension.RequiresClosingTripleColon(attributes))
             {
@@ -77,7 +78,7 @@ public class TripleColonBlockParser : BlockParser
             block.EndingTripleColons = true;
             return BlockState.ContinueDiscard;
         }
-        else if (extension.GetType() == typeof(VideoExtension))
+        else if (type == typeof(VideoExtension))
         {
             if (!VideoExtension.RequiresClosingTripleColon(attributes))
             {
@@ -106,8 +107,8 @@ public class TripleColonBlockParser : BlockParser
         var slice = processor.Line;
         var endingTripleColons = ((TripleColonBlock)block).EndingTripleColons;
 
-        if (((TripleColonBlock)block).Extension.GetType() != typeof(ImageExtension) || ((TripleColonBlock)block).Extension.GetType() != typeof(VideoExtension)
-            || endingTripleColons)
+        Type type = ((TripleColonBlock)block).Extension.GetType();
+        if (type != typeof(ImageExtension) || type != typeof(VideoExtension) || endingTripleColons)
         {
             if (processor.IsBlankLine)
             {
