@@ -3,11 +3,13 @@
  * The .NET Foundation licenses this file to you under the MIT license.
  */
 
-@import "highlight.js/scss/vs";
+@use "sass:meta";
+@use "highlight.js/scss/vs";
+@use "bootstrap/scss/bootstrap";
 
-@include color-mode(dark) {
+@include bootstrap.color-mode(dark) {
   /* stylelint-disable-next-line no-invalid-position-at-import-rule */
-  @import "highlight.js/scss/vs2015";
+  @include meta.load-css("highlight.js/scss/vs2015");
 }
 
 .hljs {
@@ -24,7 +26,7 @@ pre > code .line-highlight {
   background-color: yellow;
 }
 
-@include color-mode(dark) {
+@include bootstrap.color-mode(dark) {
   pre > code .line-highlight {
     background-color: #4a4a00;
   }

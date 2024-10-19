@@ -8,15 +8,15 @@ $container-max-widths: (
   xxl: 1768px
 ) !default;
 
-@import "mixins";
-@import "bootstrap/scss/bootstrap";
-@import "highlight";
-@import "layout";
-@import "nav";
-@import "toc";
-@import "markdown";
-@import "search";
-@import "dotnet";
+@use "mixins";
+@use "bootstrap/scss/bootstrap";
+@use "highlight";
+@use "layout";
+@use "nav";
+@use "toc";
+@use "markdown";
+@use "search";
+@use "dotnet";
 
 h1,
 h2,
