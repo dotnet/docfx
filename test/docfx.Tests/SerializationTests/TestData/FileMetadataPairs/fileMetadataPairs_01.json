@@ -1,0 +1,28 @@
+{
+  "priority": {
+    "**.md": 2.5,
+    "spec/**.md": 3
+  },
+  "keywords": {
+    "obj/docfx/**": [
+      "API",
+      "Reference"
+    ],
+    "spec/**.md": [
+      "Spec",
+      "Conceptual"
+    ]
+  },
+  "_noindex": {
+    "articles/**/article.md": true
+  },
+  "others": {
+    "nested": {
+      "null": null,
+      "val": "dummy",
+      "datetime": "2024-01-01:T00:00:00",
+      "double": 1.2345,
+      "array": [ 1, 2, 3, 4 ]
+    }
+  }
+}
