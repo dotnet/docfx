@@ -67,13 +67,16 @@ internal class PreprocessorWithResourcePool : ITemplatePreprocessor
         {
             return lease.Resource.TransformModel(model);
         }
+        catch (JavaScriptException ex)
+        {
+            throw BuildException(ex.GetJavaScriptErrorString());
+        }
         catch (Exception ex)
         {
-            string message = ex is JavaScriptException jsException
-                ? jsException.GetJavaScriptErrorString()
-                : ex.Message;
-
-            throw new InvalidPreprocessorException($"Error running Transform function inside template preprocessor: {message}");
+            throw BuildException(ex.Message);
         }
+
+        Exception BuildException(string message) =>
+            new InvalidPreprocessorException($"Error running Transform function inside template preprocessor: {message}");
     }
 }
