@@ -138,9 +138,7 @@ internal static partial class SymbolFormatter
             {
                 Name = overload ? VisitorHelper.GetOverloadId(symbol) : VisitorHelper.GetId(symbol),
                 DisplayName = part.ToString(),
-                Href = filter.IncludeApi(symbol)
-                        ? SymbolUrlResolver.GetSymbolUrl(symbol, compilation, memberLayout, urlKind, allAssemblies)
-                        : null,
+                Href = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, memberLayout, urlKind, allAssemblies, filter),
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
             };
         }

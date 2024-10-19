@@ -707,9 +707,7 @@ partial class DotnetApiCatalog
         Inline ShortLink(ISymbol symbol, Compilation compilation)
         {
             var title = SymbolFormatter.GetNameWithType(symbol, SyntaxLanguage.CSharp);
-            var url = filter.IncludeApi(symbol)
-                        ? SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, symbolUrlKind, allAssemblies)
-                        : null;
+            var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, symbolUrlKind, allAssemblies, filter);
             return Link(title, url);
         }
 
@@ -724,9 +722,7 @@ partial class DotnetApiCatalog
         Inline NameOnlyLink(ISymbol symbol, Compilation compilation)
         {
             var title = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp);
-            var url = filter.IncludeApi(symbol)
-                        ? SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, symbolUrlKind, allAssemblies)
-                        : null;
+            var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, symbolUrlKind, allAssemblies, filter);
             return Link(title, url);
         }
 
