@@ -185,13 +185,13 @@ partial class DotnetApiCatalog
             {
                 foreach (var pair in project.References)
                 {
-                    if (!result.ContainsKey(pair.Key))
+                    if (result.TryGetValue(pair.Key, out var value))
                     {
-                        result[pair.Key] = pair.Value;
+                        value.Merge(pair.Value);
                     }
                     else
                     {
-                        result[pair.Key].Merge(pair.Value);
+                        result[pair.Key] = pair.Value;
                     }
                 }
             }
