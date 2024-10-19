@@ -192,7 +192,10 @@ body[data-layout="landing"] {
           display: block;
           width: 230px;
           max-height: calc(100vh - $header-height - $main-padding-top);
+
+          /* stylelint-disable-next-line declaration-block-no-redundant-longhand-properties */
           overflow-x: hidden;
+          /* stylelint-disable-next-line declaration-block-no-redundant-longhand-properties */
           overflow-y: auto;
 
           @include stick-to-header;
