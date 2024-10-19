@@ -85,5 +85,5 @@ public sealed class FileModel
 
     public string DocumentType { get; set; }
 
-    public ImmutableArray<UidDefinition> Uids { get; set; } = ImmutableArray<UidDefinition>.Empty;
+    public ImmutableArray<UidDefinition> Uids { get; set; } = [];
 }

@@ -32,9 +32,9 @@ public class MarkdownInterpreter : IInterpreter
         var host = context.Host;
 
         var mr = host.Markup(content, context.GetOriginalContentFile(path), false);
-        (context.FileLinkSources).Merge(mr.FileLinkSources);
-        (context.UidLinkSources).Merge(mr.UidLinkSources);
-        (context.Dependency).UnionWith(mr.Dependency);
+        context.FileLinkSources.Merge(mr.FileLinkSources);
+        context.UidLinkSources.Merge(mr.UidLinkSources);
+        context.Dependency.UnionWith(mr.Dependency);
 
         if (mr.Html.StartsWith("<p"))
             mr.Html = mr.Html.Insert(mr.Html.IndexOf(">"), " jsonPath=\"" + path + "\"");

@@ -59,7 +59,7 @@ public class GlobUtility
         return options;
     }
 
-    private static void CheckPatterns(IEnumerable<string> patterns)
+    private static void CheckPatterns(IReadOnlyCollection<string> patterns)
     {
         if (patterns.Any(s => s.Contains('\\')))
         {

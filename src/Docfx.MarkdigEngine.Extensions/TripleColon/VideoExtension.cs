@@ -200,15 +200,8 @@ public class VideoExtension : ITripleColonExtensionInfo
 
     public static bool RequiresClosingTripleColon(IDictionary<string, string> attributes)
     {
-        if (attributes != null
-           && attributes.ContainsKey("type")
-           && attributes["type"] == "complex")
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return attributes != null
+               && attributes.TryGetValue("type", out string value)
+               && value == "complex";
     }
 }

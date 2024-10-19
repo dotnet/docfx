@@ -59,7 +59,6 @@ public class TemplateModelTransformer
             Version = _context.VersionName,
             Group = _context.GroupInfo?.Name,
         };
-        var outputDirectory = _settings.OutputFolder ?? Directory.GetCurrentDirectory();
 
         // 1. process resource
         if (item.ResourceFile != null)
@@ -92,7 +91,7 @@ public class TemplateModelTransformer
 
             var extension = template.Extension;
             string outputFile = item.FileWithoutExtension + extension;
-            object viewModel = null;
+            object viewModel;
             try
             {
                 viewModel = template.TransformModel(model);

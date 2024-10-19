@@ -64,7 +64,6 @@ public class ApplyOverwriteFragments : BaseDocumentBuildStep
                     $"Unable to parse markdown fragments: {ex.Message}",
                     line: ex.Position == -1 ? null : (ex.Position + 1).ToString(),
                     code: WarningCodes.Overwrite.InvalidMarkdownFragments);
-                return;
             }
             catch (DocumentException de)
             {

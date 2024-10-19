@@ -417,7 +417,7 @@ Some content";
             TemplateManager = _templateManager
         };
 
-        using var builder = new DocumentBuilder(Array.Empty<Assembly>(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder([], []);
         builder.Build(parameters);
     }
 

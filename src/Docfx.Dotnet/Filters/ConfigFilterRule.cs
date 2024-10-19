@@ -46,7 +46,7 @@ internal class ConfigFilterRule
         }
         if (!File.Exists(configFile)) throw new FileNotFoundException($"Filter Config file {configFile} does not exist!");
 
-        ConfigFilterRule rule = null;
+        ConfigFilterRule rule;
         try
         {
             rule = YamlUtility.Deserialize<ConfigFilterRule>(configFile);

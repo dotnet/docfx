@@ -49,7 +49,7 @@ public class PercyTest
         Clean(samplePath);
 
         using var process = Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"");
-        process.WaitForExit();
+        await process.WaitForExitAsync();
 
         var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
         Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
@@ -63,7 +63,7 @@ public class PercyTest
                     }, TaskContinuationOptions.OnlyOnFaulted);
 
         // Wait until web server started.
-        bool isStarted = SpinWait.SpinUntil(() => { Thread.Sleep(100); return IsActiveLocalTcpPort(port); }, TimeSpan.FromSeconds(10));
+        SpinWait.SpinUntil(() => { Thread.Sleep(100); return IsActiveLocalTcpPort(port); }, TimeSpan.FromSeconds(10));
 
         using var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync();

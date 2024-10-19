@@ -48,7 +48,7 @@ public class FileInterpreter : IInterpreter
         relPath = (currentFile + relPath).GetPathFromWorkingFolder();
         if (_exportFileLink)
         {
-            (context.FileLinkSources).AddFileLinkSource(new LinkSourceInfo
+            context.FileLinkSources.AddFileLinkSource(new LinkSourceInfo
             {
                 Target = relPath,
                 SourceFile = originalFile.File

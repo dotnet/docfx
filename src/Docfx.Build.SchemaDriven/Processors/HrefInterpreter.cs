@@ -60,7 +60,7 @@ public class HrefInterpreter : IInterpreter
             relPath = (currentFile + relPath.UrlDecode()).GetPathFromWorkingFolder();
             if (_exportFileLink)
             {
-                (context.FileLinkSources).AddFileLinkSource(new LinkSourceInfo
+                context.FileLinkSources.AddFileLinkSource(new LinkSourceInfo
                 {
                     Target = relPath,
                     Anchor = UriUtility.GetFragment(val),
