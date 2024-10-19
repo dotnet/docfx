@@ -40,7 +40,7 @@ public class SchemaDrivenProcessorTest : TestBase
             TransformDocument = true,
         };
 
-        _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
+        _templateManager = new TemplateManager(["template"], null, _templateFolder);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ items:
   - description: ""**outside**""
 ", _inputFolder);
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+        files.Add(DocumentType.Article, [inputFile], _inputFolder);
         BuildDocument(files);
 
         Assert.Single(listener.Items);
@@ -111,7 +111,7 @@ items:
 <p>3.1.1<strong>Hello</strong></p>
 <p><strong>outside</strong></p>
 "
-                .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries),
+                .Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries),
             File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).ToArray());
     }
 
@@ -134,7 +134,7 @@ items:
         var inputFileName = "inputs/CatLibrary.ICat.yml";
         var inputFile = CreateFile(inputFileName, File.ReadAllText("TestData/inputs/CatLibrary.ICat.yml"), _inputFolder);
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+        files.Add(DocumentType.Article, [inputFile], _inputFolder);
 
         // act
         BuildDocument(files);
@@ -161,7 +161,7 @@ items:
         Assert.Equal(@"
 eat:<p>eat event of cat. Every cat must implement this event.
 This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></p>
-|666|<span>net472</span><span>netstandard2_0</span>".Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
+|666|<span>net472</span><span>netstandard2_0</span>".Split(["\r\n", "\n"], StringSplitOptions.None),
             outputFileContent);
     }
 
@@ -232,7 +232,7 @@ title: Web Apps Documentation
 ", _inputFolder);
 
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile1, inputFile2, dependentMarkdown }, _inputFolder);
+        files.Add(DocumentType.Article, [inputFile1, inputFile2, dependentMarkdown], _inputFolder);
 
         BuildDocument(files);
 
@@ -258,7 +258,7 @@ title: Web Apps Documentation
         Assert.Equal("postbuild2", rawModel2["metadata"]["postMeta"].ToString());
 
         // change dependent markdown
-        UpdateFile("toc.md", new string[] { "# Updated" }, _inputFolder);
+        UpdateFile("toc.md", ["# Updated"], _inputFolder);
         BuildDocument(files);
 
         rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
@@ -333,7 +333,7 @@ metadata: Web Apps Documentation
 ", _inputFolder);
 
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+        files.Add(DocumentType.Article, [inputFile], _inputFolder);
         BuildDocument(files);
         var errors = listener.Items.Where(s => s.Code == "ViolateSchema").ToList();
         Assert.Single(errors);
@@ -376,7 +376,7 @@ searchScope:
 ", _inputFolder);
 
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile1 }, _inputFolder);
+        files.Add(DocumentType.Article, [inputFile1], _inputFolder);
         Assert.Throws<InvalidJsonPointerException>(() => BuildDocument(files));
     }
 
@@ -394,7 +394,7 @@ searchScope:
             TemplateManager = _templateManager,
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
         builder.Build(parameters);
     }
 

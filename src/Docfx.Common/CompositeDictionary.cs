@@ -13,7 +13,7 @@ public class CompositeDictionary
 
     public CompositeDictionary()
     {
-        _entries = ImmutableArray<Entry>.Empty;
+        _entries = [];
     }
 
     private CompositeDictionary(ImmutableArray<Entry> entries)
