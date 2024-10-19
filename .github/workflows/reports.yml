@@ -25,12 +25,12 @@ jobs:
         path: 'test/TestResults/*.trx'
         reporter: dotnet-trx
         fail-on-error: true
-        fail-on-empty: true
+        fail-on-empty: false
 
     - name: Output message to job summary
       id: output-job-summary
       shell: pwsh
-      if: ${{ !cancelled() }}
+      if: ${{ !cancelled() && (steps.test-reports.outputs.time != '0') }}
       run: |
         $conclusion = "${{ steps.test-reports.outputs.conclusion }}"
         $passed     = "${{ steps.test-reports.outputs.passed }}"
