@@ -24,12 +24,12 @@ public class DocsetBuildTest : TestBase
         {
             var filePath = Path.GetFullPath(Path.Combine(testDirectory, path));
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            File.WriteAllText(filePath, content);
+            await File.WriteAllTextAsync(filePath, content);
         }
 
         if (!files.ContainsKey("docfx.json"))
         {
-            File.WriteAllText($"{testDirectory}/docfx.json",
+            await File.WriteAllTextAsync($"{testDirectory}/docfx.json",
                 """
                 {
                     "build": {

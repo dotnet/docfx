@@ -1,6 +1,6 @@
 name: ci
 on:
-  pull_request_target:
+  pull_request:
     branches: [ main, feature/*, hotfix/* ]
   push:
     branches: [ main, feature/*, hotfix/* ]
@@ -72,10 +72,6 @@ jobs:
       with:
         name: dump
         path: /tmp/coredump*
-
-    - name: Report failed tests
-      if: ${{ failure() && (steps.test-net80.outcome == 'failure' || steps.test-net90.outcome == 'failure') }}
-      uses: ./.github/actions/report-failed-tests
 
   publish-docs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

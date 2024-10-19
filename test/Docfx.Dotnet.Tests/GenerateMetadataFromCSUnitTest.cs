@@ -475,16 +475,16 @@ namespace Test1
             Assert.Equal("Test1", item.Parent);
 
             Assert.Equal(
-                new[] { "Test1.Bar`1", null, "System.String", null },
+                ["Test1.Bar`1", null, "System.String", null],
                 item.NameParts[SyntaxLanguage.CSharp].Select(p => p.Name));
             Assert.Equal(
-                new[] { "Bar", "<", "string", ">" },
+                ["Bar", "<", "string", ">"],
                 item.NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
             Assert.Equal(
-                new[] { "Bar", "<", "string", ">" },
+                ["Bar", "<", "string", ">"],
                 item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
             Assert.Equal(
-                new[] { "Test1", ".", "Bar", "<", "string", ">" },
+                ["Test1", ".", "Bar", "<", "string", ">"],
                 item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
         }
         {
@@ -496,16 +496,16 @@ namespace Test1
             Assert.Equal(6, item.NameParts[SyntaxLanguage.CSharp].Count);
 
             Assert.Equal(
-                new[] { "Test1.Foo`1", null, null, null, null, null },
+                ["Test1.Foo`1", null, null, null, null, null],
                 item.NameParts[SyntaxLanguage.CSharp].Select(p => p.Name));
             Assert.Equal(
-                new[] { "Foo", "<", "T", "[", "]", ">" },
+                ["Foo", "<", "T", "[", "]", ">"],
                 item.NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
             Assert.Equal(
-                new[] { "Foo", "<", "T", "[", "]", ">" },
+                ["Foo", "<", "T", "[", "]", ">"],
                 item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
             Assert.Equal(
-                new[] { "Test1", ".", "Foo", "<", "T", "[", "]", ">" },
+                ["Test1", ".", "Foo", "<", "T", "[", "]", ">"],
                 item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
         }
         {
@@ -515,16 +515,16 @@ namespace Test1
             Assert.Equal("Test1", item.Parent);
 
             Assert.Equal(
-                new[] { "Test1.Foo`1", null, "System.String", null, null, null },
+                ["Test1.Foo`1", null, "System.String", null, null, null],
                 item.NameParts[SyntaxLanguage.CSharp].Select(p => p.Name));
             Assert.Equal(
-                new[] { "Foo", "<", "string", "[", "]", ">" },
+                ["Foo", "<", "string", "[", "]", ">"],
                 item.NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
             Assert.Equal(
-                new[] { "Foo", "<", "string", "[", "]", ">" },
+                ["Foo", "<", "string", "[", "]", ">"],
                 item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
             Assert.Equal(
-                new[] { "Test1", ".", "Foo", "<", "string", "[", "]", ">" },
+                ["Test1", ".", "Foo", "<", "string", "[", "]", ">"],
                 item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
         }
     }
@@ -3603,45 +3603,40 @@ namespace Test1
         var output = Verify(code);
         var type = output.Items[0].Items[0];
 
-        Assert.Equal(new[]
-        {
+        Assert.Equal([
             "Test.Bar.op_Implicit(System.UInt32)~Test.Bar",
             "Test.Bar.op_Implicit(System.String)~Test.Bar",
             "Test.Bar.op_CheckedExplicit(Test.Bar)~System.UInt32",
-            "Test.Bar.op_CheckedExplicit(Test.Bar)~System.String[]",
-        }, type.Items.Select(item => item.Name));
+            "Test.Bar.op_CheckedExplicit(Test.Bar)~System.String[]"
+        ], type.Items.Select(item => item.Name));
 
-        Assert.Equal(new[]
-        {
+        Assert.Equal([
             "implicit operator Bar(uint)",
             "implicit operator Bar(string)",
             "explicit operator checked uint(Bar)",
-            "explicit operator checked string[](Bar)",
-        }, type.Items.Select(item => item.DisplayNames[SyntaxLanguage.CSharp]));
+            "explicit operator checked string[](Bar)"
+        ], type.Items.Select(item => item.DisplayNames[SyntaxLanguage.CSharp]));
 
-        Assert.Equal(new[]
-        {
+        Assert.Equal([
             "Bar.implicit operator Bar(uint)",
             "Bar.implicit operator Bar(string)",
             "Bar.explicit operator checked uint(Bar)",
-            "Bar.explicit operator checked string[](Bar)",
-        }, type.Items.Select(item => item.DisplayNamesWithType[SyntaxLanguage.CSharp]));
+            "Bar.explicit operator checked string[](Bar)"
+        ], type.Items.Select(item => item.DisplayNamesWithType[SyntaxLanguage.CSharp]));
 
-        Assert.Equal(new[]
-        {
+        Assert.Equal([
             "Test.Bar.implicit operator Test.Bar(uint)",
             "Test.Bar.implicit operator Test.Bar(string)",
             "Test.Bar.explicit operator checked uint(Test.Bar)",
-            "Test.Bar.explicit operator checked string[](Test.Bar)",
-        }, type.Items.Select(item => item.DisplayQualifiedNames[SyntaxLanguage.CSharp]));
+            "Test.Bar.explicit operator checked string[](Test.Bar)"
+        ], type.Items.Select(item => item.DisplayQualifiedNames[SyntaxLanguage.CSharp]));
 
-        Assert.Equal(new[]
-        {
+        Assert.Equal([
             "Test.Bar.op_Implicit*",
             "Test.Bar.op_Implicit*",
             "Test.Bar.op_CheckedExplicit*",
-            "Test.Bar.op_CheckedExplicit*",
-        }, type.Items.Select(item => item.Overload));
+            "Test.Bar.op_CheckedExplicit*"
+        ], type.Items.Select(item => item.Overload));
 
         Assert.Equal("implicit operator", string.Concat(output.References["Test.Bar.op_Implicit*"].NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName)));
         Assert.Equal("explicit operator checked", string.Concat(output.References["Test.Bar.op_CheckedExplicit*"].NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName)));
@@ -3669,13 +3664,12 @@ namespace Test1
         var output = Verify(code, new() { IncludePrivateMembers = true });
         var foo = output.Items[0].Items[0];
         Assert.Equal("internal class Foo : IFoo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
-        Assert.Equal(new[]
-        {
+        Assert.Equal([
             "internal void M1()",
             "protected internal void M2()",
             "private protected void M3()",
-            "private void M4()",
-        }, foo.Items.Select(item => item.Syntax.Content[SyntaxLanguage.CSharp]));
+            "private void M4()"
+        ], foo.Items.Select(item => item.Syntax.Content[SyntaxLanguage.CSharp]));
     }
 
     [Fact]

@@ -59,14 +59,15 @@ class HostServiceCreator
             {
                 return (processor.Load(file, fileMeta), true);
             }
+            catch (DocumentException)
+            {
+                return (null, false);
+            }
             catch (Exception e)
             {
-                if (e is not DocumentException)
-                {
-                    Logger.LogError(
-                        $"Unable to load file '{file.File}' via processor '{processor.Name}': {e.Message}",
-                        code: ErrorCodes.Build.InvalidInputFile);
-                }
+                Logger.LogError(
+                    $"Unable to load file '{file.File}' via processor '{processor.Name}': {e.Message}",
+                    code: ErrorCodes.Build.InvalidInputFile);
                 return (null, false);
             }
         }

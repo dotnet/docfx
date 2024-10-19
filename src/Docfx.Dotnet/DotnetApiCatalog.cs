@@ -38,7 +38,7 @@ public static partial class DotnetApiCatalog
         try
         {
             var configDirectory = Path.GetDirectoryName(Path.GetFullPath(configPath));
-            var config = JObject.Parse(File.ReadAllText(configPath));
+            var config = JObject.Parse(await File.ReadAllTextAsync(configPath));
             if (config.TryGetValue("metadata", out var value))
             {
                 Logger.Rules = config["rules"]?.ToObject<Dictionary<string, LogLevel>>();

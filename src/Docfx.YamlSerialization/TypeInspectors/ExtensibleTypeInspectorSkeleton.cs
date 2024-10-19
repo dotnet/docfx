@@ -14,9 +14,9 @@ public abstract class ExtensibleTypeInspectorSkeleton : ITypeInspector, IExtensi
     public IPropertyDescriptor GetProperty(Type type, object container, string name, bool ignoreUnmatched)
     {
         var candidates =
-            (from p in GetProperties(type, container)
-             where p.Name == name
-             select p);
+            from p in GetProperties(type, container)
+            where p.Name == name
+            select p;
 
         using var enumerator = candidates.GetEnumerator();
         if (!enumerator.MoveNext())

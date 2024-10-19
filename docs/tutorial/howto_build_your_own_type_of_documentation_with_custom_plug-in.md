@@ -57,7 +57,7 @@ Create a document processor
 3. Load our rtf file by reading all text:
    [!Code-csharp[Load](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Load)]
 
-   We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Docfx.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs)
+   We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/main/src/Docfx.Build/Conceptual/ConceptualDocumentProcessor.cs)
  stores the content of markdown files.
 
 4. Implement `Save` method as follows:
