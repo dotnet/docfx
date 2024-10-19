@@ -280,7 +280,7 @@ title: Web Apps Documentation
     {
         // Json.NET schema has limitation of 1000 calls per hour
         using var listener = new TestListenerScope();
-        var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
+        CreateFile("template/schemas/mta.reference.test.schema.json", @"
 {
   ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
   ""version"": ""1.0.0"",

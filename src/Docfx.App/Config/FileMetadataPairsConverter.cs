@@ -22,7 +22,6 @@ internal class FileMetadataPairsConverter : JsonConverter
     /// <inheritdoc/>
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
-        var value = reader.Value;
         IEnumerable<JToken> jItems;
         if (reader.TokenType == JsonToken.StartObject)
         {
