@@ -155,10 +155,9 @@ public class VideoExtension : ITripleColonExtensionInfo
             renderer.WriteLine("<div class=\"embeddedvideo\">");
             renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine("></iframe>");
             renderer.WriteLine("</div>");
-            if (tripleColonObj is ContainerBlock
-                && (tripleColonObj as ContainerBlock).LastChild != null)
+            if (tripleColonObj is ContainerBlock {LastChild: not null} block)
             {
-                var inline = ((tripleColonObj as ContainerBlock).LastChild as ParagraphBlock).Inline;
+                var inline = (block.LastChild as ParagraphBlock).Inline;
                 renderer.WriteChildren(inline);
             }
         }
@@ -201,15 +200,8 @@ public class VideoExtension : ITripleColonExtensionInfo
 
     public static bool RequiresClosingTripleColon(IDictionary<string, string> attributes)
     {
-        if (attributes != null
-           && attributes.ContainsKey("type")
-           && attributes["type"] == "complex")
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return attributes != null
+               && attributes.TryGetValue("type", out string value)
+               && value == "complex";
     }
 }

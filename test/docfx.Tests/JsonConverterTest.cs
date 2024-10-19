@@ -101,7 +101,8 @@ public class JsonConverterTest
 
 internal class SkipEmptyOrNullContractResolver : DefaultContractResolver
 {
-    public SkipEmptyOrNullContractResolver(bool shareCache = false) : base() { }
+    public SkipEmptyOrNullContractResolver(bool shareCache = false)
+    { }
 
     protected override JsonProperty CreateProperty(MemberInfo member,
         MemberSerialization memberSerialization)

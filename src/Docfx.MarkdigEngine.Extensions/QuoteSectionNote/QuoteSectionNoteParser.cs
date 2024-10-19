@@ -141,8 +141,8 @@ public class QuoteSectionNoteParser : BlockParser
             while (processor.CurrentChar.IsSpaceOrTab())
                 processor.NextChar();
 
-            var isNoteVideoDiv = (infoString.StartsWith("[!div", StringComparison.OrdinalIgnoreCase)) ||
-                                 (infoString.StartsWith("[!Video", StringComparison.OrdinalIgnoreCase)) ||
+            var isNoteVideoDiv = infoString.StartsWith("[!div", StringComparison.OrdinalIgnoreCase) ||
+                                 infoString.StartsWith("[!Video", StringComparison.OrdinalIgnoreCase) ||
                                  IsNoteType(infoString);
             if (processor.CurrentChar != '\0' && isNoteVideoDiv)
             {

@@ -36,7 +36,7 @@ public class SchemaMergerTest : TestBase
             TransformDocument = true,
         };
 
-        _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
+        _templateManager = new TemplateManager(["template"], null, _templateFolder);
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class SchemaMergerTest : TestBase
                 }
             },
         };
-        var schemaFile = CreateFile("template/schemas/testmerger.schema.json", JsonUtility.Serialize(schema), _templateFolder);
+        CreateFile("template/schemas/testmerger.schema.json", JsonUtility.Serialize(schema), _templateFolder);
         var inputFileName = "src.yml";
         var inputFile = CreateFile(inputFileName, @"### YamlMime:testmerger
 uid: uid1
@@ -216,8 +216,8 @@ summary: *content
 Overwrite with content
 ", _inputFolder);
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-        files.Add(DocumentType.Overwrite, new[] { overwriteFile }, _inputFolder);
+        files.Add(DocumentType.Article, [inputFile], _inputFolder);
+        files.Add(DocumentType.Overwrite, [overwriteFile], _inputFolder);
         BuildDocument(files);
 
         // One plugin warning for yml and one plugin warning for overwrite file
@@ -290,7 +290,7 @@ Overwrite with content
     public void TestSchemaOverwriteWithGeneralSchemaOptions()
     {
         using var listener = new TestListenerScope();
-        var templateFile = CreateFile("template/testmerger2.html.tmpl", @"<xref uid=""{{xref}}""/>", _templateFolder);
+        CreateFile("template/testmerger2.html.tmpl", @"<xref uid=""{{xref}}""/>", _templateFolder);
         var schema = new Dictionary<string, object>
         {
             ["type"] = "object",
@@ -343,8 +343,8 @@ reference: ../inc/inc2.md
 Nice
 ", _inputFolder);
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-        files.Add(DocumentType.Overwrite, new[] { overwriteFile }, _inputFolder);
+        files.Add(DocumentType.Article, [inputFile], _inputFolder);
+        files.Add(DocumentType.Overwrite, [overwriteFile], _inputFolder);
         BuildDocument(files);
 
         // One plugin warning for yml and one plugin warning for overwrite file
@@ -378,7 +378,7 @@ Nice
             TemplateManager = _templateManager,
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
         builder.Build(parameters);
     }
 

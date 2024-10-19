@@ -347,7 +347,7 @@ class TocResolver
 
     private TocItemViewModel GetDefaultHomepageItem(TocItemViewModel toc)
     {
-        if (toc == null || toc.Items == null)
+        if (toc?.Items == null)
         {
             return null;
         }

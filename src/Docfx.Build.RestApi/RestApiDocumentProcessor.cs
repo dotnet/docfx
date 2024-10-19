@@ -256,12 +256,10 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         var result = new Dictionary<string, object>(item);
         foreach (var pair in overwriteItems.OrderBy(item => item.Key))
         {
-            if (result.ContainsKey(pair.Key))
+            if (!result.TryAdd(pair.Key, pair.Value))
             {
                 Logger.LogWarning($"Metadata \"{pair.Key}\" inside rest api is overwritten.");
             }
-
-            result[pair.Key] = pair.Value;
         }
         return result;
     }

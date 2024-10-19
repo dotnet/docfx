@@ -36,7 +36,7 @@ This schema exposes two types of fields. Fixed fields, which have a declared nam
 By convention, the schema file is suffixed with `.schema.json`.
 
 ### Data Types
-Primitive data types in *THIS schema* are based on [JSON schema Draft 6 4.2 Instance](http://json-schema.org/latest/json-schema-core.html#rfc.section.4.2)
+Primitive data types in *THIS schema* are based on [JSON schema](https://json-schema.org/draft/2020-12/json-schema-core)
 
 ### Schema
 For a given field, `*` as the starting character in *Description* cell stands for **required**.

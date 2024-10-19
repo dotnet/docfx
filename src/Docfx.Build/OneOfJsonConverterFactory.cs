@@ -47,7 +47,6 @@ class OneOfJsonConverterFactory : JsonConverterFactory
                 }
                 catch (JsonException)
                 {
-                    continue;
                 }
             }
 

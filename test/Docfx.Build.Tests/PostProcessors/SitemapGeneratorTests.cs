@@ -16,7 +16,6 @@ public class SitemapGeneratorTests : TestBase
     private readonly ITestOutputHelper _output;
 
     public SitemapGeneratorTests(ITestOutputHelper output)
-        : base()
     {
         _output = output;
     }

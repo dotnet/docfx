@@ -13,7 +13,7 @@ internal class ListWithStringFallback : List<string>
     /// <summary>
     /// Initializes a new instance of the <see cref="ListWithStringFallback"/> class.
     /// </summary>
-    public ListWithStringFallback() : base()
+    public ListWithStringFallback()
     {
     }
 
