@@ -9,7 +9,6 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    environment: ci
     strategy:
       fail-fast: false
       matrix:
