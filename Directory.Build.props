@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(DOCFX_PREVIEW_BUILD)' == 'true'">net8.0;net9.0</TargetFrameworks> 
     <LangVersion>Preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
