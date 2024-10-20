@@ -78,7 +78,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
 
     protected virtual bool ShouldHandle(object currentObj, object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
     {
-        return currentPropInfo != null && currentPropInfo.Attr != null;
+        return currentPropInfo is {Attr: not null};
     }
 
     /// <summary>

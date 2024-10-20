@@ -78,7 +78,7 @@ public class TemplateManager
 
     public void ProcessTheme(string outputDirectory, bool overwrite)
     {
-        if (_themes != null && _themes.Count > 0)
+        if (_themes is {Count: > 0})
         {
             TryExportResourceFiles(_themes, outputDirectory, overwrite);
             Logger.LogInfo($"Theme(s) {_themes.ToDelimitedString()} applied.");

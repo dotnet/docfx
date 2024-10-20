@@ -300,7 +300,7 @@ public class ApiReferenceBuildOutput
 
     public static List<ApiLanguageValuePair> GetSpecNames(string xref, string[] supportedLanguages, SortedList<string, List<SpecViewModel>> specs = null)
     {
-        if (specs != null && specs.Count > 0)
+        if (specs is {Count: > 0})
         {
             return (from spec in specs
                     where supportedLanguages.Contains(spec.Key)

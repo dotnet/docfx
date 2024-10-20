@@ -44,9 +44,8 @@ class PlantUmlCodeBlockRenderer : CodeBlockRenderer
 
     protected override void Write(HtmlRenderer renderer, CodeBlock obj)
     {
-        if (obj is FencedCodeBlock fencedCodeBlock
-          && fencedCodeBlock.Info is string info
-          && info.Equals("plantuml", StringComparison.OrdinalIgnoreCase))
+        if (obj is FencedCodeBlock {Info: string info} fencedCodeBlock
+            && info.Equals("plantuml", StringComparison.OrdinalIgnoreCase))
         {
             IPlantUmlRenderer plantUmlRenderer = rendererFactory.CreateRenderer(_settings);
 

@@ -28,7 +28,7 @@ static class TocRestructureUtility
             }
         }
 
-        if (item.Items != null && item.Items.Count > 0)
+        if (item.Items is {Count: > 0})
         {
             var parentItems = new List<TocItemViewModel>(item.Items);
             foreach (var i in item.Items)

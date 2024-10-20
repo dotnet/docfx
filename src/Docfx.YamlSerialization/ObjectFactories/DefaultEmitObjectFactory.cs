@@ -18,7 +18,7 @@ public class DefaultEmitObjectFactory : ObjectFactoryBase
         if (!_cache.TryGetValue(type, out Func<object> func))
         {
             var realType = type;
-            if (type.IsInterface && type.IsGenericType)
+            if (type is {IsInterface: true, IsGenericType: true})
             {
                 var def = type.GetGenericTypeDefinition();
                 var args = type.GetGenericArguments();

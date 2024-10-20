@@ -211,7 +211,7 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
             if (jObject.TryGetValue("swagger", out JToken swaggerValue))
             {
                 var swaggerString = (string)swaggerValue;
-                if (swaggerString != null && swaggerString.Equals("2.0"))
+                if (swaggerString is "2.0")
                 {
                     return true;
                 }
