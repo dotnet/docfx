@@ -13,7 +13,7 @@ internal sealed class ScalarYamlNodeTypeResolver : INodeTypeResolver
     {
         if (currentType == typeof(string) || currentType == typeof(object))
         {
-            if (nodeEvent is Scalar scalar && scalar.IsPlainImplicit)
+            if (nodeEvent is Scalar {IsPlainImplicit: true} scalar)
             {
                 if (Regexes.BooleanLike.IsMatch(scalar.Value))
                 {

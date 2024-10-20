@@ -30,7 +30,7 @@ internal class YamlModelGenerator
         item.DisplayQualifiedNames[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedName(symbol, SyntaxLanguage.VB);
     }
 
-    public void GenerateReference(ISymbol symbol, ReferenceItem reference, bool asOverload)
+    public void GenerateReference(ISymbol symbol, ReferenceItem reference, bool asOverload, SymbolFilter filter)
     {
         if (!reference.NameParts.ContainsKey(SyntaxLanguage.CSharp))
             reference.NameParts.Add(SyntaxLanguage.CSharp, new());
@@ -39,9 +39,9 @@ internal class YamlModelGenerator
         if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.CSharp))
             reference.QualifiedNameParts.Add(SyntaxLanguage.CSharp, new());
 
-        reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
-        reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
-        reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
+        reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
+        reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
+        reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
 
         if (!reference.NameParts.ContainsKey(SyntaxLanguage.VB))
             reference.NameParts.Add(SyntaxLanguage.VB, new());
@@ -50,9 +50,9 @@ internal class YamlModelGenerator
         if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.VB))
             reference.QualifiedNameParts.Add(SyntaxLanguage.VB, new());
 
-        reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
-        reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
-        reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
+        reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
+        reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
+        reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
     }
 
     public void GenerateSyntax(ISymbol symbol, SyntaxDetail syntax, SymbolFilter filter)
@@ -61,7 +61,7 @@ internal class YamlModelGenerator
         syntax.Content[SyntaxLanguage.VB] = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.VB, filter);
     }
 
-    public string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references)
+    public string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolFilter filter)
     {
         var id = VisitorHelper.GetId(symbol);
         var reference = new ReferenceItem
@@ -72,7 +72,7 @@ internal class YamlModelGenerator
             IsDefinition = symbol.IsDefinition,
             CommentId = VisitorHelper.GetCommentId(symbol)
         };
-        GenerateReference(symbol, reference, false);
+        GenerateReference(symbol, reference, false, filter);
 
         if (!references.TryAdd(id, reference))
         {
@@ -82,7 +82,7 @@ internal class YamlModelGenerator
         return id;
     }
 
-    public string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references)
+    public string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolFilter filter)
     {
         var uidBody = VisitorHelper.GetOverloadIdBody(symbol);
         var reference = new ReferenceItem
@@ -94,7 +94,7 @@ internal class YamlModelGenerator
             CommentId = "Overload:" + uidBody
         };
 
-        GenerateReference(symbol, reference, true);
+        GenerateReference(symbol, reference, true, filter);
 
         var uid = uidBody + "*";
         if (!references.TryAdd(uid, reference))
@@ -110,7 +110,7 @@ internal class YamlModelGenerator
         IReadOnlyList<string> typeGenericParameters,
         IReadOnlyList<string> methodGenericParameters,
         Dictionary<string, ReferenceItem> references,
-        SymbolVisitorAdapter adapter)
+        SymbolFilter filter)
     {
         var rawId = VisitorHelper.GetId(symbol);
         var id = SpecIdHelper.GetSpecId(symbol, typeGenericParameters, methodGenericParameters);
@@ -124,7 +124,7 @@ internal class YamlModelGenerator
             NameWithTypeParts = new(),
             QualifiedNameParts = new(),
         };
-        GenerateReference(symbol, reference, false);
+        GenerateReference(symbol, reference, false, filter);
         var originalSymbol = symbol;
         var reducedFrom = (symbol as IMethodSymbol)?.ReducedFrom;
         if (reducedFrom != null)
@@ -135,10 +135,10 @@ internal class YamlModelGenerator
 
         if (!reference.IsDefinition.Value && rawId != null)
         {
-            reference.Definition = AddReference(originalSymbol.OriginalDefinition, references);
+            reference.Definition = AddReference(originalSymbol.OriginalDefinition, references, filter);
         }
 
-        reference.Parent = GetReferenceParent(originalSymbol, typeGenericParameters, methodGenericParameters, references, adapter);
+        reference.Parent = GetReferenceParent(originalSymbol, typeGenericParameters, methodGenericParameters, references, filter);
         reference.CommentId = VisitorHelper.GetCommentId(originalSymbol);
 
         if (!references.TryAdd(id, reference))
@@ -153,7 +153,7 @@ internal class YamlModelGenerator
         IReadOnlyList<string> typeGenericParameters,
         IReadOnlyList<string> methodGenericParameters,
         Dictionary<string, ReferenceItem> references,
-        SymbolVisitorAdapter adapter)
+        SymbolFilter filter)
     {
         switch (symbol.Kind)
         {
@@ -172,7 +172,7 @@ internal class YamlModelGenerator
                     {
                         return null;
                     }
-                    return AddSpecReference(parentSymbol, typeGenericParameters, methodGenericParameters, references, adapter); ;
+                    return AddSpecReference(parentSymbol, typeGenericParameters, methodGenericParameters, references, filter);
                 }
             default:
                 return null;

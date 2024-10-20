@@ -71,7 +71,7 @@ public static class ConvertToObjectHelper
             return raw;
         }
 
-        return JToken.FromObject(raw, JsonUtility.DefaultSerializer.Value);
+        return JToken.FromObject(raw, NewtonsoftJsonUtility.DefaultSerializer.Value);
     }
 
     public static object ConvertExpandoObjectToObject(object raw)

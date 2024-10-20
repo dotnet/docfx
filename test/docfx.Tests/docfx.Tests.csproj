@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup />
   <ItemGroup>
     <None Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

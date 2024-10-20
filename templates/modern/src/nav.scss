@@ -3,11 +3,14 @@
  * The .NET Foundation licenses this file to you under the MIT license.
  */
 
+@use "bootstrap/scss/bootstrap";
+@use "mixins";
+
 .breadcrumb {
   font-size: 14px;
 
   a {
-    @include underline-on-hover;
+    @include mixins.underline-on-hover;
   }
 }
 
@@ -84,7 +87,7 @@
     }
   }
 
-  @include media-breakpoint-down(md) {
+  @include bootstrap.media-breakpoint-down(md) {
     #navbar {
       flex-direction: column;
       align-items: flex-start;
@@ -137,7 +140,7 @@
       margin: .4rem 0;
 
       a {
-        @include underline-on-hover;
+        @include mixins.underline-on-hover;
       }
     }
   }
@@ -147,13 +150,13 @@
   margin-top: 2rem;
 
   a.edit-link {
-    @include underline-on-hover;
+    @include mixins.underline-on-hover;
 
     &::before {
       content: "\F4CA";
       display: inline-block;
 
-      @include adjust-icon;
+      @include mixins.adjust-icon;
     }
   }
 }

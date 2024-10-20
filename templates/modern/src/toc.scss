@@ -3,6 +3,9 @@
  * The .NET Foundation licenses this file to you under the MIT license.
  */
 
+@use "bootstrap/scss/bootstrap";
+@use "mixins";
+
 $expand-stub-width: .85rem;
 
 .toc {
@@ -30,7 +33,7 @@ $expand-stub-width: .85rem;
   li > a {
     display: inline;
 
-    @include underline-on-hover;
+    @include mixins.underline-on-hover;
   }
 
   li > ul {
@@ -90,17 +93,17 @@ $expand-stub-width: .85rem;
 
   >.no-result {
     font-size: .9em;
-    color: $secondary;
+    color: bootstrap.$secondary;
   }
   
   a.pdf-link {
-    @include underline-on-hover;
+    @include mixins.underline-on-hover;
 
     &::before {
       content: "\F756";
       display: inline-block;
 
-      @include adjust-icon;
+      @include mixins.adjust-icon;
     }
   }
 }

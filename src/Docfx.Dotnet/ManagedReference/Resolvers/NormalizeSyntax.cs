@@ -17,7 +17,7 @@ internal class NormalizeSyntax : IResolverPipeline
             (member, parent) =>
             {
                 // get all the possible places where link is possible
-                if (member.Syntax != null && member.Syntax.Content != null)
+                if (member.Syntax is {Content: not null})
                 {
                     SyntaxLanguage[] keys = new SyntaxLanguage[member.Syntax.Content.Count];
                     member.Syntax.Content.Keys.CopyTo(keys, 0);

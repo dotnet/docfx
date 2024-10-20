@@ -1,0 +1,64 @@
+[
+  {
+    "src": [
+      {
+        "files": [
+          "assembly/bin/**/*.dll",
+          "project/**/*.csproj",
+          "solution/**/*.sln",
+          "csharp/**/*.cs",
+          "vb/**/*.vb"
+        ],
+        "exclude": [
+          "project/Project.Core/**"
+        ],
+        "src": "dotnet"
+      }
+    ],
+    "namespaceLayout": "nested",
+    "enumSortOrder": "declaringOrder",
+    "output": "obj/api"
+  },
+  {
+    "src": [
+      {
+        "files": [
+          "assembly/bin/**/*.dll",
+          "project/**/*.csproj",
+          "solution/**/*.sln",
+          "csharp/**/*.cs",
+          "vb/**/*.vb"
+        ],
+        "exclude": [
+          "project/Project.Core/**"
+        ],
+        "src": "dotnet"
+      }
+    ],
+    "namespaceLayout": "nested",
+    "enumSortOrder": "declaringOrder",
+    "outputFormat": "markdown",
+    "output": "obj/md"
+  },
+  {
+    "src": [
+      {
+        "files": [
+          "assembly/bin/**/*.dll",
+          "project/**/*.csproj",
+          "solution/**/*.sln",
+          "csharp/**/*.cs",
+          "vb/**/*.vb"
+        ],
+        "exclude": [
+          "project/Project.Core/**"
+        ],
+        "src": "dotnet"
+      }
+    ],
+    "namespaceLayout": "nested",
+    "enumSortOrder": "declaringOrder",
+    "outputFormat": "apiPage",
+    "output": "obj/apipage"
+  }
+]

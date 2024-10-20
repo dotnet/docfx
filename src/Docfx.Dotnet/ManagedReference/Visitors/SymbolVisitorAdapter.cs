@@ -238,7 +238,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
         _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
-        if (symbol.IsOverride && symbol.OverriddenMethod != null)
+        if (symbol is {IsOverride: true, OverriddenMethod: not null})
         {
             result.Overridden = AddSpecReference(symbol.OverriddenMethod, typeGenericParameters, methodGenericParameters);
         }
@@ -296,7 +296,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
         var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
-        if (symbol.IsOverride && symbol.OverriddenEvent != null)
+        if (symbol is {IsOverride: true, OverriddenEvent: not null})
         {
             result.Overridden = AddSpecReference(symbol.OverriddenEvent, typeGenericParameters);
         }
@@ -350,7 +350,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             Debug.Assert(result.Syntax.Return.Type != null);
         }
 
-        if (symbol.IsOverride && symbol.OverriddenProperty != null)
+        if (symbol is {IsOverride: true, OverriddenProperty: not null})
         {
             result.Overridden = AddSpecReference(symbol.OverriddenProperty, typeGenericParameters);
         }
@@ -374,7 +374,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             Debug.Fail("Unexpected member type.");
             throw new InvalidOperationException("Unexpected member type.");
         }
-        return _generator.AddReference(symbol, _references);
+        return _generator.AddReference(symbol, _references, _filter);
     }
 
     public string AddReference(string id, string commentId)
@@ -390,7 +390,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             reference.QualifiedNameParts = new();
             reference.IsDefinition = symbol.IsDefinition;
 
-            _generator.GenerateReference(symbol, reference, asOverload: false);
+            _generator.GenerateReference(symbol, reference, asOverload: false, _filter);
         }
 
         _references[id] = reference;
@@ -406,7 +406,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             case MemberType.Constructor:
             case MemberType.Method:
             case MemberType.Operator:
-                return _generator.AddOverloadReference(symbol, _references);
+                return _generator.AddOverloadReference(symbol, _references, _filter);
             default:
                 Debug.Fail("Unexpected member type.");
                 throw new InvalidOperationException("Unexpected member type.");
@@ -418,7 +418,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         IReadOnlyList<string> typeGenericParameters = null,
         IReadOnlyList<string> methodGenericParameters = null)
     {
-        return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
+        return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, _filter);
     }
 
     private static MemberType GetMemberTypeFromSymbol(ISymbol symbol)

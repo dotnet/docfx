@@ -19,7 +19,7 @@ public class XrefInterpreter : IInterpreter
 
     public bool CanInterpret(BaseSchema schema)
     {
-        return schema != null && schema.ContentType == ContentType.Xref;
+        return schema is {ContentType: ContentType.Xref};
     }
 
     public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)

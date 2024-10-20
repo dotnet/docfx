@@ -1,0 +1,20 @@
+{
+  "name": "dummy",
+  "files": [
+    "**/*.{md,yml}"
+  ],
+  "exclude": [
+    "_site/**",
+    "obj/**"
+  ],
+  "src": "./src",
+  "dest": "./dest",
+  "group": "dummy",
+  "rootTocPath": "dummy",
+  "case": true,
+  "noNegate": true,
+  "noExpand": true,
+  "noEscape": true,
+  "noGlobStar": false,
+  "dot": true
+}

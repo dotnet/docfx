@@ -30,5 +30,5 @@ Maximum time in milliseconds to override the default [Playwright timeout](https:
 
 ## `PLAYWRIGHT_NODEJS_PATH`
 
-Custom Node.js executable path that will be used by the `docfx pdf' command.
+Custom Node.js executable path that will be used by the `docfx pdf` command.
 By default, docfx automatically detect installed Node.js from `PATH`.

@@ -3,12 +3,14 @@
  * The .NET Foundation licenses this file to you under the MIT license.
  */
 
+@use "bootstrap/scss/bootstrap";
+
 #search-results {
   line-height: 1.8;
 
   >.search-list {
     font-size: .9em;
-    color: $secondary;
+    color: bootstrap.$secondary;
   }
 
   >.sr-items {

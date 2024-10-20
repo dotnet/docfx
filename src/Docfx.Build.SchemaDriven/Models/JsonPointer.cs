@@ -49,7 +49,7 @@ public class JsonPointer
     public static bool TryCreate(string raw, out JsonPointer pointer)
     {
         pointer = null;
-        if (raw != null && raw.Length > 0 && raw[0] != '/')
+        if (raw is {Length: > 0} && raw[0] != '/')
         {
             return false;
         }

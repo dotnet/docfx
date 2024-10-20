@@ -1,0 +1,19 @@
+{
+  "sorted": true,
+  "hrefUpdated": false,
+  "baseUrl": "http://localhost",
+  "redirections": [
+    {
+      "uidPrefix": "dummy",
+      "href": "dummy"
+    }
+  ],
+  "references": [
+    {
+      "dummy1": "dummy1",
+      "uid": "dummy",
+      "href": "dummy"
+    }
+  ],
+  "dummy": "dummy"
+}
