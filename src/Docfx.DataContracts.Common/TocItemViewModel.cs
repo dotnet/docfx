@@ -115,13 +115,25 @@ public class TocItemViewModel
     [ExtensibleMember]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
+    [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
     public Dictionary<string, object> Metadata { get; set; } = new();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
-    public CompositeDictionary MetadataJson => CompositeDictionary.CreateBuilder().Add(string.Empty, Metadata).Create();
+    [System.Text.Json.Serialization.JsonInclude]
+    public CompositeDictionary MetadataJson
+    {
+        get
+        {
+            return CompositeDictionary.CreateBuilder().Add(string.Empty, Metadata).Create();
+        }
+        private init
+        {
+            // init or getter is required for deserialize data with System.Text.Json.
+        }
+    }
 
     public TocItemViewModel Clone()
     {
