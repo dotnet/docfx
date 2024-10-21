@@ -13,7 +13,7 @@ runs:
         9.x
         8.x
 
-  - run: npm install
+  - run: npm ci
     shell: bash
     working-directory: templates
 
