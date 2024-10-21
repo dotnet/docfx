@@ -51,7 +51,7 @@ public class MarkdigExtensionSetting
     public T GetOptions<T>(T fallbackValue)
     {
         return Options is null ? fallbackValue
-            : JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(Options), MarkdigExtensionSettingConverter.DefaultSerializerOptions) ?? fallbackValue;
+            : Options.Value.Deserialize<T>(MarkdigExtensionSettingConverter.DefaultSerializerOptions) ?? fallbackValue;
     }
 
     /// <summary>

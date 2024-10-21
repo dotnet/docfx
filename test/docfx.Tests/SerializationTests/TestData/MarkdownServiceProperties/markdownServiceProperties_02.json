@@ -1,0 +1,15 @@
+{
+  "markdigExtensions": [
+    "FootNotes",
+    // Comment1
+    { "Emojis": "default" },
+    { "AutoIdentifiers": "default" },
+    {
+      // Comment2
+      "MediaLinks": {
+        "width": "800", // Comment3
+        "height": "400"
+      }
+    }
+  ]
+}
