@@ -16,4 +16,9 @@ public class BuildOptions
     /// Configures the markdig markdown pipeline.
     /// </summary>
     public Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder>? ConfigureMarkdig { get; init; }
+
+    /// <summary>
+    /// The output directory for the site build, if not set it will be rendered inline.
+    /// </summary>
+    public string? OutputDirectory { get; init; }
 }
