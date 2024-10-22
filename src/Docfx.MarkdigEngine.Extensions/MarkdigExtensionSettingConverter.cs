@@ -11,8 +11,8 @@ internal partial class MarkdigExtensionSettingConverter
     // Shared JsonSerializerOptions instance.
     internal static readonly System.Text.Json.JsonSerializerOptions DefaultSerializerOptions = new()
     {
-        IncludeFields = true,
         AllowTrailingCommas = true,
+        ReadCommentHandling = JsonCommentHandling.Skip,
         DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         PropertyNameCaseInsensitive = true,
