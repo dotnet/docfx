@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/CatLibrary.TomFromBaseClass.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_TomFromBaseClass\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"1\"> Class TomFromBaseClass</h1>",
   "title": " Class TomFromBaseClass",
-  "wordCount": 47.0,
+  "wordCount": 47,
   "_key": "obj/md/CatLibrary.TomFromBaseClass.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

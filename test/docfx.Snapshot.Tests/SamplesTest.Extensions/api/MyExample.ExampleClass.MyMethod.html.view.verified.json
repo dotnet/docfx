@@ -119,8 +119,8 @@
             },
             "id": "MyMethod",
             "path": "src/ExampleClass.cs",
-            "startLine": 17.0,
-            "endLine": 0.0
+            "startLine": 17,
+            "endLine": 0
           },
           "namespace": "MyExample",
           "overload": {
@@ -167,7 +167,7 @@
             ],
             "id": "MyExample_ExampleClass_MyMethod_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -229,8 +229,8 @@
     },
     "id": "MyMethod",
     "path": "src/ExampleClass.cs",
-    "startLine": 17.0,
-    "endLine": 0.0
+    "startLine": 17,
+    "endLine": 0
   },
   "namespace": {
     "uid": "MyExample",
@@ -277,9 +277,9 @@
         "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
-  "level": 0.0,
+  "level": 0,
   "_isOverload": true,
   "_systemKeys": [
     "uid",

@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -167,15 +167,15 @@
             },
             "id": "eat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 61.0,
-            "endLine": 0.0
+            "startLine": 61,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
           ],
           "namespace": "CatLibrary",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "type": "event",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.ICat.yml\" sourcestartlinenumber=\"1\">eat event of cat. Every cat must implement this event.</p>\n",
           "platform": null,
@@ -236,8 +236,8 @@
     },
     "id": "ICat",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 55.0,
-    "endLine": 0.0
+    "startLine": 55,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary"
@@ -287,7 +287,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/CatLibrary.ICat.yml\" sourcestartlinenumber=\"1\">Cat's interface</p>\n",
   "example": [],
@@ -303,7 +303,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "inheritedMembers": [
     {
       "uid": "CatLibrary.IAnimal.Name",
@@ -350,7 +350,7 @@
           "value": "<xref uid=\"CatLibrary.IAnimal.Name\" text=\"Name\"/>"
         }
       ],
-      "level": 0.0,
+      "level": 0,
       "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Name of Animal.</p>\n",
       "type": "property",
       "platform": null,
@@ -402,7 +402,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_System_Int32_\">this[]</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>)"
         }
       ],
-      "level": 0.0,
+      "level": 0,
       "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Return specific number animal's name.</p>\n",
       "type": "property",
       "platform": null,
@@ -453,7 +453,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat\">Eat</a>()"
         }
       ],
-      "level": 0.0,
+      "level": 0,
       "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Animal's eat method.</p>\n",
       "type": "method",
       "platform": null,
@@ -506,7 +506,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat__1___0_\">Eat</a>(Of Tool)(Tool)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "CatLibrary.IAnimal.Eat(System.String)",
@@ -554,7 +554,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_System_String_\">Eat</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>)"
         }
       ],
-      "level": 0.0,
+      "level": 0,
       "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Feed the animal with some food</p>\n",
       "type": "method",
       "platform": null,
@@ -609,7 +609,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_\">Play</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)",
@@ -658,7 +658,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_\">Sleep</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int64\">Long</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

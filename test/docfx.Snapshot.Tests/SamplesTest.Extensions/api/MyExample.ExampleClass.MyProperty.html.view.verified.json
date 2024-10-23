@@ -121,8 +121,8 @@
             },
             "id": "MyProperty",
             "path": "src/ExampleClass.cs",
-            "startLine": 10.0,
-            "endLine": 0.0
+            "startLine": 10,
+            "endLine": 0
           },
           "namespace": "MyExample",
           "overload": {
@@ -169,7 +169,7 @@
             ],
             "id": "MyExample_ExampleClass_MyProperty_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "",
           "platform": null,
@@ -231,8 +231,8 @@
     },
     "id": "MyProperty",
     "path": "src/ExampleClass.cs",
-    "startLine": 10.0,
-    "endLine": 0.0
+    "startLine": 10,
+    "endLine": 0
   },
   "namespace": {
     "uid": "MyExample",
@@ -279,9 +279,9 @@
         "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
-  "level": 0.0,
+  "level": 0,
   "_isOverload": true,
   "_systemKeys": [
     "uid",

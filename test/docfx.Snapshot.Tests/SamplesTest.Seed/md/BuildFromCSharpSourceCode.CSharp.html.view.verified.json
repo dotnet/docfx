@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/BuildFromCSharpSourceCode.CSharp.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromCSharpSourceCode_CSharp\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"1\"> Class CSharp</h1>",
   "title": " Class CSharp",
-  "wordCount": 30.0,
+  "wordCount": 30,
   "_key": "obj/md/BuildFromCSharpSourceCode.CSharp.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

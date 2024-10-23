@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/CatLibrary.FakeDelegate-1.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_FakeDelegate_1\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"1\"> Delegate FakeDelegate&lt;T&gt;</h1>",
   "title": " Delegate FakeDelegate<T>",
-  "wordCount": 43.0,
+  "wordCount": 43,
   "_key": "obj/md/CatLibrary.FakeDelegate-1.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

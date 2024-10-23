@@ -47,7 +47,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -167,8 +167,8 @@
             },
             "id": "Value",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 173.0,
-            "endLine": 0.0
+            "startLine": 173,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -176,7 +176,7 @@
           "namespace": "BuildFromProject",
           "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">This is a remarks section. Very important remarks about Value go here.</p>\n",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">This is a regular enum value.</p>\n",
           "platform": null,
@@ -302,8 +302,8 @@
             },
             "id": "OldAndUnusedValue",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 181.0,
-            "endLine": 0.0
+            "startLine": 181,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -311,7 +311,7 @@
           "namespace": "BuildFromProject",
           "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">Don't use this, seriously! Use Value instead.</p>\n",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "attributes": [
             {
               "type": "System.ObsoleteAttribute",
@@ -444,8 +444,8 @@
             },
             "id": "OldAndUnusedValue2",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 190.0,
-            "endLine": 0.0
+            "startLine": 190,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -453,7 +453,7 @@
           "namespace": "BuildFromProject",
           "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">Don't use this, seriously! Use Value instead.</p>\n",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "attributes": [
             {
               "type": "System.ObsoleteAttribute",
@@ -525,8 +525,8 @@
     },
     "id": "Issue9260",
     "path": "dotnet/project/Project/Class1.cs",
-    "startLine": 165.0,
-    "endLine": 0.0
+    "startLine": 165,
+    "endLine": 0
   },
   "assemblies": [
     "BuildFromProject"
@@ -576,7 +576,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -590,7 +590,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

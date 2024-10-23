@@ -53,7 +53,7 @@
               "value": "<xref uid=\"BuildFromAssembly.Class1\" text=\"Class1\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"1\">This is a test class.</p>\n",
           "type": "class",
           "platform": null,
@@ -123,7 +123,7 @@
               "value": "<xref uid=\"BuildFromAssembly.Issue5432\" text=\"Issue5432\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "struct",
           "platform": null,
@@ -182,7 +182,7 @@
   "assemblies": [
     "BuildFromAssembly"
   ],
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

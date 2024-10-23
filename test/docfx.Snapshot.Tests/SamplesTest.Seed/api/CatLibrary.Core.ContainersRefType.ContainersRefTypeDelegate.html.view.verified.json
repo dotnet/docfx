@@ -47,7 +47,7 @@
         "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [],
   "langs": [
@@ -93,8 +93,8 @@
     },
     "id": "ContainersRefTypeDelegate",
     "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-    "startLine": 43.0,
-    "endLine": 0.0
+    "startLine": 43,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary.Core"
@@ -144,7 +144,7 @@
         "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"1\">Delegate ContainersRefTypeDelegate</p>\n",
   "example": [],
@@ -160,7 +160,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

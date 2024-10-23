@@ -52,7 +52,7 @@
               "value": "<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html\">DefaultInterfaceMembers</a>.<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.Nested.html\">Nested</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -114,7 +114,7 @@
               "value": "<xref uid=\"CSharp8.Issue4007\" text=\"Issue4007\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "<p sourcefile=\"api/CSharp8.Issue4007.yml\" sourcestartlinenumber=\"1\">This works: <xref href=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>.\nThis does not work: <xref href=\"CSharp8.Issue4007.SomeOtherMethod\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n",
           "type": "class",
           "platform": null,
@@ -176,7 +176,7 @@
               "value": "<xref uid=\"CSharp8.Misc\" text=\"Misc\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -238,7 +238,7 @@
               "value": "<xref uid=\"CSharp8.NullableReferenceTypes\" text=\"NullableReferenceTypes\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -307,7 +307,7 @@
               "value": "<xref uid=\"CSharp8.DisposableRefStructs\" text=\"DisposableRefStructs\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "struct",
           "platform": null,
@@ -369,7 +369,7 @@
               "value": "<xref uid=\"CSharp8.ReadOnlyMembers\" text=\"ReadOnlyMembers\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "struct",
           "platform": null,
@@ -439,7 +439,7 @@
               "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "interface",
           "platform": null,
@@ -501,7 +501,7 @@
               "value": "<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html\">DefaultInterfaceMembers</a>.<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.IA.html\">IA</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "interface",
           "platform": null,
@@ -560,7 +560,7 @@
   "assemblies": [
     "CSharp"
   ],
-  "level": 0.0,
+  "level": 0,
   "_systemKeys": [
     "uid",
     "isEii",

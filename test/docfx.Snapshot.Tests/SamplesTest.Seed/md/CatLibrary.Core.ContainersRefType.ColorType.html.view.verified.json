@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/CatLibrary.Core.ContainersRefType.ColorType.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_Core_ContainersRefType_ColorType\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"1\"> Enum ContainersRefType.ColorType</h1>",
   "title": " Enum ContainersRefType.ColorType",
-  "wordCount": 22.0,
+  "wordCount": 22,
   "_key": "obj/md/CatLibrary.Core.ContainersRefType.ColorType.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
