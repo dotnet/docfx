@@ -15,6 +15,7 @@ permissions:
 jobs:
   report:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
     steps:
     - name: Create Test Report
       uses: dorny/test-reporter@31a54ee7ebcacc03a09ea97a7e5465a47b84aea5 # v1.9.1
@@ -24,13 +25,13 @@ jobs:
         name: test-results             # Name of the `check run` which will be created
         path: 'test/TestResults/*.trx'
         reporter: dotnet-trx
-        fail-on-error: true
+        fail-on-error: false
         fail-on-empty: false
 
     - name: Output message to job summary
       id: output-job-summary
       shell: pwsh
-      if: ${{ !cancelled() && (steps.test-reports.outputs.time != '0') }}
+      if: ${{ steps.test-reports.outputs.time != '0' }}
       run: |
         $conclusion = "${{ steps.test-reports.outputs.conclusion }}"
         $passed     = "${{ steps.test-reports.outputs.passed }}"
@@ -50,3 +51,8 @@ jobs:
         "@
 
         Write-Output $content >> $env:GITHUB_STEP_SUMMARY
+
+        if($failed -ne '0'){
+          echo "::error::Test Report contains ${failed} errors."
+          exit 1
+        }
