@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/BuildFromProject.Class1.Issue9260.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Class1_Issue9260\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"1\"> Enum Class1.Issue9260</h1>",
   "title": " Enum Class1.Issue9260",
-  "wordCount": 69.0,
+  "wordCount": 69,
   "_key": "obj/md/BuildFromProject.Class1.Issue9260.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

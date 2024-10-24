@@ -14,7 +14,7 @@
           "topicUid": "CSharp10.ConstantInterpolatedStrings",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -25,7 +25,7 @@
           "topicUid": "CSharp10.Issue7737",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -36,7 +36,7 @@
           "topicUid": "CSharp10.ParameterlessStructConstructors",
           "type": "Struct",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -47,7 +47,7 @@
           "topicUid": "CSharp10.ReadOnlyRecordStruct",
           "type": "Struct",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -58,7 +58,7 @@
           "topicUid": "CSharp10.RecordClass",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -69,13 +69,13 @@
           "topicUid": "CSharp10.RecordStruct",
           "type": "Struct",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         }
       ],
       "tocHref": null,
-      "level": 2.0
+      "level": 2
     },
     {
       "name": "CSharp11",
@@ -91,7 +91,7 @@
           "topicUid": "CSharp11.CheckedUserDefinedOperators`1",
           "type": "Interface",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -102,7 +102,7 @@
           "topicUid": "CSharp11.RequiredModifier",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -113,7 +113,7 @@
           "topicUid": "CSharp11.ScopedModifier",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -124,7 +124,7 @@
           "topicUid": "CSharp11.StaticAbstractMembersInInterfaces",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -135,7 +135,7 @@
           "topicUid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1",
           "type": "Interface",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -146,13 +146,13 @@
           "topicUid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
           "type": "Struct",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         }
       ],
       "tocHref": null,
-      "level": 2.0
+      "level": 2
     },
     {
       "name": "CSharp12",
@@ -168,7 +168,7 @@
           "topicUid": "CSharp12.CollectionExpressions",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -179,7 +179,7 @@
           "topicUid": "CSharp12.DefaultLambdaParameters",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -190,7 +190,7 @@
           "topicUid": "CSharp12.InlineArrays",
           "type": "Struct",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -201,7 +201,7 @@
           "topicUid": "CSharp12.PrimaryConstructors",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -212,7 +212,7 @@
           "topicUid": "CSharp12.PrimaryConstructors.BankAccount",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -223,7 +223,7 @@
           "topicUid": "CSharp12.PrimaryConstructors.CheckAccount",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -234,7 +234,7 @@
           "topicUid": "CSharp12.PrimaryConstructors.Distance",
           "type": "Struct",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -245,13 +245,13 @@
           "topicUid": "CSharp12.RefReadOnlyParameters",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         }
       ],
       "tocHref": null,
-      "level": 2.0
+      "level": 2
     },
     {
       "name": "CSharp8",
@@ -267,7 +267,7 @@
           "topicUid": "CSharp8.DefaultInterfaceMembers",
           "type": "Interface",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -278,7 +278,7 @@
           "topicUid": "CSharp8.DefaultInterfaceMembers.IA",
           "type": "Interface",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -289,7 +289,7 @@
           "topicUid": "CSharp8.DefaultInterfaceMembers.Nested",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -300,7 +300,7 @@
           "topicUid": "CSharp8.DisposableRefStructs",
           "type": "Struct",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -311,7 +311,7 @@
           "topicUid": "CSharp8.Issue4007",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -322,7 +322,7 @@
           "topicUid": "CSharp8.Misc",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -333,7 +333,7 @@
           "topicUid": "CSharp8.NullableReferenceTypes",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -344,13 +344,13 @@
           "topicUid": "CSharp8.ReadOnlyMembers",
           "type": "Struct",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         }
       ],
       "tocHref": null,
-      "level": 2.0
+      "level": 2
     },
     {
       "name": "CSharp9",
@@ -366,7 +366,7 @@
           "topicUid": "CSharp9.FunctionPointers",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -377,7 +377,7 @@
           "topicUid": "CSharp9.InitOnlySetters",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -388,7 +388,7 @@
           "topicUid": "CSharp9.NativeSizedIntegers",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -399,7 +399,7 @@
           "topicUid": "CSharp9.RecordTypes",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -410,7 +410,7 @@
           "topicUid": "CSharp9.RecordTypes.Person",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -421,13 +421,13 @@
           "topicUid": "CSharp9.RecordTypes.Teacher",
           "type": "Class",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         }
       ],
       "tocHref": null,
-      "level": 2.0
+      "level": 2
     }
   ],
   "memberLayout": "SamePage",
@@ -514,7 +514,7 @@
   "topicHref": null,
   "tocHref": null,
   "name": null,
-  "level": 1.0,
+  "level": 1,
   "leaf": false,
   "title": "Table of Content",
   "_disableToc": true

@@ -52,7 +52,7 @@
               "value": "<xref uid=\"CSharp11.RequiredModifier\" text=\"RequiredModifier\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -114,7 +114,7 @@
               "value": "<xref uid=\"CSharp11.ScopedModifier\" text=\"ScopedModifier\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -176,7 +176,7 @@
               "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -246,7 +246,7 @@
               "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "struct",
           "platform": null,
@@ -315,7 +315,7 @@
               "value": "<a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html\">CheckedUserDefinedOperators</a>(Of T)"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "interface",
           "platform": null,
@@ -377,7 +377,7 @@
               "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html\">IGetNext</a>(Of T)"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "interface",
           "platform": null,
@@ -436,7 +436,7 @@
   "assemblies": [
     "CSharp"
   ],
-  "level": 0.0,
+  "level": 0,
   "_systemKeys": [
     "uid",
     "isEii",

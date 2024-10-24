@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -167,14 +167,14 @@
             },
             "id": "GravitationalConstant",
             "path": "src/CSharp8.cs",
-            "startLine": 30.0,
-            "endLine": 0.0
+            "startLine": 30,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
           ],
           "namespace": "CSharp8",
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "",
           "platform": null,
@@ -302,14 +302,14 @@
             },
             "id": "X",
             "path": "src/CSharp8.cs",
-            "startLine": 29.0,
-            "endLine": 0.0
+            "startLine": 29,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
           ],
           "namespace": "CSharp8",
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "",
           "platform": null,
@@ -398,8 +398,8 @@
             },
             "id": "DoSomething",
             "path": "src/CSharp8.cs",
-            "startLine": 45.0,
-            "endLine": 0.0
+            "startLine": 45,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -449,7 +449,7 @@
             ],
             "id": "CSharp8_DefaultInterfaceMembers_DoSomething_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -531,8 +531,8 @@
             },
             "id": "DoSomethingElse",
             "path": "src/CSharp8.cs",
-            "startLine": 46.0,
-            "endLine": 0.0
+            "startLine": 46,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -582,7 +582,7 @@
             ],
             "id": "CSharp8_DefaultInterfaceMembers_DoSomethingElse_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -764,8 +764,8 @@
             },
             "id": "op_UnaryPlus",
             "path": "src/CSharp8.cs",
-            "startLine": 33.0,
-            "endLine": 0.0
+            "startLine": 33,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -811,7 +811,7 @@
             ],
             "id": "CSharp8_DefaultInterfaceMembers_op_UnaryPlus_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -873,8 +873,8 @@
     },
     "id": "DefaultInterfaceMembers",
     "path": "src/CSharp8.cs",
-    "startLine": 27.0,
-    "endLine": 0.0
+    "startLine": 27,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -924,7 +924,7 @@
         "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -938,7 +938,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_systemKeys": [
     "uid",
     "isEii",

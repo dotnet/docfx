@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_Core_ContainersRefType_ContainersRefTypeDelegate\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.md\" sourcestartlinenumber=\"1\"> Delegate ContainersRefType.ContainersRefTypeDelegate</h1>",
   "title": " Delegate ContainersRefType.ContainersRefTypeDelegate",
-  "wordCount": 10.0,
+  "wordCount": 10,
   "_key": "obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

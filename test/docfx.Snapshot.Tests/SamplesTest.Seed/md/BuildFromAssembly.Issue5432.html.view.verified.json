@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/BuildFromAssembly.Issue5432.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromAssembly_Issue5432\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"1\"> Struct Issue5432</h1>",
   "title": " Struct Issue5432",
-  "wordCount": 28.0,
+  "wordCount": 28,
   "_key": "obj/md/BuildFromAssembly.Issue5432.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

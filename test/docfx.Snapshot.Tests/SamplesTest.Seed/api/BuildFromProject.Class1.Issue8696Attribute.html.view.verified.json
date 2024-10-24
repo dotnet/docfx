@@ -47,7 +47,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -399,8 +399,8 @@
             },
             "id": ".ctor",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 127.0,
-            "endLine": 0.0
+            "startLine": 127,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -450,7 +450,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue8696Attribute__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "",
           "platform": null,
@@ -512,8 +512,8 @@
     },
     "id": "Issue8696Attribute",
     "path": "dotnet/project/Project/Class1.cs",
-    "startLine": 125.0,
-    "endLine": 0.0
+    "startLine": 125,
+    "endLine": 0
   },
   "assemblies": [
     "BuildFromProject"
@@ -563,7 +563,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -625,8 +625,8 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     },
     {
       "uid": "System.Attribute",
@@ -675,11 +675,11 @@
           "value": "<xref uid=\"System.Attribute\" text=\"Attribute\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 1.0
+      "level": 0,
+      "index": 1
     }
   ],
-  "level": 2.0,
+  "level": 2,
   "inheritedMembers": [
     {
       "uid": "System.Attribute.Equals(System.Object)",
@@ -728,7 +728,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttribute(System.Reflection.Assembly,System.Type)",
@@ -777,7 +777,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type)\">GetCustomAttribute</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.assembly\">Assembly</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttribute(System.Reflection.Assembly,System.Type,System.Boolean)",
@@ -826,7 +826,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type-system-boolean)\">GetCustomAttribute</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.assembly\">Assembly</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttribute(System.Reflection.MemberInfo,System.Type)",
@@ -875,7 +875,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type)\">GetCustomAttribute</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.memberinfo\">MemberInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttribute(System.Reflection.MemberInfo,System.Type,System.Boolean)",
@@ -924,7 +924,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-memberinfo-system-type-system-boolean)\">GetCustomAttribute</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.memberinfo\">MemberInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttribute(System.Reflection.Module,System.Type)",
@@ -973,7 +973,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type)\">GetCustomAttribute</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.module\">Module</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttribute(System.Reflection.Module,System.Type,System.Boolean)",
@@ -1022,7 +1022,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-module-system-type-system-boolean)\">GetCustomAttribute</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.module\">Module</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type)",
@@ -1071,7 +1071,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type)\">GetCustomAttribute</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.parameterinfo\">ParameterInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttribute(System.Reflection.ParameterInfo,System.Type,System.Boolean)",
@@ -1120,7 +1120,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-parameterinfo-system-type-system-boolean)\">GetCustomAttribute</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.parameterinfo\">ParameterInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.Assembly)",
@@ -1169,7 +1169,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.assembly\">Assembly</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.Assembly,System.Boolean)",
@@ -1218,7 +1218,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-boolean)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.assembly\">Assembly</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.Assembly,System.Type)",
@@ -1267,7 +1267,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.assembly\">Assembly</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.Assembly,System.Type,System.Boolean)",
@@ -1316,7 +1316,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-assembly-system-type-system-boolean)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.assembly\">Assembly</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.MemberInfo)",
@@ -1365,7 +1365,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.memberinfo\">MemberInfo</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.MemberInfo,System.Boolean)",
@@ -1414,7 +1414,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-boolean)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.memberinfo\">MemberInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.MemberInfo,System.Type)",
@@ -1463,7 +1463,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.memberinfo\">MemberInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.MemberInfo,System.Type,System.Boolean)",
@@ -1512,7 +1512,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-memberinfo-system-type-system-boolean)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.memberinfo\">MemberInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.Module)",
@@ -1561,7 +1561,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.module\">Module</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.Module,System.Boolean)",
@@ -1610,7 +1610,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-boolean)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.module\">Module</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.Module,System.Type)",
@@ -1659,7 +1659,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.module\">Module</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.Module,System.Type,System.Boolean)",
@@ -1708,7 +1708,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-module-system-type-system-boolean)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.module\">Module</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.ParameterInfo)",
@@ -1757,7 +1757,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.parameterinfo\">ParameterInfo</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.ParameterInfo,System.Boolean)",
@@ -1806,7 +1806,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-boolean)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.parameterinfo\">ParameterInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type)",
@@ -1855,7 +1855,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.parameterinfo\">ParameterInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetCustomAttributes(System.Reflection.ParameterInfo,System.Type,System.Boolean)",
@@ -1904,7 +1904,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattributes#system-attribute-getcustomattributes(system-reflection-parameterinfo-system-type-system-boolean)\">GetCustomAttributes</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.parameterinfo\">ParameterInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.GetHashCode",
@@ -1953,7 +1953,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.IsDefaultAttribute",
@@ -2002,7 +2002,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.isdefaultattribute\">IsDefaultAttribute</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.IsDefined(System.Reflection.Assembly,System.Type)",
@@ -2051,7 +2051,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type)\">IsDefined</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.assembly\">Assembly</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.IsDefined(System.Reflection.Assembly,System.Type,System.Boolean)",
@@ -2100,7 +2100,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-assembly-system-type-system-boolean)\">IsDefined</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.assembly\">Assembly</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.IsDefined(System.Reflection.MemberInfo,System.Type)",
@@ -2149,7 +2149,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type)\">IsDefined</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.memberinfo\">MemberInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.IsDefined(System.Reflection.MemberInfo,System.Type,System.Boolean)",
@@ -2198,7 +2198,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-memberinfo-system-type-system-boolean)\">IsDefined</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.memberinfo\">MemberInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.IsDefined(System.Reflection.Module,System.Type)",
@@ -2247,7 +2247,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type)\">IsDefined</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.module\">Module</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.IsDefined(System.Reflection.Module,System.Type,System.Boolean)",
@@ -2296,7 +2296,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-module-system-type-system-boolean)\">IsDefined</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.module\">Module</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.IsDefined(System.Reflection.ParameterInfo,System.Type)",
@@ -2345,7 +2345,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type)\">IsDefined</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.parameterinfo\">ParameterInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.IsDefined(System.Reflection.ParameterInfo,System.Type,System.Boolean)",
@@ -2394,7 +2394,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type-system-boolean)\">IsDefined</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.reflection.parameterinfo\">ParameterInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.type\">Type</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.Match(System.Object)",
@@ -2443,7 +2443,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.attribute.match\">Match</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Attribute.TypeId",
@@ -2492,7 +2492,7 @@
           "value": "<xref uid=\"System.Attribute.TypeId\" text=\"TypeId\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -2541,7 +2541,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -2590,7 +2590,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -2639,7 +2639,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -2688,7 +2688,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -2737,7 +2737,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

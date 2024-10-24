@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [],
   "langs": [
@@ -93,8 +93,8 @@
     },
     "id": "MRefNormalDelegate",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 355.0,
-    "endLine": 0.0
+    "startLine": 355,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary"
@@ -144,7 +144,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"1\">Delegate in the namespace</p>\n",
   "example": [],
@@ -257,7 +257,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

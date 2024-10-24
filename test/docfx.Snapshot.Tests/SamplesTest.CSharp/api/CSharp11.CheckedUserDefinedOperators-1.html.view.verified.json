@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -263,8 +263,8 @@
             },
             "id": "op_Addition",
             "path": "src/CSharp11.cs",
-            "startLine": 28.0,
-            "endLine": 0.0
+            "startLine": 28,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -310,7 +310,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Addition_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -534,8 +534,8 @@
             },
             "id": "op_CheckedAddition",
             "path": "src/CSharp11.cs",
-            "startLine": 37.0,
-            "endLine": 0.0
+            "startLine": 37,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -581,7 +581,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedAddition_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -758,8 +758,8 @@
             },
             "id": "op_CheckedDecrement",
             "path": "src/CSharp11.cs",
-            "startLine": 35.0,
-            "endLine": 0.0
+            "startLine": 35,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -805,7 +805,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedDecrement_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -1029,8 +1029,8 @@
             },
             "id": "op_CheckedDivision",
             "path": "src/CSharp11.cs",
-            "startLine": 40.0,
-            "endLine": 0.0
+            "startLine": 40,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -1076,7 +1076,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedDivision_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -1252,8 +1252,8 @@
             },
             "id": "op_CheckedExplicit",
             "path": "src/CSharp11.cs",
-            "startLine": 41.0,
-            "endLine": 0.0
+            "startLine": 41,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -1299,7 +1299,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedExplicit_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -1476,8 +1476,8 @@
             },
             "id": "op_CheckedIncrement",
             "path": "src/CSharp11.cs",
-            "startLine": 34.0,
-            "endLine": 0.0
+            "startLine": 34,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -1523,7 +1523,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedIncrement_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -1747,8 +1747,8 @@
             },
             "id": "op_CheckedMultiply",
             "path": "src/CSharp11.cs",
-            "startLine": 39.0,
-            "endLine": 0.0
+            "startLine": 39,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -1794,7 +1794,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedMultiply_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -2018,8 +2018,8 @@
             },
             "id": "op_CheckedSubtraction",
             "path": "src/CSharp11.cs",
-            "startLine": 38.0,
-            "endLine": 0.0
+            "startLine": 38,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -2065,7 +2065,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedSubtraction_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -2242,8 +2242,8 @@
             },
             "id": "op_CheckedUnaryNegation",
             "path": "src/CSharp11.cs",
-            "startLine": 36.0,
-            "endLine": 0.0
+            "startLine": 36,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -2289,7 +2289,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedUnaryNegation_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -2466,8 +2466,8 @@
             },
             "id": "op_Decrement",
             "path": "src/CSharp11.cs",
-            "startLine": 26.0,
-            "endLine": 0.0
+            "startLine": 26,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -2513,7 +2513,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Decrement_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -2737,8 +2737,8 @@
             },
             "id": "op_Division",
             "path": "src/CSharp11.cs",
-            "startLine": 31.0,
-            "endLine": 0.0
+            "startLine": 31,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -2784,7 +2784,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Division_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -2960,8 +2960,8 @@
             },
             "id": "op_Explicit",
             "path": "src/CSharp11.cs",
-            "startLine": 32.0,
-            "endLine": 0.0
+            "startLine": 32,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -3007,7 +3007,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Explicit_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -3184,8 +3184,8 @@
             },
             "id": "op_Increment",
             "path": "src/CSharp11.cs",
-            "startLine": 25.0,
-            "endLine": 0.0
+            "startLine": 25,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -3231,7 +3231,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Increment_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -3455,8 +3455,8 @@
             },
             "id": "op_Multiply",
             "path": "src/CSharp11.cs",
-            "startLine": 30.0,
-            "endLine": 0.0
+            "startLine": 30,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -3502,7 +3502,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Multiply_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -3726,8 +3726,8 @@
             },
             "id": "op_Subtraction",
             "path": "src/CSharp11.cs",
-            "startLine": 29.0,
-            "endLine": 0.0
+            "startLine": 29,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -3773,7 +3773,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Subtraction_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -3950,8 +3950,8 @@
             },
             "id": "op_UnaryNegation",
             "path": "src/CSharp11.cs",
-            "startLine": 27.0,
-            "endLine": 0.0
+            "startLine": 27,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -3997,7 +3997,7 @@
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -4059,8 +4059,8 @@
     },
     "id": "CheckedUserDefinedOperators",
     "path": "src/CSharp11.cs",
-    "startLine": 23.0,
-    "endLine": 0.0
+    "startLine": 23,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -4110,7 +4110,7 @@
         "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -4130,7 +4130,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_systemKeys": [
     "uid",
     "isEii",

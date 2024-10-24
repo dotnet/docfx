@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [],
   "langs": [
@@ -93,8 +93,8 @@
     },
     "id": "MRefDelegate",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 366.0,
-    "endLine": 0.0
+    "startLine": 366,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary"
@@ -144,7 +144,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"1\">Generic delegate with many constrains.</p>\n",
   "example": [],
@@ -320,7 +320,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

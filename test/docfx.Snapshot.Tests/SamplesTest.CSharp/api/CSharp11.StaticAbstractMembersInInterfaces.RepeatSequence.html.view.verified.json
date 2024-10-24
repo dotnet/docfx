@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -121,8 +121,8 @@
             },
             "id": ".ctor",
             "path": "src/CSharp11.cs",
-            "startLine": 14.0,
-            "endLine": 0.0
+            "startLine": 14,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -172,7 +172,7 @@
             ],
             "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "",
           "platform": null,
@@ -307,14 +307,14 @@
             },
             "id": "Text",
             "path": "src/CSharp11.cs",
-            "startLine": 12.0,
-            "endLine": 0.0
+            "startLine": 12,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
           ],
           "namespace": "CSharp11",
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "",
           "platform": null,
@@ -449,8 +449,8 @@
             },
             "id": "ToString",
             "path": "src/CSharp11.cs",
-            "startLine": 19.0,
-            "endLine": 0.0
+            "startLine": 19,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -544,7 +544,7 @@
             ],
             "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_ToString_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.yml\" sourcestartlinenumber=\"1\">Returns the fully qualified type name of this instance.</p>\n",
           "platform": null,
@@ -725,8 +725,8 @@
             },
             "id": "op_Increment",
             "path": "src/CSharp11.cs",
-            "startLine": 16.0,
-            "endLine": 0.0
+            "startLine": 16,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -773,7 +773,7 @@
             ],
             "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_"
           },
-          "level": 0.0,
+          "level": 0,
           "implements": [
             {
               "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext{CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence}.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)",
@@ -879,8 +879,8 @@
     },
     "id": "RepeatSequence",
     "path": "src/CSharp11.cs",
-    "startLine": 9.0,
-    "endLine": 0.0
+    "startLine": 9,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -930,7 +930,7 @@
         "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -944,7 +944,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "implements": [
     {
       "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext{CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence}",
@@ -1039,7 +1039,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.ValueType.GetHashCode",
@@ -1088,7 +1088,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -1137,7 +1137,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -1186,7 +1186,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -1235,7 +1235,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_systemKeys": [

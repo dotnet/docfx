@@ -15,7 +15,7 @@
         "value": "<xref uid=\"CatLibrary\" displayProperty=\"name\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -67,7 +67,7 @@
               "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html\">ContainersRefTypeChild</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -129,7 +129,7 @@
               "value": "<xref uid=\"CatLibrary.Core.ExplicitLayoutClass\" text=\"ExplicitLayoutClass\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -192,7 +192,7 @@
               "value": "<xref uid=\"CatLibrary.Core.Issue231\" text=\"Issue231\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -262,7 +262,7 @@
               "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">Struct ContainersRefType</p>\n",
           "type": "struct",
           "platform": null,
@@ -331,7 +331,7 @@
               "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html\">ContainersRefTypeChildInterface</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "interface",
           "platform": null,
@@ -401,7 +401,7 @@
               "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
           "type": "enum",
           "platform": null,
@@ -470,7 +470,7 @@
               "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html\">ContainersRefTypeDelegate</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"1\">Delegate ContainersRefTypeDelegate</p>\n",
           "type": "delegate",
           "platform": null,
@@ -529,7 +529,7 @@
   "assemblies": [
     "CatLibrary"
   ],
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
