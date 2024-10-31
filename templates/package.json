@@ -36,7 +36,7 @@
     "lunr": "2.3.9",
     "lunr-languages": "^1.14.0",
     "mathjax": "^3.2.2",
-    "mermaid": "^11.3.0",
+    "mermaid": "^11.4.0",
     "tsx": "^4.19.2"
   },
   "devDependencies": {
