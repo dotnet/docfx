@@ -38,9 +38,11 @@ internal static class SystemTextJsonUtility
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             // DictionaryKeyPolicy = JsonNamingPolicy.CamelCase, // This setting is not compatible to `Newtonsoft.Json` serialize result.
-            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.AllowNamedFloatingPointLiterals,
             Converters =
             {
+                new NewtonsoftJsonCompatibleConverters.FloatConverter(),
+                new NewtonsoftJsonCompatibleConverters.DoubleConverter(),
                 new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
                 new ObjectToInferredTypesConverter(), // Required for `Dictionary<string, object>` type deserialization.
             },
