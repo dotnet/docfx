@@ -48,7 +48,7 @@ public static class GitUtility
         };
     }
 
-    public static string? RawContentUrlToContentUrl(string rawUrl)
+    public static string RawContentUrlToContentUrl(string rawUrl)
     {
         // GitHub
         var url = Regex.Replace(
