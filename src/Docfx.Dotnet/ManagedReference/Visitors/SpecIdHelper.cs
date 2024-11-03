@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Docfx.Dotnet;
 
-internal sealed class SpecIdHelper
+internal static class SpecIdHelper
 {
     private static readonly Regex TypeParameterRegex = new(@"\B(?<!`)`\d+", RegexOptions.Compiled);
     private static readonly Regex MethodParameterRegex = new(@"\B``\d+", RegexOptions.Compiled);
@@ -82,7 +82,7 @@ internal sealed class SpecIdHelper
     }
 
     /// <summary>
-    /// spec extension method's receiver type. 
+    /// spec extension method's receiver type.
     /// for below overload: M(this A), M(this A, A), AddReference applies to the first method and AddSpecReference applies to the second method might get same id without prepending receiver type.
     /// </summary>
     /// <param name="symbol">symbol</param>

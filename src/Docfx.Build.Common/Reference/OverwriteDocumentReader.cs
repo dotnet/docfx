@@ -12,7 +12,7 @@ using YamlDeserializer = Docfx.YamlSerialization.YamlDeserializer;
 
 namespace Docfx.Build.Common;
 
-public class OverwriteDocumentReader
+public static class OverwriteDocumentReader
 {
     public static FileModel Read(FileAndType file)
     {

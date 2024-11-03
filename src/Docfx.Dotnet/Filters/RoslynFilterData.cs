@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Docfx.Dotnet;
 
-internal class RoslynFilterData
+internal static class RoslynFilterData
 {
     public static SymbolFilterData GetSymbolFilterData(ISymbol symbol)
     {
