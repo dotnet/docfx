@@ -135,10 +135,13 @@ internal sealed class Merger
         {
             return false;
         }
+
+        var sourceDictionary = (IDictionary<string, object>)source;
+        var overridesDictionary = (IDictionary<string, object>)overrides;
         return schema?.Properties != null && schema.Properties.Any(p => p.Value.MergeType == MergeType.Key) && schema.Properties.Where(p => p.Value.MergeType == MergeType.Key).All(p =>
         {
-            (source as IDictionary<string, object>).TryGetValue(p.Key, out var s);
-            (overrides as IDictionary<string, object>).TryGetValue(p.Key, out var o);
+            sourceDictionary.TryGetValue(p.Key, out var s);
+            overridesDictionary.TryGetValue(p.Key, out var o);
             return object.Equals(s, o);
         });
     }
