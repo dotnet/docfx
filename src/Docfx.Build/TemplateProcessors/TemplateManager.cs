@@ -85,7 +85,7 @@ public class TemplateManager
         }
     }
 
-    private bool TryExportResourceFiles(IEnumerable<string> resourceNames, string outputDirectory, bool overwrite, string? regexFilter = null)
+    private bool TryExportResourceFiles(List<string> resourceNames, string outputDirectory, bool overwrite, string? regexFilter = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(outputDirectory);
 
