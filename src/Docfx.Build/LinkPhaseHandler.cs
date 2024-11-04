@@ -55,7 +55,7 @@ internal class LinkPhaseHandler
                     m.BaseDir = Context.BuildOutputFolder;
                     if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
                     {
-                        m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
+                        m.File = (RelativePath)m.FileAndType.DestinationDir + ((RelativePath)m.File - (RelativePath)m.FileAndType.SourceDir);
                     }
                     m.File = Path.Combine(Context.VersionFolder ?? string.Empty, m.File);
                     var result = hostService.Processor.Save(m);
@@ -77,7 +77,7 @@ internal class LinkPhaseHandler
                     }
                 }
             }
-        });
+        }, Context.CancellationToken);
         return manifestItems;
     }
 
@@ -136,7 +136,7 @@ internal class LinkPhaseHandler
                     Logger.LogWarning($"Invalid file link:({fileLink}).", code: WarningCodes.Build.InvalidFileLink);
                 }
             }
-        });
+        }, Context.CancellationToken);
     }
 
     private void HandleUids(SaveResult result)

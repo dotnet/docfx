@@ -116,7 +116,7 @@ public class Template
     /// <param name="template"></param>
     private IEnumerable<TemplateResourceInfo> ExtractDependentResources(string templateName)
     {
-        if (Renderer == null || Renderer.Dependencies == null)
+        if (Renderer?.Dependencies == null)
         {
             yield break;
         }

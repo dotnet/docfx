@@ -23,7 +23,7 @@ namespace Docfx.YamlSerialization;
 /// </summary>
 public sealed class YamlDeserializer
 {
-    private static Dictionary<TagName, Type> PredefinedTagMappings { get; } = new Dictionary<TagName, Type>
+    private static Dictionary<TagName, Type> PredefinedTagMappings { get; } = new()
     {
         { "tag:yaml.org,2002:map", typeof(Dictionary<object, object>) },
         { "tag:yaml.org,2002:bool", typeof(bool) },
@@ -39,8 +39,8 @@ public sealed class YamlDeserializer
     private readonly IValueDeserializer _valueDeserializer;
     private readonly ITypeConverter _reflectionTypeConverter = new ReflectionTypeConverter();
 
-    public IList<INodeDeserializer> NodeDeserializers { get; private set; }
-    public IList<INodeTypeResolver> TypeResolvers { get; private set; }
+    public IList<INodeDeserializer> NodeDeserializers { get; }
+    public IList<INodeTypeResolver> TypeResolvers { get; }
     public IValueDeserializer ValueDeserializer => _valueDeserializer;
 
     private sealed class TypeDescriptorProxy : ITypeInspector

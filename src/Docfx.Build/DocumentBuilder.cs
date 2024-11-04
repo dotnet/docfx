@@ -39,9 +39,11 @@ public class DocumentBuilder : IDisposable
         Build(new DocumentBuildParameters[] { parameter }, parameter.OutputBaseDir);
     }
 
-    public void Build(IList<DocumentBuildParameters> parameters, string outputDirectory)
+    public void Build(IList<DocumentBuildParameters> parameters, string outputDirectory, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(parameters);
+
+        cancellationToken.ThrowIfCancellationRequested();
 
         if (parameters.Count == 0)
         {
@@ -119,7 +121,7 @@ public class DocumentBuilder : IDisposable
                     MetadataValidators = MetadataValidators.ToList(),
                     Processors = Processors,
                 };
-                manifests.Add(builder.Build(parameter, markdownService));
+                manifests.Add(builder.Build(parameter, markdownService, cancellationToken));
             }
         }
         if (noContentFound)
@@ -157,7 +159,7 @@ public class DocumentBuilder : IDisposable
             .Create();
 
         generatedManifest.Files.Sort((a, b) => (a.SourceRelativePath ?? "").CompareTo(b.SourceRelativePath ?? ""));
-        JsonUtility.Serialize("manifest.json", generatedManifest, Formatting.Indented);
+        JsonUtility.Serialize("manifest.json", generatedManifest, indented: true);
 
         EnvironmentContext.FileAbstractLayerImpl = null;
 

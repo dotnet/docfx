@@ -33,6 +33,7 @@ class InitCommand : Command<InitCommandOptions>
 
         var docfx = new
         {
+            schema = "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
             metadata = dotnetApi ? new[]
             {
                 new
@@ -69,10 +70,10 @@ class InitCommand : Command<InitCommandOptions>
         var files = new Dictionary<string, string>
         {
             ["docfx.json"] = JsonSerializer.Serialize(docfx, new JsonSerializerOptions()
-                {
-                    WriteIndented = true,
-                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                }),
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            }).Replace("\"schema\"", "\"$schema\""),
 
             ["toc.yml"] = dotnetApi ?
                 $"""

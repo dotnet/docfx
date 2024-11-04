@@ -3,6 +3,8 @@
  * The .NET Foundation licenses this file to you under the MIT license.
  */
 
+@use "bootstrap/scss/bootstrap";
+
 $header-height: 60px;
 $footer-height: 60px;
 $main-padding-top: 1.6rem;
@@ -10,7 +12,7 @@ $main-padding-bottom: 2rem;
 
 // Makes a div sticky to top
 @mixin sticky-top {
-  @include media-breakpoint-up(md) {
+  @include bootstrap.media-breakpoint-up(md) {
     position: sticky;
     top: 0;
     z-index: 1030;
@@ -18,7 +20,7 @@ $main-padding-bottom: 2rem;
 }
 
 @mixin stick-to-header {
-  @include media-breakpoint-up(md) {
+  @include bootstrap.media-breakpoint-up(md) {
     position: sticky;
     top: calc($header-height + $main-padding-top);
   }
@@ -43,7 +45,7 @@ body[data-layout="landing"] {
 
     @include sticky-top;
 
-    @include media-breakpoint-up(md) {
+    @include bootstrap.media-breakpoint-up(md) {
       height: $header-height;
     }
 
@@ -82,7 +84,7 @@ body[data-layout="landing"] {
         flex: 1;
       }
 
-      @include media-breakpoint-up(md) {
+      @include bootstrap.media-breakpoint-up(md) {
         >article [id] {
           scroll-margin-top: $header-height;
         }
@@ -140,7 +142,7 @@ body[data-layout="landing"] {
 
           @include stick-to-header;
 
-          @include media-breakpoint-down(md) {
+          @include bootstrap.media-breakpoint-down(md) {
             flex: 0;
           }
 
@@ -161,7 +163,7 @@ body[data-layout="landing"] {
             display: flex;
             align-items: flex-start;
             margin-top: .5rem;
-            
+
             >button {
               margin-top: -.65em;
               margin-left: -.8em
@@ -177,11 +179,11 @@ body[data-layout="landing"] {
             display: flex;
           }
 
-          @include media-breakpoint-down(lg) {
+          @include bootstrap.media-breakpoint-down(lg) {
             margin: 0 1rem;
           }
 
-          @include media-breakpoint-down(md) {
+          @include bootstrap.media-breakpoint-down(md) {
             margin: 0;
           }
         }
@@ -190,7 +192,10 @@ body[data-layout="landing"] {
           display: block;
           width: 230px;
           max-height: calc(100vh - $header-height - $main-padding-top);
+
+          /* stylelint-disable-next-line declaration-block-no-redundant-longhand-properties */
           overflow-x: hidden;
+          /* stylelint-disable-next-line declaration-block-no-redundant-longhand-properties */
           overflow-y: auto;
 
           @include stick-to-header;

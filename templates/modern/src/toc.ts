@@ -94,7 +94,7 @@ export async function renderToc(): Promise<TocNode[]> {
 
   function renderToc() {
     render(html`
-      ${renderTocFilter()} 
+      ${renderTocFilter()}
       <div class="flex-fill overflow-y-auto">${renderTocNodes(items) || renderNoFilterResult()}</div>
       ${renderDownloadPdf()}`, tocContainer)
   }

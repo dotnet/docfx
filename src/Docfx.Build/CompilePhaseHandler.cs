@@ -39,7 +39,7 @@ internal class CompilePhaseHandler
                     _restructions.AddRange(hostService.TableOfContentRestructions);
                 }
             }
-        }, maxParallelism);
+        }, maxParallelism, Context.CancellationToken);
 
         DistributeTocRestructions(hostServices);
 
@@ -49,7 +49,7 @@ internal class CompilePhaseHandler
             Build(hostService, maxParallelism);
         }
 
-        hostServices.RunAll(Postbuild, maxParallelism);
+        hostServices.RunAll(Postbuild, maxParallelism, Context.CancellationToken);
     }
 
     private void Prepare(List<HostService> hostServices, int maxParallelism)
@@ -66,7 +66,8 @@ internal class CompilePhaseHandler
                 {
                     m.LocalPathFromRoot ??= StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
                 },
-                maxParallelism);
+                maxParallelism,
+                Context.CancellationToken);
         }
     }
 
@@ -83,7 +84,7 @@ internal class CompilePhaseHandler
         }
     }
 
-    private static void Prebuild(HostService hostService)
+    private void Prebuild(HostService hostService)
     {
         RunBuildSteps(
             hostService.Processor.BuildSteps,
@@ -99,7 +100,7 @@ internal class CompilePhaseHandler
             });
     }
 
-    private static void Build(HostService hostService, int maxParallelism)
+    private void Build(HostService hostService, int maxParallelism)
     {
         hostService.Models.RunAll(
             m =>
@@ -124,10 +125,11 @@ internal class CompilePhaseHandler
                         });
                 }
             },
-            maxParallelism);
+            maxParallelism,
+            Context.CancellationToken);
     }
 
-    private static void Postbuild(HostService hostService)
+    private void Postbuild(HostService hostService)
     {
         hostService.Reload(hostService.Models);
 
@@ -140,12 +142,14 @@ internal class CompilePhaseHandler
             });
     }
 
-    private static void RunBuildSteps(IEnumerable<IDocumentBuildStep> buildSteps, Action<IDocumentBuildStep> action)
+    private void RunBuildSteps(IEnumerable<IDocumentBuildStep> buildSteps, Action<IDocumentBuildStep> action)
     {
         if (buildSteps != null)
         {
             foreach (var buildStep in buildSteps.OrderBy(static step => step.BuildOrder))
             {
+                Context.CancellationToken.ThrowIfCancellationRequested();
+
                 action(buildStep);
             }
         }

@@ -24,7 +24,7 @@ public class TestListenerScope : ILoggerListener, IDisposable
     public void WriteLine(ILogItem item)
     {
         if (item.LogLevel >= _logLevel)
-            s_items.Value.Add(item);
+            s_items.Value?.Add(item);
     }
 
     public IEnumerable<ILogItem> GetItemsByLogLevel(LogLevel logLevel)

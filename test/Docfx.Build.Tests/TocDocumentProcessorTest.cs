@@ -300,11 +300,20 @@ items:
 
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
 
-        Assert.NotNull(model.Metadata["metadata"]);
-
-        var meta = (JObject)model.Metadata["metadata"];
-        Assert.Single(meta);
-        Assert.Equal("content", meta["meta"]);
+        if (JsonUtility.IsSystemTextJsonSupported<TocItemViewModel>())
+        {
+            var meta = (IDictionary<string, object>)model.Metadata["metadata"];
+            Assert.NotNull(meta);
+            Assert.Single(meta);
+            Assert.Equal("content", meta["meta"]);
+        }
+        else
+        {
+            var meta = (JObject)model.Metadata["metadata"];
+            Assert.NotNull(meta);
+            Assert.Single(meta);
+            Assert.Equal("content", meta["meta"]);
+        }
 
         var expectedModel = new TocItemViewModel
         {
@@ -927,7 +936,7 @@ items:
             }.ToImmutableDictionary(),
         };
 
-        using var builder = new DocumentBuilder(Array.Empty<Assembly>(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder([], []);
         builder.Build(parameters);
     }
 

@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
@@ -46,7 +46,7 @@ class ExtractSearchIndex : IPostProcessor
         return metadata;
     }
 
-    public Manifest Process(Manifest manifest, string outputFolder)
+    public Manifest Process(Manifest manifest, string outputFolder, CancellationToken cancellationToken = default)
     {
         if (outputFolder == null)
         {
@@ -67,6 +67,8 @@ class ExtractSearchIndex : IPostProcessor
         Logger.LogInfo($"Extracting index data from {htmlFiles.Count} html files");
         foreach ((string relativePath, Dictionary<string, object> metadata) in htmlFiles)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var filePath = Path.Combine(outputFolder, relativePath);
             var html = new HtmlDocument();
             Logger.LogDiagnostic($"Extracting index data from {filePath}");
@@ -90,8 +92,7 @@ class ExtractSearchIndex : IPostProcessor
                 }
             }
         }
-
-        JsonUtility.Serialize(indexDataFilePath, indexData, Formatting.Indented);
+        JsonUtility.Serialize(indexDataFilePath, indexData, indented: true);
 
         // add index.json to manifest as resource file
         var manifestItem = new ManifestItem

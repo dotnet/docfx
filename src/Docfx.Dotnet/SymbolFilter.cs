@@ -95,7 +95,7 @@ internal class SymbolFilter
     private bool IsSymbolAccessible(ISymbol symbol)
     {
         // TODO: should we include implicitly declared members like constructors? They are part of the API contract.
-        if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
+        if (symbol is {IsImplicitlyDeclared: true, Kind: not SymbolKind.Namespace})
             return false;
 
         if (_config.IncludeExplicitInterfaceImplementations &&

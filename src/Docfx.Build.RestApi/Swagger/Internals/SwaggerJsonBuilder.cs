@@ -247,10 +247,7 @@ internal class SwaggerJsonBuilder
                         }
 
                         var swaggerObject = ResolveSwaggerObject(resolvedObject);
-                        if (!swaggerObject.Dictionary.ContainsKey(InternalRefNameKey))
-                        {
-                            swaggerObject.Dictionary.Add(InternalRefNameKey, new SwaggerValue { Token = swagger.ReferenceName });
-                        }
+                        swaggerObject.Dictionary.TryAdd(InternalRefNameKey, new SwaggerValue { Token = swagger.ReferenceName });
                         swagger.Reference = swaggerObject;
                         refStack.Pop();
                     }
@@ -259,9 +256,9 @@ internal class SwaggerJsonBuilder
             case SwaggerObjectType.Object:
                 {
                     var swagger = (SwaggerObject)swaggerBase;
-                    foreach (var key in swagger.Dictionary.Keys.ToList())
+                    foreach (var pair in swagger.Dictionary.ToList())
                     {
-                        swagger.Dictionary[key] = ResolveReferences(swagger.Dictionary[key], swaggerPath, refStack);
+                        swagger.Dictionary[pair.Key] = ResolveReferences(pair.Value, swaggerPath, refStack);
                     }
                     return swagger;
                 }

@@ -21,7 +21,7 @@ public class HrefInterpreter : IInterpreter
 
     public bool CanInterpret(BaseSchema schema)
     {
-        return schema != null && schema.ContentType == ContentType.Href;
+        return schema is {ContentType: ContentType.Href};
     }
 
     public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
@@ -44,7 +44,7 @@ public class HrefInterpreter : IInterpreter
         }
 
         // "/" is also considered as absolute to us
-        if (uri.IsAbsoluteUri || val.StartsWith("/", StringComparison.Ordinal))
+        if (uri.IsAbsoluteUri || val.StartsWith('/'))
         {
             return Helper.RemoveHostName(val, _siteHostName);
         }
@@ -60,7 +60,7 @@ public class HrefInterpreter : IInterpreter
             relPath = (currentFile + relPath.UrlDecode()).GetPathFromWorkingFolder();
             if (_exportFileLink)
             {
-                (context.FileLinkSources).AddFileLinkSource(new LinkSourceInfo
+                context.FileLinkSources.AddFileLinkSource(new LinkSourceInfo
                 {
                     Target = relPath,
                     Anchor = UriUtility.GetFragment(val),

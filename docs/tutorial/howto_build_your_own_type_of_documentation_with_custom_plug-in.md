@@ -15,7 +15,7 @@ Goal and limitation
 
 Preparation
 -----------
-1.  Create a new C# class library targeting `net6.0` or later.
+1.  Create a new C# class library targeting `net8.0` or later.
 
 2.  Add NuGet package reference to `System.Composition`, `Docfx.Plugins` and `Docfx.Common`.
 
@@ -57,7 +57,7 @@ Create a document processor
 3. Load our rtf file by reading all text:
    [!Code-csharp[Load](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Load)]
 
-   We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Docfx.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs)
+   We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/main/src/Docfx.Build/Conceptual/ConceptualDocumentProcessor.cs)
  stores the content of markdown files.
 
 4. Implement `Save` method as follows:

@@ -92,10 +92,10 @@ public class ReflectionEntityMerger : IMerger
                     placement =
                         placementValue switch
                         {
-                            "after"   => MergePlacement.After,
-                            "before"  => MergePlacement.Before,
+                            "after" => MergePlacement.After,
+                            "before" => MergePlacement.Before,
                             "replace" => MergePlacement.Replace,
-                            _         => MergePlacement.None
+                            _ => MergePlacement.None
                         };
                 }
             }
@@ -117,8 +117,8 @@ public class ReflectionEntityMerger : IMerger
 
                     s = placement switch
                     {
-                        MergePlacement.After   => $"{s}{o}",
-                        MergePlacement.Before  => $"{o}{s}",
+                        MergePlacement.After => $"{s}{o}",
+                        MergePlacement.Before => $"{o}{s}",
                         MergePlacement.Replace => o.ToString()
                     };
 
@@ -142,9 +142,11 @@ public class ReflectionEntityMerger : IMerger
                                 {
                                     continue;
                                 }
-                                if (o.GetType().IsValueType)
+
+                                var type = o.GetType();
+                                if (type.IsValueType)
                                 {
-                                    var defaultValue = Activator.CreateInstance(o.GetType());
+                                    var defaultValue = Activator.CreateInstance(type);
                                     if (object.Equals(defaultValue, o))
                                     {
                                         continue;
@@ -173,7 +175,6 @@ public class ReflectionEntityMerger : IMerger
                     case MergeOption.Replace:
                     case MergeOption.ReplaceNullOrDefault:
                         {
-                            var s = prop.Prop.GetValue(source);
                             var o = prop.Prop.GetValue(overrides);
                             if (prop.Option == MergeOption.Replace)
                             {
@@ -181,9 +182,11 @@ public class ReflectionEntityMerger : IMerger
                                 {
                                     continue;
                                 }
-                                if (o.GetType().IsValueType)
+
+                                var type = o.GetType();
+                                if (type.IsValueType)
                                 {
-                                    var defaultValue = Activator.CreateInstance(o.GetType());
+                                    var defaultValue = Activator.CreateInstance(type);
                                     if (object.Equals(defaultValue, o))
                                     {
                                         continue;

@@ -3,10 +3,11 @@
 
 namespace Docfx;
 
+[System.Text.Json.Serialization.JsonConverter(typeof(FileItemsConverter))]
 public class FileItems : List<string>
 {
     private static readonly IEnumerable<string> Empty = new List<string>();
-    public FileItems(string file) : base()
+    public FileItems(string file)
     {
         Add(file);
     }

@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Text;
 using Microsoft.CodeAnalysis;
 
 #nullable enable
@@ -106,7 +109,7 @@ partial class SymbolUrlResolver
                 case '}':
                     sb.Append("))");
                     break;
-                case char c when (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'):
+                case char and (>= 'a' and <= 'z' or >= '0' and <= '9'):
                 case '(' or ')' or '*' or '@':
                     sb.Append(ch);
                     break;

@@ -211,7 +211,7 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
             if (jObject.TryGetValue("swagger", out JToken swaggerValue))
             {
                 var swaggerString = (string)swaggerValue;
-                if (swaggerString != null && swaggerString.Equals("2.0"))
+                if (swaggerString is "2.0")
                 {
                     return true;
                 }
@@ -256,12 +256,10 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         var result = new Dictionary<string, object>(item);
         foreach (var pair in overwriteItems.OrderBy(item => item.Key))
         {
-            if (result.ContainsKey(pair.Key))
+            if (!result.TryAdd(pair.Key, pair.Value))
             {
                 Logger.LogWarning($"Metadata \"{pair.Key}\" inside rest api is overwritten.");
             }
-
-            result[pair.Key] = pair.Value;
         }
         return result;
     }

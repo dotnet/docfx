@@ -1,4 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Collections.Immutable;
 using Docfx.DataContracts.ManagedReference;
 using Microsoft.CodeAnalysis;
 using CS = Microsoft.CodeAnalysis.CSharp;
@@ -178,7 +181,7 @@ partial class SymbolFormatter
         private ImmutableArray<SymbolDisplayPart> RemoveNamedTypeConstraints(ISymbol symbol)
         {
             if (symbol.Kind is not SymbolKind.NamedType)
-                return ImmutableArray<SymbolDisplayPart>.Empty;
+                return [];
 
             var result = ImmutableArray.CreateBuilder<SymbolDisplayPart>();
 
@@ -365,7 +368,7 @@ partial class SymbolFormatter
                     AddPunctuation(")");
                     break;
 
-                case TypedConstantKind.Array when !typedConstant.IsNull && typedConstant.Type is not null:
+                case TypedConstantKind.Array when typedConstant is {IsNull: false, Type: not null}:
                     AddKeyword("new", "New");
                     AddSpace();
                     AddTypeName(typedConstant.Type);
@@ -457,7 +460,7 @@ partial class SymbolFormatter
 
         private bool ExpandEnumClassName(ISymbol symbol, SymbolDisplayPart part)
         {
-            if (symbol.Kind != SymbolKind.Field && part.Kind == SymbolDisplayPartKind.EnumMemberName && part.Symbol is not null)
+            if (symbol.Kind != SymbolKind.Field && part is {Kind: SymbolDisplayPartKind.EnumMemberName, Symbol: not null})
             {
                 _parts.Add(new(SymbolDisplayPartKind.EnumName, part.Symbol.ContainingSymbol, part.Symbol.ContainingSymbol.Name));
                 _parts.Add(new(SymbolDisplayPartKind.Punctuation, null, "."));
@@ -469,7 +472,7 @@ partial class SymbolFormatter
 
         private bool StaticClassToVBModule(ISymbol symbol, SymbolDisplayPart part)
         {
-            if (Language is SyntaxLanguage.VB && symbol.IsStatic && symbol.Kind is SymbolKind.NamedType &&
+            if (Language is SyntaxLanguage.VB && symbol is {IsStatic: true, Kind: SymbolKind.NamedType} &&
                 part.Kind == SymbolDisplayPartKind.Keyword && part.ToString() == "Class")
             {
                 _parts.Add(new(SymbolDisplayPartKind.Keyword, null, "Module"));
@@ -521,7 +524,7 @@ partial class SymbolFormatter
             }
             catch
             {
-                return ImmutableArray<SymbolDisplayPart>.Empty;
+                return [];
             }
         }
     }

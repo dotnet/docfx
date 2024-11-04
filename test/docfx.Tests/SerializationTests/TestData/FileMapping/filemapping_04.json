@@ -1,0 +1,40 @@
+{
+  "content": [
+    // Object form
+    {
+      "files": [ "file1", "file2" ],
+      "dest": "dest1"
+    },
+    // Compact Form
+    "file1.md",
+    "file2.md",
+    // Array Form
+    [
+      {
+        "files": [ "file1", "file2" ],
+        "dest": "dest1"
+      },
+      {
+        "files": "file3",
+        "dest": "dest2"
+      },
+      {
+        "files": [ "file4", "file5" ],
+        "exclude": [ "file5" ],
+        "src": "folder1"
+      },
+      {
+        "files": "Example.yml",
+        "src": "v1.0",
+        "dest": "v1.0/api",
+        "group": "v1.0"
+      },
+      {
+        "files": "Example.yml",
+        "src": "v2.0",
+        "dest": "v2.0/api",
+        "group": "v2.0"
+      }
+    ]
+  ]
+}

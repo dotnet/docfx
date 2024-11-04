@@ -1,4 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Collections.Immutable;
 
 using Docfx.Common;
 
@@ -8,17 +11,20 @@ public class ExternalReferencePackageCollection : IDisposable
 {
     private readonly LruList<ReferenceViewModelCacheItem> _cache = LruList<ReferenceViewModelCacheItem>.Create(0x100);
 
-    public ExternalReferencePackageCollection(IEnumerable<string> packageFiles, int maxParallelism)
+    public ExternalReferencePackageCollection(IEnumerable<string> packageFiles, int maxParallelism, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(packageFiles);
 
-        Readers = (from file in packageFiles.AsParallel().WithDegreeOfParallelism(maxParallelism).AsOrdered()
+        Readers = (from file in packageFiles.AsParallel()
+                                            .WithDegreeOfParallelism(maxParallelism)
+                                            .WithCancellation(cancellationToken)
+                                            .AsOrdered()
                    let reader = ExternalReferencePackageReader.CreateNoThrow(file)
                    where reader != null
                    select reader).ToImmutableList();
     }
 
-    public ImmutableList<ExternalReferencePackageReader> Readers { get; private set; }
+    public ImmutableList<ExternalReferencePackageReader> Readers { get; }
 
     public bool TryGetReference(string uid, out ReferenceViewModel vm)
     {

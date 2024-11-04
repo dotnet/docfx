@@ -1,0 +1,28 @@
+{
+  "enableSourceInfo": false,
+  "markdigExtensions": [
+    "FootNotes",
+    { "Emojis": "default" },
+    { "AutoIdentifiers": "default" },
+    {
+      "MediaLinks": {
+        "width": "800",
+        "height": "400"
+      }
+    }
+  ],
+  "fallbackFolders": [
+    "fallbackdir"
+  ],
+  "alerts": {
+    "TODO": "alert alert-secondary"
+  },
+  "plantUml": {
+    "javaPath": "dummy",
+    "localGraphvizDotPath": "dummy",
+    "localPlantUmlPath": "dummy",
+    "outputFormat": "svg",
+    "remoteUrl": "dummy",
+    "renderingMode": "local"
+  }
+}

@@ -27,7 +27,7 @@ internal class ResolveReference : IResolverPipeline
                     page = parent;
                     current.References = null;
                 }
-                if (documentReferences != null && documentReferences.Count > 0)
+                if (documentReferences is {Count: > 0})
                 {
                     foreach (var key in documentReferences.Keys)
                     {
@@ -56,7 +56,7 @@ internal class ResolveReference : IResolverPipeline
         {
             if (context.References.TryGetValue(key, out ReferenceItem item))
             {
-                var reference = context.References[key].Clone();
+                var reference = item.Clone();
                 page.References.Add(key, reference);
                 addingReferences.Add(reference);
             }

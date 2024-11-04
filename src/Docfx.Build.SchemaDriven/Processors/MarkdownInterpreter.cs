@@ -9,7 +9,7 @@ public class MarkdownInterpreter : IInterpreter
 {
     public bool CanInterpret(BaseSchema schema)
     {
-        return schema != null && schema.ContentType == ContentType.Markdown;
+        return schema is {ContentType: ContentType.Markdown};
     }
 
     public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
@@ -32,9 +32,9 @@ public class MarkdownInterpreter : IInterpreter
         var host = context.Host;
 
         var mr = host.Markup(content, context.GetOriginalContentFile(path), false);
-        (context.FileLinkSources).Merge(mr.FileLinkSources);
-        (context.UidLinkSources).Merge(mr.UidLinkSources);
-        (context.Dependency).UnionWith(mr.Dependency);
+        context.FileLinkSources.Merge(mr.FileLinkSources);
+        context.UidLinkSources.Merge(mr.UidLinkSources);
+        context.Dependency.UnionWith(mr.Dependency);
 
         if (mr.Html.StartsWith("<p"))
             mr.Html = mr.Html.Insert(mr.Html.IndexOf(">"), " jsonPath=\"" + path + "\"");

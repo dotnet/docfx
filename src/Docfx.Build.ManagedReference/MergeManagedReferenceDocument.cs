@@ -42,7 +42,6 @@ public class MergeManagedReferenceDocument : BaseDocumentBuildStep
                 return m;
             }
             processedUid.Add(mainUid);
-            var vm = (PageViewModel)m.Content;
             m.Content = MergeCore(
                 mainUid,
                 m,
@@ -169,10 +168,7 @@ public class MergeManagedReferenceDocument : BaseDocumentBuildStep
     {
         foreach (var pair in mergeFrom)
         {
-            if (!mergeTo.ContainsKey(pair.Key))
-            {
-                mergeTo[pair.Key] = pair.Value;
-            }
+            mergeTo.TryAdd(pair.Key, pair.Value);
         }
     }
 

@@ -45,13 +45,7 @@ public class MarkdigMarkdownService : IMarkdownService
     public MarkupResult Markup(string content, string filePath, bool multipleYamlHeader)
     {
         ArgumentNullException.ThrowIfNull(content);
-
-#if NET7_0_OR_GREATER
         ArgumentException.ThrowIfNullOrEmpty(filePath);
-#else
-        if(string.IsNullOrEmpty(filePath))
-            throw new ArgumentNullException(nameof(filePath));
-#endif
 
         var pipeline = CreateMarkdownPipeline(isInline: false, multipleYamlHeader);
 
@@ -141,7 +135,7 @@ public class MarkdigMarkdownService : IMarkdownService
             builder.UseInlineOnly();
         }
 
-        if (_parameters?.Extensions?.MarkdigExtensions is { } extensions && extensions.Length > 0)
+        if (_parameters?.Extensions?.MarkdigExtensions is {Length: > 0} extensions)
         {
             builder.UseOptionalExtensions(extensions);
         }
@@ -179,7 +173,7 @@ public class MarkdigMarkdownService : IMarkdownService
 
     private static string GetLink(string path, MarkdownObject origin)
     {
-        if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#", StringComparison.Ordinal))
+        if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith('#'))
         {
             return ((RelativePath)InclusionContext.File + (RelativePath)path).GetPathFromWorkingFolder();
         }

@@ -35,7 +35,7 @@ public sealed class FileModel
 
     public FileAndType FileAndType { get; private set; }
 
-    public FileAndType OriginalFileAndType { get; private set; }
+    public FileAndType OriginalFileAndType { get; }
 
     public object Content { get; set; }
 
@@ -85,5 +85,5 @@ public sealed class FileModel
 
     public string DocumentType { get; set; }
 
-    public ImmutableArray<UidDefinition> Uids { get; set; } = ImmutableArray<UidDefinition>.Empty;
+    public ImmutableArray<UidDefinition> Uids { get; set; } = [];
 }

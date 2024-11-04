@@ -19,7 +19,7 @@
   -->
   <Target Name="RewriteDocfxTemplateFiles" AfterTargets="PackTool">
     <PropertyGroup>
-      <!-- Select first element of TargetFrameworks as template source (e.g. `net6.0` is selected when TargetFrameworks `net6.0;net7.0;net8.0`) -->
+      <!-- Select first element of TargetFrameworks as template source (e.g. `net8.0` is selected when TargetFrameworks `net8.0;9.0`) -->
       <DocfxTemplateSourceTargetFramework>$(TargetFrameworks.Split(";")[0])</DocfxTemplateSourceTargetFramework>
     </PropertyGroup>
     <!-- If TargetFramework is selected version. Rewrite template files PackagePath.-->

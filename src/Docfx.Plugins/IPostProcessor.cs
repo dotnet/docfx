@@ -19,6 +19,7 @@ public interface IPostProcessor
     /// </summary>
     /// <param name="manifest"></param>
     /// <param name="outputFolder">The output folder where our static website will be placed</param>
+    /// <param name="cancellationToken">The token to cancel operation.</param>
     /// <returns></returns>
-    Manifest Process(Manifest manifest, string outputFolder);
+    Manifest Process(Manifest manifest, string outputFolder, CancellationToken cancellationToken);
 }

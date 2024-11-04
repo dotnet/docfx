@@ -78,21 +78,16 @@ public class TemplateManager
 
     public void ProcessTheme(string outputDirectory, bool overwrite)
     {
-        if (_themes != null && _themes.Count > 0)
+        if (_themes is {Count: > 0})
         {
             TryExportResourceFiles(_themes, outputDirectory, overwrite);
             Logger.LogInfo($"Theme(s) {_themes.ToDelimitedString()} applied.");
         }
     }
 
-    private bool TryExportResourceFiles(IEnumerable<string> resourceNames, string outputDirectory, bool overwrite, string? regexFilter = null)
+    private bool TryExportResourceFiles(List<string> resourceNames, string outputDirectory, bool overwrite, string? regexFilter = null)
     {
-#if NET7_0_OR_GREATER
         ArgumentException.ThrowIfNullOrEmpty(outputDirectory);
-#else
-        if (string.IsNullOrEmpty(outputDirectory))
-            throw new ArgumentNullException(nameof(outputDirectory));
-#endif
 
         if (!resourceNames.Any())
             return false;

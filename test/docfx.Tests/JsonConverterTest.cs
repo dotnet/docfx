@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Reflection;
 using Docfx.Common;
+using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -62,17 +63,15 @@ public class JsonConverterTest
                 new("*/*.cs", new object[] { "1", "2" }),
                 new("**", new Dictionary<string, object>{ ["key"] = new object[] {"1", "2" } }),
             });
+
         var result = JsonUtility.Serialize(item);
         Assert.Equal("{\"*.md\":1,\"*.m\":true,\"abc\":\"string\",\"/[]\\\\*.cs\":{\"key\":\"2\"},\"*/*.cs\":[\"1\",\"2\"],\"**\":{\"key\":[\"1\",\"2\"]}}", result);
         using var reader = new StringReader(result);
         var pairs = JsonUtility.Deserialize<FileMetadataPairs>(reader);
         Assert.Equal(item.Count, pairs.Count);
-        for (int i = 0; i < pairs.Count; i++)
-        {
-            Assert.Equal(item[i].Glob.Raw, pairs[i].Glob.Raw);
-            var parsedValue = pairs[i].Value;
-            Assert.Equal(item[i].Value, parsedValue);
-        }
+
+        // Assert
+        pairs.Should().BeEquivalentTo(item);
     }
 
     [Fact]
@@ -102,7 +101,8 @@ public class JsonConverterTest
 
 internal class SkipEmptyOrNullContractResolver : DefaultContractResolver
 {
-    public SkipEmptyOrNullContractResolver(bool shareCache = false) : base() { }
+    public SkipEmptyOrNullContractResolver(bool shareCache = false)
+    { }
 
     protected override JsonProperty CreateProperty(MemberInfo member,
         MemberSerialization memberSerialization)

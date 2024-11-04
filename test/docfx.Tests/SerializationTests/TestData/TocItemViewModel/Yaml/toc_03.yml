@@ -1,0 +1,125 @@
+### YamlMime:TableOfContent
+items:
+- uid: CSharp10
+  name: CSharp10
+  type: Namespace
+  items:
+  - uid: CSharp10.ConstantInterpolatedStrings
+    name: ConstantInterpolatedStrings
+    type: Class
+  - uid: CSharp10.Issue7737
+    name: Issue7737
+    type: Class
+  - uid: CSharp10.ParameterlessStructConstructors
+    name: ParameterlessStructConstructors
+    type: Struct
+  - uid: CSharp10.ReadOnlyRecordStruct
+    name: ReadOnlyRecordStruct
+    type: Struct
+  - uid: CSharp10.RecordClass
+    name: RecordClass
+    type: Class
+  - uid: CSharp10.RecordStruct
+    name: RecordStruct
+    type: Struct
+- uid: CSharp11
+  name: CSharp11
+  type: Namespace
+  items:
+  - uid: CSharp11.CheckedUserDefinedOperators`1
+    name: CheckedUserDefinedOperators<T>
+    type: Interface
+  - uid: CSharp11.RequiredModifier
+    name: RequiredModifier
+    type: Class
+  - uid: CSharp11.ScopedModifier
+    name: ScopedModifier
+    type: Class
+  - uid: CSharp11.StaticAbstractMembersInInterfaces
+    name: StaticAbstractMembersInInterfaces
+    type: Class
+  - uid: CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1
+    name: StaticAbstractMembersInInterfaces.IGetNext<T>
+    type: Interface
+  - uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence
+    name: StaticAbstractMembersInInterfaces.RepeatSequence
+    type: Struct
+- uid: CSharp12
+  name: CSharp12
+  type: Namespace
+  items:
+  - uid: CSharp12.CollectionExpressions
+    name: CollectionExpressions
+    type: Class
+  - uid: CSharp12.DefaultLambdaParameters
+    name: DefaultLambdaParameters
+    type: Class
+  - uid: CSharp12.InlineArrays
+    name: InlineArrays
+    type: Struct
+  - uid: CSharp12.PrimaryConstructors
+    name: PrimaryConstructors
+    type: Class
+  - uid: CSharp12.PrimaryConstructors.BankAccount
+    name: PrimaryConstructors.BankAccount
+    type: Class
+  - uid: CSharp12.PrimaryConstructors.CheckAccount
+    name: PrimaryConstructors.CheckAccount
+    type: Class
+  - uid: CSharp12.PrimaryConstructors.Distance
+    name: PrimaryConstructors.Distance
+    type: Struct
+  - uid: CSharp12.RefReadOnlyParameters
+    name: RefReadOnlyParameters
+    type: Class
+- uid: CSharp8
+  name: CSharp8
+  type: Namespace
+  items:
+  - uid: CSharp8.DefaultInterfaceMembers
+    name: DefaultInterfaceMembers
+    type: Interface
+  - uid: CSharp8.DefaultInterfaceMembers.IA
+    name: DefaultInterfaceMembers.IA
+    type: Interface
+  - uid: CSharp8.DefaultInterfaceMembers.Nested
+    name: DefaultInterfaceMembers.Nested
+    type: Class
+  - uid: CSharp8.DisposableRefStructs
+    name: DisposableRefStructs
+    type: Struct
+  - uid: CSharp8.Issue4007
+    name: Issue4007
+    type: Class
+  - uid: CSharp8.Misc
+    name: Misc
+    type: Class
+  - uid: CSharp8.NullableReferenceTypes
+    name: NullableReferenceTypes
+    type: Class
+  - uid: CSharp8.ReadOnlyMembers
+    name: ReadOnlyMembers
+    type: Struct
+- uid: CSharp9
+  name: CSharp9
+  type: Namespace
+  items:
+  - uid: CSharp9.FunctionPointers
+    name: FunctionPointers
+    type: Class
+  - uid: CSharp9.InitOnlySetters
+    name: InitOnlySetters
+    type: Class
+  - uid: CSharp9.NativeSizedIntegers
+    name: NativeSizedIntegers
+    type: Class
+  - uid: CSharp9.RecordTypes
+    name: RecordTypes
+    type: Class
+  - uid: CSharp9.RecordTypes.Person
+    name: RecordTypes.Person
+    type: Class
+  - uid: CSharp9.RecordTypes.Teacher
+    name: RecordTypes.Teacher
+    type: Class
+memberLayout: SamePage

@@ -62,7 +62,7 @@ internal static class CompilationHelper
 
         return CS.CSharpCompilation.Create(
             assemblyName: null,
-            options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+            options: GetCSharpCompilationOptions(msbuildProperties),
             syntaxTrees: syntaxTrees,
             references: GetDefaultMetadataReferences("C#").Concat(references));
     }
@@ -74,7 +74,7 @@ internal static class CompilationHelper
 
         return CS.CSharpCompilation.Create(
             name,
-            options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+            options: GetCSharpCompilationOptions(msbuildProperties),
             syntaxTrees: [syntaxTree],
             references: GetDefaultMetadataReferences("C#").Concat(references ?? []));
     }
@@ -86,7 +86,7 @@ internal static class CompilationHelper
 
         return VB.VisualBasicCompilation.Create(
             assemblyName: null,
-            options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
+            options: GetVisualBasicCompilationOptions(msbuildProperties),
             syntaxTrees: syntaxTrees,
             references: GetDefaultMetadataReferences("VB").Concat(references));
     }
@@ -98,7 +98,7 @@ internal static class CompilationHelper
 
         return VB.VisualBasicCompilation.Create(
             name,
-            options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
+            options: GetVisualBasicCompilationOptions(msbuildProperties),
             syntaxTrees: [syntaxTree],
             references: GetDefaultMetadataReferences("VB").Concat(references ?? []));
     }
@@ -109,8 +109,8 @@ internal static class CompilationHelper
         var compilation = CS.CSharpCompilation.Create(
             assemblyName: null,
             options: new CS.CSharpCompilationOptions(
-                outputKind            : OutputKind.DynamicallyLinkedLibrary,
-                metadataImportOptions : includePrivateMembers
+                outputKind: OutputKind.DynamicallyLinkedLibrary,
+                metadataImportOptions: includePrivateMembers
                     ? MetadataImportOptions.All
                     : MetadataImportOptions.Public
             ),
@@ -179,7 +179,12 @@ internal static class CompilationHelper
                 var file = assemblyResolver.FindAssemblyFile(reference);
                 if (file is null)
                 {
-                    Logger.LogWarning($"Unable to resolve assembly reference {reference}", code: "InvalidAssemblyReference");
+                    // Skip warning for some weired assembly references: https://github.com/dotnet/docfx/issues/9459
+                    if (reference.Version?.ToString() != "0.0.0.0")
+                    {
+                        Logger.LogWarning($"Unable to resolve assembly reference {reference}", code: "InvalidAssemblyReference");
+                    }
+
                     continue;
                 }
 
@@ -204,7 +209,7 @@ internal static class CompilationHelper
 
     private static CS.CSharpParseOptions GetCSharpParseOptions(IDictionary<string, string> msbuildProperties)
     {
-        var preprocessorSymbols = (msbuildProperties.TryGetValue("DefineConstants", out var defineConstants))
+        var preprocessorSymbols = msbuildProperties.TryGetValue("DefineConstants", out var defineConstants)
             ? defineConstants.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             : null;
 
@@ -213,8 +218,8 @@ internal static class CompilationHelper
 
     private static VB.VisualBasicParseOptions GetVisualBasicParseOptions(IDictionary<string, string> msbuildProperties)
     {
-        IEnumerable<KeyValuePair<string, object>>? preprocessorSymbols = null;
-        if ((msbuildProperties.TryGetValue("DefineConstants", out var defineConstants)))
+        IEnumerable<KeyValuePair<string, object>>? preprocessorSymbols;
+        if (msbuildProperties.TryGetValue("DefineConstants", out var defineConstants))
         {
             // Visual Basic use symbol/value pairs that are separated by semicolons. And are `key = value` pair syntax:
             // https://learn.microsoft.com/en-us/visualstudio/msbuild/vbc-task?view=vs-2022
@@ -230,5 +235,27 @@ internal static class CompilationHelper
         }
 
         return new VB.VisualBasicParseOptions(preprocessorSymbols: preprocessorSymbols);
+    }
+
+    private static CS.CSharpCompilationOptions GetCSharpCompilationOptions(IDictionary<string, string> msbuildProperties)
+    {
+        var options = new CS.CSharpCompilationOptions(
+            OutputKind.DynamicallyLinkedLibrary,
+            xmlReferenceResolver: XmlFileResolver.Default);
+
+        if (msbuildProperties.TryGetValue("AllowUnsafeBlocks", out var valueText) && bool.TryParse(valueText, out var allowUnsafe))
+        {
+            options = options.WithAllowUnsafe(allowUnsafe);
+        }
+
+        return options;
+    }
+
+    private static VB.VisualBasicCompilationOptions GetVisualBasicCompilationOptions(IDictionary<string, string> msbuildProperties)
+    {
+        return new VB.VisualBasicCompilationOptions(
+            OutputKind.DynamicallyLinkedLibrary,
+            globalImports: GetVBGlobalImports(),
+            xmlReferenceResolver: XmlFileResolver.Default);
     }
 }

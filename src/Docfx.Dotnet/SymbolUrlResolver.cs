@@ -1,4 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 
 #nullable enable
@@ -13,11 +16,14 @@ enum SymbolUrlKind
 
 internal static partial class SymbolUrlResolver
 {
-    public static string? GetSymbolUrl(ISymbol symbol, Compilation compilation, MemberLayout memberLayout, SymbolUrlKind urlKind, HashSet<IAssemblySymbol> allAssemblies)
+    public static string? GetSymbolUrl(ISymbol symbol, Compilation compilation, MemberLayout memberLayout, SymbolUrlKind urlKind, HashSet<IAssemblySymbol> allAssemblies, SymbolFilter filter)
     {
         // Reduce symbol into generic definitions
         symbol = symbol is IMethodSymbol method ? method.ReducedFrom ?? symbol : symbol;
         symbol = symbol.OriginalDefinition ?? symbol;
+
+        if (!filter.IncludeApi(symbol))
+            return null;
 
         return GetDocfxUrl(symbol, memberLayout, urlKind, allAssemblies)
             ?? GetMicrosoftLearnUrl(symbol)

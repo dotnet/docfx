@@ -36,11 +36,11 @@ public class SchemaFragmentsIteratorTest
 
     private class UidPropertyCounter : ISchemaFragmentsHandler
     {
-        public List<string> ExistingMarkdownProperties { get; private set; } = new();
+        public List<string> ExistingMarkdownProperties { get; } = [];
 
-        public List<string> MissingMarkdownProperties { get; private set; } = new();
+        public List<string> MissingMarkdownProperties { get; } = [];
 
-        public List<string> ExistingUids { get; private set; } = new();
+        public List<string> ExistingUids { get; } = [];
 
         public void HandleUid(string uidKey, YamlMappingNode node, Dictionary<string, MarkdownFragment> fragments, BaseSchema schema, string oPathPrefix, string uid)
         {

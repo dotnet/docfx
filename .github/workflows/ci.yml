@@ -1,6 +1,6 @@
 name: ci
 on:
-  pull_request_target:
+  pull_request:
     branches: [ main, feature/*, hotfix/* ]
   push:
     branches: [ main, feature/*, hotfix/* ]
@@ -9,7 +9,6 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    environment: ci
     strategy:
       fail-fast: false
       matrix:
@@ -34,9 +33,9 @@ jobs:
     - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
       id: test-net80
 
-    - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
+    - run: dotnet test -c Release -f net9.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
       if: matrix.os == 'ubuntu-latest'
-      id: test-net60
+      id: test-net90
 
     - run: npm i -g @percy/cli
       if: matrix.os == 'ubuntu-latest'
@@ -72,10 +71,6 @@ jobs:
       with:
         name: dump
         path: /tmp/coredump*
-
-    - name: Report failed tests
-      if: ${{ failure() && (steps.test-net80.outcome == 'failure' || steps.test-net60.outcome == 'failure') }}
-      uses: ./.github/actions/report-failed-tests
 
   publish-docs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

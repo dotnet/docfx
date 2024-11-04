@@ -26,14 +26,14 @@ class SitemapGenerator : IPostProcessor
         return metadata;
     }
 
-    public Manifest Process(Manifest manifest, string outputFolder)
+    public Manifest Process(Manifest manifest, string outputFolder, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(manifest.Sitemap?.BaseUrl))
         {
             return manifest;
         }
 
-        if (!manifest.Sitemap.BaseUrl.EndsWith("/", StringComparison.Ordinal))
+        if (!manifest.Sitemap.BaseUrl.EndsWith('/'))
         {
             manifest.Sitemap.BaseUrl += '/';
         }
@@ -105,7 +105,7 @@ class SitemapGenerator : IPostProcessor
         }
         else
         {
-            if (!options.BaseUrl.EndsWith("/", StringComparison.Ordinal))
+            if (!options.BaseUrl.EndsWith('/'))
             {
                 options.BaseUrl += '/';
             }

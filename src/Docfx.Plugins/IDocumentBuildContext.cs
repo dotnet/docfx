@@ -94,4 +94,9 @@ public interface IDocumentBuildContext
     /// Custom href generator
     /// </summary>
     ICustomHrefGenerator HrefGenerator { get; }
+
+    /// <summary>
+    /// The token to cancel build operation.
+    /// </summary>
+    CancellationToken CancellationToken { get; }
 }

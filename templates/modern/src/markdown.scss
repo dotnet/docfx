@@ -3,6 +3,9 @@
  * The .NET Foundation licenses this file to you under the MIT license.
  */
 
+@use "bootstrap/scss/bootstrap";
+@use "mixins";
+
 /* External link icon */
 a.external[href]::after {
   font-family: bootstrap-icons;
@@ -16,15 +19,15 @@ a.external[href]::after {
 blockquote {
   border-style: solid;
   border-width: 0 0 0 3px;
-  border-color: $secondary-border-subtle;
+  border-color: bootstrap.$secondary-border-subtle;
   margin: 1.2em 0 2em;
   padding: 0 .8em;
   display: block
 }
 
-@include color-mode(dark) {
+@include bootstrap.color-mode(dark) {
   blockquote {
-    border-color: $secondary-border-subtle-dark;
+    border-color: bootstrap.$secondary-border-subtle-dark;
   }
 }
 
@@ -39,7 +42,7 @@ blockquote {
   font-size: 1rem;
 
   &::before {
-    @include adjust-icon;
+    @include mixins.adjust-icon;
   }
 }
 

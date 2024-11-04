@@ -137,7 +137,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
             yield return parts[i] + "/";
         }
 
-        yield return path.EndsWith("/", StringComparison.Ordinal) ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
+        yield return path.EndsWith('/') ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
     }
 
     private string ConvertSingleGlob(IEnumerable<GlobRegexItem> regexItems)
@@ -148,7 +148,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     private static bool IsFolderPath(string path)
     {
-        return path.EndsWith("/", StringComparison.Ordinal);
+        return path.EndsWith('/');
     }
 
     /// <summary>
@@ -165,10 +165,8 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         }
 
         StringBuilder builder = new();
-        bool escaping = false;
         bool disableEscape = !Options.HasFlag(GlobMatcherOptions.AllowEscape);
         bool hasMagic = false;
-        CharClass currentCharClass = null;
         string patternStart = string.Empty;
 
         // .abc will not be matched unless . is explicitly specified
@@ -215,8 +213,8 @@ public class GlobMatcher : IEquatable<GlobMatcher>
                     hasMagic = true;
                     break;
                 case '[':
-                    escaping = false;
-                    currentCharClass = new CharClass();
+                    bool escaping = false;
+                    CharClass currentCharClass = new();
                     int cur = i + 1;
                     while (cur < globPart.Length)
                     {
@@ -408,14 +406,9 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     private bool DisallowedMatchExists(string filePart)
     {
-        if (filePart == "."
-            || filePart == ".."
-            || (!_allowDotMatch && filePart.StartsWith(".", StringComparison.Ordinal)))
-        {
-            return true;
-        }
-
-        return false;
+        return filePart == "."
+               || filePart == ".."
+               || (!_allowDotMatch && filePart.StartsWith('.'));
     }
 
     private static string UnescapeGlob(string s)
@@ -728,7 +721,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         }
     }
 
-        private sealed class GlobRegexItem
+    private sealed class GlobRegexItem
     {
         public static readonly GlobRegexItem GlobStar = new(GlobRegexItemType.GlobStar);
         public static readonly GlobRegexItem GlobStarForFileOnly = new(GlobRegexItemType.GlobStarForFileOnly);

@@ -1,4 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Collections.Immutable;
 using Docfx.Build.Engine;
 using Docfx.Common;
 using Docfx.Plugins;
@@ -31,21 +34,21 @@ public class MergeMarkdownFragmentsTest : TestBase
         var defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
         _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder) { RawModelExportSettings = { Export = true }, TransformDocument = true, };
 
-        _templateManager = new TemplateManager(new List<string> { "template" }, null, templateFolder);
+        _templateManager = new TemplateManager(["template"], null, templateFolder);
 
         _rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
 
-        var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), templateFolder);
+        CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), templateFolder);
         var yamlFile = CreateFile("Suppressions.yml", File.ReadAllText("TestData/inputs/Suppressions.yml"), _inputFolder);
         _files = new FileCollection(defaultFiles);
-        _files.Add(DocumentType.Article, new[] { yamlFile }, _inputFolder);
+        _files.Add(DocumentType.Article, [yamlFile], _inputFolder);
     }
 
     [Fact]
     void TestMergeMarkdownFragments()
     {
         // Arrange
-        var mdFile = CreateFile("Suppressions.yml.md", File.ReadAllText("TestData/inputs/Suppressions.yml.md"), _inputFolder);
+        CreateFile("Suppressions.yml.md", File.ReadAllText("TestData/inputs/Suppressions.yml.md"), _inputFolder);
 
         // Act
         BuildDocument(_files);
@@ -63,7 +66,7 @@ public class MergeMarkdownFragmentsTest : TestBase
     public void TestMissingStartingH1CodeHeading()
     {
         // Arrange
-        var mdFile = CreateFile(
+        CreateFile(
             "Suppressions.yml.md",
             @"## `summary`
 markdown content
@@ -95,7 +98,7 @@ markdown content
     public void TestInvalidSpaceMissing()
     {
         // Arrange
-        var mdFile = CreateFile(
+        CreateFile(
             "Suppressions.yml.md",
             @"#head_1_without_space
 
@@ -129,7 +132,7 @@ markdown content
     public void TestValidSpaceMissing()
     {
         // Arrange
-        var mdFile = CreateFile(
+        CreateFile(
             "Suppressions.yml.md",
             @"# `management.azure.com.advisor.suppressions`
 
@@ -153,7 +156,7 @@ markdown content
     public void TestInvalidYaml()
     {
         // Arrange
-        var mdFile = CreateFile(
+        CreateFile(
             "Suppressions.yml.md",
             @"# `management.azure.com.advisor.suppressions`
 ```
@@ -190,7 +193,7 @@ markdown content
     public void TestInvalidOPath()
     {
         // Arrange
-        var mdFile = CreateFile(
+        CreateFile(
             "Suppressions.yml.md",
             @"# `management.azure.com.advisor.suppressions`
 
@@ -228,7 +231,7 @@ markdown content
     public void TestNotExistedUid()
     {
         // Arrange
-        var mdFile = CreateFile(
+        CreateFile(
             "Suppressions.yml.md",
             @"# `uid_not_exist`
 
@@ -284,7 +287,7 @@ Some empty lines between H2 and this paragraph is tolerant
     public void TestDuplicateOPathsInYamlCodeBlockAndContentsBlock()
     {
         // Arrange
-        var mdFile = CreateFile(
+        CreateFile(
             "Suppressions.yml.md",
             @"# `management.azure.com.advisor.suppressions`
 ```
@@ -327,7 +330,7 @@ overwrite in contents block
         ClearLog(listener.Items);
 
         // add fragments
-        var mdFile = CreateFile(
+        CreateFile(
             "Suppressions.yml.md",
             @"# `management.azure.com.advisor.suppressions`
 ## ``summary``
@@ -349,11 +352,12 @@ With [!include[invalid](invalid.md)]",
         // modify fragments
         UpdateFile(
             "Suppressions.yml.md",
-            new string[] { "# `management.azure.com.advisor.suppressions`",
+            [
+                "# `management.azure.com.advisor.suppressions`",
                 "## ``summary``",
                 "I update a summary.",
-                "With [!include[invalid](invalid.md)]",
-            },
+                "With [!include[invalid](invalid.md)]"
+            ],
             _inputFolder);
 
         BuildDocument(_files);
@@ -399,7 +403,7 @@ With [!include[invalid](invalid.md)]",
             TemplateManager = _templateManager,
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
         builder.Build(parameters);
     }
 

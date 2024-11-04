@@ -1,4 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
@@ -33,9 +36,9 @@ partial class SymbolFormatter
 
         public NullableAnnotation NullableAnnotation => default;
 
-        public ImmutableArray<CustomModifier> CustomModifiers => ImmutableArray<CustomModifier>.Empty;
+        public ImmutableArray<CustomModifier> CustomModifiers => [];
 
-        public ImmutableArray<CustomModifier> RefCustomModifiers => ImmutableArray<CustomModifier>.Empty;
+        public ImmutableArray<CustomModifier> RefCustomModifiers => [];
 
         public int Ordinal => 0;
 
@@ -211,12 +214,9 @@ partial class SymbolFormatter
         public string ToDisplayString(SymbolDisplayFormat format = null) => Inner.ToDisplayString(format);
         public ImmutableArray<SymbolDisplayPart> ToMinimalDisplayParts(SemanticModel semanticModel, int position, SymbolDisplayFormat format = null) => Inner.ToMinimalDisplayParts(semanticModel, position, format);
         public string ToMinimalDisplayString(SemanticModel semanticModel, int position, SymbolDisplayFormat format = null) => Inner.ToMinimalDisplayString(semanticModel, position, format);
-
-#if NET8_0_OR_GREATER
         public IPropertySymbol PartialDefinitionPart => Inner.PartialDefinitionPart;
         public IPropertySymbol PartialImplementationPart => Inner.PartialImplementationPart;
         public bool IsPartialDefinition => Inner.IsPartialDefinition;
-#endif
     }
 
     public class MethodSymbol : IMethodSymbol

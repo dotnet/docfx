@@ -6,13 +6,14 @@ namespace Docfx;
 /// <summary>
 /// ListWithStringFallback.
 /// </summary>
-[Newtonsoft.Json.JsonConverter(typeof(ListWithStringFallbackConverter))]
+[Newtonsoft.Json.JsonConverter(typeof(ListWithStringFallbackConverter.NewtonsoftJsonConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(ListWithStringFallbackConverter.SystemTextJsonConverter))]
 internal class ListWithStringFallback : List<string>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ListWithStringFallback"/> class.
     /// </summary>
-    public ListWithStringFallback() : base()
+    public ListWithStringFallback()
     {
     }
 

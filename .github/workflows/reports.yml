@@ -1,0 +1,58 @@
+name: report-test-results
+run-name: Generate Test Report for ${{ github.event.workflow_run.head_commit.message }}
+on:
+  workflow_run:
+    workflows:
+      - ci
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+    - name: Create Test Report
+      uses: dorny/test-reporter@31a54ee7ebcacc03a09ea97a7e5465a47b84aea5 # v1.9.1
+      id : test-reports
+      with:
+        artifact: /^logs-(.*)/         # Name of artifact to report
+        name: test-results             # Name of the `check run` which will be created
+        path: 'test/TestResults/*.trx'
+        reporter: dotnet-trx
+        fail-on-error: false
+        fail-on-empty: false
+
+    - name: Output message to job summary
+      id: output-job-summary
+      shell: pwsh
+      if: ${{ steps.test-reports.outputs.time != '0' }}
+      run: |
+        $conclusion = "${{ steps.test-reports.outputs.conclusion }}"
+        $passed     = "${{ steps.test-reports.outputs.passed }}"
+        $failed     = "${{ steps.test-reports.outputs.failed }}"
+        $skipped    = "${{ steps.test-reports.outputs.skipped }}"
+        $time       = "${{ steps.test-reports.outputs.time }}"
+        $url_html   = "${{ steps.test-reports.outputs.url_html }}"
+
+        $content = @"
+        ## Summary of Test Report
+
+        - **Report URL**: $url_html
+ 
+        | Conclusion  | Passed  | Failed  | Skipped  | Time       |
+        |-------------|---------|---------|----------|------------|
+        | $conclusion | $passed | $failed | $skipped | $time [ms] |
+        "@
+
+        Write-Output $content >> $env:GITHUB_STEP_SUMMARY
+
+        if($failed -ne '0'){
+          echo "::error::Test Report contains ${failed} errors."
+          exit 1
+        }

@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(DOCFX_PREVIEW_BUILD)' == 'true'">net8.0;net9.0</TargetFrameworks> 
     <LangVersion>Preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -45,20 +45,12 @@
     <None Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(ProjectName)' != 'Docfx.Common'">
-    <PackageReference Include="PolySharp">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
 
   <!-- Remove Node.js runtime dependencies that used by playwright -->
   <Target Name="RemoveNodeJsRuntimes" AfterTargets="CopyPlaywrightFilesToOutput">

@@ -3,9 +3,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
-
-using Newtonsoft.Json.Linq;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json.Linq;
 
 namespace Docfx.Common;
 
@@ -72,7 +71,7 @@ public static class ConvertToObjectHelper
             return raw;
         }
 
-        return JToken.FromObject(raw, JsonUtility.DefaultSerializer.Value);
+        return JToken.FromObject(raw, NewtonsoftJsonUtility.DefaultSerializer.Value);
     }
 
     public static object ConvertExpandoObjectToObject(object raw)

@@ -201,7 +201,7 @@ static class PdfBuilder
                 {
                     await page.GotoAsync("about:blank");
 
-                    PagePdfOptions options = new PagePdfOptions
+                    var options = new PagePdfOptions
                     {
                         DisplayHeaderFooter = true,
                         HeaderTemplate = headerTemplate,
@@ -583,7 +583,7 @@ static class PdfBuilder
                 pageFormat = pageSize.ToString();
                 return true;
 
-            // Following format is not supported format by playwright. 
+            // Following format is not supported format by playwright.
             // It need to use Width/Height settings.
             case PageSize.A7:
             case PageSize.A8:

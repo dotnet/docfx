@@ -14,18 +14,10 @@ namespace Docfx.MarkdigEngine.Extensions;
 /// Markdig extension setting.
 /// </summary>
 [DebuggerDisplay("Name = {Name}")]
-[Newtonsoft.Json.JsonConverter(typeof(MarkdigExtensionSettingConverter))]
+[Newtonsoft.Json.JsonConverter(typeof(MarkdigExtensionSettingConverter.NewtonsoftJsonConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(MarkdigExtensionSettingConverter.SystemTextJsonConverter))]
 public class MarkdigExtensionSetting
 {
-    private static readonly JsonSerializerOptions DefaultSerializerOptions = new()
-    {
-        AllowTrailingCommas = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters = {
-                        new JsonStringEnumConverter()
-                     },
-    };
-
     /// <summary>
     /// Initializes a new instance of the <see cref="MarkdigExtensionSetting"/> class.
     /// </summary>
@@ -59,7 +51,7 @@ public class MarkdigExtensionSetting
     public T GetOptions<T>(T fallbackValue)
     {
         return Options is null ? fallbackValue
-            : JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(Options), DefaultSerializerOptions) ?? fallbackValue;
+            : Options.Value.Deserialize<T>(MarkdigExtensionSettingConverter.DefaultSerializerOptions) ?? fallbackValue;
     }
 
     /// <summary>

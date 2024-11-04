@@ -42,9 +42,9 @@ internal class XmlComment
 
     public List<string> Examples { get; private set; }
 
-    public Dictionary<string, string> Parameters { get; private set; }
+    public Dictionary<string, string> Parameters { get; }
 
-    public Dictionary<string, string> TypeParameters { get; private set; }
+    public Dictionary<string, string> TypeParameters { get; }
 
     private XmlComment(string xml, XmlCommentParserContext context)
     {
@@ -356,7 +356,7 @@ internal class XmlComment
             if (!success)
             {
                 var detailedInfo = new StringBuilder();
-                if (_context != null && _context.Source != null)
+                if (_context is {Source: not null})
                 {
                     if (!string.IsNullOrEmpty(_context.Source.Name))
                     {
@@ -374,9 +374,9 @@ internal class XmlComment
 
                 if (detailedInfo.Length == 0 && node is XDocument doc)
                 {
-                    var memberName = (string) doc.Element("member")?.Attribute("name");
+                    var memberName = (string)doc.Element("member")?.Attribute("name");
 
-                    if (! string.IsNullOrEmpty(memberName))
+                    if (!string.IsNullOrEmpty(memberName))
                     {
                         detailedInfo.Append(", member name is ");
                         detailedInfo.Append(memberName);
@@ -631,7 +631,7 @@ internal class XmlComment
                         MarkdownXmlDecode(child);
                     break;
 
-                case LeafBlock leafBlock when leafBlock.Inline is not null:
+                case LeafBlock {Inline: not null} leafBlock:
                     foreach (var child in leafBlock.Inline)
                         MarkdownXmlDecode(child);
                     break;

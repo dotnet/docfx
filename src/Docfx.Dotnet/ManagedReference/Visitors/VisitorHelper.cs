@@ -29,7 +29,7 @@ internal static class VisitorHelper
             return null;
         }
 
-        if (symbol is INamespaceSymbol namespaceSymbol && namespaceSymbol.IsGlobalNamespace)
+        if (symbol is INamespaceSymbol {IsGlobalNamespace: true})
         {
             return GlobalNamespaceId;
         }
@@ -68,8 +68,8 @@ internal static class VisitorHelper
 
         if (InGlobalNamespace(symbol) && !string.IsNullOrEmpty(GlobalNamespaceId))
         {
-            bool isNamespace = (symbol is INamespaceSymbol);
-            bool isTypeParameter = (symbol is ITypeParameterSymbol);
+            bool isNamespace = symbol is INamespaceSymbol;
+            bool isTypeParameter = symbol is ITypeParameterSymbol;
             if (!isNamespace && !isTypeParameter)
             {
                 str = str.Insert(2, GlobalNamespaceId + ".");

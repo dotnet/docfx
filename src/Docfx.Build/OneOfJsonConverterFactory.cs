@@ -3,8 +3,8 @@
 
 using System.Diagnostics;
 using System.Reflection;
-using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using OneOf;
 
 #nullable enable
@@ -47,7 +47,6 @@ class OneOfJsonConverterFactory : JsonConverterFactory
                 }
                 catch (JsonException)
                 {
-                    continue;
                 }
             }
 

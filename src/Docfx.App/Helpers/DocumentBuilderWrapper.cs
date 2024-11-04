@@ -15,7 +15,7 @@ internal static class DocumentBuilderWrapper
 {
     private static readonly Assembly[] s_pluginAssemblies = LoadPluginAssemblies(AppContext.BaseDirectory).ToArray();
 
-    public static void BuildDocument(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, string baseDirectory, string outputDirectory, string templateDirectory)
+    public static void BuildDocument(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, string baseDirectory, string outputDirectory, string templateDirectory, CancellationToken cancellationToken)
     {
         var postProcessorNames = config.PostProcessors.ToImmutableArray();
         var metadata = config.GlobalMetadata?.ToImmutableDictionary();
@@ -23,7 +23,7 @@ internal static class DocumentBuilderWrapper
         // Ensure "_enableSearch" adds the right post processor
         if (metadata != null && metadata.TryGetValue("_enableSearch", out object value))
         {
-            if (value is bool isSearchable && isSearchable && !postProcessorNames.Contains("ExtractSearchIndex"))
+            if (value is true && !postProcessorNames.Contains("ExtractSearchIndex"))
             {
                 postProcessorNames = postProcessorNames.Add("ExtractSearchIndex");
             }
@@ -39,7 +39,7 @@ internal static class DocumentBuilderWrapper
         using var builder = new DocumentBuilder(s_pluginAssemblies.Concat(pluginAssemblies), postProcessorNames);
 
         var parameters = ConfigToParameter(config, options, templateManager, baseDirectory, outputDirectory, templateDirectory);
-        builder.Build(parameters, outputDirectory);
+        builder.Build(parameters, outputDirectory, cancellationToken);
     }
 
     private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)

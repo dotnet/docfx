@@ -13,13 +13,13 @@ public class DocumentBuildParameters
 
     public string OutputBaseDir { get; set; }
 
-    public ImmutableArray<string> XRefMaps { get; set; } = ImmutableArray<string>.Empty;
+    public ImmutableArray<string> XRefMaps { get; set; } = [];
 
     public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
 
     public FileMetadata FileMetadata { get; set; }
 
-    public ImmutableArray<string> PostProcessors { get; set; } = ImmutableArray<string>.Empty;
+    public ImmutableArray<string> PostProcessors { get; set; } = [];
 
     public TemplateManager TemplateManager { get; set; }
 

@@ -14,7 +14,7 @@
   "scripts": {
     "build": "node build.js",
     "lint": "eslint modern/src && stylelint modern/src",
-    "test": "jest",
+    "test": "node --import tsx --test modern/src/*.test.ts",
     "start": "node build.js --watch"
   },
   "dependencies": {
@@ -32,27 +32,25 @@
     "highlight.js": "^11.10.0",
     "idb-keyval": "^6.2.1",
     "jquery": "3.7.0",
-    "lit-html": "^3.2.0",
+    "lit-html": "^3.2.1",
     "lunr": "2.3.9",
     "lunr-languages": "^1.14.0",
     "mathjax": "^3.2.2",
-    "mermaid": "^10.9.1"
+    "mermaid": "^11.4.0",
+    "tsx": "^4.19.2"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
     "@types/lunr": "^2.3.7",
-    "@typescript-eslint/eslint-plugin": "^8.4.0",
-    "@typescript-eslint/parser": "^8.4.0",
-    "browser-sync": "^3.0.2",
-    "esbuild": "~0.23.1",
+    "@typescript-eslint/eslint-plugin": "^8.12.2",
+    "@typescript-eslint/parser": "^8.12.2",
+    "browser-sync": "^3.0.3",
+    "esbuild": "~0.24.0",
     "esbuild-sass-plugin": "~3.3.1",
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
-    "jest": "^29.7.0",
-    "stylelint": "^15.10.3",
-    "stylelint-config-standard-scss": "^11.1.0",
-    "ts-jest": "^29.2.5",
-    "typescript": "^5.5.4",
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard-scss": "^13.1.0",
+    "typescript": "^5.6.3",
     "yargs": "^17.7.2"
   }
 }

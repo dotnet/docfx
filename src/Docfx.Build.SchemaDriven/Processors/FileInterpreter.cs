@@ -19,7 +19,7 @@ public class FileInterpreter : IInterpreter
 
     public bool CanInterpret(BaseSchema schema)
     {
-        return schema != null && schema.ContentType == ContentType.File;
+        return schema is {ContentType: ContentType.File};
     }
 
     public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
@@ -48,7 +48,7 @@ public class FileInterpreter : IInterpreter
         relPath = (currentFile + relPath).GetPathFromWorkingFolder();
         if (_exportFileLink)
         {
-            (context.FileLinkSources).AddFileLinkSource(new LinkSourceInfo
+            context.FileLinkSources.AddFileLinkSource(new LinkSourceInfo
             {
                 Target = relPath,
                 SourceFile = originalFile.File

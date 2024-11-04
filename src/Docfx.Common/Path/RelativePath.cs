@@ -54,11 +54,10 @@ public sealed class RelativePath : IEquatable<RelativePath>
     public static bool IsRelativePath(string path)
     {
         // TODO : to merge with the PathUtility one
-        return path != null &&
-            path.Length > 0 &&
-            path[0] != '/' &&
-            path[0] != '\\' &&
-            path.IndexOfAny(PathUtility.InvalidPathChars) == -1;
+        return path is {Length: > 0} &&
+               path[0] != '/' &&
+               path[0] != '\\' &&
+               path.IndexOfAny(PathUtility.InvalidPathChars) == -1;
     }
 
     public static RelativePath Parse(string path) => TryParseCore(path, true);
@@ -188,14 +187,7 @@ public sealed class RelativePath : IEquatable<RelativePath>
 
     public RelativePath ChangeFileName(string fileName)
     {
-#if NET7_0_OR_GREATER
         ArgumentException.ThrowIfNullOrEmpty(fileName);
-#else
-        if (string.IsNullOrEmpty(fileName))
-        {
-            throw new ArgumentNullException(nameof(fileName));
-        }
-#endif
 
         if (fileName.Contains('\\') || fileName.Contains('/') || fileName == ".." || fileName == ".")
         {

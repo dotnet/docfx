@@ -13,6 +13,8 @@ namespace Docfx.Build.Engine;
 
 sealed class HtmlPostProcessor : IPostProcessor
 {
+    private static readonly UTF8Encoding Utf8EncodingWithoutBom = new(false);
+
     public List<IHtmlDocumentHandler> Handlers { get; } = new();
 
     private bool _handlerInitialized;
@@ -39,7 +41,7 @@ sealed class HtmlPostProcessor : IPostProcessor
         return metadata;
     }
 
-    public Manifest Process(Manifest manifest, string outputFolder)
+    public Manifest Process(Manifest manifest, string outputFolder, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(manifest);
         ArgumentNullException.ThrowIfNull(outputFolder);
@@ -58,6 +60,8 @@ sealed class HtmlPostProcessor : IPostProcessor
                                   OutputFile = output.Value.RelativePath,
                               })
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (!EnvironmentContext.FileAbstractLayer.Exists(tuple.OutputFile))
             {
                 continue;
@@ -79,7 +83,7 @@ sealed class HtmlPostProcessor : IPostProcessor
             }
             using (var stream = EnvironmentContext.FileAbstractLayer.Create(tuple.OutputFile))
             {
-                document.Save(stream, Encoding.UTF8);
+                document.Save(stream, Utf8EncodingWithoutBom);
             }
         }
         foreach (var handler in Handlers)

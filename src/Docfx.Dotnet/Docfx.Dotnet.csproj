@@ -28,18 +28,13 @@
     <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Locator" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Formats.Asn1" />
     <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="ICSharpCode.Decompiler" />
     <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
     <PackageReference Include="OneOf" />
-    <PackageReference Include="OneOf.SourceGenerator" />
+    <PackageReference Include="OneOf.SourceGenerator" PrivateAssets="All" />
     <PackageReference Include="Markdig" />
     <PackageReference Include="Microsoft.CodeAnalysis" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" />

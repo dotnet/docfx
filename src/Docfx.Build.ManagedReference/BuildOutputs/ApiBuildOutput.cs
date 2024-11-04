@@ -188,7 +188,7 @@ public class ApiBuildOutput
 
     public static ApiBuildOutput FromModel(PageViewModel model)
     {
-        if (model == null || model.Items == null || model.Items.Count == 0)
+        if (model?.Items == null || model.Items.Count == 0)
         {
             return null;
         }

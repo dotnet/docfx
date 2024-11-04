@@ -49,7 +49,7 @@ public class ResolveLinkExtension : IMarkdownExtension
                 }
                 break;
 
-            case LeafBlock leafBlock when leafBlock.Inline != null:
+            case LeafBlock {Inline: not null} leafBlock:
                 foreach (var subInline in leafBlock.Inline)
                 {
                     UpdateLinks(subInline);

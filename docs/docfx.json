@@ -1,4 +1,5 @@
 ﻿{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
   "metadata": [
     {
       "src": [
@@ -25,6 +26,11 @@
       {
         "files": [ "**/images/**", "**/media/**", "codesnippet/**" ],
         "exclude": [ "_site/**", "obj/**" ]
+      },
+      {
+        "src": "../schemas",
+        "files": [ "**/*.json" ],
+        "dest": "schemas"
       }
     ],
     "postProcessors": [ "ExtractSearchIndex" ],

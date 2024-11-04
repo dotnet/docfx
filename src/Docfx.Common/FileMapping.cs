@@ -24,7 +24,8 @@ namespace Docfx;
 ///     If the Array form contains only one item, it can be shortened to an object
 ///     e.g. <code>projects: ["file1", "file2"]</code>
 /// </summary>
-[Newtonsoft.Json.JsonConverter(typeof(FileMappingConverter))]
+[Newtonsoft.Json.JsonConverter(typeof(FileMappingConverter.NewtonsoftJsonConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(FileMappingConverter.SystemTextJsonConverter))]
 public class FileMapping
 {
     private readonly List<FileMappingItem> _items = new();
@@ -45,7 +46,8 @@ public class FileMapping
     /// <summary>
     /// Initializes a new instance of the <see cref="FileMapping"/> class.
     /// </summary>
-    public FileMapping() : base() { }
+    public FileMapping()
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FileMapping"/> class.
@@ -69,7 +71,7 @@ public class FileMapping
     /// <param name="item"></param>
     public void Add(FileMappingItem item)
     {
-        if (item == null || item.Files == null || item.Files.Count == 0) return;
+        if (item?.Files == null || item.Files.Count == 0) return;
 
         _items.Add(item);
     }

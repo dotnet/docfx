@@ -18,7 +18,7 @@
     <PackageReference Include="Jint" />
     <PackageReference Include="Stubble.Core" />
     <PackageReference Include="OneOf" />
-    <PackageReference Include="OneOf.SourceGenerator" />
+    <PackageReference Include="OneOf.SourceGenerator" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
