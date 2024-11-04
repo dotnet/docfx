@@ -131,7 +131,7 @@ internal sealed class Merger
 
     private static bool TestKey(object source, object overrides, BaseSchema schema)
     {
-        if (overrides == null || overrides == null)
+        if (overrides == null || source == null)
         {
             return false;
         }
