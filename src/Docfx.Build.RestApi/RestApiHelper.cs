@@ -48,7 +48,7 @@ internal static class RestApiHelper
         }
 
         // Not decode for JSON String Representation
-        if (reference.StartsWith("/", StringComparison.Ordinal))
+        if (reference.StartsWith('/'))
         {
             return new SwaggerFormattedReference
             {

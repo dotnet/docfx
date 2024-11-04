@@ -44,7 +44,7 @@ public class HrefInterpreter : IInterpreter
         }
 
         // "/" is also considered as absolute to us
-        if (uri.IsAbsoluteUri || val.StartsWith("/", StringComparison.Ordinal))
+        if (uri.IsAbsoluteUri || val.StartsWith('/'))
         {
             return Helper.RemoveHostName(val, _siteHostName);
         }

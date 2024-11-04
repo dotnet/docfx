@@ -19,7 +19,7 @@ public static class YamlMime
         ArgumentNullException.ThrowIfNull(reader);
 
         var line = reader.ReadLine();
-        if (line == null || !line.StartsWith("#", StringComparison.Ordinal))
+        if (line == null || !line.StartsWith('#'))
         {
             return null;
         }

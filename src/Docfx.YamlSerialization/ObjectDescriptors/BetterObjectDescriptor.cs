@@ -30,8 +30,8 @@ public class BetterObjectDescriptor : IObjectDescriptor
                 || Regexes.NullLike.IsMatch(s)
                 || Regexes.IntegerLike.IsMatch(s)
                 || Regexes.FloatLike.IsMatch(s)
-                || s.StartsWith("'", StringComparison.Ordinal)
-                || s.StartsWith("\"", StringComparison.Ordinal)
+                || s.StartsWith('\'')
+                || s.StartsWith('"')
                 || s.Length > 0 && char.IsWhiteSpace(s[0]);
         }
     }
