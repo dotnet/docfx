@@ -11,7 +11,7 @@ namespace Docfx.Common.Git;
 
 public record GitSource(string Repo, string Branch, string Path, int Line);
 
-public static class GitUtility
+public static partial class GitUtility
 {
     record Repo(string path, string url, string branch);
 
@@ -51,13 +51,13 @@ public static class GitUtility
     public static string? RawContentUrlToContentUrl(string rawUrl)
     {
         // GitHub
-        var url = Regex.Replace(
-            rawUrl,
-            @"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$",
-            string.IsNullOrEmpty(s_branch) ? "https://github.com/$1/$2/blob/$3/$4" : $"https://github.com/$1/$2/blob/{s_branch}/$4");
+        var url = GitHubUserContentRegex().Replace(rawUrl, string.IsNullOrEmpty(s_branch) ? "https://github.com/$1/$2/blob/$3/$4" : $"https://github.com/$1/$2/blob/{s_branch}/$4");
 
         return ResolveDocfxSourceRepoUrl(url);
     }
+
+    [GeneratedRegex(@"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$")]
+    private static partial Regex GitHubUserContentRegex();
 
     public static string? GetSourceUrl(GitSource source)
     {
@@ -155,7 +155,6 @@ public static class GitUtility
             }
 
             return null;
-
         }
 
         static IEnumerable<(string key, string value)> ParseRemoteUrls(string gitRoot)
@@ -171,7 +170,7 @@ public static class GitUtility
                 var line = text.Trim();
                 if (line.StartsWith("["))
                 {
-                    var remote = Regex.Replace(line, @"\[remote\s+\""(.+)?\""\]", "$1");
+                    var remote = RemoteRegex().Replace(line, "$1");
                     key = remote != line ? remote : "";
                 }
                 else if (line.StartsWith("url = ") && !string.IsNullOrEmpty(key))
@@ -182,6 +181,8 @@ public static class GitUtility
             }
         }
     }
+    [GeneratedRegex(@"\[remote\s+\""(.+)?\""\]")]
+    private static partial Regex RemoteRegex();
 
     /// <summary>
     /// Rewrite path if `DOCFX_SOURCE_REPOSITORY_URL` environment variable is specified.
@@ -215,7 +216,7 @@ public static class GitUtility
                 {
                     // Replace `/{orgName}/{repoName}` and remove `.git` suffix.
                     var builder = new UriBuilder(parsedOriginalUrl);
-                    builder.Path = Regex.Replace(builder.Path.TrimEnd(".git"), "^/[^/]+/[^/]+", $"/{orgName}/{repoName}");
+                    builder.Path = OrgRepoRegex().Replace(builder.Path.TrimEnd(".git"), $"/{orgName}/{repoName}");
                     return builder.Uri.ToString();
                 }
 
@@ -224,4 +225,7 @@ public static class GitUtility
                 return originalUrl;
         }
     }
+
+    [GeneratedRegex("^/[^/]+/[^/]+")]
+    private static partial Regex OrgRepoRegex();
 }
