@@ -23,7 +23,7 @@ namespace Docfx.YamlSerialization;
 /// </summary>
 public sealed class YamlDeserializer
 {
-    private static Dictionary<TagName, Type> PredefinedTagMappings { get; } = new Dictionary<TagName, Type>
+    private static Dictionary<TagName, Type> PredefinedTagMappings { get; } = new()
     {
         { "tag:yaml.org,2002:map", typeof(Dictionary<object, object>) },
         { "tag:yaml.org,2002:bool", typeof(bool) },

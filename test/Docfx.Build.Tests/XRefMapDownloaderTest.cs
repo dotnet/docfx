@@ -40,7 +40,7 @@ public class XRefMapDownloadTest
         // Arrange
         var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "xrefmap.json");
 
-        XRefMapDownloader downloader = new XRefMapDownloader();
+        var downloader = new XRefMapDownloader();
         var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
 
         // Assert
@@ -54,7 +54,7 @@ public class XRefMapDownloadTest
         // Arrange
         var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "xrefmap.json.gz");
 
-        XRefMapDownloader downloader = new XRefMapDownloader();
+        var downloader = new XRefMapDownloader();
         var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
 
         // Assert
@@ -68,7 +68,7 @@ public class XRefMapDownloadTest
         // Arrange
         var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "xrefmap.yml.gz");
 
-        XRefMapDownloader downloader = new XRefMapDownloader();
+        var downloader = new XRefMapDownloader();
         var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
 
         // Assert
@@ -85,7 +85,7 @@ public class XRefMapDownloadTest
         // Arrange
         var path = "https://horizongir.github.io/ZedGraph/xrefmap.yml";
 
-        XRefMapDownloader downloader = new XRefMapDownloader();
+        var downloader = new XRefMapDownloader();
         var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
 
         // Assert
@@ -114,7 +114,7 @@ public class XRefMapDownloadTest
         // Arrange
         var path = "https://normanderwan.github.io/UnityXrefMaps/xrefmap.yml";
 
-        XRefMapDownloader downloader = new XRefMapDownloader();
+        var downloader = new XRefMapDownloader();
         var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
 
         // Assert
