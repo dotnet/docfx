@@ -86,7 +86,7 @@ partial class DotnetApiCatalog
                         _ when SymbolHelper.IsOperator(method) => "Operator",
                         _ when SymbolHelper.IsMember(method) => "Method",
                         _ => throw new NotSupportedException($"Unknown method type {method.MethodKind}"),
-                    }); ;
+                    });
                     foreach (var (s, c) in symbols)
                         Method((IMethodSymbol)s, c, 2);
                     break;
