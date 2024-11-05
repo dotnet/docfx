@@ -137,7 +137,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
             yield return parts[i] + "/";
         }
 
-        yield return path.EndsWith("/", StringComparison.Ordinal) ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
+        yield return path.EndsWith('/') ? parts[parts.Length - 1] + "/" : parts[parts.Length - 1];
     }
 
     private string ConvertSingleGlob(IEnumerable<GlobRegexItem> regexItems)
@@ -148,7 +148,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     private static bool IsFolderPath(string path)
     {
-        return path.EndsWith("/", StringComparison.Ordinal);
+        return path.EndsWith('/');
     }
 
     /// <summary>
@@ -406,14 +406,9 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     private bool DisallowedMatchExists(string filePart)
     {
-        if (filePart == "."
-            || filePart == ".."
-            || (!_allowDotMatch && filePart.StartsWith(".", StringComparison.Ordinal)))
-        {
-            return true;
-        }
-
-        return false;
+        return filePart == "."
+               || filePart == ".."
+               || (!_allowDotMatch && filePart.StartsWith('.'));
     }
 
     private static string UnescapeGlob(string s)

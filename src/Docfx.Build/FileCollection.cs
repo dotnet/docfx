@@ -61,11 +61,11 @@ public class FileCollection
                 throw new ArgumentException("DestinationDir must start with BaseDir, or relative path.", nameof(destinationDir));
             }
         }
-        if (!string.IsNullOrEmpty(sourceDir) && !sourceDir.EndsWith("/", StringComparison.Ordinal))
+        if (!string.IsNullOrEmpty(sourceDir) && !sourceDir.EndsWith('/'))
         {
             sourceDir += "/";
         }
-        if (!string.IsNullOrEmpty(destinationDir) && !destinationDir.EndsWith("/", StringComparison.Ordinal))
+        if (!string.IsNullOrEmpty(destinationDir) && !destinationDir.EndsWith('/'))
         {
             destinationDir += "/";
         }

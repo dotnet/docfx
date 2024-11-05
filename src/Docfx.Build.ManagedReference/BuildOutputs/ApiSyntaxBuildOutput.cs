@@ -13,7 +13,7 @@ public class ApiSyntaxBuildOutput
     [YamlMember(Alias = "content")]
     [JsonProperty("content")]
     [JsonPropertyName("content")]
-    public List<ApiLanguageValuePair> Content { get; set; } = new List<ApiLanguageValuePair>();
+    public List<ApiLanguageValuePair> Content { get; set; } = [];
 
     [YamlMember(Alias = "parameters")]
     [JsonProperty("parameters")]
