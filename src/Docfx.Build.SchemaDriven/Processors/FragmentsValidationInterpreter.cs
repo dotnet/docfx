@@ -44,20 +44,13 @@ public class FragmentsValidationInterpreter : IInterpreter
             return value;
         };
 
-        if (schema.MergeType == MergeType.Key)
+        if (schema.MergeType != MergeType.Key && !schema.IsLegalInFragments())
         {
-            return value;
+            // TODO: improve error message by including line number and OPathString for YAML code block
+            Logger.LogWarning(
+                $"You cannot overwrite a readonly property: `{path.Trim('/')}`, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property",
+                code: WarningCodes.Overwrite.InvalidMarkdownFragments);
         }
-
-        if (schema.IsLegalInFragments())
-        {
-            return value;
-        }
-
-        // TODO: improve error message by including line number and OPathString for YAML code block
-        Logger.LogWarning(
-            $"You cannot overwrite a readonly property: `{path.Trim('/')}`, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property",
-            code: WarningCodes.Overwrite.InvalidMarkdownFragments);
 
         return value;
     }
