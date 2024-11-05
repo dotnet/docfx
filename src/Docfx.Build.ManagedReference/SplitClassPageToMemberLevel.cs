@@ -343,26 +343,17 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             FullName = item.FullName,
         };
 
-        if (item.Names.Count > 0)
+        foreach (var pair in item.Names)
         {
-            foreach (var pair in item.Names)
-            {
-                reference.NameInDevLangs[pair.Key] = pair.Value;
-            }
+            reference.NameInDevLangs[pair.Key] = pair.Value;
         }
-        if (item.FullNames.Count > 0)
+        foreach (var pair in item.FullNames)
         {
-            foreach (var pair in item.FullNames)
-            {
-                reference.FullNameInDevLangs[pair.Key] = pair.Value;
-            }
+            reference.FullNameInDevLangs[pair.Key] = pair.Value;
         }
-        if (item.NamesWithType.Count > 0)
+        foreach (var pair in item.NamesWithType)
         {
-            foreach (var pair in item.NamesWithType)
-            {
-                reference.NameWithTypeInDevLangs[pair.Key] = pair.Value;
-            }
+            reference.NameWithTypeInDevLangs[pair.Key] = pair.Value;
         }
 
         return reference;
@@ -375,26 +366,17 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         item.FullName = reference.FullName;
         item.CommentId = reference.CommentId;
 
-        if (reference.NameInDevLangs.Count > 0)
+        foreach (var pair in reference.NameInDevLangs)
         {
-            foreach (var pair in reference.NameInDevLangs)
-            {
-                item.Names[pair.Key] = pair.Value;
-            }
+            item.Names[pair.Key] = pair.Value;
         }
-        if (reference.FullNameInDevLangs.Count > 0)
+        foreach (var pair in reference.FullNameInDevLangs)
         {
-            foreach (var pair in reference.FullNameInDevLangs)
-            {
-                item.FullNames[pair.Key] = pair.Value;
-            }
+            item.FullNames[pair.Key] = pair.Value;
         }
-        if (reference.NameWithTypeInDevLangs.Count > 0)
+        foreach (var pair in reference.NameWithTypeInDevLangs)
         {
-            foreach (var pair in reference.NameWithTypeInDevLangs)
-            {
-                item.NamesWithType[pair.Key] = pair.Value;
-            }
+            item.NamesWithType[pair.Key] = pair.Value;
         }
 
         // SHOULD sync with ItemViewModel & ReferenceViewModel
