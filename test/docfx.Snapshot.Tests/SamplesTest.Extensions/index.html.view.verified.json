@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "index.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_systemKeys": [
     "conceptual",
@@ -32,7 +32,7 @@
   ],
   "rawTitle": "<h1 id=\"this-is-the-homepage\" sourcefile=\"index.md\" sourcestartlinenumber=\"1\">This is the <strong sourcefile=\"index.md\" sourcestartlinenumber=\"1\">HOMEPAGE</strong>.</h1>",
   "title": "This is the HOMEPAGE.",
-  "wordCount": 33.0,
+  "wordCount": 33,
   "_key": "index.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

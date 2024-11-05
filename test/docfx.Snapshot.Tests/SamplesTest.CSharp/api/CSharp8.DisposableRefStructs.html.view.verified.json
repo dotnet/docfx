@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -121,8 +121,8 @@
             },
             "id": "Dispose",
             "path": "src/CSharp8.cs",
-            "startLine": 56.0,
-            "endLine": 0.0
+            "startLine": 56,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -172,7 +172,7 @@
             ],
             "id": "CSharp8_DisposableRefStructs_Dispose_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -254,8 +254,8 @@
             },
             "id": "DoSomething",
             "path": "src/CSharp8.cs",
-            "startLine": 60.0,
-            "endLine": 0.0
+            "startLine": 60,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -305,7 +305,7 @@
             ],
             "id": "CSharp8_DisposableRefStructs_DoSomething_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -367,8 +367,8 @@
     },
     "id": "DisposableRefStructs",
     "path": "src/CSharp8.cs",
-    "startLine": 54.0,
-    "endLine": 0.0
+    "startLine": 54,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -418,7 +418,7 @@
         "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -432,7 +432,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "inheritedMembers": [
     {
       "uid": "System.ValueType.Equals(System.Object)",
@@ -481,7 +481,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.ValueType.GetHashCode",
@@ -530,7 +530,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.ValueType.ToString",
@@ -579,7 +579,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -628,7 +628,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -677,7 +677,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -726,7 +726,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_systemKeys": [

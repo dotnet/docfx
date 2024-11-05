@@ -48,7 +48,7 @@
         "value": "<xref uid=\"BuildFromAssembly\" text=\"BuildFromAssembly\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -163,8 +163,8 @@
           },
           "source": {
             "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
-            "startLine": 0.0,
-            "endLine": 0.0
+            "startLine": 0,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromAssembly"
@@ -214,7 +214,7 @@
             ],
             "id": "BuildFromAssembly_Issue5432_Name_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "",
           "platform": null,
@@ -270,8 +270,8 @@
   "type": "struct",
   "source": {
     "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "assemblies": [
     "BuildFromAssembly"
@@ -322,7 +322,7 @@
         "value": "<xref uid=\"BuildFromAssembly\" text=\"BuildFromAssembly\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -336,7 +336,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "inheritedMembers": [
     {
       "uid": "System.ValueType.Equals(System.Object)",
@@ -385,7 +385,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.ValueType.GetHashCode",
@@ -434,7 +434,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.ValueType.ToString",
@@ -483,7 +483,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -532,7 +532,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -581,7 +581,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -630,7 +630,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

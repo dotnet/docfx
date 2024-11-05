@@ -47,7 +47,7 @@
         "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -167,15 +167,15 @@
             },
             "id": "Red",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-            "startLine": 28.0,
-            "endLine": 0.0
+            "startLine": 28,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary.Core"
           ],
           "namespace": "CatLibrary.Core",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">red</p>\n",
           "platform": null,
@@ -302,15 +302,15 @@
             },
             "id": "Blue",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-            "startLine": 32.0,
-            "endLine": 0.0
+            "startLine": 32,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary.Core"
           ],
           "namespace": "CatLibrary.Core",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">blue</p>\n",
           "platform": null,
@@ -437,15 +437,15 @@
             },
             "id": "Yellow",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-            "startLine": 36.0,
-            "endLine": 0.0
+            "startLine": 36,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary.Core"
           ],
           "namespace": "CatLibrary.Core",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">yellow</p>\n",
           "platform": null,
@@ -506,8 +506,8 @@
     },
     "id": "ColorType",
     "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-    "startLine": 23.0,
-    "endLine": 0.0
+    "startLine": 23,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary.Core"
@@ -557,7 +557,7 @@
         "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
   "example": [],
@@ -573,7 +573,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
