@@ -22,16 +22,14 @@ public class FillReferenceInformation : BaseDocumentBuildStep
 
     public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
     {
-        if (models.Count > 0)
+        foreach (var model in models)
         {
-            foreach (var model in models)
+            if (model.Type != DocumentType.Article)
             {
-                if (model.Type != DocumentType.Article)
-                {
-                    continue;
-                }
-                FillCore((PageViewModel)model.Content, host, model.OriginalFileAndType.File);
+                continue;
             }
+
+            FillCore((PageViewModel)model.Content, host, model.OriginalFileAndType.File);
         }
     }
 
