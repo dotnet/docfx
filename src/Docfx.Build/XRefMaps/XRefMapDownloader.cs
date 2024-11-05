@@ -134,7 +134,7 @@ public sealed class XRefMapDownloader
                             {
                                 using var reader = new StreamReader(stream);
                                 return YamlUtility.Deserialize<XRefMap>(reader);
-                            };
+                            }
                     }
                 }
 

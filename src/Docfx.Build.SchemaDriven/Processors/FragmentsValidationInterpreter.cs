@@ -42,7 +42,7 @@ public class FragmentsValidationInterpreter : IInterpreter
             $"Markdown property `{path.Trim('/')}` is not allowed inside a YAML code block",
             code: WarningCodes.Overwrite.InvalidMarkdownFragments);
             return value;
-        };
+        }
 
         if (schema.MergeType == MergeType.Key)
         {
