@@ -68,7 +68,7 @@ public class CodeSnippetExtractor
         tagName = string.Empty;
         if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(template)) return false;
 
-        var splittedTemplate = template.Split(new[] { TagNamePlaceHolder }, StringSplitOptions.None);
+        var splittedTemplate = template.Split(TagNamePlaceHolder);
         var beforeTagName = splittedTemplate[0];
         var afterTagName = splittedTemplate.Length == 2 ? splittedTemplate[1] : string.Empty;
 

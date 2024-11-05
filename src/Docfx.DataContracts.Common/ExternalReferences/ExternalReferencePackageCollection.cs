@@ -24,7 +24,7 @@ public class ExternalReferencePackageCollection : IDisposable
                    select reader).ToImmutableList();
     }
 
-    public ImmutableList<ExternalReferencePackageReader> Readers { get; private set; }
+    public ImmutableList<ExternalReferencePackageReader> Readers { get; }
 
     public bool TryGetReference(string uid, out ReferenceViewModel vm)
     {

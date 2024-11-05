@@ -43,7 +43,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         if (!string.IsNullOrEmpty(versionDir))
         {
             versionDir = versionDir.Replace('\\', '/');
-            if (!versionDir.EndsWith("/", StringComparison.Ordinal))
+            if (!versionDir.EndsWith('/'))
             {
                 versionDir += "/";
             }
@@ -95,7 +95,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         if (!string.IsNullOrEmpty(versionFolder))
         {
             versionFolder = versionFolder.Replace('\\', '/');
-            if (!versionFolder.EndsWith("/", StringComparison.Ordinal))
+            if (!versionFolder.EndsWith('/'))
             {
                 versionFolder += "/";
             }

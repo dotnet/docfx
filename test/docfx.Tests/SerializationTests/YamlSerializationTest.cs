@@ -10,7 +10,7 @@ namespace docfx.Tests;
 
 public partial class YamlSerializationTest
 {
-    private static readonly ThreadLocal<YamlSerializer> YamlJsonSerializer = new ThreadLocal<YamlSerializer>(() => new YamlSerializer(SerializationOptions.JsonCompatible | SerializationOptions.DisableAliases));
+    private static readonly ThreadLocal<YamlSerializer> YamlJsonSerializer = new(() => new YamlSerializer(SerializationOptions.JsonCompatible | SerializationOptions.DisableAliases));
 
     /// <summary>
     /// Helper method to validate serialize/deserialize results.
