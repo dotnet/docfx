@@ -35,7 +35,7 @@ public sealed class FileModel
 
     public FileAndType FileAndType { get; private set; }
 
-    public FileAndType OriginalFileAndType { get; private set; }
+    public FileAndType OriginalFileAndType { get; }
 
     public object Content { get; set; }
 

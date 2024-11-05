@@ -173,7 +173,7 @@ public class MarkdigMarkdownService : IMarkdownService
 
     private static string GetLink(string path, MarkdownObject origin)
     {
-        if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith("#", StringComparison.Ordinal))
+        if (InclusionContext.IsInclude && RelativePath.IsRelativePath(path) && PathUtility.IsRelativePath(path) && !RelativePath.IsPathFromWorkingFolder(path) && !path.StartsWith('#'))
         {
             return ((RelativePath)InclusionContext.File + (RelativePath)path).GetPathFromWorkingFolder();
         }

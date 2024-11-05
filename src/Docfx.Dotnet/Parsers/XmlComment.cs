@@ -42,9 +42,9 @@ internal class XmlComment
 
     public List<string> Examples { get; private set; }
 
-    public Dictionary<string, string> Parameters { get; private set; }
+    public Dictionary<string, string> Parameters { get; }
 
-    public Dictionary<string, string> TypeParameters { get; private set; }
+    public Dictionary<string, string> TypeParameters { get; }
 
     private XmlComment(string xml, XmlCommentParserContext context)
     {

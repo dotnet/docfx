@@ -15,16 +15,16 @@ public static class JsonUtility
 {
     public static string Serialize<T>(T graph, bool indented = false)
     {
-        if (IsSystemTextJsonSupported<T>())
-            return SystemTextJsonUtility.Serialize<T>(graph, indented);
+        if (IsSystemTextJsonSupported(graph))
+            return SystemTextJsonUtility.Serialize(graph, indented);
         else
             return NewtonsoftJsonUtility.Serialize(graph, indented ? Formatting.Indented : Formatting.None);
     }
 
     public static void Serialize<T>(string path, T graph, bool indented = false)
     {
-        if (IsSystemTextJsonSupported<T>())
-            SystemTextJsonUtility.SerializeToFile<T>(path, graph, indented);
+        if (IsSystemTextJsonSupported(graph))
+            SystemTextJsonUtility.SerializeToFile(path, graph, indented);
         else
             NewtonsoftJsonUtility.Serialize(path, graph, indented ? Formatting.Indented : Formatting.None);
     }
@@ -74,6 +74,14 @@ public static class JsonUtility
         return StaticTypeCache<T>.Supported;
     }
 
+    internal static bool IsSystemTextJsonSupported<T>(T obj)
+    {
+        if (typeof(T) == typeof(object) && obj.GetType().FullName.StartsWith("Newtonsoft.", StringComparison.Ordinal))
+            return false;
+
+        return StaticTypeCache<T>.Supported;
+    }
+
     private static class StaticTypeCache<T>
     {
         public static readonly bool Supported;
@@ -90,7 +98,6 @@ public static class JsonUtility
             {
                 // Use Newtonsoft.Json for RestAPI models.
                 case "Docfx.DataContracts.RestApi.RestApiRootItemViewModel":
-                    return false;
 
                 // Some unit tests using Newtonsoft.Json types.
                 case "Newtonsoft.Json.Linq.JObject":

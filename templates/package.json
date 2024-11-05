@@ -14,7 +14,7 @@
   "scripts": {
     "build": "node build.js",
     "lint": "eslint modern/src && stylelint modern/src",
-    "test": "node --import tsx --test modern/src/helper.test.ts",
+    "test": "node --import tsx --test modern/src/*.test.ts",
     "start": "node build.js --watch"
   },
   "dependencies": {

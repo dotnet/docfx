@@ -33,7 +33,7 @@ class SitemapGenerator : IPostProcessor
             return manifest;
         }
 
-        if (!manifest.Sitemap.BaseUrl.EndsWith("/", StringComparison.Ordinal))
+        if (!manifest.Sitemap.BaseUrl.EndsWith('/'))
         {
             manifest.Sitemap.BaseUrl += '/';
         }
@@ -105,7 +105,7 @@ class SitemapGenerator : IPostProcessor
         }
         else
         {
-            if (!options.BaseUrl.EndsWith("/", StringComparison.Ordinal))
+            if (!options.BaseUrl.EndsWith('/'))
             {
                 options.BaseUrl += '/';
             }

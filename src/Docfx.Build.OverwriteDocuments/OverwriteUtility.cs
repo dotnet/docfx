@@ -23,7 +23,7 @@ public static class OverwriteUtility
             throw new ArgumentException("OPathString cannot be null or empty.", nameof(OPathString));
         }
 
-        if (OPathString.EndsWith("/", StringComparison.Ordinal))
+        if (OPathString.EndsWith('/'))
         {
             throw new ArgumentException($"{OPathString} is not a valid OPath");
         }
@@ -39,7 +39,7 @@ public static class OverwriteUtility
                 throw new ArgumentException($"{OPathString} is not a valid OPath");
             }
 
-            if (!match.Value.EndsWith("/", StringComparison.Ordinal) && match.Groups["key"].Success)
+            if (!match.Value.EndsWith('/') && match.Groups["key"].Success)
             {
                 throw new ArgumentException($"{OPathString} is not a valid OPath");
             }
