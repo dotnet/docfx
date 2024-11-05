@@ -36,6 +36,8 @@ jobs:
     - run: dotnet test -c Release -f net9.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
       if: matrix.os == 'ubuntu-latest'
       id: test-net90
+      env:
+        BUILD_SERVER: true
 
     - run: npm i -g @percy/cli
       if: matrix.os == 'ubuntu-latest'
