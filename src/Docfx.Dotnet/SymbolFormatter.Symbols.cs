@@ -98,7 +98,7 @@ partial class SymbolFormatter
 
         public void Accept(SymbolVisitor visitor) => visitor.VisitParameter(this);
 #nullable enable
-        public TResult? Accept<TResult>(SymbolVisitor<TResult> visitor) => throw new NotImplementedException();
+        public TResult Accept<TResult>(SymbolVisitor<TResult> visitor) => throw new NotImplementedException();
 #nullable disable
         public TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) => throw new NotImplementedException();
         public bool Equals([NotNullWhen(true)] ISymbol other, SymbolEqualityComparer equalityComparer) => throw new NotImplementedException();

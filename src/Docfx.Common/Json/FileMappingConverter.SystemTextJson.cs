@@ -13,7 +13,7 @@ internal partial class FileMappingConverter
 {
     internal class SystemTextJsonConverter : JsonConverter<FileMapping>
     {
-        public override FileMapping? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override FileMapping Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             switch (reader.TokenType)
             {
