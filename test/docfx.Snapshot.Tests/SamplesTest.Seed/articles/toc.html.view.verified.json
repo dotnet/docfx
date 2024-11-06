@@ -1,12 +1,12 @@
 ﻿{
-  "order": 100.0,
+  "order": 100,
   "items": [
     {
       "name": "Getting Started with docfx",
       "href": "docfx_getting_started.html",
       "topicHref": "docfx_getting_started.html",
       "tocHref": null,
-      "level": 2.0,
+      "level": 2,
       "items": [],
       "leaf": true
     },
@@ -17,7 +17,7 @@
           "name": "Section 1",
           "topicHref": null,
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -26,7 +26,7 @@
           "href": "engineering_guidelines.html",
           "topicHref": "engineering_guidelines.html",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -35,7 +35,7 @@
           "href": "csharp_coding_standards.html",
           "topicHref": "csharp_coding_standards.html",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         }
@@ -43,14 +43,14 @@
       "expanded": true,
       "topicHref": null,
       "tocHref": null,
-      "level": 2.0
+      "level": 2
     },
     {
       "name": "Markdown",
       "href": "markdown.html",
       "topicHref": "markdown.html",
       "tocHref": null,
-      "level": 2.0,
+      "level": 2,
       "items": [],
       "leaf": true
     },
@@ -59,7 +59,7 @@
       "href": "https://docs.microsoft.com/en-us/",
       "topicHref": "https://docs.microsoft.com/en-us/",
       "tocHref": null,
-      "level": 2.0,
+      "level": 2,
       "items": [],
       "leaf": true
     }
@@ -83,7 +83,7 @@
   "topicHref": null,
   "tocHref": null,
   "name": null,
-  "level": 1.0,
+  "level": 1,
   "leaf": false,
   "title": "Table of Content",
   "_disableToc": true

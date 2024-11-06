@@ -47,7 +47,7 @@
         "value": "<xref uid=\"BuildFromVBSourceCode\" text=\"BuildFromVBSourceCode\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -214,8 +214,8 @@
             },
             "id": "WithDeclarationKeyword",
             "path": "dotnet/vb/Class1.vb",
-            "startLine": 45.0,
-            "endLine": 0.0
+            "startLine": 45,
+            "endLine": 0
           },
           "namespace": "BuildFromVBSourceCode",
           "overload": {
@@ -262,7 +262,7 @@
             ],
             "id": "BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -324,8 +324,8 @@
     },
     "id": "BaseClass1",
     "path": "dotnet/vb/Class1.vb",
-    "startLine": 44.0,
-    "endLine": 0.0
+    "startLine": 44,
+    "endLine": 0
   },
   "namespace": {
     "uid": "BuildFromVBSourceCode",
@@ -372,7 +372,7 @@
         "value": "<xref uid=\"BuildFromVBSourceCode\" text=\"BuildFromVBSourceCode\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.BaseClass1.yml\" sourcestartlinenumber=\"1\">This is the BaseClass</p>\n",
   "example": [],
@@ -436,8 +436,8 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     }
   ],
   "derivedClasses": [
@@ -487,11 +487,11 @@
           "value": "<xref uid=\"BuildFromVBSourceCode.Class1\" text=\"Class1\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 2.0
+      "level": 0,
+      "index": 2
     }
   ],
-  "level": 1.0,
+  "level": 1,
   "inheritedMembers": [
     {
       "uid": "System.Object.Equals(System.Object)",
@@ -540,7 +540,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -589,7 +589,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Finalize",
@@ -638,7 +638,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.finalize\">Finalize</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -687,7 +687,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -736,7 +736,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -785,7 +785,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -834,7 +834,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -883,7 +883,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

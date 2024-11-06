@@ -163,8 +163,7 @@ public class JsonSchemaTest : TestBase
                 var doc = JsonDocument.Parse(File.OpenRead(filePath), JsonSchemaUtility.DefaultJsonDocumentOptions);
                 return doc.RootElement;
             case ".yml":
-                var yaml = File.ReadAllText(filePath);
-                var yamlObject = YamlUtility.Deserialize<object>(new StringReader(yaml));
+                var yamlObject = YamlUtility.Deserialize<object>(filePath);
 
                 var serializer = new SerializerBuilder()
                                    .JsonCompatible()

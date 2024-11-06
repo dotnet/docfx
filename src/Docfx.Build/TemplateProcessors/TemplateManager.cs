@@ -124,7 +124,7 @@ public class TemplateManager
         try
         {
             var subfolder = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(subfolder) && !Directory.Exists(subfolder))
+            if (!string.IsNullOrEmpty(subfolder))
             {
                 Directory.CreateDirectory(subfolder);
             }

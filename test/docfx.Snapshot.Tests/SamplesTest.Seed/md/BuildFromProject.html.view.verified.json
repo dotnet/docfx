@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/BuildFromProject.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromProject\" sourcefile=\"obj/md/BuildFromProject.md\" sourcestartlinenumber=\"1\"> Namespace BuildFromProject</h1>",
   "title": " Namespace BuildFromProject",
-  "wordCount": 43.0,
+  "wordCount": 43,
   "_key": "obj/md/BuildFromProject.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

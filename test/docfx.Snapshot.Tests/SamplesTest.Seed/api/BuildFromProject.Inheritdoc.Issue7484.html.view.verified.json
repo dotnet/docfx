@@ -47,7 +47,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -121,8 +121,8 @@
             },
             "id": ".ctor",
             "path": "dotnet/project/Project/Inheritdoc.cs",
-            "startLine": 63.0,
-            "endLine": 0.0
+            "startLine": 63,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -173,7 +173,7 @@
             ],
             "id": "BuildFromProject_Inheritdoc_Issue7484__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.Issue7484.yml\" sourcestartlinenumber=\"1\">This is a constructor to document.</p>\n",
           "platform": null,
@@ -308,8 +308,8 @@
             },
             "id": "DoDad",
             "path": "dotnet/project/Project/Inheritdoc.cs",
-            "startLine": 68.0,
-            "endLine": 0.0
+            "startLine": 68,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -360,7 +360,7 @@
             ],
             "id": "BuildFromProject_Inheritdoc_Issue7484_DoDad_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.Issue7484.yml\" sourcestartlinenumber=\"1\">A string that could have something.</p>\n",
           "platform": null,
@@ -543,8 +543,8 @@
             },
             "id": "BoolReturningMethod",
             "path": "dotnet/project/Project/Inheritdoc.cs",
-            "startLine": 79.0,
-            "endLine": 0.0
+            "startLine": 79,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -596,7 +596,7 @@
             ],
             "id": "BuildFromProject_Inheritdoc_Issue7484_BoolReturningMethod_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.Issue7484.yml\" sourcestartlinenumber=\"1\">Simple method to generate docs for.</p>\n",
           "platform": null,
@@ -656,8 +656,8 @@
     },
     "id": "Issue7484",
     "path": "dotnet/project/Project/Inheritdoc.cs",
-    "startLine": 58.0,
-    "endLine": 0.0
+    "startLine": 58,
+    "endLine": 0
   },
   "assemblies": [
     "BuildFromProject"
@@ -707,7 +707,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.Issue7484.yml\" sourcestartlinenumber=\"1\">This is a test class to have something for DocFX to document.</p>\n",
   "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.Issue7484.yml\" sourcestartlinenumber=\"1\">We're going to talk about things now.</p>\n<table><thead><tr></tr></thead><tbody><tr><td class=\"term\"><xref href=\"BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod(System.Boolean)\" data-throw-if-not-resolved=\"false\"></xref></td><td class=\"description\"><summary>\nSimple method to generate docs for.\n</summary></td></tr><tr><td class=\"term\"><xref href=\"BuildFromProject.Inheritdoc.Issue7484.DoDad\" data-throw-if-not-resolved=\"false\"></xref></td><td class=\"description\"><summary>\nA string that could have something.\n</summary></td></tr></tbody></table>\n",
@@ -772,11 +772,11 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     }
   ],
-  "level": 1.0,
+  "level": 1,
   "inheritedMembers": [
     {
       "uid": "System.Object.Equals(System.Object)",
@@ -825,7 +825,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -874,7 +874,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -923,7 +923,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -972,7 +972,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -1021,7 +1021,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -1070,7 +1070,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -1119,7 +1119,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",
