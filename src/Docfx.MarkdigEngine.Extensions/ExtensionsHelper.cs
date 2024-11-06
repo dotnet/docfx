@@ -239,7 +239,7 @@ public static class ExtensionsHelper
         else
         {
             includedFilePath = TryGetStringBeforeChars([')'], ref slice, breakOnWhitespace: true);
-        };
+        }
 
         if (includedFilePath == null)
         {

@@ -585,7 +585,7 @@ exports.transform = function (model){
             var filePath = Path.Combine(cwd ?? string.Empty, file.Item1);
             var directory = Path.GetDirectoryName(filePath);
 
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            if (!string.IsNullOrEmpty(directory))
                 Directory.CreateDirectory(directory);
             File.WriteAllText(filePath, file.Item2);
         }

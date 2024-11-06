@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/CatLibrary.IAnimal.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_IAnimal\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"1\"> Interface IAnimal</h1>",
   "title": " Interface IAnimal",
-  "wordCount": 96.0,
+  "wordCount": 96,
   "_key": "obj/md/CatLibrary.IAnimal.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

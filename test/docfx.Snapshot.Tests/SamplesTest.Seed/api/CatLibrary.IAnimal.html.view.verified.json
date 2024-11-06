@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -217,8 +217,8 @@
             },
             "id": "this[]",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 30.0,
-            "endLine": 0.0
+            "startLine": 30,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -269,7 +269,7 @@
             ],
             "id": "CatLibrary_IAnimal_Item_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Return specific number animal's name.</p>\n",
           "platform": null,
@@ -397,8 +397,8 @@
             },
             "id": "Name",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 23.0,
-            "endLine": 0.0
+            "startLine": 23,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -449,7 +449,7 @@
             ],
             "id": "CatLibrary_IAnimal_Name_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Name of Animal.</p>\n",
           "platform": null,
@@ -537,8 +537,8 @@
             },
             "id": "Eat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 35.0,
-            "endLine": 0.0
+            "startLine": 35,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -589,7 +589,7 @@
             ],
             "id": "CatLibrary_IAnimal_Eat_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Animal's eat method.</p>\n",
           "platform": null,
@@ -719,8 +719,8 @@
             },
             "id": "Eat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 49.0,
-            "endLine": 0.0
+            "startLine": 49,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -771,7 +771,7 @@
             ],
             "id": "CatLibrary_IAnimal_Eat_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Feed the animal with some food</p>\n",
           "platform": null,
@@ -908,8 +908,8 @@
             },
             "id": "Eat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 42.0,
-            "endLine": 0.0
+            "startLine": 42,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -960,7 +960,7 @@
             ],
             "id": "CatLibrary_IAnimal_Eat_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Overload method of eat. This define the animal eat by which tool.</p>\n",
           "platform": null,
@@ -1021,8 +1021,8 @@
     },
     "id": "IAnimal",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 17.0,
-    "endLine": 0.0
+    "startLine": 17,
+    "endLine": 0
   },
   "documentation": {
     "remote": {
@@ -1031,8 +1031,8 @@
       "repo": "https://github.com/dotnet/docfx"
     },
     "path": "specs/CatLibrary.IAnimal.md",
-    "startLine": 1.0,
-    "endLine": 4.0
+    "startLine": 1,
+    "endLine": 4
   },
   "assemblies": [
     "CatLibrary"
@@ -1082,7 +1082,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">This is <b>basic</b> interface of all animal.</p>\n",
   "remarks": "<p sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"1\"><em sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"1\">THIS</em> is remarks overridden in <em sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"1\">MARKDWON</em> file</p>\n",
@@ -1099,7 +1099,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "conceptual": "<h3 id=\"welcome-to-the-animal-world\" sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"6\">Welcome to the <strong sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"6\">Animal</strong> world!</h3>\n",
   "_appName": "Seed",
   "_appTitle": "docfx seed website",

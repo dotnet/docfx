@@ -47,7 +47,7 @@
         "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -167,15 +167,15 @@
             },
             "id": "ColorCount",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-            "startLine": 17.0,
-            "endLine": 0.0
+            "startLine": 17,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary.Core"
           ],
           "namespace": "CatLibrary.Core",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">ColorCount</p>\n",
           "platform": null,
@@ -310,8 +310,8 @@
             },
             "id": "GetColorCount",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-            "startLine": 49.0,
-            "endLine": 0.0
+            "startLine": 49,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary.Core"
@@ -362,7 +362,7 @@
             ],
             "id": "CatLibrary_Core_ContainersRefType_GetColorCount_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">GetColorCount</p>\n",
           "platform": null,
@@ -543,8 +543,8 @@
             },
             "id": "ContainersRefTypeNonRefMethod",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-            "startLine": 67.0,
-            "endLine": 0.0
+            "startLine": 67,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary.Core"
@@ -595,7 +595,7 @@
             ],
             "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">ContainersRefTypeNonRefMethod</p>\n<param name=\"parmsArray\">array\n",
           "platform": null,
@@ -729,14 +729,14 @@
             },
             "id": "ContainersRefTypeEventHandler",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-            "startLine": 85.0,
-            "endLine": 0.0
+            "startLine": 85,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary.Core"
           ],
           "namespace": "CatLibrary.Core",
-          "level": 0.0,
+          "level": 0,
           "type": "event",
           "summary": "",
           "platform": null,
@@ -798,8 +798,8 @@
     },
     "id": "ContainersRefType",
     "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
-    "startLine": 11.0,
-    "endLine": 0.0
+    "startLine": 11,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary.Core"
@@ -849,7 +849,7 @@
         "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">Struct ContainersRefType</p>\n",
   "example": [],
@@ -865,7 +865,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "inheritedMembers": [
     {
       "uid": "System.ValueType.Equals(System.Object)",
@@ -914,7 +914,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.ValueType.GetHashCode",
@@ -963,7 +963,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.ValueType.ToString",
@@ -1012,7 +1012,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -1061,7 +1061,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -1110,7 +1110,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -1159,7 +1159,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "extensionMethods": [
@@ -1210,7 +1210,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_\">Bar</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "CatLibrary.Core.ContainersRefType.CatLibrary.Core.Issue231.Foo",
@@ -1259,7 +1259,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_\">Foo</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

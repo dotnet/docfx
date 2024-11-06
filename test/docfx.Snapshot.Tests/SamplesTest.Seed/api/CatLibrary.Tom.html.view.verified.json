@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -266,8 +266,8 @@
             },
             "id": "TomMethod",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 299.0,
-            "endLine": 0.0
+            "startLine": 299,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -458,7 +458,7 @@
               "description": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">This is the exception in current documentation</p>\n"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">This is a Tom Method with complex type as return</p>\n",
           "platform": null,
@@ -519,8 +519,8 @@
     },
     "id": "Tom",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 288.0,
-    "endLine": 0.0
+    "startLine": 288,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary"
@@ -570,7 +570,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">Tom class is only inherit from Object. Not any member inside itself.</p>\n",
   "example": [],
@@ -634,8 +634,8 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     }
   ],
   "derivedClasses": [
@@ -652,11 +652,11 @@
           "value": "<xref uid=\"CatLibrary.TomFromBaseClass\" displayProperty=\"name\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 2.0
+      "level": 0,
+      "index": 2
     }
   ],
-  "level": 1.0,
+  "level": 1,
   "inheritedMembers": [
     {
       "uid": "System.Object.Equals(System.Object)",
@@ -705,7 +705,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -754,7 +754,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -803,7 +803,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -852,7 +852,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -901,7 +901,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -950,7 +950,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -999,7 +999,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

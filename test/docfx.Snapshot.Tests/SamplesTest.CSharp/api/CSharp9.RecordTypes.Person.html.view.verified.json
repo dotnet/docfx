@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -215,8 +215,8 @@
             },
             "id": ".ctor",
             "path": "src/CSharp9.cs",
-            "startLine": 9.0,
-            "endLine": 0.0
+            "startLine": 9,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -266,7 +266,7 @@
             ],
             "id": "CSharp9_RecordTypes_Person__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "",
           "platform": null,
@@ -402,8 +402,8 @@
             },
             "id": "FirstName",
             "path": "src/CSharp9.cs",
-            "startLine": 9.0,
-            "endLine": 0.0
+            "startLine": 9,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -453,7 +453,7 @@
             ],
             "id": "CSharp9_RecordTypes_Person_FirstName_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "",
           "platform": null,
@@ -582,8 +582,8 @@
             },
             "id": "LastName",
             "path": "src/CSharp9.cs",
-            "startLine": 9.0,
-            "endLine": 0.0
+            "startLine": 9,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -633,7 +633,7 @@
             ],
             "id": "CSharp9_RecordTypes_Person_LastName_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "",
           "platform": null,
@@ -695,8 +695,8 @@
     },
     "id": "Person",
     "path": "src/CSharp9.cs",
-    "startLine": 9.0,
-    "endLine": 0.0
+    "startLine": 9,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -746,7 +746,7 @@
         "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -808,8 +808,8 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     }
   ],
   "derivedClasses": [
@@ -826,11 +826,11 @@
           "value": "<xref uid=\"CSharp9.RecordTypes.Teacher\" displayProperty=\"name\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 2.0
+      "level": 0,
+      "index": 2
     }
   ],
-  "level": 1.0,
+  "level": 1,
   "implements": [
     {
       "uid": "System.IEquatable{CSharp9.RecordTypes.Person}",
@@ -925,7 +925,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -974,7 +974,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -1023,7 +1023,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -1072,7 +1072,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -1121,7 +1121,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -1170,7 +1170,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -1219,7 +1219,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_systemKeys": [

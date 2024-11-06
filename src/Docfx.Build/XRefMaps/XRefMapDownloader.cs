@@ -134,7 +134,7 @@ public sealed class XRefMapDownloader
                             {
                                 using var reader = new StreamReader(stream);
                                 return YamlUtility.Deserialize<XRefMap>(reader);
-                            };
+                            }
                     }
                 }
 
@@ -147,8 +147,7 @@ public sealed class XRefMapDownloader
             case ".yml":
             default:
                 {
-                    using var sr = File.OpenText(filePath);
-                    return YamlUtility.Deserialize<XRefMap>(sr);
+                    return YamlUtility.Deserialize<XRefMap>(filePath);
                 }
         }
     }

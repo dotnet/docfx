@@ -167,7 +167,7 @@
   "api/CatLibrary.CatException-1.html": {
     "href": "api/CatLibrary.CatException-1.html",
     "title": "Class CatException<T> | docfx seed website",
-    "keywords": "Class CatException<T> Namespace CatLibrary Assembly CatLibrary.dll public class CatException<T> : Exception, ISerializable Type Parameters T Inheritance object Exception CatException<T> Implements ISerializable Inherited Members Exception.GetBaseException() Exception.GetObjectData(SerializationInfo, StreamingContext) Exception.GetType() Exception.ToString() Exception.Data Exception.HelpLink Exception.HResult Exception.InnerException Exception.Message Exception.Source Exception.StackTrace Exception.TargetSite Exception.SerializeObjectState object.Equals(object) object.Equals(object, object) object.GetHashCode() object.MemberwiseClone() object.ReferenceEquals(object, object)"
+    "keywords": "Class CatException<T> Namespace CatLibrary Assembly CatLibrary.dll public class CatException<T> : Exception, ISerializable Type Parameters T Inheritance object Exception CatException<T> Implements ISerializable Inherited Members Exception.GetBaseException() Exception.GetType() Exception.ToString() Exception.Data Exception.HelpLink Exception.HResult Exception.InnerException Exception.Message Exception.Source Exception.StackTrace Exception.TargetSite Exception.SerializeObjectState object.Equals(object) object.Equals(object, object) object.GetHashCode() object.MemberwiseClone() object.ReferenceEquals(object, object)"
   },
   "api/CatLibrary.Complex-2.html": {
     "href": "api/CatLibrary.Complex-2.html",
@@ -437,7 +437,7 @@
   "apipage/CatLibrary.CatException-1.html": {
     "href": "apipage/CatLibrary.CatException-1.html",
     "title": "Class CatException<T> | docfx seed website",
-    "keywords": "Class CatException<T> Namespace CatLibrary Assembly CatLibrary.dll public class CatException<T> : Exception, ISerializable Type Parameters T Inheritance object Exception CatException<T> Implements ISerializable Inherited Members Exception.GetBaseException() Exception.GetObjectData(SerializationInfo, StreamingContext) Exception.GetType() Exception.ToString() Exception.Data Exception.HelpLink Exception.HResult Exception.InnerException Exception.Message Exception.Source Exception.StackTrace Exception.TargetSite Exception.SerializeObjectState object.Equals(object?) object.Equals(object?, object?) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object?, object?) object.ToString()"
+    "keywords": "Class CatException<T> Namespace CatLibrary Assembly CatLibrary.dll public class CatException<T> : Exception, ISerializable Type Parameters T Inheritance object Exception CatException<T> Implements ISerializable Inherited Members Exception.GetBaseException() Exception.GetType() Exception.ToString() Exception.Data Exception.HelpLink Exception.HResult Exception.InnerException Exception.Message Exception.Source Exception.StackTrace Exception.TargetSite Exception.SerializeObjectState object.Equals(object?) object.Equals(object?, object?) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object?, object?) object.ToString()"
   },
   "apipage/CatLibrary.Complex-2.html": {
     "href": "apipage/CatLibrary.Complex-2.html",
@@ -742,7 +742,7 @@
   "md/CatLibrary.CatException-1.html": {
     "href": "md/CatLibrary.CatException-1.html",
     "title": "Class CatException<T> | docfx seed website",
-    "keywords": "Class CatException<T> Namespace: CatLibrary Assembly: CatLibrary.dll public class CatException<T> : Exception, ISerializable Type Parameters T Inheritance object ← Exception ← CatException<T> Implements ISerializable Inherited Members Exception.GetBaseException(), Exception.GetObjectData(SerializationInfo, StreamingContext), Exception.GetType(), Exception.ToString(), Exception.Data, Exception.HelpLink, Exception.HResult, Exception.InnerException, Exception.Message, Exception.Source, Exception.StackTrace, Exception.TargetSite, Exception.SerializeObjectState, object.Equals(object?), object.Equals(object?, object?), object.GetHashCode(), object.GetType(), object.MemberwiseClone(), object.ReferenceEquals(object?, object?), object.ToString()"
+    "keywords": "Class CatException<T> Namespace: CatLibrary Assembly: CatLibrary.dll public class CatException<T> : Exception, ISerializable Type Parameters T Inheritance object ← Exception ← CatException<T> Implements ISerializable Inherited Members Exception.GetBaseException(), Exception.GetType(), Exception.ToString(), Exception.Data, Exception.HelpLink, Exception.HResult, Exception.InnerException, Exception.Message, Exception.Source, Exception.StackTrace, Exception.TargetSite, Exception.SerializeObjectState, object.Equals(object?), object.Equals(object?, object?), object.GetHashCode(), object.GetType(), object.MemberwiseClone(), object.ReferenceEquals(object?, object?), object.ToString()"
   },
   "md/CatLibrary.Complex-2.html": {
     "href": "md/CatLibrary.Complex-2.html",

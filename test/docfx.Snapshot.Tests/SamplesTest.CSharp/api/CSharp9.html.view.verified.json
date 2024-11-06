@@ -52,7 +52,7 @@
               "value": "<xref uid=\"CSharp9.FunctionPointers\" text=\"FunctionPointers\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -114,7 +114,7 @@
               "value": "<xref uid=\"CSharp9.InitOnlySetters\" text=\"InitOnlySetters\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -176,7 +176,7 @@
               "value": "<xref uid=\"CSharp9.NativeSizedIntegers\" text=\"NativeSizedIntegers\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -238,7 +238,7 @@
               "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -301,7 +301,7 @@
               "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -363,7 +363,7 @@
               "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Teacher.html\">Teacher</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -422,7 +422,7 @@
   "assemblies": [
     "CSharp"
   ],
-  "level": 0.0,
+  "level": 0,
   "_systemKeys": [
     "uid",
     "isEii",
