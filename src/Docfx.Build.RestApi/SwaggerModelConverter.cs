@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Docfx.Build.RestApi;
 
-public static class SwaggerModelConverter
+public static partial class SwaggerModelConverter
 {
     public static RestApiRootItemViewModel FromSwaggerModel(SwaggerModel swagger)
     {
@@ -106,7 +106,9 @@ public static class SwaggerModelConverter
 
     #region Private methods
 
-    private static readonly Regex HtmlEncodeRegex = new(@"\W", RegexOptions.Compiled);
+    [GeneratedRegex(@"\W")]
+    private static partial Regex HtmlEncodeRegex();
+
     private const string TagText = "tag";
     private static readonly string[] OperationNames = ["get", "put", "post", "delete", "options", "head", "patch"];
 
@@ -118,7 +120,7 @@ public static class SwaggerModelConverter
     private static string GetHtmlId(string id)
     {
         if (string.IsNullOrEmpty(id)) return null;
-        return HtmlEncodeRegex.Replace(id, "_");
+        return HtmlEncodeRegex().Replace(id, "_");
     }
 
     private static string GetUid(SwaggerModel swagger)
@@ -194,6 +196,5 @@ public static class SwaggerModelConverter
         }
         return null;
     }
-
     #endregion
 }

@@ -8,7 +8,7 @@ using Docfx.Common;
 
 namespace Docfx.Glob;
 
-public class GlobMatcher : IEquatable<GlobMatcher>
+public partial class GlobMatcher : IEquatable<GlobMatcher>
 {
     #region Private fields
     private static readonly StringComparer Comparer = FilePathComparer.OSPlatformSensitiveStringComparer;
@@ -17,12 +17,16 @@ public class GlobMatcher : IEquatable<GlobMatcher>
     private const string GlobStar = "**";
     private const string ReplacerGroupName = "replacer";
     private static readonly HashSet<char> NeedEscapeCharactersInRegex = new(@"'().*{}+?[]^$\!".ToCharArray());
-    private static readonly Regex UnescapeGlobRegex = new(@"\\(?<replacer>.)", RegexOptions.Compiled);
+
+    [GeneratedRegex(@"\\(?<replacer>.)")]
+    private static partial Regex UnescapeGlobRegex();
 
     /// <summary>
     /// start with * and has more than one * and followed by anything except * or /
     /// </summary>
-    private static readonly Regex ExpandGlobStarRegex = new(@"^\*{2,}(?=[^/*])", RegexOptions.Compiled);
+    [GeneratedRegex(@"^\*{2,}(?=[^/*])")]
+    private static partial Regex ExpandGlobStarRegex();
+
     // Never match .abc file unless AllowDotMatch option is set
     private const string PatternStartWithDotAllowed = @"(?!(?:^|\/)\.{1,2}(?:$|\/))";
     private const string PatternStartWithoutDotAllowed = @"(?!\.)";
@@ -37,7 +41,8 @@ public class GlobMatcher : IEquatable<GlobMatcher>
     /// </summary>
     private const string SingleStarToRegex = "[^/]*?";
 
-    private static readonly Regex GlobStarRegex = new(@"^\*{2,}/?$", RegexOptions.Compiled);
+    [GeneratedRegex(@"^\*{2,}/?$")]
+    private static partial Regex GlobStarRegex();
 
     private readonly GlobRegexItem[][] _items;
     private readonly bool _negate = false;
@@ -159,7 +164,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
     private GlobRegexItem ConvertSingleGlobPart(string globPart)
     {
         // Return GlobStar for **
-        if (Options.HasFlag(GlobMatcherOptions.AllowGlobStar) && GlobStarRegex.IsMatch(globPart))
+        if (Options.HasFlag(GlobMatcherOptions.AllowGlobStar) && GlobStarRegex().IsMatch(globPart))
         {
             return IsFolderPath(globPart) ? GlobRegexItem.GlobStar : GlobRegexItem.GlobStarForFileOnly;
         }
@@ -326,10 +331,10 @@ public class GlobMatcher : IEquatable<GlobMatcher>
     {
         foreach (var part in globParts)
         {
-            if (ExpandGlobStarRegex.IsMatch(part))
+            if (ExpandGlobStarRegex().IsMatch(part))
             {
                 yield return GlobStar + "/";
-                yield return ExpandGlobStarRegex.Replace(part, "*");
+                yield return ExpandGlobStarRegex().Replace(part, "*");
             }
             else
             {
@@ -413,7 +418,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     private static string UnescapeGlob(string s)
     {
-        return UnescapeGlobRegex.Replace(s, new MatchEvaluator(ReplaceReplacerGroup));
+        return UnescapeGlobRegex().Replace(s, new MatchEvaluator(ReplaceReplacerGroup));
     }
 
     private static string ReplaceReplacerGroup(Match m)

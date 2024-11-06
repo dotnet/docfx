@@ -14,9 +14,11 @@ using Newtonsoft.Json;
 namespace Docfx.Build.Engine;
 
 [Export(nameof(ExtractSearchIndex), typeof(IPostProcessor))]
-class ExtractSearchIndex : IPostProcessor
+partial class ExtractSearchIndex : IPostProcessor
 {
-    private static readonly Regex s_regexWhiteSpace = new(@"\s+", RegexOptions.Compiled);
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex s_regexWhiteSpace();
+
     private static readonly HashSet<string> s_htmlInlineTags = new(StringComparer.OrdinalIgnoreCase)
     {
         "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
@@ -136,7 +138,7 @@ class ExtractSearchIndex : IPostProcessor
             return string.Empty;
         }
         str = WebUtility.HtmlDecode(str);
-        return s_regexWhiteSpace.Replace(str, " ").Trim();
+        return s_regexWhiteSpace().Replace(str, " ").Trim();
     }
 
     private static void ExtractTextFromNode(HtmlNode node, StringBuilder contentBuilder)

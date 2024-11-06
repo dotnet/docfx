@@ -19,14 +19,24 @@ using Markdig.Syntax.Inlines;
 
 namespace Docfx.Dotnet;
 
-internal class XmlComment
+internal partial class XmlComment
 {
     private const string IdSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
-    private static readonly Regex CommentIdRegex = new("^(?<type>N|T|M|P|F|E|Overload):(?<id>" + IdSelector + ")$", RegexOptions.Compiled);
-    private static readonly Regex RegionRegex = new(@"^\s*#region\s*(.*)$");
-    private static readonly Regex XmlRegionRegex = new(@"^\s*<!--\s*<([^/\s].*)>\s*-->$");
-    private static readonly Regex EndRegionRegex = new(@"^\s*#endregion\s*.*$");
-    private static readonly Regex XmlEndRegionRegex = new(@"^\s*<!--\s*</(.*)>\s*-->$");
+
+    [GeneratedRegex("^(?<type>N|T|M|P|F|E|Overload):(?<id>" + IdSelector + ")$")]
+    private static partial Regex CommentIdRegex();
+
+    [GeneratedRegex(@"^\s*#region\s*(.*)$")]
+    private static partial Regex RegionRegex();
+
+    [GeneratedRegex(@"^\s*<!--\s*<([^/\s].*)>\s*-->$")]
+    private static partial Regex XmlRegionRegex();
+
+    [GeneratedRegex(@"^\s*#endregion\s*.*$")]
+    private static partial Regex EndRegionRegex();
+
+    [GeneratedRegex(@"^\s*<!--\s*</(.*)>\s*-->$")]
+    private static partial Regex XmlEndRegionRegex();
 
     private readonly XmlCommentParserContext _context;
 
@@ -282,10 +292,10 @@ internal class XmlComment
             case ".HTML":
             case ".CSHTML":
             case ".VBHTML":
-                return (XmlRegionRegex, XmlEndRegionRegex);
+                return (XmlRegionRegex(), XmlEndRegionRegex());
         }
 
-        return (RegionRegex, EndRegionRegex);
+        return (RegionRegex(), EndRegionRegex());
     }
 
     private static void ResolveLangword(XNode node)
@@ -323,7 +333,7 @@ internal class XmlComment
 
             // Strict check is needed as value could be an invalid href,
             // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-            var match = CommentIdRegex.Match(cref);
+            var match = CommentIdRegex().Match(cref);
             if (match.Success)
             {
                 var id = match.Groups["id"].Value;
@@ -430,7 +440,7 @@ internal class XmlComment
             else if (!string.IsNullOrEmpty(commentId))
             {
                 // Check if exception type is valid and trim prefix
-                var match = CommentIdRegex.Match(commentId);
+                var match = CommentIdRegex().Match(commentId);
                 if (match.Success)
                 {
                     var id = match.Groups["id"].Value;
@@ -480,7 +490,7 @@ internal class XmlComment
             else if (!string.IsNullOrEmpty(commentId))
             {
                 // Check if cref type is valid and trim prefix
-                var match = CommentIdRegex.Match(commentId);
+                var match = CommentIdRegex().Match(commentId);
                 if (match.Success)
                 {
                     var id = match.Groups["id"].Value;

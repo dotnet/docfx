@@ -8,7 +8,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.TableOfContents;
 
-public static class MarkdownTocReader
+public static partial class MarkdownTocReader
 {
     private const string ContinuableCharacters = ".,;:!?~";
     private const string StopCharacters = @"\s\""\'<>";
@@ -166,20 +166,22 @@ public static class MarkdownTocReader
     /// 2. # [tocTitle](@uid)
     /// 3. # [tocTitle](xref:uid)
     /// </summary>
-    internal sealed class TopicTocParseRule : ParseRule
+    internal sealed partial class TopicTocParseRule : ParseRule
     {
-        private static readonly Regex UidRegex = new(@"^\s*(?:xref:|@)(\s*?\S+?[\s\S]*?)\s*$", RegexOptions.Compiled);
-        public static readonly Regex TocRegex =
-            new(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+)\]\((?<tocLink>(?!http[s]?://).*?)(\)| ""(?<displayText>.*)""\))(?:( |\t)+#*)?( |\t)*(\n|$)", RegexOptions.Compiled);
+        [GeneratedRegex(@"^\s*(?:xref:|@)(\s*?\S+?[\s\S]*?)\s*$")]
+        private static partial Regex UidRegex();
 
-        public override Match Match(string text) => TocRegex.Match(text);
+        [GeneratedRegex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+)\]\((?<tocLink>(?!http[s]?://).*?)(\)| ""(?<displayText>.*)""\))(?:( |\t)+#*)?( |\t)*(\n|$)")]
+        private static partial Regex TocRegex();
+
+        public override Match Match(string text) => TocRegex().Match(text);
 
         public override ParseState Apply(ParseState state, Match match)
         {
             var tocLink = match.Groups["tocLink"].Value;
             var tocTitle = match.Groups["tocTitle"].Value;
             var headerLevel = match.Groups["headerLevel"].Value.Length;
-            var uidMatch = UidRegex.Match(tocLink);
+            var uidMatch = UidRegex().Match(tocLink);
             string tocDisplayTitle = null;
 
             var displayGrp = match.Groups["displayText"];
@@ -202,19 +204,20 @@ public static class MarkdownTocReader
     /// 1. <xref:uid>
     /// 2. <xref:"uid_containing_spaces_or_greator_than_symbol">
     /// </summary>
-    internal sealed class TopicXrefAutoLinkTocParseRule : ParseRule
+    internal sealed partial class TopicXrefAutoLinkTocParseRule : ParseRule
     {
-        public static readonly Regex XrefAutoLinkTocRegex =
-            new($@"^(#+)(?: |\t)*{XrefAutoLinkRegexString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
-        public static readonly Regex XrefAutoLinkWithQuoteTocRegex =
-            new($@"^(#+)(?: |\t)*{XrefAutoLinkRegexWithQuoteString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
+        [GeneratedRegex($@"^(#+)(?: |\t)*{XrefAutoLinkRegexString}( |\t)*#*( |\t)*(\n|$)")]
+        private static partial Regex XrefAutoLinkTocRegex();
+
+        [GeneratedRegex($@"^(#+)(?: |\t)*{XrefAutoLinkRegexWithQuoteString}( |\t)*#*( |\t)*(\n|$)")]
+        private static partial Regex XrefAutoLinkWithQuoteTocRegex();
 
         public override Match Match(string text)
         {
-            var match = XrefAutoLinkWithQuoteTocRegex.Match(text);
+            var match = XrefAutoLinkWithQuoteTocRegex().Match(text);
             if (match.Length == 0)
             {
-                match = XrefAutoLinkTocRegex.Match(text);
+                match = XrefAutoLinkTocRegex().Match(text);
             }
 
             return match;
@@ -226,19 +229,20 @@ public static class MarkdownTocReader
         }
     }
 
-    internal sealed class TopicXrefShortcutTocParseRule : ParseRule
+    internal sealed partial class TopicXrefShortcutTocParseRule : ParseRule
     {
-        public static readonly Regex XrefShortcutTocRegex =
-            new($@"^(#+)(?: |\t)*{XrefShortcutRegexString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
-        public static readonly Regex XrefShortcutTocWithQuoteTocRegex =
-            new($@"^(#+)(?: |\t)*{XrefShortcutRegexWithQuoteString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
+        [GeneratedRegex($@"^(#+)(?: |\t)*{XrefShortcutRegexString}( |\t)*#*( |\t)*(\n|$)")]
+        private static partial Regex XrefShortcutTocRegex();
+
+        [GeneratedRegex($@"^(#+)(?: |\t)*{XrefShortcutRegexWithQuoteString}( |\t)*#*( |\t)*(\n|$)")]
+        private static partial Regex XrefShortcutTocWithQuoteTocRegex();
 
         public override Match Match(string text)
         {
-            var match = XrefShortcutTocWithQuoteTocRegex.Match(text);
+            var match = XrefShortcutTocWithQuoteTocRegex().Match(text);
             if (match.Length == 0)
             {
-                match = XrefShortcutTocRegex.Match(text);
+                match = XrefShortcutTocRegex().Match(text);
             }
 
             return match;
@@ -250,12 +254,12 @@ public static class MarkdownTocReader
         }
     }
 
-    internal sealed class ExternalLinkTocParseRule : ParseRule
+    internal sealed partial class ExternalLinkTocParseRule : ParseRule
     {
-        public static readonly Regex TocRegex =
-            new(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+?)\]\((?<tocLink>(http[s]?://).*?)\)(?:( |\t)+#*)?( |\t)*(\n|$)", RegexOptions.Compiled);
+        [GeneratedRegex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+?)\]\((?<tocLink>(http[s]?://).*?)\)(?:( |\t)+#*)?( |\t)*(\n|$)")]
+        private static partial Regex TocRegex();
 
-        public override Match Match(string text) => TocRegex.Match(text);
+        public override Match Match(string text) => TocRegex().Match(text);
 
         public override ParseState Apply(ParseState state, Match match)
         {
@@ -263,12 +267,12 @@ public static class MarkdownTocReader
         }
     }
 
-    internal sealed class ContainerParseRule : ParseRule
+    internal sealed partial class ContainerParseRule : ParseRule
     {
-        public static readonly Regex ContainerRegex =
-            new(@"^(?<headerLevel>#+)(( |\t)*)(?<tocTitle>.+?)(?:( |\t)+#*)?( |\t)*(\n|$)", RegexOptions.Compiled);
+        [GeneratedRegex(@"^(?<headerLevel>#+)(( |\t)*)(?<tocTitle>.+?)(?:( |\t)+#*)?( |\t)*(\n|$)")]
+        private static partial Regex ContainerRegex();
 
-        public override Match Match(string text) => ContainerRegex.Match(text);
+        public override Match Match(string text) => ContainerRegex().Match(text);
 
         public override ParseState Apply(ParseState state, Match match)
         {
@@ -276,22 +280,22 @@ public static class MarkdownTocReader
         }
     }
 
-    internal sealed class CommentParseRule : ParseRule
+    internal sealed partial class CommentParseRule : ParseRule
     {
-        public static readonly Regex CommentRegex =
-            new(@"^\s*<!--[\s\S]*?-->\s*(\n|$)", RegexOptions.Compiled);
+        [GeneratedRegex(@"^\s*<!--[\s\S]*?-->\s*(\n|$)")]
+        private static partial Regex CommentRegex();
 
-        public override Match Match(string text) => CommentRegex.Match(text);
+        public override Match Match(string text) => CommentRegex().Match(text);
 
         public override ParseState Apply(ParseState state, Match match) => state;
     }
 
-    internal sealed class WhitespaceParseRule : ParseRule
+    internal sealed partial class WhitespaceParseRule : ParseRule
     {
-        public static readonly Regex WhitespaceRegex =
-            new(@"^\s*(\n|$)", RegexOptions.Compiled);
+        [GeneratedRegex(@"^\s*(\n|$)")]
+        private static partial Regex WhitespaceRegex();
 
-        public override Match Match(string text) => WhitespaceRegex.Match(text);
+        public override Match Match(string text) => WhitespaceRegex().Match(text);
 
         public override ParseState Apply(ParseState state, Match match) => state;
     }

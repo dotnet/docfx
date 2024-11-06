@@ -7,13 +7,18 @@ using Stubble.Core.Interfaces;
 
 namespace Docfx.Build.Engine;
 
-internal class MustacheTemplateRenderer : ITemplateRenderer
+internal partial class MustacheTemplateRenderer : ITemplateRenderer
 {
     public const string Extension = ".tmpl";
 
-    private static readonly Regex IncludeRegex = new(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex MasterPageRegex = new(@"{{\s*!\s*master\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex MasterPageBodyRegex = new(@"{{\s*!\s*body\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    [GeneratedRegex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-AU")]
+    private static partial Regex IncludeRegex();
+
+    [GeneratedRegex(@"{{\s*!\s*master\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}\s*\n?", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-AU")]
+    private static partial Regex MasterPageRegex();
+
+    [GeneratedRegex(@"{{\s*!\s*body\s*}}\s*\n?", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-AU")]
+    private static partial Regex MasterPageBodyRegex();
 
     private readonly ResourceFileReader _reader;
     private readonly IStubbleRenderer _renderer;
@@ -37,7 +42,7 @@ internal class MustacheTemplateRenderer : ITemplateRenderer
             })
             .Build();
 
-        var processedTemplate = ParseTemplateHelper.ExpandMasterPage(reader, info, MasterPageRegex, MasterPageBodyRegex);
+        var processedTemplate = ParseTemplateHelper.ExpandMasterPage(reader, info, MasterPageRegex(), MasterPageBodyRegex());
 
         _template = processedTemplate;
 
@@ -63,7 +68,7 @@ internal class MustacheTemplateRenderer : ITemplateRenderer
     /// <param name="template"></param>
     private IEnumerable<string> ExtractDependencyResourceNames(string template)
     {
-        foreach (Match match in IncludeRegex.Matches(template))
+        foreach (Match match in IncludeRegex().Matches(template))
         {
             var filePath = match.Groups["file"].Value;
             foreach (var name in ParseTemplateHelper.GetResourceName(filePath, Path, _reader))

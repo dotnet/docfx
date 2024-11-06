@@ -15,13 +15,13 @@ internal sealed class ScalarYamlNodeTypeResolver : INodeTypeResolver
         {
             if (nodeEvent is Scalar {IsPlainImplicit: true} scalar)
             {
-                if (Regexes.BooleanLike.IsMatch(scalar.Value))
+                if (Regexes.BooleanLike().IsMatch(scalar.Value))
                 {
                     currentType = typeof(bool);
                     return true;
                 }
 
-                if (Regexes.IntegerLike.IsMatch(scalar.Value))
+                if (Regexes.IntegerLike().IsMatch(scalar.Value))
                 {
                     if (int.TryParse(scalar.Value, out _))
                     {
@@ -40,7 +40,7 @@ internal sealed class ScalarYamlNodeTypeResolver : INodeTypeResolver
                     }
                 }
 
-                if (Regexes.FloatLike.IsMatch(scalar.Value))
+                if (Regexes.FloatLike().IsMatch(scalar.Value))
                 {
                     currentType = typeof(double);
                     return true;

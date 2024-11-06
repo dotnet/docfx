@@ -9,9 +9,10 @@ using Markdig.Syntax.Inlines;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public class TabGroupAggregator : BlockAggregator<HeadingBlock>
+public partial class TabGroupAggregator : BlockAggregator<HeadingBlock>
 {
-    private static readonly Regex HrefRegex = new(@"^#tab\/(?<id>[a-zA-Z0-9\-]+(?:\+[a-zA-Z0-9\-]+)*)(?:\/(?<condition>[a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);
+    [GeneratedRegex(@"^#tab\/(?<id>[a-zA-Z0-9\-]+(?:\+[a-zA-Z0-9\-]+)*)(?:\/(?<condition>[a-zA-Z0-9\-]+)?)?$")]
+    private static partial Regex HrefRegex();
 
     protected override bool AggregateCore(HeadingBlock headBlock, BlockAggregateContext context)
     {
@@ -108,7 +109,7 @@ public class TabGroupAggregator : BlockAggregator<HeadingBlock>
         var child = block.Inline.FirstChild;
         if (child is {NextSibling: null} and LinkInline link)
         {
-            var m = HrefRegex.Match(link.Url);
+            var m = HrefRegex().Match(link.Url);
             if (m.Success)
             {
                 return Tuple.Create(m.Groups["id"].Value, m.Groups["condition"].Value, link);
