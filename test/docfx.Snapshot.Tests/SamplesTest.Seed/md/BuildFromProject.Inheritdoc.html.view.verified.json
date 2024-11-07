@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/BuildFromProject.Inheritdoc.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Inheritdoc\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.md\" sourcestartlinenumber=\"1\"> Class Inheritdoc</h1>",
   "title": " Class Inheritdoc",
-  "wordCount": 61.0,
+  "wordCount": 61,
   "_key": "obj/md/BuildFromProject.Inheritdoc.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

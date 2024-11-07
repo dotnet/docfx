@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -121,8 +121,8 @@
             },
             "id": "M",
             "path": "src/CSharp8.cs",
-            "startLine": 50.0,
-            "endLine": 0.0
+            "startLine": 50,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -172,7 +172,7 @@
             ],
             "id": "CSharp8_DefaultInterfaceMembers_IA_M_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -234,8 +234,8 @@
     },
     "id": "IA",
     "path": "src/CSharp8.cs",
-    "startLine": 48.0,
-    "endLine": 0.0
+    "startLine": 48,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -285,7 +285,7 @@
         "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -299,7 +299,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_systemKeys": [
     "uid",
     "isEii",

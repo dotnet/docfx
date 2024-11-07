@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "index.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -31,7 +31,7 @@
   "_lang": "zh-CN",
   "_layout": "landing",
   "title": "docfx-seed",
-  "wordCount": 186.0,
+  "wordCount": 186,
   "_key": "index.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

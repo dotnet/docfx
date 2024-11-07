@@ -53,7 +53,7 @@
               "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
           "type": "enum",
           "platform": null,
@@ -112,7 +112,7 @@
   "assemblies": [
     "CatLibrary"
   ],
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

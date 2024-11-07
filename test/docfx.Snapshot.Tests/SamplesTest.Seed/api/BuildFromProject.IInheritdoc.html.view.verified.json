@@ -47,7 +47,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -121,8 +121,8 @@
             },
             "id": "Issue7629",
             "path": "dotnet/project/Project/Inheritdoc.cs",
-            "startLine": 7.0,
-            "endLine": 0.0
+            "startLine": 7,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -173,7 +173,7 @@
             ],
             "id": "BuildFromProject_IInheritdoc_Issue7629_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.IInheritdoc.yml\" sourcestartlinenumber=\"1\">This method should do something...</p>\n",
           "platform": null,
@@ -234,8 +234,8 @@
     },
     "id": "IInheritdoc",
     "path": "dotnet/project/Project/Inheritdoc.cs",
-    "startLine": 2.0,
-    "endLine": 0.0
+    "startLine": 2,
+    "endLine": 0
   },
   "assemblies": [
     "BuildFromProject"
@@ -285,7 +285,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -299,7 +299,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

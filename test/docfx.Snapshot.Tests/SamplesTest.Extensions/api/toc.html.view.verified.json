@@ -1,7 +1,7 @@
 ﻿{
   "items": [
     {
-      "name": "Namespaces",
+      "name": "Namespace",
       "items": [
         {
           "name": "MyExample",
@@ -11,7 +11,7 @@
           "type": "Namespace",
           "items": [
             {
-              "name": "Classes",
+              "name": "Class",
               "items": [
                 {
                   "name": "ExampleClass",
@@ -33,14 +33,14 @@
                           "nameWithType": "ExampleClass.ExampleClass",
                           "isEii": false,
                           "tocHref": null,
-                          "level": 7.0,
+                          "level": 7,
                           "items": [],
                           "leaf": true
                         }
                       ],
                       "topicHref": null,
                       "tocHref": null,
-                      "level": 6.0,
+                      "level": 6,
                       "leaf": false
                     },
                     {
@@ -56,14 +56,14 @@
                           "nameWithType": "ExampleClass.MyProperty",
                           "isEii": false,
                           "tocHref": null,
-                          "level": 7.0,
+                          "level": 7,
                           "items": [],
                           "leaf": true
                         }
                       ],
                       "topicHref": null,
                       "tocHref": null,
-                      "level": 6.0,
+                      "level": 6,
                       "leaf": false
                     },
                     {
@@ -79,14 +79,14 @@
                           "nameWithType": "ExampleClass.MyMethod",
                           "isEii": false,
                           "tocHref": null,
-                          "level": 7.0,
+                          "level": 7,
                           "items": [],
                           "leaf": true
                         }
                       ],
                       "topicHref": null,
                       "tocHref": null,
-                      "level": 6.0,
+                      "level": 6,
                       "leaf": false
                     },
                     {
@@ -102,36 +102,36 @@
                           "nameWithType": "ExampleClass.MyEvent",
                           "isEii": false,
                           "tocHref": null,
-                          "level": 7.0,
+                          "level": 7,
                           "items": [],
                           "leaf": true
                         }
                       ],
                       "topicHref": null,
                       "tocHref": null,
-                      "level": 6.0,
+                      "level": 6,
                       "leaf": false
                     }
                   ],
                   "tocHref": null,
-                  "level": 5.0,
+                  "level": 5,
                   "leaf": false
                 }
               ],
               "topicHref": null,
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "leaf": false
             }
           ],
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "leaf": false
         }
       ],
       "topicHref": null,
       "tocHref": null,
-      "level": 2.0,
+      "level": 2,
       "leaf": false
     }
   ],
@@ -222,6 +222,6 @@
   "topicHref": null,
   "tocHref": null,
   "name": null,
-  "level": 1.0,
+  "level": 1,
   "leaf": false
 }

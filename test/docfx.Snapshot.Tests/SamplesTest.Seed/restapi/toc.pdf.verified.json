@@ -1,5 +1,5 @@
 ﻿{
-  "NumberOfPages": 27,
+  "NumberOfPages": 26,
   "Pages": [
     {
       "Number": 1,
@@ -27,7 +27,7 @@
     },
     {
       "Number": 2,
-      "Text": "2 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Swagger PetstoreDescribe APIs in Pet StorepetDescription for pet tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.UpdatePetUpdate an existing petRequestParametersPOST /petPUT /pet",
+      "Text": "2 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Swagger PetstoreDescribe APIs in Pet StorepetDescription for pet tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.UpdatePetUpdate an existing petRequestParametersPOST /petPUT /pet",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -78,7 +78,7 @@
     },
     {
       "Number": 3,
-      "Text": "3 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Pet not found405Validation exceptionFindPetsByStatusFinds Pets by statusMultiple status values can be provided with comma separated stringsRequestParametersNameTypeDefaultNotes*statusStatus values that need to be considered for ﬁlterResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid status valueFindPetsByTagsGET /pet/findByStatus?status",
+      "Text": "3 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Pet not found405Validation exceptionFindPetsByStatusFinds Pets by statusMultiple status values can be provided with comma separated stringsRequestParametersNameTypeDefaultNotes*statusStatus values that need to be considered for filterResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid status valueFindPetsByTagsGET /pet/findByStatus?status",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByStatus%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -138,7 +138,7 @@
     },
     {
       "Number": 4,
-      "Text": "4 / 27| Improve this Doc\uF1C5View Source\uF1C5Finds Pets by tagsMuliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 fortesting.RequestParametersNameTypeDefaultNotes*tagsTags to ﬁlter byResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid tag valueDeletePetDeletes a petRequestParametersNameTypeDefaultNotesapi_key*petIdPet id to deleteResponsesGET /pet/findByTags?tagsDELETE /pet/{petId}",
+      "Text": "4 / 26| Improve this Doc\uF1C5View Source\uF1C5Finds Pets by tagsMuliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.RequestParametersNameTypeDefaultNotes*tagsTags to filter byResponsesStatus CodeTypeDescriptionSamples200Pet[]successful operation400Invalid tag valueDeletePetDeletes a petRequestParametersNameTypeDefaultNotesapi_key*petIdPet id to deleteResponsesGET /pet/findByTags?tagsDELETE /pet/{petId}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeletePet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -171,7 +171,7 @@
     },
     {
       "Number": 5,
-      "Text": "5 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples400Invalid ID supplied404Pet not foundGetPetByIdFind pet by IDReturns a single petRequestParametersNameTypeDefaultNotes*petIdID of pet to returnResponsesStatus CodeTypeDescriptionSamples200Petsuccessful operation400Invalid ID supplied404Pet not foundUpdatePetWithFormUpdates a pet in the store with form dataRequestGET /pet/{petId}POST /pet/{petId}",
+      "Text": "5 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples400Invalid ID supplied404Pet not foundGetPetByIdFind pet by IDReturns a single petRequestParametersNameTypeDefaultNotes*petIdID of pet to returnResponsesStatus CodeTypeDescriptionSamples200Petsuccessful operation400Invalid ID supplied404Pet not foundUpdatePetWithFormUpdates a pet in the store with form dataRequestGET /pet/{petId}POST /pet/{petId}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetPetById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -222,7 +222,7 @@
     },
     {
       "Number": 6,
-      "Text": "6 / 27| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*petIdID of pet that needs to be updatednameUpdated name of the petstatusUpdated status of the petResponsesStatus CodeTypeDescriptionSamples405Invalid inputUploadFileuploads an imageRequestParametersNameTypeDefaultNotes*petIdID of pet to updateadditionalMetadataAdditional data to pass to serverﬁleﬁle to uploadResponsesStatus CodeTypeDescriptionSamples200ApiResponsesuccessful operationPOST /pet/{petId}/uploadImage",
+      "Text": "6 / 26| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*petIdID of pet that needs to be updatednameUpdated name of the petstatusUpdated status of the petResponsesStatus CodeTypeDescriptionSamples405Invalid inputUploadFileuploads an imageRequestParametersNameTypeDefaultNotes*petIdID of pet to updateadditionalMetadataAdditional data to pass to serverfilefile to uploadResponsesStatus CodeTypeDescriptionSamples200ApiResponsesuccessful operationPOST /pet/{petId}/uploadImage",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FuploadFile%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -264,7 +264,7 @@
     },
     {
       "Number": 7,
-      "Text": "7 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5storeAccess to Petstore ordersAdditional description for store tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.GetInventoryReturns pet inventories by statusReturns a map of status codes to quantitiesRequestResponsesPOST /petGET /store/inventory",
+      "Text": "7 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5storeAccess to Petstore ordersAdditional description for store tagAddPetAdd a new pet to the storeRequestParametersNameTypeDefaultNotes*bodyPetPet object that needs to be added to the storeResponsesStatus CodeTypeDescriptionSamples405Invalid inputNOTE: Add pet only when you needs.GetInventoryReturns pet inventories by statusReturns a map of status codes to quantitiesRequestResponsesPOST /petGET /store/inventory",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -315,7 +315,7 @@
     },
     {
       "Number": 8,
-      "Text": "8 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples200objectsuccessful operationPlaceOrderPlace an order for a petRequestParametersNameTypeDefaultNotes*bodyOrderorder placed for purchasing the petResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid OrderDeleteOrderDelete purchase order by IDFor valid response try integer IDs with positive integer value. Negative or non-integervalues will generate API errorsRequestParametersPOST /store/orderDELETE /store/order/{orderId}",
+      "Text": "8 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples200objectsuccessful operationPlaceOrderPlace an order for a petRequestParametersNameTypeDefaultNotes*bodyOrderorder placed for purchasing the petResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid OrderDeleteOrderDelete purchase order by IDFor valid response try integer IDs with positive integer value. Negative or non-integer values willgenerate API errorsRequestParametersPOST /store/orderDELETE /store/order/{orderId}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FplaceOrder%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -375,7 +375,7 @@
     },
     {
       "Number": 9,
-      "Text": "9 / 27| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*orderIdID of the order that needs to be deletedResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Order not foundGetOrderByIdFind purchase order by IDFor valid response try integer IDs with value >= 1 and <= 10. Other values will generatedexceptionsRequestParametersNameTypeDefaultNotes*orderIdID of pet that needs to be fetchedResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid ID supplied404Order not foundGET /store/order/{orderId}",
+      "Text": "9 / 26| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*orderIdID of the order that needs to be deletedResponsesStatus CodeTypeDescriptionSamples400Invalid ID supplied404Order not foundGetOrderByIdFind purchase order by IDFor valid response try integer IDs with value >= 1 and <= 10. Other values will generated exceptionsRequestParametersNameTypeDefaultNotes*orderIdID of pet that needs to be fetchedResponsesStatus CodeTypeDescriptionSamples200Ordersuccessful operation400Invalid ID supplied404Order not founduserGET /store/order/{orderId}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetOrderById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -408,7 +408,7 @@
     },
     {
       "Number": 10,
-      "Text": "10 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5userOperations about userCreateUserCreate userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*bodyUserCreated user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationCreateUsersWithArrayInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesPOST /userPOST /user/createWithArray",
+      "Text": "10 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Operations about userCreateUserCreate userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*bodyUserCreated user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationCreateUsersWithArrayInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesPOST /userPOST /user/createWithArray",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -468,7 +468,7 @@
     },
     {
       "Number": 11,
-      "Text": "11 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamplesdefaultsuccessful operationCreateUsersWithListInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationLoginUserLogs user into the systemRequestParametersNameTypeDefaultNotes*usernameThe user name for login*passwordThe password for login in clear textPOST /user/createWithListGET /user/login?username&password",
+      "Text": "11 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamplesdefaultsuccessful operationCreateUsersWithListInputCreates list of users with given input arrayRequestParametersNameTypeDefaultNotes*bodyUser[]List of user objectResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationLoginUserLogs user into the systemRequestParametersNameTypeDefaultNotes*usernameThe user name for login*passwordThe password for login in clear textPOST /user/createWithListGET /user/login?username&password",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithListInput%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -519,7 +519,7 @@
     },
     {
       "Number": 12,
-      "Text": "12 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5ResponsesStatus CodeTypeDescriptionSamples200stringsuccessful operation400Invalid username/password suppliedLogoutUserLogs out current logged in user sessionRequestResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationDeleteUserDelete userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*usernameThe name that needs to be deletedResponsesGET /user/logoutDELETE /user/{username}",
+      "Text": "12 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5ResponsesStatus CodeTypeDescriptionSamples200stringsuccessful operation400Invalid username/password suppliedLogoutUserLogs out current logged in user sessionRequestResponsesStatus CodeTypeDescriptionSamplesdefaultsuccessful operationDeleteUserDelete userThis can only be done by the logged in user.RequestParametersNameTypeDefaultNotes*usernameThe name that needs to be deletedResponsesGET /user/logoutDELETE /user/{username}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FlogoutUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -561,7 +561,7 @@
     },
     {
       "Number": 13,
-      "Text": "13 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples400Invalid username supplied404User not foundGetUserByNameGet user by user nameRequestParametersNameTypeDefaultNotes*usernameThe name that needs to be fetched. Use user1 for testing.ResponsesStatus CodeTypeDescriptionSamples200Usersuccessful operation400Invalid username supplied404User not foundOther APIsUpdateUserUpdated userThis can only be done by the logged in user.RequestGET /user/{username}",
+      "Text": "13 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5Status CodeTypeDescriptionSamples400Invalid username supplied404User not foundGetUserByNameGet user by user nameRequestParametersNameTypeDefaultNotes*usernameThe name that needs to be fetched. Use user1 for testing.ResponsesStatus CodeTypeDescriptionSamples200Usersuccessful operation400Invalid username supplied404User not foundOther APIsUpdateUserUpdated userThis can only be done by the logged in user.RequestGET /user/{username}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetUserByName%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -612,7 +612,7 @@
     },
     {
       "Number": 14,
-      "Text": "14 / 27ParametersNameTypeDefaultNotes*usernamename that need to be updated*bodyUserUpdated user objectResponsesStatus CodeTypeDescriptionSamples400Invalid user supplied404User not foundDeﬁnitionsPetNameTypeNotescategoryCategory[]idinteger (int64)namestringphotoUrlsarraystatusstringpet status in the storetagsTag[]CategoryPUT /user/{username}",
+      "Text": "14 / 26ParametersNameTypeDefaultNotes*usernamename that need to be updated*bodyUserUpdated user objectResponsesStatus CodeTypeDescriptionSamples400Invalid user supplied404User not foundDefinitionsPetNameTypeNotescategoryCategory[]idinteger (int64)namestringphotoUrlsarraystatusstringpet status in the storetagsTag[]CategoryPUT /user/{username}",
       "Links": [
         {
           "Goto": {
@@ -645,12 +645,12 @@
     },
     {
       "Number": 15,
-      "Text": "15 / 27NameTypeNotesidinteger (int64)namestringTagNameTypeNotesidinteger (int64)namestringApiResponseNameTypeNotescodeinteger (int32)messagestringtypestringOrderNameTypeNotescompletebooleanidinteger (int64)petIdinteger (int64)quantityinteger (int32)shipDatestring (date-time)statusstringOrder StatusUser",
+      "Text": "15 / 26NameTypeNotesidinteger (int64)namestringTagNameTypeNotesidinteger (int64)namestringApiResponseNameTypeNotescodeinteger (int32)messagestringtypestringOrderNameTypeNotescompletebooleanidinteger (int64)petIdinteger (int64)quantityinteger (int32)shipDatestring (date-time)statusstringOrder StatusUser",
       "Links": []
     },
     {
       "Number": 16,
-      "Text": "16 / 27NameTypeNotesemailstringﬁrstNamestringidinteger (int64)lastNamestringpasswordstringphonestringuserStatusinteger (int32)User StatususernamestringSee AlsosSee other REST APIs:Contacts API",
+      "Text": "16 / 26NameTypeNotesemailstringfirstNamestringidinteger (int64)lastNamestringpasswordstringphonestringuserStatusinteger (int32)User StatususernamestringSee AlsosSee other REST APIs:Contacts API",
       "Links": [
         {
           "Goto": {
@@ -665,7 +665,7 @@
     },
     {
       "Number": 17,
-      "Text": "17 / 27| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5ContactsGet ContactsYou can get a collection of contacts from your tenant.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented as datestrings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Theresults arereturned intheresponsebody.Mime type: application/jsonGet Contact By IdGet a contact by using the object ID.Required scope: Contacts.Read or Contacts.WriteGET /contacts?api-version{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"value\": [    {      \"odata.type\": \"Microsoft.DirectoryServices.Contac      \"objectType\": \"Contact\",      \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9      \"deletionTimestamp\": null,",
+      "Text": "17 / 26| Improve this Doc\uF1C5View Source\uF1C5| Improve this Doc\uF1C5View Source\uF1C5ContactsGet ContactsYou can get a collection of contacts from your tenant.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*api-version1.6The version of the Graph API to target. Beginning with version 1.5, theapi-version string is represented in major.minor format. Prior releaseswere represented as date strings: '2013-11-08' and '2013-04-05'.Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Theresults arereturned intheresponsebody.Mime type: application/jsonGet Contact By IdGet a contact by using the object ID.Required scope: Contacts.Read or Contacts.WriteGET /contacts?api-version{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObje  \"value\": [    {      \"odata.type\": \"Microsoft.DirectoryServices.Contact\",      \"objectType\": \"Contact\",      \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",      \"deletionTimestamp\": null,",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contacts.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contacts%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -707,7 +707,7 @@
     },
     {
       "Number": 18,
-      "Text": "18 / 27| Improve this Doc\uF1C5View Source\uF1C5RequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6Speciﬁes the version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Thecontact isreturned intheresponsebody.Mime type: application/jsonUpdate ContactChange a contact's properties.Required scope: Contacts.WriteRequestGET /contacts/{object_id}?api-version{  \"odata.metadata\": \"https://graph.windows.net/graphdir1.onmicrosoft.com/$m  \"odata.type\": \"Microsoft.DirectoryServices.Contact\",  \"objectType\": \"Contact\",  \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",  \"deletionTimestamp\": null,  \"city\": null,  \"companyName\": null,",
+      "Text": "18 / 26| Improve this Doc\uF1C5View Source\uF1C5RequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6Specifies the version of the Graph API to target. Beginningwith version 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Thecontact isreturned intheresponsebody.Mime type: application/jsonUpdate ContactChange a contact's properties.Required scope: Contacts.WriteRequestGET /contacts/{object_id}?api-version{  \"odata.metadata\": \"https://graph.windows.net/graphdir1.onmicrosoft.com/$metadata#di  \"odata.type\": \"Microsoft.DirectoryServices.Contact\",  \"objectType\": \"Contact\",  \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",  \"deletionTimestamp\": null,  \"city\": null,  \"companyName\": null,PATCH /contacts/{object_id}?api-version",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -731,7 +731,7 @@
     },
     {
       "Number": 19,
-      "Text": "19 / 27| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-versionstring is represented in major.minor format.Prior releases were represented as datestrings: '2013-11-08' and '2013-04-05'.Required.bodyparamcontactthis is request body, not real parameterResponsesStatusCodeTypeDescriptionSamples204No Content. Indicates success. No response body isreturned.Delete ContactDelete a contact.Required scope: Contacts.WriteRequestParametersPATCH /contacts/{object_id}?api-versionDELETE /contacts/{object_id}[?api-version]",
+      "Text": "19 / 26| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.bodyparamcontactthis is request body, not real parameterResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success. No response body is returned.Delete ContactDelete a contact.Required scope: Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.api-version1.6Specifies the version of the Graph API to target. Beginningwith version 1.5, the api-version string is represented inDELETE /contacts/{object_id}[?api-version]",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -756,7 +756,7 @@
             "PageNumber": 25,
             "Coordinates": {
               "Left": 0,
-              "Top": 324.75
+              "Top": 495
             }
           }
         }
@@ -764,7 +764,7 @@
     },
     {
       "Number": 20,
-      "Text": "20 / 27| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*object_id7163f3b8-70c9-43d2-b9e1-4467ddaf087aThe object ID (GUID) of the target contact.api-version1.6Speciﬁes the version of the Graph API to target.Beginning with version 1.5, the api-versionstring is represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success.Get Contact Manager LinkGet a link to the contact's manager.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.GET /contacts/{object_id}/$links/manager?api-version",
+      "Text": "20 / 26| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotesmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success.Get Contact Manager LinkGet a link to the contact's manager.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. AMime type: application/jsonGET /contacts/{object_id}/$links/manager?api-version",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20manager%20link%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -788,7 +788,7 @@
     },
     {
       "Number": 21,
-      "Text": "21 / 27| Improve this Doc\uF1C5View Source\uF1C5ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess. Alink to thecontact'smanager isreturned.Mime type: application/json404Not Found.Therequestedresourcewas notfound. Thiscan occur ifthe managerproperty isnot currentlyset for thespeciﬁedcontact. Itcan alsohave othercauses, forexample, abad domain.A code andassociatedmessage isreturnedwith theerror.Mime type: application/jsonUpdate Contact Manager{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"url\": \"https://graph.windows.net/myorganization/dire4c4a-93b2-03f065fabd93/Microsoft.WindowsAzure.ActiveDir}{  \"odata.error\": {    \"code\": \"Request_ResourceNotFound\",    \"message\": {      \"lang\": \"en\",      \"value\": \"Resource not found for the segment 'man    }  }}",
+      "Text": "21 / 26| Improve this Doc\uF1C5View Source\uF1C5StatusCodeTypeDescriptionSampleslink to thecontact'smanager isreturned.404Not Found.Therequestedresourcewas notfound. Thiscan occur ifthemanagerproperty isnotcurrentlyset for thespecifiedcontact. Itcan alsohave othercauses, forexample, abaddomain. Acode andassociatedmessage isreturnedwith theerror.Mime type: application/jsonUpdate Contact Manager{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObje  \"url\": \"https://graph.windows.net/myorganization/directoryObjec4c4a-93b2-03f065fabd93/Microsoft.WindowsAzure.ActiveDirectory.Con}{  \"odata.error\": {    \"code\": \"Request_ResourceNotFound\",    \"message\": {      \"lang\": \"en\",      \"value\": \"Resource not found for the segment 'manager'.\"    }  }}",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact_manager.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%20manager%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -812,7 +812,7 @@
     },
     {
       "Number": 22,
-      "Text": "22 / 27| Improve this Doc\uF1C5View Source\uF1C5Update the contact's managerRequired scope: Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-versionstring is represented in major.minor format.Prior releases were represented as datestrings: '2013-11-08' and '2013-04-05'.Required.*bodyparamThe request body contains a single propertythat speciﬁes the URL of the user or contact toadd as manager.ResponsesStatusCodeTypeDescriptionSamples204No Content. Indicates success. No response body isreturned.Delete Contact Manager By IdDelete the contact's manager.Required scope: Contacts.WriteRequestPUT /contacts/{object_id}/$links/manager?api-version",
+      "Text": "22 / 26| Improve this Doc\uF1C5View Source\uF1C5Update the contact's managerRequired scope: Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.*bodyparamThe request body contains a single property thatspecifies the URL of the user or contact to add asmanager.ResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success. No response body is returned.Delete Contact Manager By IdDelete the contact's manager.Required scope: Contacts.WriteRequestParametersPUT /contacts/{object_id}/$links/manager?api-versionDELETE /contacts/{object_id}/$links/manager?api-version",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%20manager%20by%20id%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -836,7 +836,7 @@
     },
     {
       "Number": 23,
-      "Text": "23 / 27| Improve this Doc\uF1C5View Source\uF1C5ParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples204No Content. Indicates success. N response body isreturned.Get Contact Direct Reports LinksGet a links to the contact's direct reports.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.DELETE /contacts/{object_id}/$links/manager?api-versionGET /contacts/{object_id}/$links/directReports?api-version",
+      "Text": "23 / 26| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesStatus CodeTypeDescriptionSamples204No Content. Indicates success. N response body is returned.Get Contact Direct Reports LinksGet a links to the contact's direct reports.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.ResponsesGET /contacts/{object_id}/$links/directReports?api-version",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20direct%20reports%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -860,7 +860,7 @@
     },
     {
       "Number": 24,
-      "Text": "24 / 27| Improve this Doc\uF1C5View Source\uF1C5NameTypeDefaultNotes*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One or moredirectreports arereturned.Mime type: application/jsonGet Contact MemberOf LinksGet a links to the contact's direct group and directory role memberships.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/4e26-b24f-c830606ef41c/Microsoft.DirectoryServices.Cont    }  ]GET /contacts/{object_id}/$links/memberOf?api-version",
+      "Text": "24 / 26| Improve this Doc\uF1C5View Source\uF1C5StatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One ormore directreports arereturned.Mime type: application/jsonGet Contact MemberOf LinksGet a links to the contact's direct group and directory role memberships.Required scope: Contacts.Read or Contacts.WriteRequestParametersNameTypeDefaultNotes*object_id31944231-fd52-4a7f-b32e-7902a01fddf9The object ID (GUID) of the target contact.*api-version1.6The version of the Graph API to target. Beginning withversion 1.5, the api-version string is represented inmajor.minor format. Prior releases were represented asdate strings: '2013-11-08' and '2013-04-05'. Required.Responses{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObje  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/directoryOb24f-c830606ef41c/Microsoft.DirectoryServices.Contact\"    }  ]GET /contacts/{object_id}/$links/memberOf?api-version",
       "Links": [
         {
           "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20memberOf%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
@@ -884,19 +884,19 @@
     },
     {
       "Number": 25,
-      "Text": "25 / 27NameTypeDefaultNotes*api-version1.6The version of the Graph API to target.Beginning with version 1.5, the api-version stringis represented in major.minor format. Priorreleases were represented as date strings:'2013-11-08' and '2013-04-05'. Required.ResponsesStatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One or moregroupsand/ordirectoryroles arereturned.Mime type: application/jsonDeﬁnitionsContactNameTypeNotesobjectTypestringobjectIdstringdeletionTimestampstring (date-time)citystringcountrystringdepartmentstring{  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#dir  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/b942-47c9-a10e-a4bee353ce60/Microsoft.DirectoryServices    }  ]",
+      "Text": "25 / 26StatusCodeTypeDescriptionSamples200OK.Indicatessuccess.One ormoregroupsand/ordirectoryroles arereturned.Mime type: application/jsonDefinitionsContactNameTypeNotesobjectTypestringobjectIdstringdeletionTimestampstring (date-time)citystringcountrystringdepartmentstringdirSyncEnabledbooleandisplayNamestringfacsimileTelephoneNumberstringgivenNamestringjobTitlestringlastDirSyncTimestring (date-time){  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObje  \"value\": [    {      \"url\": \"https://graph.windows.net/myorganization/directoryO47c9-a10e-a4bee353ce60/Microsoft.DirectoryServices.Group\"    }  ]",
       "Links": []
     },
     {
       "Number": 26,
-      "Text": "26 / 27NameTypeNotesdirSyncEnabledbooleandisplayNamestringfacsimileTelephoneNumberstringgivenNamestringjobTitlestringlastDirSyncTimestring (date-time)mailstringmailNicknamestringmobilestringphysicalDeliveryOﬃceNamestringpostalCodestringprovisioningErrorsProvisioningError[]proxyAddressesarraysipProxyAddressstringstatestringstreetAddressstringsurnamestringtelephoneNumberstringthumbnailPhotostringProvisioningErrorNameTypeNoteserrorDetailstring",
+      "Text": "26 / 26NameTypeNotesmailstringmailNicknamestringmobilestringphysicalDeliveryOfficeNamestringpostalCodestringprovisioningErrorsProvisioningError[]proxyAddressesarraysipProxyAddressstringstatestringstreetAddressstringsurnamestringtelephoneNumberstringthumbnailPhotostringProvisioningErrorNameTypeNoteserrorDetailstringresolvedbooleanserviceInstancestringtimestampstring (date-time)",
       "Links": [
         {
           "Goto": {
             "PageNumber": 26,
             "Coordinates": {
               "Left": 0,
-              "Top": 164.25
+              "Top": 348.75
             }
           }
         },
@@ -905,16 +905,11 @@
             "PageNumber": 26,
             "Coordinates": {
               "Left": 0,
-              "Top": 164.25
+              "Top": 348.75
             }
           }
         }
       ]
-    },
-    {
-      "Number": 27,
-      "Text": "27 / 27NameTypeNotesresolvedbooleanserviceInstancestringtimestampstring (date-time)",
-      "Links": []
     }
   ],
   "Bookmarks": [

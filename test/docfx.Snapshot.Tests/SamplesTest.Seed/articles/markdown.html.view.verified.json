@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "articles/markdown.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"markdown\" sourcefile=\"articles/markdown.md\" sourcestartlinenumber=\"1\">Markdown</h1>",
   "title": "Markdown",
-  "wordCount": 587.0,
+  "wordCount": 587,
   "_key": "articles/markdown.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
