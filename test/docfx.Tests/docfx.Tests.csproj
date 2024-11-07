@@ -5,15 +5,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Api.*.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="PublicApiGenerator" />
-    <PackageReference Include="Verify.Xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\..\src\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
     <ProjectReference Include="..\..\src\docfx\docfx.csproj" />
     <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
   </ItemGroup>

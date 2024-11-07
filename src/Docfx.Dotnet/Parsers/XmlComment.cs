@@ -70,9 +70,8 @@ internal partial class XmlComment
             else
                 xml = $"<member><summary>{innerXml}</summary></member>";
         }
-
         // Workaround: https://github.com/dotnet/roslyn/pull/66668
-        if (!xml.StartsWith("<member", StringComparison.Ordinal) && !xml.EndsWith("</member>", StringComparison.Ordinal))
+        else if (!xml.StartsWith("<member", StringComparison.Ordinal) && !xml.EndsWith("</member>", StringComparison.Ordinal))
         {
             xml = $"<member>{xml}</member>";
         }
