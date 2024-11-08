@@ -139,7 +139,7 @@ public static partial class ExtensionsHelper
         }
     }
 
-    public static string TryGetStringBeforeChars(IEnumerable<char> chars, ref StringSlice slice, bool breakOnWhitespace = false)
+    public static string TryGetStringBeforeChars(IReadOnlyList<char> chars, ref StringSlice slice, bool breakOnWhitespace = false)
     {
         StringSlice savedSlice = slice;
         var c = slice.CurrentChar;
@@ -239,11 +239,11 @@ public static partial class ExtensionsHelper
         string includedFilePath;
         if (slice.CurrentChar == '<')
         {
-            includedFilePath = TryGetStringBeforeChars(new char[] { ')', '>' }, ref slice, breakOnWhitespace: true);
+            includedFilePath = TryGetStringBeforeChars([')', '>'], ref slice, breakOnWhitespace: true);
         }
         else
         {
-            includedFilePath = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
+            includedFilePath = TryGetStringBeforeChars([')'], ref slice, breakOnWhitespace: true);
         }
 
         if (includedFilePath == null)
@@ -264,7 +264,7 @@ public static partial class ExtensionsHelper
         }
         else
         {
-            var title = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: false);
+            var title = TryGetStringBeforeChars([')'], ref slice, breakOnWhitespace: false);
             if (title == null)
             {
                 return false;
