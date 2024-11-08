@@ -1,13 +1,16 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Web;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
+public partial class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
 {
     private readonly MarkdownContext _context;
     private readonly Dictionary<string, string> _notes;
@@ -100,13 +103,14 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
 
     public static string FixUpLink(string link)
     {
-        if (!link.Contains("https"))
+        if (link.StartsWith("http:"))
         {
-            link = link.Replace("http", "https");
+            link = "https:" + link.Substring("http:".Length);
         }
         if (Uri.TryCreate(link, UriKind.Absolute, out Uri videoLink))
         {
             var host = videoLink.Host;
+            var path = videoLink.LocalPath;
             var query = videoLink.Query;
             if (query.Length > 1)
             {
@@ -125,16 +129,115 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
                     query += "&nocookie=true";
                 }
             }
-            else if (host.Equals("youtube.com", StringComparison.OrdinalIgnoreCase) || host.Equals("www.youtube.com", StringComparison.OrdinalIgnoreCase))
+            else if (hostsYouTube.Contains(host, StringComparer.OrdinalIgnoreCase))
             {
                 // case 2, YouTube video
-                host = "www.youtube-nocookie.com";
+                var idYouTube = GetYouTubeId(host, path, ref query);
+                if (idYouTube != null)
+                {
+                    host = "www.youtube-nocookie.com";
+                    path = "/embed/" + idYouTube;
+                    query = AddYouTubeRel(query);
+                }
+                else
+                {
+                    //YouTube Playlist
+                    var listYouTube = GetYouTubeList(query);
+                    if (listYouTube != null)
+                    {
+                        host = "www.youtube-nocookie.com";
+                        path = "/embed/videoseries";
+                        query = "list=" + listYouTube;
+                        query = AddYouTubeRel(query);
+                    }
+                }
+
+                //Keep this to preserve previous behavior
+                if (host.Equals("youtube.com", StringComparison.OrdinalIgnoreCase) || host.Equals("www.youtube.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    host = "www.youtube-nocookie.com";
+                }
             }
 
-            var builder = new UriBuilder(videoLink) { Host = host, Query = query };
+            var builder = new UriBuilder(videoLink) { Host = host, Path = path, Query = query };
             link = builder.Uri.ToString();
         }
 
         return link;
     }
+
+    /// <summary>
+    /// Only related videos from the same channel
+    /// https://developers.google.com/youtube/player_parameters
+    /// </summary>
+    private static string AddYouTubeRel(string query)
+    {
+        // Add rel=0 unless specified in the original link
+        if (query.Split('&').Any(q => q.StartsWith("rel=")) == false)
+        {
+            if (query.Length == 0)
+                return "rel=0";
+            else
+                return query + "&rel=0";
+        }
+
+        return query;
+    }
+
+    private static readonly ReadOnlyCollection<string> hostsYouTube = new string[] {
+        "youtube.com",
+        "www.youtube.com",
+        "youtu.be",
+        "www.youtube-nocookie.com",
+    }.AsReadOnly();
+
+    private static string GetYouTubeId(string host, string path, ref string query)
+    {
+        if (host == "youtu.be")
+        {
+            return path.Substring(1);
+        }
+
+        var match = ReYouTubeQueryVideo().Match(query);
+        if (match.Success)
+        {
+            //Remove from query
+            query = query.Replace(match.Groups[0].Value, "").Trim('&').Replace("&&", "&");
+            return match.Groups[2].Value;
+        }
+
+        match = ReYouTubePathId().Match(path);
+        if (match.Success)
+        {
+            var id = match.Groups[1].Value;
+
+            if (id == "videoseries")
+                return null;
+
+            return id;
+        }
+
+        return null;
+    }
+
+    [GeneratedRegex(@"(^|&)v=([^&]+)")]
+    private static partial Regex ReYouTubeQueryVideo();
+
+    [GeneratedRegex(@"(^|&)list=([^&]+)")]
+    private static partial Regex ReYouTubeQueryList();
+
+    [GeneratedRegex(@"/embed/([^/]+)$")]
+    private static partial Regex ReYouTubePathId();
+
+    private static string GetYouTubeList(string query)
+    {
+        var match = ReYouTubeQueryList().Match(query);
+        if (match.Success)
+        {
+            return match.Groups[2].Value;
+        }
+
+        return null;
+    }
+
 }
