@@ -731,7 +731,7 @@ partial class DotnetApiCatalog
             return string.IsNullOrEmpty(url) ? text : new LinkSpan { text = text, url = url };
         }
 
-        XmlComment? Comment(ISymbol symbol, Compilation compilation)
+        XmlComment Comment(ISymbol symbol, Compilation compilation)
         {
             // Cache XML comment to avoid duplicated parsing and warnings
             return commentCache.GetOrAdd(symbol, symbol =>
