@@ -19,9 +19,8 @@
           warning NU1507: There are 2 package sources defined in your configuration.
           warning NU5104: A stable release of a package should not have a prerelease dependency. Either modify the version spec of dependency "PdfPig [0.1.9-alpha-20240510-d86c2, )" or update the version field in the nuspec.
           warning NU5111: The script file 'tools\.playwright\package\bin\install_media_pack.ps1' is not recognized by NuGet and hence will not be executed during installation of this package.
-          warning CS0436: IgnoresAccessChecksTo redefinition due to InternalsVisibleTo
      -->
-    <NoWarn>$(NoWarn);NU1507;NU5104;NU5111;CS0436</NoWarn>
+    <NoWarn>$(NoWarn);NU1507;NU5104;NU5111</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

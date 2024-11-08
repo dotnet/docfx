@@ -18,11 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsAssemblyName Include="UglyToad.PdfPig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Playwright" />
     <PackageReference Include="PdfPig" />
   </ItemGroup>
