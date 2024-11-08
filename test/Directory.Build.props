@@ -2,23 +2,52 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <PropertyGroup>
     <!--
-    .NET 9 preview 2 or later run tests in parallel by default.
+    .NET 9 run tests in parallel by default.
     It is necessary to disable this feature because there are tests that need to be executed sequentially that are marked with `[Collection("docfx STA")]`.
     -->
     <TestTfmsInParallel>false</TestTfmsInParallel>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Enable `Microsoft.Testing.Platform` mode for `dotnet test` -->
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+    <TestingPlatformCaptureOutput>true</TestingPlatformCaptureOutput>
+
+    <!-- Use `Microsoft.Testing.Platform` entrypoint. -->
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+
+    <!-- Change TestResults output directory. And enable detailed log outputs -->
+    <TestingPlatformCommandLineArguments>--results-directory "$(MSBuildThisFileDirectory)TestResults"</TestingPlatformCommandLineArguments>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --output Detailed</TestingPlatformCommandLineArguments>
+
+    <!-- Ignore exit code 8 (the test session run zero tests) -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments)  --ignore-exit-code 8</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="TestData\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!-- Settings for CI environment -->
   <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(PERCY_TOKEN)' == ''">
+    <!-- Disable progress reports -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --no-progress</TestingPlatformCommandLineArguments>
+
+    <!-- Enable trx/html reporters -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-xunit-trx  --report-xunit-trx-filename  TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).trx</TestingPlatformCommandLineArguments>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-xunit-html --report-xunit-html-filename TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).html</TestingPlatformCommandLineArguments>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-ctrf       --report-ctrf-filename       TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).ctrf</TestingPlatformCommandLineArguments>
+
+    <!-- Settings for VSTest. These settings will be removed in future. -->
     <VSTestResultsDirectory>$(MSBuildThisFileDirectory)TestResults</VSTestResultsDirectory>
     <VSTestLogger>$(VSTestLogger);trx%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework).trx</VSTestLogger>
     <VSTestLogger>$(VSTestLogger);html%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework).html</VSTestLogger>
@@ -32,6 +61,6 @@
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit.runner.visualstudio" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.v3" />
   </ItemGroup>
 </Project>

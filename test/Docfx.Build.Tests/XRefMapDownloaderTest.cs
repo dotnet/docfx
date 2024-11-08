@@ -13,7 +13,7 @@ public class XRefMapDownloadTest
     public async Task BaseUrlIsSet()
     {
         var downloader = new XRefMapDownloader();
-        var xrefs = await downloader.DownloadAsync(new Uri("https://dotnet.github.io/docfx/xrefmap.yml")) as XRefMap;
+        var xrefs = await downloader.DownloadAsync(new Uri("https://dotnet.github.io/docfx/xrefmap.yml"), TestContext.Current.CancellationToken) as XRefMap;
         Assert.NotNull(xrefs);
         Assert.Equal("https://dotnet.github.io/docfx/", xrefs.BaseUrl);
     }
@@ -27,7 +27,7 @@ public class XRefMapDownloadTest
 
         // Get fallback TestData/xrefmap.yml which contains uid: 'str'
         var reader = await new XRefCollection(from u in xrefmaps
-                                              select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(basePath, fallbackFolders);
+                                              select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(basePath, fallbackFolders, TestContext.Current.CancellationToken);
 
         var xrefSpec = reader.Find("str");
         Assert.NotNull(xrefSpec);
@@ -41,7 +41,7 @@ public class XRefMapDownloadTest
         var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "xrefmap.json");
 
         var downloader = new XRefMapDownloader();
-        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+        var xrefMap = await downloader.DownloadAsync(new Uri(path), TestContext.Current.CancellationToken) as XRefMap;
 
         // Assert
         xrefMap.Should().NotBeNull();
@@ -55,7 +55,7 @@ public class XRefMapDownloadTest
         var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "xrefmap.json.gz");
 
         var downloader = new XRefMapDownloader();
-        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+        var xrefMap = await downloader.DownloadAsync(new Uri(path), TestContext.Current.CancellationToken) as XRefMap;
 
         // Assert
         xrefMap.Should().NotBeNull();
@@ -69,7 +69,7 @@ public class XRefMapDownloadTest
         var path = Path.Combine(Directory.GetCurrentDirectory(), "TestData", "xrefmap.yml.gz");
 
         var downloader = new XRefMapDownloader();
-        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+        var xrefMap = await downloader.DownloadAsync(new Uri(path), TestContext.Current.CancellationToken) as XRefMap;
 
         // Assert
         xrefMap.Should().NotBeNull();
@@ -86,7 +86,7 @@ public class XRefMapDownloadTest
         var path = "https://horizongir.github.io/ZedGraph/xrefmap.yml";
 
         var downloader = new XRefMapDownloader();
-        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+        var xrefMap = await downloader.DownloadAsync(new Uri(path), TestContext.Current.CancellationToken) as XRefMap;
 
         // Assert
         xrefMap.Sorted.Should().BeTrue();
@@ -115,7 +115,7 @@ public class XRefMapDownloadTest
         var path = "https://normanderwan.github.io/UnityXrefMaps/xrefmap.yml";
 
         var downloader = new XRefMapDownloader();
-        var xrefMap = await downloader.DownloadAsync(new Uri(path)) as XRefMap;
+        var xrefMap = await downloader.DownloadAsync(new Uri(path), TestContext.Current.CancellationToken) as XRefMap;
 
         // Assert
         xrefMap.Sorted.Should().BeTrue();

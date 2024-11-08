@@ -22,6 +22,10 @@ public class MetadataCommandTest : TestBase
     {
         _outputFolder = GetRandomFolder();
         _projectFolder = GetRandomFolder();
+
+        // Create empty `Directory.Build.props` file.
+        var propsFilePath = Path.Combine(_projectFolder, "Directory.Build.props");
+        File.WriteAllText(propsFilePath, "<Project></Project>");
     }
 
     [Fact]

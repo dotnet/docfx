@@ -7,7 +7,6 @@ using Docfx.DataContracts.Common;
 using Docfx.Tests.Common;
 using FluentAssertions;
 using Json.Schema;
-using Xunit.Abstractions;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Tests;
