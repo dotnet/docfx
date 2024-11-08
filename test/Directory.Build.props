@@ -20,8 +20,8 @@
 
   <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(PERCY_TOKEN)' == ''">
     <VSTestResultsDirectory>$(MSBuildThisFileDirectory)TestResults</VSTestResultsDirectory>
-    <VSTestLogger>$(VSTestLogger);trx%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework).trx</VSTestLogger>
-    <VSTestLogger>$(VSTestLogger);html%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework).html</VSTestLogger>
+    <VSTestLogger>$(VSTestLogger);trx%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).trx</VSTestLogger>
+    <VSTestLogger>$(VSTestLogger);html%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).html</VSTestLogger>
   </PropertyGroup>
 
   <ItemGroup>
