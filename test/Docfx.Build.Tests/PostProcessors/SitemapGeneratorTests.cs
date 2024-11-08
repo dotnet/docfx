@@ -5,7 +5,6 @@ using System.Xml.Linq;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 using Xunit;
-using Xunit.Abstractions;
 using DocumentType = Docfx.DataContracts.Common.Constants.DocumentType;
 
 namespace Docfx.Build.Engine.Tests;
@@ -58,7 +57,7 @@ public class SitemapGeneratorTests : TestBase
         var sitemapPath = Path.Combine(outputFolder, "sitemap.xml");
 
         // Act
-        manifest = sitemapGenerator.Process(manifest, outputFolder);
+        manifest = sitemapGenerator.Process(manifest, outputFolder, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("https://example.com/", manifest.Sitemap.BaseUrl);

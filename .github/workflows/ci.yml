@@ -63,8 +63,10 @@ jobs:
         name: logs-${{ matrix.os }}
         path: |
           msbuild.binlog
+          test/**/TestResults/*.log
           test/**/TestResults/*.trx
           test/**/TestResults/*.html
+          test/**/TestResults/*.ctrf
 
     - uses: actions/upload-artifact@v4
       if: ${{ failure() && matrix.os == 'ubuntu-latest' }}
