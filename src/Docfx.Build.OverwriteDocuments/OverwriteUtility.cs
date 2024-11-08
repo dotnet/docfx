@@ -7,14 +7,12 @@ using Docfx.Common;
 
 namespace Docfx.Build.OverwriteDocuments;
 
-public static class OverwriteUtility
+public static partial class OverwriteUtility
 {
     private static readonly string[] UidWrappers = ["`", "``", "```", "````", "`````", "``````"];
 
-    private static readonly Regex OPathRegex =
-        new(
-            @"^(?<propertyName>[:A-Za-z_](?>[\w\.\-:]*))(?:\[\s*(?<key>[:A-Za-z_](?>[\w\.\-:]*))\s*=\s*(?:""(?<value>(?:(?>[^""\\]*)|\\.)*)"")\s*\])?(?:\/|$)",
-            RegexOptions.Compiled);
+    [GeneratedRegex(@"^(?<propertyName>[:A-Za-z_](?>[\w\.\-:]*))(?:\[\s*(?<key>[:A-Za-z_](?>[\w\.\-:]*))\s*=\s*(?:""(?<value>(?:(?>[^""\\]*)|\\.)*)"")\s*\])?(?:\/|$)")]
+    private static partial Regex OPathRegex();
 
     public static List<OPathSegment> ParseOPath(string OPathString)
     {
@@ -33,7 +31,7 @@ public static class OverwriteUtility
         var leftString = OPathString;
         while (leftString.Length > 0)
         {
-            var match = OPathRegex.Match(leftString);
+            var match = OPathRegex().Match(leftString);
             if (match.Length == 0)
             {
                 throw new ArgumentException($"{OPathString} is not a valid OPath");

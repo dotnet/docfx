@@ -7,9 +7,11 @@ using Markdig.Helpers;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public class CodeSnippetExtractor
+public partial class CodeSnippetExtractor
 {
-    private static readonly Regex TagnameFormat = new(@"^[\w\.-]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    [GeneratedRegex(@"^[\w\.-]+$", RegexOptions.IgnoreCase, "en-AU")]
+    private static partial Regex TagnameFormat();
+
     private readonly string StartLineTemplate;
     private readonly string EndLineTemplate;
     private readonly bool IsEndLineContainsTagName;
@@ -112,6 +114,6 @@ public class CodeSnippetExtractor
         if (index != afterTagName.Length) return false;
         while (column < line.Length && CharHelper.IsWhitespace(line[column])) column++;
 
-        return column == line.Length && (!containTagName || TagnameFormat.IsMatch(tagName));
+        return column == line.Length && (!containTagName || TagnameFormat().IsMatch(tagName));
     }
 }

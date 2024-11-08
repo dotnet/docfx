@@ -12,9 +12,11 @@ using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Docfx.Dotnet;
 
-internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
+internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 {
-    private static readonly Regex MemberSigRegex = new(@"^([\w\{\}`]+\.)+", RegexOptions.Compiled);
+    [GeneratedRegex(@"^([\w\{\}`]+\.)+")]
+    private static partial Regex MemberSigRegex();
+
     private static readonly IReadOnlyList<string> EmptyListOfString = Array.Empty<string>();
     private readonly Compilation _compilation;
     private readonly YamlModelGenerator _generator;
@@ -669,7 +671,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
                           where IsInheritable(m)
                           select m)
         {
-            var sig = MemberSigRegex.Replace(SpecIdHelper.GetSpecId(m, typeParameterNames), string.Empty);
+            var sig = MemberSigRegex().Replace(SpecIdHelper.GetSpecId(m, typeParameterNames), string.Empty);
             if (!dict.ContainsKey(sig))
             {
                 dict.Add(sig, type.Equals(symbol, SymbolEqualityComparer.Default) ? null : AddSpecReference(m, typeParameterNames));

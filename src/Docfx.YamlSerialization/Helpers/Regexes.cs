@@ -5,19 +5,23 @@ using System.Text.RegularExpressions;
 
 namespace Docfx.YamlSerialization.Helpers;
 
-internal static class Regexes
+internal static partial class Regexes
 {
     // todo : boolean more for yaml http://yaml.org/type/bool.html
     // y|Y|yes|Yes|YES|n|N|no|No|NO
     // |true|True|TRUE|false|False|FALSE
     // |null|Null|NULL|~
     // |on|On|ON|off|Off|OFF
-    public static readonly Regex BooleanLike = new("^(true|True|TRUE|false|False|FALSE)$", RegexOptions.Compiled);
+    [GeneratedRegex("^(true|True|TRUE|false|False|FALSE)$")]
+    public static partial Regex BooleanLike();
 
-    public static readonly Regex NullLike = new("^(null|Null|NULL|~)$", RegexOptions.Compiled);
+    [GeneratedRegex("^(null|Null|NULL|~)$")]
+    public static partial Regex NullLike();
 
-    public static readonly Regex IntegerLike = new("^-?(0|[1-9][0-9]*)$", RegexOptions.Compiled);
+    [GeneratedRegex("^-?(0|[1-9][0-9]*)$")]
+    public static partial Regex IntegerLike();
 
     // https://yaml.org/spec/1.2/spec.html#id2805071
-    public static readonly Regex FloatLike = new(@"^[-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?$", RegexOptions.Compiled);
+    [GeneratedRegex(@"^[-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?$")]
+    public static partial Regex FloatLike();
 }

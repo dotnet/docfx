@@ -5,9 +5,11 @@ using System.Text.RegularExpressions;
 
 namespace Docfx.Common;
 
-public static class PathUtility
+public static partial class PathUtility
 {
-    private static readonly Regex UriWithProtocol = new(@"^\w{2,}\:", RegexOptions.Compiled);
+
+    [GeneratedRegex(@"^\w{2,}\:")]
+    private static partial Regex UriWithProtocol();
 
     private static readonly char[] AdditionalInvalidChars = ":*".ToArray();
     public static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars().Concat(AdditionalInvalidChars).ToArray();
@@ -98,7 +100,7 @@ public static class PathUtility
             return false;
         }
 
-        if (UriWithProtocol.IsMatch(path))
+        if (UriWithProtocol().IsMatch(path))
         {
             return false;
         }

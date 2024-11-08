@@ -12,10 +12,12 @@ using Microsoft.CodeAnalysis;
 
 namespace Docfx.Dotnet;
 
-internal static class VisitorHelper
+internal static partial class VisitorHelper
 {
     public static string GlobalNamespaceId { get; set; }
-    private static readonly Regex GenericMethodPostFix = new(@"``\d+$", RegexOptions.Compiled);
+
+    [GeneratedRegex(@"``\d+$")]
+    private static partial Regex GenericMethodPostFix();
 
     public static string PathFriendlyId(string id)
     {
@@ -109,7 +111,7 @@ internal static class VisitorHelper
                 uidBody = uidBody.Remove(index);
             }
         }
-        uidBody = GenericMethodPostFix.Replace(uidBody, string.Empty);
+        uidBody = GenericMethodPostFix().Replace(uidBody, string.Empty);
         return uidBody;
     }
 

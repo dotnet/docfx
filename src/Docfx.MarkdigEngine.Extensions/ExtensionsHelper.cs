@@ -8,11 +8,16 @@ using Markdig.Parsers;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public static class ExtensionsHelper
+public static partial class ExtensionsHelper
 {
-    public static readonly Regex HtmlEscapeWithEncode = new("&", RegexOptions.Compiled);
-    public static readonly Regex HtmlEscapeWithoutEncode = new(@"&(?!#?\w+;)", RegexOptions.Compiled);
-    public static readonly Regex HtmlUnescape = new(@"&([#\w]+);", RegexOptions.Compiled);
+    [GeneratedRegex("&")]
+    private static partial Regex HtmlEscapeWithEncode();
+
+    [GeneratedRegex(@"&(?!#?\w+;)")]
+    private static partial Regex HtmlEscapeWithoutEncode();
+
+    [GeneratedRegex(@"&([#\w]+);")]
+    private static partial Regex HtmlUnescape();
 
     public static char SkipSpaces(ref StringSlice slice)
     {
@@ -29,7 +34,7 @@ public static class ExtensionsHelper
     public static string Escape(string html, bool encode = false)
     {
         return html
-            .ReplaceRegex(encode ? HtmlEscapeWithEncode : HtmlEscapeWithoutEncode, "&amp;")
+            .ReplaceRegex(encode ? HtmlEscapeWithEncode() : HtmlEscapeWithoutEncode(), "&amp;")
             .Replace("<", "&lt;")
             .Replace(">", "&gt;")
             .Replace("\"", "&quot;")
@@ -38,7 +43,7 @@ public static class ExtensionsHelper
 
     public static string Unescape(string html)
     {
-        return HtmlUnescape.Replace(html, match =>
+        return HtmlUnescape().Replace(html, match =>
         {
             var n = match.Groups[1].Value;
 

@@ -26,10 +26,10 @@ public class BetterObjectDescriptor : IObjectDescriptor
             if (val is not string s)
                 return false;
 
-            return Regexes.BooleanLike.IsMatch(s)
-                || Regexes.NullLike.IsMatch(s)
-                || Regexes.IntegerLike.IsMatch(s)
-                || Regexes.FloatLike.IsMatch(s)
+            return Regexes.BooleanLike().IsMatch(s)
+                || Regexes.NullLike().IsMatch(s)
+                || Regexes.IntegerLike().IsMatch(s)
+                || Regexes.FloatLike().IsMatch(s)
                 || s.StartsWith('\'')
                 || s.StartsWith('"')
                 || s.Length > 0 && char.IsWhiteSpace(s[0]);
