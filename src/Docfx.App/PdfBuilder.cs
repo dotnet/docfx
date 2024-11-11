@@ -301,7 +301,7 @@ static class PdfBuilder
             var key = CleanUrl(url);
             if (!pagesByUrl.TryGetValue(key, out var dests))
                 pagesByUrl[key] = dests = new();
-            dests.Add((node, document.Structure.Catalog.NamedDestinations));
+            dests.Add((node, document.Structure.Catalog.GetNamedDestinations()));
 
             pageBytes[node] = bytes;
             pageNumbers[node] = numberOfPages + 1;
