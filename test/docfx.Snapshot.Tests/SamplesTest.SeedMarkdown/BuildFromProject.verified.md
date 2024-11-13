@@ -38,6 +38,10 @@ A nice class
 
  [Class1.Issue8948](BuildFromProject.Class1.Issue8948.md)
 
+ [Inheritdoc.Issue9736](BuildFromProject.Inheritdoc.Issue9736.md)
+
+ [Inheritdoc.Issue9736.JsonApiOptions](BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.md)
+
  [Class1.Test<T\>](BuildFromProject.Class1.Test\-1.md)
 
 ### Structs
@@ -49,6 +53,8 @@ A nice class
  [IInheritdoc](BuildFromProject.IInheritdoc.md)
 
  [Class1.IIssue8948](BuildFromProject.Class1.IIssue8948.md)
+
+ [Inheritdoc.Issue9736.IJsonApiOptions](BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md)
 
 ### Enums
 
