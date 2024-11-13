@@ -108,4 +108,41 @@ public class Inheritdoc : IInheritdoc, IDisposable
             public override bool TestMethod1(bool parm1, int parm2) => false;
         }
     }
+
+    // Issue #9736 #9495 #9754
+    public class Issue9736
+    {
+        public interface IJsonApiOptions
+        {
+            /// <summary>
+            /// Whether to use relative links for all resources. <c>false</c> by default.
+            /// </summary>
+            /// <example>
+            /// <code><![CDATA[
+            /// options.UseRelativeLinks = true;
+            /// ]]></code>
+            /// <code><![CDATA[
+            /// {
+            ///   "type": "articles",
+            ///   "id": "4309",
+            ///   "relationships": {
+            ///      "author": {
+            ///        "links": {
+            ///          "self": "/api/shopping/articles/4309/relationships/author",
+            ///          "related": "/api/shopping/articles/4309/author"
+            ///        }
+            ///      }
+            ///   }
+            /// }
+            /// ]]></code>
+            /// </example>
+            bool UseRelativeLinks { get; }
+        }
+
+        public sealed class JsonApiOptions : IJsonApiOptions
+        {
+            /// <inheritdoc />
+            public bool UseRelativeLinks { get; set; }
+        }
+    }
 }
