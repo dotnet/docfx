@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Interface Inheritdoc.Issue9736.IJsonApiOptions",
+  "content": "<h1 class='section api' data-uid='BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions' data-commentId='T:BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions' id='BuildFromProject_Inheritdoc_Issue9736_IJsonApiOptions'>Interface Inheritdoc.Issue9736.IJsonApiOptions    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs#L115'><i class='bi bi-code-slash'></i></a></h1>\r\n <div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='BuildFromProject.html'>BuildFromProject</a></dd></dl><dl><dt>Assembly</dt><dd>BuildFromProject.dll</dd></dl>\r\n</div><pre><code class='lang-csharp'>public interface Inheritdoc.Issue9736.IJsonApiOptions</code></pre><h2 class='section'>Properties</h2><h3 class='section api' data-uid='BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks' data-commentId='P:BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks' id='BuildFromProject_Inheritdoc_Issue9736_IJsonApiOptions_UseRelativeLinks'>UseRelativeLinks    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs#L139'><i class='bi bi-code-slash'></i></a></h3>\r\n <p sourceFile=\"obj/apipage/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.yml\" sourceStartLineNumber=\"1\">Whether to use relative links for all resources. <code>false</code> by default.</p>\n<pre><code class='lang-csharp'>bool UseRelativeLinks { get; }</code></pre><h4 class='section'>Property Value</h4><dl class='parameters'><dt> <a href='https://learn.microsoft.com/dotnet/api/system.boolean'>bool</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl><h4 class='section'>Examples</h4><pre><code class=\"lang-csharp\">options.UseRelativeLinks = true;</code></pre>\n<pre><code class=\"lang-csharp\">{\n  \"type\": \"articles\",\n  \"id\": \"4309\",\n  \"relationships\": {\n     \"author\": {\n       \"links\": {\n         \"self\": \"/api/shopping/articles/4309/relationships/author\",\n         \"related\": \"/api/shopping/articles/4309/author\"\n       }\n     }\n  }\n}</code></pre>\n",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

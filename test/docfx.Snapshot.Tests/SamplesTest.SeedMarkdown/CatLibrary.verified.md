@@ -21,7 +21,8 @@
  [ICatExtension](CatLibrary.ICatExtension.md)
 
 It's the class that contains ICat interface's extension method.
-<p>This class must be <b>public</b> and <b>static</b>.</p><p>Also it shouldn't be a geneic class</p>
+<p>This class must be <b>public</b> and <b>static</b>.</p>
+<p>Also it shouldn't be a geneic class</p>
 
  [Tom](CatLibrary.Tom.md)
 
