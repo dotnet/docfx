@@ -104,6 +104,21 @@
     "title": "Struct Inheritdoc.Issue8129 | docfx seed website",
     "keywords": "Struct Inheritdoc.Issue8129 Namespace BuildFromProject Assembly BuildFromProject.dll public struct Inheritdoc.Issue8129 Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Constructors Issue8129(string) public Issue8129(string foo) Parameters foo string"
   },
+  "api/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html",
+    "title": "Interface Inheritdoc.Issue9736.IJsonApiOptions | docfx seed website",
+    "keywords": "Interface Inheritdoc.Issue9736.IJsonApiOptions Namespace BuildFromProject Assembly BuildFromProject.dll public interface Inheritdoc.Issue9736.IJsonApiOptions Properties UseRelativeLinks Whether to use relative links for all resources. false by default. bool UseRelativeLinks { get; } Property Value bool Examples options.UseRelativeLinks = true; { \"type\": \"articles\", \"id\": \"4309\", \"relationships\": { \"author\": { \"links\": { \"self\": \"/api/shopping/articles/4309/relationships/author\", \"related\": \"/api/shopping/articles/4309/author\" } } } }"
+  },
+  "api/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html",
+    "title": "Class Inheritdoc.Issue9736.JsonApiOptions | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue9736.JsonApiOptions Namespace BuildFromProject Assembly BuildFromProject.dll public sealed class Inheritdoc.Issue9736.JsonApiOptions : Inheritdoc.Issue9736.IJsonApiOptions Inheritance object Inheritdoc.Issue9736.JsonApiOptions Implements Inheritdoc.Issue9736.IJsonApiOptions Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.ReferenceEquals(object, object) object.ToString() Properties UseRelativeLinks Whether to use relative links for all resources. false by default. public bool UseRelativeLinks { get; set; } Property Value bool Examples options.UseRelativeLinks = true; { \"type\": \"articles\", \"id\": \"4309\", \"relationships\": { \"author\": { \"links\": { \"self\": \"/api/shopping/articles/4309/relationships/author\", \"related\": \"/api/shopping/articles/4309/author\" } } } }"
+  },
+  "api/BuildFromProject.Inheritdoc.Issue9736.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue9736.html",
+    "title": "Class Inheritdoc.Issue9736 | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue9736 Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc.Issue9736 Inheritance object Inheritdoc.Issue9736 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString()"
+  },
   "api/BuildFromProject.Inheritdoc.html": {
     "href": "api/BuildFromProject.Inheritdoc.html",
     "title": "Class Inheritdoc | docfx seed website",
@@ -142,7 +157,7 @@
   "api/BuildFromProject.html": {
     "href": "api/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Issue8725 A nice class Structs Inheritdoc.Issue8129 Interfaces Class1.IIssue8948 IInheritdoc Enums Class1.Issue9260"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Inheritdoc.Issue9736 Inheritdoc.Issue9736.JsonApiOptions Issue8725 A nice class Structs Inheritdoc.Issue8129 Interfaces Class1.IIssue8948 IInheritdoc Inheritdoc.Issue9736.IJsonApiOptions Enums Class1.Issue9260"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",
@@ -374,6 +389,21 @@
     "title": "Struct Inheritdoc.Issue8129 | docfx seed website",
     "keywords": "Struct Inheritdoc.Issue8129 Namespace BuildFromProject Assembly BuildFromProject.dll public struct Inheritdoc.Issue8129 Inherited Members object.Equals(object?) object.Equals(object?, object?) object.GetHashCode() object.GetType() object.ReferenceEquals(object?, object?) object.ToString() Constructors Issue8129(string) public Issue8129(string foo) Parameters foo string"
   },
+  "apipage/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html": {
+    "href": "apipage/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html",
+    "title": "Interface Inheritdoc.Issue9736.IJsonApiOptions | docfx seed website",
+    "keywords": "Interface Inheritdoc.Issue9736.IJsonApiOptions Namespace BuildFromProject Assembly BuildFromProject.dll public interface Inheritdoc.Issue9736.IJsonApiOptions Properties UseRelativeLinks Whether to use relative links for all resources. false by default. bool UseRelativeLinks { get; } Property Value bool Examples options.UseRelativeLinks = true; { \"type\": \"articles\", \"id\": \"4309\", \"relationships\": { \"author\": { \"links\": { \"self\": \"/api/shopping/articles/4309/relationships/author\", \"related\": \"/api/shopping/articles/4309/author\" } } } }"
+  },
+  "apipage/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html": {
+    "href": "apipage/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html",
+    "title": "Class Inheritdoc.Issue9736.JsonApiOptions | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue9736.JsonApiOptions Namespace BuildFromProject Assembly BuildFromProject.dll public sealed class Inheritdoc.Issue9736.JsonApiOptions : Inheritdoc.Issue9736.IJsonApiOptions Inheritance object Inheritdoc.Issue9736.JsonApiOptions Implements Inheritdoc.Issue9736.IJsonApiOptions Inherited Members object.Equals(object?) object.Equals(object?, object?) object.GetHashCode() object.GetType() object.ReferenceEquals(object?, object?) object.ToString() Properties UseRelativeLinks Whether to use relative links for all resources. false by default. public bool UseRelativeLinks { get; set; } Property Value bool Examples options.UseRelativeLinks = true; { \"type\": \"articles\", \"id\": \"4309\", \"relationships\": { \"author\": { \"links\": { \"self\": \"/api/shopping/articles/4309/relationships/author\", \"related\": \"/api/shopping/articles/4309/author\" } } } }"
+  },
+  "apipage/BuildFromProject.Inheritdoc.Issue9736.html": {
+    "href": "apipage/BuildFromProject.Inheritdoc.Issue9736.html",
+    "title": "Class Inheritdoc.Issue9736 | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue9736 Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc.Issue9736 Inheritance object Inheritdoc.Issue9736 Inherited Members object.Equals(object?) object.Equals(object?, object?) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object?, object?) object.ToString()"
+  },
   "apipage/BuildFromProject.Inheritdoc.html": {
     "href": "apipage/BuildFromProject.Inheritdoc.html",
     "title": "Class Inheritdoc | docfx seed website",
@@ -412,7 +442,7 @@
   "apipage/BuildFromProject.html": {
     "href": "apipage/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Enums Class1.Issue9260"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Inheritdoc.Issue9736 Inheritdoc.Issue9736.JsonApiOptions Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Inheritdoc.Issue9736.IJsonApiOptions Enums Class1.Issue9260"
   },
   "apipage/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "apipage/BuildFromVBSourceCode.BaseClass1.html",
@@ -679,6 +709,21 @@
     "title": "Struct Inheritdoc.Issue8129 | docfx seed website",
     "keywords": "Struct Inheritdoc.Issue8129 Namespace: BuildFromProject Assembly: BuildFromProject.dll public struct Inheritdoc.Issue8129 Inherited Members object.Equals(object?), object.Equals(object?, object?), object.GetHashCode(), object.GetType(), object.ReferenceEquals(object?, object?), object.ToString() Constructors Issue8129(string) public Issue8129(string foo) Parameters foo string"
   },
+  "md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html": {
+    "href": "md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html",
+    "title": "Interface Inheritdoc.Issue9736.IJsonApiOptions | docfx seed website",
+    "keywords": "Interface Inheritdoc.Issue9736.IJsonApiOptions Namespace: BuildFromProject Assembly: BuildFromProject.dll public interface Inheritdoc.Issue9736.IJsonApiOptions Properties UseRelativeLinks Whether to use relative links for all resources. false by default. bool UseRelativeLinks { get; } Property Value bool Examples options.UseRelativeLinks = true; { \"type\": \"articles\", \"id\": \"4309\", \"relationships\": { \"author\": { \"links\": { \"self\": \"/api/shopping/articles/4309/relationships/author\", \"related\": \"/api/shopping/articles/4309/author\" } } } }"
+  },
+  "md/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html": {
+    "href": "md/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html",
+    "title": "Class Inheritdoc.Issue9736.JsonApiOptions | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue9736.JsonApiOptions Namespace: BuildFromProject Assembly: BuildFromProject.dll public sealed class Inheritdoc.Issue9736.JsonApiOptions : Inheritdoc.Issue9736.IJsonApiOptions Inheritance object ← Inheritdoc.Issue9736.JsonApiOptions Implements Inheritdoc.Issue9736.IJsonApiOptions Inherited Members object.Equals(object?), object.Equals(object?, object?), object.GetHashCode(), object.GetType(), object.ReferenceEquals(object?, object?), object.ToString() Properties UseRelativeLinks Whether to use relative links for all resources. false by default. public bool UseRelativeLinks { get; set; } Property Value bool Examples options.UseRelativeLinks = true; { \"type\": \"articles\", \"id\": \"4309\", \"relationships\": { \"author\": { \"links\": { \"self\": \"/api/shopping/articles/4309/relationships/author\", \"related\": \"/api/shopping/articles/4309/author\" } } } }"
+  },
+  "md/BuildFromProject.Inheritdoc.Issue9736.html": {
+    "href": "md/BuildFromProject.Inheritdoc.Issue9736.html",
+    "title": "Class Inheritdoc.Issue9736 | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue9736 Namespace: BuildFromProject Assembly: BuildFromProject.dll public class Inheritdoc.Issue9736 Inheritance object ← Inheritdoc.Issue9736 Inherited Members object.Equals(object?), object.Equals(object?, object?), object.GetHashCode(), object.GetType(), object.MemberwiseClone(), object.ReferenceEquals(object?, object?), object.ToString()"
+  },
   "md/BuildFromProject.Inheritdoc.html": {
     "href": "md/BuildFromProject.Inheritdoc.html",
     "title": "Class Inheritdoc | docfx seed website",
@@ -717,7 +762,7 @@
   "md/BuildFromProject.html": {
     "href": "md/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Enums Class1.Issue9260"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Inheritdoc.Issue9736 Inheritdoc.Issue9736.JsonApiOptions Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Inheritdoc.Issue9736.IJsonApiOptions Enums Class1.Issue9260"
   },
   "md/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "md/BuildFromVBSourceCode.BaseClass1.html",

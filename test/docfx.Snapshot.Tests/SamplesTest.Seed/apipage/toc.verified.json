@@ -149,6 +149,16 @@
           "topicHref": "BuildFromProject.Inheritdoc.Issue8101.html"
         },
         {
+          "name": "Inheritdoc.Issue9736",
+          "href": "BuildFromProject.Inheritdoc.Issue9736.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue9736.html"
+        },
+        {
+          "name": "Inheritdoc.Issue9736.JsonApiOptions",
+          "href": "BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html"
+        },
+        {
           "name": "Issue8725",
           "href": "BuildFromProject.Issue8725.html",
           "topicHref": "BuildFromProject.Issue8725.html"
@@ -173,6 +183,11 @@
           "name": "IInheritdoc",
           "href": "BuildFromProject.IInheritdoc.html",
           "topicHref": "BuildFromProject.IInheritdoc.html"
+        },
+        {
+          "name": "Inheritdoc.Issue9736.IJsonApiOptions",
+          "href": "BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html"
         },
         {
           "name": "Enums"

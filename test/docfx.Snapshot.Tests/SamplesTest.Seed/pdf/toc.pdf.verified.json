@@ -2868,7 +2868,7 @@
     },
     {
       "Number": 44,
-      "Text": "44 / 127\nNamespace: BuildFromProject\nAssembly: BuildFromProject.dll\nFields\nValue = 0\nThis is a regular enum value.\nThis is a remarks section. Very important remarks about Value go here.\n[Obsolete] OldAndUnusedValue = 1\nThis is old and unused. You shouldn't use it anymore.\nDon't use this, seriously! Use Value instead.\n[Obsolete(\"Use Value\")] OldAndUnusedValue2 = 2\nThis is old and unused. You shouldn't use it anymore.\nDon't use this, seriously! Use Value instead.\nEnum Class1.Issue9260\npublic enum Class1.Issue9260",
+      "Text": "44 / 131\nNamespace: BuildFromProject\nAssembly: BuildFromProject.dll\nFields\nValue = 0\nThis is a regular enum value.\nThis is a remarks section. Very important remarks about Value go here.\n[Obsolete] OldAndUnusedValue = 1\nThis is old and unused. You shouldn't use it anymore.\nDon't use this, seriously! Use Value instead.\n[Obsolete(\"Use Value\")] OldAndUnusedValue2 = 2\nThis is old and unused. You shouldn't use it anymore.\nDon't use this, seriously! Use Value instead.\nEnum Class1.Issue9260\npublic enum Class1.Issue9260",
       "Links": [
         {
           "Goto": {
