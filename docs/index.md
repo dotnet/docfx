@@ -114,6 +114,53 @@ await Docfx.Docset.Build("docfx.json");
 
 See [API References](api/Docfx.yml) for additional APIs.
 
+##  How to use prerelease version of docfx
+
+Docfx publishes nightly builds to [GitHub Packages](https://github.com/dotnet/docfx/pkgs/nuget/docfx).
+If you want to use prerelease version, you can install package with following steps.
+
+### Prerequisite
+
+1. Install [GitHub CLI](https://github.com/cli/cli) command.
+2. Install PowerShell 7.x or later.
+
+### Steps
+
+1. Open PowerShell on working directory.
+
+2. Login to GitHub with additional scope request
+
+    ```pwsh
+    gh auth login --scopes "read:packages" --host github.com
+    ```
+
+3. Follow the instructions and complete the login steps.
+
+4. Download docfx nuget package from GitHub Packages
+
+    ```pwsh
+    # Gets Access Token
+    $token = gh auth token
+
+    # Gets the version of latest nightly build
+    $version = gh api /orgs/dotnet/packages/nuget/docfx/versions --jq '.[0].name'
+
+    # Gets nupkg download URL.
+    $downloadUrl = "https://nuget.pkg.github.com/dotnet/download/docfx/${version}/${version}.nupkg"
+
+    # Download nupkg to current directory.
+    Write-Host ('Download nupkg from: {0}' -f $downloadUrl)
+    Invoke-RestMethod -Method Get -Uri $downloadUrl -OutFile "docfx.${version}.nupkg" -Headers @{
+      Authorization = "Bearer $token"
+    }
+    ```
+
+5. Install docfx as .NET Global Package from local source
+
+    ```pwsh
+    dotnet tool update docfx -g --prerelease --source ./
+    ```
+
 ## Next Steps
 
 - [Write Articles](docs/markdown.md)
