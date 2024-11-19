@@ -1,5 +1,6 @@
 name: nightly
 on:
+  workflow_dispatch:
   schedule:
   - cron: '0 0 * * *'
 
@@ -40,3 +41,44 @@ jobs:
       run: |
         dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate --source https://nuget.pkg.github.com/dotnet/index.json
 
+  test-nightly-package:
+    if: github.repository == 'dotnet/docfx'
+    runs-on: ubuntu-latest
+    needs: [publish-github-packages]
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Create NuGet.config
+      shell: pwsh
+      run: |
+        @'
+        <?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+          <packageSources>
+            <clear />
+            <add key="github" value="https://nuget.pkg.github.com/dotnet/index.json" />
+          </packageSources>
+          <packageSourceCredentials>
+            <github>
+              <add key="Username" value="%USER%" />
+              <add key="ClearTextPassword" value="%GITHUB_TOKEN%" />
+            </github>
+          </packageSourceCredentials>
+        </configuration>
+        '@ | Out-File NuGet.config -Encoding UTF8
+
+    - name: Install nightly build package
+      run: |
+        dotnet tool install docfx -g --prerelease
+
+    - name: Run docfx commands for test
+      working-directory: samples/seed
+      run: |
+        docfx metadata
+        docfx build
+        docfx pdf
+   
