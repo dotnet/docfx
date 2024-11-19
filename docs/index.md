@@ -9,7 +9,7 @@ In this section we will build a simple documentation site on your local machine.
 > Prerequisites
 > - Familiarity with the command line
 > - Install [.NET SDK](https://dotnet.microsoft.com/en-us/download) 8.0 or higher
-> - Install [Node.js](https://nodejs.org/) v20 or higher
+> - Install [Node.js](https://nodejs.org/) v20 or higher (Optional: It's required when using [Create PDF Files](https://filzrev.github.io/docfx/docs/pdf.html))
 
 Make sure you have [.NET SDK](https://dotnet.microsoft.com/en-us/download) installed, then open a terminal and enter the following command to install the latest docfx:
 
