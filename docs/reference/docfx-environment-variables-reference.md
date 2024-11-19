@@ -32,3 +32,7 @@ Maximum time in milliseconds to override the default [Playwright timeout](https:
 
 Custom Node.js executable path that will be used by the `docfx pdf` command.
 By default, docfx automatically detect installed Node.js from `PATH`.
+
+## `DOCFX_GIT_TIMEOUT`
+
+Used to override maximum time in milliseconds for git operations. Default value is 1,000.
