@@ -89,8 +89,15 @@ partial class SymbolUrlResolver
         private string? TryGetSourceLinkUrl(DocumentHandle handle)
         {
             var document = _pdbReader.GetDocument(handle);
-            if (document.Name.IsNil)
+            try
+            {
+                if (document.Name.IsNil)
+                    return null;
+            }
+            catch (BadImageFormatException)
+            {
                 return null;
+            }
 
             var documentName = _pdbReader.GetString(document.Name);
             if (documentName is null)
