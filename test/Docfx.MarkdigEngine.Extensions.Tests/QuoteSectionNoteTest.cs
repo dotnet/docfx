@@ -423,6 +423,19 @@ We should support that.</p>
 
     [Fact]
     [Trait("Related", "DfmMarkdown")]
+    public void TestVideoBlock_Http()
+    {
+        var source = @"# Article 2
+> [!VIDEO http://microsoft.com:8080?query=http+A#bookmark]
+";
+        var expected = @"<h1 id=""article-2"">Article 2</h1>
+<div class=""embeddedvideo""><iframe src=""https://microsoft.com:8080/?query=http+A#bookmark"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+";
+        TestUtility.VerifyMarkup(source, expected);
+    }
+
+    [Fact]
+    [Trait("Related", "DfmMarkdown")]
     public void TestVideoBlock_Channel9()
     {
         var source = @"# Article 2
