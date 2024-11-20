@@ -48,11 +48,6 @@ static class PdfBuilder
         public string? pdfFooterTemplate { get; init; }
     }
 
-    static PdfBuilder()
-    {
-        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
-    }
-
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
     {
         var outputFolder = Path.GetFullPath(Path.Combine(
@@ -69,6 +64,8 @@ static class PdfBuilder
         var pdfTocs = GetPdfTocs().ToDictionary(p => p.url, p => p.toc);
         if (pdfTocs.Count == 0)
             return;
+
+        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
 
         Program.Main(["install", "chromium"]);
 
