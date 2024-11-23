@@ -14,11 +14,11 @@ public sealed class ExtensibleReadableAndWritablePropertiesTypeInspector : Exten
         _innerTypeDescriptor = innerTypeDescriptor;
     }
 
-    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container) =>
+    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container) =>
         from p in _innerTypeDescriptor.GetProperties(type, container)
         where p.CanWrite
         select p;
 
-    public override IPropertyDescriptor GetProperty(Type type, object container, string name) =>
+    public override IPropertyDescriptor? GetProperty(Type type, object? container, string name) =>
         _innerTypeDescriptor.GetProperty(type, container, name);
 }

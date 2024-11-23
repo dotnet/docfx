@@ -5,7 +5,7 @@ namespace Docfx.YamlSerialization.Helpers;
 
 internal static class ReflectionUtility
 {
-    public static Type GetImplementedGenericInterface(Type type, Type genericInterfaceType)
+    public static Type? GetImplementedGenericInterface(Type type, Type genericInterfaceType)
     {
         foreach (var interfaceType in GetImplementedInterfaces(type))
         {

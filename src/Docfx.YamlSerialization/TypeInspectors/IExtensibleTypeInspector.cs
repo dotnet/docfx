@@ -7,5 +7,5 @@ namespace Docfx.YamlSerialization.TypeInspectors;
 
 public interface IExtensibleTypeInspector : ITypeInspector
 {
-    IPropertyDescriptor GetProperty(Type type, object container, string name);
+    IPropertyDescriptor? GetProperty(Type type, object? container, string name);
 }

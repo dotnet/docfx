@@ -14,11 +14,11 @@ namespace Docfx.YamlSerialization.NodeDeserializers;
 public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
 {
     private static readonly MethodInfo DeserializeHelperMethod =
-        typeof(EmitGenericDictionaryNodeDeserializer).GetMethod(nameof(DeserializeHelper));
+        typeof(EmitGenericDictionaryNodeDeserializer).GetMethod(nameof(DeserializeHelper))!;
     private readonly IObjectFactory _objectFactory;
-    private readonly Dictionary<Type, Type[]> _gpCache =
+    private readonly Dictionary<Type, Type[]?> _gpCache =
         new();
-    private readonly Dictionary<Tuple<Type, Type>, Action<IParser, Type, Func<IParser, Type, object>, object>> _actionCache =
+    private readonly Dictionary<Tuple<Type, Type>, Action<IParser, Type, Func<IParser, Type, object?>, object?>> _actionCache =
         new();
 
     public EmitGenericDictionaryNodeDeserializer(IObjectFactory objectFactory)
@@ -26,9 +26,9 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
         _objectFactory = objectFactory;
     }
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
     {
-        if (!_gpCache.TryGetValue(expectedType, out Type[] gp))
+        if (!_gpCache.TryGetValue(expectedType, out var gp))
         {
             var dictionaryType = ReflectionUtility.GetImplementedGenericInterface(expectedType, typeof(IDictionary<,>));
             if (dictionaryType != null)
@@ -67,7 +67,7 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
             il.Emit(OpCodes.Castclass, typeof(IDictionary<,>).MakeGenericType(gp));
             il.Emit(OpCodes.Call, DeserializeHelperMethod.MakeGenericMethod(gp));
             il.Emit(OpCodes.Ret);
-            action = (Action<IParser, Type, Func<IParser, Type, object>, object>)dm.CreateDelegate(typeof(Action<IParser, Type, Func<IParser, Type, object>, object>));
+            action = (Action<IParser, Type, Func<IParser, Type, object?>, object?>)dm.CreateDelegate(typeof(Action<IParser, Type, Func<IParser, Type, object?>, object?>));
             _actionCache[cacheKey] = action;
         }
         action(reader, expectedType, nestedObjectDeserializer, value);
@@ -78,7 +78,7 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void DeserializeHelper<TKey, TValue>(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, IDictionary<TKey, TValue> result)
+    public static void DeserializeHelper<TKey, TValue>(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, IDictionary<TKey, TValue> result)
     {
         while (!reader.Accept<MappingEnd>(out _))
         {
@@ -92,12 +92,12 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
                 if (valuePromise == null)
                 {
                     // Happy path: both key and value are known
-                    result[(TKey)key] = (TValue)value;
+                    result[(TKey)key!] = (TValue)value!;
                 }
                 else
                 {
                     // Key is known, value is pending
-                    valuePromise.ValueAvailable += v => result[(TKey)key] = (TValue)v;
+                    valuePromise.ValueAvailable += v => result[(TKey)key!] = (TValue)v!;
                 }
             }
             else
@@ -105,7 +105,7 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
                 if (valuePromise == null)
                 {
                     // Key is pending, value is known
-                    keyPromise.ValueAvailable += v => result[(TKey)v] = (TValue)value;
+                    keyPromise.ValueAvailable += v => result[(TKey)v!] = (TValue)value!;
                 }
                 else
                 {
@@ -116,7 +116,7 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
                     {
                         if (hasFirstPart)
                         {
-                            result[(TKey)v] = (TValue)value;
+                            result[(TKey)v!] = (TValue)value!;
                         }
                         else
                         {
@@ -129,7 +129,7 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
                     {
                         if (hasFirstPart)
                         {
-                            result[(TKey)key] = (TValue)v;
+                            result[(TKey)key] = (TValue)v!;
                         }
                         else
                         {

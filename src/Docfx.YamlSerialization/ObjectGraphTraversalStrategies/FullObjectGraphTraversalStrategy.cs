@@ -22,7 +22,7 @@ namespace Docfx.YamlSerialization.ObjectGraphTraversalStrategies;
 public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
 {
     private static MethodInfo TraverseGenericDictionaryHelperMethod { get; } =
-        typeof(FullObjectGraphTraversalStrategy).GetMethod(nameof(TraverseGenericDictionaryHelper));
+        typeof(FullObjectGraphTraversalStrategy).GetMethod(nameof(TraverseGenericDictionaryHelper))!;
     protected YamlSerializer Serializer { get; }
     private readonly int _maxRecursion;
     private readonly ITypeInspector _typeDescriptor;
@@ -30,10 +30,10 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
     private readonly INamingConvention _namingConvention;
     private readonly Dictionary<Tuple<Type, Type>, Action<IObjectDescriptor, IObjectGraphVisitor, int, IObjectGraphVisitorContext>> _behaviorCache =
         new();
-    private readonly Dictionary<Tuple<Type, Type, Type>, Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext>> _traverseGenericDictionaryCache =
+    private readonly Dictionary<Tuple<Type, Type, Type>, Action<FullObjectGraphTraversalStrategy, object?, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext>> _traverseGenericDictionaryCache =
         new();
 
-    public FullObjectGraphTraversalStrategy(YamlSerializer serializer, ITypeInspector typeDescriptor, ITypeResolver typeResolver, int maxRecursion, INamingConvention namingConvention)
+    public FullObjectGraphTraversalStrategy(YamlSerializer serializer, ITypeInspector typeDescriptor, ITypeResolver typeResolver, int maxRecursion, INamingConvention? namingConvention)
     {
         if (maxRecursion <= 0)
         {
@@ -47,7 +47,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
         _typeDescriptor = typeDescriptor;
         _typeResolver = typeResolver;
         _maxRecursion = maxRecursion;
-        _namingConvention = namingConvention;
+        _namingConvention = namingConvention ?? NullNamingConvention.Instance;
     }
 
     void IObjectGraphTraversalStrategy.Traverse<TContext>(IObjectDescriptor graph, IObjectGraphVisitor<TContext> visitor, TContext context)
@@ -141,7 +141,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
             }
             _behaviorCache[key] = action;
         }
-        action(value, visitor, currentDepth, context);
+        action(value, visitor, currentDepth, context!);
     }
 
     protected virtual void TraverseDictionary<TContext>(IObjectDescriptor dictionary, object visitor, int currentDepth, object context)
@@ -150,7 +150,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
         var c = (TContext)context;
         v.VisitMappingStart(dictionary, typeof(object), typeof(object), c);
 
-        foreach (DictionaryEntry entry in (IDictionary)dictionary.Value)
+        foreach (DictionaryEntry entry in (IDictionary)dictionary.NonNullValue())
         {
             var key = GetObjectDescriptor(entry.Key, typeof(object));
             var value = GetObjectDescriptor(entry.Value, typeof(object));
@@ -180,12 +180,12 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
             action = GetTraverseGenericDictionaryHelper(entryTypes[0], entryTypes[1], typeof(TContext));
             _traverseGenericDictionaryCache[key] = action;
         }
-        action(this, dictionary.Value, v, currentDepth, _namingConvention ?? NullNamingConvention.Instance, c);
+        action(this, dictionary.Value, v, currentDepth, _namingConvention, c);
 
         v.VisitMappingEnd(dictionary, c);
     }
 
-    private static Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext> GetTraverseGenericDictionaryHelper(Type tkey, Type tvalue, Type tcontext)
+    private static Action<FullObjectGraphTraversalStrategy, object?, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext> GetTraverseGenericDictionaryHelper(Type tkey, Type tvalue, Type tcontext)
     {
         var dm = new DynamicMethod(string.Empty, typeof(void), [typeof(FullObjectGraphTraversalStrategy), typeof(object), typeof(IObjectGraphVisitor), typeof(int), typeof(INamingConvention), typeof(IObjectGraphVisitorContext)]);
         var il = dm.GetILGenerator();
@@ -198,7 +198,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
         il.Emit(OpCodes.Ldarg_S, (byte)5);
         il.Emit(OpCodes.Call, TraverseGenericDictionaryHelperMethod.MakeGenericMethod(tkey, tvalue, tcontext));
         il.Emit(OpCodes.Ret);
-        return (Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext>)dm.CreateDelegate(typeof(Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext>));
+        return (Action<FullObjectGraphTraversalStrategy, object?, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext>)dm.CreateDelegate(typeof(Action<FullObjectGraphTraversalStrategy, object?, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext>));
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -212,10 +212,10 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
     {
         var v = (IObjectGraphVisitor<TContext>)visitor;
         var c = (TContext)context;
-        var isDynamic = dictionary.GetType().FullName.Equals("System.Dynamic.ExpandoObject");
+        var isDynamic = dictionary.GetType().FullName!.Equals("System.Dynamic.ExpandoObject");
         foreach (var entry in dictionary)
         {
-            var keyString = isDynamic ? namingConvention.Apply(entry.Key.ToString()) : entry.Key.ToString();
+            var keyString = isDynamic ? namingConvention.Apply(entry.Key!.ToString()!) : entry.Key!.ToString();
             var key = self.GetObjectDescriptor(keyString, typeof(TKey));
             var value = self.GetObjectDescriptor(entry.Value, typeof(TValue));
 
@@ -238,7 +238,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
 
         v.VisitSequenceStart(value, itemType, c);
 
-        foreach (var item in (IEnumerable)value.Value)
+        foreach (var item in (IEnumerable)value.NonNullValue())
         {
             Traverse(GetObjectDescriptor(item, itemType), v, currentDepth, c);
         }
@@ -252,9 +252,10 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
         var c = (TContext)context;
         v.VisitMappingStart(value, typeof(string), typeof(object), c);
 
+        var source = value.NonNullValue();
         foreach (var propertyDescriptor in _typeDescriptor.GetProperties(value.Type, value.Value))
         {
-            var propertyValue = propertyDescriptor.Read(value.Value);
+            var propertyValue = propertyDescriptor.Read(source);
 
             if (v.EnterMapping(propertyDescriptor, propertyValue, c))
             {
@@ -266,7 +267,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
         v.VisitMappingEnd(value, c);
     }
 
-    private IObjectDescriptor GetObjectDescriptor(object value, Type staticType)
+    private IObjectDescriptor GetObjectDescriptor(object? value, Type staticType)
     {
         return new BetterObjectDescriptor(value, _typeResolver.Resolve(staticType, value), staticType);
     }
