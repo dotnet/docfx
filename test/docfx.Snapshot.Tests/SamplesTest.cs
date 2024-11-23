@@ -11,6 +11,8 @@ using Docfx.Dotnet;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Actions;
 using UglyToad.PdfPig.Annotations;
+using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 using UglyToad.PdfPig.Outline;
 
 namespace Docfx.Tests;
@@ -80,7 +82,7 @@ public class SamplesTest : IDisposable
                 {
                     p.Number,
                     p.NumberOfImages,
-                    p.Text,
+                    Text = ExtractText(p),
                     Links = p.ExperimentalAccess.GetAnnotations().Select(ToLink).ToArray(),
                 }).ToArray(),
                 Bookmarks = document.TryGetBookmarks(out var bookmarks) ? ToBookmarks(bookmarks.Roots) : null,
@@ -206,5 +208,25 @@ public class SamplesTest : IDisposable
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             }));
         }
+    }
+
+    private string ExtractText(Page page)
+    {
+        // Gets PDF text content
+        var text = ContentOrderTextExtractor.GetText(page, new ContentOrderTextExtractor.Options { ReplaceWhitespaceWithSpace = true });
+
+        // string.Normalize is not works when using `Globalization Invariant Mode`.
+        StringBuilder sb = new(text);
+
+        // Normalize known ligature chars. (Note: `string.Normalize` is not works when using `Globalization Invariant Mode`)
+        sb.Replace("ﬀ", "ff");
+        sb.Replace("ﬃ", "ffi");
+        sb.Replace("ﬂ", "fl");
+        sb.Replace("ﬁ", "fi");
+
+        // Normalize newline char.
+        sb.Replace("\r\n", "\n");
+
+        return sb.ToString();
     }
 }
