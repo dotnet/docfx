@@ -1,7 +1,7 @@
 ﻿{
   "items": [
     {
-      "name": "Namespace",
+      "name": "Namespaces",
       "items": [
         {
           "name": "MyExample",
@@ -11,7 +11,7 @@
           "type": "Namespace",
           "items": [
             {
-              "name": "Class",
+              "name": "Classes",
               "items": [
                 {
                   "name": "ExampleClass",
