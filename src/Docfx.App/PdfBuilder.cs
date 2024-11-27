@@ -357,6 +357,8 @@ static class PdfBuilder
                 if (!pageBytes.TryGetValue(node, out var bytes))
                     continue;
 
+                var isCoverPage = url.AbsolutePath.TrimStart('/').Equals(outline.pdfCoverPage, GetStringComparison());
+
                 var isTocPage = IsTocPage(url);
                 if (isTocPage)
                 {
@@ -374,6 +376,9 @@ static class PdfBuilder
                     pageNumber++;
 
                     var pageBuilder = builder.AddPage(document, i, x => CopyLink(node, x));
+
+                    if (isCoverPage)
+                        continue;
 
                     if (isTocPage)
                         continue;
@@ -614,5 +619,13 @@ static class PdfBuilder
             const double Dpi = 72d; // Use Default DPI of PDF.
             return $"{Math.Round(pt * MillimeterPerInch / Dpi)}mm";
         }
+    }
+
+    // Gets StringComparison instance for path string.
+    private static StringComparison GetStringComparison()
+    {
+        return PathUtility.IsPathCaseInsensitive()
+            ? StringComparison.OrdinalIgnoreCase
+            : StringComparison.Ordinal;
     }
 }
