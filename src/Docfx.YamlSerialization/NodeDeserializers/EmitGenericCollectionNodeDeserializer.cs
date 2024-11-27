@@ -17,11 +17,11 @@ namespace Docfx.YamlSerialization.NodeDeserializers;
 public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
 {
     private static readonly MethodInfo DeserializeHelperMethod =
-        typeof(EmitGenericCollectionNodeDeserializer).GetMethod(nameof(DeserializeHelper));
+        typeof(EmitGenericCollectionNodeDeserializer).GetMethod(nameof(DeserializeHelper))!;
     private readonly IObjectFactory _objectFactory;
-    private readonly Dictionary<Type, Type> _gpCache =
+    private readonly Dictionary<Type, Type?> _gpCache =
         new();
-    private readonly Dictionary<Type, Action<IParser, Type, Func<IParser, Type, object>, object>> _actionCache =
+    private readonly Dictionary<Type, Action<IParser, Type, Func<IParser, Type, object?>, object?>> _actionCache =
         new();
 
     public EmitGenericCollectionNodeDeserializer(IObjectFactory objectFactory)
@@ -29,9 +29,9 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
         _objectFactory = objectFactory;
     }
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
     {
-        if (!_gpCache.TryGetValue(expectedType, out Type gp))
+        if (!_gpCache.TryGetValue(expectedType, out var gp))
         {
             var collectionType = ReflectionUtility.GetImplementedGenericInterface(expectedType, typeof(ICollection<>));
             if (collectionType != null)
@@ -66,7 +66,7 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
             il.Emit(OpCodes.Castclass, typeof(ICollection<>).MakeGenericType(gp));
             il.Emit(OpCodes.Call, DeserializeHelperMethod.MakeGenericMethod(gp));
             il.Emit(OpCodes.Ret);
-            action = (Action<IParser, Type, Func<IParser, Type, object>, object>)dm.CreateDelegate(typeof(Action<IParser, Type, Func<IParser, Type, object>, object>));
+            action = (Action<IParser, Type, Func<IParser, Type, object?>, object?>)dm.CreateDelegate(typeof(Action<IParser, Type, Func<IParser, Type, object?>, object?>));
             _actionCache[gp] = action;
         }
 
@@ -75,13 +75,11 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void DeserializeHelper<TItem>(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, ICollection<TItem> result)
+    public static void DeserializeHelper<TItem>(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, ICollection<TItem> result)
     {
         reader.Consume<SequenceStart>();
         while (!reader.Accept<SequenceEnd>(out _))
         {
-            var current = reader.Current;
-
             var value = nestedObjectDeserializer(reader, typeof(TItem));
             if (value is not IValuePromise promise)
             {
@@ -90,11 +88,12 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
             else if (result is IList<TItem> list)
             {
                 var index = list.Count;
-                result.Add(default);
+                result.Add(default!);
                 promise.ValueAvailable += v => list[index] = TypeConverter.ChangeType<TItem>(v, NullNamingConvention.Instance);
             }
             else
             {
+                var current = reader.Current!;
                 throw new ForwardAnchorNotSupportedException(
                     current.Start,
                     current.End,
