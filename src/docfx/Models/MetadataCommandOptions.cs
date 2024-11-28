@@ -45,6 +45,10 @@ internal class MetadataCommandOptions : LogOptions
     [CommandOption("--disableDefaultFilter")]
     public bool DisableDefaultFilter { get; set; }
 
+    [Description("Do not run `dotnet restore` before building the projects")]
+    [CommandOption("--noRestore")]
+    public bool NoRestore { get; set; }
+
     [Description("Determines the category layout in table of contents.")]
     [CommandOption("--categoryLayout")]
     public CategoryLayout? CategoryLayout { get; set; }

@@ -24,7 +24,7 @@ public class YamlSerializer
     private readonly INamingConvention _namingConvention;
     private readonly ITypeResolver _typeResolver;
 
-    public YamlSerializer(SerializationOptions options = SerializationOptions.None, INamingConvention namingConvention = null)
+    public YamlSerializer(SerializationOptions options = SerializationOptions.None, INamingConvention? namingConvention = null)
     {
         _options = options;
         _namingConvention = namingConvention ?? NullNamingConvention.Instance;
@@ -76,7 +76,7 @@ public class YamlSerializer
     {
         IObjectGraphVisitor<IEmitter> emittingVisitor = new EmittingObjectGraphVisitor(eventEmitter);
 
-        void nestedObjectSerializer(object v, Type t = null) => SerializeValue(emitter, v, t);
+        void nestedObjectSerializer(object? v, Type? t = null) => SerializeValue(emitter, v, t);
 
         emittingVisitor = new CustomSerializationObjectGraphVisitor(emittingVisitor, Converters, nestedObjectSerializer);
 
@@ -96,7 +96,7 @@ public class YamlSerializer
         return emittingVisitor;
     }
 
-    public void SerializeValue(IEmitter emitter, object value, Type type)
+    public void SerializeValue(IEmitter emitter, object? value, Type? type)
     {
         var graph = type != null
             ? new BetterObjectDescriptor(value, type, type)

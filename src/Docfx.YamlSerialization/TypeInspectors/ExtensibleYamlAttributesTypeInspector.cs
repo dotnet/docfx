@@ -17,7 +17,7 @@ public sealed class ExtensibleYamlAttributesTypeInspector : ExtensibleTypeInspec
         this.innerTypeDescriptor = innerTypeDescriptor;
     }
 
-    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
+    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container)
     {
         return innerTypeDescriptor.GetProperties(type, container)
             .Where(p => p.GetCustomAttribute<YamlIgnoreAttribute>() == null)
@@ -46,6 +46,6 @@ public sealed class ExtensibleYamlAttributesTypeInspector : ExtensibleTypeInspec
             .OrderBy(p => p.Order);
     }
 
-    public override IPropertyDescriptor GetProperty(Type type, object container, string name) =>
+    public override IPropertyDescriptor? GetProperty(Type type, object? container, string name) =>
         innerTypeDescriptor.GetProperty(type, container, name);
 }

@@ -22,7 +22,7 @@ public sealed class ExtensibleObjectNodeDeserializer : INodeDeserializer
         _ignoreUnmatched = ignoreUnmatched;
     }
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
     {
         if (!reader.TryConsume<MappingStart>(out _))
         {

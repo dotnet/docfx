@@ -7,7 +7,7 @@ ENV PATH="${PATH}:/root/.dotnet/tools"
 ENV PLAYWRIGHT_NODEJS_PATH="/usr/bin/node"
 
 # Set target docfx version.
-ARG DOCFX_VERSION=2.78.1
+ARG DOCFX_VERSION=2.78.2
 
 # Install DocFX as a dotnet tool.
 RUN dotnet tool install docfx -g --version ${DOCFX_VERSION} && \
