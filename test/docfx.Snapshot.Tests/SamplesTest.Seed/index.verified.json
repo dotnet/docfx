@@ -47,7 +47,7 @@
   "api/BuildFromProject.Class1.Issue9260.html": {
     "href": "api/BuildFromProject.Class1.Issue9260.html",
     "title": "Enum Class1.Issue9260 | docfx seed website",
-    "keywords": "Enum Class1.Issue9260 Namespace BuildFromProject Assembly BuildFromProject.dll public enum Class1.Issue9260 Fields Value = 0 This is a regular enum value. [Obsolete] OldAndUnusedValue = 1 This is old and unused. You shouldn't use it anymore. [Obsolete(\"Use Value\")] OldAndUnusedValue2 = 2 This is old and unused. You shouldn't use it anymore."
+    "keywords": "Enum Class1.Issue9260 Namespace BuildFromProject Assembly BuildFromProject.dll public enum Class1.Issue9260 Fields Value = 0 This is a regular enum value. This is a remarks section. Very important remarks about Value go here. [Obsolete] OldAndUnusedValue = 1 This is old and unused. You shouldn't use it anymore. Don't use this, seriously! Use Value instead. [Obsolete(\"Use Value\")] OldAndUnusedValue2 = 2 This is old and unused. You shouldn't use it anymore. Don't use this, seriously! Use Value instead."
   },
   "api/BuildFromProject.Class1.Test-1.html": {
     "href": "api/BuildFromProject.Class1.Test-1.html",
