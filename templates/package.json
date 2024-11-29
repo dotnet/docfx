@@ -48,7 +48,7 @@
     "esbuild-sass-plugin": "~3.3.1",
     "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
-    "stylelint": "^16.10.0",
+    "stylelint": "^16.11.0",
     "stylelint-config-standard-scss": "^13.1.0",
     "typescript": "^5.7.2",
     "yargs": "^17.7.2"
