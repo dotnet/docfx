@@ -67,7 +67,7 @@ static class PdfBuilder
 
         PlaywrightHelper.EnsurePlaywrightNodeJsPath();
 
-        Program.Main(["install", "chromium"]);
+        Program.Main(["install", "chromium", "--only-shell"]);
 
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
