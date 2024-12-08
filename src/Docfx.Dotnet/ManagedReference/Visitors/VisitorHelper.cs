@@ -31,7 +31,7 @@ internal static partial class VisitorHelper
             return null;
         }
 
-        if (symbol is INamespaceSymbol {IsGlobalNamespace: true})
+        if (symbol is INamespaceSymbol { IsGlobalNamespace: true })
         {
             return GlobalNamespaceId;
         }
