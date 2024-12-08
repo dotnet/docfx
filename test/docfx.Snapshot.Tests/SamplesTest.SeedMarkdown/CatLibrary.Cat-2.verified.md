@@ -53,6 +53,7 @@ This type is a struct type, class type can't be used for this parameter.
 ## Examples
 
 <p>Here's example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
+
 <pre><code class="lang-c#">var a = new Cat(object, int)();
 int catNumber = new int();
 unsafe
