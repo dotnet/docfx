@@ -107,7 +107,7 @@ public partial class TabGroupAggregator : BlockAggregator<HeadingBlock>
     private static Tuple<string, string, LinkInline> ParseHeading(HeadingBlock block)
     {
         var child = block.Inline.FirstChild;
-        if (child is {NextSibling: null} and LinkInline link)
+        if (child is { NextSibling: null } and LinkInline link)
         {
             var m = HrefRegex().Match(link.Url);
             if (m.Success)

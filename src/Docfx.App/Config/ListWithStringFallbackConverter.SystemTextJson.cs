@@ -35,7 +35,7 @@ internal partial class ListWithStringFallbackConverter
                     {
                         using var document = JsonDocument.ParseValue(ref reader);
                         JsonElement root = document.RootElement;
-                        var values = root.EnumerateObject().Select(x=>x.ToString());
+                        var values = root.EnumerateObject().Select(x => x.ToString());
                         return new ListWithStringFallback(values);
                     }
                 default:
