@@ -1,0 +1,46 @@
+name: lint
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Lint
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false   
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.x
+
+      - name: Run `dotnet format` command
+        run: |
+          dotnet restore
+          dotnet format --no-restore --verify-no-changes
+
+      - name: Add sticky comment to PR
+        if: ${{ failure() && github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@331f8f5b4215f0445d3c07b4967662a32a2d3e31 # v2.9.0
+        with:
+          header: lint
+          skip_unchanged: true
+          recreate: true
+          message: |
+            ## Failed to run the `lint.yml` workflow
+            To fix workflow errors. Please follow the steps below.
+             1. Run `dotnet format` command.
+             2. Commit changes as separated commit.
+             3. Push changes to source branch of PR.
