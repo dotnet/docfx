@@ -59,6 +59,10 @@
     href: BuildFromProject.Inheritdoc.Issue7484.md
   - name: Inheritdoc.Issue8101
     href: BuildFromProject.Inheritdoc.Issue8101.md
+  - name: Inheritdoc.Issue9736
+    href: BuildFromProject.Inheritdoc.Issue9736.md
+  - name: Inheritdoc.Issue9736.JsonApiOptions
+    href: BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.md
   - name: Issue8725
     href: BuildFromProject.Issue8725.md
   - name: Structs
@@ -69,6 +73,8 @@
     href: BuildFromProject.Class1.IIssue8948.md
   - name: IInheritdoc
     href: BuildFromProject.IInheritdoc.md
+  - name: Inheritdoc.Issue9736.IJsonApiOptions
+    href: BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md
   - name: Enums
   - name: Class1.Issue9260
     href: BuildFromProject.Class1.Issue9260.md
