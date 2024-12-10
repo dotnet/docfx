@@ -105,7 +105,7 @@ public class TripleColonBlockParser : BlockParser
     public override BlockState TryContinue(BlockProcessor processor, Block block)
     {
         var slice = processor.Line;
-        var colonBlock = (TripleColonBlock) block;
+        var colonBlock = (TripleColonBlock)block;
         var endingTripleColons = colonBlock.EndingTripleColons;
 
         Type type = ((TripleColonBlock)block).Extension.GetType();

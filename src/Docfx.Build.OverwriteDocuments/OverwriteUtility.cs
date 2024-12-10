@@ -93,7 +93,7 @@ public static partial class OverwriteUtility
     {
         if (!fragment.Properties.TryGetValue(oPath, out var property))
         {
-            fragment.Properties[oPath] = property = new MarkdownProperty { OPath = oPath};
+            fragment.Properties[oPath] = property = new MarkdownProperty { OPath = oPath };
         }
 
         if (string.IsNullOrEmpty(property.Content))
