@@ -29,10 +29,9 @@ public class ValidateRestApiDocumentMetadata : BaseDocumentBuildStep
             case DocumentType.Overwrite:
                 foreach (var item in (List<OverwriteDocumentModel>)model.Content)
                 {
-                    host.ValidateInputMetadata(
-                        model.OriginalFileAndType.File,
-                        // use RestApiChildItemViewModel because it contains all properties for REST.
-                        item.ConvertTo<RestApiChildItemViewModel>().Metadata.ToImmutableDictionary());
+                    // use RestApiChildItemViewModel because it contains all properties for REST
+                    var metadata = item.ConvertTo<RestApiChildItemViewModel>().Metadata.ToImmutableDictionary();
+                    host.ValidateInputMetadata(model.OriginalFileAndType.File, metadata);
                 }
                 break;
             default:
