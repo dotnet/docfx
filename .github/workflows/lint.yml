@@ -14,8 +14,6 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false   
-    permissions:
-      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,16 +29,15 @@ jobs:
           dotnet restore
           dotnet format --no-restore --verify-no-changes
 
-      - name: Add sticky comment to PR
-        if: ${{ failure() && github.event_name == 'pull_request' }}
-        uses: marocchino/sticky-pull-request-comment@331f8f5b4215f0445d3c07b4967662a32a2d3e31 # v2.9.0
-        with:
-          header: lint
-          skip_unchanged: true
-          recreate: true
-          message: |
-            ## Failed to run the `lint.yml` workflow
-            To fix workflow errors. Please follow the steps below.
-             1. Run `dotnet format` command.
-             2. Commit changes as separated commit.
-             3. Push changes to source branch of PR.
+      - name: Report failures as Job Summary
+        if: ${{ failure() }}
+        shell: pwsh
+        run: |
+          $content = '
+          ## Failed to run the `lint.yml` workflow
+          To fix workflow errors. Please follow the steps below.
+           1. Run `dotnet format` command.
+           2. Commit changes as separated commit.
+           3. Push changes to source branch of PR.
+          '
+          Write-Output $content >> $env:GITHUB_STEP_SUMMARY
