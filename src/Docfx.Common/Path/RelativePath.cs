@@ -54,7 +54,7 @@ public sealed class RelativePath : IEquatable<RelativePath>
     public static bool IsRelativePath(string path)
     {
         // TODO : to merge with the PathUtility one
-        return path is {Length: > 0} &&
+        return path is { Length: > 0 } &&
                path[0] != '/' &&
                path[0] != '\\' &&
                path.IndexOfAny(PathUtility.InvalidPathChars) == -1;

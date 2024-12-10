@@ -135,7 +135,7 @@ public class MarkdigMarkdownService : IMarkdownService
             builder.UseInlineOnly();
         }
 
-        if (_parameters?.Extensions?.MarkdigExtensions is {Length: > 0} extensions)
+        if (_parameters?.Extensions?.MarkdigExtensions is { Length: > 0 } extensions)
         {
             builder.UseOptionalExtensions(extensions);
         }
