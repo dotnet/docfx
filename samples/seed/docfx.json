@@ -70,7 +70,7 @@
       { "files": [ "**" ], "src": "obj/md", "dest": "md" },
       { "files": [ "**" ], "src": "obj/apipage", "dest": "apipage" },
       { "files": [ "articles/**/*.{md,yml}", "*.md", "toc.yml", "restapi/**" ] },
-      { "files": [ "pdf/**" ] }
+      { "files": [ "pdf/*.{md,yml}" ] }
     ],
     "resource": [
       {
