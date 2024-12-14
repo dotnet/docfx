@@ -2,14 +2,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Docfx.Common;
 using Docfx.Plugins;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+#nullable enable
 
 namespace Docfx;
 
@@ -44,6 +48,7 @@ internal static class RunServe
             Console.WriteLine($"Serving \"{folder}\" on {url}");
             Console.WriteLine("Press Ctrl+C to shut down");
             using var app = builder.Build();
+            app.UseExtensionlessHtmlUrl();
             app.UseServe(folder);
 
             if (openBrowser || !string.IsNullOrEmpty(openFile))
@@ -159,6 +164,43 @@ internal static class RunServe
         catch (Exception ex)
         {
             Logger.LogError($"Could not launch the browser process. with error - {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Enable HTML content access with extensionless URL.
+    /// This extension method must be called before `UseFileServer` or `UseStaticFiles`.
+    /// </summary>
+    private static IApplicationBuilder UseExtensionlessHtmlUrl(this WebApplication app)
+    {
+        // Configure middleware that rewrite extensionless url to physical HTML file path.
+        return app.Use(async (context, next) =>
+        {
+            if (IsGetOrHeadMethod(context.Request.Method)
+             && TryResolveHtmlFilePath(context.Request.Path, out var htmlFilePath))
+            {
+                context.Request.Path = htmlFilePath;
+            }
+
+            await next();
+        });
+
+        static bool IsGetOrHeadMethod(string method) => HttpMethods.IsGet(method) || HttpMethods.IsHead(method);
+
+        // Try to resolve HTML file path.
+        bool TryResolveHtmlFilePath(PathString pathString, [NotNullWhen(true)] out string? htmlPath)
+        {
+            var path = pathString.Value;
+            if (!string.IsNullOrEmpty(path) && !Path.HasExtension(path) && !path.EndsWith('/'))
+            {
+                htmlPath = $"{path}.html";
+                var fileInfo = app.Environment.WebRootFileProvider.GetFileInfo(htmlPath);
+                if (fileInfo != null)
+                    return true;
+            }
+
+            htmlPath = null;
+            return false;
         }
     }
 }
