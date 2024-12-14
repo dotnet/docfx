@@ -9,7 +9,7 @@ public class FileGlob
     {
         if (patterns == null)
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
 
         if (string.IsNullOrEmpty(cwd))
@@ -18,7 +18,7 @@ public class FileGlob
         }
         var globArray = patterns.Select(s => new GlobMatcher(s, options)).ToArray();
         var excludeGlobArray = excludePatterns == null ?
-            Array.Empty<GlobMatcher>() :
+            [] :
             excludePatterns.Select(s => new GlobMatcher(s, options)).ToArray();
         return GetFilesCore(cwd, globArray, excludeGlobArray);
     }

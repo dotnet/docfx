@@ -52,6 +52,6 @@ public class JintProcessorHelperTest
 
         public Dictionary<object, object> ValueDict { get; set; } = new() { [1] = "Value1", ["key"] = 2 };
 
-        public List<string> ValueList { get; set; } = new() { "ValueA", "ValueB" };
+        public List<string> ValueList { get; set; } = ["ValueA", "ValueB"];
     }
 }

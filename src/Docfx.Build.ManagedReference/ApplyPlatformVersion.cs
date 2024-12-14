@@ -60,7 +60,7 @@ public class ApplyPlatformVersion : BaseDocumentBuildStep
     {
         if (value is string text)
         {
-            return new List<string> { text };
+            return [text];
         }
 
         if (value is IEnumerable<object> collection)

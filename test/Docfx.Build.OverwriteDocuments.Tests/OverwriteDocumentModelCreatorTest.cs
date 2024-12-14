@@ -58,7 +58,7 @@ definitions:
             });
         }
 
-        var contentsMetadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
+        var contentsMetadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents([], contents);
         Assert.Equal(3, contentsMetadata.Count);
         Assert.Equal("summary,return,function", ExtractDictionaryKeys(contentsMetadata));
         Assert.Equal(2, ((Dictionary<object, object>)contentsMetadata["return"]).Count);
@@ -79,26 +79,27 @@ definitions:
     public void DuplicateOPathInMarkdownSectionTest()
     {
         var testOPath = "function/parameters";
-        var contents = new List<MarkdownPropertyModel>();
-
-        contents.Add(new MarkdownPropertyModel
+        var contents = new List<MarkdownPropertyModel>
         {
-            PropertyName = testOPath,
-            PropertyNameSource = Markdown.Parse($"## `{testOPath}`")[0],
-            PropertyValue = Markdown.Parse("test1").ToList()
-        });
-        contents.Add(new MarkdownPropertyModel
-        {
-            PropertyName = testOPath,
-            PropertyNameSource = Markdown.Parse($"## `{testOPath}`")[0],
-            PropertyValue = Markdown.Parse("test2").ToList()
-        });
+            new MarkdownPropertyModel
+            {
+                PropertyName = testOPath,
+                PropertyNameSource = Markdown.Parse($"## `{testOPath}`")[0],
+                PropertyValue = Markdown.Parse("test1").ToList()
+            },
+            new MarkdownPropertyModel
+            {
+                PropertyName = testOPath,
+                PropertyNameSource = Markdown.Parse($"## `{testOPath}`")[0],
+                PropertyValue = Markdown.Parse("test2").ToList()
+            }
+        };
 
         Dictionary<string, object> contentsMetadata;
         Logger.RegisterListener(_listener);
         try
         {
-            contentsMetadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
+            contentsMetadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents([], contents);
         }
         finally
         {
@@ -188,7 +189,7 @@ definitions:
             });
         }
 
-        var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents));
+        var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreator("test.yml.md").ConvertContents([], contents));
         Assert.Equal(
             "A(parameters) is not expected to be an array like \"A[c=d]/B\", however it is used as an array in line 0 with `parameters[id=\"para1\"]/...`",
             ex.Message);
@@ -215,7 +216,7 @@ definitions:
             });
         }
 
-        var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents));
+        var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreator("test.yml.md").ConvertContents([], contents));
         Assert.Equal(
             "A(parameters) is not expected to be an object like \"A/B\", however it is used as an object in line 0 with `parameters/...`",
             ex.Message);

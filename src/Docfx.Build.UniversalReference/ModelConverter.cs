@@ -31,7 +31,7 @@ public static class ModelConverter
         Dictionary<string, ApiNames> references = null;
         if (model.References != null)
         {
-            references = new Dictionary<string, ApiNames>();
+            references = [];
             foreach (var reference in model.References
                 .Where(r => !string.IsNullOrEmpty(r.Uid))
                 .Select(ToReferenceApiNames))
@@ -44,7 +44,7 @@ public static class ModelConverter
         var childUids = model.Items[0].Children ?? Enumerable.Empty<string>()
             .Concat(model.Items[0].ChildrenInDevLangs != null
                 ? model.Items[0].ChildrenInDevLangs.SelectMany(kv => kv.Value)
-                : Enumerable.Empty<string>())
+                : [])
             .Distinct();
         var children = new Dictionary<string, ApiBuildOutput>();
         if (model.References != null)
@@ -388,7 +388,7 @@ public static class ModelConverter
         }
 
         var result = new List<ApiLanguageValuePair<T>>();
-        values ??= new SortedList<string, T>();
+        values ??= [];
         foreach (var language in supportedLanguages)
         {
             result.Add(new ApiLanguageValuePair<T>

@@ -56,7 +56,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
         {
             config.Xref =
                 new ListWithStringFallback(
-                    (config.Xref ?? new ListWithStringFallback())
+                    (config.Xref ?? [])
                     .Concat(options.XRefMaps)
                     .Where(x => !string.IsNullOrWhiteSpace(x))
                     .Distinct());
@@ -100,7 +100,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
         {
             if (options.Metadata != null)
             {
-                config.GlobalMetadata ??= new();
+                config.GlobalMetadata ??= [];
                 foreach (var metadata in options.Metadata)
                 {
                     var (key, value) = ParseMetadata(metadata);

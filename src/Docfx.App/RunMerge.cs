@@ -56,7 +56,7 @@ internal static class RunMerge
             OutputBaseDir = outputDirectory,
             Metadata = config.GlobalMetadata?.ToImmutableDictionary() ?? ImmutableDictionary<string, object>.Empty,
             FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata),
-            TocMetadata = config.TocMetadata?.ToImmutableList() ?? ImmutableList<string>.Empty,
+            TocMetadata = config.TocMetadata?.ToImmutableList() ?? [],
             Files = GetFileCollectionFromFileMapping(
                 baseDirectory,
                 DocumentType.Article,

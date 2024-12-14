@@ -10,7 +10,7 @@ namespace Docfx.Dotnet.Tests;
 [Collection("docfx STA")]
 public class ApiFilterUnitTest
 {
-    private static readonly Dictionary<string, string> EmptyMSBuildProperties = new();
+    private static readonly Dictionary<string, string> EmptyMSBuildProperties = [];
 
     [Fact]
     public void TestApiFilter()

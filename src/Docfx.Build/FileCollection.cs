@@ -8,7 +8,7 @@ namespace Docfx.Build.Engine;
 
 public class FileCollection
 {
-    private readonly List<FileAndType> _files = new();
+    private readonly List<FileAndType> _files = [];
 
     public int Count => _files.Count;
 

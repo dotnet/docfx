@@ -15,7 +15,7 @@ namespace Docfx.Build.RestApi;
 [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
 public class BuildRestApiDocument : BuildReferenceDocumentBase
 {
-    private static readonly HashSet<string> MarkupKeys = new() { "description" };
+    private static readonly HashSet<string> MarkupKeys = ["description"];
 
     public override string Name => nameof(BuildRestApiDocument);
 

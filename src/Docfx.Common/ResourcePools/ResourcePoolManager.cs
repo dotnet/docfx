@@ -8,7 +8,7 @@ public class ResourcePoolManager<TResource>
     where TResource : class
 {
     private readonly object _syncRoot = new();
-    private readonly List<TResource> _resources = new();
+    private readonly List<TResource> _resources = [];
     private readonly Stack<TResource> _stack = new();
     private readonly Func<TResource> _creator;
     private readonly int _maxResourceCount;

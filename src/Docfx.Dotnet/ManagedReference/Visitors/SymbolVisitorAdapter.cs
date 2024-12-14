@@ -20,7 +20,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     private static readonly IReadOnlyList<string> EmptyListOfString = Array.Empty<string>();
     private readonly Compilation _compilation;
     private readonly YamlModelGenerator _generator;
-    private readonly Dictionary<string, ReferenceItem> _references = new();
+    private readonly Dictionary<string, ReferenceItem> _references = [];
     private readonly IMethodSymbol[] _extensionMethods;
     private readonly ExtractMetadataConfig _config;
     private readonly SymbolFilter _filter;
@@ -31,7 +31,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         _generator = generator;
         _filter = filter;
         _config = config;
-        _extensionMethods = extensionMethods?.Where(_filter.IncludeApi).ToArray() ?? Array.Empty<IMethodSymbol>();
+        _extensionMethods = extensionMethods?.Where(_filter.IncludeApi).ToArray() ?? [];
     }
 
     public override MetadataItem DefaultVisit(ISymbol symbol)
@@ -45,13 +45,13 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             Name = VisitorHelper.GetId(symbol),
             CommentId = VisitorHelper.GetCommentId(symbol),
-            DisplayNames = new SortedList<SyntaxLanguage, string>(),
-            DisplayNamesWithType = new SortedList<SyntaxLanguage, string>(),
-            DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>(),
+            DisplayNames = [],
+            DisplayNamesWithType = [],
+            DisplayQualifiedNames = [],
             Source = _config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, _compilation),
         };
         var assemblyName = symbol.ContainingAssembly?.Name;
-        item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) || assemblyName is "?" ? null : new List<string> { assemblyName };
+        item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) || assemblyName is "?" ? null : [assemblyName];
         if (symbol is not INamespaceSymbol)
         {
             var namespaceName = VisitorHelper.GetId(symbol.ContainingNamespace);
@@ -155,10 +155,10 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         item.Type = VisitorHelper.GetMemberTypeFromTypeKind(symbol.TypeKind);
-        item.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
+        item.Syntax ??= new SyntaxDetail { Content = [] };
         if (item.Syntax.Content == null)
         {
-            item.Syntax.Content = new SortedList<SyntaxLanguage, string>();
+            item.Syntax.Content = [];
         }
         _generator.GenerateSyntax(symbol, item.Syntax, _filter);
 
@@ -166,7 +166,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             if (item.Syntax.TypeParameters == null)
             {
-                item.Syntax.TypeParameters = new List<ApiParameter>();
+                item.Syntax.TypeParameters = [];
             }
 
             foreach (var p in symbol.TypeParameters)
@@ -182,7 +182,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             AddMethodSyntax(symbol.DelegateInvokeMethod, item, typeGenericParameters, EmptyListOfString);
         }
 
-        item.Items = new List<MetadataItem>();
+        item.Items = [];
         foreach (
             var member in symbol.GetMembers()
             .Where(static s =>
@@ -212,13 +212,13 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
+        result.Syntax ??= new SyntaxDetail { Content = [] };
 
         if (symbol.TypeParameters.Length > 0)
         {
             if (result.Syntax.TypeParameters == null)
             {
-                result.Syntax.TypeParameters = new List<ApiParameter>();
+                result.Syntax.TypeParameters = [];
             }
 
             foreach (var p in symbol.TypeParameters)
@@ -236,7 +236,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
         if (result.Syntax.Content == null)
         {
-            result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
+            result.Syntax.Content = [];
         }
         _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
@@ -264,10 +264,10 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
+        result.Syntax ??= new SyntaxDetail { Content = [] };
         if (result.Syntax.Content == null)
         {
-            result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
+            result.Syntax.Content = [];
         }
         _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
@@ -289,10 +289,10 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
+        result.Syntax ??= new SyntaxDetail { Content = [] };
         if (result.Syntax.Content == null)
         {
-            result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
+            result.Syntax.Content = [];
         }
         _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
@@ -323,14 +323,14 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
+        result.Syntax ??= new SyntaxDetail { Content = [] };
         if (result.Syntax.Parameters == null)
         {
-            result.Syntax.Parameters = new List<ApiParameter>();
+            result.Syntax.Parameters = [];
         }
         if (result.Syntax.Content == null)
         {
-            result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
+            result.Syntax.Content = [];
         }
         _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
@@ -387,9 +387,9 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         var reference = new ReferenceItem { CommentId = commentId };
         if (DocumentationCommentId.GetFirstSymbolForDeclarationId(commentId, _compilation) is { } symbol)
         {
-            reference.NameParts = new();
-            reference.NameWithTypeParts = new();
-            reference.QualifiedNameParts = new();
+            reference.NameParts = [];
+            reference.NameWithTypeParts = [];
+            reference.QualifiedNameParts = [];
             reference.IsDefinition = symbol.IsDefinition;
 
             _generator.GenerateReference(symbol, reference, asOverload: false, _filter);
@@ -549,7 +549,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             var type = symbol;
             var inheritance = new List<string>();
-            dict = new Dictionary<string, string>();
+            dict = [];
             var typeParameterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
             while (type != null)
             {
@@ -587,7 +587,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
         else if (symbol.TypeKind == TypeKind.Interface)
         {
-            dict = new Dictionary<string, string>();
+            dict = [];
             var typeParameterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
             AddInheritedMembers(symbol, symbol, dict, typeParameterNames);
             for (int i = 0; i < symbol.AllInterfaces.Length; i++)
@@ -692,7 +692,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             if (result.Syntax.Parameters == null)
             {
-                result.Syntax.Parameters = new List<ApiParameter>();
+                result.Syntax.Parameters = [];
             }
 
             foreach (var p in symbol.Parameters)
@@ -719,7 +719,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         void AddReferenceDelegate(string id, string commentId)
         {
             var r = AddReference(id, commentId);
-            item.References ??= new Dictionary<string, ReferenceItem>();
+            item.References ??= [];
 
             // only record the id now, the value would be fed at later phase after merge
             item.References[id] = null;

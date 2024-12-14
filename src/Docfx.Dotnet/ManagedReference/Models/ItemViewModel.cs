@@ -72,7 +72,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> Names { get; set; } = new();
+    public SortedList<string, string> Names { get; set; } = [];
 
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
@@ -128,7 +128,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> NamesWithType { get; set; } = new();
+    public SortedList<string, string> NamesWithType { get; set; } = [];
 
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
@@ -184,7 +184,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public SortedList<string, string> FullNames { get; set; } = new();
+    public SortedList<string, string> FullNames { get; set; } = [];
 
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
@@ -373,7 +373,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
     [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]

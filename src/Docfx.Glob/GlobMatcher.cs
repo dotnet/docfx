@@ -12,7 +12,7 @@ public partial class GlobMatcher : IEquatable<GlobMatcher>
 {
     #region Private fields
     private static readonly StringComparer Comparer = FilePathComparer.OSPlatformSensitiveStringComparer;
-    private static readonly string[] EmptyString = Array.Empty<string>();
+    private static readonly string[] EmptyString = [];
     private const char NegateChar = '!';
     private const string GlobStar = "**";
     private const string ReplacerGroupName = "replacer";
@@ -120,7 +120,7 @@ public partial class GlobMatcher : IEquatable<GlobMatcher>
         if (Options.HasFlag(GlobMatcherOptions.AllowExpand))
         {
             globs = ExpandGroup(pattern, Options);
-            if (globs.Length == 0) return Enumerable.Empty<GlobRegexItem[]>();
+            if (globs.Length == 0) return [];
         }
         else
         {
@@ -558,8 +558,7 @@ public partial class GlobMatcher : IEquatable<GlobMatcher>
             }
             public override List<StringBuilder> Flatten()
             {
-                List<StringBuilder> result = new(1);
-                result.Add(_builder);
+                List<StringBuilder> result = [_builder];
                 return result;
             }
         }
@@ -569,7 +568,7 @@ public partial class GlobMatcher : IEquatable<GlobMatcher>
             public ChoiceNode(GlobNode parentNode)
             : base(parentNode)
             {
-                _nodes = new List<SequenceNode>();
+                _nodes = [];
             }
             public override GlobNode AddChar(char c)
             {
@@ -594,7 +593,7 @@ public partial class GlobMatcher : IEquatable<GlobMatcher>
             }
             public override List<StringBuilder> Flatten()
             {
-                List<StringBuilder> result = new();
+                List<StringBuilder> result = [];
                 foreach (GlobNode node in _nodes)
                 {
                     foreach (StringBuilder builder in node.Flatten())
@@ -611,7 +610,7 @@ public partial class GlobMatcher : IEquatable<GlobMatcher>
             public SequenceNode(GlobNode parentNode)
             : base(parentNode)
             {
-                _nodes = new List<GlobNode>();
+                _nodes = [];
             }
             public override GlobNode AddChar(char c)
             {
@@ -635,11 +634,10 @@ public partial class GlobMatcher : IEquatable<GlobMatcher>
             }
             public override List<StringBuilder> Flatten()
             {
-                List<StringBuilder> result = new();
-                result.Add(new StringBuilder());
+                List<StringBuilder> result = [new StringBuilder()];
                 foreach (GlobNode node in _nodes)
                 {
-                    List<StringBuilder> tmp = new();
+                    List<StringBuilder> tmp = [];
                     foreach (StringBuilder builder in node.Flatten())
                     {
                         foreach (StringBuilder sb in result)

@@ -176,7 +176,7 @@ public class MergeManagedReferenceDocument : BaseDocumentBuildStep
     {
         var vm = new PageViewModel
         {
-            Items = new List<ItemViewModel>(),
+            Items = [],
             References = mergeItem.References?.Values.ToList(),
             Metadata = mergeItem.Metadata,
         };

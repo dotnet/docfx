@@ -48,7 +48,7 @@ public sealed class LocalFileResourceReader : ResourceFileReader
     {
         if (searchLevel < 1)
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
         var files = Directory.GetFiles(directory, searchPattern, SearchOption.TopDirectoryOnly);
         var dirs = Directory.GetDirectories(directory);

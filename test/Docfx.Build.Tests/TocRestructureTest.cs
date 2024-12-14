@@ -259,7 +259,7 @@ root
         }
         var root = new TocItemViewModel
         {
-            Items = new()
+            Items = []
         };
         var stack = new Stack<Tuple<LineInfo, TocItemViewModel>>();
         stack.Push(Tuple.Create(new LineInfo
@@ -280,7 +280,7 @@ root
             var parent = stack.Peek();
             if (parent.Item2.Items == null)
             {
-                parent.Item2.Items = new();
+                parent.Item2.Items = [];
             }
             parent.Item2.Items.Add(item);
 
@@ -291,8 +291,8 @@ root
 
     private IEnumerable<LineInfo> GetLines(string layout)
     {
-        return layout.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
-            .SelectMany(s => s.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries))
+        return layout.Split(["\r\n"], StringSplitOptions.RemoveEmptyEntries)
+            .SelectMany(s => s.Split(["\n"], StringSplitOptions.RemoveEmptyEntries))
             .Where(s => !string.IsNullOrWhiteSpace(s)).Select(GetLineInfo);
     }
 

@@ -13,7 +13,7 @@ namespace Docfx.Build.Common;
 
 public class MarkdownReader
 {
-    private static readonly ImmutableList<string> RequiredProperties = ImmutableList.Create(Constants.PropertyName.Uid);
+    private static readonly ImmutableList<string> RequiredProperties = [Constants.PropertyName.Uid];
 
     public static IEnumerable<OverwriteDocumentModel> ReadMarkdownAsOverwrite(IHostService host, FileAndType ft)
     {
