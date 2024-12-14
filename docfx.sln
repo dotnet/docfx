@@ -15,6 +15,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{926A0726-B806-4215-82EF-AF8E22D0FACF}"
 	ProjectSection(SolutionItems) = preProject
 		test\Directory.Build.props = test\Directory.Build.props
+		test\Directory.Packages.props = test\Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx", "src\docfx\docfx.csproj", "{EF53214F-BA98-4026-BEED-CF771865C312}"
@@ -96,6 +97,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Build.OverwriteDocuments", "src\Docfx.Build.OverwriteDocuments\Docfx.Build.OverwriteDocuments.csproj", "{528A2D8B-4792-4202-987E-876E9D0EAF03}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Build.OverwriteDocuments.Tests", "test\Docfx.Build.OverwriteDocuments.Tests\Docfx.Build.OverwriteDocuments.Tests.csproj", "{CAECA6C3-3317-4E6E-8927-9186857B23E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
