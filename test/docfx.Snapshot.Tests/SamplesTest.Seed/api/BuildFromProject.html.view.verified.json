@@ -855,6 +855,130 @@
           "hideSubtitle": false
         },
         {
+          "uid": "BuildFromProject.Inheritdoc.Issue9736",
+          "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue9736"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue9736"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue9736"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue9736"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue9736"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue9736"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.html\">Issue9736</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.html\">Issue9736</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Inheritdoc_Issue9736",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions",
+          "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue9736.JsonApiOptions"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue9736.JsonApiOptions"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue9736.JsonApiOptions"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue9736.JsonApiOptions"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.html\">Issue9736</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html\">JsonApiOptions</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.html\">Issue9736</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html\">JsonApiOptions</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Inheritdoc_Issue9736_JsonApiOptions",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
           "uid": "BuildFromProject.Issue8725",
           "isExtensionMethod": false,
           "href": "BuildFromProject.Issue8725.html",
@@ -1115,6 +1239,69 @@
           "example": "",
           "seealso": [],
           "id": "BuildFromProject_IInheritdoc",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions",
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject",
+          "href": "BuildFromProject.Inheritdoc.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue9736.IJsonApiOptions"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue9736.IJsonApiOptions"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue9736.IJsonApiOptions"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue9736.IJsonApiOptions"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.html\">Issue9736</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html\">IJsonApiOptions</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.html\">Issue9736</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html\">IJsonApiOptions</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "interface",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Inheritdoc_Issue9736_IJsonApiOptions",
           "hideTitleType": false,
           "hideSubtitle": false
         }

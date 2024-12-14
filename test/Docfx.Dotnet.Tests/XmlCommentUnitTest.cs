@@ -28,7 +28,8 @@ public class XmlCommentUnitTest
         Assert.Equal(
             """
             a
-            <p>b</p><p>c</p>
+            <p>b</p>
+            <p>c</p>
             """,
             XmlComment.Parse("""
                 <summary>
@@ -390,13 +391,14 @@ public class XmlCommentUnitTest
             <a href="https://example.org">example</a>
             <p>This is <code class="paramref">ref</code> a sample of exception node</p>
             <ul><li>
-                  <pre><code class="lang-c#">public class XmlElement
-                      : XmlLinkedNode</code></pre>
-                  <ol><li>
-                                    word inside list-&gt;listItem-&gt;list-&gt;listItem-&gt;para.&gt;
+
+                        <pre><code class="lang-c#">public class XmlElement
+                            : XmlLinkedNode</code></pre>
+                        <ol><li>
+                                    word inside list->listItem->list->listItem->para.>
                                     the second line.
                                 </li><li>item2 in numbered list</li></ol>
-                </li><li>item2 in bullet list</li><li>
+                    </li><li>item2 in bullet list</li><li>
                     loose text <i>not</i> wrapped in description
                 </li></ul>
             """, remarks, ignoreLineEndingDifferences: true);
@@ -519,6 +521,7 @@ public class XmlCommentUnitTest
         Assert.Equal(
             """
             <pre><code class="lang-csharp">options.UseRelativeLinks = true;</code></pre>
+
             <pre><code class="lang-csharp">{
               "type": "articles",
               "id": "4309",
@@ -533,4 +536,45 @@ public class XmlCommentUnitTest
             }</code></pre>
             """, comment.Examples[0], ignoreLineEndingDifferences: true);
     }
+
+    [Fact]
+    public void Issue10385()
+    {
+        var comment = XmlComment.Parse(
+            """
+            <remarks>
+            <para>
+            Paragraph.
+            </para>
+            <code lang="cs">
+            public sealed class Issue10385
+            {
+                public int AAA {get;set;}
+            
+                public int BBB {get;set;}
+            
+                public int CCC {get;set;}
+            }
+            </code>
+            </remarks>
+            """);
+        Assert.Equal(
+            """
+            <p>
+            Paragraph.
+            </p>
+
+            <pre><code class="lang-csharp">public sealed class Issue10385
+            {
+                public int AAA {get;set;}
+
+                public int BBB {get;set;}
+
+                public int CCC {get;set;}
+            }</code></pre>
+            """, comment.Remarks, ignoreLineEndingDifferences: true);
+    }
+
+
+
 }
