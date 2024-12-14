@@ -12,7 +12,7 @@ namespace Docfx.Build.Engine;
 sealed class ValidateBookmark : HtmlDocumentHandler
 {
     private static readonly string XPathTemplate = "//*/@{0}";
-    private static readonly HashSet<string> WhiteList = new() { "top" };
+    private static readonly HashSet<string> WhiteList = ["top"];
     /// <summary>
     /// bookmarks mapping from output file -> bookmarks
     /// </summary>

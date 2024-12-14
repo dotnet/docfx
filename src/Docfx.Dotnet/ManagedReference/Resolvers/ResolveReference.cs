@@ -20,7 +20,7 @@ internal class ResolveReference : IResolverPipeline
                 if (current.Type.IsPageLevel())
                 {
                     page = current;
-                    current.References = new Dictionary<string, ReferenceItem>();
+                    current.References = [];
                 }
                 else
                 {

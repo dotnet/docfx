@@ -21,7 +21,7 @@ internal static class RunBuild
         var stopwatch = Stopwatch.StartNew();
         if (config.Template == null || config.Template.Count == 0)
         {
-            config.Template = new ListWithStringFallback { "default" };
+            config.Template = ["default"];
         }
 
         var baseDirectory = Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory);

@@ -10,7 +10,7 @@ public sealed class YamlCodeBlockRule : IOverwriteBlockRule
 {
     public string TokenName => "YamlCodeBlock";
 
-    private static readonly List<string> _allowedLanguages = new() { "yaml", "yml" };
+    private static readonly List<string> _allowedLanguages = ["yaml", "yml"];
 
     public bool Parse(Block block, out string value)
     {

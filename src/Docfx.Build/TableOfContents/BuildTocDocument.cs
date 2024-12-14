@@ -84,7 +84,7 @@ class BuildTocDocument : BaseDocumentBuildStep
     }
 
     private static void AddOrUpdate(Dictionary<string, ImmutableList<LinkSourceInfo>> dict, string path, LinkSourceInfo source)
-        => dict[path] = dict.TryGetValue(path, out var sources) ? sources.Add(source) : ImmutableList.Create(source);
+        => dict[path] = dict.TryGetValue(path, out var sources) ? sources.Add(source) : [source];
 
     private static LinkSourceInfo GetLinkSourceInfo(string path, string anchor, string source, string includedFrom)
     {

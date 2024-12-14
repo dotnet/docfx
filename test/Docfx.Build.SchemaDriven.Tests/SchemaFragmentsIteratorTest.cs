@@ -24,7 +24,7 @@ public class SchemaFragmentsIteratorTest
         }
 
         // act
-        iterator.Traverse(yamlStream.Documents[0].RootNode, new Dictionary<string, MarkdownFragment>(), schema);
+        iterator.Traverse(yamlStream.Documents[0].RootNode, [], schema);
 
         // assert
         Assert.Single(counter.ExistingUids);

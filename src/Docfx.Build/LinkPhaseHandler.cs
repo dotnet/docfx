@@ -35,7 +35,7 @@ internal class LinkPhaseHandler
 
     private void Save(List<HostService> hostServices, int maxParallelism)
     {
-        _manifestWithContext = new List<ManifestItemWithContext>();
+        _manifestWithContext = [];
         foreach (var hostService in hostServices)
         {
             _manifestWithContext.AddRange(ExportManifest(hostService));

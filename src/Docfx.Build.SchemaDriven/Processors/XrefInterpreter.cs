@@ -61,7 +61,7 @@ public class XrefInterpreter : IInterpreter
         var file = source.Target;
         if (!uidLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))
         {
-            sources = new List<LinkSourceInfo>();
+            sources = [];
             uidLinkSources[file] = sources;
         }
         sources.Add(source);

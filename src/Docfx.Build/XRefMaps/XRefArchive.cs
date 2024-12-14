@@ -71,7 +71,7 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
                     }
                     fs = File.Create(file);
                     archive = new ZipArchive(fs, ZipArchiveMode.Update);
-                    entries = new List<string>();
+                    entries = [];
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode));
@@ -299,7 +299,7 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
 
     bool IXRefContainer.IsEmbeddedRedirections => true;
 
-    IEnumerable<XRefMapRedirection> IXRefContainer.GetRedirections() => Enumerable.Empty<XRefMapRedirection>();
+    IEnumerable<XRefMapRedirection> IXRefContainer.GetRedirections() => [];
 
     public IXRefContainerReader GetReader()
     {

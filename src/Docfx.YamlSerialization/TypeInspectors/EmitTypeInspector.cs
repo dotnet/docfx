@@ -68,9 +68,9 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 
         public Exception? Error { get; private set; }
 
-        public List<EmitPropertyDescriptorSkeleton> Properties { get; } = new();
+        public List<EmitPropertyDescriptorSkeleton> Properties { get; } = [];
 
-        public List<ExtensiblePropertyDescriptorSkeleton> ExtensibleProperties { get; } = new();
+        public List<ExtensiblePropertyDescriptorSkeleton> ExtensibleProperties { get; } = [];
 
         public static CachingItem Create(Type type)
         {

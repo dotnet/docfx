@@ -10,7 +10,7 @@ namespace Docfx.Build.SchemaDriven;
 
 public class ValidateFragmentsHandler : ISchemaFragmentsHandler
 {
-    private readonly Dictionary<string, bool> _isMissingUidsLogged = new();
+    private readonly Dictionary<string, bool> _isMissingUidsLogged = [];
 
     public void HandleUid(string uidKey, YamlMappingNode node, Dictionary<string, MarkdownFragment> fragments, BaseSchema schema, string oPathPrefix, string uid)
     {

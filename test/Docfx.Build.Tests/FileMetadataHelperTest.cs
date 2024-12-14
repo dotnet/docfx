@@ -122,18 +122,24 @@ public class FileMetadataHelperTest
         var patterns = new string[] { "*md", "*.m", "abc", "/[]\\*.cs", "*/*.cs", "**" };
         var left = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
         {
-            ["meta"] = ImmutableArray.Create(
+            ["meta"] =
+
+            [
                 new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
                 new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true)
-            )
+,
+            ]
         });
 
         var right = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
         {
-            ["meta"] = ImmutableArray.Create(
+            ["meta"] =
+
+            [
                 new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
                 new FileMetadataItem(new GlobMatcher(patterns[2]), "meta", "string")
-            )
+,
+            ]
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
@@ -150,17 +156,18 @@ public class FileMetadataHelperTest
         var patterns = new string[] { "*md", "*.m", "abc", "/[]\\*.cs", "*/*.cs", "**" };
         var left = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
         {
-            ["meta"] = ImmutableArray.Create(
+            ["meta"] =
+
+            [
                 new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
                 new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true)
-            )
+,
+            ]
         });
 
         var right = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
         {
-            ["meta"] = ImmutableArray.Create(
-                new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L)
-            )
+            ["meta"] = [new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L)]
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
@@ -176,19 +183,25 @@ public class FileMetadataHelperTest
         var patterns = new string[] { "*md", "*.m", "abc" };
         var left = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
         {
-            ["meta"] = ImmutableArray.Create(
+            ["meta"] =
+
+            [
                 new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
                 new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true)
-            )
+,
+            ]
         });
 
         var right = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
         {
-            ["meta"] = ImmutableArray.Create(
+            ["meta"] =
+
+            [
                 new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
                 new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
                 new FileMetadataItem(new GlobMatcher(patterns[2]), "meta", "string")
-            )
+,
+            ]
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
@@ -204,12 +217,15 @@ public class FileMetadataHelperTest
         var patterns = new string[] { "*md", "*.m", "abc", "/[]\\*.cs", "*/*.cs", "**" };
         var left = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
         {
-            ["meta"] = ImmutableArray.Create(
+            ["meta"] =
+
+            [
                 new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
                 new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
                 new FileMetadataItem(new GlobMatcher(patterns[3]), "meta", new Dictionary<string, object> { ["key"] = "2" }),
                 new FileMetadataItem(new GlobMatcher(patterns[5]), "meta", new Dictionary<string, object> { ["key"] = new object[] { "1", "2" } })
-            )
+,
+            ]
         });
 
         var right = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
@@ -238,18 +254,20 @@ public class FileMetadataHelperTest
         var patterns = new string[] { "*md", "*.m" };
         var left = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
         {
-            ["meta"] = ImmutableArray.Create(
+            ["meta"] =
+            [
                 new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
                 new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true)
-            )
+            ]
         });
 
         var right = new FileMetadata(baseDir, new Dictionary<string, ImmutableArray<FileMetadataItem>>
         {
-            ["meta"] = ImmutableArray.Create(
+            ["meta"] =
+            [
                 new FileMetadataItem(new GlobMatcher(patterns[1]), "meta", true),
-                new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L)
-            )
+                new FileMetadataItem(new GlobMatcher(patterns[0]), "meta", 1L),
+            ]
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();

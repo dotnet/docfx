@@ -6,7 +6,7 @@ namespace Docfx.Common;
 public class CompositeLogListener : ILoggerListener
 {
     private readonly object _sync = new();
-    private readonly List<ILoggerListener> _listeners = new();
+    private readonly List<ILoggerListener> _listeners = [];
 
     public CompositeLogListener()
     {

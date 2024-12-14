@@ -7,7 +7,7 @@ namespace Docfx.Dotnet;
 
 internal class SetDerivedClass : IResolverPipeline
 {
-    private readonly Dictionary<string, List<string>> _derivedClassMapping = new();
+    private readonly Dictionary<string, List<string>> _derivedClassMapping = [];
 
     public void Run(MetadataModel yaml, ResolverContext context)
     {
@@ -41,7 +41,7 @@ internal class SetDerivedClass : IResolverPipeline
                     }
                     else
                     {
-                        _derivedClassMapping.Add(superClass, new List<string> { item.Name });
+                        _derivedClassMapping.Add(superClass, [item.Name]);
                     }
                 }
             }

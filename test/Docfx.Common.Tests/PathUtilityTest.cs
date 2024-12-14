@@ -46,10 +46,10 @@ public class PathUtilityTest
             { "/temp/dir",       "/temp/dir/subdir/",       "subdir/"},               // If target path endsWith directory separator char. resolved path should contain directory separator.
         };
 
-        public static TheoryData<string> EscapedPaths = new()
-        {
+        public static TheoryData<string> EscapedPaths =
+        [
             "EscapedHypen(%2D).md",                      // Contains escaped hypen char
             "EscapedSpace(%20)_with_NonAsciiChar(α).md", // Contains escaped space char and non-unicode char
-        };
+        ];
     }
 }

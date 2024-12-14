@@ -126,7 +126,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public ConcurrentDictionary<string, HashSet<string>> TocMap { get; } = new(FilePathComparer.OSPlatformSensitiveStringComparer);
 
-    public HashSet<string> XRef { get; } = new();
+    public HashSet<string> XRef { get; } = [];
 
     public string RootTocPath { get; }
 
@@ -136,7 +136,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public CancellationToken CancellationToken { get; } = CancellationToken.None;
 
-    internal ConcurrentBag<ManifestItem> ManifestItems { get; } = new();
+    internal ConcurrentBag<ManifestItem> ManifestItems { get; } = [];
 
     private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new();
 

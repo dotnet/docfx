@@ -14,7 +14,7 @@ internal class AttributeFilterInfo
     public List<string> ConstructorArguments { get; set; }
 
     [YamlMember(Alias = "ctorNamedArguments")]
-    public Dictionary<string, string> ConstructorNamedArguments { get; set; } = new();
+    public Dictionary<string, string> ConstructorNamedArguments { get; set; } = [];
 
     public bool ContainedIn(SymbolFilterData symbol)
     {

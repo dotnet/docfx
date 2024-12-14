@@ -68,7 +68,7 @@ public static partial class MarkdownTocReader
         public InitialState(string filePath)
         {
             Parents = new Stack<TocItemViewModel>();
-            Root = new();
+            Root = [];
             FilePath = filePath;
         }
         public override int Level => 0;
@@ -144,7 +144,7 @@ public static partial class MarkdownTocReader
             if (state.Parents.Count > 0)
             {
                 var parent = state.Parents.Peek();
-                parent.Items ??= new();
+                parent.Items ??= [];
                 parent.Items.Add(item);
             }
             else

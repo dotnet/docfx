@@ -325,11 +325,11 @@ bar: bar
     public class ClassWithExtensibleMembers : BasicClass
     {
         [ExtensibleMember("s.")]
-        public SortedDictionary<string, string> StringExtensions { get; } = new();
+        public SortedDictionary<string, string> StringExtensions { get; } = [];
         [ExtensibleMember("i.")]
-        public SortedList<string, int> IntegerExtensions { get; } = new();
+        public SortedList<string, int> IntegerExtensions { get; } = [];
         [ExtensibleMember()]
-        public Dictionary<string, object> ObjectExtensions { get; } = new();
+        public Dictionary<string, object> ObjectExtensions { get; } = [];
     }
 
     [Fact]
@@ -364,7 +364,7 @@ bar: bar
         var sw = new StringWriter();
         YamlUtility.Serialize(sw, new ClassWithInterfaceMember
         {
-            List = new List<string> { "a" },
+            List = ["a"],
             ReadOnlyList = new[] { "b" },
             Collection = new Collection<string> { "c" },
             ReadOnlyCollection = ImmutableList.Create("d"),

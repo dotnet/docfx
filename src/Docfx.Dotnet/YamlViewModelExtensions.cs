@@ -42,7 +42,7 @@ internal static class YamlViewModelExtensions
         {
             foreach (var i in item.Items)
             {
-                shrinkedItem.Items ??= new List<MetadataItem>();
+                shrinkedItem.Items ??= [];
 
                 if (i.IsInvalid)
                 {
@@ -77,7 +77,7 @@ internal static class YamlViewModelExtensions
             {
                 foreach (var i in item.Items)
                 {
-                    shrinkedItem.Items ??= new List<MetadataItem>();
+                    shrinkedItem.Items ??= [];
 
                     if (i.IsInvalid)
                     {

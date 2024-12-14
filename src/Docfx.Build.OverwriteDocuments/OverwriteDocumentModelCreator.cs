@@ -37,7 +37,7 @@ public class OverwriteDocumentModelCreator
     {
         if (string.IsNullOrEmpty(yamlCodeBlock) || yamlCodeBlockSource == null)
         {
-            return new Dictionary<object, object>();
+            return [];
         }
 
         using var reader = new StringReader(yamlCodeBlock);
@@ -202,7 +202,7 @@ public class OverwriteDocumentModelCreator
 
     private static Dictionary<object, object> CreateDictionaryObject()
     {
-        return new Dictionary<object, object>();
+        return [];
     }
 
     private static List<object> CreateDictionaryArrayObject(OPathSegment segment)

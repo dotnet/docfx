@@ -66,7 +66,7 @@ partial class DotnetApiCatalog
             YamlUtility.Serialize(tocFilePath, tocViewModel, YamlMime.TableOfContent);
             outputFileNames.Add(tocFilePath, 1);
 
-            ApiReferenceViewModel indexer = new();
+            ApiReferenceViewModel indexer = [];
 
             // generate each item's yaml
             var members = model.Members;
@@ -142,7 +142,7 @@ partial class DotnetApiCatalog
         {
             if (node.Type is MemberType.Assembly)
             {
-                foreach (var item in node.Items ?? new())
+                foreach (var item in node.Items ?? [])
                 {
                     MergeNode(item);
                 }
@@ -152,7 +152,7 @@ partial class DotnetApiCatalog
             if (!result.TryGetValue(node.Name, out var existingNode))
             {
                 result.Add(node.Name, node);
-                foreach (var item in node.Items ?? new())
+                foreach (var item in node.Items ?? [])
                 {
                     MergeNode(item);
                 }
@@ -161,11 +161,11 @@ partial class DotnetApiCatalog
 
             if (node.Type is MemberType.Namespace or MemberType.Class)
             {
-                foreach (var item in node.Items ?? new())
+                foreach (var item in node.Items ?? [])
                 {
                     if (MergeNode(item))
                     {
-                        existingNode.Items ??= new();
+                        existingNode.Items ??= [];
                         existingNode.Items.Add(item);
                     }
                 }

@@ -109,7 +109,7 @@ public static class MarkupUtility
 
                 if (!fileLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))
                 {
-                    sources = new List<LinkSourceInfo>();
+                    sources = [];
                     fileLinkSources[file] = sources;
                 }
                 sources.Add(new LinkSourceInfo

@@ -85,8 +85,8 @@ public sealed class YamlDeserializer
             _converters.Add(yamlTypeConverter);
         }
 
-        NodeDeserializers = new List<INodeDeserializer>
-        {
+        NodeDeserializers =
+        [
             new TypeConverterNodeDeserializer(_converters),
             new NullNodeDeserializer(),
             new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter, YamlFormatter.Default, NullNamingConvention.Instance),
@@ -97,14 +97,14 @@ public sealed class YamlDeserializer
             new CollectionNodeDeserializer(objectFactory, NullNamingConvention.Instance),
             new EnumerableNodeDeserializer(),
             new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
-        };
+        ];
         _tagMappings = new Dictionary<TagName, Type>(PredefinedTagMappings);
-        TypeResolvers = new List<INodeTypeResolver>
-        {
+        TypeResolvers =
+        [
             new TagNodeTypeResolver(_tagMappings),
             new DefaultContainersNodeTypeResolver(),
             new ScalarYamlNodeTypeResolver()
-        };
+        ];
 
         NodeValueDeserializer nodeValueDeserializer = new(NodeDeserializers, TypeResolvers, _reflectionTypeConverter, NullNamingConvention.Instance);
         if (ignoreNotFoundAnchor)

@@ -14,8 +14,8 @@ namespace Docfx;
 
 internal class MetadataMerger
 {
-    private readonly Dictionary<string, Dictionary<string, object>> _metaTable = new();
-    private readonly Dictionary<string, Dictionary<string, object>> _propTable = new();
+    private readonly Dictionary<string, Dictionary<string, object>> _metaTable = [];
+    private readonly Dictionary<string, Dictionary<string, object>> _propTable = [];
 
     public void Merge(MetadataMergeParameters parameters)
     {

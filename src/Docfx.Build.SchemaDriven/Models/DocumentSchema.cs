@@ -142,7 +142,7 @@ public class DocumentSchema : BaseSchema
 
     private static bool CheckOverwriteAbility(BaseSchema schema)
     {
-        return CheckOverwriteAbilityCore(schema, new Dictionary<BaseSchema, bool>());
+        return CheckOverwriteAbilityCore(schema, []);
     }
 
     private static bool CheckOverwriteAbilityCore(BaseSchema schema, Dictionary<BaseSchema, bool> cache)

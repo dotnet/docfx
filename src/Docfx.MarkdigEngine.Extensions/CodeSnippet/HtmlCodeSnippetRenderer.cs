@@ -110,17 +110,17 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         { "vb", new string[] {"vbnet", "vbscript", "bas", "vbs", "vba" } }
     };
 
-    private static readonly Dictionary<string, string> s_languageByFileExtension = new();
+    private static readonly Dictionary<string, string> s_languageByFileExtension = [];
 
     // If we ever come across a language that has not been defined above, we shouldn't break the build.
     // We can at least try it with a default language, "C#" for now, and try and resolve the code snippet.
-    private static readonly HashSet<CodeSnippetExtractor> s_defaultExtractors = new();
+    private static readonly HashSet<CodeSnippetExtractor> s_defaultExtractors = [];
 
     // Language names and aliases follow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
     // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
     // Currently only supports parts of the language names, aliases and extensions
     // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
-    private static readonly Dictionary<string, HashSet<CodeSnippetExtractor>> s_languageExtractors = new();
+    private static readonly Dictionary<string, HashSet<CodeSnippetExtractor>> s_languageExtractors = [];
 
     private readonly MarkdownContext _context;
 
@@ -198,7 +198,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
             }
             else
             {
-                s_languageExtractors[language] = new HashSet<CodeSnippetExtractor> { extractor };
+                s_languageExtractors[language] = [extractor];
             }
         }
     }
@@ -299,22 +299,22 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
             var tagWithPrefix = TagPrefix + obj.TagName;
             foreach (var extractor in extractors)
             {
-                HashSet<int> tagLines = new();
+                HashSet<int> tagLines = [];
                 var tagToCodeRangeMapping = extractor.GetAllTags(allLines, ref tagLines);
                 if (tagToCodeRangeMapping.TryGetValue(obj.TagName, out var cr)
                     || tagToCodeRangeMapping.TryGetValue(tagWithPrefix, out cr))
                 {
-                    return GetCodeLines(allLines, obj, new List<CodeRange> { cr }, tagLines);
+                    return GetCodeLines(allLines, obj, [cr], tagLines);
                 }
             }
         }
         else if (obj.BookMarkRange != null)
         {
-            return GetCodeLines(allLines, obj, new List<CodeRange> { obj.BookMarkRange });
+            return GetCodeLines(allLines, obj, [obj.BookMarkRange]);
         }
         else if (obj.StartEndRange != null)
         {
-            return GetCodeLines(allLines, obj, new List<CodeRange> { obj.StartEndRange });
+            return GetCodeLines(allLines, obj, [obj.StartEndRange]);
         }
         else if (obj.CodeRanges != null)
         {
@@ -322,7 +322,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
         else
         {
-            return GetCodeLines(allLines, obj, new List<CodeRange> { new() { Start = 0, End = allLines.Length } });
+            return GetCodeLines(allLines, obj, [new() { Start = 0, End = allLines.Length }]);
         }
 
         return string.Empty;
@@ -340,7 +340,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
 
     private static string GetCodeLines(string[] allLines, CodeSnippet obj, List<CodeRange> codeRanges, HashSet<int> ignoreLines = null)
     {
-        List<string> codeLines = new();
+        List<string> codeLines = [];
         StringBuilder showCode = new();
         int commonIndent = int.MaxValue;
 
@@ -458,7 +458,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
                 return false;
             }
 
-            codeRanges ??= new List<CodeRange>();
+            codeRanges ??= [];
 
             codeRanges.Add(codeRange);
         }

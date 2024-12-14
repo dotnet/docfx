@@ -76,12 +76,12 @@ public static class ConvertToObjectHelper
 
     public static object ConvertExpandoObjectToObject(object raw)
     {
-        return ConvertExpandoObjectToObjectCore(raw, new Dictionary<object, object>());
+        return ConvertExpandoObjectToObjectCore(raw, []);
     }
 
     public static object ConvertToDynamic(object obj)
     {
-        return ConvertToDynamicCore(obj, new Dictionary<object, object>());
+        return ConvertToDynamicCore(obj, []);
     }
 
     private static object ConvertExpandoObjectToObjectCore(object obj, Dictionary<object, object> cache)

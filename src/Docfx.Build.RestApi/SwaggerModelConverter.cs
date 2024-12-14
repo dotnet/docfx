@@ -25,9 +25,9 @@ public static partial class SwaggerModelConverter
             Metadata = swagger.Metadata,
             Description = swagger.Description,
             Summary = swagger.Summary,
-            Children = new List<RestApiChildItemViewModel>(),
+            Children = [],
             Raw = swagger.Raw,
-            Tags = new List<RestApiTagViewModel>()
+            Tags = []
         };
         if (swagger.Tags != null)
         {

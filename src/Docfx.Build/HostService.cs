@@ -12,7 +12,7 @@ namespace Docfx.Build.Engine;
 [Export(typeof(IHostService))]
 class HostService : IHostService
 {
-    private Dictionary<string, List<FileModel>> _uidIndex = new();
+    private Dictionary<string, List<FileModel>> _uidIndex = [];
 
     public TemplateProcessor Template { get; set; }
 
@@ -65,7 +65,7 @@ class HostService : IHostService
         {
             return result.ToImmutableList();
         }
-        return ImmutableList<FileModel>.Empty;
+        return [];
     }
 
     public MarkupResult Markup(string markdown, FileAndType ft)

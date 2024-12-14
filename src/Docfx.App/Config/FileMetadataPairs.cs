@@ -39,7 +39,7 @@ internal class FileMetadataPairs
     /// </summary>
     public FileMetadataPairs(FileMetadataPairsItem item)
     {
-        _items = new List<FileMetadataPairsItem> { item };
+        _items = [item];
     }
 
     /// <summary>

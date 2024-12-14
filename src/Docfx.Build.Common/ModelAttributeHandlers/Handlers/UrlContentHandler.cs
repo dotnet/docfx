@@ -98,7 +98,7 @@ public class UrlContentHandler : IModelAttributeHandler
 
             if (!context.FileLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))
             {
-                sources = new List<LinkSourceInfo>();
+                sources = [];
                 context.FileLinkSources[file] = sources;
             }
             sources.Add(new LinkSourceInfo

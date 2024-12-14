@@ -62,7 +62,7 @@ public class XrefPropertiesInterpreter : IInterpreter
             Uid = uid
         };
 
-        var parts = schema.XrefProperties ?? new List<string> { "name", "fullName" };
+        var parts = schema.XrefProperties ?? ["name", "fullName"];
         var root = context.GetModel<object>();
         foreach (var part in parts.Distinct())
         {

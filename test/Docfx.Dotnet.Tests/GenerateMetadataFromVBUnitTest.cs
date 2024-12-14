@@ -11,7 +11,7 @@ namespace Docfx.Dotnet.Tests;
 [Collection("docfx STA")]
 public class GenerateMetadataFromVBUnitTest
 {
-    private static readonly Dictionary<string, string> EmptyMSBuildProperties = new();
+    private static readonly Dictionary<string, string> EmptyMSBuildProperties = [];
 
     private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, IDictionary<string, string> msbuildProperties = null, MetadataReference[] references = null)
     {

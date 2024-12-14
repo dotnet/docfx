@@ -13,7 +13,7 @@ internal sealed class EmptyFileReader : IFileReader
 
     public PathMapping? FindFile(RelativePath file) => null;
 
-    public IEnumerable<RelativePath> EnumerateFiles() => Enumerable.Empty<RelativePath>();
+    public IEnumerable<RelativePath> EnumerateFiles() => [];
 
     public string GetExpectedPhysicalPath(RelativePath file) => null;
 }

@@ -18,7 +18,7 @@ namespace Docfx.Dotnet;
 
 partial class SymbolUrlResolver
 {
-    private static readonly ConditionalWeakTable<IAssemblySymbol, SourceLinkProvider?> s_sourceLinkProviders = new();
+    private static readonly ConditionalWeakTable<IAssemblySymbol, SourceLinkProvider?> s_sourceLinkProviders = [];
 
     public static string? GetPdbSourceLinkUrl(Compilation compilation, ISymbol symbol)
     {

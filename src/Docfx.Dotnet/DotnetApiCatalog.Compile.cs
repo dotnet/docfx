@@ -20,9 +20,9 @@ partial class DotnetApiCatalog
     {
         var files = config.Files?.Select(s => new FileInformation(s))
             .GroupBy(f => f.Type)
-            .ToDictionary(s => s.Key, s => s.Distinct().ToList()) ?? new();
+            .ToDictionary(s => s.Key, s => s.Distinct().ToList()) ?? [];
 
-        var msbuildProperties = config.MSBuildProperties ?? new Dictionary<string, string>();
+        var msbuildProperties = config.MSBuildProperties ?? [];
         msbuildProperties.TryAdd("Configuration", "Release");
 
         // NOTE:
@@ -122,7 +122,7 @@ partial class DotnetApiCatalog
 
         if (hasCompilationError)
         {
-            return new();
+            return [];
         }
 
         if (assemblies.Count <= 0)

@@ -8,8 +8,8 @@ namespace Docfx.Dotnet;
 internal static class YamlMetadataResolver
 {
     // Order matters
-    private static readonly List<IResolverPipeline> pipelines = new()
-    {
+    private static readonly List<IResolverPipeline> pipelines =
+    [
         new LayoutCheckAndCleanup(),
         new SetParent(),
         new ResolveReference(),
@@ -17,7 +17,7 @@ internal static class YamlMetadataResolver
         new BuildMembers(),
         new SetDerivedClass(),
         new BuildToc()
-    };
+    ];
 
     /// <summary>
     /// TODO: input Namespace list instead;
@@ -33,7 +33,7 @@ internal static class YamlMetadataResolver
         MetadataModel viewModel = new()
         {
             TocYamlViewModel = GenerateToc(allMembers, allReferences, namespaceLayout),
-            Members = new List<MetadataItem>(),
+            Members = [],
         };
         ResolverContext context = new()
         {
@@ -74,9 +74,9 @@ internal static class YamlMetadataResolver
         var root = new MetadataItem()
         {
             Type = MemberType.Toc,
-            Items = new()
+            Items = []
         };
-        Dictionary<string, MetadataItem> namespacedItems = new();
+        Dictionary<string, MetadataItem> namespacedItems = [];
 
         var dotsPerNamespace = namespaces.ToDictionary(x => x.Key, x => x.Value.Name.Where(y => y == '.').Count());
         foreach (var member in namespaces
@@ -95,10 +95,10 @@ internal static class YamlMetadataResolver
                         {
                             Type = MemberType.Namespace,
                             Name = partialParentNamespace,
-                            Items = new(),
-                            DisplayNames = new(),
-                            DisplayNamesWithType = new(),
-                            DisplayQualifiedNames = new()
+                            Items = [],
+                            DisplayNames = [],
+                            DisplayNamesWithType = [],
+                            DisplayQualifiedNames = []
                         };
                         missingNamespace.DisplayNames.Add(SyntaxLanguage.Default, partialParentNamespace);
                         namespacedItems[partialParentNamespace] = missingNamespace;

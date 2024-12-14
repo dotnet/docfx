@@ -20,7 +20,7 @@ public class ModelAttributeHandlerTest
         var model = new SimpleModel
         {
             Identity = "Identity1",
-            Identities = new List<object> { "Identity2" }
+            Identities = ["Identity2"]
         };
 
         var context = Handle(model);
@@ -61,7 +61,7 @@ public class ModelAttributeHandlerTest
     {
         var model = new InvalidModel2
         {
-            Identities = new List<int> { 0 }
+            Identities = [0]
         };
         Assert.Throws<NotSupportedException>(
             () => Handle(model)
@@ -73,23 +73,23 @@ public class ModelAttributeHandlerTest
     {
         var model = new ComplexModel
         {
-            Identities = new List<string> { "1", "2", "3" },
+            Identities = ["1", "2", "3"],
             Identity = "0",
             Inner = new ComplexModel
             {
-                Identities = new List<string> { "1.1", "1.2", "1.3" },
+                Identities = ["1.1", "1.2", "1.3"],
                 Identity = "0.0",
                 OtherProperty = "innerothers",
                 Inner = new ComplexModel
                 {
-                    Identities = new List<string> { "1.1.1", "1.1.2" },
+                    Identities = ["1.1.1", "1.1.2"],
                     Identity = "0.0.0",
                     OtherProperty = "innersinner"
                 }
             },
             OtherProperty = "others",
-            InnerModels = new List<InnerModel>
-            {
+            InnerModels =
+            [
                 new()
                 {
                      Identity = "2.1",
@@ -100,7 +100,7 @@ public class ModelAttributeHandlerTest
                      Identity = "2.2",
                      CrefType = TestCrefType.Href
                 }
-            }
+            ]
         };
         var context = Handle(model);
 
@@ -238,7 +238,7 @@ public class ModelAttributeHandlerTest
     {
         var model = new MarkdownModelWithIList
         {
-            ListContent = new List<string> { "*list*" },
+            ListContent = ["*list*"],
             ArrayContent = ["@xref", "*content"]
         };
 
@@ -295,7 +295,7 @@ public class ModelAttributeHandlerTest
     {
         return new HandleModelAttributesContext
         {
-            Host = new HostService(Enumerable.Empty<FileModel>())
+            Host = new HostService([])
             {
                 MarkdownService = new MarkdigMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
                 SourceFiles = new Dictionary<string, FileAndType>

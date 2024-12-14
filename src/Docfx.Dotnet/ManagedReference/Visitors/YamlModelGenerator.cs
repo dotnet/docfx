@@ -33,22 +33,22 @@ internal class YamlModelGenerator
     public void GenerateReference(ISymbol symbol, ReferenceItem reference, bool asOverload, SymbolFilter filter)
     {
         if (!reference.NameParts.ContainsKey(SyntaxLanguage.CSharp))
-            reference.NameParts.Add(SyntaxLanguage.CSharp, new());
+            reference.NameParts.Add(SyntaxLanguage.CSharp, []);
         if (!reference.NameWithTypeParts.ContainsKey(SyntaxLanguage.CSharp))
-            reference.NameWithTypeParts.Add(SyntaxLanguage.CSharp, new());
+            reference.NameWithTypeParts.Add(SyntaxLanguage.CSharp, []);
         if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.CSharp))
-            reference.QualifiedNameParts.Add(SyntaxLanguage.CSharp, new());
+            reference.QualifiedNameParts.Add(SyntaxLanguage.CSharp, []);
 
         reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
         reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
         reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
 
         if (!reference.NameParts.ContainsKey(SyntaxLanguage.VB))
-            reference.NameParts.Add(SyntaxLanguage.VB, new());
+            reference.NameParts.Add(SyntaxLanguage.VB, []);
         if (!reference.NameWithTypeParts.ContainsKey(SyntaxLanguage.VB))
-            reference.NameWithTypeParts.Add(SyntaxLanguage.VB, new());
+            reference.NameWithTypeParts.Add(SyntaxLanguage.VB, []);
         if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.VB))
-            reference.QualifiedNameParts.Add(SyntaxLanguage.VB, new());
+            reference.QualifiedNameParts.Add(SyntaxLanguage.VB, []);
 
         reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
         reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
@@ -66,9 +66,9 @@ internal class YamlModelGenerator
         var id = VisitorHelper.GetId(symbol);
         var reference = new ReferenceItem
         {
-            NameParts = new(),
-            NameWithTypeParts = new(),
-            QualifiedNameParts = new(),
+            NameParts = [],
+            NameWithTypeParts = [],
+            QualifiedNameParts = [],
             IsDefinition = symbol.IsDefinition,
             CommentId = VisitorHelper.GetCommentId(symbol)
         };
@@ -87,9 +87,9 @@ internal class YamlModelGenerator
         var uidBody = VisitorHelper.GetOverloadIdBody(symbol);
         var reference = new ReferenceItem
         {
-            NameParts = new(),
-            NameWithTypeParts = new(),
-            QualifiedNameParts = new(),
+            NameParts = [],
+            NameWithTypeParts = [],
+            QualifiedNameParts = [],
             IsDefinition = true,
             CommentId = "Overload:" + uidBody
         };
@@ -120,9 +120,9 @@ internal class YamlModelGenerator
         }
         var reference = new ReferenceItem
         {
-            NameParts = new(),
-            NameWithTypeParts = new(),
-            QualifiedNameParts = new(),
+            NameParts = [],
+            NameWithTypeParts = [],
+            QualifiedNameParts = [],
         };
         GenerateReference(symbol, reference, false, filter);
         var originalSymbol = symbol;

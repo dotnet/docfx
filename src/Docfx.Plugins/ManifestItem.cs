@@ -18,7 +18,7 @@ public class ManifestItem
 
     [JsonProperty("output")]
     [JsonPropertyName("output")]
-    public Dictionary<string, OutputFileInfo> Output { get; init; } = new();
+    public Dictionary<string, OutputFileInfo> Output { get; init; } = [];
 
     [JsonProperty("version")]
     [JsonPropertyName("version")]
@@ -30,5 +30,5 @@ public class ManifestItem
 
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 }

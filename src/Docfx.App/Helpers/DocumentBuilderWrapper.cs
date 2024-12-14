@@ -263,7 +263,7 @@ internal static class DocumentBuilderWrapper
         {
             foreach (var (key, value) in config.FileMetadata)
             {
-                var list = result.TryGetValue(key, out var items) ? items : result[key] = new();
+                var list = result.TryGetValue(key, out var items) ? items : result[key] = [];
                 foreach (var pair in value.Items)
                 {
                     list.Add(new FileMetadataItem(pair.Glob, key, pair.Value));
@@ -277,7 +277,7 @@ internal static class DocumentBuilderWrapper
             {
                 foreach (var (key, value) in JsonUtility.Deserialize<Dictionary<string, FileMetadataPairs>>(path))
                 {
-                    var list = result.TryGetValue(key, out var items) ? items : result[key] = new();
+                    var list = result.TryGetValue(key, out var items) ? items : result[key] = [];
                     foreach (var pair in value.Items)
                     {
                         list.Add(new FileMetadataItem(pair.Glob, key, pair.Value));

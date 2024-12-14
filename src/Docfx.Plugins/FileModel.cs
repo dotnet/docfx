@@ -67,9 +67,9 @@ public sealed class FileModel
 
     public string Key { get; }
 
-    public ImmutableHashSet<string> LinkToFiles { get; set; } = ImmutableHashSet<string>.Empty;
+    public ImmutableHashSet<string> LinkToFiles { get; set; } = [];
 
-    public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
+    public ImmutableHashSet<string> LinkToUids { get; set; } = [];
 
     public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> UidLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
 

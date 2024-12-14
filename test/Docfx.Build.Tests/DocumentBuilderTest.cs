@@ -48,19 +48,17 @@ public class DocumentBuilderTest : TestBase
         CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
 
         var tocFile = CreateFile("toc.md",
-            new[]
-            {
+            [
                 "# [test1](test.md#bookmark)",
                 "## [test2](test/test.md)",
                 "## [GitHub](GitHub.md?shouldBeAbbreviated=true#test)",
                 "# Api",
                 "## [Console](@System.Console)",
                 "## [ConsoleColor](xref:System.ConsoleColor)",
-            },
+            ],
             _inputFolder);
         var conceptualFile = CreateFile("test.md",
-            new[]
-            {
+            [
                 "---",
                 "uid: XRef1",
                 "a: b",
@@ -96,11 +94,10 @@ public class DocumentBuilderTest : TestBase
                 "Test href generator: [Git](Git.md?shouldBeAbbreviated=true#test)",
                 "<p>",
                 "test",
-            },
+            ],
             _inputFolder);
         var conceptualFile2 = CreateFile("test/test.md",
-            new[]
-            {
+            [
                 "---",
                 "uid: XRef2",
                 "a: b",
@@ -112,11 +109,10 @@ public class DocumentBuilderTest : TestBase
                 "Test link: [link text](../test.md)",
                 "<p>",
                 "test",
-            },
+            ],
             _inputFolder);
         var conceptualFile3 = CreateFile("check-xrefmap.md",
-            new[]
-            {
+            [
                 "---",
                 "uid: XRef1",
                 "a: b",
@@ -125,11 +121,10 @@ public class DocumentBuilderTest : TestBase
                 "---",
                 "# Hello World",
                 "Test xrefmap with duplicate uid in different files: XRef1 should be recorded with file check-xrefmap.md"
-            },
+            ],
             _inputFolder);
         var conceptualFile4 = CreateFile("test/verify-xrefmap.md",
-            new[]
-            {
+            [
                 "---",
                 "uid: XRef2",
                 "a: b",
@@ -138,7 +133,7 @@ public class DocumentBuilderTest : TestBase
                 "---",
                 "# Hello World",
                 "Test xrefmap with duplicate uid in different files: XRef2 should be recorded with file test/test.md"
-            },
+            ],
             _inputFolder);
 
         FileCollection files = new(Directory.GetCurrentDirectory());
@@ -320,34 +315,32 @@ exports.getOptions = function (){
 ", _templateFolder);
         CreateFile("conceptual.html.tmpl", "{{.}}", _templateFolder);
         var conceptualFile = CreateFile("test.md",
-            new[]
-            {
+            [
                 "---",
                 "uid: XRef1",
                 "---",
                 "# Hello World",
                 "Test link: [link text](test/test.md)",
                 "test",
-            },
+            ],
             _inputFolder);
         var conceptualFile2 = CreateFile("test/test.md",
-            new[]
-            {
+            [
                 "---",
                 "uid: XRef2",
                 "---",
                 "test",
-            },
+            ],
             _inputFolder);
-        var tocFile = CreateFile("toc.md", new[]
-            {
+        var tocFile = CreateFile("toc.md",
+            [
                 "#[Test](test.md)"
-            },
+            ],
             _inputFolder);
-        var tocFile2 = CreateFile("test/toc.md", new[]
-            {
+        var tocFile2 = CreateFile("test/toc.md",
+            [
                 "#[Test](test.md)"
-            },
+            ],
             _inputFolder);
         FileCollection files = new(Directory.GetCurrentDirectory());
         files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2, tocFile, tocFile2 });
@@ -517,15 +510,13 @@ exports.getOptions = function (){
         CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
 
         var tocFile = CreateFile("toc.md",
-            new[]
-            {
+            [
                 "# [test1](test.md)",
                 "## [test2](test/test.md)",
-            },
+            ],
             _inputFolder);
         var conceptualFile = CreateFile("test.md",
-            new[]
-            {
+            [
                 "# Hello World",
                 "Test link: [link 1](test/test.md)",
                 "Test link: [link 2](http://www.microsoft.com)",
@@ -537,14 +528,13 @@ exports.getOptions = function (){
                 "Test link: [link 8](test/test.md#top)",
                 "Test link: [link 9](a.md#top)",
                 "Test link: [link 10](#top)",
-            },
+            ],
             _inputFolder);
         var conceptualFile2 = CreateFile("test/test.md",
-            new[]
-            {
+            [
                 "# Hello World",
                 "Test link: [link 1](../test.md)",
-            },
+            ],
             _inputFolder);
 
         FileCollection files = new(Directory.GetCurrentDirectory());
@@ -630,19 +620,17 @@ exports.getOptions = function (){
         CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
 
         var conceptualFile = CreateFile("a/a.md",
-            new[]
-            {
+            [
                 "[link a](invalid-a.md)",
                 "[link b](../b/invalid-b.md)",
                 "[!include[](../b/token.md)]",
-            },
+            ],
             _inputFolder);
         var tokenFile = CreateFile("b/token.md",
-            new[]
-            {
+            [
                 "[link a](../a/invalid-a.md)",
                 "[link b](invalid-b.md)",
-            },
+            ],
             _inputFolder);
 
         FileCollection files = new(Directory.GetCurrentDirectory());
@@ -651,7 +639,7 @@ exports.getOptions = function (){
 
         BuildDocument(
             files,
-            new Dictionary<string, object>(),
+            [],
             templateFolder: _templateFolder);
 
         {
@@ -672,7 +660,7 @@ exports.getOptions = function (){
 
     private class FakeResponseHandler : DelegatingHandler
     {
-        private readonly Dictionary<Uri, HttpResponseMessage> _fakeResponses = new();
+        private readonly Dictionary<Uri, HttpResponseMessage> _fakeResponses = [];
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -703,7 +691,7 @@ exports.getOptions = function (){
 
         BuildDocument(
             files,
-            new Dictionary<string, object>(),
+            [],
             templateFolder: _templateFolder,
             versionDir: versionDir);
 
@@ -740,10 +728,10 @@ exports.getOptions = function (){
             OutputBaseDir = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
             ApplyTemplateSettings = applyTemplateSettings,
             Metadata = metadata?.ToImmutableDictionary(),
-            TemplateManager = new TemplateManager(new List<string> { _templateFolder }, null, null),
+            TemplateManager = new TemplateManager([_templateFolder], null, null),
             TemplateDir = templateFolder,
             VersionDir = versionDir,
-            XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml"),
+            XRefMaps = ["TestData/xrefmap.yml"],
         };
         builder.Build(parameters);
     }

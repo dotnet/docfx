@@ -30,8 +30,8 @@ public class ConvertToObjectHelperTest
         var complexType = new ComplexType
         {
             String = "String",
-            List = new List<string>(),
-            IntDictionary = new Dictionary<int, string>()
+            List = [],
+            IntDictionary = []
         };
         var result = ConvertToObjectHelper.ConvertStrongTypeToObject(complexType);
         Assert.Equal(typeof(Dictionary<string, object>), result.GetType());
@@ -45,8 +45,8 @@ public class ConvertToObjectHelperTest
         var complexType = new ComplexTypeWithJson
         {
             String = "String",
-            List = new List<string>(),
-            IntDictionary = new Dictionary<int, string>()
+            List = [],
+            IntDictionary = []
         };
         var result = ConvertToObjectHelper.ConvertStrongTypeToObject(complexType);
         Assert.Equal(typeof(Dictionary<string, object>), result.GetType());

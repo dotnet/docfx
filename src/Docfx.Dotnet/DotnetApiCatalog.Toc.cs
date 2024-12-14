@@ -37,7 +37,7 @@ partial class DotnetApiCatalog
         internal TocNodeType type;
         internal string? id;
         internal bool containsLeafNodes;
-        internal List<(ISymbol symbol, Compilation compilation)> symbols = new();
+        internal List<(ISymbol symbol, Compilation compilation)> symbols = [];
     }
 
     private static List<TocNode> CreateToc(List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
@@ -104,7 +104,7 @@ partial class DotnetApiCatalog
 
                 var existingNodeHasNoLeafNode = idExists && !node.containsLeafNodes;
 
-                node.items ??= new();
+                node.items ??= [];
                 node.symbols.Add((symbol, compilation));
 
                 foreach (var child in ns.GetNamespaceMembers())
@@ -164,7 +164,7 @@ partial class DotnetApiCatalog
 
                 if (config.MemberLayout is MemberLayout.SeparatePages && type.TypeKind is TypeKind.Class or TypeKind.Interface or TypeKind.Struct)
                 {
-                    node.items ??= new();
+                    node.items ??= [];
                     foreach (var member in type.GetMembers())
                         node.items.AddRange(CreateToc(member, compilation));
                 }

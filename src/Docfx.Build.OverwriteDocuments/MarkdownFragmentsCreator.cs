@@ -69,7 +69,7 @@ public class MarkdownFragmentsCreator
             {
                 PropertyName = key,
                 PropertyNameSource = Next(),
-                PropertyValue = new List<Block>(),
+                PropertyValue = [],
             };
             Block block;
             while ((block = Peek()) != null && !_inlineCodeHeadingRule.Parse(block, out var _))

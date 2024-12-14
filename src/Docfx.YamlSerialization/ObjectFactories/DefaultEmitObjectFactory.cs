@@ -10,7 +10,7 @@ namespace Docfx.YamlSerialization.ObjectFactories;
 
 public class DefaultEmitObjectFactory : ObjectFactoryBase
 {
-    private readonly Dictionary<Type, Func<object>> _cache = new();
+    private readonly Dictionary<Type, Func<object>> _cache = [];
     private static Type[] EmptyTypes => Type.EmptyTypes;
 
     public override object Create(Type type)

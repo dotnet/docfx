@@ -7,7 +7,7 @@ internal class SwaggerArray : SwaggerObjectBase
 {
     public override SwaggerObjectType ObjectType => SwaggerObjectType.Array;
 
-    public List<SwaggerObjectBase> Array { get; set; } = new();
+    public List<SwaggerObjectBase> Array { get; set; } = [];
 
     public override SwaggerObjectBase Clone()
     {

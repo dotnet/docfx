@@ -27,7 +27,7 @@ public class DocumentBuilder : IDisposable
     public DocumentBuilder(IEnumerable<Assembly> assemblies, ImmutableArray<string> postProcessorNames)
     {
         Logger.LogVerbose("Loading plug-ins and post-processors...");
-        var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
+        var assemblyList = assemblies?.ToList() ?? [];
         assemblyList.Add(typeof(DocumentBuilder).Assembly);
         _container = CompositionContainer.GetContainer(assemblyList);
         _container.SatisfyImports(this);
