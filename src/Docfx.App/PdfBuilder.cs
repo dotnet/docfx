@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
@@ -32,6 +33,8 @@ namespace Docfx.Pdf;
 
 static class PdfBuilder
 {
+    private static readonly SearchValues<char> InvalidPathChars = SearchValues.Create(Path.GetInvalidPathChars());
+
     class Outline
     {
         public string name { get; init; } = "";
@@ -94,7 +97,8 @@ static class PdfBuilder
 
         using var pageLimiter = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
         var pagePool = new ConcurrentBag<IPage>();
-        var headerFooterCache = new ConcurrentDictionary<(string, string), Task<byte[]>>();
+        var headerFooterTemplateCache = new ConcurrentDictionary<string, string>();
+        var headerFooterPageCache = new ConcurrentDictionary<(string, string), Task<byte[]>>();
 
         await AnsiConsole.Progress().StartAsync(async progress =>
         {
@@ -187,7 +191,7 @@ static class PdfBuilder
             var headerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfHeaderTemplate), pageNumber, totalPages);
             var footerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfFooterTemplate) ?? DefaultFooterTemplate, pageNumber, totalPages);
 
-            return headerFooterCache.GetOrAdd((headerTemplate, footerTemplate), _ => PrintHeaderFooterCore());
+            return headerFooterPageCache.GetOrAdd((headerTemplate, footerTemplate), _ => PrintHeaderFooterCore());
 
             async Task<byte[]> PrintHeaderFooterCore()
             {
@@ -241,16 +245,29 @@ static class PdfBuilder
                 if (string.IsNullOrEmpty(template))
                     return template;
 
-                try
-                {
-                    var path = Path.Combine(outputFolder, template);
-                    return File.Exists(path) ? File.ReadAllText(path) : template;
-                }
-                catch
-                {
+                // Check path chars. If it's contains HTML chars. Skip access to file content to optimmize performance
+                if (template.AsSpan().ContainsAny(InvalidPathChars))
                     return template;
-                }
+
+                return headerFooterTemplateCache.GetOrAdd(template, (_) =>
+                {
+                    // Note: This valueFactory might be called multiple times.
+                    try
+                    {
+                        var path = Path.GetFullPath(Path.Combine(outputFolder, template));
+                        if (!File.Exists(path))
+                            return template;
+
+                        var templateContent = File.ReadAllText(path);
+                        return templateContent;
+                    }
+                    catch
+                    {
+                        return template;
+                    }
+                });
             }
+
         }
     }
 
