@@ -5,7 +5,6 @@ using System.Text.Json;
 using Docfx.Common;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
-using FluentAssertions.Equivalency.Tracing;
 
 namespace docfx.Tests;
 

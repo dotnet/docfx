@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Web;
 using Markdig.Renderers;

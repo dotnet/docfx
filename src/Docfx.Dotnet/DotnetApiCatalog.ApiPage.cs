@@ -10,7 +10,6 @@ using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using HtmlAgilityPack;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 using OneOf;
 
 #nullable enable

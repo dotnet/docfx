@@ -3,7 +3,6 @@
 
 using System.Collections.Immutable;
 using System.Composition;
-using System.Text.RegularExpressions;
 
 using Docfx.Build.Engine;
 using Docfx.Common;

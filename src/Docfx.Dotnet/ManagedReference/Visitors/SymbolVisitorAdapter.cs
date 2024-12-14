@@ -8,7 +8,6 @@ using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Docfx.Dotnet;
 

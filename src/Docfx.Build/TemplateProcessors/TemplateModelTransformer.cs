@@ -5,7 +5,6 @@ using System.Web;
 using Docfx.Common;
 using Docfx.Plugins;
 using HtmlAgilityPack;
-using Newtonsoft.Json;
 
 namespace Docfx.Build.Engine;
 
