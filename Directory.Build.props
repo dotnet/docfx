@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(DOCFX_PREVIEW_BUILD)' == 'true'">net8.0;net9.0</TargetFrameworks> 
+    <TargetFrameworks Condition="'$(DOCFX_PREVIEW_BUILD)' == 'true'">net8.0;net9.0</TargetFrameworks>
     <LangVersion>Preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
@@ -29,8 +29,8 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources> 
-  
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
     <Authors>.NET Foundation and Contributors</Authors>
     <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
     <Description>Technical documentation tool with markdown, API docs for .NET, REST API and more.</Description>
@@ -42,13 +42,6 @@
 
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath="\"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <!-- Remove Node.js runtime dependencies that used by playwright -->
