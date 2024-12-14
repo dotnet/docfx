@@ -51,17 +51,17 @@ static class PdfBuilder
         public string? pdfFooterTemplate { get; init; }
     }
 
-    public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
+    public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null, CancellationToken cancellationToken = default)
     {
         var outputFolder = Path.GetFullPath(Path.Combine(
             string.IsNullOrEmpty(outputDirectory) ? Path.Combine(configDirectory, config.Output ?? "") : outputDirectory,
             config.Dest ?? ""));
 
         Logger.LogInfo($"Searching for manifest in {outputFolder}");
-        return CreatePdf(outputFolder);
+        return CreatePdf(outputFolder, cancellationToken);
     }
 
-    public static async Task CreatePdf(string outputFolder)
+    public static async Task CreatePdf(string outputFolder, CancellationToken cancellationToken = default)
     {
         var stopwatch = Stopwatch.StartNew();
         var pdfTocs = GetPdfTocs().ToDictionary(p => p.url, p => p.toc);
@@ -82,7 +82,7 @@ static class PdfBuilder
         using var app = builder.Build();
         app.UseServe(outputFolder);
         app.MapGet("/_pdftoc/{*url}", TocPage);
-        await app.StartAsync();
+        await app.StartAsync(cancellationToken);
 
         baseUrl = new Uri(app.Urls.First());
 
@@ -100,25 +100,53 @@ static class PdfBuilder
         var headerFooterTemplateCache = new ConcurrentDictionary<string, string>();
         var headerFooterPageCache = new ConcurrentDictionary<(string, string), Task<byte[]>>();
 
-        await AnsiConsole.Progress().StartAsync(async progress =>
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        using var ctr = SubscribeCancelKeyPressEvent(cts);
+
+        var pdfBuildTask = AnsiConsole.Progress().StartAsync(async progress =>
         {
-            await Parallel.ForEachAsync(pdfTocs, async (item, _) =>
+            await Parallel.ForEachAsync(pdfTocs, new ParallelOptions { CancellationToken = cts.Token }, async (item, _) =>
             {
                 var (url, toc) = item;
                 var outputName = Path.Combine(Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
                 var task = progress.AddTask(outputName);
-                var outputPath = Path.Combine(outputFolder, outputName);
+                var pdfOutputPath = Path.Combine(outputFolder, outputName);
 
                 await CreatePdf(
-                    PrintPdf, PrintHeaderFooter, task, new(baseUrl, url), toc, outputFolder, outputPath,
-                    pageNumbers => pdfPageNumbers[url] = pageNumbers);
+                    PrintPdf, PrintHeaderFooter, task, new(baseUrl, url), toc, outputFolder, pdfOutputPath,
+                    pageNumbers => pdfPageNumbers[url] = pageNumbers,
+                    cts.Token);
 
                 task.Value = task.MaxValue;
                 task.StopTask();
             });
         });
 
+        // Wait pdfBuildTask completed or cancelled.
+        await Task.WhenAny(pdfBuildTask, Task.Delay(Timeout.Infinite, cts.Token));
+
+        if (!pdfBuildTask.IsCompletedSuccessfully)
+        {
+            // So manually close playwright context and browser to immeadiately shutdown running task.
+            if (!pdfBuildTask.IsCompleted)
+            {
+                await context.CloseAsync();
+                await browser.CloseAsync();
+            }
+
+            try
+            {
+                await pdfBuildTask;
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.LogError($"PDF file generation is canceled by user interaction.");
+                return;
+            }
+        }
+
         Logger.LogVerbose($"PDF done in {stopwatch.Elapsed}");
+        return;
 
         IEnumerable<(string url, Outline toc)> GetPdfTocs()
         {
@@ -150,7 +178,7 @@ static class PdfBuilder
 
         async Task<byte[]?> PrintPdf(Outline outline, Uri url)
         {
-            await pageLimiter.WaitAsync();
+            await pageLimiter.WaitAsync(cancellationToken);
             var page = pagePool.TryTake(out var pooled) ? pooled : await context.NewPageAsync();
 
             try
@@ -273,7 +301,7 @@ static class PdfBuilder
 
     static async Task CreatePdf(
         Func<Outline, Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Page, Task<byte[]>> printHeaderFooter, ProgressTask task,
-        Uri outlineUrl, Outline outline, string outputFolder, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
+        Uri outlineUrl, Outline outline, string outputFolder, string pdfOutputPath, Action<Dictionary<Outline, int>> updatePageNumbers, CancellationToken cancellationToken)
     {
         var pages = GetPages(outline).ToArray();
         if (pages.Length == 0)
@@ -284,7 +312,7 @@ static class PdfBuilder
         // Make progress at 99% before merge PDF
         task.MaxValue = pages.Length + (pages.Length / 99.0);
 
-        await Parallel.ForEachAsync(pages, async (item, _) =>
+        await Parallel.ForEachAsync(pages, new ParallelOptions { CancellationToken = cancellationToken }, async (item, _) =>
         {
             var (url, node) = item;
             if (await printPdf(outline, url) is { } bytes)
@@ -302,6 +330,8 @@ static class PdfBuilder
 
         foreach (var (url, node) in pages)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (!pageBytes.TryGetValue(node, out var bytes))
                 continue;
 
@@ -324,13 +354,14 @@ static class PdfBuilder
 
         var producer = $"docfx ({typeof(PdfBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version})";
 
-        using var output = File.Create(outputPath);
+        using var output = File.Create(pdfOutputPath);
         using var builder = new PdfDocumentBuilder(output);
 
         builder.DocumentInformation = new() { Producer = producer };
         builder.Bookmarks = CreateBookmarks(outline.items);
 
         await MergePdf();
+        return;
 
         IEnumerable<(Uri url, Outline node)> GetPages(Outline outline)
         {
@@ -368,6 +399,8 @@ static class PdfBuilder
 
             foreach (var (url, node) in pages)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (!pageBytes.TryGetValue(node, out var bytes))
                     continue;
 
@@ -387,6 +420,8 @@ static class PdfBuilder
                 using var document = PdfDocument.Open(bytes);
                 for (var i = 1; i <= document.NumberOfPages; i++)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     pageNumber++;
 
                     var pageBuilder = builder.AddPage(document, i, x => CopyLink(node, x));
@@ -654,5 +689,17 @@ static class PdfBuilder
         return PathUtility.IsPathCaseInsensitive()
             ? StringComparison.OrdinalIgnoreCase
             : StringComparison.Ordinal;
+    }
+
+    private static CancellationTokenRegistration SubscribeCancelKeyPressEvent(CancellationTokenSource cts)
+    {
+        void onCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
+        {
+            e.Cancel = true;
+            cts.Cancel();
+        }
+
+        Console.CancelKeyPress += onCancelKeyPress;
+        return cts.Token.Register(() => Console.CancelKeyPress -= onCancelKeyPress);
     }
 }
