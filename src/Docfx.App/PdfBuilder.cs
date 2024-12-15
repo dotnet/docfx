@@ -258,9 +258,6 @@ static class PdfBuilder
         Func<Outline, Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Page, Task<byte[]>> printHeaderFooter, ProgressTask task,
         Uri outlineUrl, Outline outline, string outputFolder, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
-        var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
-        Directory.CreateDirectory(tempDirectory);
-
         var pages = GetPages(outline).ToArray();
         if (pages.Length == 0)
             return;
