@@ -49,6 +49,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       with:
         fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
 
     - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
       if: matrix.os == 'ubuntu-latest'
