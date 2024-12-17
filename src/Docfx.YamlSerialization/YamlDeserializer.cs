@@ -45,22 +45,22 @@ public sealed class YamlDeserializer
 
     private sealed class TypeDescriptorProxy : ITypeInspector
     {
-        public ITypeInspector TypeDescriptor;
+        public ITypeInspector TypeDescriptor = default!;
 
-        public IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
+        public IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container)
         {
             return TypeDescriptor.GetProperties(type, container);
         }
 
-        public IPropertyDescriptor GetProperty(Type type, object container, string name, bool ignoreUnmatched)
+        public IPropertyDescriptor GetProperty(Type type, object? container, string name, bool ignoreUnmatched)
         {
             return TypeDescriptor.GetProperty(type, container, name, ignoreUnmatched);
         }
     }
 
     public YamlDeserializer(
-        IObjectFactory objectFactory = null,
-        INamingConvention namingConvention = null,
+        IObjectFactory? objectFactory = null,
+        INamingConvention? namingConvention = null,
         bool ignoreUnmatched = false,
         bool ignoreNotFoundAnchor = true)
     {
@@ -127,27 +127,27 @@ public sealed class YamlDeserializer
         _converters.Add(typeConverter);
     }
 
-    public T Deserialize<T>(TextReader input, IValueDeserializer deserializer = null)
+    public T? Deserialize<T>(TextReader input, IValueDeserializer? deserializer = null)
     {
-        return (T)Deserialize(input, typeof(T), deserializer);
+        return (T?)Deserialize(input, typeof(T), deserializer);
     }
 
-    public object Deserialize(TextReader input, IValueDeserializer deserializer = null)
+    public object? Deserialize(TextReader input, IValueDeserializer? deserializer = null)
     {
         return Deserialize(input, typeof(object), deserializer);
     }
 
-    public object Deserialize(TextReader input, Type type, IValueDeserializer deserializer = null)
+    public object? Deserialize(TextReader input, Type type, IValueDeserializer? deserializer = null)
     {
         return Deserialize(new Parser(input), type, deserializer);
     }
 
-    public T Deserialize<T>(IParser reader, IValueDeserializer deserializer = null)
+    public T? Deserialize<T>(IParser reader, IValueDeserializer? deserializer = null)
     {
-        return (T)Deserialize(reader, typeof(T), deserializer);
+        return (T?)Deserialize(reader, typeof(T), deserializer);
     }
 
-    public object Deserialize(IParser reader, IValueDeserializer deserializer = null)
+    public object? Deserialize(IParser reader, IValueDeserializer? deserializer = null)
     {
         return Deserialize(reader, typeof(object), deserializer);
     }
@@ -158,7 +158,7 @@ public sealed class YamlDeserializer
     /// <param name="parser">The <see cref="IParser" /> where to deserialize the object.</param>
     /// <param name="type">The static type of the object to deserialize.</param>
     /// <returns>Returns the deserialized object.</returns>
-    public object Deserialize(IParser parser, Type type, IValueDeserializer deserializer = null)
+    public object? Deserialize(IParser parser, Type type, IValueDeserializer? deserializer = null)
     {
         ArgumentNullException.ThrowIfNull(parser);
         ArgumentNullException.ThrowIfNull(type);
@@ -167,7 +167,7 @@ public sealed class YamlDeserializer
 
         var hasDocumentStart = parser.TryConsume<DocumentStart>(out _);
         deserializer ??= _valueDeserializer;
-        object result = null;
+        object? result = null;
         if (!parser.Accept<DocumentEnd>(out _) && !parser.Accept<StreamEnd>(out _))
         {
             using var state = new SerializerState();
@@ -205,7 +205,7 @@ public sealed class YamlDeserializer
             {
                 foreach (var promise in Values)
                 {
-                    if (!promise.HasValue)
+                    if (!promise.HasValue && promise.Alias != null)
                     {
                         // If promise is not resolved, reset to it's alias value
                         promise.Value = "*" + promise.Alias.Value;
@@ -216,26 +216,26 @@ public sealed class YamlDeserializer
 
         private sealed class ValuePromise : IValuePromise
         {
-            public event Action<object> ValueAvailable;
+            public event Action<object?>? ValueAvailable;
 
             public bool HasValue { get; private set; }
 
-            private object value;
+            private object? value;
 
-            public readonly AnchorAlias Alias;
+            public readonly AnchorAlias? Alias;
 
             public ValuePromise(AnchorAlias alias)
             {
                 Alias = alias;
             }
 
-            public ValuePromise(object value)
+            public ValuePromise(object? value)
             {
                 HasValue = true;
                 this.value = value;
             }
 
-            public object Value
+            public object? Value
             {
                 get
                 {
@@ -259,13 +259,13 @@ public sealed class YamlDeserializer
             }
         }
 
-        public object DeserializeValue(IParser reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
+        public object? DeserializeValue(IParser reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
         {
-            object value;
+            object? value;
             if (reader.TryConsume<AnchorAlias>(out var alias))
             {
                 var aliasState = state.Get<AliasState>();
-                if (!aliasState.TryGetValue(alias.Value, out ValuePromise valuePromise))
+                if (!aliasState.TryGetValue(alias.Value, out var valuePromise))
                 {
                     valuePromise = new ValuePromise(alias);
                     aliasState.Add(alias.Value, valuePromise);
@@ -287,7 +287,7 @@ public sealed class YamlDeserializer
             {
                 var aliasState = state.Get<AliasState>();
 
-                if (!aliasState.TryGetValue(anchor.Value, out ValuePromise valuePromise))
+                if (!aliasState.TryGetValue(anchor.Value, out var valuePromise))
                 {
                     aliasState.Add(anchor.Value, new ValuePromise(value));
                 }

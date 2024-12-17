@@ -3,13 +3,12 @@
  * The .NET Foundation licenses this file to you under the MIT license.
  */
 
-$enable-important-utilities: false;
-$container-max-widths: (
-  xxl: 1768px
-) !default;
-
 @use "mixins";
-@use "bootstrap/scss/bootstrap";
+@use "bootstrap/scss/bootstrap" with (
+  $container-max-widths: (
+    xxl: 1768px
+  )
+);
 @use "highlight";
 @use "layout";
 @use "nav";

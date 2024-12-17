@@ -9,12 +9,12 @@ public sealed class ExtensibleMemberAttribute : Attribute
     public string Prefix { get; }
 
     public ExtensibleMemberAttribute()
-        : this(null)
+        : this(string.Empty)
     {
     }
 
     public ExtensibleMemberAttribute(string prefix)
     {
-        Prefix = prefix ?? string.Empty;
+        Prefix = prefix;
     }
 }

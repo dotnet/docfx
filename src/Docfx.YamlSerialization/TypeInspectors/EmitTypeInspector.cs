@@ -22,7 +22,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         _resolver = resolver;
     }
 
-    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
+    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object? container)
     {
         var item = _cache.GetOrAdd(type, CachingItem.Create);
         if (item.Error != null)
@@ -45,7 +45,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         return from p in item.Properties select new EmitPropertyDescriptor(p, _resolver);
     }
 
-    public override IPropertyDescriptor GetProperty(Type type, object container, string name)
+    public override IPropertyDescriptor? GetProperty(Type type, object? container, string name)
     {
         var item = _cache.GetOrAdd(type, CachingItem.Create);
         if (item.Error != null)
@@ -56,6 +56,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         {
             return null;
         }
+
         return (from ep in item.ExtensibleProperties
                 where name.StartsWith(ep.Prefix, StringComparison.Ordinal)
                 select new ExtensiblePropertyDescriptor(ep, name, _resolver)).FirstOrDefault();
@@ -65,7 +66,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
     {
         private CachingItem() { }
 
-        public Exception Error { get; private set; }
+        public Exception? Error { get; private set; }
 
         public List<EmitPropertyDescriptorSkeleton> Properties { get; } = new();
 
@@ -103,7 +104,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
                 }
                 else
                 {
-                    Type valueType = GetGenericValueType(propertyType);
+                    Type? valueType = GetGenericValueType(propertyType);
 
                     if (valueType == null)
                     {
@@ -130,7 +131,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 
         private static Func<object, object> CreateReader(MethodInfo getMethod)
         {
-            var hostType = getMethod.DeclaringType;
+            var hostType = getMethod.DeclaringType!;
             var propertyType = getMethod.ReturnType;
             var dm = new DynamicMethod(string.Empty, typeof(object), [typeof(object)]);
             var il = dm.GetILGenerator();
@@ -153,9 +154,9 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             return (Func<object, object>)dm.CreateDelegate(typeof(Func<object, object>));
         }
 
-        private static Action<object, object> CreateWriter(MethodInfo setMethod)
+        private static Action<object, object?> CreateWriter(MethodInfo setMethod)
         {
-            var hostType = setMethod.DeclaringType;
+            var hostType = setMethod.DeclaringType!;
             var propertyType = setMethod.GetParameters()[0].ParameterType;
             var dm = new DynamicMethod(string.Empty, typeof(void), [typeof(object), typeof(object)]);
             var il = dm.GetILGenerator();
@@ -173,12 +174,12 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             il.Emit(OpCodes.Unbox_Any, propertyType);
             il.Emit(isValueType ? OpCodes.Call : OpCodes.Callvirt, setMethod);
             il.Emit(OpCodes.Ret);
-            return (Action<object, object>)dm.CreateDelegate(typeof(Action<object, object>));
+            return (Action<object, object?>)dm.CreateDelegate(typeof(Action<object, object?>));
         }
 
-        private static Type GetGenericValueType(Type propertyType)
+        private static Type? GetGenericValueType(Type propertyType)
         {
-            Type valueType = null;
+            Type? valueType = null;
             if (propertyType.IsInterface)
             {
                 valueType = GetGenericValueTypeCore(propertyType);
@@ -189,7 +190,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             return valueType;
         }
 
-        private static Type GetGenericValueTypeCore(Type type)
+        private static Type? GetGenericValueTypeCore(Type type)
         {
             if (type.IsGenericType &&
                 type.GetGenericTypeDefinition() == typeof(IDictionary<,>))
@@ -205,7 +206,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 
         private static Func<object, ICollection<string>> CreateDictionaryKeyReader(MethodInfo getMethod, Type valueType)
         {
-            var hostType = getMethod.DeclaringType;
+            var hostType = getMethod.DeclaringType!;
             var propertyType = getMethod.ReturnType;
             var dictType = typeof(IDictionary<,>).MakeGenericType(typeof(string), valueType);
             var dm = new DynamicMethod(string.Empty, typeof(ICollection<string>), [typeof(object)]);
@@ -241,7 +242,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
                 il.MarkLabel(notNullLabel);
                 il.Emit(OpCodes.Ldloc_0);
             }
-            il.Emit(OpCodes.Callvirt, dictType.GetMethod("get_Keys"));
+            il.Emit(OpCodes.Callvirt, dictType.GetMethod("get_Keys")!);
             il.Emit(OpCodes.Ret);
 
             return (Func<object, ICollection<string>>)dm.CreateDelegate(typeof(Func<object, ICollection<string>>));
@@ -249,7 +250,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 
         private static Func<object, string, object> CreateDictionaryReader(MethodInfo getMethod, Type valueType)
         {
-            var hostType = getMethod.DeclaringType;
+            var hostType = getMethod.DeclaringType!;
             var propertyType = getMethod.ReturnType;
             var dictType = typeof(IDictionary<,>).MakeGenericType(typeof(string), valueType);
             var dm = new DynamicMethod(string.Empty, typeof(object), [typeof(object), typeof(string)]);
@@ -288,7 +289,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             }
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldloca_S, (byte)0);
-            il.Emit(OpCodes.Callvirt, dictType.GetMethod("TryGetValue"));
+            il.Emit(OpCodes.Callvirt, dictType.GetMethod("TryGetValue")!);
             il.Emit(OpCodes.Brfalse_S, nullLabel);
             il.Emit(OpCodes.Ldloc_0);
             if (valueType.IsValueType)
@@ -303,9 +304,9 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             return (Func<object, string, object>)dm.CreateDelegate(typeof(Func<object, string, object>));
         }
 
-        private static Action<object, string, object> CreateDictionaryWriter(MethodInfo getMethod, Type valueType)
+        private static Action<object, string, object?> CreateDictionaryWriter(MethodInfo getMethod, Type valueType)
         {
-            var hostType = getMethod.DeclaringType;
+            var hostType = getMethod.DeclaringType!;
             var propertyType = getMethod.ReturnType;
             var dictType = typeof(IDictionary<,>).MakeGenericType(typeof(string), valueType);
             var dm = new DynamicMethod(string.Empty, typeof(void), [typeof(object), typeof(string), typeof(object)]);
@@ -341,11 +342,11 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Ldarg_2);
             il.Emit(OpCodes.Unbox_Any, valueType);
-            il.Emit(OpCodes.Callvirt, dictType.GetMethod("set_Item"));
+            il.Emit(OpCodes.Callvirt, dictType.GetMethod("set_Item")!);
             il.MarkLabel(nullLabel);
             il.Emit(OpCodes.Ret);
 
-            return (Action<object, string, object>)dm.CreateDelegate(typeof(Action<object, string, object>));
+            return (Action<object, string, object?>)dm.CreateDelegate(typeof(Action<object, string, object?>));
         }
     }
 
@@ -356,20 +357,20 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 
         public EmitPropertyDescriptorSkeleton()
         {
-            _attributeFunc = t => Property.GetCustomAttribute(t);
+            _attributeFunc = t => Property!.GetCustomAttribute(t)!;
         }
 
-        internal PropertyInfo Property { get; set; }
+        internal required PropertyInfo Property { get; set; }
 
-        internal Func<object, object> Reader { get; set; }
+        internal required Func<object, object> Reader { get; set; }
 
-        internal Action<object, object> Writer { get; set; }
+        internal required Action<object, object?>? Writer { get; set; }
 
         public bool CanWrite { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        public Type Type { get; set; }
+        public required Type Type { get; set; }
 
         public Attribute GetCustomAttribute(Type type)
         {
@@ -398,7 +399,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 
         public Type Type => _skeleton.Type;
 
-        public Type TypeOverride { get; set; }
+        public Type? TypeOverride { get; set; }
 
         public T GetCustomAttribute<T>() where T : Attribute => (T)_skeleton.GetCustomAttribute(typeof(T));
 
@@ -408,23 +409,24 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             return new BetterObjectDescriptor(value, TypeOverride ?? _typeResolver.Resolve(Type, value), Type, ScalarStyle);
         }
 
-        public void Write(object target, object value)
+        public void Write(object target, object? value)
         {
-            _skeleton.Writer(target, value);
+            if (_skeleton.CanWrite && _skeleton.Writer != null)
+                _skeleton.Writer(target, value);
         }
     }
 
     private sealed class ExtensiblePropertyDescriptorSkeleton
     {
-        internal string Prefix { get; set; }
+        internal required string Prefix { get; set; }
 
-        internal Func<object, string, object> Reader { get; set; }
+        internal required Func<object, string, object> Reader { get; set; }
 
-        internal Action<object, string, object> Writer { get; set; }
+        internal required Action<object, string, object?> Writer { get; set; }
 
-        internal Func<object, ICollection<string>> KeyReader { get; set; }
+        internal required Func<object, ICollection<string>> KeyReader { get; set; }
 
-        public Type Type { get; set; }
+        public required Type Type { get; set; }
 
         public ICollection<string> GetAllKeys(object target) => KeyReader(target);
     }
@@ -457,9 +459,9 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 
         public Type Type => _skeleton.Type;
 
-        public Type TypeOverride { get; set; }
+        public Type? TypeOverride { get; set; }
 
-        public T GetCustomAttribute<T>() where T : Attribute => null;
+        public T? GetCustomAttribute<T>() where T : Attribute => null;
 
         public IObjectDescriptor Read(object target)
         {
@@ -471,7 +473,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             return new BetterObjectDescriptor(value, TypeOverride ?? _typeResolver.Resolve(Type, value), Type, ScalarStyle);
         }
 
-        public void Write(object target, object value)
+        public void Write(object target, object? value)
         {
             if (Name == null || Name.Length <= _skeleton.Prefix.Length)
             {

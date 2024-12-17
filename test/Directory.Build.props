@@ -13,6 +13,8 @@
     <TestTfmsInParallel>false</TestTfmsInParallel>
   </PropertyGroup>
 
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('$(MSBuildThisFile)', '$(MSBuildThisFileDirectory)../'))" />
+  
   <PropertyGroup>
     <!-- Enable `Microsoft.Testing.Platform` mode for `dotnet test` -->
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
@@ -29,8 +31,6 @@
     <!-- Ignore exit code 8 (the test session run zero tests) -->
     <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments)  --ignore-exit-code 8</TestingPlatformCommandLineArguments>
   </PropertyGroup>
-
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
@@ -49,15 +49,11 @@
 
     <!-- Settings for VSTest. These settings will be removed in future. -->
     <VSTestResultsDirectory>$(MSBuildThisFileDirectory)TestResults</VSTestResultsDirectory>
-    <VSTestLogger>$(VSTestLogger);trx%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework).trx</VSTestLogger>
-    <VSTestLogger>$(VSTestLogger);html%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework).html</VSTestLogger>
+    <VSTestLogger>$(VSTestLogger);trx%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).trx</VSTestLogger>
+    <VSTestLogger>$(VSTestLogger);html%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).html</VSTestLogger>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit.runner.visualstudio" />

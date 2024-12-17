@@ -365,7 +365,7 @@ internal partial class XmlComment
             if (!success)
             {
                 var detailedInfo = new StringBuilder();
-                if (_context is {Source: not null})
+                if (_context is { Source: not null })
                 {
                     if (!string.IsNullOrEmpty(_context.Source.Name))
                     {
@@ -640,7 +640,7 @@ internal partial class XmlComment
                         MarkdownXmlDecode(child);
                     break;
 
-                case LeafBlock {Inline: not null} leafBlock:
+                case LeafBlock { Inline: not null } leafBlock:
                     foreach (var child in leafBlock.Inline)
                         MarkdownXmlDecode(child);
                     break;

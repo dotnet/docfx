@@ -9,11 +9,11 @@ namespace Docfx.YamlSerialization.NodeTypeResolvers;
 
 internal sealed class ScalarYamlNodeTypeResolver : INodeTypeResolver
 {
-    bool INodeTypeResolver.Resolve(NodeEvent nodeEvent, ref Type currentType)
+    bool INodeTypeResolver.Resolve(NodeEvent? nodeEvent, ref Type currentType)
     {
         if (currentType == typeof(string) || currentType == typeof(object))
         {
-            if (nodeEvent is Scalar {IsPlainImplicit: true} scalar)
+            if (nodeEvent is Scalar { IsPlainImplicit: true } scalar)
             {
                 if (Regexes.BooleanLike().IsMatch(scalar.Value))
                 {

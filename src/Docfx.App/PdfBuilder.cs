@@ -48,11 +48,6 @@ static class PdfBuilder
         public string? pdfFooterTemplate { get; init; }
     }
 
-    static PdfBuilder()
-    {
-        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
-    }
-
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
     {
         var outputFolder = Path.GetFullPath(Path.Combine(
@@ -70,7 +65,9 @@ static class PdfBuilder
         if (pdfTocs.Count == 0)
             return;
 
-        Program.Main(["install", "chromium"]);
+        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
+
+        Program.Main(["install", "chromium", "--only-shell"]);
 
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
@@ -109,7 +106,7 @@ static class PdfBuilder
                 var outputPath = Path.Combine(outputFolder, outputName);
 
                 await CreatePdf(
-                    PrintPdf, PrintHeaderFooter, task, new(baseUrl, url), toc, outputPath,
+                    PrintPdf, PrintHeaderFooter, task, new(baseUrl, url), toc, outputFolder, outputPath,
                     pageNumbers => pdfPageNumbers[url] = pageNumbers);
 
                 task.Value = task.MaxValue;
@@ -259,7 +256,7 @@ static class PdfBuilder
 
     static async Task CreatePdf(
         Func<Outline, Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Page, Task<byte[]>> printHeaderFooter, ProgressTask task,
-        Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
+        Uri outlineUrl, Outline outline, string outputFolder, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
         Directory.CreateDirectory(tempDirectory);
@@ -301,7 +298,7 @@ static class PdfBuilder
             var key = CleanUrl(url);
             if (!pagesByUrl.TryGetValue(key, out var dests))
                 pagesByUrl[key] = dests = new();
-            dests.Add((node, document.Structure.Catalog.NamedDestinations));
+            dests.Add((node, document.Structure.Catalog.GetNamedDestinations()));
 
             pageBytes[node] = bytes;
             pageNumbers[node] = numberOfPages + 1;
@@ -360,6 +357,8 @@ static class PdfBuilder
                 if (!pageBytes.TryGetValue(node, out var bytes))
                     continue;
 
+                var isCoverPage = IsCoverPage(url, outputFolder, outline.pdfCoverPage);
+
                 var isTocPage = IsTocPage(url);
                 if (isTocPage)
                 {
@@ -377,6 +376,9 @@ static class PdfBuilder
                     pageNumber++;
 
                     var pageBuilder = builder.AddPage(document, i, x => CopyLink(node, x));
+
+                    if (isCoverPage)
+                        continue;
 
                     if (isTocPage)
                         continue;
@@ -437,6 +439,19 @@ static class PdfBuilder
         }
 
         static Uri CleanUrl(Uri url) => new UriBuilder(url) { Query = null, Fragment = null }.Uri;
+
+        static bool IsCoverPage(Uri pageUri, string baseFolder, string? pdfCoverPage)
+        {
+            Debug.Assert(Path.IsPathFullyQualified(baseFolder));
+
+            if (string.IsNullOrEmpty(pdfCoverPage))
+                return false;
+
+            string pagePath = pageUri.AbsolutePath.TrimStart('/');
+            string covePagePath = PathUtility.MakeRelativePath(baseFolder, Path.GetFullPath(Path.Combine(baseFolder, pdfCoverPage)));
+
+            return pagePath.Equals(covePagePath, GetStringComparison());
+        }
 
         static bool IsTocPage(Uri url) => url.AbsolutePath.StartsWith("/_pdftoc/");
 
@@ -617,5 +632,13 @@ static class PdfBuilder
             const double Dpi = 72d; // Use Default DPI of PDF.
             return $"{Math.Round(pt * MillimeterPerInch / Dpi)}mm";
         }
+    }
+
+    // Gets StringComparison instance for path string.
+    private static StringComparison GetStringComparison()
+    {
+        return PathUtility.IsPathCaseInsensitive()
+            ? StringComparison.OrdinalIgnoreCase
+            : StringComparison.Ordinal;
     }
 }

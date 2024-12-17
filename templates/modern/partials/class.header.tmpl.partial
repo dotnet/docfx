@@ -139,7 +139,8 @@
 <dl class="parameters">
 {{#children}}
   <dt id="{{id}}"><code>{{syntax.content.0.value}}</code></dt>
-  <dd>{{{summary}}}</dd>
+  {{#remarks}}<dd>{{{summary}}}{{{remarks}}}</dd>{{/remarks}}
+  {{^remarks}}<dd>{{{summary}}}</dd>{{/remarks}}
 {{/children}}
 </dl>
 {{/children}}

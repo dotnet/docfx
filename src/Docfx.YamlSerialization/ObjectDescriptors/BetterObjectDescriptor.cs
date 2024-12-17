@@ -9,21 +9,21 @@ namespace Docfx.YamlSerialization.ObjectDescriptors;
 
 public class BetterObjectDescriptor : IObjectDescriptor
 {
-    public BetterObjectDescriptor(object value, Type type, Type staticType)
+    public BetterObjectDescriptor(object? value, Type type, Type staticType)
         : this(value, type, staticType, ScalarStyle.Any)
     {
     }
 
-    public BetterObjectDescriptor(object value, Type type, Type staticType, ScalarStyle scalarStyle)
+    public BetterObjectDescriptor(object? value, Type type, Type staticType, ScalarStyle scalarStyle)
     {
         Value = value;
         Type = type;
         StaticType = staticType;
         ScalarStyle = scalarStyle == ScalarStyle.Any && NeedQuote(value) ? ScalarStyle.DoubleQuoted : scalarStyle;
 
-        static bool NeedQuote(object val)
+        static bool NeedQuote(object? val)
         {
-            if (val is not string s)
+            if (val is not string s || s == null)
                 return false;
 
             return Regexes.BooleanLike().IsMatch(s)
@@ -42,5 +42,5 @@ public class BetterObjectDescriptor : IObjectDescriptor
 
     public Type Type { get; }
 
-    public object Value { get; }
+    public object? Value { get; }
 }

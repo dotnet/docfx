@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(DOCFX_PREVIEW_BUILD)' == 'true'">net8.0;net9.0</TargetFrameworks> 
+    <TargetFrameworks Condition="'$(DOCFX_PREVIEW_BUILD)' == 'true'">net8.0;net9.0</TargetFrameworks>
     <LangVersion>Preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
@@ -19,9 +19,8 @@
           warning NU1507: There are 2 package sources defined in your configuration.
           warning NU5104: A stable release of a package should not have a prerelease dependency. Either modify the version spec of dependency "PdfPig [0.1.9-alpha-20240510-d86c2, )" or update the version field in the nuspec.
           warning NU5111: The script file 'tools\.playwright\package\bin\install_media_pack.ps1' is not recognized by NuGet and hence will not be executed during installation of this package.
-          warning CS0436: IgnoresAccessChecksTo redefinition due to InternalsVisibleTo
      -->
-    <NoWarn>$(NoWarn);NU1507;NU5104;NU5111;CS0436</NoWarn>
+    <NoWarn>$(NoWarn);NU1507;NU5104;NU5111</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -30,8 +29,8 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources> 
-  
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
     <Authors>.NET Foundation and Contributors</Authors>
     <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
     <Description>Technical documentation tool with markdown, API docs for .NET, REST API and more.</Description>
@@ -43,13 +42,6 @@
 
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath="\"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <!-- Remove Node.js runtime dependencies that used by playwright -->

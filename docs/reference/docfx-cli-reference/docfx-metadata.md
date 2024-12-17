@@ -77,6 +77,10 @@ Run `docfx metadata --help` or `docfx -h` to get a list of all available options
 
   Disable the default API filter (default filter only generate public or protected APIs).
 
+- **--noRestore**
+
+  Do not run `dotnet restore` before building the projects.
+
 - **--namespaceLayout**
 
   Determines the namespace layout in table of contents.
