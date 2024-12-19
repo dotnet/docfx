@@ -219,7 +219,7 @@ public class ExtractSearchIndexFromHtmlTest
         manifest.Files.Add(manifestItem);
 
         // process the fake manifest, using tempTestFolder as the output folder
-        _extractor.Process(manifest, tempTestFolder);
+        _extractor.Process(manifest, tempTestFolder, TestContext.Current.CancellationToken);
 
         var expectedIndexJSON = @"{
   ""index.html"": {

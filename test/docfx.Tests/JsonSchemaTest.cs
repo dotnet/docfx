@@ -7,7 +7,6 @@ using Docfx.DataContracts.Common;
 using Docfx.Tests.Common;
 using FluentAssertions;
 using Json.Schema;
-using Xunit.Abstractions;
 using YamlDotNet.Serialization;
 
 namespace Docfx.Tests;
@@ -15,13 +14,6 @@ namespace Docfx.Tests;
 [Collection("docfx STA")]
 public class JsonSchemaTest : TestBase
 {
-    private readonly ITestOutputHelper output;
-
-    public JsonSchemaTest(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
-
     [Theory]
     [InlineData("docs/docfx.json")]
     [InlineData("samples/csharp/docfx.json")]
