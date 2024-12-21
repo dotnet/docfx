@@ -4,6 +4,7 @@
 namespace Docfx.Tests;
 
 [Collection("docfx STA")]
+[UseNullAnsiConsole]
 public static class CommandLineTest
 {
     [Fact]
