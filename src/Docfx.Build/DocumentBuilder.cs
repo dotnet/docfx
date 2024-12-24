@@ -9,7 +9,6 @@ using Docfx.Build.SchemaDriven;
 using Docfx.Common;
 using Docfx.MarkdigEngine;
 using Docfx.Plugins;
-using Newtonsoft.Json;
 
 namespace Docfx.Build.Engine;
 
