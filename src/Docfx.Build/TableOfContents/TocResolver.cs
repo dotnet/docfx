@@ -11,7 +11,7 @@ namespace Docfx.Build.TableOfContents;
 class TocResolver
 {
     private readonly Dictionary<string, TocItemInfo> _collection;
-    private readonly Dictionary<FileAndType, TocItemInfo> _notInProjectTocCache = new();
+    private readonly Dictionary<FileAndType, TocItemInfo> _notInProjectTocCache = [];
 
     public TocResolver(Dictionary<string, TocItemInfo> collection)
     {

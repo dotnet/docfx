@@ -17,7 +17,7 @@ public sealed class XRefSpec : IDictionary<string, object>
 
     public XRefSpec()
     {
-        _dict = new Dictionary<string, object>();
+        _dict = [];
     }
 
     public XRefSpec(IDictionary<string, object> dictionary)

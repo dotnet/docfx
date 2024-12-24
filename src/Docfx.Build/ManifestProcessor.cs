@@ -29,7 +29,7 @@ internal class ManifestProcessor
         // E.g. we can set TOC model to be globally shared by every data model
         // Make sure it is single thread
         _globalMetadata = _templateProcessor.Tokens?.ToDictionary(pair => pair.Key, pair => (object)pair.Value)
-            ?? new Dictionary<string, object>();
+            ?? [];
     }
 
     public void Process()

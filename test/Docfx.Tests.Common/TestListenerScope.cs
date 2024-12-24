@@ -15,7 +15,7 @@ public class TestListenerScope : ILoggerListener, IDisposable
     public TestListenerScope(LogLevel logLevel = LogLevel.Warning)
     {
         _logLevel = logLevel;
-        s_items.Value = new();
+        s_items.Value = [];
         Logger.RegisterListener(this);
     }
 

@@ -15,7 +15,7 @@ sealed class HtmlPostProcessor : IPostProcessor
 {
     private static readonly UTF8Encoding Utf8EncodingWithoutBom = new(false);
 
-    public List<IHtmlDocumentHandler> Handlers { get; } = new();
+    public List<IHtmlDocumentHandler> Handlers { get; } = [];
 
     private bool _handlerInitialized;
 

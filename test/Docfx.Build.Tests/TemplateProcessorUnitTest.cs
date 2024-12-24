@@ -61,6 +61,6 @@ public class TemplateProcessorUnitTest : TestBase
             LocalPathFromRoot = fileName,
             Content = content,
         };
-        return processor.Process(new List<InternalManifestItem> { inputItem }, new ApplyTemplateSettings(_inputFolder, _outputFolder))[0];
+        return processor.Process([inputItem], new ApplyTemplateSettings(_inputFolder, _outputFolder))[0];
     }
 }

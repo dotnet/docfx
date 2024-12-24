@@ -17,7 +17,7 @@ public class OverwriteDocumentModel
     [ExtensibleMember]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     /// <summary>
     /// The uid for this overwrite document, as defined in YAML header
@@ -49,7 +49,7 @@ public class OverwriteDocumentModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public HashSet<string> LinkToFiles { get; set; } = new();
+    public HashSet<string> LinkToFiles { get; set; } = [];
 
     /// <summary>
     /// Links to other Uids
@@ -57,7 +57,7 @@ public class OverwriteDocumentModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public HashSet<string> LinkToUids { get; set; } = new();
+    public HashSet<string> LinkToUids { get; set; } = [];
 
     /// <summary>
     /// Link sources information for file
@@ -65,7 +65,7 @@ public class OverwriteDocumentModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public Dictionary<string, List<LinkSourceInfo>> FileLinkSources { get; set; } = new();
+    public Dictionary<string, List<LinkSourceInfo>> FileLinkSources { get; set; } = [];
 
     /// <summary>
     /// Link sources information for Uid
@@ -73,7 +73,7 @@ public class OverwriteDocumentModel
     [YamlIgnore]
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
-    public Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; set; } = new();
+    public Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; set; } = [];
 
     /// <summary>
     /// Dependencies extracted from the markdown content

@@ -10,7 +10,7 @@ namespace Docfx.Build.Engine;
 
 internal class CompilePhaseHandler
 {
-    private readonly List<TreeItemRestructure> _restructions = new();
+    private readonly List<TreeItemRestructure> _restructions = [];
 
     public DocumentBuildContext Context { get; }
 

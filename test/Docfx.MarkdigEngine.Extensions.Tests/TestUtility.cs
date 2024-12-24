@@ -23,9 +23,9 @@ public static class TestUtility
         Dictionary<string, string> notes = null,
         PlantUmlOptions plantUml = null)
     {
-        errors ??= Array.Empty<string>();
-        tokens ??= new Dictionary<string, string>();
-        files ??= new Dictionary<string, string>();
+        errors ??= [];
+        tokens ??= [];
+        files ??= [];
         optionalExtensions ??= [];
 
         var actualErrors = new List<string>();

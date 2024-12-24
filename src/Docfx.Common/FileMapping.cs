@@ -28,7 +28,7 @@ namespace Docfx;
 [System.Text.Json.Serialization.JsonConverter(typeof(FileMappingConverter.SystemTextJsonConverter))]
 public class FileMapping
 {
-    private readonly List<FileMappingItem> _items = new();
+    private readonly List<FileMappingItem> _items = [];
 
     /// <summary>
     /// Flags to distinguish items are expanded or not.

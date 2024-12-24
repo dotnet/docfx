@@ -77,9 +77,9 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         }
 
         // Reset children
-        content.Children = new List<RestApiChildItemViewModel>();
+        content.Children = [];
         content.Metadata["_isSplittedByOperation"] = true;
-        content.Tags = new List<RestApiTagViewModel>();
+        content.Tags = [];
         model.Content = content;
 
         // Reset uid definition
@@ -123,8 +123,8 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
                 Summary = child.Summary,
                 Remarks = child.Remarks,
                 Documentation = child.Documentation,
-                Children = new List<RestApiChildItemViewModel> { child },
-                Tags = new List<RestApiTagViewModel>(),
+                Children = [child],
+                Tags = [],
                 Metadata = MergeChildMetadata(root, child)
             };
 
@@ -139,7 +139,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
             child.Description = null;
             child.Summary = null;
             child.Remarks = null;
-            child.Tags = new List<string>();
+            child.Tags = [];
 
             yield return model;
         }

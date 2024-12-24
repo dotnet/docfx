@@ -74,7 +74,7 @@ public class ExternalReferencePackageReader : IDisposable
         {
             if (!uidEntryMap.TryGetValue(entry.Uid, out List<string> list))
             {
-                list = new List<string>();
+                list = [];
                 uidEntryMap[entry.Uid] = list;
             }
             list.Add(entry.FullName);
