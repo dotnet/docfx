@@ -100,12 +100,9 @@ static class PdfBuilder
         var headerFooterTemplateCache = new ConcurrentDictionary<string, string>();
         var headerFooterPageCache = new ConcurrentDictionary<(string, string), Task<byte[]>>();
 
-        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        using var ctr = SubscribeCancelKeyPressEvent(cts);
-
         var pdfBuildTask = AnsiConsole.Progress().StartAsync(async progress =>
         {
-            await Parallel.ForEachAsync(pdfTocs, new ParallelOptions { CancellationToken = cts.Token }, async (item, _) =>
+            await Parallel.ForEachAsync(pdfTocs, new ParallelOptions { CancellationToken = cancellationToken }, async (item, _) =>
             {
                 var (url, toc) = item;
                 var outputName = Path.Combine(Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
@@ -115,33 +112,34 @@ static class PdfBuilder
                 await CreatePdf(
                     PrintPdf, PrintHeaderFooter, task, new(baseUrl, url), toc, outputFolder, pdfOutputPath,
                     pageNumbers => pdfPageNumbers[url] = pageNumbers,
-                    cts.Token);
+                    cancellationToken);
 
                 task.Value = task.MaxValue;
                 task.StopTask();
             });
         });
 
-        // Wait pdfBuildTask completed or cancelled.
-        await Task.WhenAny(pdfBuildTask, Task.Delay(Timeout.Infinite, cts.Token));
-
-        if (!pdfBuildTask.IsCompletedSuccessfully)
+        try
         {
-            // So manually close playwright context and browser to immeadiately shutdown running task.
+            await pdfBuildTask.WaitAsync(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
             if (!pdfBuildTask.IsCompleted)
             {
+                // If pdf generation task is not completed.
+                // Manually close playwright context/browser to immediately shutdown remaining tasks.
                 await context.CloseAsync();
                 await browser.CloseAsync();
-            }
-
-            try
-            {
-                await pdfBuildTask;
-            }
-            catch (OperationCanceledException)
-            {
-                Logger.LogError($"PDF file generation is canceled by user interaction.");
-                return;
+                try
+                {
+                    await pdfBuildTask; // Wait AnsiConsole.Progress operation completed to output logs.
+                }
+                catch
+                {
+                    Logger.LogError($"PDF file generation is canceled by user interaction.");
+                    return;
+                }
             }
         }
 
@@ -689,17 +687,5 @@ static class PdfBuilder
         return PathUtility.IsPathCaseInsensitive()
             ? StringComparison.OrdinalIgnoreCase
             : StringComparison.Ordinal;
-    }
-
-    private static CancellationTokenRegistration SubscribeCancelKeyPressEvent(CancellationTokenSource cts)
-    {
-        void onCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
-        {
-            e.Cancel = true;
-            cts.Cancel();
-        }
-
-        Console.CancelKeyPress += onCancelKeyPress;
-        return cts.Token.Register(() => Console.CancelKeyPress -= onCancelKeyPress);
     }
 }

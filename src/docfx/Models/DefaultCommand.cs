@@ -10,7 +10,7 @@ using Spectre.Console.Cli;
 
 namespace Docfx;
 
-class DefaultCommand : Command<DefaultCommand.Options>
+class DefaultCommand : CancellableCommandBase<DefaultCommand.Options>
 {
     [Description("Runs metadata, build and pdf commands")]
     internal class Options : BuildCommandOptions
@@ -20,7 +20,7 @@ class DefaultCommand : Command<DefaultCommand.Options>
         public bool Version { get; set; }
     }
 
-    public override int Execute(CommandContext context, Options options)
+    public override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
     {
         if (options.Version)
         {
@@ -48,9 +48,9 @@ class DefaultCommand : Command<DefaultCommand.Options>
             if (config.build is not null)
             {
                 BuildCommand.MergeOptionsToConfig(options, config.build, configDirectory);
-                serveDirectory = RunBuild.Exec(config.build, new(), configDirectory, outputFolder);
+                serveDirectory = RunBuild.Exec(config.build, new(), configDirectory, outputFolder, cancellationToken);
 
-                PdfBuilder.CreatePdf(serveDirectory).GetAwaiter().GetResult();
+                PdfBuilder.CreatePdf(serveDirectory, cancellationToken).GetAwaiter().GetResult();
             }
 
             if (options.Serve && serveDirectory is not null)
