@@ -13,6 +13,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\docfx\docfx.csproj" />
-    <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
   </ItemGroup>
 </Project>

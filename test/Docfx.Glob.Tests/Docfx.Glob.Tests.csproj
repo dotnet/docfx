@@ -5,6 +5,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.Glob\Docfx.Glob.csproj" />
-    <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
   </ItemGroup>
 </Project>

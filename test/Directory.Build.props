@@ -58,9 +58,12 @@
     <VSTestLogger>$(VSTestLogger);html%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).html</VSTestLogger>
   </PropertyGroup>
 
-  <!-- Add [assembly:CaptureConsole] attribute to assemblies -->
-  <ItemGroup>
-    <AssemblyAttribute Include="Xunit.CaptureConsole" />
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <!-- Add project reference to `Docfx.Tests.Common` library project -->
+    <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
+
+    <!-- Add SharedAssemblyInfo.cs file link to projects -->
+    <Compile Include="$(MSBuildThisFileDirectory)SharedAssemblyInfo.cs" Link="Properties/AssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
