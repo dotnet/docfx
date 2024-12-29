@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -56,7 +57,7 @@ public class SamplesTest : IDisposable
         using var process = Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"");
         await process.WaitForExitAsync();
 
-        if (Debugger.IsAttached)
+        if (Debugger.IsAttached || IsWslRemoteTest())
         {
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
             Assert.Equal(0, Program.Main([$"{samplePath}/docfx.json"]));
@@ -228,5 +229,14 @@ public class SamplesTest : IDisposable
         sb.Replace("\r\n", "\n");
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Returns true if running on WSL and executed on Visual Studio Remote Testing.
+    /// </summary>
+    private static bool IsWslRemoteTest([CallerFilePath] string callerFilePath = "")
+    {
+        return Environment.GetEnvironmentVariable("WSLENV") != null
+            && callerFilePath.Contains('\\', StringComparison.Ordinal); // Contains `\` when build on windows environment.
     }
 }
