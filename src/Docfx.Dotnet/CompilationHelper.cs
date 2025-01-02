@@ -189,7 +189,7 @@ internal static class CompilationHelper
                             if (!string.IsNullOrEmpty(name)
                                 && !referenceFiles.TryAdd(name, referenceFile.FilePath!))
                             {
-                                Logger.LogWarning($"Duplicate reference files for '{name}'.");
+                                Logger.LogWarning($"Duplicate reference files for '{name}'.", code: "InvalidAssemblyReference");
                             }
                         }
                     }
