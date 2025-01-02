@@ -86,11 +86,7 @@ partial class DotnetApiCatalog
         }
 
         var references = config.References ?? [];
-        var metadataReferences = references.Select(assemblyPath =>
-        {
-            var documentation = XmlDocumentationProvider.CreateFromFile(Path.ChangeExtension(assemblyPath, ".xml"));
-            return MetadataReference.CreateFromFile(assemblyPath, documentation: documentation);
-        }).ToArray();
+        var metadataReferences = references.Select(CompilationHelper.CreateMetadataReference).ToArray();
 
         // LoadCompilationFrom C# source files
         if (files.TryGetValue(FileType.CSSourceCode, out var csFiles))
