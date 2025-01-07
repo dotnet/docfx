@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/BuildFromProject.Inheritdoc.Issue8129.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Inheritdoc_Issue8129\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue8129.md\" sourcestartlinenumber=\"1\"> Struct Inheritdoc.Issue8129</h1>",
   "title": " Struct Inheritdoc.Issue8129",
-  "wordCount": 25.0,
+  "wordCount": 25,
   "_key": "obj/md/BuildFromProject.Inheritdoc.Issue8129.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

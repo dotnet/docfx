@@ -1,7 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Threading;
 using Docfx.Common;
 
 namespace Docfx.Build.Engine;
@@ -53,7 +52,7 @@ public class XRefArchiveBuilder
         //   Sort is not needed if `map.Sorted == true`.
         //   But there are some xrefmap files that is not propery sorted by using InvariantCulture.
         //   (e.g. Unity xrefmap that maintained by community)
-        if (map.References is {Count: > 0})
+        if (map.References is { Count: > 0 })
         {
             map.References.Sort(XRefSpecUidComparer.Instance);
             map.Sorted = true;

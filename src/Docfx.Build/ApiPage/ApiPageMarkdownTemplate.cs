@@ -13,7 +13,7 @@ static class ApiPageMarkdownTemplate
     {
         return string.Concat(page.body.Select(Block));
 
-        FormattableString? Block(Block block) => block.Value switch
+        FormattableString Block(Block block) => block.Value switch
         {
             Markdown markdown => Markdown(markdown),
             Heading heading => Heading(heading),
@@ -25,9 +25,9 @@ static class ApiPageMarkdownTemplate
             Parameters parameters => Parameters(parameters),
         };
 
-        FormattableString? Markdown(Markdown markdown) => $"{markdown.markdown}\n\n";
+        FormattableString Markdown(Markdown markdown) => $"{markdown.markdown}\n\n";
 
-        FormattableString? Heading(Heading heading) => heading.Value switch
+        FormattableString Heading(Heading heading) => heading.Value switch
         {
             H1 h1 => ToHeading(1, h1.h1, h1.id),
             H2 h2 => ToHeading(2, h2.h2, h2.id),
@@ -37,7 +37,7 @@ static class ApiPageMarkdownTemplate
             H6 h6 => ToHeading(6, h6.h6, h6.id),
         };
 
-        FormattableString? Api(Api api) => api.Value switch
+        FormattableString Api(Api api) => api.Value switch
         {
             Api1 api1 => ToHeading(1, api1.api1, api1.id),
             Api2 api2 => ToHeading(2, api2.api2, api2.id),
@@ -45,19 +45,19 @@ static class ApiPageMarkdownTemplate
             Api4 api4 => ToHeading(4, api4.api4, api4.id),
         };
 
-        FormattableString? ToHeading(int level, string title, string? id = null) =>
+        FormattableString ToHeading(int level, string title, string? id = null) =>
             $"{new string('#', level)}{(string.IsNullOrEmpty(id) ? null : $" <a id=\"{id}\"></a>")} {Escape(title)}\n\n";
 
-        FormattableString? Facts(Facts facts) =>
+        FormattableString Facts(Facts facts) =>
             $"{string.Concat(facts.facts.Select(fact => $"{Escape(fact.name)}: {Inline(fact.value)}  \n"))}\n";
 
-        FormattableString? List(List list) =>
+        FormattableString List(List list) =>
             $"{string.Join(", \n", list.list.Select(Inline))}\n\n";
 
-        FormattableString? Inheritance(Inheritance inheritance) =>
+        FormattableString Inheritance(Inheritance inheritance) =>
             $"{string.Join(" \u2190 \n", inheritance.inheritance.Select(Inline))}\n\n";
 
-        FormattableString? Code(Code code) =>
+        FormattableString Code(Code code) =>
             $"""
              ```{code.languageId ?? page.languageId}
              {code.code}
@@ -66,7 +66,7 @@ static class ApiPageMarkdownTemplate
 
              """;
 
-        FormattableString? Parameters(Parameters parameters) =>
+        FormattableString Parameters(Parameters parameters) =>
             $"{string.Concat(parameters.parameters.Select(Parameter))}";
 
         FormattableString? Parameter(Parameter parameter) =>

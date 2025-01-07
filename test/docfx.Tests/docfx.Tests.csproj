@@ -5,11 +5,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Api.*.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="PublicApiGenerator" />
     <PackageReference Include="Verify.Xunit" />
   </ItemGroup>
 

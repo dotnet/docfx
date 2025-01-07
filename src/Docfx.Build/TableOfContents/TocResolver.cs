@@ -11,7 +11,7 @@ namespace Docfx.Build.TableOfContents;
 class TocResolver
 {
     private readonly Dictionary<string, TocItemInfo> _collection;
-    private readonly Dictionary<FileAndType, TocItemInfo> _notInProjectTocCache = new();
+    private readonly Dictionary<FileAndType, TocItemInfo> _notInProjectTocCache = [];
 
     public TocResolver(Dictionary<string, TocItemInfo> collection)
     {
@@ -122,7 +122,7 @@ class TocResolver
         {
             case HrefType.AbsolutePath:
             case HrefType.RelativeFile:
-                if (item.Items is {Count: > 0})
+                if (item.Items is { Count: > 0 })
                 {
                     item.Items = new List<TocItemViewModel>(from i in item.Items
                                                             select ResolveItem(new TocItemInfo(file, i), stack) into r

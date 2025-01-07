@@ -28,9 +28,7 @@ public abstract class FileWriterBase : IFileWriter
         {
             return;
         }
-        if (!Directory.Exists(folder))
-        {
-            Directory.CreateDirectory(folder);
-        }
+
+        Directory.CreateDirectory(folder);
     }
 }

@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/BuildFromProject.Issue8725.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Issue8725\" sourcefile=\"obj/md/BuildFromProject.Issue8725.md\" sourcestartlinenumber=\"1\"> Class Issue8725</h1>",
   "title": " Class Issue8725",
-  "wordCount": 43.0,
+  "wordCount": 43,
   "_key": "obj/md/BuildFromProject.Issue8725.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

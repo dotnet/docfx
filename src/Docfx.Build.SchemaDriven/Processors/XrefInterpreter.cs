@@ -19,7 +19,7 @@ public class XrefInterpreter : IInterpreter
 
     public bool CanInterpret(BaseSchema schema)
     {
-        return schema is {ContentType: ContentType.Xref};
+        return schema is { ContentType: ContentType.Xref };
     }
 
     public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
@@ -61,7 +61,7 @@ public class XrefInterpreter : IInterpreter
         var file = source.Target;
         if (!uidLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))
         {
-            sources = new List<LinkSourceInfo>();
+            sources = [];
             uidLinkSources[file] = sources;
         }
         sources.Add(source);

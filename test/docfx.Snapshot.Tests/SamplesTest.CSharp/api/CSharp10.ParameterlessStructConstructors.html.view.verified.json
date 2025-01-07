@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -121,8 +121,8 @@
             },
             "id": ".ctor",
             "path": "src/CSharp10.cs",
-            "startLine": 14.0,
-            "endLine": 0.0
+            "startLine": 14,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -172,7 +172,7 @@
             ],
             "id": "CSharp10_ParameterlessStructConstructors__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "",
           "platform": null,
@@ -307,14 +307,14 @@
             },
             "id": "X",
             "path": "src/CSharp10.cs",
-            "startLine": 10.0,
-            "endLine": 0.0
+            "startLine": 10,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
           ],
           "namespace": "CSharp10",
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "",
           "platform": null,
@@ -450,8 +450,8 @@
             },
             "id": "Description",
             "path": "src/CSharp10.cs",
-            "startLine": 12.0,
-            "endLine": 0.0
+            "startLine": 12,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -501,7 +501,7 @@
             ],
             "id": "CSharp10_ParameterlessStructConstructors_Description_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "",
           "platform": null,
@@ -630,8 +630,8 @@
             },
             "id": "Y",
             "path": "src/CSharp10.cs",
-            "startLine": 11.0,
-            "endLine": 0.0
+            "startLine": 11,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -681,7 +681,7 @@
             ],
             "id": "CSharp10_ParameterlessStructConstructors_Y_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "",
           "platform": null,
@@ -743,8 +743,8 @@
     },
     "id": "ParameterlessStructConstructors",
     "path": "src/CSharp10.cs",
-    "startLine": 8.0,
-    "endLine": 0.0
+    "startLine": 8,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -794,7 +794,7 @@
         "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -808,7 +808,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "inheritedMembers": [
     {
       "uid": "System.ValueType.Equals(System.Object)",
@@ -857,7 +857,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.ValueType.GetHashCode",
@@ -906,7 +906,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.ValueType.ToString",
@@ -955,7 +955,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -1004,7 +1004,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -1053,7 +1053,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -1102,7 +1102,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_systemKeys": [

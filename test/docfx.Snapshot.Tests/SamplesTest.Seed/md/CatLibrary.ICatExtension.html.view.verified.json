@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/CatLibrary.ICatExtension.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_ICatExtension\" sourcefile=\"obj/md/CatLibrary.ICatExtension.md\" sourcestartlinenumber=\"1\"> Class ICatExtension</h1>",
   "title": " Class ICatExtension",
-  "wordCount": 107.0,
+  "wordCount": 107,
   "_key": "obj/md/CatLibrary.ICatExtension.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

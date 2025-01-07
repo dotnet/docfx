@@ -15,7 +15,7 @@ namespace Docfx.Build.RestApi;
 [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
 public class BuildRestApiDocument : BuildReferenceDocumentBase
 {
-    private static readonly HashSet<string> MarkupKeys = new() { "description" };
+    private static readonly HashSet<string> MarkupKeys = ["description"];
 
     public override string Name => nameof(BuildRestApiDocument);
 
@@ -102,7 +102,7 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
             {
                 if (MarkupKeys.Contains(pair.Key) && pair.Value != null)
                 {
-                    if (pair.Value is JValue {Type: JTokenType.String} jValue)
+                    if (pair.Value is JValue { Type: JTokenType.String } jValue)
                     {
                         jObject[pair.Key] = Markup(host, (string)jValue, model, filter);
                     }

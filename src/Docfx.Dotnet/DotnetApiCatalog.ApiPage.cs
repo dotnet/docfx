@@ -10,7 +10,6 @@ using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using HtmlAgilityPack;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 using OneOf;
 
 #nullable enable
@@ -86,7 +85,7 @@ partial class DotnetApiCatalog
                         _ when SymbolHelper.IsOperator(method) => "Operator",
                         _ when SymbolHelper.IsMember(method) => "Method",
                         _ => throw new NotSupportedException($"Unknown method type {method.MethodKind}"),
-                    }); ;
+                    });
                     foreach (var (s, c) in symbols)
                         Method((IMethodSymbol)s, c, 2);
                     break;
@@ -731,7 +730,7 @@ partial class DotnetApiCatalog
             return string.IsNullOrEmpty(url) ? text : new LinkSpan { text = text, url = url };
         }
 
-        XmlComment? Comment(ISymbol symbol, Compilation compilation)
+        XmlComment Comment(ISymbol symbol, Compilation compilation)
         {
             // Cache XML comment to avoid duplicated parsing and warnings
             return commentCache.GetOrAdd(symbol, symbol =>

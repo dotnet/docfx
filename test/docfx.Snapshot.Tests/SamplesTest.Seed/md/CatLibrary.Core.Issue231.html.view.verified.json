@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "path": "obj/md/CatLibrary.Core.Issue231.md",
   "documentation": {
@@ -17,8 +17,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0.0,
-    "endLine": 0.0
+    "startLine": 0,
+    "endLine": 0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -27,7 +27,7 @@
   "pdfTocPage": true,
   "rawTitle": "<h1 id=\"CatLibrary_Core_Issue231\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"1\"> Class Issue231</h1>",
   "title": " Class Issue231",
-  "wordCount": 45.0,
+  "wordCount": 45,
   "_key": "obj/md/CatLibrary.Core.Issue231.md",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsAssemblyName Include="Microsoft.CodeAnalysis.Workspaces" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
     <ProjectReference Include="..\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
     <ProjectReference Include="..\Docfx.Glob\Docfx.Glob.csproj" />
@@ -32,7 +28,6 @@
     <PackageReference Include="System.Formats.Asn1" />
     <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="ICSharpCode.Decompiler" />
-    <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
     <PackageReference Include="OneOf" />
     <PackageReference Include="OneOf.SourceGenerator" PrivateAssets="All" />
     <PackageReference Include="Markdig" />

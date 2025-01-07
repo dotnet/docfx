@@ -1,0 +1,44 @@
+name: lint
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event.pull_request.draft == false   
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.x
+
+      - name: Run `dotnet format` command
+        run: |
+          dotnet restore
+          dotnet format --no-restore --verify-no-changes
+
+      - name: Report failures as Job Summary
+        if: ${{ failure() }}
+        shell: pwsh
+        run: |
+          $content = '
+          ## Failed to run the `lint.yml` workflow
+          To fix workflow errors. Please follow the steps below.
+           1. Run `dotnet format` command.
+           2. Commit changes as separated commit.
+           3. Push changes to source branch of PR.
+          '
+          Write-Output $content >> $env:GITHUB_STEP_SUMMARY

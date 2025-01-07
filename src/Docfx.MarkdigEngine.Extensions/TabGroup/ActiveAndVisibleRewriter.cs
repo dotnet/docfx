@@ -10,7 +10,7 @@ namespace Docfx.MarkdigEngine.Extensions;
 public class ActiveAndVisibleRewriter : IMarkdownObjectRewriter
 {
     private readonly MarkdownContext _context;
-    private readonly List<string[]> tabSelectionInfo = new();
+    private readonly List<string[]> tabSelectionInfo = [];
 
     public ActiveAndVisibleRewriter(MarkdownContext context)
     {

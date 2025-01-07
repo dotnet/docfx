@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -216,8 +216,8 @@
             },
             "id": "op_Increment",
             "path": "src/CSharp11.cs",
-            "startLine": 6.0,
-            "endLine": 0.0
+            "startLine": 6,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -263,7 +263,7 @@
             ],
             "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "",
           "platform": null,
@@ -325,8 +325,8 @@
     },
     "id": "IGetNext",
     "path": "src/CSharp11.cs",
-    "startLine": 4.0,
-    "endLine": 0.0
+    "startLine": 4,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -376,7 +376,7 @@
         "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -396,7 +396,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_systemKeys": [
     "uid",
     "isEii",

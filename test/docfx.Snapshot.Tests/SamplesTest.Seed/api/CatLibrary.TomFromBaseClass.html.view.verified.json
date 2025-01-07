@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -170,8 +170,8 @@
             },
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 315.0,
-            "endLine": 0.0
+            "startLine": 315,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -222,7 +222,7 @@
             ],
             "id": "CatLibrary_TomFromBaseClass__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"1\">This is a #ctor with parameter</p>\n",
           "platform": null,
@@ -283,8 +283,8 @@
     },
     "id": "TomFromBaseClass",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 308.0,
-    "endLine": 0.0
+    "startLine": 308,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary"
@@ -334,7 +334,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"1\"><em sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"1\">TomFromBaseClass</em> inherits from @</p>\n",
   "example": [],
@@ -398,8 +398,8 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     },
     {
       "uid": "CatLibrary.Tom",
@@ -447,11 +447,11 @@
           "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 1.0
+      "level": 0,
+      "index": 1
     }
   ],
-  "level": 2.0,
+  "level": 2,
   "inheritedMembers": [
     {
       "uid": "CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})",
@@ -499,7 +499,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__\">TomMethod</a>(<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>(Of <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>), <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>, <a class=\"xref\" href=\"CatLibrary.Tom.html\">Tom</a>))"
         }
       ],
-      "level": 0.0,
+      "level": 0,
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">This is a Tom Method with complex type as return</p>\n",
       "type": "method",
       "platform": null,
@@ -552,7 +552,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -601,7 +601,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -650,7 +650,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -699,7 +699,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -748,7 +748,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -797,7 +797,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -846,7 +846,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

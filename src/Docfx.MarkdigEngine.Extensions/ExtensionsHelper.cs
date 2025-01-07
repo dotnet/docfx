@@ -8,11 +8,16 @@ using Markdig.Parsers;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public static class ExtensionsHelper
+public static partial class ExtensionsHelper
 {
-    public static readonly Regex HtmlEscapeWithEncode = new("&", RegexOptions.Compiled);
-    public static readonly Regex HtmlEscapeWithoutEncode = new(@"&(?!#?\w+;)", RegexOptions.Compiled);
-    public static readonly Regex HtmlUnescape = new(@"&([#\w]+);", RegexOptions.Compiled);
+    [GeneratedRegex("&")]
+    private static partial Regex HtmlEscapeWithEncode();
+
+    [GeneratedRegex(@"&(?!#?\w+;)")]
+    private static partial Regex HtmlEscapeWithoutEncode();
+
+    [GeneratedRegex(@"&([#\w]+);")]
+    private static partial Regex HtmlUnescape();
 
     public static char SkipSpaces(ref StringSlice slice)
     {
@@ -29,7 +34,7 @@ public static class ExtensionsHelper
     public static string Escape(string html, bool encode = false)
     {
         return html
-            .ReplaceRegex(encode ? HtmlEscapeWithEncode : HtmlEscapeWithoutEncode, "&amp;")
+            .ReplaceRegex(encode ? HtmlEscapeWithEncode() : HtmlEscapeWithoutEncode(), "&amp;")
             .Replace("<", "&lt;")
             .Replace(">", "&gt;")
             .Replace("\"", "&quot;")
@@ -38,7 +43,7 @@ public static class ExtensionsHelper
 
     public static string Unescape(string html)
     {
-        return HtmlUnescape.Replace(html, match =>
+        return HtmlUnescape().Replace(html, match =>
         {
             var n = match.Groups[1].Value;
 
@@ -134,7 +139,7 @@ public static class ExtensionsHelper
         }
     }
 
-    public static string TryGetStringBeforeChars(IEnumerable<char> chars, ref StringSlice slice, bool breakOnWhitespace = false)
+    public static string TryGetStringBeforeChars(IReadOnlyList<char> chars, ref StringSlice slice, bool breakOnWhitespace = false)
     {
         StringSlice savedSlice = slice;
         var c = slice.CurrentChar;
@@ -234,12 +239,12 @@ public static class ExtensionsHelper
         string includedFilePath;
         if (slice.CurrentChar == '<')
         {
-            includedFilePath = TryGetStringBeforeChars(new char[] { ')', '>' }, ref slice, breakOnWhitespace: true);
+            includedFilePath = TryGetStringBeforeChars([')', '>'], ref slice, breakOnWhitespace: true);
         }
         else
         {
-            includedFilePath = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
-        };
+            includedFilePath = TryGetStringBeforeChars([')'], ref slice, breakOnWhitespace: true);
+        }
 
         if (includedFilePath == null)
         {
@@ -259,7 +264,7 @@ public static class ExtensionsHelper
         }
         else
         {
-            var title = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: false);
+            var title = TryGetStringBeforeChars([')'], ref slice, breakOnWhitespace: false);
             if (title == null)
             {
                 return false;

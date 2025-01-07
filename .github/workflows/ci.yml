@@ -9,6 +9,7 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -44,6 +45,11 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       env:
         PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+
+    - uses: codecov/codecov-action@v5
+      if: matrix.os == 'ubuntu-latest'
+      with:
+        fail_ci_if_error: true
 
     - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
       if: matrix.os == 'ubuntu-latest'

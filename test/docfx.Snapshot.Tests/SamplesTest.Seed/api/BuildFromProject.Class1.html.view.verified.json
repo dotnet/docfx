@@ -47,7 +47,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -121,8 +121,8 @@
             },
             "id": "Issue1651",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 32.0,
-            "endLine": 0.0
+            "startLine": 32,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -173,7 +173,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue1651_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Pricing models are used to calculate theoretical option values</p>\n<ul><li><span class=\"term\">1</span>Black Scholes</li><li><span class=\"term\">2</span>Black76</li><li><span class=\"term\">3</span>Black76Fut</li><li><span class=\"term\">4</span>Equity Tree</li><li><span class=\"term\">5</span>Variance Swap</li><li><span class=\"term\">6</span>Dividend Forecast</li></ul>\n",
           "platform": null,
@@ -254,8 +254,8 @@
             },
             "id": "Issue1887",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 151.0,
-            "endLine": 0.0
+            "startLine": 151,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -306,7 +306,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue1887_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">IConfiguration related helper and extension routines.</p>\n",
           "platform": null,
@@ -387,8 +387,8 @@
             },
             "id": "Issue2623",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 77.0,
-            "endLine": 0.0
+            "startLine": 77,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -442,7 +442,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue2623_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -522,8 +522,8 @@
             },
             "id": "Issue2723",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 96.0,
-            "endLine": 0.0
+            "startLine": 96,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -575,7 +575,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue2723_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -655,8 +655,8 @@
             },
             "id": "Issue4017",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 55.0,
-            "endLine": 0.0
+            "startLine": 55,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -710,7 +710,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue4017_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -790,8 +790,8 @@
             },
             "id": "Issue4392",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 101.0,
-            "endLine": 0.0
+            "startLine": 101,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -843,7 +843,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue4392_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -923,8 +923,8 @@
             },
             "id": "Issue7484",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 42.0,
-            "endLine": 0.0
+            "startLine": 42,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -976,7 +976,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue7484_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -1062,8 +1062,8 @@
             },
             "id": "Issue8764",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 103.0,
-            "endLine": 0.0
+            "startLine": 103,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1113,7 +1113,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue8764_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -1195,8 +1195,8 @@
             },
             "id": "Issue896",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 19.0,
-            "endLine": 0.0
+            "startLine": 19,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1343,7 +1343,7 @@
               "isCref": true
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Test</p>\n",
           "platform": null,
@@ -1468,8 +1468,8 @@
             },
             "id": "Issue9216",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 163.0,
-            "endLine": 0.0
+            "startLine": 163,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1520,7 +1520,7 @@
             ],
             "id": "BuildFromProject_Class1_Issue9216_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Calculates the determinant of a 3-dimensional matrix:</p>\n<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"3\"><span class=\"math\" sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"3\">\\(A = \\begin{vmatrix} a_{11} &amp; a_{12} &amp; a_{13} \\\\ a_{21} &amp; a_{22} &amp; a_{23} \\\\ a_{31} &amp; a_{32} &amp; a_{33} \\end{vmatrix}\\)</span></p>\n<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"5\">Returns the smallest value:</p>\n<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"7\"><span class=\"math\" sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"7\">\\(\\left\\{\\begin{matrix}a, a&lt;b \\\\ b, b&gt;a\\\\ \\end{matrix} \\right.\\)</span></p>\n",
           "platform": null,
@@ -1601,8 +1601,8 @@
             },
             "id": "XmlCommentIncludeTag",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 11.0,
-            "endLine": 0.0
+            "startLine": 11,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1654,7 +1654,7 @@
             ],
             "id": "BuildFromProject_Class1_XmlCommentIncludeTag_"
           },
-          "level": 0.0,
+          "level": 0,
           "implements": [
             {
               "uid": "BuildFromProject.IClass1.XmlCommentIncludeTag",
@@ -1758,8 +1758,8 @@
     },
     "id": "Class1",
     "path": "dotnet/project/Project/Class1.cs",
-    "startLine": 2.0,
-    "endLine": 0.0
+    "startLine": 2,
+    "endLine": 0
   },
   "assemblies": [
     "BuildFromProject"
@@ -1809,7 +1809,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -1871,11 +1871,11 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     }
   ],
-  "level": 1.0,
+  "level": 1,
   "implements": [
     {
       "uid": "BuildFromProject.IClass1",
@@ -1969,7 +1969,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -2018,7 +2018,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -2067,7 +2067,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -2116,7 +2116,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -2165,7 +2165,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -2214,7 +2214,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -2263,7 +2263,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

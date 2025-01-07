@@ -47,7 +47,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -127,8 +127,8 @@
             },
             "id": "DoNothing",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 139.0,
-            "endLine": 0.0
+            "startLine": 139,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -179,7 +179,7 @@
             ],
             "id": "BuildFromProject_Class1_IIssue8948_DoNothing_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.IIssue8948.yml\" sourcestartlinenumber=\"1\">Does nothing with generic type <code class=\"typeparamref\">T</code>.</p>\n",
           "platform": null,
@@ -240,8 +240,8 @@
     },
     "id": "IIssue8948",
     "path": "dotnet/project/Project/Class1.cs",
-    "startLine": 133.0,
-    "endLine": 0.0
+    "startLine": 133,
+    "endLine": 0
   },
   "assemblies": [
     "BuildFromProject"
@@ -291,7 +291,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -305,7 +305,7 @@
       }
     ]
   },
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

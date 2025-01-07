@@ -21,7 +21,7 @@ StringComparer.OrdinalIgnoreCase);
         var file = source.Target;
         if (!fileLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))
         {
-            sources = new List<LinkSourceInfo>();
+            sources = [];
             fileLinkSources[file] = sources;
         }
         sources.Add(source);
@@ -31,7 +31,7 @@ StringComparer.OrdinalIgnoreCase);
     {
         if (!context.PathProperties.TryGetValue(path, out var properties))
         {
-            properties = context.PathProperties[path] = new Dictionary<string, object>();
+            properties = context.PathProperties[path] = [];
         }
 
         properties[ContentOriginalFileKeyName] = file;

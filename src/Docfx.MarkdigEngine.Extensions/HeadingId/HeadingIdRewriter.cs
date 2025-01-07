@@ -9,10 +9,13 @@ using Markdig.Syntax.Inlines;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public class HeadingIdRewriter : IMarkdownObjectRewriter
+public partial class HeadingIdRewriter : IMarkdownObjectRewriter
 {
-    private static readonly Regex OpenARegex = new(@"^\<a +(?:name|id)=\""([\w \-\.]+)\"" *\>$", RegexOptions.Compiled);
-    private static readonly Regex CloseARegex = new(@"^\<\/a\>$", RegexOptions.Compiled);
+    [GeneratedRegex(@"^\<a +(?:name|id)=\""([\w \-\.]+)\"" *\>$")]
+    private static partial Regex OpenARegex();
+
+    [GeneratedRegex(@"^\<\/a\>$")]
+    private static partial Regex CloseARegex();
 
     public void PostProcess(IMarkdownObject markdownObject)
     {
@@ -66,12 +69,12 @@ public class HeadingIdRewriter : IMarkdownObjectRewriter
             return null;
         }
 
-        var m = OpenARegex.Match(openATag.Tag);
+        var m = OpenARegex().Match(openATag.Tag);
         if (!m.Success)
         {
             return null;
         }
-        if (!CloseARegex.IsMatch(closeATag.Tag))
+        if (!CloseARegex().IsMatch(closeATag.Tag))
         {
             return null;
         }

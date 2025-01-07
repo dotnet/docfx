@@ -178,6 +178,8 @@ You can create a cross link with following options:
 - `displayProperty`: the property of display text when the cross reference is has resolved correctly.
 
   e.g.: `<a href="xref:System.String?displayProperty=fullName"/>` will be resolved as <a href="xref:System.String?displayProperty=fullName"/>.
+
+  e.g.: `<a href="xref:System.String.Length?displayProperty=nameWithType"/>` will be resolved as <a href="xref:System.String.Length?displayProperty=nameWithType"/>.
 - `altProperty`: the property of display text when the cross reference does not have a `href` property.
 
   e.g.: ``<xref href="System.Collections.Immutable.ImmutableArray`1" altProperty="name"/>`` will be resolved as <xref href="System.Collections.Immutable.ImmutableArray`1" altProperty="name"/>.

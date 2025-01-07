@@ -8,10 +8,13 @@ using Markdig.Syntax;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public class ZoneExtension : ITripleColonExtensionInfo
+public partial class ZoneExtension : ITripleColonExtensionInfo
 {
-    private static readonly Regex s_pivotRegex = new(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
-    private static readonly Regex s_pivotReplaceCommasRegex = new(@"\s*,\s*");
+    [GeneratedRegex(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$")]
+    private static partial Regex s_pivotRegex();
+
+    [GeneratedRegex(@"\s*,\s*")]
+    private static partial Regex s_pivotReplaceCommasRegex();
 
     public string Name => "zone";
 
@@ -46,7 +49,7 @@ public class ZoneExtension : ITripleColonExtensionInfo
                     target = value;
                     break;
                 case "pivot":
-                    if (!s_pivotRegex.IsMatch(value))
+                    if (!s_pivotRegex().IsMatch(value))
                     {
                         logError($"Invalid pivot \"{value}\". Pivot must be a comma-delimited list of pivot names. Pivot names must be lower-case and contain only letters, numbers or dashes.");
                         return false;
@@ -80,7 +83,7 @@ public class ZoneExtension : ITripleColonExtensionInfo
         if (!string.IsNullOrEmpty(pivot))
         {
             htmlAttributes.AddClass("has-pivot");
-            htmlAttributes.AddProperty("data-pivot", pivot.Trim().ReplaceRegex(s_pivotReplaceCommasRegex, " "));
+            htmlAttributes.AddProperty("data-pivot", pivot.Trim().ReplaceRegex(s_pivotReplaceCommasRegex(), " "));
         }
         return true;
     }

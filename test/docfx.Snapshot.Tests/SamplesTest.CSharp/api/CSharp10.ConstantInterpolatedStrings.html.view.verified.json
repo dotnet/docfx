@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -167,14 +167,14 @@
             },
             "id": "S1",
             "path": "src/CSharp10.cs",
-            "startLine": 22.0,
-            "endLine": 0.0
+            "startLine": 22,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
           ],
           "namespace": "CSharp10",
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "",
           "platform": null,
@@ -302,14 +302,14 @@
             },
             "id": "S2",
             "path": "src/CSharp10.cs",
-            "startLine": 23.0,
-            "endLine": 0.0
+            "startLine": 23,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
           ],
           "namespace": "CSharp10",
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "",
           "platform": null,
@@ -437,14 +437,14 @@
             },
             "id": "S3",
             "path": "src/CSharp10.cs",
-            "startLine": 24.0,
-            "endLine": 0.0
+            "startLine": 24,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
           ],
           "namespace": "CSharp10",
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "",
           "platform": null,
@@ -506,8 +506,8 @@
     },
     "id": "ConstantInterpolatedStrings",
     "path": "src/CSharp10.cs",
-    "startLine": 20.0,
-    "endLine": 0.0
+    "startLine": 20,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -557,7 +557,7 @@
         "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -619,11 +619,11 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     }
   ],
-  "level": 1.0,
+  "level": 1,
   "inheritedMembers": [
     {
       "uid": "System.Object.Equals(System.Object)",
@@ -672,7 +672,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -721,7 +721,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -770,7 +770,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -819,7 +819,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -868,7 +868,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -917,7 +917,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -966,7 +966,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_systemKeys": [

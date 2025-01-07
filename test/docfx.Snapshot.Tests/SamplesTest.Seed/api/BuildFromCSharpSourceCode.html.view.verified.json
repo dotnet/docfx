@@ -52,7 +52,7 @@
               "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp\" text=\"CSharp\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -108,7 +108,7 @@
     }
   ],
   "type": "namespace",
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

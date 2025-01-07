@@ -48,7 +48,7 @@ public static partial class GitUtility
         };
     }
 
-    public static string? RawContentUrlToContentUrl(string rawUrl)
+    public static string RawContentUrlToContentUrl(string rawUrl)
     {
         // GitHub
         var url = GitHubUserContentRegex().Replace(rawUrl, string.IsNullOrEmpty(s_branch) ? "https://github.com/$1/$2/blob/$3/$4" : $"https://github.com/$1/$2/blob/{s_branch}/$4");

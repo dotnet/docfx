@@ -47,7 +47,7 @@
         "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -167,15 +167,15 @@
             },
             "id": "Red",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 410.0,
-            "endLine": 0.0
+            "startLine": 410,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
           ],
           "namespace": "MRef.Demo.Enumeration",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">this color is red</p>\n",
           "platform": null,
@@ -302,15 +302,15 @@
             },
             "id": "Blue",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 414.0,
-            "endLine": 0.0
+            "startLine": 414,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
           ],
           "namespace": "MRef.Demo.Enumeration",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">blue like river</p>\n",
           "platform": null,
@@ -437,15 +437,15 @@
             },
             "id": "Yellow",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 418.0,
-            "endLine": 0.0
+            "startLine": 418,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
           ],
           "namespace": "MRef.Demo.Enumeration",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">yellow comes from desert</p>\n",
           "platform": null,
@@ -506,8 +506,8 @@
     },
     "id": "ColorType",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 405.0,
-    "endLine": 0.0
+    "startLine": 405,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary"
@@ -557,7 +557,7 @@
         "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
   "remarks": "<p>\nRed/Blue/Yellow can become all color you want.\n</p>\n<ul></ul>\n",
@@ -623,7 +623,7 @@
       "isCref": true
     }
   ],
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

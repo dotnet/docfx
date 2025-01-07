@@ -52,7 +52,7 @@
               "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings\" text=\"ConstantInterpolatedStrings\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -114,7 +114,7 @@
               "value": "<xref uid=\"CSharp10.Issue7737\" text=\"Issue7737\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -176,7 +176,7 @@
               "value": "<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -245,7 +245,7 @@
               "value": "<xref uid=\"CSharp10.ParameterlessStructConstructors\" text=\"ParameterlessStructConstructors\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "struct",
           "platform": null,
@@ -307,7 +307,7 @@
               "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "struct",
           "platform": null,
@@ -369,7 +369,7 @@
               "value": "<xref uid=\"CSharp10.RecordStruct\" text=\"RecordStruct\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "struct",
           "platform": null,
@@ -428,7 +428,7 @@
   "assemblies": [
     "CSharp"
   ],
-  "level": 0.0,
+  "level": 0,
   "_systemKeys": [
     "uid",
     "isEii",

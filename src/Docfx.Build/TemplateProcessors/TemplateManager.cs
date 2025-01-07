@@ -78,7 +78,7 @@ public class TemplateManager
 
     public void ProcessTheme(string outputDirectory, bool overwrite)
     {
-        if (_themes is {Count: > 0})
+        if (_themes is { Count: > 0 })
         {
             TryExportResourceFiles(_themes, outputDirectory, overwrite);
             Logger.LogInfo($"Theme(s) {_themes.ToDelimitedString()} applied.");
@@ -124,7 +124,7 @@ public class TemplateManager
         try
         {
             var subfolder = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(subfolder) && !Directory.Exists(subfolder))
+            if (!string.IsNullOrEmpty(subfolder))
             {
                 Directory.CreateDirectory(subfolder);
             }

@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
@@ -32,6 +33,8 @@ namespace Docfx.Pdf;
 
 static class PdfBuilder
 {
+    private static readonly SearchValues<char> InvalidPathChars = SearchValues.Create(Path.GetInvalidPathChars());
+
     class Outline
     {
         public string name { get; init; } = "";
@@ -46,11 +49,6 @@ static class PdfBuilder
 
         public string? pdfHeaderTemplate { get; init; }
         public string? pdfFooterTemplate { get; init; }
-    }
-
-    static PdfBuilder()
-    {
-        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
     }
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
@@ -70,7 +68,9 @@ static class PdfBuilder
         if (pdfTocs.Count == 0)
             return;
 
-        Program.Main(["install", "chromium"]);
+        PlaywrightHelper.EnsurePlaywrightNodeJsPath();
+
+        Program.Main(["install", "chromium", "--only-shell"]);
 
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
@@ -97,7 +97,8 @@ static class PdfBuilder
 
         using var pageLimiter = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
         var pagePool = new ConcurrentBag<IPage>();
-        var headerFooterCache = new ConcurrentDictionary<(string, string), Task<byte[]>>();
+        var headerFooterTemplateCache = new ConcurrentDictionary<string, string>();
+        var headerFooterPageCache = new ConcurrentDictionary<(string, string), Task<byte[]>>();
 
         await AnsiConsole.Progress().StartAsync(async progress =>
         {
@@ -109,7 +110,7 @@ static class PdfBuilder
                 var outputPath = Path.Combine(outputFolder, outputName);
 
                 await CreatePdf(
-                    PrintPdf, PrintHeaderFooter, task, new(baseUrl, url), toc, outputPath,
+                    PrintPdf, PrintHeaderFooter, task, new(baseUrl, url), toc, outputFolder, outputPath,
                     pageNumbers => pdfPageNumbers[url] = pageNumbers);
 
                 task.Value = task.MaxValue;
@@ -190,7 +191,7 @@ static class PdfBuilder
             var headerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfHeaderTemplate), pageNumber, totalPages);
             var footerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfFooterTemplate) ?? DefaultFooterTemplate, pageNumber, totalPages);
 
-            return headerFooterCache.GetOrAdd((headerTemplate, footerTemplate), _ => PrintHeaderFooterCore());
+            return headerFooterPageCache.GetOrAdd((headerTemplate, footerTemplate), _ => PrintHeaderFooterCore());
 
             async Task<byte[]> PrintHeaderFooterCore()
             {
@@ -244,26 +245,36 @@ static class PdfBuilder
                 if (string.IsNullOrEmpty(template))
                     return template;
 
-                try
-                {
-                    var path = Path.Combine(outputFolder, template);
-                    return File.Exists(path) ? File.ReadAllText(path) : template;
-                }
-                catch
-                {
+                // Check path chars. If it's contains HTML chars. Skip access to file content to optimmize performance
+                if (template.AsSpan().ContainsAny(InvalidPathChars))
                     return template;
-                }
+
+                return headerFooterTemplateCache.GetOrAdd(template, (_) =>
+                {
+                    // Note: This valueFactory might be called multiple times.
+                    try
+                    {
+                        var path = Path.GetFullPath(Path.Combine(outputFolder, template));
+                        if (!File.Exists(path))
+                            return template;
+
+                        var templateContent = File.ReadAllText(path);
+                        return templateContent;
+                    }
+                    catch
+                    {
+                        return template;
+                    }
+                });
             }
+
         }
     }
 
     static async Task CreatePdf(
         Func<Outline, Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Page, Task<byte[]>> printHeaderFooter, ProgressTask task,
-        Uri outlineUrl, Outline outline, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
+        Uri outlineUrl, Outline outline, string outputFolder, string outputPath, Action<Dictionary<Outline, int>> updatePageNumbers)
     {
-        var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
-        Directory.CreateDirectory(tempDirectory);
-
         var pages = GetPages(outline).ToArray();
         if (pages.Length == 0)
             return;
@@ -300,8 +311,8 @@ static class PdfBuilder
 
             var key = CleanUrl(url);
             if (!pagesByUrl.TryGetValue(key, out var dests))
-                pagesByUrl[key] = dests = new();
-            dests.Add((node, document.Structure.Catalog.NamedDestinations));
+                pagesByUrl[key] = dests = [];
+            dests.Add((node, document.Structure.Catalog.GetNamedDestinations()));
 
             pageBytes[node] = bytes;
             pageNumbers[node] = numberOfPages + 1;
@@ -360,6 +371,8 @@ static class PdfBuilder
                 if (!pageBytes.TryGetValue(node, out var bytes))
                     continue;
 
+                var isCoverPage = IsCoverPage(url, outputFolder, outline.pdfCoverPage);
+
                 var isTocPage = IsTocPage(url);
                 if (isTocPage)
                 {
@@ -377,6 +390,9 @@ static class PdfBuilder
                     pageNumber++;
 
                     var pageBuilder = builder.AddPage(document, i, x => CopyLink(node, x));
+
+                    if (isCoverPage)
+                        continue;
 
                     if (isTocPage)
                         continue;
@@ -437,6 +453,19 @@ static class PdfBuilder
         }
 
         static Uri CleanUrl(Uri url) => new UriBuilder(url) { Query = null, Fragment = null }.Uri;
+
+        static bool IsCoverPage(Uri pageUri, string baseFolder, string? pdfCoverPage)
+        {
+            Debug.Assert(Path.IsPathFullyQualified(baseFolder));
+
+            if (string.IsNullOrEmpty(pdfCoverPage))
+                return false;
+
+            string pagePath = pageUri.AbsolutePath.TrimStart('/');
+            string covePagePath = PathUtility.MakeRelativePath(baseFolder, Path.GetFullPath(Path.Combine(baseFolder, pdfCoverPage)));
+
+            return pagePath.Equals(covePagePath, GetStringComparison());
+        }
 
         static bool IsTocPage(Uri url) => url.AbsolutePath.StartsWith("/_pdftoc/");
 
@@ -617,5 +646,13 @@ static class PdfBuilder
             const double Dpi = 72d; // Use Default DPI of PDF.
             return $"{Math.Round(pt * MillimeterPerInch / Dpi)}mm";
         }
+    }
+
+    // Gets StringComparison instance for path string.
+    private static StringComparison GetStringComparison()
+    {
+        return PathUtility.IsPathCaseInsensitive()
+            ? StringComparison.OrdinalIgnoreCase
+            : StringComparison.Ordinal;
     }
 }

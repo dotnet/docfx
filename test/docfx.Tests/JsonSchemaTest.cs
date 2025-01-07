@@ -6,7 +6,6 @@ using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Tests.Common;
 using FluentAssertions;
-using Json.Schema;
 using Xunit.Abstractions;
 using YamlDotNet.Serialization;
 
@@ -163,8 +162,7 @@ public class JsonSchemaTest : TestBase
                 var doc = JsonDocument.Parse(File.OpenRead(filePath), JsonSchemaUtility.DefaultJsonDocumentOptions);
                 return doc.RootElement;
             case ".yml":
-                var yaml = File.ReadAllText(filePath);
-                var yamlObject = YamlUtility.Deserialize<object>(new StringReader(yaml));
+                var yamlObject = YamlUtility.Deserialize<object>(filePath);
 
                 var serializer = new SerializerBuilder()
                                    .JsonCompatible()

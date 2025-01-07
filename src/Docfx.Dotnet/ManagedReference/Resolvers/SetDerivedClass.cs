@@ -7,11 +7,11 @@ namespace Docfx.Dotnet;
 
 internal class SetDerivedClass : IResolverPipeline
 {
-    private readonly Dictionary<string, List<string>> _derivedClassMapping = new();
+    private readonly Dictionary<string, List<string>> _derivedClassMapping = [];
 
     public void Run(MetadataModel yaml, ResolverContext context)
     {
-        if (yaml.Members is {Count: > 0})
+        if (yaml.Members is { Count: > 0 })
         {
             UpdateDerivedClassMapping(yaml.Members, context.References);
             AppendDerivedClass(yaml.Members);
@@ -23,7 +23,7 @@ internal class SetDerivedClass : IResolverPipeline
         foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
         {
             var inheritance = item.Inheritance;
-            if (inheritance is {Count: > 0})
+            if (inheritance is { Count: > 0 })
             {
                 var superClass = inheritance[inheritance.Count - 1];
 
@@ -41,7 +41,7 @@ internal class SetDerivedClass : IResolverPipeline
                     }
                     else
                     {
-                        _derivedClassMapping.Add(superClass, new List<string> { item.Name });
+                        _derivedClassMapping.Add(superClass, [item.Name]);
                     }
                 }
             }

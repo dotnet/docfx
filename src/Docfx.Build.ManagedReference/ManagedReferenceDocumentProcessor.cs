@@ -205,34 +205,25 @@ public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
             Href = ((RelativePath)key).UrlEncode().ToString(),
             CommentId = item.CommentId,
         };
-        if (item.Names.Count > 0)
+        foreach (var pair in item.Names)
         {
-            foreach (var pair in item.Names)
-            {
-                result["name." + pair.Key] = pair.Value;
-            }
+            result["name." + pair.Key] = pair.Value;
         }
         if (!string.IsNullOrEmpty(item.FullName))
         {
             result["fullName"] = item.FullName;
         }
-        if (item.FullNames.Count > 0)
+        foreach (var pair in item.FullNames)
         {
-            foreach (var pair in item.FullNames)
-            {
-                result["fullName." + pair.Key] = pair.Value;
-            }
+            result["fullName." + pair.Key] = pair.Value;
         }
         if (!string.IsNullOrEmpty(item.NameWithType))
         {
             result["nameWithType"] = item.NameWithType;
         }
-        if (item.NamesWithType.Count > 0)
+        foreach (var pair in item.NamesWithType)
         {
-            foreach (var pair in item.NamesWithType)
-            {
-                result["nameWithType." + pair.Key] = pair.Value;
-            }
+            result["nameWithType." + pair.Key] = pair.Value;
         }
         yield return result;
         // generate overload xref spec.
@@ -263,34 +254,25 @@ public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
             CommentId = item.CommentId,
             IsSpec = item.IsExternal != true,
         };
-        if (item.NameInDevLangs.Count > 0)
+        foreach (var pair in item.NameInDevLangs)
         {
-            foreach (var pair in item.NameInDevLangs)
-            {
-                result["name." + pair.Key] = pair.Value;
-            }
+            result["name." + pair.Key] = pair.Value;
         }
         if (!string.IsNullOrEmpty(item.FullName))
         {
             result["fullName"] = item.FullName;
         }
-        if (item.FullNameInDevLangs.Count > 0)
+        foreach (var pair in item.FullNameInDevLangs)
         {
-            foreach (var pair in item.FullNameInDevLangs)
-            {
-                result["fullName." + pair.Key] = pair.Value;
-            }
+            result["fullName." + pair.Key] = pair.Value;
         }
         if (!string.IsNullOrEmpty(item.NameWithType))
         {
             result["nameWithType"] = item.NameWithType;
         }
-        if (item.NameWithTypeInDevLangs.Count > 0)
+        foreach (var pair in item.NameWithTypeInDevLangs)
         {
-            foreach (var pair in item.NameWithTypeInDevLangs)
-            {
-                result["nameWithType." + pair.Key] = pair.Value;
-            }
+            result["nameWithType." + pair.Key] = pair.Value;
         }
         if (item.Additional != null)
         {

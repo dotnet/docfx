@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Docfx.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 
@@ -585,7 +584,7 @@ exports.transform = function (model){
             var filePath = Path.Combine(cwd ?? string.Empty, file.Item1);
             var directory = Path.GetDirectoryName(filePath);
 
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            if (!string.IsNullOrEmpty(directory))
                 Directory.CreateDirectory(directory);
             File.WriteAllText(filePath, file.Item2);
         }

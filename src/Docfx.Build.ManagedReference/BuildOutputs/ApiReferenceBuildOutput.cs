@@ -174,7 +174,7 @@ public class ApiReferenceBuildOutput
     [Newtonsoft.Json.JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
     [System.Text.Json.Serialization.JsonPropertyName("__metadata__")]
-    public Dictionary<string, object> Metadata { get; set; } = new();
+    public Dictionary<string, object> Metadata { get; set; } = [];
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]
@@ -300,7 +300,7 @@ public class ApiReferenceBuildOutput
 
     public static List<ApiLanguageValuePair> GetSpecNames(string xref, string[] supportedLanguages, SortedList<string, List<SpecViewModel>> specs = null)
     {
-        if (specs is {Count: > 0})
+        if (specs is { Count: > 0 })
         {
             return (from spec in specs
                     where supportedLanguages.Contains(spec.Key)

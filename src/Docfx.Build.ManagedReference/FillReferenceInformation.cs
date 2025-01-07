@@ -14,7 +14,7 @@ namespace Docfx.Build.ManagedReference;
 [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
 public class FillReferenceInformation : BaseDocumentBuildStep
 {
-    private readonly Dictionary<string, SourceInfo> _items = new();
+    private readonly Dictionary<string, SourceInfo> _items = [];
 
     public override string Name => nameof(FillReferenceInformation);
 
@@ -22,16 +22,14 @@ public class FillReferenceInformation : BaseDocumentBuildStep
 
     public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
     {
-        if (models.Count > 0)
+        foreach (var model in models)
         {
-            foreach (var model in models)
+            if (model.Type != DocumentType.Article)
             {
-                if (model.Type != DocumentType.Article)
-                {
-                    continue;
-                }
-                FillCore((PageViewModel)model.Content, host, model.OriginalFileAndType.File);
+                continue;
             }
+
+            FillCore((PageViewModel)model.Content, host, model.OriginalFileAndType.File);
         }
     }
 
@@ -113,10 +111,10 @@ public class FillReferenceInformation : BaseDocumentBuildStep
     private static IEnumerable<string> GetUidsToFill(PageViewModel pageViewModel)
     {
         return from i in pageViewModel.Items
-            from c in (i.Children ?? Enumerable.Empty<string>())
-                .Concat(i.ExtensionMethods ?? Enumerable.Empty<string>())
-                .Concat(i.InheritedMembers ?? Enumerable.Empty<string>())
-            select c;
+               from c in (i.Children ?? Enumerable.Empty<string>())
+                   .Concat(i.ExtensionMethods ?? Enumerable.Empty<string>())
+                   .Concat(i.InheritedMembers ?? Enumerable.Empty<string>())
+               select c;
     }
 
     #endregion

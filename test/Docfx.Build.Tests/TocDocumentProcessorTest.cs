@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-using System.Reflection;
 using System.Web;
 using Docfx.Build.Engine;
 using Docfx.Common;
@@ -60,15 +59,15 @@ public class TocDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new List<TocItemViewModel>
-            {
+            Items =
+            [
                 new()
                 {
                     Name = "Constructor",
                     Href = $"{href}.md",
                     TopicHref = $"{href}.md",
                 }
-            }
+            ]
         };
 
         AssertTocEqual(expectedModel, model);
@@ -94,27 +93,27 @@ public class TocDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new List<TocItemViewModel>
-            {
+            Items =
+            [
                 new()
                 {
                     Name = "Topic1 Language",
                     Href = "/href1",
                     TopicHref = "/href1",
-                    Items = new List<TocItemViewModel>
-                    {
+                    Items =
+                    [
                         new()
                         {
                             Name = "Topic1.1 Language C#",
-                            Items = new List<TocItemViewModel>
-                            {
+                            Items =
+                            [
                                 new()
                                 {
                                     Name = "Topic1.1.1",
                                     Href = "/href1.1.1",
                                     TopicHref = "/href1.1.1"
                                 }
-                            }
+                            ]
                         },
                         new()
                         {
@@ -122,7 +121,7 @@ public class TocDocumentProcessorTest : TestBase
                             Href = string.Empty,
                             TopicHref = string.Empty
                         }
-                    }
+                    ]
                 },
                 new()
                 {
@@ -130,7 +129,7 @@ public class TocDocumentProcessorTest : TestBase
                     Href = "http://href.com",
                     TopicHref = "http://href.com"
                 }
-            }
+            ]
         };
 
         AssertTocEqual(expectedModel, model);
@@ -158,29 +157,29 @@ public class TocDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new List<TocItemViewModel>
-            {
+            Items =
+            [
                 new()
                 {
                     Name = "Topic1",
                     Href = "/href1",
                     TopicHref = "/href1",
-                    Items = new List<TocItemViewModel>
-                    {
+                    Items =
+                    [
                         new()
                         {
                             Name = "Topic1.1",
                             Href = file1,
                             TopicHref = file1,
-                            Items = new List<TocItemViewModel>
-                            {
+                            Items =
+                            [
                                 new()
                                 {
                                     Name = "Topic1.1.1",
                                     Href = file2,
                                     TopicHref = file2
                                 }
-                            }
+                            ]
                         },
                         new()
                         {
@@ -188,7 +187,7 @@ public class TocDocumentProcessorTest : TestBase
                             Href = string.Empty,
                             TopicHref = string.Empty
                         }
-                    }
+                    ]
                 },
                 new()
                 {
@@ -202,7 +201,7 @@ public class TocDocumentProcessorTest : TestBase
                     Href = "invalid.md",
                     TopicHref = "invalid.md"
                 }
-            }
+            ]
         };
 
         AssertTocEqual(expectedModel, model);
@@ -238,15 +237,15 @@ public class TocDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new List<TocItemViewModel>
-            {
+            Items =
+            [
                 new()
                 {
                     Name = "Topic1",
                     Href = file1,
                     TopicHref = file1,
-                    Items = new List<TocItemViewModel>
-                    {
+                    Items =
+                    [
                         new()
                         {
                             Name = "Topic1.1",
@@ -262,7 +261,7 @@ public class TocDocumentProcessorTest : TestBase
                             TopicHref = file1,
                             TocHref = "sub/toc.md",
                         }
-                    }
+                    ]
                 },
                 new()
                 {
@@ -271,7 +270,7 @@ public class TocDocumentProcessorTest : TestBase
                     TopicHref = file2,
                     TocHref = "sub/toc.md",
                 }
-            }
+            ]
         };
 
         AssertTocEqual(expectedModel, model);
@@ -317,24 +316,24 @@ items:
 
         var expectedModel = new TocItemViewModel
         {
-            Items = new List<TocItemViewModel>
-            {
+            Items =
+            [
                 new()
                 {
                     Name = "Topic1",
                     Href = file1,
                     TopicHref = file1,
-                    Items = new List<TocItemViewModel>
-                    {
+                    Items =
+                    [
                         new()
                         {
                             Name = "Topic1.1",
                             Href = file1, // For relative file, href keeps unchanged
                             TopicHref = file1,
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         };
         AssertTocEqual(expectedModel, model);
     }
@@ -386,23 +385,23 @@ items:
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new List<TocItemViewModel>
-            {
+            Items =
+            [
                 new()
                 {
                     Name = "Topic1",
                     Href = file1,
                     TopicHref = file1,
-                    Items = new List<TocItemViewModel>
-                    {
+                    Items =
+                    [
                         new()
                         {
                             Name = "Topic1.1",
                             IncludedFrom = "~/sub1/toc.md",
                             Href = null, // For referenced toc, the content from the referenced toc is expanded as the items of current toc, and href is cleared
                             TopicHref = null,
-                            Items = new List<TocItemViewModel>
-                            {
+                            Items =
+                            [
                                 new()
                                 {
                                     Name = "Topic",
@@ -413,8 +412,8 @@ items:
                                 {
                                     Name = "ReferencedToc",
                                     IncludedFrom = "~/sub1/sub2/toc.yml",
-                                    Items = new List<TocItemViewModel>
-                                    {
+                                    Items =
+                                    [
                                         new()
                                         {
                                             Name = "Topic",
@@ -427,22 +426,22 @@ items:
                                             Href = "sub1/sub2/a/b/c.md",
                                             TopicHref = "sub1/sub2/a/b/c.md",
                                         }
-                                    }
+                                    ]
                                 },
 
                                 new()
                                 {
                                     Name = "ReferencedToc2",
                                     IncludedFrom = "~/sub1/sub3/toc.md",
-                                    Items = new List<TocItemViewModel>
-                                    {
+                                    Items =
+                                    [
                                         new()
                                         {
                                             Name = "Not-existed-md",
                                             Href = "sub1/sub3/sub2/notexist.md",
                                             TopicHref = "sub1/sub3/sub2/notexist.md",
                                         },
-                                    }
+                                    ]
                                 },
                                 new()
                                 {
@@ -450,7 +449,7 @@ items:
                                     Href = "sub1/sub2/notexist.md",
                                     TopicHref = "sub1/sub2/notexist.md",
                                 }
-                            }
+                            ]
                         },
                         new()
                         {
@@ -459,8 +458,8 @@ items:
                             TopicHref = file1,
                             IncludedFrom = "~/sub1/toc.md",
                             Homepage = file1,
-                            Items = new List<TocItemViewModel>
-                            {
+                            Items =
+                            [
                                 new()
                                 {
                                     Name = "Topic",
@@ -471,8 +470,8 @@ items:
                                 {
                                     Name = "ReferencedToc",
                                     IncludedFrom = "~/sub1/sub2/toc.yml",
-                                    Items = new List<TocItemViewModel>
-                                    {
+                                    Items =
+                                    [
                                         new()
                                         {
                                             Name = "Topic",
@@ -485,21 +484,21 @@ items:
                                             Href = "sub1/sub2/a/b/c.md",
                                             TopicHref = "sub1/sub2/a/b/c.md",
                                         }
-                                    }
+                                    ]
                                 },
                                 new()
                                 {
                                     Name = "ReferencedToc2",
                                     IncludedFrom = "~/sub1/sub3/toc.md",
-                                    Items = new List<TocItemViewModel>
-                                    {
+                                    Items =
+                                    [
                                         new()
                                         {
                                             Name = "Not-existed-md",
                                             Href = "sub1/sub3/sub2/notexist.md",
                                             TopicHref = "sub1/sub3/sub2/notexist.md",
                                         }
-                                    }
+                                    ]
                                 },
                                 new()
                                 {
@@ -507,17 +506,17 @@ items:
                                     Href = "sub1/sub2/notexist.md",
                                     TopicHref = "sub1/sub2/notexist.md",
                                 }
-                            }
+                            ]
                         }
-                    }
+                    ]
                 },
                 new()
                 {
                     Name = "Topic2",
                     IncludedFrom = "~/sub1/sub2/toc.yml",
                     Href = null,
-                    Items = new List<TocItemViewModel>
-                    {
+                    Items =
+                    [
                         new()
                         {
                             Name = "Topic",
@@ -530,9 +529,9 @@ items:
                             Href = "sub1/sub2/a/b/c.md",
                             TopicHref = "sub1/sub2/a/b/c.md",
                         }
-                    }
+                    ]
                 }
-            }
+            ]
         };
 
         AssertTocEqual(expectedModel, model);
@@ -575,7 +574,7 @@ items:
         var files = new FileCollection(_inputFolder);
         files.Add(DocumentType.Article, new[] { toc });
 
-        var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(new List<string> { WarningCodes.Build.InvalidTocInclude });
+        var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter([WarningCodes.Build.InvalidTocInclude]);
         Logger.RegisterListener(listener);
 
         BuildDocument(files);
@@ -599,7 +598,7 @@ items:
         var files = new FileCollection(_inputFolder);
         files.Add(DocumentType.Article, new[] { toc });
 
-        var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(new List<string> { WarningCodes.Build.InvalidTocInclude });
+        var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter([WarningCodes.Build.InvalidTocInclude]);
         Logger.RegisterListener(listener);
         BuildDocument(files);
         Logger.UnregisterListener(listener);
@@ -645,8 +644,8 @@ items:
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
-            Items = new List<TocItemViewModel>
-            {
+            Items =
+            [
                 new()
                 {
                     Name = "Topic1",
@@ -654,8 +653,8 @@ items:
                     TocHref = "/Topic1/",
                     Homepage = "/Topic1/index.html",
                     TopicHref = "/Topic1/index.html",
-                    Items = new List<TocItemViewModel>
-                    {
+                    Items =
+                    [
                         new()
                         {
                             Name = "Topic1.1",
@@ -672,7 +671,7 @@ items:
                             Homepage = "/Topic1.2/index.html",
                             TopicHref = "/Topic1.2/index.html",
                         }
-                    }
+                    ]
                 },
                 new()
                 {
@@ -682,7 +681,7 @@ items:
                     TopicHref = file2,
                     Homepage = file2,
                 }
-            }
+            ]
         };
 
         AssertTocEqual(expectedModel, model);
@@ -813,7 +812,7 @@ items:
 
         // Act
         var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
-            new List<string> { WarningCodes.Build.InvalidFileLink, WarningCodes.Build.UidNotFound });
+            [WarningCodes.Build.InvalidFileLink, WarningCodes.Build.UidNotFound]);
         Logger.RegisterListener(listener);
         BuildDocument(files);
         Logger.UnregisterListener(listener);
@@ -841,7 +840,7 @@ items:
 
         // Act
         var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
-            new List<string> { WarningCodes.Build.InvalidFileLink });
+            [WarningCodes.Build.InvalidFileLink]);
         Logger.RegisterListener(listener);
         BuildDocument(files);
         Logger.UnregisterListener(listener);
@@ -863,7 +862,7 @@ items:
 
         // Act
         var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(
-            new List<string> { WarningCodes.Build.InvalidFileLink });
+            [WarningCodes.Build.InvalidFileLink]);
         Logger.RegisterListener(listener);
         BuildDocument(files);
         Logger.UnregisterListener(listener);

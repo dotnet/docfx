@@ -1,8 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
-using System.Diagnostics;
 using System.IO.Compression;
 using System.Net;
 using Docfx.Common;
@@ -134,7 +132,7 @@ public sealed class XRefMapDownloader
                             {
                                 using var reader = new StreamReader(stream);
                                 return YamlUtility.Deserialize<XRefMap>(reader);
-                            };
+                            }
                     }
                 }
 
@@ -147,8 +145,7 @@ public sealed class XRefMapDownloader
             case ".yml":
             default:
                 {
-                    using var sr = File.OpenText(filePath);
-                    return YamlUtility.Deserialize<XRefMap>(sr);
+                    return YamlUtility.Deserialize<XRefMap>(filePath);
                 }
         }
     }

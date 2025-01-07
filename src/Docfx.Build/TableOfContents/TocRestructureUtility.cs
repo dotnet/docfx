@@ -15,7 +15,7 @@ static class TocRestructureUtility
         {
             return;
         }
-        RestructureCore(toc, new(), restructures);
+        RestructureCore(toc, [], restructures);
     }
 
     private static void RestructureCore(TocItemViewModel item, List<TocItemViewModel> items, IList<TreeItemRestructure> restructures)
@@ -28,7 +28,7 @@ static class TocRestructureUtility
             }
         }
 
-        if (item.Items is {Count: > 0})
+        if (item.Items is { Count: > 0 })
         {
             var parentItems = new List<TocItemViewModel>(item.Items);
             foreach (var i in item.Items)
@@ -91,7 +91,7 @@ static class TocRestructureUtility
                     {
                         return;
                     }
-                    item.Items ??= new();
+                    item.Items ??= [];
 
                     var roots = GetRoots(restruction.RestructuredItems);
                     item.Items.AddRange(roots);
@@ -103,7 +103,7 @@ static class TocRestructureUtility
                     {
                         return;
                     }
-                    item.Items ??= new();
+                    item.Items ??= [];
 
                     var roots = GetRoots(restruction.RestructuredItems);
                     item.Items.InsertRange(0, roots);

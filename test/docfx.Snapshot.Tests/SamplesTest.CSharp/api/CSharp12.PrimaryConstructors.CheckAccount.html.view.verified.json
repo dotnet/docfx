@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -261,8 +261,8 @@
             },
             "id": ".ctor",
             "path": "src/CSharp12.cs",
-            "startLine": 20.0,
-            "endLine": 0.0
+            "startLine": 20,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -312,7 +312,7 @@
             ],
             "id": "CSharp12_PrimaryConstructors_CheckAccount__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "",
           "platform": null,
@@ -448,8 +448,8 @@
             },
             "id": "CurrentBalance",
             "path": "src/CSharp12.cs",
-            "startLine": 22.0,
-            "endLine": 0.0
+            "startLine": 22,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -499,7 +499,7 @@
             ],
             "id": "CSharp12_PrimaryConstructors_CheckAccount_CurrentBalance_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "",
           "platform": null,
@@ -636,8 +636,8 @@
             },
             "id": "Deposit",
             "path": "src/CSharp12.cs",
-            "startLine": 24.0,
-            "endLine": 0.0
+            "startLine": 24,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -687,7 +687,7 @@
             ],
             "id": "CSharp12_PrimaryConstructors_CheckAccount_Deposit_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -815,8 +815,8 @@
             },
             "id": "ToString",
             "path": "src/CSharp12.cs",
-            "startLine": 46.0,
-            "endLine": 0.0
+            "startLine": 46,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -910,7 +910,7 @@
             ],
             "id": "CSharp12_PrimaryConstructors_CheckAccount_ToString_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"api/CSharp12.PrimaryConstructors.CheckAccount.yml\" sourcestartlinenumber=\"1\">Returns a string that represents the current object.</p>\n",
           "platform": null,
@@ -1039,8 +1039,8 @@
             },
             "id": "Withdrawal",
             "path": "src/CSharp12.cs",
-            "startLine": 33.0,
-            "endLine": 0.0
+            "startLine": 33,
+            "endLine": 0
           },
           "assemblies": [
             "CSharp"
@@ -1090,7 +1090,7 @@
             ],
             "id": "CSharp12_PrimaryConstructors_CheckAccount_Withdrawal_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "",
           "platform": null,
@@ -1152,8 +1152,8 @@
     },
     "id": "CheckAccount",
     "path": "src/CSharp12.cs",
-    "startLine": 20.0,
-    "endLine": 0.0
+    "startLine": 20,
+    "endLine": 0
   },
   "assemblies": [
     "CSharp"
@@ -1203,7 +1203,7 @@
         "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -1265,8 +1265,8 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     },
     {
       "uid": "CSharp12.PrimaryConstructors.BankAccount",
@@ -1314,11 +1314,11 @@
           "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html\">BankAccount</a>"
         }
       ],
-      "level": 0.0,
-      "index": 1.0
+      "level": 0,
+      "index": 1
     }
   ],
-  "level": 2.0,
+  "level": 2,
   "inheritedMembers": [
     {
       "uid": "CSharp12.PrimaryConstructors.BankAccount.AccountID",
@@ -1365,7 +1365,7 @@
           "value": "<xref uid=\"CSharp12.PrimaryConstructors.BankAccount.AccountID\" text=\"AccountID\"/>"
         }
       ],
-      "level": 0.0,
+      "level": 0,
       "summary": null,
       "type": "property",
       "platform": null,
@@ -1416,7 +1416,7 @@
           "value": "<xref uid=\"CSharp12.PrimaryConstructors.BankAccount.Owner\" text=\"Owner\"/>"
         }
       ],
-      "level": 0.0,
+      "level": 0,
       "summary": null,
       "type": "property",
       "platform": null,
@@ -1469,7 +1469,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -1518,7 +1518,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -1567,7 +1567,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -1616,7 +1616,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -1665,7 +1665,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -1714,7 +1714,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_systemKeys": [

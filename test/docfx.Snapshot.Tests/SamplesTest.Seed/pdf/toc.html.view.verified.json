@@ -1,5 +1,5 @@
 ﻿{
-  "order": 200.0,
+  "order": 200,
   "items": [
     {
       "name": "Articles",
@@ -10,7 +10,7 @@
           "href": "../articles/docfx_getting_started.html",
           "topicHref": "../articles/docfx_getting_started.html",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -21,7 +21,7 @@
               "name": "Section 1",
               "topicHref": null,
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -30,7 +30,7 @@
               "href": "../articles/engineering_guidelines.html",
               "topicHref": "../articles/engineering_guidelines.html",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -39,7 +39,7 @@
               "href": "../articles/csharp_coding_standards.html",
               "topicHref": "../articles/csharp_coding_standards.html",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             }
@@ -47,14 +47,14 @@
           "expanded": true,
           "topicHref": null,
           "tocHref": null,
-          "level": 3.0
+          "level": 3
         },
         {
           "name": "Markdown",
           "href": "../articles/markdown.html",
           "topicHref": "../articles/markdown.html",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -63,14 +63,14 @@
           "href": "https://docs.microsoft.com/en-us/",
           "topicHref": "https://docs.microsoft.com/en-us/",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         }
       ],
       "topicHref": null,
       "tocHref": null,
-      "level": 2.0
+      "level": 2
     },
     {
       "name": "API Documentation",
@@ -90,7 +90,7 @@
               "topicUid": "BuildFromAssembly.Class1",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -101,13 +101,13 @@
               "topicUid": "BuildFromAssembly.Issue5432",
               "type": "Struct",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             }
           ],
           "tocHref": null,
-          "level": 3.0
+          "level": 3
         },
         {
           "name": "BuildFromCSharpSourceCode",
@@ -123,13 +123,13 @@
               "topicUid": "BuildFromCSharpSourceCode.CSharp",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             }
           ],
           "tocHref": null,
-          "level": 3.0
+          "level": 3
         },
         {
           "name": "BuildFromProject",
@@ -159,13 +159,13 @@
                       "topicUid": "BuildFromProject.Issue8540.A.A",
                       "type": "Class",
                       "tocHref": null,
-                      "level": 6.0,
+                      "level": 6,
                       "items": [],
                       "leaf": true
                     }
                   ],
                   "tocHref": null,
-                  "level": 5.0
+                  "level": 5
                 },
                 {
                   "name": "B",
@@ -181,17 +181,17 @@
                       "topicUid": "BuildFromProject.Issue8540.B.B",
                       "type": "Class",
                       "tocHref": null,
-                      "level": 6.0,
+                      "level": 6,
                       "items": [],
                       "leaf": true
                     }
                   ],
                   "tocHref": null,
-                  "level": 5.0
+                  "level": 5
                 }
               ],
               "tocHref": null,
-              "level": 4.0
+              "level": 4
             },
             {
               "name": "Class1",
@@ -200,7 +200,7 @@
               "topicUid": "BuildFromProject.Class1",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -211,7 +211,7 @@
               "topicUid": "BuildFromProject.Class1.IIssue8948",
               "type": "Interface",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -222,7 +222,7 @@
               "topicUid": "BuildFromProject.Class1.Issue8665",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -233,7 +233,7 @@
               "topicUid": "BuildFromProject.Class1.Issue8696Attribute",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -244,7 +244,7 @@
               "topicUid": "BuildFromProject.Class1.Issue8948",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -255,7 +255,7 @@
               "topicUid": "BuildFromProject.Class1.Issue9260",
               "type": "Enum",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -266,7 +266,7 @@
               "topicUid": "BuildFromProject.Class1.Test`1",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -277,7 +277,7 @@
               "topicUid": "BuildFromProject.Dog",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -288,7 +288,7 @@
               "topicUid": "BuildFromProject.IInheritdoc",
               "type": "Interface",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -299,7 +299,7 @@
               "topicUid": "BuildFromProject.Inheritdoc",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -310,7 +310,7 @@
               "topicUid": "BuildFromProject.Inheritdoc.Issue6366",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -321,7 +321,7 @@
               "topicUid": "BuildFromProject.Inheritdoc.Issue6366.Class1`1",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -332,7 +332,7 @@
               "topicUid": "BuildFromProject.Inheritdoc.Issue6366.Class2",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -343,7 +343,7 @@
               "topicUid": "BuildFromProject.Inheritdoc.Issue7035",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -354,7 +354,7 @@
               "topicUid": "BuildFromProject.Inheritdoc.Issue7484",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -365,7 +365,7 @@
               "topicUid": "BuildFromProject.Inheritdoc.Issue8101",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -376,7 +376,7 @@
               "topicUid": "BuildFromProject.Inheritdoc.Issue8129",
               "type": "Struct",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -387,13 +387,13 @@
               "topicUid": "BuildFromProject.Issue8725",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             }
           ],
           "tocHref": null,
-          "level": 3.0
+          "level": 3
         },
         {
           "name": "BuildFromVBSourceCode",
@@ -409,7 +409,7 @@
               "topicUid": "BuildFromVBSourceCode.BaseClass1",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -420,13 +420,13 @@
               "topicUid": "BuildFromVBSourceCode.Class1",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             }
           ],
           "tocHref": null,
-          "level": 3.0
+          "level": 3
         },
         {
           "name": "CatLibrary",
@@ -449,7 +449,7 @@
                   "topicUid": "CatLibrary.Core.ContainersRefType",
                   "type": "Struct",
                   "tocHref": null,
-                  "level": 5.0,
+                  "level": 5,
                   "items": [],
                   "leaf": true
                 },
@@ -460,7 +460,7 @@
                   "topicUid": "CatLibrary.Core.ContainersRefType.ColorType",
                   "type": "Enum",
                   "tocHref": null,
-                  "level": 5.0,
+                  "level": 5,
                   "items": [],
                   "leaf": true
                 },
@@ -471,7 +471,7 @@
                   "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
                   "type": "Class",
                   "tocHref": null,
-                  "level": 5.0,
+                  "level": 5,
                   "items": [],
                   "leaf": true
                 },
@@ -482,7 +482,7 @@
                   "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface",
                   "type": "Interface",
                   "tocHref": null,
-                  "level": 5.0,
+                  "level": 5,
                   "items": [],
                   "leaf": true
                 },
@@ -493,7 +493,7 @@
                   "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
                   "type": "Delegate",
                   "tocHref": null,
-                  "level": 5.0,
+                  "level": 5,
                   "items": [],
                   "leaf": true
                 },
@@ -504,7 +504,7 @@
                   "topicUid": "CatLibrary.Core.ExplicitLayoutClass",
                   "type": "Class",
                   "tocHref": null,
-                  "level": 5.0,
+                  "level": 5,
                   "items": [],
                   "leaf": true
                 },
@@ -515,13 +515,13 @@
                   "topicUid": "CatLibrary.Core.Issue231",
                   "type": "Class",
                   "tocHref": null,
-                  "level": 5.0,
+                  "level": 5,
                   "items": [],
                   "leaf": true
                 }
               ],
               "tocHref": null,
-              "level": 4.0
+              "level": 4
             },
             {
               "name": "CatException<T>",
@@ -530,7 +530,7 @@
               "topicUid": "CatLibrary.CatException`1",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -541,7 +541,7 @@
               "topicUid": "CatLibrary.Cat`2",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -552,7 +552,7 @@
               "topicUid": "CatLibrary.Complex`2",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -563,7 +563,7 @@
               "topicUid": "CatLibrary.FakeDelegate`1",
               "type": "Delegate",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -574,7 +574,7 @@
               "topicUid": "CatLibrary.IAnimal",
               "type": "Interface",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -585,7 +585,7 @@
               "topicUid": "CatLibrary.ICat",
               "type": "Interface",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -596,7 +596,7 @@
               "topicUid": "CatLibrary.ICatExtension",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -607,7 +607,7 @@
               "topicUid": "CatLibrary.MRefDelegate`3",
               "type": "Delegate",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -618,7 +618,7 @@
               "topicUid": "CatLibrary.MRefNormalDelegate",
               "type": "Delegate",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -629,7 +629,7 @@
               "topicUid": "CatLibrary.Tom",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             },
@@ -640,13 +640,13 @@
               "topicUid": "CatLibrary.TomFromBaseClass",
               "type": "Class",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             }
           ],
           "tocHref": null,
-          "level": 3.0
+          "level": 3
         },
         {
           "name": "MRef.Demo.Enumeration",
@@ -662,18 +662,18 @@
               "topicUid": "MRef.Demo.Enumeration.ColorType",
               "type": "Enum",
               "tocHref": null,
-              "level": 4.0,
+              "level": 4,
               "items": [],
               "leaf": true
             }
           ],
           "tocHref": null,
-          "level": 3.0
+          "level": 3
         }
       ],
       "topicHref": null,
       "tocHref": null,
-      "level": 2.0
+      "level": 2
     },
     {
       "name": "REST API",
@@ -684,7 +684,7 @@
           "href": "../restapi/petstore.html",
           "topicHref": "../restapi/petstore.html",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         },
@@ -693,14 +693,14 @@
           "href": "../restapi/contacts.html",
           "topicHref": "../restapi/contacts.html",
           "tocHref": null,
-          "level": 3.0,
+          "level": 3,
           "items": [],
           "leaf": true
         }
       ],
       "topicHref": null,
       "tocHref": null,
-      "level": 2.0
+      "level": 2
     }
   ],
   "_appName": "Seed",
@@ -720,7 +720,7 @@
   "topicHref": null,
   "tocHref": null,
   "name": null,
-  "level": 1.0,
+  "level": 1,
   "leaf": false,
   "title": "Table of Content",
   "_disableToc": true

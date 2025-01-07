@@ -15,7 +15,7 @@
         "value": "<xref uid=\"BuildFromProject.Issue8540\" displayProperty=\"name\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -67,7 +67,7 @@
               "value": "<xref uid=\"BuildFromProject.Issue8540.A.A\" text=\"A\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -126,7 +126,7 @@
   "assemblies": [
     "BuildFromProject"
   ],
-  "level": 0.0,
+  "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

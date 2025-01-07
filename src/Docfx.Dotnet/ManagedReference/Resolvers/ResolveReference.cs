@@ -20,14 +20,14 @@ internal class ResolveReference : IResolverPipeline
                 if (current.Type.IsPageLevel())
                 {
                     page = current;
-                    current.References = new Dictionary<string, ReferenceItem>();
+                    current.References = [];
                 }
                 else
                 {
                     page = parent;
                     current.References = null;
                 }
-                if (documentReferences is {Count: > 0})
+                if (documentReferences is { Count: > 0 })
                 {
                     foreach (var key in documentReferences.Keys)
                     {

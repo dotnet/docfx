@@ -1,10 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using YamlDotNet.Serialization;
 
 namespace Docfx;
 
@@ -35,7 +33,7 @@ internal partial class ListWithStringFallbackConverter
                     {
                         using var document = JsonDocument.ParseValue(ref reader);
                         JsonElement root = document.RootElement;
-                        var values = root.EnumerateObject().Select(x=>x.ToString());
+                        var values = root.EnumerateObject().Select(x => x.ToString());
                         return new ListWithStringFallback(values);
                     }
                 default:

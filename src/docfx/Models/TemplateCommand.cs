@@ -53,7 +53,7 @@ internal class TemplateCommand
 
                 foreach (var template in templates)
                 {
-                    var manager = new TemplateManager(new List<string> { template }, null, null);
+                    var manager = new TemplateManager([template], null, null);
                     if (manager.TryExportTemplateFiles(Path.Combine(outputFolder, template)))
                     {
                         Logger.LogInfo($"{template} is exported to {outputFolder}");

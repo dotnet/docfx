@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -121,8 +121,8 @@
             },
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 124.0,
-            "endLine": 0.0
+            "startLine": 124,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -173,7 +173,7 @@
             ],
             "id": "CatLibrary_Cat_2__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Default constructor.</p>\n",
           "platform": null,
@@ -444,8 +444,8 @@
             },
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 139.0,
-            "endLine": 0.0
+            "startLine": 139,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -496,7 +496,7 @@
             ],
             "id": "CatLibrary_Cat_2__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">It's a complex constructor. The parameter will have some attributes.</p>\n",
           "platform": null,
@@ -627,8 +627,8 @@
             },
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 130.0,
-            "endLine": 0.0
+            "startLine": 130,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -679,7 +679,7 @@
             ],
             "id": "CatLibrary_Cat_2__ctor_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "constructor",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Constructor with one generic parameter.</p>\n",
           "platform": null,
@@ -813,15 +813,15 @@
             },
             "id": "isHealthy",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 236.0,
-            "endLine": 0.0
+            "startLine": 236,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
           ],
           "namespace": "CatLibrary",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "attributes": [
             {
               "type": "System.ContextStaticAttribute",
@@ -973,8 +973,8 @@
             },
             "id": "Age",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 215.0,
-            "endLine": 0.0
+            "startLine": 215,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -1025,7 +1025,7 @@
             ],
             "id": "CatLibrary_Cat_2_Age_"
           },
-          "level": 0.0,
+          "level": 0,
           "attributes": [
             {
               "type": "System.ObsoleteAttribute",
@@ -1209,8 +1209,8 @@
             },
             "id": "this[]",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 206.0,
-            "endLine": 0.0
+            "startLine": 206,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -1261,7 +1261,7 @@
             ],
             "id": "CatLibrary_Cat_2_Item_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "property",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">This is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.</p>\n",
           "platform": null,
@@ -1389,8 +1389,8 @@
             },
             "id": "Name",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 260.0,
-            "endLine": 0.0
+            "startLine": 260,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -1441,7 +1441,7 @@
             ],
             "id": "CatLibrary_Cat_2_Name_"
           },
-          "level": 0.0,
+          "level": 0,
           "implements": [
             {
               "uid": "CatLibrary.IAnimal.Name",
@@ -1669,8 +1669,8 @@
             },
             "id": "CalculateFood",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 147.0,
-            "endLine": 0.0
+            "startLine": 147,
+            "endLine": 0
           },
           "documentation": {
             "remote": {
@@ -1679,8 +1679,8 @@
               "repo": "https://github.com/dotnet/docfx"
             },
             "path": "specs/Cat.CalculateFood.md",
-            "startLine": 1.0,
-            "endLine": 15.0
+            "startLine": 1,
+            "endLine": 15
           },
           "assemblies": [
             "CatLibrary"
@@ -1779,7 +1779,7 @@
               "description": "<p sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"1\">This is an <code sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"1\">overridden</code> argument exception. you can add additional exception by adding different exception <code sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"1\">type</code>.</p>\n"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "conceptual": "\n<p sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"17\">This is overriding methods. You can override parameter descriptions for methods, you can even add exceptions to methods. Check the intermediate <code sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"17\">obj</code> folder to see the data model of the generated method/class. Override Yaml header should follow the data structure.</p>\n",
           "type": "method",
           "summary": "<p sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"1\">It's an overridden summary in <code sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"1\">markdown</code> format</p>\n",
@@ -1955,8 +1955,8 @@
             },
             "id": "Equals",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 167.0,
-            "endLine": 0.0
+            "startLine": 167,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -2050,7 +2050,7 @@
             ],
             "id": "CatLibrary_Cat_2_Equals_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Override the method of <code>Object.Equals(object obj).</code></p>\n",
           "platform": null,
@@ -2273,8 +2273,8 @@
             },
             "id": "GetTailLength",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 176.0,
-            "endLine": 0.0
+            "startLine": 176,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -2325,7 +2325,7 @@
             ],
             "id": "CatLibrary_Cat_2_GetTailLength_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">It's an <code>unsafe</code> method.\nAs you see, <code class=\"paramref\">catName</code> is a <b>pointer</b>, so we need to add <code class=\"languageKeyword\">unsafe</code> keyword.</p>\n",
           "platform": null,
@@ -2551,8 +2551,8 @@
             },
             "id": "Jump",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 156.0,
-            "endLine": 0.0
+            "startLine": 156,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -2651,7 +2651,7 @@
               "description": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">This is an argument exception</p>\n"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "attributes": [
             {
               "type": "System.Diagnostics.ConditionalAttribute",
@@ -2797,15 +2797,15 @@
             },
             "id": "ownEat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 227.0,
-            "endLine": 0.0
+            "startLine": 227,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
           ],
           "namespace": "CatLibrary",
           "example": [],
-          "level": 0.0,
+          "level": 0,
           "attributes": [
             {
               "type": "System.ObsoleteAttribute",
@@ -3047,8 +3047,8 @@
             },
             "id": "op_Addition",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 185.0,
-            "endLine": 0.0
+            "startLine": 185,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -3095,7 +3095,7 @@
             ],
             "id": "CatLibrary_Cat_2_op_Addition_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Addition operator of this class.</p>\n",
           "platform": null,
@@ -3271,8 +3271,8 @@
             },
             "id": "op_Explicit",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 198.0,
-            "endLine": 0.0
+            "startLine": 198,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -3319,7 +3319,7 @@
             ],
             "id": "CatLibrary_Cat_2_op_Explicit_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Expilicit operator of this class.</p>\n<p>It means this cat can evolve to change to Tom. Tom and Jerry.</p>\n",
           "platform": null,
@@ -3539,8 +3539,8 @@
             },
             "id": "op_Subtraction",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 190.0,
-            "endLine": 0.0
+            "startLine": 190,
+            "endLine": 0
           },
           "assemblies": [
             "CatLibrary"
@@ -3587,7 +3587,7 @@
             ],
             "id": "CatLibrary_Cat_2_op_Subtraction_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "operator",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Similar with operaotr +, refer to that topic.</p>\n",
           "platform": null,
@@ -3648,8 +3648,8 @@
     },
     "id": "Cat",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 114.0,
-    "endLine": 0.0
+    "startLine": 114,
+    "endLine": 0
   },
   "documentation": {
     "remote": {
@@ -3658,8 +3658,8 @@
       "repo": "https://github.com/dotnet/docfx"
     },
     "path": "specs/Cat.md",
-    "startLine": 1.0,
-    "endLine": 4.0
+    "startLine": 1,
+    "endLine": 4
   },
   "assemblies": [
     "CatLibrary"
@@ -3709,7 +3709,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "summary": "<p>Here's main class of this <i>Demo</i>.</p>\n<p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>\n<p></p>\n<p>this class is a template class. It has two Generic parameter. they are: <code class=\"typeparamref\">T</code> and <code class=\"typeparamref\">K</code>.</p>\n<p>The extension method of this class can refer to <xref href=\"CatLibrary.ICatExtension\" data-throw-if-not-resolved=\"false\"></xref> class</p>\n",
   "remarks": "<p sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"1\"><em sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"1\">THIS</em> is remarks overridden in <em sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"1\">MARKDWON</em> file</p>\n",
@@ -3786,11 +3786,11 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     }
   ],
-  "level": 1.0,
+  "level": 1,
   "implements": [
     {
       "uid": "CatLibrary.ICat",
@@ -3927,7 +3927,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -3976,7 +3976,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -4025,7 +4025,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -4074,7 +4074,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -4123,7 +4123,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -4172,7 +4172,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "extensionMethods": [
@@ -4223,7 +4223,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_\">Play</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)",
@@ -4272,7 +4272,7 @@
           "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_\">Sleep</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int64\">Long</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "conceptual": "\n<p sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"6\">This is a class talking about <a href=\"https://en.wikipedia.org/wiki/Cat\" sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"6\">CAT</a>.</p>\n<blockquote sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"8\">\n<p sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"8\"><strong sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"8\">NOTE</strong>\nThis is a CAT class</p>\n</blockquote>\n<p sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"12\">Refer to <xref href=\"CatLibrary.IAnimal\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CatLibrary.IAnimal\" sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"12\"></xref> to see other animals.</p>\n",

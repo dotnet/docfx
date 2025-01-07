@@ -47,7 +47,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [
     {
@@ -121,8 +121,8 @@
             },
             "id": "Dispose",
             "path": "dotnet/project/Project/Inheritdoc.cs",
-            "startLine": 12.0,
-            "endLine": 0.0
+            "startLine": 12,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -173,7 +173,7 @@
             ],
             "id": "BuildFromProject_Inheritdoc_Dispose_"
           },
-          "level": 0.0,
+          "level": 0,
           "implements": [
             {
               "uid": "System.IDisposable.Dispose",
@@ -298,8 +298,8 @@
             },
             "id": "Issue7628",
             "path": "dotnet/project/Project/Inheritdoc.cs",
-            "startLine": 17.0,
-            "endLine": 0.0
+            "startLine": 17,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -350,7 +350,7 @@
             ],
             "id": "BuildFromProject_Inheritdoc_Issue7628_"
           },
-          "level": 0.0,
+          "level": 0,
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.yml\" sourcestartlinenumber=\"1\">This method should do something...</p>\n",
           "platform": null,
@@ -431,8 +431,8 @@
             },
             "id": "Issue7629",
             "path": "dotnet/project/Project/Inheritdoc.cs",
-            "startLine": 14.0,
-            "endLine": 0.0
+            "startLine": 14,
+            "endLine": 0
           },
           "assemblies": [
             "BuildFromProject"
@@ -483,7 +483,7 @@
             ],
             "id": "BuildFromProject_Inheritdoc_Issue7629_"
           },
-          "level": 0.0,
+          "level": 0,
           "implements": [
             {
               "uid": "BuildFromProject.IInheritdoc.Issue7629",
@@ -588,8 +588,8 @@
     },
     "id": "Inheritdoc",
     "path": "dotnet/project/Project/Inheritdoc.cs",
-    "startLine": 10.0,
-    "endLine": 0.0
+    "startLine": 10,
+    "endLine": 0
   },
   "assemblies": [
     "BuildFromProject"
@@ -639,7 +639,7 @@
         "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -701,11 +701,11 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     }
   ],
-  "level": 1.0,
+  "level": 1,
   "implements": [
     {
       "uid": "BuildFromProject.IInheritdoc",
@@ -842,7 +842,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -891,7 +891,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -940,7 +940,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetType",
@@ -989,7 +989,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -1038,7 +1038,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -1087,7 +1087,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ToString",
@@ -1136,7 +1136,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

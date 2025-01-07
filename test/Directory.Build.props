@@ -12,7 +12,7 @@
     <TestTfmsInParallel>false</TestTfmsInParallel>
   </PropertyGroup>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('$(MSBuildThisFile)', '$(MSBuildThisFileDirectory)../'))" />
 
   <ItemGroup>
     <None Include="TestData\**" CopyToOutputDirectory="PreserveNewest" />
@@ -20,15 +20,11 @@
 
   <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(PERCY_TOKEN)' == ''">
     <VSTestResultsDirectory>$(MSBuildThisFileDirectory)TestResults</VSTestResultsDirectory>
-    <VSTestLogger>$(VSTestLogger);trx%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework).trx</VSTestLogger>
-    <VSTestLogger>$(VSTestLogger);html%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework).html</VSTestLogger>
+    <VSTestLogger>$(VSTestLogger);trx%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).trx</VSTestLogger>
+    <VSTestLogger>$(VSTestLogger);html%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).html</VSTestLogger>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit.runner.visualstudio" />

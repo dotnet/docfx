@@ -61,7 +61,7 @@ public class XRefMap : IXRefContainer
     [ExtensibleMember]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
-    public Dictionary<string, object> Others { get; set; } = new();
+    public Dictionary<string, object> Others { get; set; } = [];
 
     public void Sort()
     {

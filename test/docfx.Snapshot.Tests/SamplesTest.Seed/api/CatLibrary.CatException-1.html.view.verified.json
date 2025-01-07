@@ -47,7 +47,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "children": [],
   "langs": [
@@ -93,8 +93,8 @@
     },
     "id": "CatException",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 322.0,
-    "endLine": 0.0
+    "startLine": 322,
+    "endLine": 0
   },
   "assemblies": [
     "CatLibrary"
@@ -144,7 +144,7 @@
         "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
-    "level": 0.0
+    "level": 0
   },
   "syntax": {
     "content": [
@@ -212,8 +212,8 @@
           "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 0.0
+      "level": 0,
+      "index": 0
     },
     {
       "uid": "System.Exception",
@@ -262,11 +262,11 @@
           "value": "<xref uid=\"System.Exception\" text=\"Exception\"/>"
         }
       ],
-      "level": 0.0,
-      "index": 1.0
+      "level": 0,
+      "index": 1
     }
   ],
-  "level": 2.0,
+  "level": 2,
   "implements": [
     {
       "uid": "System.Runtime.Serialization.ISerializable",
@@ -360,56 +360,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception\">GetBaseException</a>()"
         }
       ],
-      "level": 0.0
-    },
-    {
-      "uid": "System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)",
-      "isEii": false,
-      "isExtensionMethod": false,
-      "parent": "System.Exception",
-      "isExternal": true,
-      "href": "https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata",
-      "name": [
-        {
-          "lang": "csharp",
-          "value": "GetObjectData(SerializationInfo, StreamingContext)"
-        },
-        {
-          "lang": "vb",
-          "value": "GetObjectData(SerializationInfo, StreamingContext)"
-        }
-      ],
-      "nameWithType": [
-        {
-          "lang": "csharp",
-          "value": "Exception.GetObjectData(SerializationInfo, StreamingContext)"
-        },
-        {
-          "lang": "vb",
-          "value": "Exception.GetObjectData(SerializationInfo, StreamingContext)"
-        }
-      ],
-      "fullName": [
-        {
-          "lang": "csharp",
-          "value": "System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)"
-        },
-        {
-          "lang": "vb",
-          "value": "System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)"
-        }
-      ],
-      "specName": [
-        {
-          "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata\">GetObjectData</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.serialization.serializationinfo\">SerializationInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.serialization.streamingcontext\">StreamingContext</a>)"
-        },
-        {
-          "lang": "vb",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata\">GetObjectData</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.serialization.serializationinfo\">SerializationInfo</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.serialization.streamingcontext\">StreamingContext</a>)"
-        }
-      ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.GetType",
@@ -458,7 +409,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.gettype\">GetType</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.ToString",
@@ -507,7 +458,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.tostring\">ToString</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.Data",
@@ -556,7 +507,7 @@
           "value": "<xref uid=\"System.Exception.Data\" text=\"Data\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.HelpLink",
@@ -605,7 +556,7 @@
           "value": "<xref uid=\"System.Exception.HelpLink\" text=\"HelpLink\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.HResult",
@@ -654,7 +605,7 @@
           "value": "<xref uid=\"System.Exception.HResult\" text=\"HResult\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.InnerException",
@@ -703,7 +654,7 @@
           "value": "<xref uid=\"System.Exception.InnerException\" text=\"InnerException\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.Message",
@@ -752,7 +703,7 @@
           "value": "<xref uid=\"System.Exception.Message\" text=\"Message\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.Source",
@@ -801,7 +752,7 @@
           "value": "<xref uid=\"System.Exception.Source\" text=\"Source\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.StackTrace",
@@ -850,7 +801,7 @@
           "value": "<xref uid=\"System.Exception.StackTrace\" text=\"StackTrace\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.TargetSite",
@@ -899,7 +850,7 @@
           "value": "<xref uid=\"System.Exception.TargetSite\" text=\"TargetSite\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Exception.SerializeObjectState",
@@ -948,7 +899,7 @@
           "value": "<xref uid=\"System.Exception.SerializeObjectState\" text=\"SerializeObjectState\"/>"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object)",
@@ -997,7 +948,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.Equals(System.Object,System.Object)",
@@ -1046,7 +997,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.GetHashCode",
@@ -1095,7 +1046,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.MemberwiseClone",
@@ -1144,7 +1095,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
-      "level": 0.0
+      "level": 0
     },
     {
       "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
@@ -1193,7 +1144,7 @@
           "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
-      "level": 0.0
+      "level": 0
     }
   ],
   "_appName": "Seed",

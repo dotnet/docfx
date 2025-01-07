@@ -52,7 +52,7 @@
               "value": "<xref uid=\"CSharp12.CollectionExpressions\" text=\"CollectionExpressions\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -114,7 +114,7 @@
               "value": "<xref uid=\"CSharp12.DefaultLambdaParameters\" text=\"DefaultLambdaParameters\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -176,7 +176,7 @@
               "value": "<xref uid=\"CSharp12.PrimaryConstructors\" text=\"PrimaryConstructors\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -239,7 +239,7 @@
               "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html\">BankAccount</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -301,7 +301,7 @@
               "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.CheckAccount.html\">CheckAccount</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -363,7 +363,7 @@
               "value": "<xref uid=\"CSharp12.RefReadOnlyParameters\" text=\"RefReadOnlyParameters\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "class",
           "platform": null,
@@ -432,7 +432,7 @@
               "value": "<xref uid=\"CSharp12.InlineArrays\" text=\"InlineArrays\"/>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "struct",
           "platform": null,
@@ -494,7 +494,7 @@
               "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.Distance.html\">Distance</a>"
             }
           ],
-          "level": 0.0,
+          "level": 0,
           "summary": "",
           "type": "struct",
           "platform": null,
@@ -553,7 +553,7 @@
   "assemblies": [
     "CSharp"
   ],
-  "level": 0.0,
+  "level": 0,
   "_systemKeys": [
     "uid",
     "isEii",

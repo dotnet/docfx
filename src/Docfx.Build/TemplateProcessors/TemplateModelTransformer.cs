@@ -5,7 +5,6 @@ using System.Web;
 using Docfx.Common;
 using Docfx.Plugins;
 using HtmlAgilityPack;
-using Newtonsoft.Json;
 
 namespace Docfx.Build.Engine;
 
@@ -265,7 +264,7 @@ public class TemplateModelTransformer
 
     private void TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, ManifestItem manifestItem, out List<XRefDetails> unresolvedXRefs)
     {
-        unresolvedXRefs = new List<XRefDetails>();
+        unresolvedXRefs = [];
         using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath))
         {
             using var sw = new StreamWriter(stream);
@@ -293,7 +292,7 @@ public class TemplateModelTransformer
         HtmlDocument document = new();
         document.LoadHtml(html);
 
-        unresolvedXRefs = new List<XRefDetails>();
+        unresolvedXRefs = [];
         TransformXrefInHtml(context, sourceFilePath, destFilePath, document.DocumentNode, unresolvedXRefs);
         TransformLinkInHtml(context, sourceFilePath, destFilePath, document.DocumentNode);
 

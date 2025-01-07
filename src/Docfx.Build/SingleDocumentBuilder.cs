@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-using System.Threading;
 using Docfx.Common;
 using Docfx.Plugins;
 
@@ -31,8 +30,8 @@ class SingleDocumentBuilder : IDisposable
             processor,
             parameters.Files.EnumerateFiles());
 
-        new CompilePhaseHandler(null).Handle(new List<HostService> { hostService }, parameters.MaxParallelism);
-        new LinkPhaseHandler(null, null).Handle(new List<HostService> { hostService }, parameters.MaxParallelism);
+        new CompilePhaseHandler(null).Handle([hostService], parameters.MaxParallelism);
+        new LinkPhaseHandler(null, null).Handle([hostService], parameters.MaxParallelism);
         return hostService.Models;
     }
 
@@ -75,13 +74,13 @@ class SingleDocumentBuilder : IDisposable
             Xrefmap = ExportXRefMap(parameters, context),
             SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
         };
-        manifest.Groups = new List<ManifestGroupInfo>
-                {
+        manifest.Groups =
+                [
                     new(parameters.GroupInfo)
                     {
                         XRefmap = (string)manifest.Xrefmap
                     }
-                };
+                ];
         return manifest;
     }
 
@@ -103,7 +102,7 @@ class SingleDocumentBuilder : IDisposable
                                 where priority != ProcessingPriority.NotSupported
                                 group processor by priority into ps
                                 orderby ps.Key descending
-                                select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
+                                select ps.ToList()).FirstOrDefault() ?? [null]
                      group file by p).ToList();
 
         var toHandleItems = files.Where(s => s.Key != null);

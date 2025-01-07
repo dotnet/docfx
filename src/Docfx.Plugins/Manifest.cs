@@ -27,7 +27,7 @@ public class Manifest
 
     [JsonProperty("files")]
     [JsonPropertyName("files")]
-    public List<ManifestItem> Files { get; init; } = new();
+    public List<ManifestItem> Files { get; init; } = [];
 
     [JsonProperty("groups")]
     [JsonPropertyName("groups")]
