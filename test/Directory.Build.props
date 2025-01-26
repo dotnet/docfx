@@ -50,6 +50,14 @@
     <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-ctrf       --report-ctrf-filename       TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).ctrf</TestingPlatformCommandLineArguments>
   </PropertyGroup>
 
+  <!-- Settings for code coverage -->
+  <PropertyGroup Condition="'$(EnableCodeCoverage)' == 'true'">
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --coverage</TestingPlatformCommandLineArguments>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --coverage-output code-coverages/$(MSBuildProjectName)-$(TargetFramework).cobertura.xml</TestingPlatformCommandLineArguments>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --coverage-output-format cobertura</TestingPlatformCommandLineArguments>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --coverage-settings "$(MSBuildThisFileDirectory)/CodeCoverage.runsettings"</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
   <!-- Settings for VSTest mode. These settings will be removed in future. -->
   <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(PERCY_TOKEN)' == ''">
     <!-- See: https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-platform-vs-vstest#communication-protocol-preview -->
@@ -74,6 +82,7 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

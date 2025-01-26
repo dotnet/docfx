@@ -3,7 +3,6 @@
 
 using System.Text;
 using Docfx.Common;
-using Docfx.Plugins;
 using FluentAssertions;
 using Xunit;
 
