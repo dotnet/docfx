@@ -1,4 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="TestData\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
@@ -11,6 +15,5 @@
     <ProjectReference Include="..\..\src\Docfx.Build\Docfx.Build.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.ManagedReference\Docfx.Build.ManagedReference.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Common\Docfx.Common.csproj" />
-    <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
   </ItemGroup>
 </Project>

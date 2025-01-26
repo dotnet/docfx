@@ -43,7 +43,7 @@ public class RemoveDebugInfoTest : TestBase
         new HtmlPostProcessor
         {
             Handlers = { new RemoveDebugInfo() }
-        }.Process(manifest, _outputFolder);
+        }.Process(manifest, _outputFolder, TestContext.Current.CancellationToken);
 
         var actual = File.ReadAllText(Path.Combine(_outputFolder, "a.html"));
         Assert.Equal("<p id='b1'>section<a href='http://bing.com#top'>Microsoft Bing</a></p>", actual);

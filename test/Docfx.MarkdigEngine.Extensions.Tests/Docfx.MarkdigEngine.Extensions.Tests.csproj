@@ -1,4 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="System.Collections.Immutable" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.MarkdigEngine.Extensions\Docfx.MarkdigEngine.Extensions.csproj" />
   </ItemGroup>
