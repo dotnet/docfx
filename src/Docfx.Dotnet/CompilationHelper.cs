@@ -180,7 +180,7 @@ internal static class CompilationHelper
                 var file = assemblyResolver.FindAssemblyFile(reference);
                 if (file is null)
                 {
-                    if(referenceFiles == null)
+                    if (referenceFiles == null)
                     {
                         referenceFiles = new();
                         foreach (var referenceFile in references.OfType<PortableExecutableReference>())
@@ -193,7 +193,7 @@ internal static class CompilationHelper
                             }
                         }
                     }
-                    if(!referenceFiles.TryGetValue(reference.Name, out file))
+                    if (!referenceFiles.TryGetValue(reference.Name, out file))
                     {
                         // Skip warning for some weired assembly references: https://github.com/dotnet/docfx/issues/9459
                         if (reference.Version?.ToString() != "0.0.0.0")
