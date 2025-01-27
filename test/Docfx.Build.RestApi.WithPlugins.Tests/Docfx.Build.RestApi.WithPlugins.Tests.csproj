@@ -7,6 +7,5 @@
     <ProjectReference Include="..\..\src\Docfx.Build.RestApi\Docfx.Build.RestApi.csproj" />
     <ProjectReference Include="..\..\src\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
     <ProjectReference Include="..\..\src\Docfx.DataContracts.RestApi\Docfx.DataContracts.RestApi.csproj" />
-    <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
   </ItemGroup>
 </Project>
