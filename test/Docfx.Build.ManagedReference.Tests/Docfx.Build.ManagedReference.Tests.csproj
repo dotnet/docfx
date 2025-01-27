@@ -2,6 +2,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.Build\Docfx.Build.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.ManagedReference\Docfx.Build.ManagedReference.csproj" />
-    <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
   </ItemGroup>
 </Project>
