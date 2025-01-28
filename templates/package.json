@@ -50,7 +50,7 @@
     "eslint-config-standard": "^17.1.0",
     "stylelint": "^16.14.1",
     "stylelint-config-standard-scss": "^14.0.0",
-    "typescript": "^5.7.2",
+    "typescript": "^5.7.3",
     "yargs": "^17.7.2"
   }
 }
