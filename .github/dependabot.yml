@@ -19,6 +19,10 @@ updates:
       - "xunit"
       - "xunit.*"
       - "Verify.Xunit"
+  ignore:
+    - dependency-name: "FluentAssertions"
+      update-types: 
+        - version-update:semver-major
 
 - package-ecosystem: npm
   target-branch: main
