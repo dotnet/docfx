@@ -119,9 +119,12 @@ public static partial class DotnetApiCatalog
         var projects = configModel.Src;
         var references = configModel.References;
 
-        var outputFolder = Path.GetFullPath(Path.Combine(
-            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(configDirectory, configModel.Output ?? "") : outputDirectory,
-            configModel.Dest ?? ""));
+#pragma warning disable CS0618
+        var outputFolder = Path.GetFullPath(
+            string.IsNullOrEmpty(outputDirectory)
+              ? Path.Combine(configDirectory, configModel.Output ?? configModel.Dest ?? "")
+              : outputDirectory);
+#pragma warning restore CS0618
 
         var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
         var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
