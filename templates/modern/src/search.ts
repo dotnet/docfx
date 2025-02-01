@@ -8,6 +8,7 @@ import { classMap } from 'lit-html/directives/class-map.js'
 type SearchHit = {
   href: string
   title: string
+  summary: string
   keywords: string
 }
 
@@ -34,6 +35,11 @@ export async function enableSearch() {
       case 'index-ready':
         searchQuery.disabled = false
         searchQuery.addEventListener('input', onSearchQueryInput)
+        searchQuery.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            event.preventDefault()
+          }
+        })
         window.docfx.searchReady = true
         break
       case 'query-ready':
@@ -56,7 +62,8 @@ export async function enableSearch() {
     if (query === '') {
       document.body.removeAttribute('data-search')
     } else {
-      worker.postMessage({ q: query })
+      const additiveQuery = query.replace(/\s+/g, ' ').split(' ').map(w => '+' + w).join(' ')
+      worker.postMessage({ q: additiveQuery })
     }
   }
 
@@ -108,7 +115,7 @@ export async function enableSearch() {
           const currentUrl = window.location.href
           const itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href)
           const itemHref = relHref + hit.href + '?q=' + query
-          const itemBrief = extractContentBrief(hit.keywords)
+          const itemBrief = hit.summary ? extractContentBrief(hit.summary) : ''
 
           return html`
             <div class="sr-item">

@@ -20,6 +20,10 @@ class SearchIndexItem
     [JsonPropertyName("keywords")]
     public string Keywords { get; set; }
 
+    [JsonProperty("summary")]
+    [JsonPropertyName("summary")]
+    public string Summary { get; set; }
+
     public override bool Equals(object obj)
     {
         return Equals(obj as SearchIndexItem);
@@ -35,11 +39,17 @@ class SearchIndexItem
         {
             return true;
         }
-        return string.Equals(Title, other.Title) && string.Equals(Href, other.Href) && string.Equals(Keywords, other.Keywords);
+        return string.Equals(Title, other.Title) &&
+               string.Equals(Href, other.Href) &&
+               string.Equals(Summary, other.Summary) &&
+               string.Equals(Keywords, other.Keywords);
     }
 
     public override int GetHashCode()
     {
-        return Title.GetHashCode() ^ Href.GetHashCode() ^ Keywords.GetHashCode();
+        return Title.GetHashCode() ^
+               Href.GetHashCode() ^
+               Summary.GetHashCode() ^
+               Keywords.GetHashCode();
     }
 }
