@@ -456,6 +456,12 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 
         public Type? TypeOverride { get; set; }
 
+        public bool AllowNulls { get; set; }
+
+        public bool Required { get; set; }
+
+        public Type? ConverterType { get; set; }
+
         public T GetCustomAttribute<T>() where T : Attribute => (T)_skeleton.GetCustomAttribute(typeof(T));
 
         public IObjectDescriptor Read(object target)
@@ -515,6 +521,12 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         public Type Type => _skeleton.Type;
 
         public Type? TypeOverride { get; set; }
+
+        public bool AllowNulls { get; set; }
+
+        public bool Required { get; set; }
+
+        public Type? ConverterType { get; set; }
 
         public T? GetCustomAttribute<T>() where T : Attribute => null;
 
