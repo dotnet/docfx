@@ -70,11 +70,14 @@ public sealed class YamlDeserializer
     public YamlDeserializer(
         IObjectFactory? objectFactory = null,
         INamingConvention? namingConvention = null,
+        INamingConvention? enumNamingConvention = null,
         bool ignoreUnmatched = false,
-        bool ignoreNotFoundAnchor = true)
+        bool ignoreNotFoundAnchor = true,
+        bool caseInsensitivePropertyMatching = false)
     {
         objectFactory ??= new DefaultEmitObjectFactory();
         namingConvention ??= NullNamingConvention.Instance;
+        enumNamingConvention ??= NullNamingConvention.Instance;
 
         _typeDescriptor.TypeDescriptor =
             new ExtensibleYamlAttributesTypeInspector(
@@ -98,24 +101,24 @@ public sealed class YamlDeserializer
         [
             new TypeConverterNodeDeserializer(_converters),
             new NullNodeDeserializer(),
-            new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter, YamlFormatter.Default, NullNamingConvention.Instance),
-            new EmitArrayNodeDeserializer(),
+            new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter, _typeDescriptor, YamlFormatter.Default, enumNamingConvention),
+            new EmitArrayNodeDeserializer(enumNamingConvention,_typeDescriptor),
             new EmitGenericDictionaryNodeDeserializer(objectFactory),
             new DictionaryNodeDeserializer(objectFactory, duplicateKeyChecking: true),
-            new EmitGenericCollectionNodeDeserializer(objectFactory),
-            new CollectionNodeDeserializer(objectFactory, NullNamingConvention.Instance),
+            new EmitGenericCollectionNodeDeserializer(objectFactory, enumNamingConvention,_typeDescriptor),
+            new CollectionNodeDeserializer(objectFactory, enumNamingConvention, _typeDescriptor),
             new EnumerableNodeDeserializer(),
-            new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
+            new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, enumNamingConvention, ignoreUnmatched, caseInsensitivePropertyMatching),
         ];
         _tagMappings = new Dictionary<TagName, Type>(PredefinedTagMappings);
         TypeResolvers =
         [
             new TagNodeTypeResolver(_tagMappings),
             new DefaultContainersNodeTypeResolver(),
-            new ScalarYamlNodeTypeResolver()
+            new ScalarYamlNodeTypeResolver(),
         ];
 
-        NodeValueDeserializer nodeValueDeserializer = new(NodeDeserializers, TypeResolvers, _reflectionTypeConverter, NullNamingConvention.Instance);
+        NodeValueDeserializer nodeValueDeserializer = new(NodeDeserializers, TypeResolvers, _reflectionTypeConverter, enumNamingConvention, _typeDescriptor);
         if (ignoreNotFoundAnchor)
         {
             _valueDeserializer = new LooseAliasValueDeserializer(nodeValueDeserializer);
