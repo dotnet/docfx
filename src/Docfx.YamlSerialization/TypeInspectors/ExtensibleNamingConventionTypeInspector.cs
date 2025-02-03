@@ -25,4 +25,10 @@ public sealed class ExtensibleNamingConventionTypeInspector : ExtensibleTypeInsp
 
     public override IPropertyDescriptor? GetProperty(Type type, object? container, string name) =>
         innerTypeDescriptor.GetProperty(type, container, name);
+
+    public override string GetEnumName(Type enumType, string name) =>
+        innerTypeDescriptor.GetEnumName(enumType, name);
+
+    public override string GetEnumValue(object enumValue) =>
+        innerTypeDescriptor.GetEnumValue(enumValue);
 }

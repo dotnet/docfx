@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.Serialization;
 using Docfx.YamlSerialization.Helpers;
 using Docfx.YamlSerialization.ObjectDescriptors;
 using YamlDotNet.Core;
@@ -15,6 +16,8 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 {
     private static readonly ConcurrentDictionary<Type, CachingItem> _cache = new();
     private static readonly ConcurrentDictionary<Type, List<IPropertyDescriptor>> _propertyDescriptorCache = new();
+    private static readonly ConcurrentDictionary<(Type, string), string> _enumNameCache = new();
+    private static readonly ConcurrentDictionary<(Type, string), string> _enumValueCache = new();
     private readonly ITypeResolver _resolver;
 
     public EmitTypeInspector(ITypeResolver resolver)
@@ -60,6 +63,58 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         return (from ep in item.ExtensibleProperties
                 where name.StartsWith(ep.Prefix, StringComparison.Ordinal)
                 select new ExtensiblePropertyDescriptor(ep, name, _resolver)).FirstOrDefault();
+    }
+
+    // This code is based on ReflectionTypeInspector implementation(See: https://github.com/aaubry/YamlDotNet/blob/master/YamlDotNet/Serialization/TypeInspectors/ReflectionTypeInspector.cs)
+    public override string GetEnumName(Type enumType, string name)
+    {
+        var key = (enumType, name);
+        if (_enumNameCache.TryGetValue(key, out var result))
+            return result;
+
+        // Try to gets enum name from EnumMemberAttribute and resolve enum name.
+        foreach (var enumMember in enumType.GetMembers())
+        {
+            var attribute = enumMember.GetCustomAttribute<EnumMemberAttribute>(inherit: false);
+            if (attribute != null && attribute.Value == name)
+            {
+                name = enumMember.Name;
+                break;
+            }
+        }
+
+        // Add resolved name to cache
+        _enumNameCache.TryAdd(key, name);
+        return name;
+    }
+
+    public override string GetEnumValue(object enumValue)
+    {
+        var enumType = enumValue.GetType();
+        var valueText = enumValue.ToString()!;
+        var key = (enumType, valueText);
+
+        if (_enumValueCache.TryGetValue(key, out var result))
+            return result;
+
+        // Try to gets enum value from EnumMemberAttribute and resolve enum value.
+        if (enumType.GetCustomAttribute<FlagsAttribute>() != null)
+        {
+            var enumMember = enumType.GetMember(valueText).FirstOrDefault();
+            if (enumMember != null)
+            {
+                var attribute = enumMember.GetCustomAttribute<EnumMemberAttribute>(inherit: false);
+                if (attribute?.Value != null)
+                {
+                    valueText = attribute.Value;
+                }
+            }
+        }
+
+        // Add resolved text to cache.
+        _enumValueCache.TryAdd(key, valueText);
+
+        return valueText;
     }
 
     private sealed class CachingItem

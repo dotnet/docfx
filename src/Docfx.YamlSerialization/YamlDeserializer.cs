@@ -52,9 +52,18 @@ public sealed class YamlDeserializer
             return TypeDescriptor.GetProperties(type, container);
         }
 
-        public IPropertyDescriptor GetProperty(Type type, object? container, string name, bool ignoreUnmatched)
+        public IPropertyDescriptor GetProperty(Type type, object? container, string name, bool ignoreUnmatched, bool caseInsensitivePropertyMatching)
         {
-            return TypeDescriptor.GetProperty(type, container, name, ignoreUnmatched);
+            return TypeDescriptor.GetProperty(type, container, name, ignoreUnmatched, caseInsensitivePropertyMatching);
+        }
+
+        public string GetEnumName(Type enumType, string name)
+        {
+            return TypeDescriptor.GetEnumName(enumType, name);
+        }
+        public string GetEnumValue(object enumValue)
+        {
+            return TypeDescriptor.GetEnumValue(enumValue);
         }
     }
 
