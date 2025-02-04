@@ -24,7 +24,7 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
         _objectFactory = objectFactory;
     }
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value, ObjectDeserializer rootDeserializer)
     {
         if (!_gpCache.TryGetValue(expectedType, out var gp))
         {
