@@ -23,13 +23,13 @@ internal sealed class ExclusiveObjectGraphVisitor : ChainedObjectGraphVisitor
         return type.IsValueType ? Activator.CreateInstance(type) : null;
     }
 
-    public override bool EnterMapping(IPropertyDescriptor key, IObjectDescriptor value, IEmitter context)
+    public override bool EnterMapping(IPropertyDescriptor key, IObjectDescriptor value, IEmitter context, ObjectSerializer serializer)
     {
         var defaultValueAttribute = key.GetCustomAttribute<DefaultValueAttribute>();
         object? defaultValue = defaultValueAttribute != null
             ? defaultValueAttribute.Value
             : GetDefault(key.Type);
 
-        return !Equals(value.Value, defaultValue) && base.EnterMapping(key, value, context);
+        return !Equals(value.Value, defaultValue) && base.EnterMapping(key, value, context, serializer);
     }
 }
