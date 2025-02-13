@@ -38,6 +38,9 @@ internal partial class XmlComment
     [GeneratedRegex(@"^\s*<!--\s*</(.*)>\s*-->$")]
     private static partial Regex XmlEndRegionRegex();
 
+    [GeneratedRegex(@"^(\s*)&gt;", RegexOptions.Multiline)]
+    private static partial Regex BlockQuoteRegex();
+
     private readonly XmlCommentParserContext _context;
 
     public string Summary { get; private set; }
@@ -603,7 +606,7 @@ internal partial class XmlComment
         {
             // > is encoded to &gt; in XML. When interpreted as markdown, > is as blockquote
             // Decode standalone &gt; to > to enable the block quote markdown syntax
-            return Regex.Replace(xml, @"^(\s*)&gt;", "$1>", RegexOptions.Multiline);
+            return BlockQuoteRegex().Replace(xml, "$1>");
         }
 
         static void MarkdownXmlDecode(MarkdownObject node)

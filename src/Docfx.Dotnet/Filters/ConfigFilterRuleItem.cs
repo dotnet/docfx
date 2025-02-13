@@ -20,7 +20,7 @@ internal abstract class ConfigFilterRuleItem
         }
         set
         {
-            _uidRegex = new Regex(value);
+            _uidRegex = new Regex(value, RegexOptions.Compiled);
         }
     }
 
