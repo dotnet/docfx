@@ -31,6 +31,7 @@
     <PackageReference Include="OneOf" />
     <PackageReference Include="OneOf.SourceGenerator" PrivateAssets="All" />
     <PackageReference Include="Markdig" />
+    <PackageReference Include="Microsoft.Build" />
     <PackageReference Include="Microsoft.CodeAnalysis" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
