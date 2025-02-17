@@ -37,6 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+    <GlobalPackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
   </ItemGroup>
 </Project>
