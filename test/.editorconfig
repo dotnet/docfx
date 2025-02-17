@@ -11,5 +11,4 @@ dotnet_diagnostic.CA1869.severity = none # CA1869: Cache and reuse 'JsonSerializ
 
 dotnet_diagnostic.SYSLIB1045.severity = silent  # SYSLIB1045: Convert to 'GeneratedRegexAttribute'.
 
-[*.runsettings]
 indent_size = 2
