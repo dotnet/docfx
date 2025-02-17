@@ -43,13 +43,13 @@ public class PercyTest
     }
 
     [PercyFact]
+    [UseCustomBranchName("main")]
     public async Task SeedHtml()
     {
         var samplePath = $"{s_samplesDir}/seed";
         Clean(samplePath);
 
-        using var process = Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"");
-        await process.WaitForExitAsync();
+        Exec("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"");
 
         var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
         Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
@@ -115,13 +115,14 @@ public class PercyTest
 
     private static int Exec(string filename, string args, string workingDirectory = null)
     {
-        var psi = new ProcessStartInfo(filename, args);
-        psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
-        if (workingDirectory != null)
-            psi.WorkingDirectory = Path.GetFullPath(workingDirectory);
-        using var process = Process.Start(psi);
-        process.WaitForExit();
-        return process.ExitCode;
+        var execTask = ProcessHelper.ExecAsync(
+            filename,
+            args,
+            workingDirectory,
+            environmentVariables: [],
+            TestContext.Current.CancellationToken);
+
+        return execTask.GetAwaiter().GetResult();
     }
 
     private static void Clean(string samplePath)
