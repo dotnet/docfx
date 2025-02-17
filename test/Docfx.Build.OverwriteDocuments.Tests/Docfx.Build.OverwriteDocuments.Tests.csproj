@@ -1,7 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Markdig" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.Build.OverwriteDocuments\Docfx.Build.OverwriteDocuments.csproj" />
   </ItemGroup>
