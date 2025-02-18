@@ -4,12 +4,12 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="HtmlAgilityPack" Version="1.11.71" />
+    <PackageVersion Include="HtmlAgilityPack" Version="1.11.72" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="9.0.0.7889" />
     <PackageVersion Include="Jint" Version="4.2.0" />
-    <PackageVersion Include="JsonSchema.Net" Version="7.2.3" />
+    <PackageVersion Include="JsonSchema.Net" Version="7.3.3" />
     <PackageVersion Include="Markdig" Version="0.40.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.49.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.50.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271" />
@@ -18,10 +18,10 @@
     <PackageVersion Include="Spectre.Console" Version="0.49.1" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.49.1" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
-    <PackageVersion Include="System.Collections.Immutable" Version="9.0.1" />
-    <PackageVersion Include="System.Composition" Version="9.0.1" />
-    <PackageVersion Include="System.Formats.Asn1" Version="9.0.1" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.1" />
+    <PackageVersion Include="System.Collections.Immutable" Version="9.0.2" />
+    <PackageVersion Include="System.Composition" Version="9.0.2" />
+    <PackageVersion Include="System.Formats.Asn1" Version="9.0.2" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.2" />
     <PackageVersion Include="YamlDotNet" Version="15.3.0" />
   </ItemGroup>
 
