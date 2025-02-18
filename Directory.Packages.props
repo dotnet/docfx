@@ -25,6 +25,12 @@
     <PackageVersion Include="YamlDotNet" Version="15.3.0" />
   </ItemGroup>
 
+  <!-- .slnx solution format is supported Microsoft.Build 17.13.9 or later. -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Build" Version="[17.11.4]" Condition="'$(TargetFramework)' == 'net8.0'"/>
+    <PackageVersion Include="Microsoft.Build" Version="17.13.9"   Condition="'$(TargetFramework)' != 'net8.0'"/>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.12.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.12.0" />
