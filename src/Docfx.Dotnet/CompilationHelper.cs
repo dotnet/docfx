@@ -115,7 +115,7 @@ internal static class CompilationHelper
                     : MetadataImportOptions.Public
             ),
             syntaxTrees: s_assemblyBootstrap,
-            references: GetReferenceAssemblies(assemblyPath)
+            references: GetReferenceAssemblies(assemblyPath, references)
                 .Select(CreateMetadataReference)
                 .Concat(references ?? [])
                 .Append(metadataReference));
@@ -164,11 +164,12 @@ internal static class CompilationHelper
         }
     }
 
-    private static IEnumerable<string> GetReferenceAssemblies(string assemblyPath)
+    private static IEnumerable<string> GetReferenceAssemblies(string assemblyPath, MetadataReference[] references)
     {
         using var assembly = new PEFile(assemblyPath);
         var assemblyResolver = new UniversalAssemblyResolver(assemblyPath, false, assembly.DetectTargetFrameworkId());
         var result = new Dictionary<string, string>();
+        Dictionary<string, string>? referenceFiles = default;
 
         GetReferenceAssembliesCore(assembly);
 
@@ -179,20 +180,36 @@ internal static class CompilationHelper
                 var file = assemblyResolver.FindAssemblyFile(reference);
                 if (file is null)
                 {
-                    // Skip warning for some weired assembly references: https://github.com/dotnet/docfx/issues/9459
-                    if (reference.Version?.ToString() != "0.0.0.0")
+                    if (referenceFiles == null)
                     {
-                        Logger.LogWarning($"Unable to resolve assembly reference {reference}", code: "InvalidAssemblyReference");
+                        referenceFiles = new();
+                        foreach (var referenceFile in references.OfType<PortableExecutableReference>())
+                        {
+                            var name = Path.GetFileNameWithoutExtension(referenceFile.FilePath);
+                            if (!string.IsNullOrEmpty(name)
+                                && !referenceFiles.TryAdd(name, referenceFile.FilePath!))
+                            {
+                                Logger.LogWarning($"Duplicate reference files for '{name}'.", code: "InvalidAssemblyReference");
+                            }
+                        }
                     }
+                    if (!referenceFiles.TryGetValue(reference.Name, out file))
+                    {
+                        // Skip warning for some weired assembly references: https://github.com/dotnet/docfx/issues/9459
+                        if (reference.Version?.ToString() != "0.0.0.0")
+                        {
+                            Logger.LogWarning($"Unable to resolve assembly reference {reference}", code: "InvalidAssemblyReference");
+                        }
 
-                    continue;
+                        continue;
+                    }
                 }
 
                 Logger.LogVerbose($"Loaded {reference.Name} from {file}");
 
-                using var referenceAssembly = new PEFile(file);
-                if (result.TryAdd(referenceAssembly.Name, file))
+                if (result.TryAdd(reference.Name, file))
                 {
+                    using var referenceAssembly = new PEFile(file);
                     GetReferenceAssembliesCore(referenceAssembly);
                 }
             }
@@ -201,7 +218,7 @@ internal static class CompilationHelper
         return result.Values;
     }
 
-    private static MetadataReference CreateMetadataReference(string assemblyPath)
+    internal static MetadataReference CreateMetadataReference(string assemblyPath)
     {
         var documentation = XmlDocumentationProvider.CreateFromFile(Path.ChangeExtension(assemblyPath, ".xml"));
         return MetadataReference.CreateFromFile(assemblyPath, documentation: documentation);
