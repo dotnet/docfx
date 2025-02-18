@@ -131,7 +131,7 @@ If you want to use prerelease version, you can install package with following st
 2. Login to GitHub with additional scope request
 
     ```pwsh
-    gh auth login --scopes "read:packages" --host github.com
+    gh auth login --scopes "read:packages" --hostname github.com
     ```
 
 3. Follow the instructions and complete the login steps.
