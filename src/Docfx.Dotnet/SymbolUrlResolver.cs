@@ -16,6 +16,10 @@ enum SymbolUrlKind
 
 internal static partial class SymbolUrlResolver
 {
+    // Regex to match any character other than a word character(alphabet/numeric/underscore)
+    [GeneratedRegex(@"\W")]
+    private static partial Regex NonWordCharRegex();
+
     public static string? GetSymbolUrl(ISymbol symbol, Compilation compilation, MemberLayout memberLayout, SymbolUrlKind urlKind, HashSet<IAssemblySymbol> allAssemblies, SymbolFilter filter)
     {
         // Reduce symbol into generic definitions
@@ -53,8 +57,8 @@ internal static partial class SymbolUrlResolver
             "!" => null,
             "N" or "T" => $"{VisitorHelper.PathFriendlyId(uid)}{ext}",
             "M" or "F" or "P" or "E" => memberLayout is MemberLayout.SeparatePages && !symbol.IsEnumMember()
-                ? $"{VisitorHelper.PathFriendlyId(VisitorHelper.GetOverloadId(symbol))}{ext}#{Regex.Replace(uid, @"\W", "_")}"
-                : $"{VisitorHelper.PathFriendlyId(VisitorHelper.GetId(symbol.ContainingType))}{ext}#{Regex.Replace(uid, @"\W", "_")}",
+                ? $"{VisitorHelper.PathFriendlyId(VisitorHelper.GetOverloadId(symbol))}{ext}#{NonWordCharRegex().Replace(uid, "_")}"
+                : $"{VisitorHelper.PathFriendlyId(VisitorHelper.GetId(symbol.ContainingType))}{ext}#{NonWordCharRegex().Replace(uid, "_")}",
             _ => throw new NotSupportedException($"Unknown comment ID format '{type}'"),
         };
     }

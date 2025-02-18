@@ -9,7 +9,7 @@ namespace Docfx.MarkdigEngine.Extensions;
 
 public partial class CodeSnippetExtractor
 {
-    [GeneratedRegex(@"^[\w\.-]+$", RegexOptions.IgnoreCase, "en-AU")]
+    [GeneratedRegex(@"^[\w\.-]+$", RegexOptions.IgnoreCase)]
     private static partial Regex TagnameFormat();
 
     private readonly string StartLineTemplate;

@@ -8,8 +8,11 @@ using System.Text.RegularExpressions;
 
 namespace Docfx.Build;
 
-struct HtmlTemplate
+partial struct HtmlTemplate
 {
+    [GeneratedRegex("(\\s+[a-zA-Z0-9_-]+)=([\"']){(\\d)}[\"']")]
+    private static partial Regex AttributePlaceholderRegex();
+
     private string? _html;
 
     public override string ToString() => _html ?? "";
@@ -18,7 +21,7 @@ struct HtmlTemplate
 
     public static HtmlTemplate Html(FormattableString template)
     {
-        var format = Regex.Replace(template.Format, "(\\s+[a-zA-Z0-9_-]+)=([\"']){(\\d)}[\"']", RenderAttribute);
+        var format = AttributePlaceholderRegex().Replace(template.Format, RenderAttribute);
         var html = string.Format(format, Array.ConvertAll(template.GetArguments(), Render));
         return new() { _html = html };
 

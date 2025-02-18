@@ -18,6 +18,10 @@ namespace Docfx.Dotnet;
 
 partial class DotnetApiCatalog
 {
+    // Regex to match any character other than a word character(alphabet/numeric/underscore)
+    [GeneratedRegex(@"\W")]
+    private static partial Regex NonWordCharRegex();
+
     private static void CreatePages(Action<string, string, ApiPage> output, List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
     {
         Directory.CreateDirectory(config.OutputFolder);
@@ -122,7 +126,7 @@ partial class DotnetApiCatalog
             void Api(int level, string title, ISymbol symbol, Compilation compilation)
             {
                 var uid = VisitorHelper.GetId(symbol);
-                var id = Regex.Replace(uid, @"\W", "_");
+                var id = NonWordCharRegex().Replace(uid, "_");
                 var commentId = VisitorHelper.GetCommentId(symbol);
                 var source = config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, compilation);
                 var git = source?.Remote is null ? null
