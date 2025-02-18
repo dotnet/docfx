@@ -48,6 +48,14 @@ internal class FileInformation
             case ".sln":
             case ".slnf":
                 return FileType.Solution;
+
+            case ".slnx":
+#if NET9_0_OR_GREATER
+                return FileType.Solution;
+#else
+                return FileType.NotSupported;
+#endif
+
             case ".csproj":
             case ".vbproj":
                 return FileType.Project;
