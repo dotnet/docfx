@@ -78,10 +78,9 @@ internal static partial class ParseTemplateHelper
         {
             file = regexPatternMatch.Groups[1].Value;
             var resourceKey = GetRelativeResourceKey(templateName, file);
-            var regex = new Regex(resourceKey, RegexOptions.IgnoreCase);
             foreach (var name in reader.Names)
             {
-                if (regex.IsMatch(name))
+                if (Regex.IsMatch(name, resourceKey, RegexOptions.IgnoreCase))
                 {
                     yield return name;
                 }
