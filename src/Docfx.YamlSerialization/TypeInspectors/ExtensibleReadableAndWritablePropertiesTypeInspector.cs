@@ -21,4 +21,10 @@ public sealed class ExtensibleReadableAndWritablePropertiesTypeInspector : Exten
 
     public override IPropertyDescriptor? GetProperty(Type type, object? container, string name) =>
         _innerTypeDescriptor.GetProperty(type, container, name);
+
+    public override string GetEnumName(Type enumType, string name) =>
+       _innerTypeDescriptor.GetEnumName(enumType, name);
+
+    public override string GetEnumValue(object enumValue) =>
+        _innerTypeDescriptor.GetEnumValue(enumValue);
 }

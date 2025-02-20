@@ -41,16 +41,16 @@
   },
   "devDependencies": {
     "@types/lunr": "^2.3.7",
-    "@typescript-eslint/eslint-plugin": "^8.18.0",
-    "@typescript-eslint/parser": "^8.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.24.1",
+    "@typescript-eslint/parser": "^8.24.1",
     "browser-sync": "^3.0.3",
-    "esbuild": "~0.24.0",
+    "esbuild": "~0.25.0",
     "esbuild-sass-plugin": "~3.3.1",
     "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
-    "stylelint": "^16.11.0",
+    "stylelint": "^16.14.1",
     "stylelint-config-standard-scss": "^14.0.0",
-    "typescript": "^5.7.2",
+    "typescript": "^5.7.3",
     "yargs": "^17.7.2"
   }
 }

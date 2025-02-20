@@ -38,6 +38,9 @@ internal partial class XmlComment
     [GeneratedRegex(@"^\s*<!--\s*</(.*)>\s*-->$")]
     private static partial Regex XmlEndRegionRegex();
 
+    [GeneratedRegex(@"^(\s*)&gt;", RegexOptions.Multiline)]
+    private static partial Regex BlockQuoteRegex();
+
     private readonly XmlCommentParserContext _context;
 
     public string Summary { get; private set; }
@@ -121,10 +124,6 @@ internal partial class XmlComment
         }
         try
         {
-            // Format xml with indentation.
-            // It's needed to fix issue (https://github.com/dotnet/docfx/issues/9736)
-            xml = XElement.Parse(xml).ToString(SaveOptions.None);
-
             return new XmlComment(xml, context ?? new());
         }
         catch (XmlException)
@@ -170,7 +169,8 @@ internal partial class XmlComment
 
             code.SetAttributeValue("class", $"lang-{lang}");
 
-            if (node.PreviousNode is null)
+            if (node.PreviousNode is null
+             || node.PreviousNode is XText xText && xText.Value == $"\n{indent}")
             {
                 // Xml writer formats <pre><code> with unintended identation
                 // when there is no preceeding text node.
@@ -603,7 +603,7 @@ internal partial class XmlComment
         {
             // > is encoded to &gt; in XML. When interpreted as markdown, > is as blockquote
             // Decode standalone &gt; to > to enable the block quote markdown syntax
-            return Regex.Replace(xml, @"^(\s*)&gt;", "$1>", RegexOptions.Multiline);
+            return BlockQuoteRegex().Replace(xml, "$1>");
         }
 
         static void MarkdownXmlDecode(MarkdownObject node)

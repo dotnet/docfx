@@ -752,6 +752,50 @@ references:
   fullName.vb: BuildFromProject.Inheritdoc.Issue8129.New
   nameWithType: Inheritdoc.Issue8129.Issue8129
   nameWithType.vb: Inheritdoc.Issue8129.New
+- uid: BuildFromProject.Inheritdoc.Issue9736
+  name: Inheritdoc.Issue9736
+  href: api/BuildFromProject.Inheritdoc.Issue9736.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue9736
+  fullName: BuildFromProject.Inheritdoc.Issue9736
+  nameWithType: Inheritdoc.Issue9736
+- uid: BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions
+  name: Inheritdoc.Issue9736.IJsonApiOptions
+  href: api/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions
+  fullName: BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions
+  nameWithType: Inheritdoc.Issue9736.IJsonApiOptions
+- uid: BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks
+  name: UseRelativeLinks
+  href: api/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html#BuildFromProject_Inheritdoc_Issue9736_IJsonApiOptions_UseRelativeLinks
+  commentId: P:BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks
+  fullName: BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks
+  nameWithType: Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks
+- uid: BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks*
+  name: UseRelativeLinks
+  href: api/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html#BuildFromProject_Inheritdoc_Issue9736_IJsonApiOptions_UseRelativeLinks_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks
+  nameWithType: Inheritdoc.Issue9736.IJsonApiOptions.UseRelativeLinks
+- uid: BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions
+  name: Inheritdoc.Issue9736.JsonApiOptions
+  href: api/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions
+  fullName: BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions
+  nameWithType: Inheritdoc.Issue9736.JsonApiOptions
+- uid: BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.UseRelativeLinks
+  name: UseRelativeLinks
+  href: api/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html#BuildFromProject_Inheritdoc_Issue9736_JsonApiOptions_UseRelativeLinks
+  commentId: P:BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.UseRelativeLinks
+  fullName: BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.UseRelativeLinks
+  nameWithType: Inheritdoc.Issue9736.JsonApiOptions.UseRelativeLinks
+- uid: BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.UseRelativeLinks*
+  name: UseRelativeLinks
+  href: api/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html#BuildFromProject_Inheritdoc_Issue9736_JsonApiOptions_UseRelativeLinks_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.UseRelativeLinks
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.UseRelativeLinks
+  nameWithType: Inheritdoc.Issue9736.JsonApiOptions.UseRelativeLinks
 - uid: BuildFromProject.Issue8540
   name: BuildFromProject.Issue8540
   href: api/BuildFromProject.Issue8540.html

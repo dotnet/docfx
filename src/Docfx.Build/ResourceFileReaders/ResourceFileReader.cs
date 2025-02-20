@@ -36,8 +36,7 @@ public abstract class ResourceFileReader
         {
             if (selector != null)
             {
-                var regex = new Regex(selector, RegexOptions.IgnoreCase);
-                return regex.IsMatch(s);
+                return Regex.IsMatch(s, selector, RegexOptions.IgnoreCase);
             }
             else
             {

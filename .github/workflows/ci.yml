@@ -49,7 +49,8 @@ jobs:
     - uses: codecov/codecov-action@v5
       if: matrix.os == 'ubuntu-latest'
       with:
-        fail_ci_if_error: true
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN }}
 
     - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
       if: matrix.os == 'ubuntu-latest'
