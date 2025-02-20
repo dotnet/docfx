@@ -124,10 +124,6 @@ internal partial class XmlComment
         }
         try
         {
-            // Format xml with indentation.
-            // It's needed to fix issue (https://github.com/dotnet/docfx/issues/9736)
-            xml = XElement.Parse(xml).ToString(SaveOptions.None);
-
             return new XmlComment(xml, context ?? new());
         }
         catch (XmlException)
@@ -173,7 +169,8 @@ internal partial class XmlComment
 
             code.SetAttributeValue("class", $"lang-{lang}");
 
-            if (node.PreviousNode is null)
+            if (node.PreviousNode is null
+             || node.PreviousNode is XText xText && xText.Value == $"\n{indent}")
             {
                 // Xml writer formats <pre><code> with unintended identation
                 // when there is no preceeding text node.
