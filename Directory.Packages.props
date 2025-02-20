@@ -22,7 +22,7 @@
     <PackageVersion Include="System.Composition" Version="9.0.2" />
     <PackageVersion Include="System.Formats.Asn1" Version="9.0.2" />
     <PackageVersion Include="System.Text.Json" Version="9.0.2" />
-    <PackageVersion Include="YamlDotNet" Version="15.3.0" />
+    <PackageVersion Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 
   <!-- .slnx solution format is supported Microsoft.Build 17.13.9 or later. -->
