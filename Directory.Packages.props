@@ -4,7 +4,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="HtmlAgilityPack" Version="1.11.72" />
+    <PackageVersion Include="HtmlAgilityPack" Version="1.11.73" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="9.0.0.7889" />
     <PackageVersion Include="Jint" Version="4.2.0" />
     <PackageVersion Include="JsonSchema.Net" Version="7.3.3" />
