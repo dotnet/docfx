@@ -18,14 +18,17 @@ public class MarkdigMarkdownService : IMarkdownService
 
     private readonly MarkdownServiceParameters _parameters;
     private readonly MarkdownContext _context;
-    private readonly Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> _configureMarkdig;
+
+    private readonly MarkdownPipeline markdownPipeline1; // isInline:true,  multipleYamlHeader:true
+    private readonly MarkdownPipeline markdownPipeline2; // isInline:true,  multipleYamlHeader:false
+    private readonly MarkdownPipeline markdownPipeline3; // isInline:false, multipleYamlHeader:true
+    private readonly MarkdownPipeline markdownPipeline4; // isInline:false, multipleYamlHeader:false
 
     public MarkdigMarkdownService(
         MarkdownServiceParameters parameters,
         Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> configureMarkdig = null)
     {
         _parameters = parameters;
-        _configureMarkdig = configureMarkdig;
         _context = new MarkdownContext(
             key => CollectionExtensions.GetValueOrDefault(_parameters.Tokens, key),
             (code, message, origin, line) => Logger.LogInfo(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
@@ -35,6 +38,11 @@ public class MarkdigMarkdownService : IMarkdownService
             ReadFile,
             GetLink,
             GetImageLink);
+
+        markdownPipeline1 = CreateMarkdownPipeline(configureMarkdig, true, true);
+        markdownPipeline2 = CreateMarkdownPipeline(configureMarkdig, true, false);
+        markdownPipeline3 = CreateMarkdownPipeline(configureMarkdig, false, true);
+        markdownPipeline4 = CreateMarkdownPipeline(configureMarkdig, false, false);
     }
 
     public MarkupResult Markup(string content, string filePath)
@@ -47,7 +55,7 @@ public class MarkdigMarkdownService : IMarkdownService
         ArgumentNullException.ThrowIfNull(content);
         ArgumentException.ThrowIfNullOrEmpty(filePath);
 
-        var pipeline = CreateMarkdownPipeline(isInline: false, multipleYamlHeader);
+        var pipeline = GetOrCreateMarkdownPipeline(isInline: false, multipleYamlHeader);
 
         using (InclusionContext.PushFile((RelativePath)filePath))
         {
@@ -73,7 +81,7 @@ public class MarkdigMarkdownService : IMarkdownService
             throw new ArgumentException("file path can't be null or empty.");
         }
 
-        var pipeline = CreateMarkdownPipeline(isInline);
+        var pipeline = GetOrCreateMarkdownPipeline(isInline);
 
         using (InclusionContext.PushFile((RelativePath)filePath))
         {
@@ -98,7 +106,7 @@ public class MarkdigMarkdownService : IMarkdownService
             throw new ArgumentNullException(nameof(document), "file path can't be found in AST.");
         }
 
-        var pipeline = CreateMarkdownPipeline(isInline);
+        var pipeline = GetOrCreateMarkdownPipeline(isInline);
 
         using (InclusionContext.PushFile((RelativePath)filePath))
         {
@@ -116,7 +124,18 @@ public class MarkdigMarkdownService : IMarkdownService
         }
     }
 
-    private MarkdownPipeline CreateMarkdownPipeline(bool isInline, bool multipleYamlHeader = false)
+    private MarkdownPipeline GetOrCreateMarkdownPipeline(bool isInline, bool multipleYamlHeader = false)
+    {
+        return isInline
+            ? multipleYamlHeader
+                ? markdownPipeline1  // isInline:true,  multipleYamlHeader:true
+                : markdownPipeline2  // isInline:true,  multipleYamlHeader:false
+            : multipleYamlHeader
+                ? markdownPipeline3  // isInline:false, multipleYamlHeader:true
+                : markdownPipeline4; // isInline:false, multipleYamlHeader:false
+    }
+
+    private MarkdownPipeline CreateMarkdownPipeline(Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> configureMarkdig, bool isInline, bool multipleYamlHeader)
     {
         var enableSourceInfo = _parameters?.Extensions?.EnableSourceInfo ?? true;
 
@@ -140,9 +159,9 @@ public class MarkdigMarkdownService : IMarkdownService
             builder.UseOptionalExtensions(extensions);
         }
 
-        if (_configureMarkdig != null)
+        if (configureMarkdig != null)
         {
-            builder = _configureMarkdig(builder);
+            builder = configureMarkdig(builder);
         }
 
         return builder.Build();
