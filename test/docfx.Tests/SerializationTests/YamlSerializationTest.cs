@@ -55,7 +55,7 @@ public partial class YamlSerializationTest
         newtownsoftJsonModel.Should().BeEquivalentTo(systemTextJsonModel, customAssertionOptions);
     }
 
-    private static EquivalencyAssertionOptions<T> customAssertionOptions<T>(EquivalencyAssertionOptions<T> opt)
+    private static EquivalencyOptions<T> customAssertionOptions<T>(EquivalencyOptions<T> opt)
     {
         // By default. JsonElement is compared by reference because JsonElement don't override Equals.
         return opt.ComparingByMembers<JsonElement>()
