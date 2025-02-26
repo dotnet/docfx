@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Formats.Asn1" />
     <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="ICSharpCode.Decompiler" />
     <PackageReference Include="OneOf" />
