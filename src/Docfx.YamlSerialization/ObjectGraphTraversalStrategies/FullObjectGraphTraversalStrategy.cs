@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
@@ -32,7 +33,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
     private readonly IObjectFactory _objectFactory;
 
     // private readonly Dictionary<Tuple<Type, Type>, Action<IPropertyDescriptor?, IObjectDescriptor, IObjectGraphVisitor, Type, Type, IObjectGraphVisitorContext, Stack<FullObjectGraphTraversalStrategy.ObjectPathSegment>, ObjectSerializer>> _behaviorCache = new();
-    private readonly Dictionary<Tuple<Type, Type, Type>, Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, INamingConvention, IObjectGraphVisitorContext, Stack<ObjectPathSegment>, ObjectSerializer>> _traverseGenericDictionaryCache = new();
+    private readonly ConcurrentDictionary<Tuple<Type, Type, Type>, Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, INamingConvention, IObjectGraphVisitorContext, Stack<ObjectPathSegment>, ObjectSerializer>> _traverseGenericDictionaryCache = new();
 
     protected YamlSerializer Serializer { get; }
 

@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Reflection.Emit;
 using Docfx.YamlSerialization.Helpers;
@@ -20,9 +21,9 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
     private readonly IObjectFactory _objectFactory;
     private readonly INamingConvention _enumNamingConvention;
     private readonly ITypeInspector _typeDescriptor;
-    private readonly Dictionary<Type, Type?> _gpCache =
+    private readonly ConcurrentDictionary<Type, Type?> _gpCache =
         new();
-    private readonly Dictionary<Type, Action<IParser, Type, Func<IParser, Type, object?>, object?, INamingConvention, ITypeInspector>> _actionCache =
+    private readonly ConcurrentDictionary<Type, Action<IParser, Type, Func<IParser, Type, object?>, object?, INamingConvention, ITypeInspector>> _actionCache =
         new();
 
     public EmitGenericCollectionNodeDeserializer(IObjectFactory objectFactory, INamingConvention enumNamingConvention, ITypeInspector typeDescriptor)

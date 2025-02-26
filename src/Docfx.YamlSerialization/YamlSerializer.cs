@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Concurrent;
 using Docfx.YamlSerialization.Helpers;
 using Docfx.YamlSerialization.ObjectDescriptors;
 using Docfx.YamlSerialization.ObjectGraphTraversalStrategies;
@@ -141,7 +142,7 @@ public class YamlSerializer
         {
             return new TypeAssigningEventEmitter(
                 writer,
-                new Dictionary<Type, TagName>(),
+                new ConcurrentDictionary<Type, TagName>(),
                 quoteNecessaryStrings: false,
                 quoteYaml1_1Strings: false,
                 defaultScalarStyle: ScalarStyle.Any,
