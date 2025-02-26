@@ -12,6 +12,8 @@ namespace docfx.Tests;
 
 public partial class YamlSerializationTest
 {
+    private static IDeserializer deserializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
+
     [Theory]
     [TestData<ApiPage>]
     public void YamlSerializationTest_ApiPage(string path)
@@ -29,9 +31,6 @@ public partial class YamlSerializationTest
     private static ApiPage LoadApiPage(string path)
     {
         path = PathHelper.ResolveTestDataPath(path);
-
-        var deserializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization()
-                                                    .Build();
 
         // 1. Deserialize ApiPage yaml as Dictionary
         // 2. Serialize to json
@@ -56,8 +55,6 @@ public partial class YamlSerializationTest
 
     private static string ToYaml(ApiPage model)
     {
-        var deserializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
-
         var json = JsonSerializer.Serialize(model, Docfx.Build.ApiPage.ApiPage.JsonSerializerOptions);
         var obj = deserializer.Deserialize(json);
 
@@ -68,7 +65,6 @@ public partial class YamlSerializationTest
 
     private static ApiPage ToApiPage(string yaml)
     {
-        var deserializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
         var dict = deserializer.Deserialize<Dictionary<object, object>>(new StringReader(yaml));
         var json = JsonSerializer.Serialize(dict);
         return JsonSerializer.Deserialize<ApiPage>(json, ApiPage.JsonSerializerOptions);

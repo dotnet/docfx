@@ -12,8 +12,8 @@ namespace Docfx.Common;
 
 public static class YamlUtility
 {
-    private static readonly ThreadLocal<YamlSerializer> serializer = new(() => new YamlSerializer(SerializationOptions.DisableAliases));
-    private static readonly ThreadLocal<YamlDeserializer> deserializer = new(() => new YamlDeserializer(ignoreUnmatched: true));
+    private static readonly YamlSerializer serializer = new(SerializationOptions.DisableAliases);
+    private static readonly YamlDeserializer deserializer = new(ignoreUnmatched: true);
 
     public static void Serialize(TextWriter writer, object graph)
     {
@@ -30,7 +30,7 @@ public static class YamlUtility
                 writer.WriteLine(comment.TrimEnd('\r'));
             }
         }
-        serializer.Value.Serialize(writer, graph);
+        serializer.Serialize(writer, graph);
     }
 
     public static void Serialize(string path, object graph, string comments)
@@ -41,7 +41,7 @@ public static class YamlUtility
 
     public static T Deserialize<T>(TextReader reader)
     {
-        return deserializer.Value.Deserialize<T>(reader);
+        return deserializer.Deserialize<T>(reader);
     }
 
     public static T Deserialize<T>(string path)
@@ -55,8 +55,8 @@ public static class YamlUtility
         var sb = new StringBuilder();
         using (var writer = new StringWriter(sb))
         {
-            serializer.Value.Serialize(writer, obj);
+            serializer.Serialize(writer, obj);
         }
-        return deserializer.Value.Deserialize<T>(new StringReader(sb.ToString()));
+        return deserializer.Deserialize<T>(new StringReader(sb.ToString()));
     }
 }
