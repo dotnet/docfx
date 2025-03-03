@@ -111,7 +111,7 @@ public class CodeSnippet : LeafBlock
 
     public string GetHighlightLinesString()
     {
-        if (HighlightRanges != null && HighlightRanges.Any())
+        if (HighlightRanges != null && HighlightRanges.Count != 0)
         {
             return string.Join(',', HighlightRanges.Select(highlight =>
             {

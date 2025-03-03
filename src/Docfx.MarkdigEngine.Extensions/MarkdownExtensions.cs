@@ -59,7 +59,7 @@ public static class MarkdownExtensions
         this MarkdownPipelineBuilder pipeline,
         MarkdigExtensionSetting[] optionalExtensions)
     {
-        if (!optionalExtensions.Any())
+        if (optionalExtensions.Length == 0)
         {
             return pipeline;
         }
