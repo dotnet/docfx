@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows:
       - ci
+      - nightly
     types:
       - completed
 

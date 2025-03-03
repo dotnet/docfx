@@ -2,7 +2,6 @@
   <ItemGroup>
     <PackageReference Include="Markdig" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="System.Collections.Immutable" />
   </ItemGroup>
 
   <ItemGroup>
