@@ -8,7 +8,7 @@ using Docfx.Build.Common;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
-
+using YamlDotNet.Serialization;
 namespace Docfx.Build.TableOfContents;
 
 [Export(nameof(TocDocumentProcessor), typeof(IDocumentBuildStep))]
@@ -24,14 +24,36 @@ class BuildTocDocument : BaseDocumentBuildStep
     /// </summary>
     public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
     {
+
+        if (!models.Any())
+        {
+            return TocHelper.ResolveToc(models.ToImmutableList());
+        }
+
+        // Keep auto toc agnostic to the toc file naming convention.
+        var tocFileName = models.First().Key.Split('/').Last();
+        var tocModels = models.OrderBy(f => f.File.Split('/').Count());
+        var pathToToc = new Dictionary<string, TocItemViewModel>();
+        models.ForEach(model =>
+        {
+            pathToToc.Add(model.Key.Replace("\\", "/").Replace("/" + tocFileName, string.Empty), (TocItemViewModel)model.Content);
+        });
+
+        // The list of models would contain all toc.yml including ones that are outside docfx base directory.
+        // we filter to exclude auto toc for those outside the base directory (will learn the reasoning behind this from yufei).
+        var rootTocModel = tocModels.Where(m =>
+            !m.LocalPathFromRoot.Contains("..")).OrderBy(f => f.LocalPathFromRoot.Split('/').Count()).First();
+        var tocForRoot = (TocItemViewModel)rootTocModel.Content;
+        if (tocForRoot != null && tocForRoot.Auto.HasValue && tocForRoot.Auto.Value)
+        {
+            TocHelper.PopulateToc(rootTocModel, host, pathToToc);
+        }
         return TocHelper.ResolveToc(models);
     }
 
     public override void Build(FileModel model, IHostService host)
     {
-        var toc = (TocItemViewModel)model.Content;
-        TocRestructureUtility.Restructure(toc, host.TableOfContentRestructions);
-        BuildCore(toc, model);
+        TocRestructureUtility.Restructure((TocItemViewModel)model.Content, host.TableOfContentRestructions);
         // todo : metadata.
     }
 

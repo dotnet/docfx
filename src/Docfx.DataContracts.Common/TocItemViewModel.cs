@@ -12,6 +12,11 @@ namespace Docfx.DataContracts.Common;
 
 public class TocItemViewModel
 {
+    [YamlMember(Alias = Constants.PropertyName.Auto)]
+    [JsonProperty(Constants.PropertyName.Auto)]
+    [JsonPropertyName(Constants.PropertyName.Auto)]
+    public bool? Auto { get; set; }
+
     [YamlMember(Alias = Constants.PropertyName.Uid)]
     [JsonProperty(Constants.PropertyName.Uid)]
     [JsonPropertyName(Constants.PropertyName.Uid)]
