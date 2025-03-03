@@ -26,9 +26,12 @@ attributeRules:
 - exclude:
     uidRegex: ^System\.EnterpriseServices$
     type: Namespace
+- include:
+    uidRegex: ^System\.Diagnostics\.CodeAnalysis\.(ExperimentalAttribute)$
+    type: Type
 - exclude:
     uidRegex: ^System\.Diagnostics\.CodeAnalysis$
-    type: Namespace
+    type: Type
 - include:
     uidRegex: ^System\.Diagnostics\.(ConditionalAttribute|EventLogPermissionAttribute|PerformanceCounterPermissionAttribute)$
     type: Type
