@@ -5,7 +5,6 @@ using System.Xml.Linq;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 using Xunit;
-using Xunit.Abstractions;
 using DocumentType = Docfx.DataContracts.Common.Constants.DocumentType;
 
 namespace Docfx.Build.Engine.Tests;
@@ -13,13 +12,6 @@ namespace Docfx.Build.Engine.Tests;
 [Collection("docfx STA")]
 public class SitemapGeneratorTests : TestBase
 {
-    private readonly ITestOutputHelper _output;
-
-    public SitemapGeneratorTests(ITestOutputHelper output)
-    {
-        _output = output;
-    }
-
     public override void Dispose()
     {
         base.Dispose();
