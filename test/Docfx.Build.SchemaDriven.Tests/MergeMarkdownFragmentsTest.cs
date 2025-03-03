@@ -44,7 +44,7 @@ public class MergeMarkdownFragmentsTest : TestBase
     }
 
     [Fact]
-    void TestMergeMarkdownFragments()
+    public void TestMergeMarkdownFragments()
     {
         // Arrange
         CreateFile("Suppressions.yml.md", File.ReadAllText("TestData/inputs/Suppressions.yml.md"), _inputFolder);
