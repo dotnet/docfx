@@ -53,7 +53,7 @@ internal partial class MarkdigExtensionSettingConverter
             if (value == null)
                 return;
 
-            var model = (MarkdigExtensionSetting)value;
+            var model = value;
 
             if (model.Options == null || !model.Options.HasValue)
             {
