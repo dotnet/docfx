@@ -21,7 +21,7 @@ public class MarkdownFragmentsValidationTest : TestBase
     private TemplateManager _templateManager;
     private FileCollection _files;
 
-    private TestLoggerListener _listener = new();
+    private readonly TestLoggerListener _listener = new();
     private string _rawModelFilePath;
 
     private const string RawModelFileExtension = ".raw.json";
