@@ -87,7 +87,7 @@ public class GlobFileTest : TestBase
         foreach (var i in items)
         {
             var item = cwd + "/" + i;
-            if (item.EndsWith("/"))
+            if (item.EndsWith('/'))
             {
                 Directory.CreateDirectory(item);
             }
