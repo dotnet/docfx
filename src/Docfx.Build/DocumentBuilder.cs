@@ -146,7 +146,7 @@ public sealed class DocumentBuilder : IDisposable
             .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
             .Create();
 
-        _postProcessorsManager.Process(generatedManifest, outputDirectory);
+        _postProcessorsManager.Process(generatedManifest, outputDirectory, cancellationToken);
 
         generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
 

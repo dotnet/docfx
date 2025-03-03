@@ -221,7 +221,7 @@ static class PdfBuilder
 
             async Task<byte[]> PrintHeaderFooterCore()
             {
-                await pageLimiter.WaitAsync();
+                await pageLimiter.WaitAsync(cancellationToken);
                 var page = pagePool.TryTake(out var pooled) ? pooled : await context.NewPageAsync();
 
                 try
