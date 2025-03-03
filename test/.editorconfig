@@ -5,4 +5,6 @@ root = false
 csharp_style_unused_value_expression_statement_preference = discard_variable:silent # IDE0058: Remove unnecessary expression value
 csharp_style_unused_value_assignment_preference           = discard_variable:silent # IDE0059: Remove unnecessary value assignment
 
+dotnet_diagnostic.CA1816.severity = none # CA1816: Call GC.SuppressFinalize correctly
+
 dotnet_diagnostic.SYSLIB1045.severity = silent  # SYSLIB1045: Convert to 'GeneratedRegexAttribute'.
