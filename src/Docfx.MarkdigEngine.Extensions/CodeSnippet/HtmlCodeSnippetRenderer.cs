@@ -418,20 +418,6 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         return sb.ToString();
     }
 
-    private static bool IsLineInRange(int lineNumber, List<CodeRange> allCodeRanges)
-    {
-        if (allCodeRanges.Count == 0) return true;
-
-        for (int rangeNumber = 0; rangeNumber < allCodeRanges.Count; rangeNumber++)
-        {
-            var range = allCodeRanges[rangeNumber];
-            if (lineNumber >= range.Start && lineNumber <= range.End)
-                return true;
-        }
-
-        return false;
-    }
-
     private string GetWarning()
     {
         var warningTitle = _context.GetToken(WarningTitleId) ?? DefaultWarningTitle;
