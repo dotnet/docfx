@@ -163,7 +163,7 @@ public static class TocHelper
     internal static void PopulateToc(FileModel model, IEnumerable<string> sourceFiles, Dictionary<string, TocItemViewModel> pathToToc)
     {
         var toc = ((TocItemViewModel)model.Content);
-        if (toc != null && toc.Auto.HasValue && toc.Auto.Value)
+        if (!(toc != null && toc.Auto.HasValue && toc.Auto.Value))
         {
             Logger.LogInfo($"auto value is not set to true in {model.File}. skipping toc auto gen.");
             return;
