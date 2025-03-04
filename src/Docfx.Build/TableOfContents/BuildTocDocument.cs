@@ -8,7 +8,6 @@ using Docfx.Build.Common;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
-using YamlDotNet.Serialization;
 namespace Docfx.Build.TableOfContents;
 
 [Export(nameof(TocDocumentProcessor), typeof(IDocumentBuildStep))]
@@ -40,13 +39,15 @@ class BuildTocDocument : BaseDocumentBuildStep
         });
 
         // The list of models would contain all toc.yml including ones that are outside docfx base directory.
-        // we filter to exclude auto toc for those outside the base directory.
+        // Filter get the root toc
         var rootTocModel = tocModels.Where(m =>
             !m.LocalPathFromRoot.Contains("..")).OrderBy(f => f.LocalPathFromRoot.Split('/').Count()).First();
-        var tocForRoot = (TocItemViewModel)rootTocModel.Content;
-        if (tocForRoot != null && tocForRoot.Auto.HasValue && tocForRoot.Auto.Value)
+
+        // If there is no toc along side docfx.json, skip tocgen - validate behavior with yuefi
+        if (rootTocModel.LocalPathFromRoot.Equals(tocFileName))
         {
             TocHelper.PopulateToc(rootTocModel, host.SourceFiles.Keys, pathToToc);
+            Logger.LogInfo($"toc autogen complete.");
         }
         return TocHelper.ResolveToc(models);
     }

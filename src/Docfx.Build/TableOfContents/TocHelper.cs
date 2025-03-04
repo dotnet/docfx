@@ -120,6 +120,7 @@ public static class TocHelper
         {
             // This is an existing behavior, href: ~/foldername/ doesnot work, but href: ./foldername/ does.
             //var folderToProcessSanitized = currentFolderPath.Replace("~", ".") + "/";
+            // validate this behavior with yuefi
             var parentTocFolder = currentFolderPath.Substring(0, idx);
             TocItemViewModel parentToc;
             while (!pathToToc.TryGetValue(parentTocFolder, out parentToc))
@@ -162,9 +163,15 @@ public static class TocHelper
     internal static void PopulateToc(FileModel model, IEnumerable<string> sourceFiles, Dictionary<string, TocItemViewModel> pathToToc)
     {
         var toc = ((TocItemViewModel)model.Content);
+        if (toc != null && toc.Auto.HasValue && toc.Auto.Value)
+        {
+            Logger.LogInfo($"auto value is not set to true in {model.File}. skipping toc auto gen.");
+            return;
+        }
         var tocFileName = model.Key.Split('/').Last();
         var folderPathForModel = Path.GetDirectoryName(model.Key).Replace("\\", "/");
 
+        // We need to omit the files that are outside the docfx base directory.
         var fileNames = sourceFiles
             .Where(s => !Path.GetRelativePath(folderPathForModel, s).Contains("..") && !s.EndsWith(tocFileName))
             .Select(p => p.Replace("\\", "/"))
