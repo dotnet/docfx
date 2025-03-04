@@ -13,7 +13,7 @@ internal class CustomEqualityEquivalencyStep : IEquivalencyStep
     public EquivalencyResult Handle(
         Comparands comparands,
         IEquivalencyValidationContext context,
-        IEquivalencyValidator nestedValidator)
+        IValidateChildNodeEquivalency nestedValidator)
     {
         if (comparands.Subject is null || comparands.Expectation is null)
             return EquivalencyResult.ContinueWithNext;

@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -16,15 +17,15 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
     private static readonly MethodInfo DeserializeHelperMethod =
         typeof(EmitGenericDictionaryNodeDeserializer).GetMethod(nameof(DeserializeHelper))!;
     private readonly IObjectFactory _objectFactory;
-    private readonly Dictionary<Type, Type[]?> _gpCache = [];
-    private readonly Dictionary<Tuple<Type, Type>, Action<IParser, Type, Func<IParser, Type, object?>, object?>> _actionCache = [];
+    private readonly ConcurrentDictionary<Type, Type[]?> _gpCache = [];
+    private readonly ConcurrentDictionary<Tuple<Type, Type>, Action<IParser, Type, Func<IParser, Type, object?>, object?>> _actionCache = [];
 
     public EmitGenericDictionaryNodeDeserializer(IObjectFactory objectFactory)
     {
         _objectFactory = objectFactory;
     }
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
+    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value, ObjectDeserializer rootDeserializer)
     {
         if (!_gpCache.TryGetValue(expectedType, out var gp))
         {

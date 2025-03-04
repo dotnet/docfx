@@ -306,6 +306,39 @@
           "leaf": true
         },
         {
+          "name": "Inheritdoc.Issue9736",
+          "href": "BuildFromProject.Inheritdoc.Issue9736.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue9736.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue9736",
+          "type": "Class",
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc.Issue9736.IJsonApiOptions",
+          "href": "BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions",
+          "type": "Interface",
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc.Issue9736.JsonApiOptions",
+          "href": "BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions",
+          "type": "Class",
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "Issue8725",
           "href": "BuildFromProject.Issue8725.html",
           "topicHref": "BuildFromProject.Issue8725.html",

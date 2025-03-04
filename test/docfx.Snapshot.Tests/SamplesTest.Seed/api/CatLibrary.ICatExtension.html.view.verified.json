@@ -612,7 +612,7 @@
     ],
     "level": 0
   },
-  "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">It's the class that contains ICat interface's extension method.</p>\n<p>This class must be <b>public</b> and <b>static</b>.</p><p>Also it shouldn't be a geneic class</p>\n",
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">It's the class that contains ICat interface's extension method.</p>\n<p>This class must be <b>public</b> and <b>static</b>.</p>\n<p>Also it shouldn't be a geneic class</p>\n",
   "example": [],
   "syntax": {
     "content": [
@@ -1041,7 +1041,7 @@
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension.md&value=---%0Auid%3A%20CatLibrary.ICatExtension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
   "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L333",
-  "description": "It's the class that contains ICat interface's extension method. This class must be public and static.Also it shouldn't be a geneic class",
+  "description": "It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class",
   "remarks": "",
   "conceptual": "",
   "implements": "",

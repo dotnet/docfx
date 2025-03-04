@@ -10,6 +10,7 @@ import { get, set, createStore } from 'idb-keyval'
 type SearchHit = {
   href: string
   title: string
+  summary: string
   keywords: string
 }
 
@@ -47,7 +48,8 @@ async function loadIndex({ lunrLanguages }: { lunrLanguages?: string[] }) {
 
       this.ref('href')
       this.field('title', { boost: 50 })
-      this.field('keywords', { boost: 20 })
+      this.field('keywords', { boost: 40 })
+      this.field('summary', { boost: 20 })
 
       if (lunrLanguages && lunrLanguages.length > 0) {
         this.use(lunr.multiLanguage(...lunrLanguages))

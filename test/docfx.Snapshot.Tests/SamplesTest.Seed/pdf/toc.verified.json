@@ -252,6 +252,27 @@
               "type": "Struct"
             },
             {
+              "name": "Inheritdoc.Issue9736",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue9736.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue9736.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue9736",
+              "type": "Class"
+            },
+            {
+              "name": "Inheritdoc.Issue9736.IJsonApiOptions",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions",
+              "type": "Interface"
+            },
+            {
+              "name": "Inheritdoc.Issue9736.JsonApiOptions",
+              "href": "../api/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html",
+              "topicHref": "../api/BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.html",
+              "topicUid": "BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions",
+              "type": "Class"
+            },
+            {
               "name": "Issue8725",
               "href": "../api/BuildFromProject.Issue8725.html",
               "topicHref": "../api/BuildFromProject.Issue8725.html",

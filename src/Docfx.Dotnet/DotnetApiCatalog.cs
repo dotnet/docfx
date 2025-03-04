@@ -15,6 +15,8 @@ namespace Docfx.Dotnet;
 /// </summary>
 public static partial class DotnetApiCatalog
 {
+    private static IDeserializer deserializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
+
     /// <summary>
     /// Generates metadata reference YAML files using docfx.json config.
     /// </summary>
@@ -96,13 +98,12 @@ public static partial class DotnetApiCatalog
                     break;
 
                 case MetadataOutputFormat.ApiPage:
-                    var serializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
                     CreatePages(WriteYaml, assemblies, config, options);
 
                     void WriteYaml(string outputFolder, string id, Build.ApiPage.ApiPage apiPage)
                     {
                         var json = JsonSerializer.Serialize(apiPage, Docfx.Build.ApiPage.ApiPage.JsonSerializerOptions);
-                        var obj = serializer.Deserialize(json);
+                        var obj = deserializer.Deserialize(json);
                         YamlUtility.Serialize(Path.Combine(outputFolder, $"{id}.yml"), obj, "YamlMime:ApiPage");
                     }
                     break;
