@@ -159,13 +159,13 @@ public static class TocHelper
         }
     }
 
-    internal static void PopulateToc(FileModel model, IHostService host, Dictionary<string, TocItemViewModel> pathToToc)
+    internal static void PopulateToc(FileModel model, IEnumerable<string> sourceFiles, Dictionary<string, TocItemViewModel> pathToToc)
     {
         var toc = ((TocItemViewModel)model.Content);
         var tocFileName = model.Key.Split('/').Last();
         var folderPathForModel = Path.GetDirectoryName(model.Key).Replace("\\", "/");
 
-        var fileNames = host.SourceFiles.Keys
+        var fileNames = sourceFiles
             .Where(s => !Path.GetRelativePath(folderPathForModel, s).Contains("..") && !s.EndsWith(tocFileName))
             .Select(p => p.Replace("\\", "/"))
             .OrderBy(f => f.Split('/').Count());

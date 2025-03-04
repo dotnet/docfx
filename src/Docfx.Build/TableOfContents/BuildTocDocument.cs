@@ -40,20 +40,22 @@ class BuildTocDocument : BaseDocumentBuildStep
         });
 
         // The list of models would contain all toc.yml including ones that are outside docfx base directory.
-        // we filter to exclude auto toc for those outside the base directory (will learn the reasoning behind this from yufei).
+        // we filter to exclude auto toc for those outside the base directory.
         var rootTocModel = tocModels.Where(m =>
             !m.LocalPathFromRoot.Contains("..")).OrderBy(f => f.LocalPathFromRoot.Split('/').Count()).First();
         var tocForRoot = (TocItemViewModel)rootTocModel.Content;
         if (tocForRoot != null && tocForRoot.Auto.HasValue && tocForRoot.Auto.Value)
         {
-            TocHelper.PopulateToc(rootTocModel, host, pathToToc);
+            TocHelper.PopulateToc(rootTocModel, host.SourceFiles.Keys, pathToToc);
         }
         return TocHelper.ResolveToc(models);
     }
 
     public override void Build(FileModel model, IHostService host)
     {
-        TocRestructureUtility.Restructure((TocItemViewModel)model.Content, host.TableOfContentRestructions);
+        var toc = (TocItemViewModel)model.Content;
+        TocRestructureUtility.Restructure(toc, host.TableOfContentRestructions);
+        BuildCore(toc, model);
         // todo : metadata.
     }
 
