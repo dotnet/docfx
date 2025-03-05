@@ -113,7 +113,7 @@ public static class TocHelper
         return (folderHasToc, tocItem);
     }
 
-    private static void LinkToParentToc(Dictionary<string, TocItemViewModel> pathToToc, string currentFolderPath, TocItemViewModel tocItem, HashSet<string> virtualTocPaths, bool folderHasToc)
+    private static void LinkToParentToc(Dictionary<string, TocItemViewModel> tocCache, string currentFolderPath, TocItemViewModel tocItem, HashSet<string> virtualTocPaths, bool folderHasToc)
     {
         int idx = currentFolderPath.LastIndexOf('/');
         if (idx != -1 && !currentFolderPath.EndsWith(".."))
@@ -123,7 +123,7 @@ public static class TocHelper
             // validate this behavior with yuefi
             var parentTocFolder = currentFolderPath.Substring(0, idx);
             TocItemViewModel parentToc;
-            while (!pathToToc.TryGetValue(parentTocFolder, out parentToc))
+            while (!tocCache.TryGetValue(parentTocFolder, out parentToc))
             {
                 idx = parentTocFolder.LastIndexOf('/');
                 parentTocFolder = currentFolderPath.Substring(0, idx);
@@ -160,19 +160,19 @@ public static class TocHelper
         }
     }
 
-    internal static void PopulateToc(FileModel model, IEnumerable<string> sourceFiles, Dictionary<string, TocItemViewModel> pathToToc)
+    internal static void PopulateToc(FileModel rootTocFileModel, IEnumerable<string> sourceFilePaths, Dictionary<string, TocItemViewModel> tocCache)
     {
-        var toc = ((TocItemViewModel)model.Content);
+        var toc = ((TocItemViewModel)rootTocFileModel.Content);
         if (!(toc != null && toc.Auto.HasValue && toc.Auto.Value))
         {
-            Logger.LogInfo($"auto value is not set to true in {model.File}. skipping toc auto gen.");
+            Logger.LogInfo($"auto value is not set to true in {rootTocFileModel.File}. skipping toc auto gen.");
             return;
         }
-        var tocFileName = model.Key.Split('/').Last();
-        var folderPathForModel = Path.GetDirectoryName(model.Key).Replace("\\", "/");
+        var tocFileName = rootTocFileModel.Key.Split('/').Last();
+        var folderPathForModel = Path.GetDirectoryName(rootTocFileModel.Key).Replace("\\", "/");
 
-        // We need to omit the files that are outside the docfx base directory.
-        var fileNames = sourceFiles
+        // Omit the files that are outside the docfx base directory.
+        var fileNames = sourceFilePaths
             .Where(s => !Path.GetRelativePath(folderPathForModel, s).Contains("..") && !s.EndsWith(tocFileName))
             .Select(p => p.Replace("\\", "/"))
             .OrderBy(f => f.Split('/').Count());
@@ -183,14 +183,14 @@ public static class TocHelper
             var folderToProcess = Path.GetDirectoryName(filePath).Replace("\\", "/");
 
             // If the folder has a toc available use it.
-            var (folderHasToc, tocToProcess) = TryGetOrCreateToc(pathToToc, folderToProcess, virtualTocs);
+            var (folderHasToc, tocToProcess) = TryGetOrCreateToc(tocCache, folderToProcess, virtualTocs);
 
             // Link the toc we are processing, back to a parent.
             // Look for a toc one level up until we find the root toc.
-            LinkToParentToc(pathToToc, folderToProcess, tocToProcess, virtualTocs, folderHasToc);
+            LinkToParentToc(tocCache, folderToProcess, tocToProcess, virtualTocs, folderHasToc);
 
             // If the toc we currently processed didnot have auto enabled.
-            // There is no need to populate the toc, just return.
+            // There is no need to populate the toc, move on.
             if (tocToProcess.Auto.HasValue && !tocToProcess.Auto.Value)
             {
                 continue;

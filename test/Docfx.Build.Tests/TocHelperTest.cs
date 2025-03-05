@@ -1,105 +1,476 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
+using Docfx.Tests.Common;
 using Xunit;
 
 namespace Docfx.Build.TableOfContents;
 
 [Collection("docfx STA")]
-public class TocHelperTests
+public class TocHelperTest: TestBase
 {
+
+    private readonly string _inputFolder;
+    private readonly string _outputFolder;
+    private readonly string _templateFolder;
+    private TestLoggerListener Listener { get; set; }
+
+    public TocHelperTest()
+    {
+        _inputFolder = GetRandomFolder();
+        _outputFolder = GetRandomFolder();
+        _templateFolder = GetRandomFolder();
+        EnvironmentContext.SetBaseDirectory(Directory.GetCurrentDirectory());
+        EnvironmentContext.SetOutputDirectory(_outputFolder);
+    }
+
+    public override void Dispose()
+    {
+        EnvironmentContext.Clean();
+        base.Dispose();
+    }
+
     [Fact]
     public void PopulateToc_ShouldPopulateTocItems()
     {
+
         // Arrange
-        var fileAndType = new FileAndType("D:\\code\\docfx\\samples\\seed", "toc.yml", DocumentType.Article);
-        var model = new FileModel(fileAndType, new TocItemViewModel(), null);
-        var sourceFiles = new List<string>
-            {
-                "folder1/file1.md",
-                "folder1/file2.md",
-                "folder2/file3.md"
-            };
-        var pathToToc = new Dictionary<string, TocItemViewModel>();
+        var tocFileRoot = CreateFile("toc.yml",
+            """
+            auto: true
+            """,
+            _inputFolder);
+        var conceptualFile = CreateFile("index.md",
+            string.Empty,
+            _inputFolder);
+        var tocFileFolderA = CreateFile("foldera/toc.yml",
+            """
+            auto: true
+            """,
+            _inputFolder);
+        var conceptualFile2 = CreateFile("foldera/index.md",
+            string.Empty,
+            _inputFolder);
+        var tocFileFolderB = CreateFile("foldera/folderb/toc.yml",
+            """
+            auto: true
+            """,
+            _inputFolder);
+        var conceptualFile3 = CreateFile("foldera/folderb/index.md",
+            string.Empty,
+            _inputFolder);
+
+        var files = Directory.GetFiles(_inputFolder, "*.*",  SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/")) ;
+        var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
+        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
+        var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
+        var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
+        Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
+        tocCache.Add(tocFileRoot.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), rootTocModel);
+        tocCache.Add(tocFileFolderA.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderAModel);
+        tocCache.Add(tocFileFolderB.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderBModel);
 
         // Act
-        TocHelper.PopulateToc(model, sourceFiles, pathToToc);
+        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
 
         // Assert
-        Assert.NotNull(pathToToc);
-        Assert.Equal(2, pathToToc.Count);
-        Assert.Contains("folder1", pathToToc.Keys);
-        Assert.Contains("folder2", pathToToc.Keys);
+        var expectedRootTocModel = new TocItemViewModel()
+        {
+            Auto = true,
 
-        var folder1Toc = pathToToc["folder1"];
-        Assert.NotNull(folder1Toc.Items);
-        Assert.Equal(2, folder1Toc.Items.Count);
-        Assert.Contains(folder1Toc.Items, i => i.Href == "folder1/file1.md");
-        Assert.Contains(folder1Toc.Items, i => i.Href == "folder1/file2.md");
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "index",
+                    Href = "~/index.md"
+                },
+                new TocItemViewModel()
+                {
+                    Name = "foldera",
+                    Href = "./foldera/"
+                }
+            }
+        };
 
-        var folder2Toc = pathToToc["folder2"];
-        Assert.NotNull(folder2Toc.Items);
-        Assert.Single(folder2Toc.Items);
-        Assert.Contains(folder2Toc.Items, i => i.Href == "folder2/file3.md");
+        var expectedTocFolderAModel = new TocItemViewModel()
+        {
+            Auto = true,
+
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "index",
+                    Href = "~/foldera/index.md"
+                },
+                new TocItemViewModel()
+                {
+                    Name = "folderb",
+                    Href = "./folderb/"
+                }
+            }
+        };
+
+        var expectedTocFolderBModel = new TocItemViewModel()
+        {
+            Auto = true,
+
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "index",
+                    Href = "~/foldera/folderb/index.md"
+                }
+            }
+        };
+
+        AssertTocEqual(expectedRootTocModel, rootTocModel);
+        AssertTocEqual(expectedTocFolderAModel, tocFolderAModel);
+        AssertTocEqual(expectedTocFolderBModel, tocFolderBModel);
     }
 
     [Fact]
-    public void PopulateToc_ShouldNotPopulateWhenAutoIsDisabled()
+    public void PopulateToc_ShouldNotPopulateToc_WhenAutoIsFalse()
     {
+
         // Arrange
-        var model = new FileModel(new FileAndType("test", "toc.yml", DocumentType.Article), new TocItemViewModel(), null);
-        var sourceFiles = new List<string>
-            {
-                "folder1/file1.md",
-                "folder1/file2.md"
-            };
-        var pathToToc = new Dictionary<string, TocItemViewModel>
-            {
-                { "folder1", new TocItemViewModel { Auto = false } }
-            };
+        var tocFileRoot = CreateFile("toc.yml",
+            """
+            auto: false
+            """,
+            _inputFolder);
+
+        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
+        var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
+        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
+        Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
+        tocCache.Add(tocFileRoot.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), rootTocModel);
 
         // Act
-        TocHelper.PopulateToc(model, sourceFiles, pathToToc);
+        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
 
         // Assert
-        var folder1Toc = pathToToc["folder1"];
-        Assert.NotNull(folder1Toc.Items);
-        Assert.Empty(folder1Toc.Items);
+        var expectedRootTocModel = new TocItemViewModel()
+        {
+            Auto = false
+        };
+
+        AssertTocEqual(expectedRootTocModel, rootTocModel);
+    }
+
+
+    [Fact]
+    public void PopulateToc_ShouldNotPopulate_AutoIsFalseForSubFolder()
+    {
+
+        // Arrange
+        // Arrange
+        var tocFileRoot = CreateFile("toc.yml",
+            """
+            auto: true
+            """,
+            _inputFolder);
+        var conceptualFile = CreateFile("index.md",
+            string.Empty,
+            _inputFolder);
+        var tocFileFolderA = CreateFile("foldera/toc.yml",
+            """
+            auto: true
+            """,
+            _inputFolder);
+        var conceptualFile2 = CreateFile("foldera/index.md",
+            string.Empty,
+            _inputFolder);
+        var tocFileFolderB = CreateFile("foldera/folderb/toc.yml",
+            """
+            auto: false
+            """,
+            _inputFolder);
+
+        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
+        var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
+        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
+        var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
+        var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
+        Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
+        tocCache.Add(tocFileRoot.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), rootTocModel);
+        tocCache.Add(tocFileFolderA.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderAModel);
+        tocCache.Add(tocFileFolderB.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderBModel);
+
+        // Act
+        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
+
+        // Assert
+        var expectedRootTocModel = new TocItemViewModel()
+        {
+            Auto = true,
+
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "index",
+                    Href = "~/index.md"
+                },
+                new TocItemViewModel()
+                {
+                    Name = "foldera",
+                    Href = "./foldera/"
+                }
+            }
+        };
+
+        var expectedTocFolderAModel = new TocItemViewModel()
+        {
+            Auto = true,
+
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "index",
+                    Href = "~/foldera/index.md"
+                }
+            }
+        };
+
+        var expectedTocFolderBModel = new TocItemViewModel()
+        {
+            Auto = false,
+        };
+
+        AssertTocEqual(expectedRootTocModel, rootTocModel);
+        AssertTocEqual(expectedTocFolderAModel, tocFolderAModel);
+        AssertTocEqual(expectedTocFolderBModel, tocFolderBModel);
+    }
+
+
+    [Fact]
+    public void PopulateToc_ShouldNotOverrideExisting_FileHrefs()
+    {
+
+        // Arrange
+        var tocFileRoot = CreateFile("toc.yml",
+            """
+            auto: true
+            items:
+            - name: overrideindex
+              href: index.md
+            """,
+            _inputFolder);
+        var conceptualFile = CreateFile("index.md",
+            string.Empty,
+            _inputFolder);
+        var tocFileFolderA = CreateFile("foldera/toc.yml",
+            """
+            auto: true
+            """,
+            _inputFolder);
+        var conceptualFile2 = CreateFile("foldera/index.md",
+            string.Empty,
+            _inputFolder);
+        var tocFileFolderB = CreateFile("foldera/folderb/toc.yml",
+            """
+            auto: true
+            """,
+            _inputFolder);
+        var conceptualFile3 = CreateFile("foldera/folderb/index.md",
+            string.Empty,
+            _inputFolder);
+
+        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
+        var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
+        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
+        var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
+        var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
+        Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
+        tocCache.Add(tocFileRoot.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), rootTocModel);
+        tocCache.Add(tocFileFolderA.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderAModel);
+        tocCache.Add(tocFileFolderB.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderBModel);
+
+        // Act
+        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
+
+        // Assert
+        var expectedRootTocModel = new TocItemViewModel()
+        {
+            Auto = true,
+
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "overrideindex",
+                    Href = "index.md"
+                },
+                new TocItemViewModel()
+                {
+                    Name = "foldera",
+                    Href = "./foldera/"
+                }
+            }
+        };
+
+        var expectedTocFolderAModel = new TocItemViewModel()
+        {
+            Auto = true,
+
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "index",
+                    Href = "~/foldera/index.md"
+                },
+                new TocItemViewModel()
+                {
+                    Name = "folderb",
+                    Href = "./folderb/"
+                }
+            }
+        };
+
+        var expectedTocFolderBModel = new TocItemViewModel()
+        {
+            Auto = true,
+
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "index",
+                    Href = "~/foldera/folderb/index.md"
+                }
+            }
+        };
+
+        AssertTocEqual(expectedRootTocModel, rootTocModel);
+        AssertTocEqual(expectedTocFolderAModel, tocFolderAModel);
+        AssertTocEqual(expectedTocFolderBModel, tocFolderBModel);
     }
 
     [Fact]
-    public void PopulateToc_ShouldLinkToParentToc()
+    public void PopulateToc_ShouldNotOverrideExisting_FolderHrefs()
     {
+
         // Arrange
-        var model = new FileModel(new FileAndType("test", "toc.yml", DocumentType.Article), new TocItemViewModel(), null);
-        var sourceFiles = new List<string>
-            {
-                "folder1/subfolder1/file1.md",
-                "folder1/subfolder1/file2.md"
-            };
-        var pathToToc = new Dictionary<string, TocItemViewModel>();
+        var tocFileRoot = CreateFile("toc.yml",
+            """
+            auto: true
+            items:
+            - name: overrideindex
+              href: index.md
+            - name: overridefolderareference
+              href: foldera/
+            """,
+            _inputFolder);
+        var conceptualFile = CreateFile("index.md",
+            string.Empty,
+            _inputFolder);
+        var tocFileFolderA = CreateFile("foldera/toc.yml",
+            """
+            auto: true
+            """,
+            _inputFolder);
+        var conceptualFile2 = CreateFile("foldera/index.md",
+            string.Empty,
+            _inputFolder);
+        var tocFileFolderB = CreateFile("foldera/folderb/toc.yml",
+            """
+            auto: true
+            """,
+            _inputFolder);
+        var conceptualFile3 = CreateFile("foldera/folderb/index.md",
+            string.Empty,
+            _inputFolder);
+
+        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
+        var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
+        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
+        var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
+        var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
+        Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
+        tocCache.Add(tocFileRoot.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), rootTocModel);
+        tocCache.Add(tocFileFolderA.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderAModel);
+        tocCache.Add(tocFileFolderB.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderBModel);
 
         // Act
-        TocHelper.PopulateToc(model, sourceFiles, pathToToc);
+        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
 
         // Assert
-        Assert.NotNull(pathToToc);
-        Assert.Equal(2, pathToToc.Count);
-        Assert.Contains("folder1/subfolder1", pathToToc.Keys);
-        Assert.Contains("folder1", pathToToc.Keys);
+        var expectedRootTocModel = new TocItemViewModel()
+        {
+            Auto = true,
 
-        var subfolder1Toc = pathToToc["folder1/subfolder1"];
-        Assert.NotNull(subfolder1Toc.Items);
-        Assert.Equal(2, subfolder1Toc.Items.Count);
-        Assert.Contains(subfolder1Toc.Items, i => i.Href == "folder1/subfolder1/file1.md");
-        Assert.Contains(subfolder1Toc.Items, i => i.Href == "folder1/subfolder1/file2.md");
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "overrideindex",
+                    Href = "index.md"
+                },
+                new TocItemViewModel()
+                {
+                    Name = "overridefolderareference",
+                    Href = "foldera/"
+                }
+            }
+        };
 
-        var folder1Toc = pathToToc["folder1"];
-        Assert.NotNull(folder1Toc.Items);
-        Assert.Single(folder1Toc.Items);
-        Assert.Contains(folder1Toc.Items, i => i.Href == "folder1/subfolder1/");
+        var expectedTocFolderAModel = new TocItemViewModel()
+        {
+            Auto = true,
+
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "index",
+                    Href = "~/foldera/index.md"
+                },
+                new TocItemViewModel()
+                {
+                    Name = "folderb",
+                    Href = "./folderb/"
+                }
+            }
+        };
+
+        var expectedTocFolderBModel = new TocItemViewModel()
+        {
+            Auto = true,
+
+            Items = new()
+            {
+                new TocItemViewModel()
+                {
+                    Name = "index",
+                    Href = "~/foldera/folderb/index.md"
+                }
+            }
+        };
+
+        AssertTocEqual(expectedRootTocModel, rootTocModel);
+        AssertTocEqual(expectedTocFolderAModel, tocFolderAModel);
+        AssertTocEqual(expectedTocFolderBModel, tocFolderBModel);
+    }
+
+    internal static void AssertTocEqual(TocItemViewModel expected, TocItemViewModel actual, bool noMetadata = true)
+    {
+        using var swForExpected = new StringWriter();
+        YamlUtility.Serialize(swForExpected, expected);
+        using var swForActual = new StringWriter();
+        if (noMetadata)
+        {
+            actual.Metadata.Clear();
+        }
+        YamlUtility.Serialize(swForActual, actual);
+        Assert.Equal(swForExpected.ToString(), swForActual.ToString());
     }
 }
 

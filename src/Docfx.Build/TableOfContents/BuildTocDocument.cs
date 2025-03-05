@@ -32,21 +32,21 @@ class BuildTocDocument : BaseDocumentBuildStep
         // Keep auto toc agnostic to the toc file naming convention.
         var tocFileName = models.First().Key.Split('/').Last();
         var tocModels = models.OrderBy(f => f.File.Split('/').Count());
-        var pathToToc = new Dictionary<string, TocItemViewModel>();
+        var tocCache = new Dictionary<string, TocItemViewModel>();
         models.ForEach(model =>
         {
-            pathToToc.Add(model.Key.Replace("\\", "/").Replace("/" + tocFileName, string.Empty), (TocItemViewModel)model.Content);
+            tocCache.Add(model.Key.Replace("\\", "/").Replace("/" + tocFileName, string.Empty), (TocItemViewModel)model.Content);
         });
 
         // The list of models would contain all toc.yml including ones that are outside docfx base directory.
         // Filter get the root toc
         var rootTocModel = tocModels.Where(m =>
-            !m.LocalPathFromRoot.Contains("..")).OrderBy(f => f.LocalPathFromRoot.Split('/').Count()).First();
+            !m.LocalPathFromRoot.Contains("..")).OrderBy(f => f.LocalPathFromRoot.Split('/').Count()).FirstOrDefault();
 
         // If there is no toc along side docfx.json, skip tocgen - validate behavior with yuefi
-        if (rootTocModel.LocalPathFromRoot.Equals(tocFileName))
+        if (rootTocModel != null && rootTocModel.LocalPathFromRoot.Equals(tocFileName))
         {
-            TocHelper.PopulateToc(rootTocModel, host.SourceFiles.Keys, pathToToc);
+            TocHelper.PopulateToc(rootTocModel, host.SourceFiles.Keys, tocCache);
             Logger.LogInfo($"toc autogen complete.");
         }
         return TocHelper.ResolveToc(models);
