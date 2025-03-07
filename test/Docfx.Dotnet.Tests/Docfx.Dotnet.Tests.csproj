@@ -1,4 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Use following setting when running tests withoug Globalization Invariant Mode. -->
+    <!--<InvariantGlobalization>false</InvariantGlobalization>-->
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="TestDataReferences\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
