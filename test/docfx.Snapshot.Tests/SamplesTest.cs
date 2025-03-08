@@ -211,7 +211,7 @@ public class SamplesTest : IDisposable
         }
     }
 
-    private string ExtractText(Page page)
+    private static string ExtractText(Page page)
     {
         // Gets PDF text content
         var text = ContentOrderTextExtractor.GetText(page, new ContentOrderTextExtractor.Options { ReplaceWhitespaceWithSpace = true });
