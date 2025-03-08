@@ -273,7 +273,7 @@ public class DocumentBuilderTest : TestBase
                 Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
                 var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
                 Assert.Single(meta);
-                Assert.True(!meta.ContainsKey("meta"));
+                Assert.False(meta.ContainsKey("meta"));
             }
 
             {
