@@ -59,7 +59,7 @@ public class SitemapGeneratorTests : TestBase
         var sitemap = XDocument.Load(sitemapPath);
         var ns = sitemap.Root.Name.Namespace;
         var urls = sitemap.Root.Elements(ns + "url").ToArray();
-        Assert.True(urls.Length == 4);
+        Assert.Equal(4, urls.Length);
 
         // URLs are ordered based on HTML output's RelativePath.
         Assert.EndsWith("/Conceptual.html", urls[0].Element(ns + "loc").Value);
