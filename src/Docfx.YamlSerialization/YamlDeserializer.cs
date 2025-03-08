@@ -146,7 +146,7 @@ public sealed class YamlDeserializer
 
     public object? Deserialize(TextReader input, IValueDeserializer? deserializer = null)
     {
-        return Deserialize(input, typeof(object), deserializer);
+        return Deserialize<object>(input, deserializer);
     }
 
     public object? Deserialize(TextReader input, Type type, IValueDeserializer? deserializer = null)
@@ -161,7 +161,7 @@ public sealed class YamlDeserializer
 
     public object? Deserialize(IParser reader, IValueDeserializer? deserializer = null)
     {
-        return Deserialize(reader, typeof(object), deserializer);
+        return Deserialize<object>(reader, deserializer);
     }
 
     /// <summary>
