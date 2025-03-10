@@ -63,7 +63,7 @@ public class TocHelperTest: TestBase
             string.Empty,
             _inputFolder);
 
-        var files = Directory.GetFiles(_inputFolder, "*.*",  SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/")) ;
+        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace("\\", "/").Replace($"{_inputFolder}/", "~/"));
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
         var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
         var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
@@ -144,7 +144,7 @@ public class TocHelperTest: TestBase
             """,
             _inputFolder);
 
-        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
+        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace("\\", "/").Replace($"{_inputFolder}/", "~/"));
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
         Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
         tocCache.Add(tocFileRoot.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), rootTocModel);
@@ -190,7 +190,7 @@ public class TocHelperTest: TestBase
             """,
             _inputFolder);
 
-        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
+        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace("\\", "/").Replace($"{_inputFolder}/", "~/"));
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
         var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
         var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
@@ -280,7 +280,7 @@ public class TocHelperTest: TestBase
             string.Empty,
             _inputFolder);
 
-        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
+        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace("\\", "/").Replace($"{_inputFolder}/", "~/"));
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
         var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
         var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
@@ -385,7 +385,7 @@ public class TocHelperTest: TestBase
             string.Empty,
             _inputFolder);
 
-        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
+        var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace("\\", "/").Replace($"{_inputFolder}/", "~/"));
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
         var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
         var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
