@@ -38,7 +38,7 @@ public class TocHelperTest: TestBase
     {
 
         // Arrange
-        var tocFileRoot = CreateFile("toc.yml",
+        var tocFileRoot = CreateFile(Constants.TocYamlFileName,
             """
             auto: true
             """,
@@ -65,7 +65,6 @@ public class TocHelperTest: TestBase
 
         var files = Directory.GetFiles(_inputFolder, "*.*",  SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/")) ;
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
-        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
         var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
         var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
         Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
@@ -74,7 +73,7 @@ public class TocHelperTest: TestBase
         tocCache.Add(tocFileFolderB.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderBModel);
 
         // Act
-        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
+        TocHelper.RecursivelyPopulateTocs(Constants.TocYamlFileName, files, tocCache);
 
         // Assert
         var expectedRootTocModel = new TocItemViewModel()
@@ -85,12 +84,12 @@ public class TocHelperTest: TestBase
             {
                 new TocItemViewModel()
                 {
-                    Name = "index",
+                    Name = "Index",
                     Href = "~/index.md"
                 },
                 new TocItemViewModel()
                 {
-                    Name = "foldera",
+                    Name = "Foldera",
                     Href = "./foldera/"
                 }
             }
@@ -104,12 +103,12 @@ public class TocHelperTest: TestBase
             {
                 new TocItemViewModel()
                 {
-                    Name = "index",
+                    Name = "Index",
                     Href = "~/foldera/index.md"
                 },
                 new TocItemViewModel()
                 {
-                    Name = "folderb",
+                    Name = "Folderb",
                     Href = "./folderb/"
                 }
             }
@@ -123,7 +122,7 @@ public class TocHelperTest: TestBase
             {
                 new TocItemViewModel()
                 {
-                    Name = "index",
+                    Name = "Index",
                     Href = "~/foldera/folderb/index.md"
                 }
             }
@@ -139,7 +138,7 @@ public class TocHelperTest: TestBase
     {
 
         // Arrange
-        var tocFileRoot = CreateFile("toc.yml",
+        var tocFileRoot = CreateFile(Constants.TocYamlFileName,
             """
             auto: false
             """,
@@ -147,12 +146,11 @@ public class TocHelperTest: TestBase
 
         var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
-        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
         Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
         tocCache.Add(tocFileRoot.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), rootTocModel);
 
         // Act
-        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
+        TocHelper.RecursivelyPopulateTocs(Constants.TocYamlFileName, files, tocCache);
 
         // Assert
         var expectedRootTocModel = new TocItemViewModel()
@@ -170,7 +168,7 @@ public class TocHelperTest: TestBase
 
         // Arrange
         // Arrange
-        var tocFileRoot = CreateFile("toc.yml",
+        var tocFileRoot = CreateFile(Constants.TocYamlFileName,
             """
             auto: true
             """,
@@ -178,15 +176,15 @@ public class TocHelperTest: TestBase
         var conceptualFile = CreateFile("index.md",
             string.Empty,
             _inputFolder);
-        var tocFileFolderA = CreateFile("foldera/toc.yml",
+        var tocFileFolderA = CreateFile("folder-a/toc.yml",
             """
             auto: true
             """,
             _inputFolder);
-        var conceptualFile2 = CreateFile("foldera/index.md",
+        var conceptualFile2 = CreateFile("folder-a/index.md",
             string.Empty,
             _inputFolder);
-        var tocFileFolderB = CreateFile("foldera/folderb/toc.yml",
+        var tocFileFolderB = CreateFile("folder-a/folderb/toc.yml",
             """
             auto: false
             """,
@@ -194,7 +192,6 @@ public class TocHelperTest: TestBase
 
         var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
-        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
         var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
         var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
         Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
@@ -203,7 +200,7 @@ public class TocHelperTest: TestBase
         tocCache.Add(tocFileFolderB.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderBModel);
 
         // Act
-        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
+        TocHelper.RecursivelyPopulateTocs(Constants.TocYamlFileName, files, tocCache);
 
         // Assert
         var expectedRootTocModel = new TocItemViewModel()
@@ -214,13 +211,13 @@ public class TocHelperTest: TestBase
             {
                 new TocItemViewModel()
                 {
-                    Name = "index",
+                    Name = "Index",
                     Href = "~/index.md"
                 },
                 new TocItemViewModel()
                 {
-                    Name = "foldera",
-                    Href = "./foldera/"
+                    Name = "Folder A",
+                    Href = "./folder-a/"
                 }
             }
         };
@@ -233,8 +230,8 @@ public class TocHelperTest: TestBase
             {
                 new TocItemViewModel()
                 {
-                    Name = "index",
-                    Href = "~/foldera/index.md"
+                    Name = "Index",
+                    Href = "~/folder-a/index.md"
                 }
             }
         };
@@ -255,7 +252,7 @@ public class TocHelperTest: TestBase
     {
 
         // Arrange
-        var tocFileRoot = CreateFile("toc.yml",
+        var tocFileRoot = CreateFile(Constants.TocYamlFileName,
             """
             auto: true
             items:
@@ -285,7 +282,6 @@ public class TocHelperTest: TestBase
 
         var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
-        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
         var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
         var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
         Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
@@ -294,7 +290,7 @@ public class TocHelperTest: TestBase
         tocCache.Add(tocFileFolderB.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderBModel);
 
         // Act
-        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
+        TocHelper.RecursivelyPopulateTocs(Constants.TocYamlFileName, files, tocCache);
 
         // Assert
         var expectedRootTocModel = new TocItemViewModel()
@@ -310,7 +306,7 @@ public class TocHelperTest: TestBase
                 },
                 new TocItemViewModel()
                 {
-                    Name = "foldera",
+                    Name = "Foldera",
                     Href = "./foldera/"
                 }
             }
@@ -324,12 +320,12 @@ public class TocHelperTest: TestBase
             {
                 new TocItemViewModel()
                 {
-                    Name = "index",
+                    Name = "Index",
                     Href = "~/foldera/index.md"
                 },
                 new TocItemViewModel()
                 {
-                    Name = "folderb",
+                    Name = "Folderb",
                     Href = "./folderb/"
                 }
             }
@@ -343,7 +339,7 @@ public class TocHelperTest: TestBase
             {
                 new TocItemViewModel()
                 {
-                    Name = "index",
+                    Name = "Index",
                     Href = "~/foldera/folderb/index.md"
                 }
             }
@@ -359,7 +355,7 @@ public class TocHelperTest: TestBase
     {
 
         // Arrange
-        var tocFileRoot = CreateFile("toc.yml",
+        var tocFileRoot = CreateFile(Constants.TocYamlFileName,
             """
             auto: true
             items:
@@ -391,7 +387,6 @@ public class TocHelperTest: TestBase
 
         var files = Directory.GetFiles(_inputFolder, "*.*", SearchOption.AllDirectories).Select(f => f.Replace($"{_inputFolder}\\", "~/").Replace("\\", "/"));
         var rootTocModel = TocHelper.LoadSingleToc(tocFileRoot);
-        var rootTocFileModel = new FileModel(new FileAndType(Directory.GetCurrentDirectory(), "toc.yml", DocumentType.Article), rootTocModel);
         var tocFolderAModel = TocHelper.LoadSingleToc(tocFileFolderA);
         var tocFolderBModel = TocHelper.LoadSingleToc(tocFileFolderB);
         Dictionary<string, TocItemViewModel> tocCache = new Dictionary<string, TocItemViewModel>();
@@ -400,7 +395,7 @@ public class TocHelperTest: TestBase
         tocCache.Add(tocFileFolderB.Replace($"{_inputFolder}/", "~/").Replace("/toc.yml", string.Empty), tocFolderBModel);
 
         // Act
-        TocHelper.PopulateToc(rootTocFileModel, files, tocCache);
+        TocHelper.RecursivelyPopulateTocs(Constants.TocYamlFileName, files, tocCache);
 
         // Assert
         var expectedRootTocModel = new TocItemViewModel()
@@ -430,12 +425,12 @@ public class TocHelperTest: TestBase
             {
                 new TocItemViewModel()
                 {
-                    Name = "index",
+                    Name = "Index",
                     Href = "~/foldera/index.md"
                 },
                 new TocItemViewModel()
                 {
-                    Name = "folderb",
+                    Name = "Folderb",
                     Href = "./folderb/"
                 }
             }
@@ -449,7 +444,7 @@ public class TocHelperTest: TestBase
             {
                 new TocItemViewModel()
                 {
-                    Name = "index",
+                    Name = "Index",
                     Href = "~/foldera/folderb/index.md"
                 }
             }

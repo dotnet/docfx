@@ -8,6 +8,7 @@ using Docfx.Build.Common;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
+using YamlDotNet.Core.Tokens;
 namespace Docfx.Build.TableOfContents;
 
 [Export(nameof(TocDocumentProcessor), typeof(IDocumentBuildStep))]
@@ -37,18 +38,7 @@ class BuildTocDocument : BaseDocumentBuildStep
         {
             tocCache.Add(model.Key.Replace("\\", "/").Replace("/" + tocFileName, string.Empty), (TocItemViewModel)model.Content);
         });
-
-        // The list of models would contain all toc.yml including ones that are outside docfx base directory.
-        // Filter get the root toc
-        var rootTocModel = tocModels.Where(m =>
-            !m.LocalPathFromRoot.Contains("..")).OrderBy(f => f.LocalPathFromRoot.Split('/').Count()).FirstOrDefault();
-
-        // If there is no toc along side docfx.json, skip tocgen - validate behavior with yuefi
-        if (rootTocModel != null && rootTocModel.LocalPathFromRoot.Equals(tocFileName))
-        {
-            TocHelper.PopulateToc(rootTocModel, host.SourceFiles.Keys, tocCache);
-            Logger.LogInfo($"toc autogen complete.");
-        }
+        TocHelper.RecursivelyPopulateTocs(tocFileName, host.SourceFiles.Keys, tocCache);
         return TocHelper.ResolveToc(models);
     }
 

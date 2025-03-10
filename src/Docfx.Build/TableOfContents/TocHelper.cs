@@ -2,7 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-
+using System.Globalization;
+using System.Web;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
@@ -11,6 +12,8 @@ namespace Docfx.Build.TableOfContents;
 
 public static class TocHelper
 {
+    private static TextInfo TextInfo = new CultureInfo("en-US", false).TextInfo;
+
     private static readonly YamlDeserializerWithFallback _deserializer =
         YamlDeserializerWithFallback.Create<List<TocItemViewModel>>()
         .WithFallback<TocItemViewModel>();
@@ -119,14 +122,17 @@ public static class TocHelper
         if (idx != -1 && !currentFolderPath.EndsWith(".."))
         {
             // This is an existing behavior, href: ~/foldername/ doesnot work, but href: ./foldername/ does.
-            //var folderToProcessSanitized = currentFolderPath.Replace("~", ".") + "/";
+            // var folderToProcessSanitized = currentFolderPath.Replace("~", ".") + "/";
             // validate this behavior with yuefi
             var parentTocFolder = currentFolderPath.Substring(0, idx);
-            TocItemViewModel parentToc;
-            while (!tocCache.TryGetValue(parentTocFolder, out parentToc))
+            TocItemViewModel parentToc = null;
+            while (idx != -1 && !tocCache.TryGetValue(parentTocFolder, out parentToc))
             {
                 idx = parentTocFolder.LastIndexOf('/');
-                parentTocFolder = currentFolderPath.Substring(0, idx);
+                if (idx != -1)
+                {
+                    parentTocFolder = currentFolderPath.Substring(0, idx);
+                }
             }
 
             
@@ -138,7 +144,7 @@ public static class TocHelper
                     parentToc.Items = new List<TocItemViewModel>();
                 }
 
-                // Only link to parent toc if the auto is enabled.
+                // Only link to parent rootToc if the auto is enabled.
                 if (!folderHasToc &&
                     parentToc.Auto.HasValue &&
                     parentToc.Auto.Value)
@@ -152,7 +158,7 @@ public static class TocHelper
                     !parentToc.Items.Any(i => i.Href != null && Path.GetRelativePath(i.Href.Replace('~', '.'), folderToProcessSanitized) == "."))
                 {
                     var tocToLinkFrom = new TocItemViewModel();
-                    tocToLinkFrom.Name = Path.GetFileNameWithoutExtension(currentFolderPath);
+                    tocToLinkFrom.Name = StandarizeName(Path.GetFileNameWithoutExtension(currentFolderPath));
                     tocToLinkFrom.Href = folderToProcessSanitized;
                     parentToc.Items.Add(tocToLinkFrom);
                 }
@@ -160,20 +166,19 @@ public static class TocHelper
         }
     }
 
-    internal static void PopulateToc(FileModel rootTocFileModel, IEnumerable<string> sourceFilePaths, Dictionary<string, TocItemViewModel> tocCache)
+    internal static void RecursivelyPopulateTocs(string tocFileName, IEnumerable<string> sourceFilePaths, Dictionary<string, TocItemViewModel> tocCache)
     {
-        var toc = ((TocItemViewModel)rootTocFileModel.Content);
-        if (!(toc != null && toc.Auto.HasValue && toc.Auto.Value))
+        var rootToc = tocCache.GetValueOrDefault(RelativePath.WorkingFolderString);
+        /*if (!(rootToc != null && rootToc.Auto.HasValue && rootToc.Auto.Value))
         {
-            Logger.LogInfo($"auto value is not set to true in {rootTocFileModel.File}. skipping toc auto gen.");
+            Logger.LogInfo($"auto value is not set to true. skipping auto gen.");
             return;
-        }
-        var tocFileName = rootTocFileModel.Key.Split('/').Last();
-        var folderPathForModel = Path.GetDirectoryName(rootTocFileModel.Key).Replace("\\", "/");
+        }*/
+        var folderPathForRootToc = RelativePath.WorkingFolderString;
 
         // Omit the files that are outside the docfx base directory.
         var fileNames = sourceFilePaths
-            .Where(s => !Path.GetRelativePath(folderPathForModel, s).Contains("..") && !s.EndsWith(tocFileName))
+            .Where(s => !Path.GetRelativePath(folderPathForRootToc, s).Contains("..") && !s.EndsWith(tocFileName))
             .Select(p => p.Replace("\\", "/"))
             .OrderBy(f => f.Split('/').Count());
 
@@ -182,16 +187,13 @@ public static class TocHelper
         {
             var folderToProcess = Path.GetDirectoryName(filePath).Replace("\\", "/");
 
-            // If the folder has a toc available use it.
             var (folderHasToc, tocToProcess) = TryGetOrCreateToc(tocCache, folderToProcess, virtualTocs);
 
-            // Link the toc we are processing, back to a parent.
-            // Look for a toc one level up until we find the root toc.
             LinkToParentToc(tocCache, folderToProcess, tocToProcess, virtualTocs, folderHasToc);
 
-            // If the toc we currently processed didnot have auto enabled.
-            // There is no need to populate the toc, move on.
-            if (tocToProcess.Auto.HasValue && !tocToProcess.Auto.Value)
+            // If the rootToc we currently process didnot have auto enabled.
+            // There is no need to populate the rootToc, move on.
+            if (!tocToProcess.Auto.HasValue || (tocToProcess.Auto.HasValue && !tocToProcess.Auto.Value))
             {
                 continue;
             }
@@ -203,13 +205,15 @@ public static class TocHelper
                 tocToProcess.Items = new List<TocItemViewModel>();
             }
 
-            if (!(tocToProcess.Items.Where(i => i.Href.Equals(filePath) || i.Href.Equals(Path.GetFileName(filePath)))).Any())
+            if (!(tocToProcess.Items.Where(i => i.Href !=null && (i.Href.Equals(filePath) || i.Href.Equals(Path.GetFileName(filePath))))).Any())
             {
                 var item = new TocItemViewModel();
-                item.Name = fileNameWithoutExtension;
+                item.Name = item.Name != null ? item.Name : StandarizeName(fileNameWithoutExtension);
                 item.Href = filePath;
                 tocToProcess.Items.Add(item);
             }
         }
     }
+
+    internal static string StandarizeName(string name) => TextInfo.ToTitleCase(HttpUtility.UrlDecode(name)).Replace('-', ' ');
 }
