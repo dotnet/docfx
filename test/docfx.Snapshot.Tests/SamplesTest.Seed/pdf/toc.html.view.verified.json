@@ -557,10 +557,10 @@
               "level": 4
             },
             {
-              "name": "CatException<T>",
-              "href": "../api/CatLibrary.CatException-1.html",
-              "topicHref": "../api/CatLibrary.CatException-1.html",
-              "topicUid": "CatLibrary.CatException`1",
+              "name": "Cat<T, K>",
+              "href": "../api/CatLibrary.Cat-2.html",
+              "topicHref": "../api/CatLibrary.Cat-2.html",
+              "topicUid": "CatLibrary.Cat`2",
               "type": "Class",
               "tocHref": null,
               "level": 4,
@@ -568,10 +568,10 @@
               "leaf": true
             },
             {
-              "name": "Cat<T, K>",
-              "href": "../api/CatLibrary.Cat-2.html",
-              "topicHref": "../api/CatLibrary.Cat-2.html",
-              "topicUid": "CatLibrary.Cat`2",
+              "name": "CatException<T>",
+              "href": "../api/CatLibrary.CatException-1.html",
+              "topicHref": "../api/CatLibrary.CatException-1.html",
+              "topicUid": "CatLibrary.CatException`1",
               "type": "Class",
               "tocHref": null,
               "level": 4,
