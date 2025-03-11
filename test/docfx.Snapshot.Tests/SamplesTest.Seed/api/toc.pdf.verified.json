@@ -351,7 +351,7 @@
     },
     {
       "Number": 2,
-      "Text": "ContainersRefType.ColorType 58\nContainersRefType.ContainersRefTypeChild 59\nContainersRefType.ContainersRefTypeChildInterface 60\nContainersRefType.ContainersRefTypeDelegate 61\nExplicitLayoutClass 62\nIssue231 63\nCatException<T> 64\nCat<T, K> 65\nComplex<T, J> 74\nFakeDelegate<T> 75\nIAnimal 76\nICat 79\nICatExtension 80\nMRefDelegate<K, T, L> 82\nMRefNormalDelegate 83\nTom 84\nTomFromBaseClass 86\nMRef.Demo.Enumeration 87\nColorType 88",
+      "Text": "ContainersRefType.ColorType 58\nContainersRefType.ContainersRefTypeChild 59\nContainersRefType.ContainersRefTypeChildInterface 60\nContainersRefType.ContainersRefTypeDelegate 61\nExplicitLayoutClass 62\nIssue231 63\nCat<T, K> 64\nCatException<T> 73\nComplex<T, J> 74\nFakeDelegate<T> 75\nIAnimal 76\nICat 79\nICatExtension 80\nMRefDelegate<K, T, L> 82\nMRefNormalDelegate 83\nTom 84\nTomFromBaseClass 86\nMRef.Demo.Enumeration 87\nColorType 88",
       "Links": [
         {
           "Goto": {
@@ -418,7 +418,7 @@
         },
         {
           "Goto": {
-            "PageNumber": 65,
+            "PageNumber": 73,
             "Type": 2,
             "Coordinates": {
               "Top": 0
@@ -4990,7 +4990,7 @@
     },
     {
       "Number": 53,
-      "Text": "53 / 88\nNamespaces\nCatLibrary.Core\nClasses\nCatException<T>\nCat<T, K>\nHere's main class of this Demo.\nYou can see mostly type of article within this class and you for more detail, please see the\nremarks.\nthis class is a template class. It has two Generic parameter. they are: T and K.\nThe extension method of this class can refer to ICatExtension class\nComplex<T, J>\nICatExtension\nIt's the class that contains ICat interface's extension method.\nThis class must be public and static.\nAlso it shouldn't be a geneic class\nTom\nTom class is only inherit from Object. Not any member inside itself.\nTomFromBaseClass\nTomFromBaseClass inherits from @\nInterfaces\nIAnimal\nThis is basic interface of all animal.\nICat\nCat's interface\nDelegates\nFakeDelegate<T>\nFake delegate\nNamespace CatLibrary",
+      "Text": "53 / 88\nNamespaces\nCatLibrary.Core\nClasses\nCat<T, K>\nHere's main class of this Demo.\nYou can see mostly type of article within this class and you for more detail, please see the\nremarks.\nthis class is a template class. It has two Generic parameter. they are: T and K.\nThe extension method of this class can refer to ICatExtension class\nCatException<T>\nComplex<T, J>\nICatExtension\nIt's the class that contains ICat interface's extension method.\nThis class must be public and static.\nAlso it shouldn't be a geneic class\nTom\nTom class is only inherit from Object. Not any member inside itself.\nTomFromBaseClass\nTomFromBaseClass inherits from @\nInterfaces\nIAnimal\nThis is basic interface of all animal.\nICat\nCat's interface\nDelegates\nFakeDelegate<T>\nFake delegate\nNamespace CatLibrary",
       "Links": [
         {
           "Goto": {
@@ -5030,15 +5030,6 @@
         },
         {
           "Goto": {
-            "PageNumber": 65,
-            "Type": 2,
-            "Coordinates": {
-              "Top": 0
-            }
-          }
-        },
-        {
-          "Goto": {
             "PageNumber": 80,
             "Type": 2,
             "Coordinates": {
@@ -5049,6 +5040,15 @@
         {
           "Goto": {
             "PageNumber": 80,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 73,
             "Type": 2,
             "Coordinates": {
               "Top": 0
@@ -6190,211 +6190,7 @@
     },
     {
       "Number": 64,
-      "Text": "64 / 88\nNamespace: CatLibrary\nAssembly: CatLibrary.dll\nType Parameters\nT\nInheritance\nobject\uF1C5 Exception\uF1C5 CatException<T>\nImplements\nISerializable\uF1C5\nInherited Members\nException.GetBaseException()\uF1C5 , Exception.GetType()\uF1C5 , Exception.ToString()\uF1C5 ,\nException.Data\uF1C5 , Exception.HelpLink\uF1C5 , Exception.HResult\uF1C5 , Exception.InnerException\uF1C5 ,\nException.Message\uF1C5 , Exception.Source\uF1C5 , Exception.StackTrace\uF1C5 , Exception.TargetSite\uF1C5 ,\nException.SerializeObjectState\uF1C5 , object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 ,\nobject.GetHashCode()\uF1C5 , object.MemberwiseClone()\uF1C5 ,\nobject.ReferenceEquals(object, object)\uF1C5\nClass CatException<T>\npublic class CatException<T> : Exception, ISerializable\n\uF12C \uF12C",
-      "Links": [
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
-        },
-        {
-          "Goto": {
-            "PageNumber": 53,
-            "Type": 2,
-            "Coordinates": {
-              "Top": 0
-            }
-          }
-        },
-        {
-          "Goto": {
-            "PageNumber": 53,
-            "Type": 2,
-            "Coordinates": {
-              "Top": 0
-            }
-          }
-        }
-      ]
-    },
-    {
-      "Number": 65,
-      "Text": "65 / 88\nNamespace: CatLibrary\nAssembly: CatLibrary.dll\nHere's main class of this Demo.\nYou can see mostly type of article within this class and you for more detail, please see the\nremarks.\nthis class is a template class. It has two Generic parameter. they are: T and K.\nThe extension method of this class can refer to ICatExtension class\nThis is a class talking about CAT\uF1C5 .\nNOTE This is a CAT class\nRefer to IAnimal to see other animals.\nType Parameters\nT\nThis type should be class and can new instance.\nK\nThis type is a struct type, class type can't be used for this parameter.\nInheritance\nobject\uF1C5 Cat<T, K>\nImplements\nICat, IAnimal\nInherited Members\nClass Cat<T, K>\n[Serializable]\n[Obsolete]\npublic class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct\n\uF12C",
+      "Text": "64 / 88\nNamespace: CatLibrary\nAssembly: CatLibrary.dll\nHere's main class of this Demo.\nYou can see mostly type of article within this class and you for more detail, please see the\nremarks.\nthis class is a template class. It has two Generic parameter. they are: T and K.\nThe extension method of this class can refer to ICatExtension class\nThis is a class talking about CAT\uF1C5 .\nNOTE This is a CAT class\nRefer to IAnimal to see other animals.\nType Parameters\nT\nThis type should be class and can new instance.\nK\nThis type is a struct type, class type can't be used for this parameter.\nInheritance\nobject\uF1C5 Cat<T, K>\nImplements\nICat, IAnimal\nInherited Members\nClass Cat<T, K>\n[Serializable]\n[Obsolete]\npublic class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct\n\uF12C",
       "Links": [
         {
           "Uri": "https://en.wikipedia.org/wiki/Cat"
@@ -6480,8 +6276,8 @@
       ]
     },
     {
-      "Number": 66,
-      "Text": "66 / 88\nobject.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,\nobject.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5\nExtension Methods\nICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)\nExamples\nHere's example of how to create an instance of this class. As T is limited with class and K is\nlimited with struct.\nAs you see, here we bring in pointer so we need to add unsafe keyword.\nRemarks\nTHIS is remarks overridden in MARKDWON file\nConstructors\nDefault constructor.\nIt's a complex constructor. The parameter will have some attributes.\nParameters\nvar a = new Cat(object, int)();\nint catNumber = new int();\nunsafe\n{   \na.GetFeetLength(catNumber);\n}\nCat()\npublic Cat()\nCat(string, out int, string, bool)\npublic Cat(string nickName, out int age, string realName, bool isHealthy)",
+      "Number": 65,
+      "Text": "65 / 88\nobject.Equals(object, object)\uF1C5 , object.GetHashCode()\uF1C5 , object.GetType()\uF1C5 ,\nobject.MemberwiseClone()\uF1C5 , object.ReferenceEquals(object, object)\uF1C5 , object.ToString()\uF1C5\nExtension Methods\nICatExtension.Play(ICat, ContainersRefType.ColorType) , ICatExtension.Sleep(ICat, long)\nExamples\nHere's example of how to create an instance of this class. As T is limited with class and K is\nlimited with struct.\nAs you see, here we bring in pointer so we need to add unsafe keyword.\nRemarks\nTHIS is remarks overridden in MARKDWON file\nConstructors\nDefault constructor.\nConstructor with one generic parameter.\nParameters\nvar a = new Cat(object, int)();\nint catNumber = new int();\nunsafe\n{   \na.GetFeetLength(catNumber);\n}\nCat()\npublic Cat()\nCat(T)\npublic Cat(T ownType)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
@@ -6644,21 +6440,63 @@
               "Top": 792
             }
           }
+        }
+      ]
+    },
+    {
+      "Number": 66,
+      "Text": "66 / 88\nownType T\nThis parameter type defined by class.\nIt's a complex constructor. The parameter will have some attributes.\nParameters\nnickName string\uF1C5\nit's string type.\nage int\uF1C5\nIt's an out and ref parameter.\nrealName string\uF1C5\nIt's an out paramter.\nisHealthy bool\uF1C5\nIt's an in parameter.\nFields\nField with attribute.\nField Value\nCat(string, out int, string, bool)\npublic Cat(string nickName, out int age, string realName, bool isHealthy)\nisHealthy\n[ContextStatic]\n[NonSerialized]\n[Obsolete]\npublic bool isHealthy",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         }
       ]
     },
     {
       "Number": 67,
-      "Text": "67 / 88\nnickName string\uF1C5\nit's string type.\nage int\uF1C5\nIt's an out and ref parameter.\nrealName string\uF1C5\nIt's an out paramter.\nisHealthy bool\uF1C5\nIt's an in parameter.\nConstructor with one generic parameter.\nParameters\nownType T\nThis parameter type defined by class.\nFields\nField with attribute.\nField Value\nCat(T)\npublic Cat(T ownType)\nisHealthy\n[ContextStatic]\n[NonSerialized]\n[Obsolete]\npublic bool isHealthy",
+      "Text": "67 / 88\nbool\uF1C5\nProperties\nHint cat's age.\nProperty Value\nint\uF1C5\nThis is index property of Cat. You can see that the visibility is different between get and set\nmethod.\nParameters\na string\uF1C5\nCat's name.\nProperty Value\nint\uF1C5\nCat's number.\nEII property.\nAge\n[Obsolete]\nprotected int Age { get; set; }\nthis[string]\npublic int this[string a] { protected get; set; }\nName",
       "Links": [
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6679,37 +6517,46 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         }
       ]
     },
     {
       "Number": 68,
-      "Text": "68 / 88\nbool\uF1C5\nProperties\nHint cat's age.\nProperty Value\nint\uF1C5\nThis is index property of Cat. You can see that the visibility is different between get and set\nmethod.\nParameters\na string\uF1C5\nCat's name.\nProperty Value\nint\uF1C5\nCat's number.\nEII property.\nAge\n[Obsolete]\nprotected int Age { get; set; }\nthis[string]\npublic int this[string a] { protected get; set; }\nName",
+      "Text": "68 / 88\nProperty Value\nstring\uF1C5\nMethods\nIt's an overridden summary in markdown format\nThis is overriding methods. You can override parameter descriptions for methods, you can\neven add exceptions to methods. Check the intermediate obj folder to see the data model\nof the generated method/class. Override Yaml header should follow the data structure.\nParameters\ndate DateTime\uF1C5\nThis is overridden description for a parameter. id must be specified.\nReturns\nDictionary\uF1C5 <string\uF1C5 , List\uF1C5 <int\uF1C5 >>\nIt's overridden description for return. type must be specified.\nExceptions\nArgumentException\uF1C5\nThis is an overridden argument exception. you can add additional exception by adding\ndifferent exception type.\npublic string Name { get; }\nOverride CalculateFood Name\npublic Dictionary<string, List<int>> CalculateFood(DateTime date)\nEquals(object)",
       "Links": [
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
@@ -6721,64 +6568,55 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
         }
       ]
     },
     {
       "Number": 69,
-      "Text": "69 / 88\nProperty Value\nstring\uF1C5\nMethods\nIt's an overridden summary in markdown format\nThis is overriding methods. You can override parameter descriptions for methods, you can\neven add exceptions to methods. Check the intermediate obj folder to see the data model\nof the generated method/class. Override Yaml header should follow the data structure.\nParameters\ndate DateTime\uF1C5\nThis is overridden description for a parameter. id must be specified.\nReturns\nDictionary\uF1C5 <string\uF1C5 , List\uF1C5 <int\uF1C5 >>\nIt's overridden description for return. type must be specified.\nExceptions\nArgumentException\uF1C5\nThis is an overridden argument exception. you can add additional exception by adding\ndifferent exception type.\npublic string Name { get; }\nOverride CalculateFood Name\npublic Dictionary<string, List<int>> CalculateFood(DateTime date)\nEquals(object)",
+      "Text": "69 / 88\nOverride the method of Object.Equals(object obj).\nParameters\nobj object\uF1C5\nCan pass any class type.\nReturns\nbool\uF1C5\nThe return value tell you whehter the compare operation is successful.\nIt's an unsafe method. As you see, catName is a pointer, so we need to add unsafe keyword.\nParameters\ncatName int\uF1C5 *\nThie represent for cat name length.\nparameters object\uF1C5 []\nOptional parameters.\nReturns\nlong\uF1C5\nReturn cat tail's length.\npublic override bool Equals(object obj)\nGetTailLength(int*, params object[])\npublic long GetTailLength(int* catName, params object[] parameters)\nJump(T, K, ref bool)",
       "Links": [
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.datetime"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.string"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6790,30 +6628,30 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
         }
       ]
     },
     {
       "Number": 70,
-      "Text": "70 / 88\nOverride the method of Object.Equals(object obj).\nParameters\nobj object\uF1C5\nCan pass any class type.\nReturns\nbool\uF1C5\nThe return value tell you whehter the compare operation is successful.\nIt's an unsafe method. As you see, catName is a pointer, so we need to add unsafe keyword.\nParameters\ncatName int\uF1C5 *\nThie represent for cat name length.\nparameters object\uF1C5 []\nOptional parameters.\nReturns\nlong\uF1C5\nReturn cat tail's length.\npublic override bool Equals(object obj)\nGetTailLength(int*, params object[])\npublic long GetTailLength(int* catName, params object[] parameters)\nJump(T, K, ref bool)",
+      "Text": "70 / 88\nThis method have attribute above it.\nParameters\nownType T\nType come from class define.\nanotherOwnType K\nType come from class define.\ncheat bool\uF1C5\nHint whether this cat has cheat mode.\nExceptions\nArgumentException\uF1C5\nThis is an argument exception\nEvents\nEat event of this cat\nEvent Type\nEventHandler\uF1C5\nOperators\n[Conditional(\"Debug\")]\npublic void Jump(T ownType, K anotherOwnType, ref bool cheat)\nownEat\n[Obsolete(\"This _event handler_ is deprecated.\")]\npublic event EventHandler ownEat",
       "Links": [
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
-        },
-        {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
@@ -6823,70 +6661,28 @@
           "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
         },
         {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.int64"
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
         }
       ]
     },
     {
       "Number": 71,
-      "Text": "71 / 88\nThis method have attribute above it.\nParameters\nownType T\nType come from class define.\nanotherOwnType K\nType come from class define.\ncheat bool\uF1C5\nHint whether this cat has cheat mode.\nExceptions\nArgumentException\uF1C5\nThis is an argument exception\nEvents\nEat event of this cat\nEvent Type\nEventHandler\uF1C5\nOperators\n[Conditional(\"Debug\")]\npublic void Jump(T ownType, K anotherOwnType, ref bool cheat)\nownEat\n[Obsolete(\"This _event handler_ is deprecated.\")]\npublic event EventHandler ownEat",
-      "Links": [
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.boolean"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.argumentexception"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
-        },
-        {
-          "Uri": "https://learn.microsoft.com/dotnet/api/system.eventhandler"
-        }
-      ]
-    },
-    {
-      "Number": 72,
-      "Text": "72 / 88\nAddition operator of this class.\nParameters\nlsr Cat<T, K>\n..\nrsr int\uF1C5\n~~\nReturns\nint\uF1C5\nResult with int type.\nExpilicit operator of this class.\nIt means this cat can evolve to change to Tom. Tom and Jerry.\nParameters\nsrc Cat<T, K>\nInstance of this class.\nReturns\nTom\nAdvanced class type of cat.\noperator +(Cat<T, K>, int)\npublic static int operator +(Cat<T, K> lsr, int rsr)\nexplicit operator Tom(Cat<T, K>)\npublic static explicit operator Tom(Cat<T, K> src)",
+      "Text": "71 / 88\nAddition operator of this class.\nParameters\nlsr Cat<T, K>\n..\nrsr int\uF1C5\n~~\nReturns\nint\uF1C5\nResult with int type.\nExpilicit operator of this class.\nIt means this cat can evolve to change to Tom. Tom and Jerry.\nParameters\nsrc Cat<T, K>\nInstance of this class.\nReturns\nTom\nAdvanced class type of cat.\noperator +(Cat<T, K>, int)\npublic static int operator +(Cat<T, K> lsr, int rsr)\nexplicit operator Tom(Cat<T, K>)\npublic static explicit operator Tom(Cat<T, K> src)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6908,7 +6704,7 @@
         },
         {
           "Goto": {
-            "PageNumber": 65,
+            "PageNumber": 64,
             "Type": 2,
             "Coordinates": {
               "Top": 0
@@ -6917,7 +6713,7 @@
         },
         {
           "Goto": {
-            "PageNumber": 65,
+            "PageNumber": 64,
             "Type": 2,
             "Coordinates": {
               "Top": 0
@@ -6936,8 +6732,8 @@
       ]
     },
     {
-      "Number": 73,
-      "Text": "73 / 88\nSimilar with operaotr +, refer to that topic.\nParameters\nlsr Cat<T, K>\nrsr int\uF1C5\nReturns\nint\uF1C5\noperator -(Cat<T, K>, int)\npublic static int operator -(Cat<T, K> lsr, int rsr)",
+      "Number": 72,
+      "Text": "72 / 88\nSimilar with operaotr +, refer to that topic.\nParameters\nlsr Cat<T, K>\nrsr int\uF1C5\nReturns\nint\uF1C5\noperator -(Cat<T, K>, int)\npublic static int operator -(Cat<T, K> lsr, int rsr)",
       "Links": [
         {
           "Uri": "https://learn.microsoft.com/dotnet/api/system.int32"
@@ -6959,7 +6755,211 @@
         },
         {
           "Goto": {
-            "PageNumber": 65,
+            "PageNumber": 64,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 73,
+      "Text": "73 / 88\nNamespace: CatLibrary\nAssembly: CatLibrary.dll\nType Parameters\nT\nInheritance\nobject\uF1C5 Exception\uF1C5 CatException<T>\nImplements\nISerializable\uF1C5\nInherited Members\nException.GetBaseException()\uF1C5 , Exception.GetType()\uF1C5 , Exception.ToString()\uF1C5 ,\nException.Data\uF1C5 , Exception.HelpLink\uF1C5 , Exception.HResult\uF1C5 , Exception.InnerException\uF1C5 ,\nException.Message\uF1C5 , Exception.Source\uF1C5 , Exception.StackTrace\uF1C5 , Exception.TargetSite\uF1C5 ,\nException.SerializeObjectState\uF1C5 , object.Equals(object)\uF1C5 , object.Equals(object, object)\uF1C5 ,\nobject.GetHashCode()\uF1C5 , object.MemberwiseClone()\uF1C5 ,\nobject.ReferenceEquals(object, object)\uF1C5\nClass CatException<T>\npublic class CatException<T> : Exception, ISerializable\n\uF12C \uF12C",
+      "Links": [
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.gettype"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.tostring"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.data"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.helplink"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.hresult"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.message"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.source"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Uri": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals"
+        },
+        {
+          "Goto": {
+            "PageNumber": 53,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 53,
             "Type": 2,
             "Coordinates": {
               "Top": 0
@@ -8020,7 +8020,7 @@
         },
         {
           "Goto": {
-            "PageNumber": 64,
+            "PageNumber": 73,
             "Type": 2,
             "Coordinates": {
               "Top": 0
@@ -8029,7 +8029,7 @@
         },
         {
           "Goto": {
-            "PageNumber": 64,
+            "PageNumber": 73,
             "Type": 2,
             "Coordinates": {
               "Top": 0
@@ -8702,7 +8702,7 @@
           }
         },
         {
-          "Title": "CatException<T>",
+          "Title": "Cat<T, K>",
           "Children": [],
           "Destination": {
             "PageNumber": 64,
@@ -8713,10 +8713,10 @@
           }
         },
         {
-          "Title": "Cat<T, K>",
+          "Title": "CatException<T>",
           "Children": [],
           "Destination": {
-            "PageNumber": 65,
+            "PageNumber": 73,
             "Type": 2,
             "Coordinates": {
               "Top": 0

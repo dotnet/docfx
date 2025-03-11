@@ -370,17 +370,17 @@
               ]
             },
             {
-              "name": "CatException<T>",
-              "href": "../api/CatLibrary.CatException-1.html",
-              "topicHref": "../api/CatLibrary.CatException-1.html",
-              "topicUid": "CatLibrary.CatException`1",
-              "type": "Class"
-            },
-            {
               "name": "Cat<T, K>",
               "href": "../api/CatLibrary.Cat-2.html",
               "topicHref": "../api/CatLibrary.Cat-2.html",
               "topicUid": "CatLibrary.Cat`2",
+              "type": "Class"
+            },
+            {
+              "name": "CatException<T>",
+              "href": "../api/CatLibrary.CatException-1.html",
+              "topicHref": "../api/CatLibrary.CatException-1.html",
+              "topicUid": "CatLibrary.CatException`1",
               "type": "Class"
             },
             {
