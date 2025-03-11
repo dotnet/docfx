@@ -168,7 +168,7 @@ public static partial class GitUtility
             foreach (var text in File.ReadAllLines(configPath))
             {
                 var line = text.Trim();
-                if (line.StartsWith("["))
+                if (line.StartsWith('['))
                 {
                     var remote = RemoteRegex().Replace(line, "$1");
                     key = remote != line ? remote : "";

@@ -69,7 +69,7 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
                 if (index > -1)
                 {
                     // Latter one overwrites former one
-                    properties[pair.Substring(0, index)] = pair.Substring(index + 1, pair.Length - index - 1);
+                    properties[pair.Substring(0, index)] = pair.Substring(index + 1);
                 }
             }
         }

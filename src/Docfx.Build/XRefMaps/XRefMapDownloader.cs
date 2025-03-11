@@ -80,7 +80,7 @@ public sealed class XRefMapDownloader
     /// <remarks>
     /// Support scheme: http, https, file.
     /// </remarks>
-    private async ValueTask<IXRefContainer> DownloadBySchemeAsync(Uri uri, CancellationToken token = default)
+    private static async ValueTask<IXRefContainer> DownloadBySchemeAsync(Uri uri, CancellationToken token = default)
     {
         IXRefContainer result;
         if (uri.IsFile)

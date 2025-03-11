@@ -15,7 +15,7 @@ public partial class YamlSerializationTest
     /// <summary>
     /// Helper method to validate serialize/deserialize results.
     /// </summary>
-    protected void ValidateYamlRoundTrip<T>(T model)
+    private static void ValidateYamlRoundTrip<T>(T model)
     {
         // Act
         using var writer = new StringWriter();
@@ -31,7 +31,7 @@ public partial class YamlSerializationTest
     /// <summary>
     /// Helper method to validate serialize/deserialize results.
     /// </summary>
-    protected void ValidateYamlJsonRoundTrip<T>(T model)
+    protected static void ValidateYamlJsonRoundTrip<T>(T model)
     {
         // 1. Serialize to JSON with YamlDotNet
         using var writer = new StringWriter();

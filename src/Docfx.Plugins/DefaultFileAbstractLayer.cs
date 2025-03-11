@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace Docfx.Plugins;
 
-public class DefaultFileAbstractLayer : IFileAbstractLayer
+public sealed class DefaultFileAbstractLayer : IFileAbstractLayer
 {
     public IEnumerable<string> GetAllInputFiles()
     {

@@ -248,7 +248,8 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
 
     private static string ChangeFileExtension(string file)
     {
-        return file.Substring(0, file.Length - SupportedFileEndings.First(s => IsSupportedFileEnding(file, s)).Length) + ".json";
+        var suffix = SupportedFileEndings.First(s => IsSupportedFileEnding(file, s));
+        return $"{file.AsSpan(0, file.Length - suffix.Length)}.json";
     }
 
     private static Dictionary<string, object> MergeMetadata(IDictionary<string, object> item, IDictionary<string, object> overwriteItems)

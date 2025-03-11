@@ -107,8 +107,7 @@ class ConceptualDocumentProcessor : DisposableDocumentProcessor
 
         if (((IDictionary<string, object>)model.Properties).TryGetValue("XrefSpec", out var value))
         {
-            var xrefSpec = value as XRefSpec;
-            if (xrefSpec != null)
+            if (value is XRefSpec xrefSpec)
             {
                 result.XRefSpecs = [xrefSpec];
             }

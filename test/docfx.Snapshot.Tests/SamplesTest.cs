@@ -56,6 +56,7 @@ public class SamplesTest : IDisposable
 
         using var process = Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"");
         await process.WaitForExitAsync();
+        VerifyExitCode(process);
 
         if (Debugger.IsAttached || IsWslRemoteTest())
         {
@@ -84,7 +85,7 @@ public class SamplesTest : IDisposable
                     p.Number,
                     p.NumberOfImages,
                     Text = ExtractText(p),
-                    Links = p.ExperimentalAccess.GetAnnotations().Select(ToLink).ToArray(),
+                    Links = p.GetAnnotations().Select(ToLink).ToArray(),
                 }).ToArray(),
                 Bookmarks = document.TryGetBookmarks(out var bookmarks) ? ToBookmarks(bookmarks.Roots) : null,
             };
@@ -121,7 +122,8 @@ public class SamplesTest : IDisposable
         var outputPath = nameof(SeedMarkdown);
         Clean(samplePath);
 
-        Program.Main(["metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath]);
+        var exitCode = Program.Main(["metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath]);
+        Assert.Equal(0, exitCode);
 
         await VerifyDirectory(outputPath).AutoVerify(includeBuildServer: false);
     }
@@ -156,10 +158,12 @@ public class SamplesTest : IDisposable
 #if DEBUG
         using var process = Process.Start("dotnet", $"build \"{samplePath}/build\"");
         process.WaitForExit();
+        VerifyExitCode(process);
         Assert.Equal(0, Exec("dotnet", "run --no-build --project build", workingDirectory: samplePath));
 #else
         using var process = Process.Start("dotnet", $"build -c Release \"{samplePath}/build\"");
         process.WaitForExit();
+        VerifyExitCode(process);
         Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
@@ -211,7 +215,7 @@ public class SamplesTest : IDisposable
         }
     }
 
-    private string ExtractText(Page page)
+    private static string ExtractText(Page page)
     {
         // Gets PDF text content
         var text = ContentOrderTextExtractor.GetText(page, new ContentOrderTextExtractor.Options { ReplaceWhitespaceWithSpace = true });
@@ -238,5 +242,20 @@ public class SamplesTest : IDisposable
     {
         return Environment.GetEnvironmentVariable("WSLENV") != null
             && callerFilePath.Contains('\\', StringComparison.Ordinal); // Contains `\` when build on windows environment.
+    }
+
+    private static void VerifyExitCode(Process process)
+    {
+        if (!process.HasExited)
+            throw new InvalidOperationException("Process is not exited yet.");
+
+        // Gets exit code before closing process.
+        var exitCode = process.ExitCode;
+
+        // Close process to flush stdout/stderr logs.
+        process.Close();
+
+        // Assert exit code
+        Assert.Equal(0, exitCode);
     }
 }

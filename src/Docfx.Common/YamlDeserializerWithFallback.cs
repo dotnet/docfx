@@ -19,9 +19,8 @@ public class YamlDeserializerWithFallback
     }
 
     public static YamlDeserializerWithFallback Create<T>() =>
-        new(
-            (Func<TextReader> tr) => YamlUtility.Deserialize<T>(tr()),
-            (string path) => YamlUtility.Deserialize<T>(path));
+        new(tr => YamlUtility.Deserialize<T>(tr()),
+            path => YamlUtility.Deserialize<T>(path));
 
     public YamlDeserializerWithFallback WithFallback<T>() =>
         new(

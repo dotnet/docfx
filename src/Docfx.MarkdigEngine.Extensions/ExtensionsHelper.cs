@@ -253,7 +253,7 @@ public static partial class ExtensionsHelper
 
         if (includedFilePath.Length >= 1 && includedFilePath.First() == '<' && slice.CurrentChar == '>')
         {
-            includedFilePath = includedFilePath.Substring(1, includedFilePath.Length - 1).Trim();
+            includedFilePath = includedFilePath.Substring(1).Trim();
         }
 
         if (slice.CurrentChar == ')')

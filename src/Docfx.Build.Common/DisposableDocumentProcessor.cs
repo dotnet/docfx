@@ -22,6 +22,15 @@ public abstract class DisposableDocumentProcessor : IDocumentProcessor, IDisposa
 
     public void Dispose()
     {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposing)
+            return;
+
         if (BuildSteps != null)
         {
             foreach (var buildStep in BuildSteps)

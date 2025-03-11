@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Docfx.Tests.Common;
 
-public class TestBase : IClassFixture<TestBase>, IDisposable
+public class TestBase : IDisposable
 {
     private readonly List<string> _folderCollection = [];
     private readonly object _locker = new();

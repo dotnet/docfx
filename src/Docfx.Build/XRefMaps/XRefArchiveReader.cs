@@ -5,7 +5,7 @@ using Docfx.Common;
 
 namespace Docfx.Build.Engine;
 
-public class XRefArchiveReader : XRefRedirectionReader, IDisposable
+public sealed class XRefArchiveReader : XRefRedirectionReader, IDisposable
 {
     #region Fields
     private readonly LruList<Tuple<string, XRefMap>> _lru;
