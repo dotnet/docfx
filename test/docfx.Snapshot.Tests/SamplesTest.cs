@@ -84,7 +84,7 @@ public class SamplesTest : IDisposable
                     p.Number,
                     p.NumberOfImages,
                     Text = ExtractText(p),
-                    Links = p.ExperimentalAccess.GetAnnotations().Select(ToLink).ToArray(),
+                    Links = p.GetAnnotations().Select(ToLink).ToArray(),
                 }).ToArray(),
                 Bookmarks = document.TryGetBookmarks(out var bookmarks) ? ToBookmarks(bookmarks.Roots) : null,
             };
