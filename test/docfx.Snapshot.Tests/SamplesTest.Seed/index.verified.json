@@ -29,6 +29,16 @@
     "title": "Interface Class1.IIssue8948 | docfx seed website",
     "summary": "Interface Class1.IIssue8948 Namespace BuildFromProject Assembly BuildFromProject.dll public interface Class1.IIssue8948 Methods DoNothing<T>() Does nothing with generic type T. void DoNothing<T>() Type Parameters T A generic type."
   },
+  "api/BuildFromProject.Class1.Issue10332.SampleEnum.html": {
+    "href": "api/BuildFromProject.Class1.Issue10332.SampleEnum.html",
+    "title": "Enum Class1.Issue10332.SampleEnum | docfx seed website",
+    "summary": "Enum Class1.Issue10332.SampleEnum Namespace BuildFromProject Assembly BuildFromProject.dll public enum Class1.Issue10332.SampleEnum Fields AAA = 0 3rd element when sorted by alphabetic order aaa = 1 2nd element when sorted by alphabetic order _aaa = 2 1st element when sorted by alphabetic order"
+  },
+  "api/BuildFromProject.Class1.Issue10332.html": {
+    "href": "api/BuildFromProject.Class1.Issue10332.html",
+    "title": "Class Class1.Issue10332 | docfx seed website",
+    "summary": "Class Class1.Issue10332 Namespace BuildFromProject Assembly BuildFromProject.dll public class Class1.Issue10332 Inheritance object Class1.Issue10332 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods IRoutedView() public void IRoutedView() IRoutedView<TViewModel>() public void IRoutedView<TViewModel>() Type Parameters TViewModel IRoutedViewModel() public void IRoutedViewModel() Method() public void Method() Method(int) public void Method(int a) Parameters a int Method(int, int) public void Method(int a, int b) Parameters a int b int Null(object?) public void Null(object? obj) Parameters obj object Null<T>(T) public void Null<T>(T obj) Parameters obj T Type Parameters T NullOrEmpty(string) public void NullOrEmpty(string text) Parameters text string"
+  },
   "api/BuildFromProject.Class1.Issue8665.html": {
     "href": "api/BuildFromProject.Class1.Issue8665.html",
     "title": "Class Class1.Issue8665 | docfx seed website",
@@ -157,7 +167,7 @@
   "api/BuildFromProject.html": {
     "href": "api/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "summary": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Inheritdoc.Issue9736 Inheritdoc.Issue9736.JsonApiOptions Issue8725 A nice class Structs Inheritdoc.Issue8129 Interfaces Class1.IIssue8948 IInheritdoc Inheritdoc.Issue9736.IJsonApiOptions Enums Class1.Issue9260"
+    "summary": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue10332 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Inheritdoc.Issue9736 Inheritdoc.Issue9736.JsonApiOptions Issue8725 A nice class Structs Inheritdoc.Issue8129 Interfaces Class1.IIssue8948 IInheritdoc Inheritdoc.Issue9736.IJsonApiOptions Enums Class1.Issue10332.SampleEnum Class1.Issue9260"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",
@@ -314,6 +324,16 @@
     "title": "Interface Class1.IIssue8948 | docfx seed website",
     "summary": "Interface Class1.IIssue8948 Preview DOCFX001: 'BuildFromProject.Class1.IIssue8948' is for evaluation purposes only and is subject to change or removal in future updates. Namespace BuildFromProject Assembly BuildFromProject.dll public interface Class1.IIssue8948 Methods DoNothing<T>() Does nothing with generic type T. void DoNothing<T>() Type Parameters T A generic type."
   },
+  "apipage/BuildFromProject.Class1.Issue10332.SampleEnum.html": {
+    "href": "apipage/BuildFromProject.Class1.Issue10332.SampleEnum.html",
+    "title": "Enum Class1.Issue10332.SampleEnum | docfx seed website",
+    "summary": "Enum Class1.Issue10332.SampleEnum Preview DOCFX001: 'BuildFromProject.Class1.Issue10332.SampleEnum' is for evaluation purposes only and is subject to change or removal in future updates. Namespace BuildFromProject Assembly BuildFromProject.dll public enum Class1.Issue10332.SampleEnum Fields AAA = 0 3rd element when sorted by alphabetic order aaa = 1 2nd element when sorted by alphabetic order _aaa = 2 1st element when sorted by alphabetic order"
+  },
+  "apipage/BuildFromProject.Class1.Issue10332.html": {
+    "href": "apipage/BuildFromProject.Class1.Issue10332.html",
+    "title": "Class Class1.Issue10332 | docfx seed website",
+    "summary": "Class Class1.Issue10332 Preview DOCFX001: 'BuildFromProject.Class1.Issue10332' is for evaluation purposes only and is subject to change or removal in future updates. Namespace BuildFromProject Assembly BuildFromProject.dll public class Class1.Issue10332 Inheritance object Class1.Issue10332 Inherited Members object.Equals(object?) object.Equals(object?, object?) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object?, object?) object.ToString() Methods IRoutedView() public void IRoutedView() IRoutedView<TViewModel>() public void IRoutedView<TViewModel>() Type Parameters TViewModel IRoutedViewModel() public void IRoutedViewModel() Method() public void Method() Method(int) public void Method(int a) Parameters a int Method(int, int) public void Method(int a, int b) Parameters a int b int Null(object?) public void Null(object? obj) Parameters obj object? Null<T>(T) public void Null<T>(T obj) Parameters obj T Type Parameters T NullOrEmpty(string) public void NullOrEmpty(string text) Parameters text string"
+  },
   "apipage/BuildFromProject.Class1.Issue8665.html": {
     "href": "apipage/BuildFromProject.Class1.Issue8665.html",
     "title": "Class Class1.Issue8665 | docfx seed website",
@@ -442,7 +462,7 @@
   "apipage/BuildFromProject.html": {
     "href": "apipage/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "summary": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Inheritdoc.Issue9736 Inheritdoc.Issue9736.JsonApiOptions Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Inheritdoc.Issue9736.IJsonApiOptions Enums Class1.Issue9260"
+    "summary": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Dog Class representing a dog. Inheritdoc Class1.Issue10332 Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Inheritdoc.Issue9736 Inheritdoc.Issue9736.JsonApiOptions Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Inheritdoc.Issue9736.IJsonApiOptions Enums Class1.Issue9260 Class1.Issue10332.SampleEnum"
   },
   "apipage/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "apipage/BuildFromVBSourceCode.BaseClass1.html",
@@ -634,6 +654,16 @@
     "title": "Interface Class1.IIssue8948 | docfx seed website",
     "summary": "Interface Class1.IIssue8948 Namespace: BuildFromProject Assembly: BuildFromProject.dll public interface Class1.IIssue8948 Methods DoNothing<T>() Does nothing with generic type T. void DoNothing<T>() Type Parameters T A generic type."
   },
+  "md/BuildFromProject.Class1.Issue10332.SampleEnum.html": {
+    "href": "md/BuildFromProject.Class1.Issue10332.SampleEnum.html",
+    "title": "Enum Class1.Issue10332.SampleEnum | docfx seed website",
+    "summary": "Enum Class1.Issue10332.SampleEnum Namespace: BuildFromProject Assembly: BuildFromProject.dll public enum Class1.Issue10332.SampleEnum Fields AAA = 0 3rd element when sorted by alphabetic order aaa = 1 2nd element when sorted by alphabetic order _aaa = 2 1st element when sorted by alphabetic order"
+  },
+  "md/BuildFromProject.Class1.Issue10332.html": {
+    "href": "md/BuildFromProject.Class1.Issue10332.html",
+    "title": "Class Class1.Issue10332 | docfx seed website",
+    "summary": "Class Class1.Issue10332 Namespace: BuildFromProject Assembly: BuildFromProject.dll public class Class1.Issue10332 Inheritance object ← Class1.Issue10332 Inherited Members object.Equals(object?), object.Equals(object?, object?), object.GetHashCode(), object.GetType(), object.MemberwiseClone(), object.ReferenceEquals(object?, object?), object.ToString() Methods IRoutedView() public void IRoutedView() IRoutedView<TViewModel>() public void IRoutedView<TViewModel>() Type Parameters TViewModel IRoutedViewModel() public void IRoutedViewModel() Method() public void Method() Method(int) public void Method(int a) Parameters a int Method(int, int) public void Method(int a, int b) Parameters a int b int Null(object?) public void Null(object? obj) Parameters obj object? Null<T>(T) public void Null<T>(T obj) Parameters obj T Type Parameters T NullOrEmpty(string) public void NullOrEmpty(string text) Parameters text string"
+  },
   "md/BuildFromProject.Class1.Issue8665.html": {
     "href": "md/BuildFromProject.Class1.Issue8665.html",
     "title": "Class Class1.Issue8665 | docfx seed website",
@@ -762,7 +792,7 @@
   "md/BuildFromProject.html": {
     "href": "md/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "summary": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Dog Class representing a dog. Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Inheritdoc.Issue9736 Inheritdoc.Issue9736.JsonApiOptions Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Inheritdoc.Issue9736.IJsonApiOptions Enums Class1.Issue9260"
+    "summary": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Dog Class representing a dog. Inheritdoc Class1.Issue10332 Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Issue8725 A nice class Class1.Issue8948 Inheritdoc.Issue9736 Inheritdoc.Issue9736.JsonApiOptions Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Inheritdoc.Issue9736.IJsonApiOptions Enums Class1.Issue9260 Class1.Issue10332.SampleEnum"
   },
   "md/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "md/BuildFromVBSourceCode.BaseClass1.html",
