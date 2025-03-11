@@ -13,7 +13,6 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
     #region Consts / Fields
     public const string MajorFileName = "xrefmap.yml";
 
-    private readonly object _syncRoot = new();
     private readonly XRefArchiveMode _mode;
     private readonly ZipArchive _archive;
     private readonly List<string> _entries;

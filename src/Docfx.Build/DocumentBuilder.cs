@@ -12,7 +12,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
 
-public class DocumentBuilder : IDisposable
+public sealed class DocumentBuilder : IDisposable
 {
     [ImportMany]
     internal IEnumerable<IDocumentProcessor> Processors { get; set; }
@@ -146,7 +146,7 @@ public class DocumentBuilder : IDisposable
             .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
             .Create();
 
-        _postProcessorsManager.Process(generatedManifest, outputDirectory);
+        _postProcessorsManager.Process(generatedManifest, outputDirectory, cancellationToken);
 
         generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
 

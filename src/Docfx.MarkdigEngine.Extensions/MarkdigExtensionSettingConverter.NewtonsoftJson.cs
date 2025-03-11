@@ -41,7 +41,7 @@ internal partial class MarkdigExtensionSettingConverter
                         var name = prop.Name;
 
                         var options = prop.Value;
-                        if (options.Count() == 0)
+                        if (!options.Any())
                         {
                             return new MarkdigExtensionSetting(name);
                         }

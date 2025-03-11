@@ -18,7 +18,9 @@ partial class ExtractSearchIndex : IPostProcessor
     [GeneratedRegex(@"\s+")]
     private static partial Regex s_regexWhiteSpace();
 
-    private static readonly Regex s_regexCase = new(@"[a-z0-9]+|[A-Z0-9]+[a-z0-9]*|[0-9]+", RegexOptions.Compiled);
+
+    [GeneratedRegex(@"[a-z0-9]+|[A-Z0-9]+[a-z0-9]*|[0-9]+")]
+    private static partial Regex s_regexCase();
 
     private static readonly HashSet<string> s_htmlInlineTags = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -185,7 +187,7 @@ partial class ExtractSearchIndex : IPostProcessor
             return [string.Empty];
         }
         str = WebUtility.HtmlDecode(str);
-        return s_regexCase.Matches(str).Select(m => m.Value).ToArray();
+        return s_regexCase().Matches(str).Select(m => m.Value).ToArray();
     }
 
     private static List<string> GetStemAggregations(string str)

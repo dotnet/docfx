@@ -384,7 +384,7 @@ Some content";
 
         // Test `manifest.json` content
         var manifest = GetOutputManifest();
-        Assert.True(manifest.Files.Count == 1);
+        Assert.Single(manifest.Files);
         Assert.True(manifest.Files[0].Type == Constants.DocumentType.Redirection);
     }
 

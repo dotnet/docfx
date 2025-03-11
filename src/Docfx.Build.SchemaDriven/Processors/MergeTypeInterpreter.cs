@@ -17,9 +17,4 @@ public class MergeTypeInterpreter : IInterpreter
         // TODO implement
         return value;
     }
-
-    private static object MergeCore(object value, IProcessContext context)
-    {
-        return value;
-    }
 }

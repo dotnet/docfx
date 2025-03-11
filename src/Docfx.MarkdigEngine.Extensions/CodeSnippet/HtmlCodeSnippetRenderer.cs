@@ -155,14 +155,14 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         {
             foreach (var (language, aliases) in s_languageAlias.Select(i => (i.Key, i.Value)))
             {
-                Debug.Assert(!language.StartsWith("."));
+                Debug.Assert(!language.StartsWith('.'));
 
                 s_languageByFileExtension.Add(language, language);
                 s_languageByFileExtension.Add($".{language}", language);
 
                 foreach (var alias in aliases)
                 {
-                    Debug.Assert(!alias.StartsWith("."));
+                    Debug.Assert(!alias.StartsWith('.'));
 
                     s_languageByFileExtension.Add(alias, language);
                     s_languageByFileExtension.Add($".{alias}", language);
@@ -416,20 +416,6 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
 
         return sb.ToString();
-    }
-
-    private static bool IsLineInRange(int lineNumber, List<CodeRange> allCodeRanges)
-    {
-        if (allCodeRanges.Count == 0) return true;
-
-        for (int rangeNumber = 0; rangeNumber < allCodeRanges.Count; rangeNumber++)
-        {
-            var range = allCodeRanges[rangeNumber];
-            if (lineNumber >= range.Start && lineNumber <= range.End)
-                return true;
-        }
-
-        return false;
     }
 
     private string GetWarning()

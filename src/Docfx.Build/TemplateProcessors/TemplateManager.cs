@@ -89,7 +89,7 @@ public class TemplateManager
     {
         ArgumentException.ThrowIfNullOrEmpty(outputDirectory);
 
-        if (!resourceNames.Any())
+        if (resourceNames.Count == 0)
             return false;
 
         bool isEmpty = true;

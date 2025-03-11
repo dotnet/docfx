@@ -72,11 +72,7 @@ public static class DocumentExceptionExtensions
     {
         ArgumentNullException.ThrowIfNull(elements);
         ArgumentNullException.ThrowIfNull(action);
-
-        if (parallelism <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(parallelism));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(parallelism);
 
         try
         {

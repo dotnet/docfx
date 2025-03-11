@@ -7,7 +7,7 @@ namespace Docfx.Tests.Common;
 
 public class TestListenerScope : ILoggerListener, IDisposable
 {
-    private static AsyncLocal<List<ILogItem>> s_items = new();
+    private static readonly AsyncLocal<List<ILogItem>> s_items = new();
     private readonly LogLevel _logLevel;
 
     public List<ILogItem> Items => s_items.Value;

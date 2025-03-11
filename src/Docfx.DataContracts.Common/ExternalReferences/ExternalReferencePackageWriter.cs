@@ -7,7 +7,7 @@ using Docfx.Common;
 
 namespace Docfx.DataContracts.Common;
 
-public class ExternalReferencePackageWriter : IDisposable
+public sealed class ExternalReferencePackageWriter : IDisposable
 {
     private readonly ZipArchive _zip;
 

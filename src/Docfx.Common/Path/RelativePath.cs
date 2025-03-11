@@ -447,10 +447,8 @@ public sealed class RelativePath : IEquatable<RelativePath>
 
     private IEnumerable<string> GetSubdirectories(int skip)
     {
-        if (_parts.Length <= skip)
-        {
-            throw new ArgumentOutOfRangeException(nameof(skip));
-        }
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(skip, _parts.Length);
+
         return _parts.Take(_parts.Length - skip - 1);
     }
 

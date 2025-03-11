@@ -13,7 +13,7 @@ public partial class JsonSerializationTest
     /// <summary>
     /// Helper method to validate serialize/deserialize results.
     /// </summary>
-    protected void ValidateJsonRoundTrip<T>(T model)
+    private static void ValidateJsonRoundTrip<T>(T model)
     {
         // 1. Validate serialized result.
         var newtonsoftJson = NewtonsoftJsonUtility.Serialize(model);

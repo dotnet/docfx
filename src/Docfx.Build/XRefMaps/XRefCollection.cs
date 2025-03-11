@@ -44,7 +44,7 @@ internal sealed class XRefCollection
             AddToDownloadList(_uris, cancellationToken);
             var dict = new Dictionary<string, IXRefContainer>();
 
-            while (_processing.Any())
+            while (_processing.Count != 0)
             {
                 Task<IXRefContainer> task = await Task.WhenAny(_processing.Keys)
                                                       .WaitAsync(cancellationToken);

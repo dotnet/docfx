@@ -104,7 +104,7 @@ public partial class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNot
     {
         if (link.StartsWith("http:"))
         {
-            link = "https:" + link.Substring("http:".Length);
+            link = $"https:{link.AsSpan("http:".Length)}";
         }
         if (Uri.TryCreate(link, UriKind.Absolute, out Uri videoLink))
         {
