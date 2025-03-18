@@ -10,11 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - run: gh pr review --approve "$PR_URL"
+      - name: Retrieve Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@d7267f607e9d3fb96fc2fbe83e0af444713e90b7 # v2.3.0
+
+      - name: Auto Approve PR
+        run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - run: gh pr merge --auto --squash "$PR_URL"
+
+      - name: Auto Merge PR
+        run: gh pr merge --auto --squash "$PR_URL"
+        if: ${{ steps.metadata.outputs.package-ecosystem != 'github_actions' }}
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

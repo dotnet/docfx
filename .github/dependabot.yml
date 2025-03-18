@@ -18,7 +18,10 @@ updates:
       patterns:
       - "xunit"
       - "xunit.*"
+      - "xunit.v3"
+      - "xunit.v3.*"
       - "Verify.Xunit"
+      - "Verify.XunitV3"
 
 - package-ecosystem: npm
   target-branch: main
