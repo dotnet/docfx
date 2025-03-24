@@ -61,7 +61,7 @@ public static class TestUtility
                     actualHtml.Replace("\r", "").Replace("\n", ""));
             }
 
-            Assert.AreEqual(errors.OrderBy(_ => _), actualErrors.OrderBy(_ => _));
+            CollectionAssert.AreEqual(errors.OrderBy(_ => _).ToArray(), actualErrors.OrderBy(_ => _).ToArray());
 
             if (dependencies != null)
             {
