@@ -492,7 +492,7 @@ End Namespace
                     "System.Object.GetType",
                     "System.Object.Finalize",
                     "System.Object.MemberwiseClone",
-                }.OrderBy(s => s),
+                }.OrderBy(s => s).ToArray(),
                 inheritedMembers.OrderBy(s => s).ToArray());
         }
     }
