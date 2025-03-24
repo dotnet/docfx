@@ -97,7 +97,7 @@ items:
         var outputFilePath = Path.Combine(_outputFolder, outputFileName);
         Assert.IsTrue(File.Exists(outputFilePath));
 
-        Assert.AreEqual(@"
+        CollectionAssert.AreEqual(@"
 <p><strong>Hello</strong></p>
 <p>1<strong>Hello</strong></p>
 <p>1.1<strong>Hello</strong></p>
@@ -157,7 +157,7 @@ items:
         var outputFilePath = Path.Combine(_outputFolder, outputFileName);
         Assert.IsTrue(File.Exists(outputFilePath));
         var outputFileContent = File.ReadAllLines(outputFilePath);
-        Assert.AreEqual(@"
+        CollectionAssert.AreEqual(@"
 eat:<p>eat event of cat. Every cat must implement this event.
 This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></p>
 |666|<span>net472</span><span>netstandard2_0</span>".Split(["\r\n", "\n"], StringSplitOptions.None),
