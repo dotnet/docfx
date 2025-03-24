@@ -4,7 +4,6 @@
 using System.Text.Json;
 using Docfx.MarkdigEngine.Extensions;
 using Markdig.Extensions.SmartyPants;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
@@ -13,13 +12,14 @@ namespace Docfx.MarkdigEngine.Tests;
 /// Unit tests for markdig <see cref="SmartyPantsExtension"/>.
 /// </summary>
 /// <seealso href="https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/SmartyPantsSpecs.md"/>
-[Trait("Related", "MarkdigExtension")]
+[TestProperty("Related", "MarkdigExtension")]
+[TestClass]
 public class SmartyPantsTest
 {
     /// <summary>
     /// SmartyPants extension is not enabled by docfx default.
     /// </summary>
-    [Fact]
+    [TestMethod]
     public void SmartyPantsTest_DocfxDefault()
     {
         string content = "This is a \"text 'with\" a another text'";
@@ -28,7 +28,7 @@ public class SmartyPantsTest
         TestUtility.VerifyMarkup(content, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void SmartyPantsTest_Default()
     {
         string content = "This is a \"text 'with\" a another text'";
@@ -39,7 +39,8 @@ public class SmartyPantsTest
 
     // Currently custom mapping is not works as expected.
     // Because SmartyPantOptions.Mapping is defined as setter-only property. It's not deserialized by default.
-    [Fact(Skip = "Currently custom mapping is not supported.")]
+    [TestMethod]
+    [Ignore("Currently custom mapping is not supported.")]
     public void SmartyPantsTest_Custom()
     {
         var options = new SmartyPantOptions();

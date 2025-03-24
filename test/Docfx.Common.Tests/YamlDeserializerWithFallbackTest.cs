@@ -1,41 +1,42 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
 using YamlDotNet.Core;
 
 namespace Docfx.Common.Tests;
 
+[TestClass]
 public class YamlDeserializerWithFallbackTest
 {
-    [Fact]
+    [TestMethod]
     public void TestYamlDeserializerWithFallback()
     {
         var deserializer = YamlDeserializerWithFallback.Create<string>()
             .WithFallback<List<string>>();
         {
             var obj = deserializer.Deserialize(() => new StringReader("A"));
-            Assert.NotNull(obj);
-            var a = Assert.IsType<string>(obj);
-            Assert.Equal("A", a);
+            Assert.IsNotNull(obj);
+            Assert.IsInstanceOfType<string>(obj);
+            Assert.AreEqual("A", (string)obj);
         }
         {
             var obj = deserializer.Deserialize(() => new StringReader(@"- A
 - B"));
-            Assert.NotNull(obj);
-            var a = Assert.IsType<List<string>>(obj);
-            Assert.Equal("A", a[0]);
-            Assert.Equal("B", a[1]);
+            Assert.IsNotNull(obj);
+            Assert.IsInstanceOfType<List<string>>(obj);
+            var a = (List<string>)obj;
+            Assert.AreEqual("A", a[0]);
+            Assert.AreEqual("B", a[1]);
         }
         {
             var ex = Assert.Throws<YamlException>(() => deserializer.Deserialize(() => new StringReader(@"- A
 - A: abc")));
-            Assert.Equal(2, ex.Start.Line);
-            Assert.Equal(3, ex.Start.Column);
+            Assert.AreEqual(2, ex.Start.Line);
+            Assert.AreEqual(3, ex.Start.Column);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestYamlDeserializerWithFallback_MultiFallback()
     {
         var deserializer = YamlDeserializerWithFallback.Create<int>()
@@ -43,29 +44,30 @@ public class YamlDeserializerWithFallbackTest
             .WithFallback<string[]>();
         {
             var obj = deserializer.Deserialize(() => new StringReader("1"));
-            Assert.NotNull(obj);
-            var a = Assert.IsType<int>(obj);
-            Assert.Equal(1, a);
+            Assert.IsNotNull(obj);
+            Assert.IsInstanceOfType<int>(obj);
+            Assert.AreEqual(1, (int)obj);
         }
         {
             var obj = deserializer.Deserialize(() => new StringReader("A"));
-            Assert.NotNull(obj);
-            var a = Assert.IsType<string>(obj);
-            Assert.Equal("A", a);
+            Assert.IsNotNull(obj);
+            Assert.IsInstanceOfType<string>(obj);
+            Assert.AreEqual("A", (string)obj);
         }
         {
             var obj = deserializer.Deserialize(() => new StringReader(@"- A
 - B"));
-            Assert.NotNull(obj);
-            var a = Assert.IsType<string[]>(obj);
-            Assert.Equal("A", a[0]);
-            Assert.Equal("B", a[1]);
+            Assert.IsNotNull(obj);
+            Assert.IsInstanceOfType<string[]>(obj);
+            var a = (string[])obj;
+            Assert.AreEqual("A", a[0]);
+            Assert.AreEqual("B", a[1]);
         }
         {
             var ex = Assert.Throws<YamlException>(() => deserializer.Deserialize(() => new StringReader(@"- A
 - A: abc")));
-            Assert.Equal(2, ex.Start.Line);
-            Assert.Equal(3, ex.Start.Column);
+            Assert.AreEqual(2, ex.Start.Line);
+            Assert.AreEqual(3, ex.Start.Column);
         }
     }
 }

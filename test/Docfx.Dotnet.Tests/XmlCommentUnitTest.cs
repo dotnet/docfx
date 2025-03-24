@@ -1,55 +1,52 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.Dotnet.Tests;
 
+[TestClass]
 public class XmlCommentUnitTest
 {
     private static void Verify(string comment, string summary)
     {
-        Assert.Equal(
-            summary,
-            XmlComment.Parse($"<summary>{comment}</summary>").Summary,
-            ignoreLineEndingDifferences: true);
+        Assert.AreEqual(
+            summary.ReplaceLineEndings(),
+            XmlComment.Parse($"<summary>{comment}</summary>").Summary.ReplaceLineEndings());
     }
 
-    [Fact]
-    public static void SeeLangword()
+    [TestMethod]
+    public void SeeLangword()
     {
         Verify("<see langword=\"if\" />", "<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/statements/selection-statements#the-if-statement\">if</a>");
         Verify("<see langword=\"undefined-langword\" />", "<code>undefined-langword</code>");
     }
 
-    [Fact]
-    public static void ParaNewLine()
+    [TestMethod]
+    public void ParaNewLine()
     {
-        Assert.Equal(
+        Assert.AreEqual(
             """
             a
             <p>b</p>
             <p>c</p>
-            """,
+            """.ReplaceLineEndings(),
             XmlComment.Parse("""
                 <summary>
                 a
                 <para>b</para>
                 <para>c</para>
                 </summary>
-                """).Summary,
-            ignoreLineEndingDifferences: true);
+                """).Summary.ReplaceLineEndings());
     }
 
-    [Fact]
-    public static void Issue8122()
+    [TestMethod]
+    public void Issue8122()
     {
         var comment = XmlComment.Parse("<seealso href=\"#\">Foo's</seealso>");
-        Assert.Equal("Foo's", comment.SeeAlsos[0].AltText);
+        Assert.AreEqual("Foo's", comment.SeeAlsos[0].AltText);
     }
 
-    [Fact]
-    public static void Issue4165()
+    [TestMethod]
+    public void Issue4165()
     {
         var comment = XmlComment.Parse(
             """
@@ -58,18 +55,18 @@ public class XmlCommentUnitTest
               <param name="args">arg2</param>
             </doc>
             """);
-        Assert.Equal("arg1", comment.Parameters["args"]);
+        Assert.AreEqual("arg1", comment.Parameters["args"]);
     }
 
-    [Fact]
-    public static void Issue8965()
+    [TestMethod]
+    public void Issue8965()
     {
         Verify("<seealso href=\"https://github.com\"><em>See also on MDN</em></seealso>", "<a href=\"https://github.com\">\n  <em>See also on MDN</em>\n</a>");
         Verify("<see href=\"https://github.com\"><em>See also on MDN</em></see>", "<a href=\"https://github.com\">\n  <em>See also on MDN</em>\n</a>");
     }
 
-    [Fact]
-    public static void BasicCodeBlock()
+    [TestMethod]
+    public void BasicCodeBlock()
     {
         var comment = XmlComment.Parse(
             """
@@ -83,19 +80,18 @@ public class XmlCommentUnitTest
             </remarks>
             """);
 
-        Assert.Equal(
+        Assert.AreEqual(
             """
             <pre><code class="lang-csharp">public int Main(string[] args)
             {
                 Console.HelloWorld();
             }</code></pre>
-            """,
-            comment.Remarks,
-            ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(),
+            comment.Remarks.ReplaceLineEndings());
     }
 
-    [Fact]
-    public static void ExternalCodeBlockCSharp()
+    [TestMethod]
+    public void ExternalCodeBlockCSharp()
     {
         var example = """
             using System;
@@ -122,7 +118,7 @@ public class XmlCommentUnitTest
             """,
             new() { ResolveCode = _ => example });
 
-        Assert.Equal(
+        Assert.AreEqual(
             """
             <pre><code class="lang-cs">static class Program
             {
@@ -131,12 +127,11 @@ public class XmlCommentUnitTest
                     Console.HelloWorld();
                 }
             }</code></pre>
-            """,
-            comment.Remarks,
-            ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(),
+            comment.Remarks.ReplaceLineEndings());
     }
 
-    [Fact]
+    [TestMethod]
     public void ExternalCodeBlockXaml()
     {
         var example = """
@@ -162,20 +157,19 @@ public class XmlCommentUnitTest
 
         var commentModel = XmlComment.Parse(input, new() { ResolveCode = _ => example });
 
-        Assert.Equal(
+        Assert.AreEqual(
             """
             This is an example using source reference in a xaml file.
             <pre><code class="lang-xaml">&lt;Grid&gt;
               &lt;TextBlock Text="Hello World" /&gt;
             &lt;/Grid&gt;</code></pre>
-            """,
-            commentModel.Examples.Single(),
-            ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(),
+            commentModel.Examples.Single().ReplaceLineEndings());
     }
 
-    [Theory]
-    [InlineData("<example><code source='Example.cs' region='SDK_CustomProcessor' /></example>")]
-    [InlineData("""
+    [TestMethod]
+    [DataRow("<example><code source='Example.cs' region='SDK_CustomProcessor' /></example>")]
+    [DataRow("""
         <example>
           <code source='Example.cs' region='SDK_CustomProcessor' />
         </example>
@@ -193,17 +187,17 @@ public class XmlCommentUnitTest
                 #endregion
                 """
         });
-        Assert.Equal(
+
+        Assert.AreEqual(
             """
             <pre><code class="lang-cs">using System;
             using System.Collections.Generic;</code></pre>
-            """,
-            commentModel.Examples.Single(),
-            ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(),
+            commentModel.Examples.Single().ReplaceLineEndings());
     }
 
-    [Fact]
-    public static void MarkdownCodeBlock()
+    [TestMethod]
+    public void MarkdownCodeBlock()
     {
         var comment = XmlComment.Parse(
             """
@@ -232,14 +226,14 @@ public class XmlCommentUnitTest
             </doc>
             """);
 
-        Assert.Equal("""
+        Assert.AreEqual("""
             public int Main(string[] args)
             {
                 Console.HelloWorld();
             }
-            """, comment.Summary, ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(), comment.Summary.ReplaceLineEndings());
 
-        Assert.Equal("""
+        Assert.AreEqual("""
             For example:
 
                 public int Main(string[] args)
@@ -253,17 +247,17 @@ public class XmlCommentUnitTest
                 return 0
             }
             ```
-            """, comment.Remarks, ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(), comment.Remarks.ReplaceLineEndings());
     }
 
-    [Fact]
-    public static void MarkdownCodeInline()
+    [TestMethod]
+    public void MarkdownCodeInline()
     {
         Verify("Inline `&lt;angle brackets&gt;`", "Inline `<angle brackets>`");
     }
 
-    [Fact]
-    public static void Issue9216()
+    [TestMethod]
+    public void Issue9216()
     {
         Verify(
             """
@@ -278,7 +272,7 @@ public class XmlCommentUnitTest
             """);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestXmlCommentParser()
     {
         var input = """
@@ -371,22 +365,22 @@ public class XmlCommentUnitTest
         var commentModel = XmlComment.Parse(input);
 
         var summary = commentModel.Summary;
-        Assert.Equal("""
+        Assert.AreEqual("""
             Partial classes <xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref><xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref>can not cross assemblies, Test <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
 
             ```
             Classes in assemblies are by definition complete.
             ```
-            """, summary, ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(), summary.ReplaceLineEndings());
 
         var returns = commentModel.Returns;
-        Assert.Equal("Task<xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref> returns", returns);
+        Assert.AreEqual("Task<xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref> returns", returns);
 
         var paramInput = commentModel.Parameters["input"];
-        Assert.Equal("This is <xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref>the input", paramInput);
+        Assert.AreEqual("This is <xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref>the input", paramInput);
 
         var remarks = commentModel.Remarks;
-        Assert.Equal("""
+        Assert.AreEqual("""
             <a href="https://example.org">https://example.org</a>
             <a href="https://example.org">example</a>
             <p>This is <code class="paramref">ref</code> a sample of exception node</p>
@@ -401,16 +395,16 @@ public class XmlCommentUnitTest
                     </li><li>item2 in bullet list</li><li>
                     loose text <i>not</i> wrapped in description
                 </li></ul>
-            """, remarks, ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(), remarks.ReplaceLineEndings());
 
         var exceptions = commentModel.Exceptions;
-        Assert.Single(exceptions);
-        Assert.Equal("System.Xml.XmlException", exceptions[0].Type);
-        Assert.Equal(@"This is a sample of exception node. Ref <a href=""http://exception.com"">Exception</a>", exceptions[0].Description);
+        Assert.ContainsSingle(exceptions);
+        Assert.AreEqual("System.Xml.XmlException", exceptions[0].Type);
+        Assert.AreEqual(@"This is a sample of exception node. Ref <a href=""http://exception.com"">Exception</a>", exceptions[0].Description);
 
-        Assert.Collection(
-            commentModel.Examples,
-            e => Assert.Equal(
+        Assert.AreEqual(4, commentModel.Examples.Count);
+
+        Assert.AreEqual(
                 """
                 This sample shows how to call the <see cref="M: Docfx.EntityModel.XmlCommentParser.GetExceptions(System.String, Docfx.EntityModel.XmlCommentParserContext)"></see> method.
                 <pre><code class="lang-csharp">class TestClass
@@ -420,36 +414,38 @@ public class XmlCommentUnitTest
                          return GetExceptions(null, null).Count();
                      }
                  }</code></pre>
-                """, e, ignoreLineEndingDifferences: true),
-            e => Assert.Equal(
+                """.ReplaceLineEndings(), commentModel.Examples[0].ReplaceLineEndings());
+
+        Assert.AreEqual(
                 """
                 This is another example
-                """, e, ignoreLineEndingDifferences: true),
-            e => Assert.Equal(
+                """.ReplaceLineEndings(), commentModel.Examples[1].ReplaceLineEndings());
+
+        Assert.AreEqual(
                 """
                 Check empty code.
                 <pre><code class="lang-csharp"></code></pre>
-                """, e, ignoreLineEndingDifferences: true),
-            e => Assert.Equal(
+                """.ReplaceLineEndings(), commentModel.Examples[2].ReplaceLineEndings());
+
+        Assert.AreEqual(
                 """
                 This is an example using source reference.
                 <pre><code class="lang-cs"></code></pre>
-                """, e, ignoreLineEndingDifferences: true)
-            );
+                """.ReplaceLineEndings(), commentModel.Examples[3].ReplaceLineEndings());
 
         commentModel = XmlComment.Parse(input);
 
         var seeAlsos = commentModel.SeeAlsos;
-        Assert.Equal(3, seeAlsos.Count);
-        Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].LinkId);
-        Assert.Null(seeAlsos[0].AltText);
-        Assert.Equal("http://www.bing.com", seeAlsos[1].LinkId);
-        Assert.Equal("Hello Bing", seeAlsos[1].AltText);
-        Assert.Equal("http://www.bing.com", seeAlsos[2].AltText);
-        Assert.Equal("http://www.bing.com", seeAlsos[2].LinkId);
+        Assert.AreEqual(3, seeAlsos.Count);
+        Assert.AreEqual("System.IO.WaitForChangedResult", seeAlsos[0].LinkId);
+        Assert.IsNull(seeAlsos[0].AltText);
+        Assert.AreEqual("http://www.bing.com", seeAlsos[1].LinkId);
+        Assert.AreEqual("Hello Bing", seeAlsos[1].AltText);
+        Assert.AreEqual("http://www.bing.com", seeAlsos[2].AltText);
+        Assert.AreEqual("http://www.bing.com", seeAlsos[2].LinkId);
     }
 
-    [Fact]
+    [TestMethod]
     public void SeeAltText()
     {
         string input = """
@@ -469,31 +465,31 @@ public class XmlCommentUnitTest
         var commentModel = XmlComment.Parse(input);
 
         var summary = commentModel.Summary;
-        Assert.Equal("""
+        Assert.AreEqual("""
             Class summary <xref href="System.AccessViolationException?text=Exception+type" data-throw-if-not-resolved="false"></xref>
-            """, summary, ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(), summary.ReplaceLineEndings());
 
         var returns = commentModel.Returns;
-        Assert.Equal("Returns an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", returns);
+        Assert.AreEqual("Returns an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", returns);
 
         var paramInput = commentModel.Parameters["input"];
-        Assert.Equal("This is an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", paramInput);
+        Assert.AreEqual("This is an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", paramInput);
 
         var remarks = commentModel.Remarks;
-        Assert.Equal("""
+        Assert.AreEqual("""
             See <xref href="System.Int?text=Integer" data-throw-if-not-resolved="false"></xref>.
-            """, remarks, ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(), remarks.ReplaceLineEndings());
     }
 
-    [Fact]
+    [TestMethod]
     public void ParseXmlCommentWithoutRootNode()
     {
         var input = "<summary>A</summary>";
         var commentModel = XmlComment.Parse(input, new XmlCommentParserContext());
-        Assert.Equal("A", commentModel.Summary);
+        Assert.AreEqual("A", commentModel.Summary);
     }
 
-    [Fact]
+    [TestMethod]
     public void Issue9495()
     {
         var comment = XmlComment.Parse(
@@ -518,7 +514,8 @@ public class XmlCommentUnitTest
             ]]></code>
             </example>
             """);
-        Assert.Equal(
+
+        Assert.AreEqual(
             """
             <pre><code class="lang-csharp">options.UseRelativeLinks = true;</code></pre>
 
@@ -534,10 +531,10 @@ public class XmlCommentUnitTest
                  }
               }
             }</code></pre>
-            """, comment.Examples[0], ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(), comment.Examples[0].ReplaceLineEndings());
     }
 
-    [Fact]
+    [TestMethod]
     public void Issue10385()
     {
         var comment = XmlComment.Parse(
@@ -558,7 +555,8 @@ public class XmlCommentUnitTest
             </code>
             </remarks>
             """);
-        Assert.Equal(
+
+        Assert.AreEqual(
             """
             <p>
             Paragraph.
@@ -572,7 +570,7 @@ public class XmlCommentUnitTest
 
                 public int CCC {get;set;}
             }</code></pre>
-            """, comment.Remarks, ignoreLineEndingDifferences: true);
+            """.ReplaceLineEndings(), comment.Remarks.ReplaceLineEndings());
     }
 
 

@@ -8,6 +8,7 @@ using FluentAssertions;
 using FluentAssertions.Equivalency;
 namespace docfx.Tests;
 
+[TestClass]
 public partial class YamlSerializationTest
 {
     private static readonly ThreadLocal<YamlSerializer> YamlJsonSerializer = new(() => new YamlSerializer(SerializationOptions.JsonCompatible | SerializationOptions.DisableAliases));

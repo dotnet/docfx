@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Markdig.Extensions.AutoIdentifiers;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
@@ -10,10 +9,11 @@ namespace Docfx.MarkdigEngine.Tests;
 /// Unit tests for markdig <see cref="AutoIdentifierExtension"/>.
 /// </summary>
 /// <seealso href="https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/AutoIdentifierSpecs.md"/>
-[Trait("Related", "MarkdigExtension")]
+[TestProperty("Related", "MarkdigExtension")]
+[TestClass]
 public class AutoIdentifierTest
 {
-    [Fact]
+    [TestMethod]
     public void AutoIdentifierTest_DocfxDefault()
     {
         // docfx use `AutoIdentifierOptions.GitHub` as default options.
@@ -26,7 +26,7 @@ public class AutoIdentifierTest
         ]);
     }
 
-    [Fact]
+    [TestMethod]
     public void AutoIdentifierTest_MarkdigDefault()
     {
         var content = "# This - is a &@! heading _ with . and ! -";
@@ -44,7 +44,7 @@ public class AutoIdentifierTest
         ]);
     }
 
-    [Fact]
+    [TestMethod]
     public void AutoIdentifierTest_None()
     {
         var content = "# This - is a &@! heading _ with . and ! -";

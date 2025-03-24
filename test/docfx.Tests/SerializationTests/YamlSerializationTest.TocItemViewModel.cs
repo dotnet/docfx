@@ -7,7 +7,7 @@ namespace docfx.Tests;
 
 public partial class YamlSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<TocItemViewModel>]
     public void YamlSerializationTest_TocItemViewModel(string path)
     {

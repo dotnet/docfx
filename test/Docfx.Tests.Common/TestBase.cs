@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using Xunit;
 
 namespace Docfx.Tests.Common;
 
@@ -95,7 +94,7 @@ public class TestBase : IDisposable
 
     public static void AssertJsonEquivalent(JsonElement expected, JsonElement actual)
     {
-        Assert.Equal(expected.ValueKind, actual.ValueKind);
+        Assert.AreEqual(expected.ValueKind, actual.ValueKind);
 
         switch (expected.ValueKind)
         {
@@ -110,7 +109,7 @@ public class TestBase : IDisposable
                 break;
 
             default:
-                Assert.Equal(expected.GetRawText(), actual.GetRawText());
+                Assert.AreEqual(expected.GetRawText(), actual.GetRawText());
                 break;
         }
     }

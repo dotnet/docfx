@@ -4,16 +4,16 @@
 using System.Text;
 using Docfx.Plugins;
 using HtmlAgilityPack;
-using Xunit;
 
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class ExtractSearchIndexFromHtmlTest
 {
     private static readonly ExtractSearchIndex _extractor = new();
 
-    [Fact]
+    [TestMethod]
     public void TestBasicFeature()
     {
         var rawHtml = @"
@@ -39,10 +39,10 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Hello World, Microsoft This is article title docfx can do anything..." }, item);
+        Assert.AreEqual(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Hello World, Microsoft This is article title docfx can do anything..." }, item);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestMRefMetadata()
     {
         var rawHtml = @"
@@ -75,7 +75,7 @@ public class ExtractSearchIndexFromHtmlTest
             ["Title"] = "ManagedReferenceExample",
             ["Summary"] = "Lorem Ipsum",
         });
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Hello World, Microsoft This is article title docfx can do anything..." }, itemNoMetadata);
+        Assert.AreEqual(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Hello World, Microsoft This is article title docfx can do anything..." }, itemNoMetadata);
         _extractor.UseMetadata = true;
         _extractor.UseMetadataTitle = true;
         var itemWithMetadata = _extractor.ExtractItem(html, href, new()
@@ -84,7 +84,7 @@ public class ExtractSearchIndexFromHtmlTest
             ["Title"] = "ManagedReferenceExample",
             ["Summary"] = "Lorem Ipsum",
         });
-        Assert.Equal(new SearchIndexItem
+        Assert.AreEqual(new SearchIndexItem
         {
             Href = href,
             Title = "ManagedReferenceExample",
@@ -98,7 +98,7 @@ public class ExtractSearchIndexFromHtmlTest
             ["Title"] = "ManagedReferenceExample",
             ["Summary"] = "Lorem Ipsum",
         });
-        Assert.Equal(new SearchIndexItem
+        Assert.AreEqual(new SearchIndexItem
         {
             Href = href,
             Title = "This is title in head metadata",
@@ -107,7 +107,7 @@ public class ExtractSearchIndexFromHtmlTest
         }, itemWithMetadataNoTitle);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestSearchableClass()
     {
         var rawHtml = @"
@@ -124,10 +124,10 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Cooooooool!" }, item);
+        Assert.AreEqual(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Cooooooool!" }, item);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestSearchDisableClass()
     {
         var rawHtml = @"
@@ -150,10 +150,10 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Null(item);
+        Assert.IsNull(item);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestArticleTagWithSearchableClass()
     {
         var rawHtml = @"
@@ -172,10 +172,10 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Only index once." }, item);
+        Assert.AreEqual(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = "Only index once." }, item);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestDisableTagWithSearchableClass()
     {
         var rawHtml = @"
@@ -196,10 +196,10 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Null(item);
+        Assert.IsNull(item);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestEmptyItem()
     {
         var rawHtml = @"
@@ -215,10 +215,10 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = string.Empty }, item);
+        Assert.AreEqual(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Summary = string.Empty }, item);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBlockTagsVsInlineTags()
     {
         var rawHtml = @"
@@ -235,10 +235,10 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "", Summary = "Insert space in block level html tags Donotinsertspaceininlinehtmltags" }, item);
+        Assert.AreEqual(new SearchIndexItem { Href = href, Title = "", Summary = "Insert space in block level html tags Donotinsertspaceininlinehtmltags" }, item);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestIndexDotJsonWithNonEnglishCharacters()
     {
         var rawHtml = @"
@@ -294,6 +294,6 @@ public class ExtractSearchIndexFromHtmlTest
   }
 }";
         var actualIndexJSON = File.ReadAllText(Path.Combine(tempTestFolder, "index.json"), Encoding.UTF8);
-        Assert.Equal(expectedIndexJSON, actualIndexJSON, ignoreLineEndingDifferences: true);
+        Assert.AreEqual(expectedIndexJSON.ReplaceLineEndings(), actualIndexJSON.ReplaceLineEndings());
     }
 }

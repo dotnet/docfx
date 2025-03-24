@@ -5,11 +5,10 @@ using Docfx.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 
-using Xunit;
-
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class ValidateBookmarkTest : TestBase
 {
     private readonly string _outputFolder;
@@ -29,7 +28,7 @@ public class ValidateBookmarkTest : TestBase
         base.Dispose();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBasicFeature()
     {
         Manifest manifest = new()
@@ -70,8 +69,8 @@ public class ValidateBookmarkTest : TestBase
             Logger.UnregisterListener(_listener);
         }
         var logs = _listener.Items;
-        Assert.Equal(5, logs.Count);
-        Assert.True(logs.All(l => l.Code == WarningCodes.Build.InvalidBookmark));
+        Assert.AreEqual(5, logs.Count);
+        Assert.IsTrue(logs.All(l => l.Code == WarningCodes.Build.InvalidBookmark));
         var expected = new[]
         {
             Tuple.Create("Invalid link: '[link with source info](a.md#b2)'. The file a.md doesn't contain a bookmark named 'b2'.", "b.md"),
@@ -81,10 +80,10 @@ public class ValidateBookmarkTest : TestBase
             Tuple.Create("Invalid link: '[local link in token file](#b3)'. The file g.md doesn't contain a bookmark named 'b3'.", "token.md"),
         };
         var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
-        Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
+        Assert.IsTrue(!expected.Except(actual).Any() && expected.Length == actual.Count);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestNoCheck()
     {
         // Arrange
@@ -116,16 +115,16 @@ public class ValidateBookmarkTest : TestBase
 
         // Assert
         var logs = _listener.Items;
-        Assert.Single(logs);
+        Assert.ContainsSingle(logs);
         var expected = new[]
         {
             Tuple.Create("Invalid link: '<a href=\"#invalid\">test</a>'. The file test.md doesn't contain a bookmark named 'invalid'.", "test.md"),
         };
         var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
-        Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
+        Assert.IsTrue(!expected.Except(actual).Any() && expected.Length == actual.Count);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestLinkThatContainsNonAsciiChars()
     {
         Manifest manifest = new()
@@ -157,6 +156,6 @@ public class ValidateBookmarkTest : TestBase
             Logger.UnregisterListener(_listener);
         }
         var logs = _listener.Items;
-        Assert.Empty(logs);
+        Assert.IsEmpty(logs);
     }
 }

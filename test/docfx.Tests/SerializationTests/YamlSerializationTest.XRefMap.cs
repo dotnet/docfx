@@ -7,7 +7,7 @@ namespace docfx.Tests;
 
 public partial class YamlSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<XRefMap>]
     public void YamlSerializationTest_XRefMap(string path)
     {

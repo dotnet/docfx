@@ -7,7 +7,7 @@ namespace docfx.Tests;
 
 public partial class JsonSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<FileMetadataPairs>]
     public void JsonSerializationTest_FileMetadataPairs(string path)
     {

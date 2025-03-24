@@ -7,7 +7,7 @@ namespace docfx.Tests;
 
 public partial class JsonSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<ListWithStringFallback>]
     public void JsonSerializationTest_ListWithStringFallback(string path)
     {

@@ -5,122 +5,122 @@ using Docfx.Build.RestApi.Swagger;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace Docfx.Build.RestApi.Tests;
 
+[TestClass]
 public class SwaggerJsonParserTest
 {
-    [Fact]
+    [TestMethod]
     public void ParseSimpleSwaggerJsonShouldSucceed()
     {
         var swaggerFile = "TestData/swagger/simple_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-        Assert.Single(swagger.Paths.Values);
+        Assert.ContainsSingle(swagger.Paths.Values);
         var actionJObject = swagger.Paths["/contacts"].Metadata["get"] as JObject;
-        Assert.NotNull(actionJObject);
+        Assert.IsNotNull(actionJObject);
         var action = actionJObject.ToObject<OperationObject>();
         var parameters = action.Parameters;
-        Assert.Single(parameters);
-        Assert.Equal("query", parameters[0].Metadata["in"]);
-        Assert.Single(action.Responses);
+        Assert.ContainsSingle(parameters);
+        Assert.AreEqual("query", parameters[0].Metadata["in"]);
+        Assert.ContainsSingle(action.Responses);
         var response = action.Responses["200"];
-        Assert.Single(response.Examples);
+        Assert.ContainsSingle(response.Examples);
         var example = response.Examples["application/json"];
-        Assert.NotNull(example);
+        Assert.IsNotNull(example);
     }
 
-    [Fact]
+    [TestMethod]
     public void ParseSwaggerJsonWithReferenceShouldSucceed()
     {
         var swaggerFile = "TestData/swagger/ref_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-        Assert.Single(swagger.Paths);
-        Assert.Single(swagger.Paths["/contacts"].Metadata);
+        Assert.ContainsSingle(swagger.Paths);
+        Assert.ContainsSingle(swagger.Paths["/contacts"].Metadata);
         var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;
-        Assert.NotNull(actionJObject);
+        Assert.IsNotNull(actionJObject);
         var action = actionJObject.ToObject<OperationObject>();
         var parameters = action.Parameters;
         var schema = parameters[0].Metadata["schema"] as JObject;
-        Assert.NotNull(schema);
-        Assert.Equal("Sales", schema["example"]["department"].ToString());
+        Assert.IsNotNull(schema);
+        Assert.AreEqual("Sales", schema["example"]["department"].ToString());
 
         // Reference object
         var properties = schema["properties"] as JObject;
-        Assert.NotNull(properties);
-        Assert.Equal(2, properties.Count);
-        Assert.Equal("string", properties["objectType"]["type"]);
-        Assert.Equal("array", properties["provisioningErrors"]["type"]);
+        Assert.IsNotNull(properties);
+        Assert.AreEqual(2, properties.Count);
+        Assert.AreEqual("string", properties["objectType"]["type"]);
+        Assert.AreEqual("array", properties["provisioningErrors"]["type"]);
         var refProperty = properties["provisioningErrors"]["items"]["schema"] as JObject;
-        Assert.NotNull(refProperty);
-        Assert.Equal("string", refProperty["properties"]["errorDetail"]["type"]);
+        Assert.IsNotNull(refProperty);
+        Assert.AreEqual("string", refProperty["properties"]["errorDetail"]["type"]);
 
         schema = parameters[1].Metadata["schema"] as JObject;
         properties = schema["properties"] as JObject;
         var message = properties["message"];
-        Assert.Equal("A message describing the error, intended to be suitable for display in a user interface.", message["description"]);
+        Assert.AreEqual("A message describing the error, intended to be suitable for display in a user interface.", message["description"]);
 
-        Assert.Single(action.Responses);
+        Assert.ContainsSingle(action.Responses);
         var response = action.Responses["204"];
-        Assert.Single(response.Examples);
+        Assert.ContainsSingle(response.Examples);
         var example = response.Examples["application/json"];
-        Assert.NotNull(example);
+        Assert.IsNotNull(example);
     }
 
-    [Fact]
+    [TestMethod]
     public void ParseSwaggerJsonWithTagShouldSucceed()
     {
         const string swaggerFile = "TestData/swagger/tag_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-        Assert.Equal(3, swagger.Tags.Count);
+        Assert.AreEqual(3, swagger.Tags.Count);
         var tag0 = swagger.Tags[0];
-        Assert.Equal("contact", tag0.Name);
-        Assert.Equal("Everything about the **contacts**", tag0.Description);
-        Assert.Equal("contact-bookmark", tag0.BookmarkId);
-        Assert.Single(tag0.Metadata);
+        Assert.AreEqual("contact", tag0.Name);
+        Assert.AreEqual("Everything about the **contacts**", tag0.Description);
+        Assert.AreEqual("contact-bookmark", tag0.BookmarkId);
+        Assert.ContainsSingle(tag0.Metadata);
         var externalDocs = (JObject)tag0.Metadata["externalDocs"];
-        Assert.NotNull(externalDocs);
-        Assert.Equal("Find out more", externalDocs["description"]);
-        Assert.Equal("http://swagger.io", externalDocs["url"]);
+        Assert.IsNotNull(externalDocs);
+        Assert.AreEqual("Find out more", externalDocs["description"]);
+        Assert.AreEqual("http://swagger.io", externalDocs["url"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ParseSwaggerJsonWithPathParametersShouldSucceed()
     {
         const string swaggerFile = "TestData/swagger/pathParameters_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-        Assert.Single(swagger.Paths.Values);
+        Assert.ContainsSingle(swagger.Paths.Values);
         var parameters = swagger.Paths["/contacts"].Parameters;
-        Assert.Equal(2, parameters.Count);
+        Assert.AreEqual(2, parameters.Count);
 
         // $ref parameter
-        Assert.Equal("api-version", parameters[0].Name);
-        Assert.Equal(false, parameters[0].Metadata["required"]);
-        Assert.Equal("api version description", parameters[0].Description);
+        Assert.AreEqual("api-version", parameters[0].Name);
+        Assert.AreEqual(false, parameters[0].Metadata["required"]);
+        Assert.AreEqual("api version description", parameters[0].Description);
 
         // self defined parameter
-        Assert.Equal("subscriptionId", parameters[1].Name);
-        Assert.Equal(true, parameters[1].Metadata["required"]);
-        Assert.Equal("subscription id", parameters[1].Description);
+        Assert.AreEqual("subscriptionId", parameters[1].Name);
+        Assert.AreEqual(true, parameters[1].Metadata["required"]);
+        Assert.AreEqual("subscription id", parameters[1].Description);
     }
 
-    [Fact]
+    [TestMethod]
     public void ParseSwaggerJsonWithLoopReferenceShouldSucceed()
     {
         const string swaggerFile = "TestData/swagger/loopref_swagger2.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-        Assert.Single(swagger.Paths.Values);
+        Assert.ContainsSingle(swagger.Paths.Values);
         var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;
-        Assert.NotNull(actionJObject);
+        Assert.IsNotNull(actionJObject);
         var action = actionJObject.ToObject<OperationObject>();
         var schemaJObject = (JObject)action.Parameters[0].Metadata["schema"];
         var schemaObj = schemaJObject.ToString(Formatting.Indented);
-        Assert.Equal(@"{
+        Assert.AreEqual(@"{
   ""properties"": {
     ""provisioningErrors"": {
       ""type"": ""array"",
@@ -147,19 +147,19 @@ public class SwaggerJsonParserTest
 }".Replace("\r\n", "\n"), schemaObj.Replace("\r\n", "\n"));
     }
 
-    [Fact]
+    [TestMethod]
     public void ParseSwaggerJsonWithExternalLoopReferenceShouldSucceed()
     {
         const string swaggerFile = "TestData/swagger/externalLoopRef_A.json";
         var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
-        Assert.Single(swagger.Paths.Values);
+        Assert.ContainsSingle(swagger.Paths.Values);
         var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;
-        Assert.NotNull(actionJObject);
+        Assert.IsNotNull(actionJObject);
         var action = actionJObject.ToObject<OperationObject>();
         var schemaJObject = (JObject)action.Parameters[0].Metadata["schema"];
         var schemaObj = schemaJObject.ToString(Formatting.Indented);
-        Assert.Equal(@"{
+        Assert.AreEqual(@"{
   ""properties"": {
     ""provisioningErrors"": {
       ""type"": ""array"",
@@ -185,7 +185,7 @@ public class SwaggerJsonParserTest
   }
 }".Replace("\r\n", "\n"), schemaObj.Replace("\r\n", "\n"));
     }
-    [Fact]
+    [TestMethod]
     public void ParseKeyWordSwaggerJsonShouldSucceed()
     {
         var swaggerFile = "TestData/swagger/resolveKeywordWithRefInside.json";
@@ -193,7 +193,7 @@ public class SwaggerJsonParserTest
 
         ///test x-ms-examples: unresolved.
         var xmsexamples = swagger.Metadata["x-ms-examples"] as JObject;
-        Assert.NotNull(xmsexamples["$ref"]);
+        Assert.IsNotNull(xmsexamples["$ref"]);
 
         var get = swagger.Paths["/{resourceUri}/providers/microsoft.insights/metrics"].Metadata["get"] as JObject;
         var responses = get["responses"] as JObject;
@@ -201,35 +201,35 @@ public class SwaggerJsonParserTest
         ///test responses/../examples: unresolved.
         var response200 = responses["200"] as JObject;
         var examplesOfResponse200 = response200["examples"] as JObject;
-        Assert.NotNull(examplesOfResponse200["$ref"]);
+        Assert.IsNotNull(examplesOfResponse200["$ref"]);
 
         ///test responses/examples: resolved.
         var examplesOfResponse = responses["examples"] as JObject;
-        Assert.Null(examplesOfResponse["$ref"]);
+        Assert.IsNull(examplesOfResponse["$ref"]);
 
         ///test parameters/examples: resolved.
         var parameters = get["parameters"] as JObject;
         var examplesOfParameters = parameters["examples"] as JObject;
-        Assert.Null(examplesOfParameters["$ref"]);
+        Assert.IsNull(examplesOfParameters["$ref"]);
 
         ///test definitions/../example: unresolved.
         var definitions = swagger.Definitions as JObject;
         var tag = definitions["Tag"] as JObject;
         var examplesOfTag = tag["example"] as JObject;
-        Assert.NotNull(examplesOfTag["$ref"]);
+        Assert.IsNotNull(examplesOfTag["$ref"]);
 
         ///test definitions/example: resolved.
         var examplesOfDefinitions = definitions["example"] as JObject;
-        Assert.Null(examplesOfDefinitions["$ref"]);
+        Assert.IsNull(examplesOfDefinitions["$ref"]);
 
         ///test properties/../example: unresolved.
         var propertiesOfTag = tag["properties"] as JObject;
         var unresolvedOfTag = propertiesOfTag["unresolved"] as JObject;
         var examplesOfUnresolved = unresolvedOfTag["example"] as JObject;
-        Assert.NotNull(examplesOfUnresolved["$ref"]);
+        Assert.IsNotNull(examplesOfUnresolved["$ref"]);
 
         ///test properties/example: resolved.
         var examplesOfResolved = propertiesOfTag["example"] as JObject;
-        Assert.Null(examplesOfResolved["$ref"]);
+        Assert.IsNull(examplesOfResolved["$ref"]);
     }
 }

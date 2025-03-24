@@ -1,14 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class GeneralTest
 {
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void MarkdigWithDefaultFAL()
     {
         var source = "[!INCLUDE [title](~/token1573.md)]";
@@ -20,8 +19,8 @@ public class GeneralTest
         });
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfm_TaskList_ExtensionDisabledByDefault()
     {
         // Confirm that the [ ] and { } in the middle of list should not be parsed by default.
@@ -33,8 +32,8 @@ public class GeneralTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfm_TaskList_ExtensionEnabled()
     {
         // Confirm that the [ ] and { } in the middle of list should be parsed if the Task List extension is enabled.
@@ -49,8 +48,8 @@ public class GeneralTest
         ]);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfm_MultipleOptionalExtensionsEnabled()
     {
         // Confirm that multiple optional extensions can be enabled at once
@@ -75,8 +74,8 @@ Term 1
         ]);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfm_HeadingId()
     {
         var source = " ### 1. Deploying the network";
@@ -85,7 +84,7 @@ Term 1
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestDfm_LinkDefinition()
     {
         var source = @"![scenario image][scenario]
@@ -98,8 +97,8 @@ Term 1
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfm_EncodeInStrongEM()
     {
         var source = @"tag started with non-alphabet should be encoded <1-100>, <_hello>, <?world>, <1_2 href=""good"">, <1 att='bcd'>.
@@ -111,8 +110,8 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmImageLink_WithSpecialCharactersInAltText()
     {
         var source = @"![This is image alt text with quotation ' and double quotation ""hello"" world](girl.png)";
@@ -122,37 +121,37 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Theory]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     #region Inline Data
-    [InlineData("", "")]
-    [InlineData("<address@example.com>", "<p><a href=\"mailto:address@example.com\">address@example.com</a></p>\n")]
-    [InlineData(" https://github.com/dotnet/docfx/releases ", "<p><a href=\"https://github.com/dotnet/docfx/releases\">https://github.com/dotnet/docfx/releases</a></p>\n")]
-    [InlineData("<http://example.com/>", "<p><a href=\"http://example.com/\">http://example.com/</a></p>\n")]
-    [InlineData("# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n")]
-    [InlineData("Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd>", "<p>Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd></p>\n")]
-    [InlineData("<div>Some text here</div>", "<div>Some text here</div>\n")]
-    [InlineData(@"# Hello @CrossLink1 @'CrossLink2'dummy 
+    [DataRow("", "")]
+    [DataRow("<address@example.com>", "<p><a href=\"mailto:address@example.com\">address@example.com</a></p>\n")]
+    [DataRow(" https://github.com/dotnet/docfx/releases ", "<p><a href=\"https://github.com/dotnet/docfx/releases\">https://github.com/dotnet/docfx/releases</a></p>\n")]
+    [DataRow("<http://example.com/>", "<p><a href=\"http://example.com/\">http://example.com/</a></p>\n")]
+    [DataRow("# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n")]
+    [DataRow("Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd>", "<p>Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd></p>\n")]
+    [DataRow("<div>Some text here</div>", "<div>Some text here</div>\n")]
+    [DataRow(@"# Hello @CrossLink1 @'CrossLink2'dummy 
 @World",
 "<h1 id=\"hello--dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'CrossLink2'\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@World\"></xref></p>\n")]
-    [InlineData("a\n```\nc\n```",
+    [DataRow("a\n```\nc\n```",
 "<p>a</p>\n<pre><code>c\n</code></pre>\n")]
-    [InlineData(" *hello* abc @api__1",
+    [DataRow(" *hello* abc @api__1",
 "<p><em>hello</em> abc <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref></p>\n")]
-    [InlineData("@1abc", "<p>@1abc</p>\n")]
-    [InlineData(@"@api1 @api__1 @api!1 @api@a <abc@api.com> <a.b.c@api.com> @'a p ';@""a!pi"",@api...@api",
+    [DataRow("@1abc", "<p>@1abc</p>\n")]
+    [DataRow(@"@api1 @api__1 @api!1 @api@a <abc@api.com> <a.b.c@api.com> @'a p ';@""a!pi"",@api...@api",
 "<p><xref href=\"api1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api1\"></xref> <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref> <xref href=\"api!1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api!1\"></xref> <xref href=\"api@a\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api@a\"></xref> <a href=\"mailto:abc@api.com\">abc@api.com</a> <a href=\"mailto:a.b.c@api.com\">a.b.c@api.com</a> <xref href=\"a p \" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'a p '\"></xref>;<xref href=\"a!pi\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@&quot;a!pi&quot;\"></xref>,<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api\"></xref>...<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api\"></xref></p>\n")]
-    [InlineData("[name](xref:uid \"title\")", "<p><a href=\"xref:uid\" title=\"title\">name</a></p>\n")]
-    [InlineData("<xref:uid>text", "<p><xref href=\"uid\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:uid&gt;\"></xref>text</p>\n")]
-    [InlineData("<xref:'uid with space'>text", "<p><xref href=\"uid with space\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:'uid with space'&gt;\"></xref>text</p>\n")]
-    [InlineData(
+    [DataRow("[name](xref:uid \"title\")", "<p><a href=\"xref:uid\" title=\"title\">name</a></p>\n")]
+    [DataRow("<xref:uid>text", "<p><xref href=\"uid\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:uid&gt;\"></xref>text</p>\n")]
+    [DataRow("<xref:'uid with space'>text", "<p><xref href=\"uid with space\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:'uid with space'&gt;\"></xref>text</p>\n")]
+    [DataRow(
 "[*a*](xref:uid)",
 "<p><a href=\"xref:uid\"><em>a</em></a></p>\n")]
-    [InlineData(
+    [DataRow(
 @"# <a id=""x""></a>Y",
 @"<h1 id=""x"">Y</h1>
 ")]
-    [InlineData(
+    [DataRow(
 @"# <a name=""x""></a>Y",
 @"<h1 id=""x"">Y</h1>
 ")]
@@ -162,8 +161,8 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmLink_LinkWithSpecialCharactersInTitle()
     {
         var source = @"[text's string](https://www.google.com.sg/?gfe_rd=cr&ei=Xk ""Google's homepage"")";
@@ -172,8 +171,8 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmLink_WithSpecialCharactersInTitle()
     {
         var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is \""hello\"" world."")";
@@ -183,8 +182,8 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmTagValidate()
     {
 
@@ -198,8 +197,8 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestPathUtility_AbsoluteLinkWithBracketAndBracket()
     {
         var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
@@ -208,8 +207,8 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestYaml_InvalidYamlInsideContent()
     {
         var source = @"# Title
@@ -225,8 +224,8 @@ hello world";
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestTabGroup()
     {
         string actual = @"# [title-a](#tab/a)
@@ -254,8 +253,8 @@ content-b
         TestUtility.VerifyMarkup(actual, expected, lineNumber: true);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestTabGroup_2()
     {
         string actual = @"# [title-a](#tab/a)
@@ -306,8 +305,8 @@ content-b
         TestUtility.VerifyMarkup(actual, expected, ["invalid-tab-group"], lineNumber: true);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestAllExtensions()
     {
         string source = @"---

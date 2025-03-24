@@ -3,11 +3,10 @@
 
 using Docfx.Tests.Common;
 
-using Xunit;
-
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class TemplatePageLoaderUnitTest : TestBase
 {
     private readonly string _inputFolder;
@@ -17,32 +16,32 @@ public class TemplatePageLoaderUnitTest : TestBase
         _inputFolder = GetRandomFolder();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestLoaderWhenNoFileExists()
     {
         using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
-        Assert.Empty(listener.Items);
-        Assert.Empty(templates);
+        Assert.IsEmpty(listener.Items);
+        Assert.IsEmpty(templates);
 
         CreateFile("a.js", string.Empty, _inputFolder);
         templates = LoadAllTemplates();
-        Assert.Empty(listener.Items);
-        Assert.Empty(templates);
+        Assert.IsEmpty(listener.Items);
+        Assert.IsEmpty(templates);
 
         // only allows file under root folder
         CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
         templates = LoadAllTemplates();
-        Assert.Empty(listener.Items);
-        Assert.Empty(templates);
+        Assert.IsEmpty(listener.Items);
+        Assert.IsEmpty(templates);
 
         CreateFile("a.tmpl.js", string.Empty, _inputFolder);
         templates = LoadAllTemplates();
-        Assert.Empty(listener.Items);
-        Assert.Empty(templates);
+        Assert.IsEmpty(listener.Items);
+        Assert.IsEmpty(templates);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestLoaderWhenRendererExists()
     {
         CreateFile("a.tmpl", string.Empty, _inputFolder);
@@ -50,21 +49,21 @@ public class TemplatePageLoaderUnitTest : TestBase
         using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
 
-        Assert.Empty(listener.Items);
+        Assert.IsEmpty(listener.Items);
 
-        Assert.Single(templates);
+        Assert.ContainsSingle(templates);
         var template = templates[0];
-        Assert.NotNull(template.Renderer);
-        Assert.Equal(TemplateType.Default, template.TemplateType);
-        Assert.Equal("a", template.Name);
-        Assert.Equal("a", template.Type);
-        Assert.Equal(string.Empty, template.Extension);
-        Assert.Null(template.Preprocessor);
-        Assert.False(template.ContainsGetOptions);
-        Assert.False(template.ContainsModelTransformation);
+        Assert.IsNotNull(template.Renderer);
+        Assert.AreEqual(TemplateType.Default, template.TemplateType);
+        Assert.AreEqual("a", template.Name);
+        Assert.AreEqual("a", template.Type);
+        Assert.AreEqual(string.Empty, template.Extension);
+        Assert.IsNull(template.Preprocessor);
+        Assert.IsFalse(template.ContainsGetOptions);
+        Assert.IsFalse(template.ContainsModelTransformation);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestLoaderWhenPreprocessorExists()
     {
         CreateFile("a.primary.tmpl", string.Empty, _inputFolder);
@@ -73,24 +72,24 @@ public class TemplatePageLoaderUnitTest : TestBase
         using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
 
-        Assert.Empty(listener.Items);
+        Assert.IsEmpty(listener.Items);
 
-        Assert.Single(templates);
+        Assert.ContainsSingle(templates);
         var template = templates[0];
-        Assert.NotNull(template.Renderer);
-        Assert.Equal(TemplateType.Primary, template.TemplateType);
-        Assert.Equal("a.primary", template.Name);
-        Assert.Equal("a", template.Type);
-        Assert.Equal(string.Empty, template.Extension);
-        Assert.NotNull(template.Preprocessor);
-        Assert.False(template.ContainsGetOptions);
-        Assert.True(template.ContainsModelTransformation);
+        Assert.IsNotNull(template.Renderer);
+        Assert.AreEqual(TemplateType.Primary, template.TemplateType);
+        Assert.AreEqual("a.primary", template.Name);
+        Assert.AreEqual("a", template.Type);
+        Assert.AreEqual(string.Empty, template.Extension);
+        Assert.IsNotNull(template.Preprocessor);
+        Assert.IsFalse(template.ContainsGetOptions);
+        Assert.IsTrue(template.ContainsModelTransformation);
 
         var output = template.TransformModel(new { a = 1 });
-        Assert.Null(output);
+        Assert.IsNull(output);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestLoaderWhenStandalonePreprocessorExists()
     {
         CreateFile("a.ext.TMPL.js", "exports.transform = function(){}", _inputFolder);
@@ -98,21 +97,21 @@ public class TemplatePageLoaderUnitTest : TestBase
         using var listener = new TestListenerScope();
         var templates = LoadAllTemplates();
 
-        Assert.Empty(listener.Items);
+        Assert.IsEmpty(listener.Items);
 
-        Assert.Single(templates);
+        Assert.ContainsSingle(templates);
         var template = templates[0];
-        Assert.Null(template.Renderer);
-        Assert.Equal(TemplateType.Default, template.TemplateType);
-        Assert.Equal("a.ext", template.Name);
-        Assert.Equal("a", template.Type);
-        Assert.Equal(".ext", template.Extension);
-        Assert.NotNull(template.Preprocessor);
-        Assert.False(template.ContainsGetOptions);
-        Assert.True(template.ContainsModelTransformation);
+        Assert.IsNull(template.Renderer);
+        Assert.AreEqual(TemplateType.Default, template.TemplateType);
+        Assert.AreEqual("a.ext", template.Name);
+        Assert.AreEqual("a", template.Type);
+        Assert.AreEqual(".ext", template.Extension);
+        Assert.IsNotNull(template.Preprocessor);
+        Assert.IsFalse(template.ContainsGetOptions);
+        Assert.IsTrue(template.ContainsModelTransformation);
 
         var output = template.TransformModel(new { a = 1 });
-        Assert.Null(output);
+        Assert.IsNull(output);
     }
 
     private List<Template> LoadAllTemplates()

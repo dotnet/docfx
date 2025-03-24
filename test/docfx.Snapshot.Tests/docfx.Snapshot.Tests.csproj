@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Playwright" />
     <PackageReference Include="Verify.DiffPlex" />
-    <PackageReference Include="Verify.Xunit" />
+    <PackageReference Include="Verify.MSTest" />
   </ItemGroup>
 
   <ItemGroup>

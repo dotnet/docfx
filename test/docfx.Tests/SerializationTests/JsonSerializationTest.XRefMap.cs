@@ -7,7 +7,7 @@ namespace docfx.Tests;
 
 public partial class JsonSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<XRefMap>]
     public void JsonSerializationTest_XRefMap(string path)
     {

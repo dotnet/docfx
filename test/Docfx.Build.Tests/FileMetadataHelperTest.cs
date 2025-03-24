@@ -3,13 +3,13 @@
 
 using System.Collections.Immutable;
 using Docfx.Glob;
-using Xunit;
 
 namespace Docfx.Build.Engine.Tests;
 
+[TestClass]
 public class FileMetadataHelperTest
 {
-    [Fact]
+    [TestMethod]
     public void TestGetChangedGlobs_AllTheSame()
     {
         var baseDir = "inputFolder";
@@ -38,11 +38,11 @@ public class FileMetadataHelperTest
         });
 
         var actual = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-        Assert.NotNull(actual);
-        Assert.Empty(actual);
+        Assert.IsNotNull(actual);
+        Assert.IsEmpty(actual);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestGetChangedGlobs_AllChanged_With_DifferentBaseDir()
     {
         var patterns = new string[] { "*md", "*.m", "abc", "/[]\\*.cs", "*/*.cs", "**" };
@@ -71,11 +71,11 @@ public class FileMetadataHelperTest
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-        Assert.NotNull(actualResults);
-        Assert.Empty(actualResults);
+        Assert.IsNotNull(actualResults);
+        Assert.IsEmpty(actualResults);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestGetChangedGlobs_AllChanged_With_DifferentPattern()
     {
         var baseDir = "inputFolder";
@@ -106,16 +106,16 @@ public class FileMetadataHelperTest
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-        Assert.NotNull(actualResults);
-        Assert.Equal(12, actualResults.Count);
+        Assert.IsNotNull(actualResults);
+        Assert.AreEqual(12, actualResults.Count);
         var patterns = patternsA.Concat(patternsB).ToList();
         for (var index = 0; index < patterns.Count; index++)
         {
-            Assert.Equal(patterns[index], actualResults[index].Raw);
+            Assert.AreEqual(patterns[index], actualResults[index].Raw);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestGetChangedGlobs_CrossGlobsChanged()
     {
         var baseDir = "inputFolder";
@@ -143,13 +143,13 @@ public class FileMetadataHelperTest
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-        Assert.NotNull(actualResults);
-        Assert.Equal(2, actualResults.Count);
-        Assert.Equal(patterns[0], actualResults[0].Raw);
-        Assert.Equal(patterns[2], actualResults[1].Raw);
+        Assert.IsNotNull(actualResults);
+        Assert.AreEqual(2, actualResults.Count);
+        Assert.AreEqual(patterns[0], actualResults[0].Raw);
+        Assert.AreEqual(patterns[2], actualResults[1].Raw);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestGetChangedGlobs_ReduceGlobsChanged()
     {
         var baseDir = "inputFolder";
@@ -171,12 +171,12 @@ public class FileMetadataHelperTest
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-        Assert.NotNull(actualResults);
-        Assert.Single(actualResults);
-        Assert.Equal(patterns[1], actualResults[0].Raw);
+        Assert.IsNotNull(actualResults);
+        Assert.ContainsSingle(actualResults);
+        Assert.AreEqual(patterns[1], actualResults[0].Raw);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestGetChangedGlobs_IncreaseGlobsChanged()
     {
         var baseDir = "inputFolder";
@@ -205,12 +205,12 @@ public class FileMetadataHelperTest
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-        Assert.NotNull(actualResults);
-        Assert.Single(actualResults);
-        Assert.Equal(patterns[2], actualResults[0].Raw);
+        Assert.IsNotNull(actualResults);
+        Assert.ContainsSingle(actualResults);
+        Assert.AreEqual(patterns[2], actualResults[0].Raw);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestGetChangedGlobs_Changed()
     {
         var baseDir = "inputFolder";
@@ -240,14 +240,14 @@ public class FileMetadataHelperTest
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-        Assert.NotNull(actualResults);
-        Assert.Equal(3, actualResults.Count);
-        Assert.Equal(patterns[5], actualResults[0].Raw);
-        Assert.Equal(patterns[2], actualResults[1].Raw);
-        Assert.Equal(patterns[4], actualResults[2].Raw);
+        Assert.IsNotNull(actualResults);
+        Assert.AreEqual(3, actualResults.Count);
+        Assert.AreEqual(patterns[5], actualResults[0].Raw);
+        Assert.AreEqual(patterns[2], actualResults[1].Raw);
+        Assert.AreEqual(patterns[4], actualResults[2].Raw);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestGetChangedGlobs_Changed_Reverse()
     {
         var baseDir = "inputFolder";
@@ -271,8 +271,8 @@ public class FileMetadataHelperTest
         });
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
-        Assert.NotNull(actualResults);
-        Assert.Single(actualResults);
-        Assert.Equal(patterns[1], actualResults[0].Raw);
+        Assert.IsNotNull(actualResults);
+        Assert.ContainsSingle(actualResults);
+        Assert.AreEqual(patterns[1], actualResults[0].Raw);
     }
 }

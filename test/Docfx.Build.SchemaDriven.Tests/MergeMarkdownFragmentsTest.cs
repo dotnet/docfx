@@ -7,11 +7,11 @@ using Docfx.Plugins;
 using Docfx.Tests.Common;
 
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace Docfx.Build.SchemaDriven.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class MergeMarkdownFragmentsTest : TestBase
 {
     private readonly string _outputFolder;
@@ -43,7 +43,7 @@ public class MergeMarkdownFragmentsTest : TestBase
         _files.Add(DocumentType.Article, [yamlFile], _inputFolder);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestMergeMarkdownFragments()
     {
         // Arrange
@@ -53,15 +53,15 @@ public class MergeMarkdownFragmentsTest : TestBase
         BuildDocument(_files);
 
         // Assert
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.Equal("bob", rawModel["author"]);
+        Assert.AreEqual("bob", rawModel["author"]);
         Assert.Contains("Enables the snoozed or dismissed attribute", rawModel["operations"][0]["summary"].ToString());
         Assert.Contains("Some empty lines between H2 and this paragraph is tolerant", rawModel["definitions"][0]["properties"][0]["description"].ToString());
         Assert.Contains("This is a summary at YAML's", rawModel["summary"].ToString());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestMissingStartingH1CodeHeading()
     {
         // Arrange
@@ -85,15 +85,15 @@ markdown content
 
         var logs = _listener.Items;
         var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.Single(warningLogs);
-        Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
-        Assert.Equal("1", warningLogs.First().Line);
-        Assert.Null(rawModel["summary"]);
+        Assert.ContainsSingle(warningLogs);
+        Assert.AreEqual("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
+        Assert.AreEqual("1", warningLogs.First().Line);
+        Assert.IsNull(rawModel["summary"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestInvalidSpaceMissing()
     {
         // Arrange
@@ -119,15 +119,15 @@ markdown content
 
         var logs = _listener.Items;
         var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.Single(warningLogs);
-        Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
-        Assert.Equal("1", warningLogs.First().Line);
-        Assert.Null(rawModel["summary"]);
+        Assert.ContainsSingle(warningLogs);
+        Assert.AreEqual("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
+        Assert.AreEqual("1", warningLogs.First().Line);
+        Assert.IsNull(rawModel["summary"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestValidSpaceMissing()
     {
         // Arrange
@@ -146,12 +146,12 @@ markdown content
         // Act
         BuildDocument(_files);
 
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
         Assert.Contains("##head_3_without_space", rawModel["summary"].ToString());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestInvalidYaml()
     {
         // Arrange
@@ -180,15 +180,15 @@ markdown content
 
         var logs = _listener.Items;
         var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.Single(warningLogs);
-        Assert.Equal("Unable to parse markdown fragments: Encountered an invalid YAML code block: (Line: 1, Col: 1, Idx: 0) - (Line: 1, Col: 28, Idx: 27): Exception during deserialization", warningLogs.First().Message);
-        Assert.Equal("2", warningLogs.First().Line);
-        Assert.Null(rawModel["summary"]);
+        Assert.ContainsSingle(warningLogs);
+        Assert.AreEqual("Unable to parse markdown fragments: Encountered an invalid YAML code block: (Line: 1, Col: 1, Idx: 0) - (Line: 1, Col: 28, Idx: 27): Exception during deserialization", warningLogs.First().Message);
+        Assert.AreEqual("2", warningLogs.First().Line);
+        Assert.IsNull(rawModel["summary"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestInvalidOPath()
     {
         // Arrange
@@ -218,15 +218,15 @@ markdown content
 
         var logs = _listener.Items;
         var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.Single(warningLogs);
-        Assert.Equal("Unable to parse markdown fragments: operations[id=]/summary is not a valid OPath", warningLogs.First().Message);
-        Assert.Equal("3", warningLogs.First().Line);
-        Assert.Null(rawModel["summary"]);
+        Assert.ContainsSingle(warningLogs);
+        Assert.AreEqual("Unable to parse markdown fragments: operations[id=]/summary is not a valid OPath", warningLogs.First().Message);
+        Assert.AreEqual("3", warningLogs.First().Line);
+        Assert.IsNull(rawModel["summary"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestNotExistedUid()
     {
         // Arrange
@@ -275,14 +275,14 @@ Some empty lines between H2 and this paragraph is tolerant
 
         var logs = _listener.Items;
         var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.Single(warningLogs);
-        Assert.Equal("Unable to find UidDefinition for Uid: uid_not_exist", warningLogs.First().Message);
-        Assert.Empty(rawModel["summary"]);
+        Assert.ContainsSingle(warningLogs);
+        Assert.AreEqual("Unable to find UidDefinition for Uid: uid_not_exist", warningLogs.First().Message);
+        Assert.IsEmpty(rawModel["summary"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestDuplicateOPathsInYamlCodeBlockAndContentsBlock()
     {
         // Arrange
@@ -308,24 +308,24 @@ overwrite in contents block
         // Act
         BuildDocument(_files);
 
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.Equal("name overwrite", rawModel["name"]);
-        Assert.Equal($"<p sourcefile=\"{_inputFolder}/Suppressions.yml.md\" sourcestartlinenumber=\"1\" jsonPath=\"/definitions/0/properties/0/description\">overwrite in yaml block</p>\n", rawModel["definitions"][0]["properties"][0]["description"].ToString());
-        Assert.Equal($"<p sourceFile=\"{_inputFolder}/Suppressions.yml.md\" sourceStartLineNumber=\"14\">overwrite in contents block</p>\n", rawModel["definitions"][0]["properties"][1]["description"].ToString());
+        Assert.AreEqual("name overwrite", rawModel["name"]);
+        Assert.AreEqual($"<p sourcefile=\"{_inputFolder}/Suppressions.yml.md\" sourcestartlinenumber=\"1\" jsonPath=\"/definitions/0/properties/0/description\">overwrite in yaml block</p>\n", rawModel["definitions"][0]["properties"][0]["description"].ToString());
+        Assert.AreEqual($"<p sourceFile=\"{_inputFolder}/Suppressions.yml.md\" sourceStartLineNumber=\"14\">overwrite in contents block</p>\n", rawModel["definitions"][0]["properties"][1]["description"].ToString());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestFragmentsWithIncremental()
     {
         using var listener = new TestListenerScope();
         // first build
         BuildDocument(_files);
 
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.Null(rawModel["summary"]);
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+        Assert.IsNull(rawModel["summary"]);
+        Assert.IsNotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
         ClearLog(listener.Items);
 
         // add fragments
@@ -339,12 +339,12 @@ With [!include[invalid](invalid.md)]",
 
         BuildDocument(_files);
 
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.NotNull(rawModel["summary"]);
+        Assert.IsNotNull(rawModel["summary"]);
         Assert.Contains("I add a summary", rawModel["summary"].ToString());
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
+        Assert.IsNotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+        Assert.IsNotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
         List<string> lastMessages;
         var messages = ClearLog(listener.Items);
 
@@ -361,28 +361,28 @@ With [!include[invalid](invalid.md)]",
 
         BuildDocument(_files);
 
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.NotNull(rawModel["summary"]);
+        Assert.IsNotNull(rawModel["summary"]);
         Assert.Contains("I update a summary", rawModel["summary"].ToString());
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
+        Assert.IsNotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+        Assert.IsNotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
         lastMessages = messages;
         messages = ClearLog(listener.Items);
-        Assert.True(messages.SequenceEqual(lastMessages));
+        Assert.IsTrue(messages.SequenceEqual(lastMessages));
 
         // rebuild
         BuildDocument(_files);
 
-        Assert.True(File.Exists(_rawModelFilePath));
+        Assert.IsTrue(File.Exists(_rawModelFilePath));
         rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-        Assert.NotNull(rawModel["summary"]);
+        Assert.IsNotNull(rawModel["summary"]);
         Assert.Contains("I update a summary", rawModel["summary"].ToString());
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
+        Assert.IsNotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+        Assert.IsNotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
         lastMessages = messages;
         messages = ClearLog(listener.Items);
-        Assert.True(messages.SequenceEqual(lastMessages));
+        Assert.IsTrue(messages.SequenceEqual(lastMessages));
     }
 
     private static List<string> ClearLog(List<ILogItem> items)

@@ -4,7 +4,6 @@
 using Docfx.MarkdigEngine.Extensions;
 using Markdig;
 using Markdig.Syntax;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
@@ -57,16 +56,16 @@ public static class TestUtility
 
             if (html != null)
             {
-                Assert.Equal(
+                Assert.AreEqual(
                     html.Replace("\r", "").Replace("\n", ""),
                     actualHtml.Replace("\r", "").Replace("\n", ""));
             }
 
-            Assert.Equal(errors.OrderBy(_ => _), actualErrors.OrderBy(_ => _));
+            Assert.AreEqual(errors.OrderBy(_ => _), actualErrors.OrderBy(_ => _));
 
             if (dependencies != null)
             {
-                Assert.Equal(dependencies.OrderBy(_ => _), actualDependencies.OrderBy(_ => _));
+                Assert.AreEqual(dependencies.OrderBy(_ => _), actualDependencies.OrderBy(_ => _));
             }
             return actualHtml;
         }

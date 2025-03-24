@@ -14,7 +14,7 @@ public partial class YamlSerializationTest
 {
     private static IDeserializer deserializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
 
-    [Theory]
+    [TestMethod]
     [TestData<ApiPage>]
     public void YamlSerializationTest_ApiPage(string path)
     {

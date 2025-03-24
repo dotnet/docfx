@@ -11,11 +11,11 @@ using Docfx.Plugins;
 using Docfx.Tests.Common;
 
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace Docfx.Build.SchemaDriven.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class SchemaDrivenProcessorTest : TestBase
 {
     private readonly string _outputFolder;
@@ -42,7 +42,7 @@ public class SchemaDrivenProcessorTest : TestBase
         _templateManager = new TemplateManager(["template"], null, _templateFolder);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestRef()
     {
         using var listener = new TestListenerScope();
@@ -86,18 +86,18 @@ items:
         files.Add(DocumentType.Article, [inputFile], _inputFolder);
         BuildDocument(files);
 
-        Assert.Single(listener.Items);
+        Assert.ContainsSingle(listener.Items);
 
         var xrefspec = Path.Combine(_outputFolder, "xrefmap.yml");
         var xrefmap = YamlUtility.Deserialize<XRefMap>(xrefspec);
-        Assert.Empty(xrefmap.References);
+        Assert.IsEmpty(xrefmap.References);
 
         var outputFileName = Path.ChangeExtension(inputFileName, ".html");
 
         var outputFilePath = Path.Combine(_outputFolder, outputFileName);
-        Assert.True(File.Exists(outputFilePath));
+        Assert.IsTrue(File.Exists(outputFilePath));
 
-        Assert.Equal(@"
+        Assert.AreEqual(@"
 <p><strong>Hello</strong></p>
 <p>1<strong>Hello</strong></p>
 <p>1.1<strong>Hello</strong></p>
@@ -114,7 +114,7 @@ items:
             File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()).ToArray());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestXrefResolver()
     {
         using var listener = new TestListenerScope();
@@ -139,32 +139,32 @@ items:
         BuildDocument(files);
 
         // assert
-        Assert.Single(listener.Items);
+        Assert.ContainsSingle(listener.Items);
         listener.Items.Clear();
 
         var xrefspec = Path.Combine(_outputFolder, "xrefmap.yml");
         var xrefmap = YamlUtility.Deserialize<XRefMap>(xrefspec);
-        Assert.Equal(2, xrefmap.References.Count);
-        Assert.Equal(8, xrefmap.References[0].Keys.Count);
-        Assert.Equal(10, xrefmap.References[1].Keys.Count);
+        Assert.AreEqual(2, xrefmap.References.Count);
+        Assert.AreEqual(8, xrefmap.References[0].Keys.Count);
+        Assert.AreEqual(10, xrefmap.References[1].Keys.Count);
 
-        Assert.Equal("ICat", xrefmap.References[0].Name);
-        Assert.Equal("CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)", xrefmap.References[0]["extensionMethods/0"]);
+        Assert.AreEqual("ICat", xrefmap.References[0].Name);
+        Assert.AreEqual("CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)", xrefmap.References[0]["extensionMethods/0"]);
         var outputFileName = Path.ChangeExtension(inputFileName, ".html");
-        Assert.Equal(outputFileName, xrefmap.References[0].Href);
-        Assert.NotNull(xrefmap.References[0]["summary"]);
+        Assert.AreEqual(outputFileName, xrefmap.References[0].Href);
+        Assert.IsNotNull(xrefmap.References[0]["summary"]);
 
         var outputFilePath = Path.Combine(_outputFolder, outputFileName);
-        Assert.True(File.Exists(outputFilePath));
+        Assert.IsTrue(File.Exists(outputFilePath));
         var outputFileContent = File.ReadAllLines(outputFilePath);
-        Assert.Equal(@"
+        Assert.AreEqual(@"
 eat:<p>eat event of cat. Every cat must implement this event.
 This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></p>
 |666|<span>net472</span><span>netstandard2_0</span>".Split(["\r\n", "\n"], StringSplitOptions.None),
             outputFileContent);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestXrefResolverShouldWarnWithEmptyUidReference()
     {
         using var listener = new TestListenerScope();
@@ -179,11 +179,11 @@ This method is within <a class=""xref"" href=""CatLibrary.ICat.html"">ICat</a></
         BuildDocument(files);
 
         // assert
-        Assert.NotEmpty(listener.Items);
-        Assert.Contains(listener.Items, i => i.Code == WarningCodes.Build.UidNotFound);
+        Assert.IsNotEmpty(listener.Items);
+        Assert.Contains(i => i.Code == WarningCodes.Build.UidNotFound, listener.Items);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestValidMetadataReferenceWithIncremental()
     {
         using var listener = new TestListenerScope();
@@ -235,26 +235,26 @@ title: Web Apps Documentation
 
         BuildDocument(files);
 
-        Assert.Equal(4, listener.Items.Count);
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): MetadataReferenceTest,Toc")));
+        Assert.AreEqual(4, listener.Items.Count);
+        Assert.IsNotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): MetadataReferenceTest,Toc")));
         listener.Items.Clear();
 
         var rawModelFilePath = GetRawModelFilePath(inputFileName1);
-        Assert.True(File.Exists(rawModelFilePath));
+        Assert.IsTrue(File.Exists(rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
-        Assert.Equal("overwritten", rawModel["metadata"]["meta"].ToString());
-        Assert.Equal("postbuild1", rawModel["metadata"]["postMeta"].ToString());
-        Assert.Equal("1", rawModel["metadata"]["another"].ToString());
-        Assert.Equal("app-service", rawModel["metadata"]["ms.service"].ToString());
+        Assert.AreEqual("overwritten", rawModel["metadata"]["meta"].ToString());
+        Assert.AreEqual("postbuild1", rawModel["metadata"]["postMeta"].ToString());
+        Assert.AreEqual("1", rawModel["metadata"]["another"].ToString());
+        Assert.AreEqual("app-service", rawModel["metadata"]["ms.service"].ToString());
 
         var rawModelFilePath2 = GetRawModelFilePath(inputFileName2);
-        Assert.True(File.Exists(rawModelFilePath2));
+        Assert.IsTrue(File.Exists(rawModelFilePath2));
         var rawModel2 = JsonUtility.Deserialize<JObject>(rawModelFilePath2);
 
-        Assert.Equal("Hello world!", rawModel2["metadata"]["meta"].ToString());
-        Assert.Equal("2", rawModel2["metadata"]["another"].ToString());
-        Assert.Equal("postbuild2", rawModel2["metadata"]["postMeta"].ToString());
+        Assert.AreEqual("Hello world!", rawModel2["metadata"]["meta"].ToString());
+        Assert.AreEqual("2", rawModel2["metadata"]["another"].ToString());
+        Assert.AreEqual("postbuild2", rawModel2["metadata"]["postMeta"].ToString());
 
         // change dependent markdown
         UpdateFile("toc.md", ["# Updated"], _inputFolder);
@@ -262,19 +262,19 @@ title: Web Apps Documentation
 
         rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
-        Assert.Equal("overwritten", rawModel["metadata"]["meta"].ToString());
-        Assert.Equal("1", rawModel["metadata"]["another"].ToString());
-        Assert.Equal("app-service", rawModel["metadata"]["ms.service"].ToString());
-        Assert.Equal("postbuild1", rawModel["metadata"]["postMeta"].ToString());
+        Assert.AreEqual("overwritten", rawModel["metadata"]["meta"].ToString());
+        Assert.AreEqual("1", rawModel["metadata"]["another"].ToString());
+        Assert.AreEqual("app-service", rawModel["metadata"]["ms.service"].ToString());
+        Assert.AreEqual("postbuild1", rawModel["metadata"]["postMeta"].ToString());
 
         rawModel2 = JsonUtility.Deserialize<JObject>(rawModelFilePath2);
 
-        Assert.Equal("Hello world!", rawModel2["metadata"]["meta"].ToString());
-        Assert.Equal("2", rawModel2["metadata"]["another"].ToString());
-        Assert.Equal("postbuild2", rawModel2["metadata"]["postMeta"].ToString());
+        Assert.AreEqual("Hello world!", rawModel2["metadata"]["meta"].ToString());
+        Assert.AreEqual("2", rawModel2["metadata"]["another"].ToString());
+        Assert.AreEqual("postbuild2", rawModel2["metadata"]["postMeta"].ToString());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestInvalidSchemaDefinition()
     {
         // Json.NET schema has limitation of 1000 calls per hour
@@ -306,7 +306,7 @@ metadata: Web Apps Documentation
         Assert.Throws<InvalidSchemaException>(() => BuildDocument(files));
     }
 
-    [Fact]
+    [TestMethod]
     public void TestInvalidObjectAgainstSchema()
     {
         using var listener = new TestListenerScope();
@@ -335,10 +335,10 @@ metadata: Web Apps Documentation
         files.Add(DocumentType.Article, [inputFile], _inputFolder);
         BuildDocument(files);
         var errors = listener.Items.Where(s => s.Code == "ViolateSchema").ToList();
-        Assert.Single(errors);
+        Assert.ContainsSingle(errors);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestInvalidMetadataReference()
     {
         using var listener = new TestListenerScope();

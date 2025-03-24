@@ -2,13 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Tests.Common;
-using Xunit;
 
 namespace Docfx.Common.Tests;
 
+[TestClass]
 public class FileAbstractLayerTest : TestBase
 {
-    [Fact]
+    [TestMethod]
     public void TestFileAbstractLayerWithRealImplementsShouldReadFileCorrectlyWhenInputNoFallback()
     {
         var input = GetRandomFolder();
@@ -16,15 +16,15 @@ public class FileAbstractLayerTest : TestBase
         var fal = FileAbstractLayerBuilder.Default
             .ReadFromRealFileSystem(input)
             .Create();
-        Assert.True(fal.Exists("~/temp.txt"));
-        Assert.True(fal.Exists("temp.txt"));
-        Assert.False(fal.Exists("~/temp.jpg"));
-        Assert.False(fal.Exists("temp.jpg"));
-        Assert.Equal("👍", fal.ReadAllText("temp.txt"));
-        Assert.Equal(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles());
+        Assert.IsTrue(fal.Exists("~/temp.txt"));
+        Assert.IsTrue(fal.Exists("temp.txt"));
+        Assert.IsFalse(fal.Exists("~/temp.jpg"));
+        Assert.IsFalse(fal.Exists("temp.jpg"));
+        Assert.AreEqual("👍", fal.ReadAllText("temp.txt"));
+        Assert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestFileAbstractLayerWithRealImplementsShouldCopyFileCorrectly()
     {
         var input = GetRandomFolder();
@@ -39,14 +39,14 @@ public class FileAbstractLayerTest : TestBase
         var fal2 = FileAbstractLayerBuilder.Default
             .ReadFromOutput(fal)
             .Create();
-        Assert.True(fal2.Exists("copy.txt"));
-        Assert.False(fal2.Exists("temp.txt"));
-        Assert.Equal("😈", fal2.ReadAllText("copy.txt"));
-        Assert.Equal(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
-        Assert.True(File.Exists(Path.Combine(output, "copy.txt")));
+        Assert.IsTrue(fal2.Exists("copy.txt"));
+        Assert.IsFalse(fal2.Exists("temp.txt"));
+        Assert.AreEqual("😈", fal2.ReadAllText("copy.txt"));
+        Assert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
+        Assert.IsTrue(File.Exists(Path.Combine(output, "copy.txt")));
     }
 
-    [Fact]
+    [TestMethod]
     public void TestFileAbstractLayerWithRealImplementsShouldCreateTwiceForSameFileCorrectly()
     {
         var output = GetRandomFolder();
@@ -59,13 +59,13 @@ public class FileAbstractLayerTest : TestBase
         var fal2 = FileAbstractLayerBuilder.Default
             .ReadFromOutput(fal)
             .Create();
-        Assert.True(fal2.Exists("temp.txt"));
-        Assert.Equal("😆", fal2.ReadAllText("temp.txt"));
-        Assert.Equal(new[] { (RelativePath)"~/temp.txt" }, fal2.GetAllInputFiles());
-        Assert.True(File.Exists(Path.Combine(output, "temp.txt")));
+        Assert.IsTrue(fal2.Exists("temp.txt"));
+        Assert.AreEqual("😆", fal2.ReadAllText("temp.txt"));
+        Assert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal2.GetAllInputFiles());
+        Assert.IsTrue(File.Exists(Path.Combine(output, "temp.txt")));
     }
 
-    [Fact]
+    [TestMethod]
     public void TestFileAbstractLayerWithRealImplementsShouldCopyThenCreateForSameFileCorrectly()
     {
         var input = GetRandomFolder();
@@ -81,10 +81,10 @@ public class FileAbstractLayerTest : TestBase
         var fal2 = FileAbstractLayerBuilder.Default
             .ReadFromOutput(fal)
             .Create();
-        Assert.True(fal2.Exists("copy.txt"));
-        Assert.Equal("😁", fal2.ReadAllText("copy.txt"));
-        Assert.Equal(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
-        Assert.True(File.Exists(Path.Combine(output, "copy.txt")));
-        Assert.Equal("😄", File.ReadAllText(Path.Combine(input, "temp.txt")));
+        Assert.IsTrue(fal2.Exists("copy.txt"));
+        Assert.AreEqual("😁", fal2.ReadAllText("copy.txt"));
+        Assert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
+        Assert.IsTrue(File.Exists(Path.Combine(output, "copy.txt")));
+        Assert.AreEqual("😄", File.ReadAllText(Path.Combine(input, "temp.txt")));
     }
 }

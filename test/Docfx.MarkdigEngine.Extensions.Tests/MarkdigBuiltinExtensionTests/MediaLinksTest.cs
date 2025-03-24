@@ -4,7 +4,6 @@
 using System.Text.Json;
 using Docfx.MarkdigEngine.Extensions;
 using Markdig.Extensions.MediaLinks;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
@@ -12,10 +11,11 @@ namespace Docfx.MarkdigEngine.Tests;
 /// Unit tests for markdig <see cref="MediaLinkExtension"/>.
 /// </summary>
 /// <seealso href="https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/MediaSpecs.md"/>
-[Trait("Related", "MarkdigExtension")]
+[TestProperty("Related", "MarkdigExtension")]
+[TestClass]
 public class MediaLinksTest
 {
-    [Fact]
+    [TestMethod]
     public void MediaLinksTest_Default()
     {
         var content = "![static mp4](https://example.com/video.mp4)";
@@ -26,7 +26,7 @@ public class MediaLinksTest
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["MediaLinks"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void MediaLinksTest_Custom()
     {
         // `ExtensionToMimeType` and `Hosts` property override is not supported.

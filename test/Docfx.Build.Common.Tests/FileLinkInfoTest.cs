@@ -3,13 +3,13 @@
 
 using Docfx.Common;
 using FluentAssertions;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class FileLinkInfoTest
 {
-    [Fact]
+    [TestMethod]
     public void TestFileLinkInfo_EncodedWorkspaceCharacter()
     {
         string fromFileInSource = "articles/vpn-gateway/vpn-gateway-verify-connection-resource-manager.md";

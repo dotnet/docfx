@@ -5,11 +5,10 @@ using Docfx.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 
-using Xunit;
-
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class TemplateProcessorUnitTest : TestBase
 {
     private readonly string _inputFolder;
@@ -23,7 +22,7 @@ public class TemplateProcessorUnitTest : TestBase
         _templateFolder = GetRandomFolder();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestXrefWithTemplate()
     {
         CreateFile("partials/xref.html.tmpl", "<h2>{{uid}}</h2><p>{{summary}}</p>{{#isGood}}Good!{{/isGood}}", _templateFolder);
@@ -40,8 +39,8 @@ public class TemplateProcessorUnitTest : TestBase
         };
         var output = Process("index", "input", new { reference = "reference" }, xref);
 
-        Assert.Equal($"{_outputFolder}/input.html".ToNormalizedFullPath(), output.Output[".html"].RelativePath.ToNormalizedPath());
-        Assert.Equal(@"
+        Assert.AreEqual($"{_outputFolder}/input.html".ToNormalizedFullPath(), output.Output[".html"].RelativePath.ToNormalizedPath());
+        Assert.AreEqual(@"
 <h2>reference</h2><p>hello world</p>Good!
 ", File.ReadAllText(Path.Combine(_outputFolder, "input.html")));
 

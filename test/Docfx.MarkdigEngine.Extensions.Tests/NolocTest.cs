@@ -1,14 +1,13 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class NolocTest
 {
-    [Fact]
-    [Trait("Related", "Noloc")]
+    [TestMethod]
+    [TestProperty("Related", "Noloc")]
     public void NolocTest_General()
     {
         // Normal syntax
@@ -25,8 +24,8 @@ public class NolocTest
             "<p>*Hello*</p>");
     }
 
-    [Fact]
-    [Trait("Related", "Noloc")]
+    [TestMethod]
+    [TestProperty("Related", "Noloc")]
     public void NolocTest_Invalid()
     {
         // MultipleLines

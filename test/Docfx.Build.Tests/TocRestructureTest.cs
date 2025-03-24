@@ -6,13 +6,13 @@ using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
-using Xunit;
 
 namespace Docfx.Build.TableOfContents.Tests;
 
+[TestClass]
 public class TocRestructureTest : TestBase
 {
-    [Fact]
+    [TestMethod]
     public void TestTocRestructureWithLeafNode()
     {
         var toc = GetTocItem(@"
@@ -52,7 +52,7 @@ root
         AssertTocEqual(expected, toc);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestTocRestructureWithContainerNode()
     {
         var toc = GetTocItem(@"
@@ -101,7 +101,7 @@ root
         AssertTocEqual(expected, toc);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestTocRestructureWithNoMatchNode()
     {
         var layout = @"
@@ -128,7 +128,7 @@ root
         AssertTocEqual(expected, toc);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestReplaceNodeWithMultipleNodesThrows()
     {
         var toc = GetTocItem(@"
@@ -147,7 +147,7 @@ root
         Assert.Throws<InvalidOperationException>(() => TocRestructureUtility.Restructure(toc, restructures));
     }
 
-    [Fact]
+    [TestMethod]
     public void TestTocRestructureWithRestructureConflicts()
     {
         var toc = GetTocItem(@"
@@ -179,7 +179,7 @@ root
         AssertTocEqual(expected, toc);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestTocRestructureAppliesToAllMatchedNodes()
     {
         var toc = GetTocItem(@"
@@ -225,7 +225,7 @@ root
 
     private static void AssertTocEqual(TocItemViewModel expected, TocItemViewModel actual)
     {
-        Assert.Equal(expected.ToJsonString(), actual.ToJsonString());
+        Assert.AreEqual(expected.ToJsonString(), actual.ToJsonString());
     }
 
     private TreeItemRestructure GetRestructure(TreeItemActionType actionType, string uid, string[] childrenUids)

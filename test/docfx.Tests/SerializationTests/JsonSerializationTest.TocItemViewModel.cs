@@ -7,7 +7,7 @@ namespace docfx.Tests;
 
 public partial class JsonSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<TocItemViewModel>]
     public void JsonSerializationTest_TocItemViewModel(string path)
     {

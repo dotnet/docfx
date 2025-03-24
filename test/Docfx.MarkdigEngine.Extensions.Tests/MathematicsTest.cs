@@ -1,13 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class MathematicsTest
 {
-    [Fact]
+    [TestMethod]
     public void Test_Mathematics_Support_0()
     {
         var source = "$ math inline $";
@@ -16,7 +15,7 @@ public class MathematicsTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void Test_Mathematics_Support_1()
     {
         var source = "$ math^0 **inline** $";

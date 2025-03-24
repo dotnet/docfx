@@ -9,7 +9,7 @@ namespace docfx.Tests;
 
 public partial class JsonSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<MarkdownServiceProperties>]
     public void JsonSerializationTest_MarkdownServiceProperties(string path)
     {

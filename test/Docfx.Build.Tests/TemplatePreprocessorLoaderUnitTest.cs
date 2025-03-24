@@ -3,11 +3,10 @@
 
 using Docfx.Tests.Common;
 
-using Xunit;
-
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class TemplatePreprocessorLoaderUnitTest : TestBase
 {
     private readonly string _inputFolder;
@@ -17,21 +16,21 @@ public class TemplatePreprocessorLoaderUnitTest : TestBase
         _inputFolder = GetRandomFolder();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestLoaderWithValidInput()
     {
         using var listener = new TestListenerScope();
         var preprocessor = Load("a.ext.TMPL.js", "exports.transform = function(model) { return model; }");
 
-        Assert.Empty(listener.Items);
+        Assert.IsEmpty(listener.Items);
 
-        Assert.NotNull(preprocessor);
-        Assert.False(preprocessor.ContainsGetOptions);
-        Assert.True(preprocessor.ContainsModelTransformation);
+        Assert.IsNotNull(preprocessor);
+        Assert.IsFalse(preprocessor.ContainsGetOptions);
+        Assert.IsTrue(preprocessor.ContainsModelTransformation);
 
         var input = new { a = 1 };
         var output = preprocessor.TransformModel(input);
-        Assert.Equal(input.a, ((dynamic)output).a);
+        Assert.AreEqual(input.a, ((dynamic)output).a);
     }
 
     private ITemplatePreprocessor Load(string path, string content)

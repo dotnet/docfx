@@ -8,7 +8,8 @@ using Docfx.Tests.Common;
 
 namespace Docfx.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class DocsetBuildTest : TestBase
 {
     private static async Task<Dictionary<string, Func<string>>> Build(Dictionary<string, string> files, [CallerMemberName] string testName = null)
@@ -49,8 +50,8 @@ public class DocsetBuildTest : TestBase
                             f => new Func<string>(() => File.ReadAllText(f)));
     }
 
-    [Fact]
-    public static async Task CustomLogo_Override_LogoFromTemplate()
+    [TestMethod]
+    public async Task CustomLogo_Override_LogoFromTemplate()
     {
         var outputs = await Build(new()
         {
@@ -67,11 +68,11 @@ public class DocsetBuildTest : TestBase
             ["logo.svg"] = "<svg>my svg</svg>"
         });
 
-        Assert.Equal("<svg>my svg</svg>", outputs["logo.svg"]());
+        Assert.AreEqual("<svg>my svg</svg>", outputs["logo.svg"]());
     }
 
-    [Fact]
-    public static async Task Load_Custom_Plugin_From_Template()
+    [TestMethod]
+    public async Task Load_Custom_Plugin_From_Template()
     {
         var outputs = await Build(new()
         {
@@ -89,11 +90,11 @@ public class DocsetBuildTest : TestBase
             ["index.md"] = ""
         });
 
-        Assert.Equal("customPostProcessor", outputs["customPostProcessor.txt"]());
+        Assert.AreEqual("customPostProcessor", outputs["customPostProcessor.txt"]());
     }
 
-    [Fact]
-    public static async Task Build_With_Global_Metadata_Files()
+    [TestMethod]
+    public async Task Build_With_Global_Metadata_Files()
     {
         var outputs = await Build(new()
         {
@@ -129,13 +130,13 @@ public class DocsetBuildTest : TestBase
         });
 
         var metadata = JsonDocument.Parse(outputs["index.raw.json"]()).RootElement;
-        Assert.Equal("projectMetadata1.json", metadata.GetProperty("meta1").GetString());
-        Assert.Equal("projectMetadata2.json", metadata.GetProperty("meta2").GetString());
-        Assert.Equal("docfx.json", metadata.GetProperty("meta3").GetString());
+        Assert.AreEqual("projectMetadata1.json", metadata.GetProperty("meta1").GetString());
+        Assert.AreEqual("projectMetadata2.json", metadata.GetProperty("meta2").GetString());
+        Assert.AreEqual("docfx.json", metadata.GetProperty("meta3").GetString());
     }
 
-    [Fact]
-    public static async Task Build_With_File_Metadata_Files()
+    [TestMethod]
+    public async Task Build_With_File_Metadata_Files()
     {
         var outputs = await Build(new()
         {
@@ -178,12 +179,12 @@ public class DocsetBuildTest : TestBase
 
         var a = JsonDocument.Parse(outputs["a.raw.json"]()).RootElement;
         var b = JsonDocument.Parse(outputs["b.raw.json"]()).RootElement;
-        Assert.Equal("fileMetadata1.json", a.GetProperty("meta1").GetString());
-        Assert.Equal("fileMetadata2.json", b.GetProperty("meta1").GetString());
+        Assert.AreEqual("fileMetadata1.json", a.GetProperty("meta1").GetString());
+        Assert.AreEqual("fileMetadata2.json", b.GetProperty("meta1").GetString());
     }
 
-    [Fact]
-    public static async Task Build_With_RedirectUri_Files()
+    [TestMethod]
+    public async Task Build_With_RedirectUri_Files()
     {
         // Act
         var outputs = await Build(new()
@@ -215,7 +216,7 @@ public class DocsetBuildTest : TestBase
 
         // Assert
         var result = outputs["index.html"]();
-        Assert.Equal(
+        Assert.AreEqual(
             """
             <!DOCTYPE html>
             <html>
@@ -229,11 +230,11 @@ public class DocsetBuildTest : TestBase
         // Test redirect page.is excluded from sitemap.
         var sitemapXml = outputs["sitemap.xml"]();
         var urls = XDocument.Parse(sitemapXml).Root.Elements();
-        Assert.False(urls.Any());
+        Assert.IsFalse(urls.Any());
     }
 
-    [Fact]
-    public static async Task Build_Toc_Gen_Name()
+    [TestMethod]
+    public async Task Build_Toc_Gen_Name()
     {
         var outputs = await Build(new()
         {
@@ -268,14 +269,14 @@ public class DocsetBuildTest : TestBase
             """, outputs["toc.json"]());
     }
 
-    [Fact]
-    public static async Task Issue5174()
+    [TestMethod]
+    public async Task Issue5174()
     {
         var outputs = await Build(new()
         {
             ["index.md"] = "[link](On%25252Dcall-duties.md)",
             ["On%252Dcall-duties.md"] = "a",
         });
-        Assert.NotEmpty(outputs["On%252Dcall-duties.html"]());
+        Assert.IsNotEmpty(outputs["On%252Dcall-duties.html"]());
     }
 }

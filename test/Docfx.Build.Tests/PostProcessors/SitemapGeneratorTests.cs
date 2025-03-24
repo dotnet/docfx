@@ -4,12 +4,12 @@
 using System.Xml.Linq;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
-using Xunit;
 using DocumentType = Docfx.DataContracts.Common.Constants.DocumentType;
 
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class SitemapGeneratorTests : TestBase
 {
     public override void Dispose()
@@ -17,7 +17,7 @@ public class SitemapGeneratorTests : TestBase
         base.Dispose();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestSitemapGenerator()
     {
         // Arrange
@@ -53,19 +53,19 @@ public class SitemapGeneratorTests : TestBase
         manifest = sitemapGenerator.Process(manifest, outputFolder);
 
         // Assert
-        Assert.Equal("https://example.com/", manifest.Sitemap.BaseUrl);
-        Assert.True(File.Exists(sitemapPath));
+        Assert.AreEqual("https://example.com/", manifest.Sitemap.BaseUrl);
+        Assert.IsTrue(File.Exists(sitemapPath));
 
         var sitemap = XDocument.Load(sitemapPath);
         var ns = sitemap.Root.Name.Namespace;
         var urls = sitemap.Root.Elements(ns + "url").ToArray();
-        Assert.Equal(4, urls.Length);
+        Assert.AreEqual(4, urls.Length);
 
         // URLs are ordered based on HTML output's RelativePath.
-        Assert.EndsWith("/Conceptual.html", urls[0].Element(ns + "loc").Value);
-        Assert.EndsWith("/Dashboard.html", urls[1].Element(ns + "loc").Value);
-        Assert.EndsWith("/ManagedReference.html", urls[2].Element(ns + "loc").Value);
-        Assert.EndsWith("/Resource.html", urls[3].Element(ns + "loc").Value);
+        StringAssert.EndsWith(urls[0].Element(ns + "loc").Value, "/Conceptual.html");
+        StringAssert.EndsWith(urls[1].Element(ns + "loc").Value, "/Dashboard.html");
+        StringAssert.EndsWith(urls[2].Element(ns + "loc").Value, "/ManagedReference.html");
+        StringAssert.EndsWith(urls[3].Element(ns + "loc").Value, "/Resource.html");
     }
 
     private static ManifestItem GetManifestItem(string documentType, string outputFileExtension = ".html")

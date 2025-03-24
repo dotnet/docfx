@@ -8,7 +8,8 @@ using HtmlAgilityPack;
 
 namespace Docfx.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class CompositeCommandTest : TestBase
 {
     /// <summary>
@@ -23,8 +24,8 @@ public class CompositeCommandTest : TestBase
         _projectFolder = Path.GetFullPath(GetRandomFolder());
     }
 
-    [Fact]
-    [Trait("Related", "docfx#428")]
+    [TestMethod]
+    [TestProperty("Related", "docfx#428")]
     public void TestCommandFromCSCodeToHtml()
     {
         // Create source file
@@ -87,40 +88,40 @@ public class CompositeCommandTest : TestBase
 
         var docfxJsonFile = Path.Combine(_projectFolder, "docfx.json");
         File.WriteAllText(docfxJsonFile, docfxJson);
-        Assert.Equal(0, Program.Main([docfxJsonFile]));
+        Assert.AreEqual(0, Program.Main([docfxJsonFile]));
         var filePath = Path.Combine(_outputFolder, "site", "api", "Hello.HelloWorld.html");
-        Assert.True(File.Exists(filePath));
+        Assert.IsTrue(File.Exists(filePath));
         var html = new HtmlDocument();
         html.Load(filePath);
         var summary = html.DocumentNode.SelectSingleNode("//div[contains(@class, 'summary')]/p").InnerHtml;
-        Assert.Equal("The class &lt; &gt; &gt; description goes here...", summary.Trim());
+        Assert.AreEqual("The class &lt; &gt; &gt; description goes here...", summary.Trim());
         var note = html.DocumentNode.SelectSingleNode("//div[@class='NOTE']").InnerHtml;
-        Assert.Equal("<h5>Note</h5>\n<p>This is <em>note</em></p>", note.Trim());
+        Assert.AreEqual("<h5>Note</h5>\n<p>This is <em>note</em></p>", note.Trim());
         var code = html.DocumentNode.SelectNodes("//pre/code")[1].InnerHtml;
-        Assert.Equal("""
+        Assert.AreEqual("""
             var handler = DateTimeHandler();
             for (var i = 0; i &lt; 10; i++){
                 date = date.AddMonths(1);
             }
             """.Replace("\r\n", "\n"), code);
         var sitemap = Path.Combine(_outputFolder, "site", "sitemap.xml");
-        Assert.True(File.Exists(sitemap));
+        Assert.IsTrue(File.Exists(sitemap));
 
         XDocument xDoc = XDocument.Load(sitemap);
 
         var documentElement = xDoc.Elements().FirstOrDefault();
-        Assert.NotNull(documentElement);
+        Assert.IsNotNull(documentElement);
         var ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
-        Assert.Equal(ns, documentElement.GetDefaultNamespace());
+        Assert.AreEqual(ns, documentElement.GetDefaultNamespace());
         var elements = documentElement.Elements().ToList();
-        Assert.Equal(2, elements.Count);
-        Assert.Equal("0.3", elements[0].Element(XName.Get("priority", ns)).Value);
-        Assert.Equal("monthly", elements[0].Element(XName.Get("changefreq", ns)).Value);
-        Assert.Equal("https://dotnet.github.io/docfx/api/Hello.HelloWorld.html", elements[0].Element(XName.Get("loc", ns)).Value);
-        Assert.Equal(new DateTime(1999, 01, 01).ToString("yyyy-MM-ddThh:mm:ssK"), elements[0].Element(XName.Get("lastmod", ns)).Value);
+        Assert.AreEqual(2, elements.Count);
+        Assert.AreEqual("0.3", elements[0].Element(XName.Get("priority", ns)).Value);
+        Assert.AreEqual("monthly", elements[0].Element(XName.Get("changefreq", ns)).Value);
+        Assert.AreEqual("https://dotnet.github.io/docfx/api/Hello.HelloWorld.html", elements[0].Element(XName.Get("loc", ns)).Value);
+        Assert.AreEqual(new DateTime(1999, 01, 01).ToString("yyyy-MM-ddThh:mm:ssK"), elements[0].Element(XName.Get("lastmod", ns)).Value);
 
-        Assert.Equal("0.8", elements[1].Element(XName.Get("priority", ns)).Value);
-        Assert.Equal("daily", elements[1].Element(XName.Get("changefreq", ns)).Value);
-        Assert.Equal("https://dotnet.github.io/docfx/1/api/Hello.html", elements[1].Element(XName.Get("loc", ns)).Value);
+        Assert.AreEqual("0.8", elements[1].Element(XName.Get("priority", ns)).Value);
+        Assert.AreEqual("daily", elements[1].Element(XName.Get("changefreq", ns)).Value);
+        Assert.AreEqual("https://dotnet.github.io/docfx/1/api/Hello.html", elements[1].Element(XName.Get("loc", ns)).Value);
     }
 }

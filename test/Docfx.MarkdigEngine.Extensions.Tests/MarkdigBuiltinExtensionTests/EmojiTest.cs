@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Markdig.Extensions.Emoji;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
@@ -10,10 +9,11 @@ namespace Docfx.MarkdigEngine.Tests;
 /// Unit tests for markdig <see cref="EmojiExtension"/>.
 /// </summary>
 /// <seealso href="https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/EmojiSpecs.md"/>
-[Trait("Related", "MarkdigExtension")]
+[TestProperty("Related", "MarkdigExtension")]
+[TestClass]
 public class EmojiTest
 {
-    [Fact]
+    [TestMethod]
     public void EmojiTest_DocfxDefault()
     {
         var content = "**content :** :smile:";
@@ -23,7 +23,7 @@ public class EmojiTest
         TestUtility.VerifyMarkup(content, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void EmojiTest_MarkdigDefault()
     {
         var content = ":)";
@@ -33,7 +33,7 @@ public class EmojiTest
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["Emojis"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void EmojiTest_Smileys_Enabled()
     {
         var content = ":)";
@@ -44,7 +44,7 @@ public class EmojiTest
         ]);
     }
 
-    [Fact]
+    [TestMethod]
     public void EmojiTest_Smileys_Disabled()
     {
         var content = ":)";

@@ -4,7 +4,6 @@
 using System.Text.Json;
 using Docfx.MarkdigEngine.Extensions;
 using Markdig.Extensions.Tables;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
@@ -12,10 +11,11 @@ namespace Docfx.MarkdigEngine.Tests;
 /// Unit tests for markdig <see cref="PipeTableExtension"/>.
 /// </summary>
 /// <seealso href="https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/PipeTableSpecs.md"/>
-[Trait("Related", "MarkdigExtension")]
+[TestProperty("Related", "MarkdigExtension")]
+[TestClass]
 public class PipeTableTest
 {
-    [Fact]
+    [TestMethod]
     public void PipeTableTest_Default()
     {
         var content =
@@ -49,7 +49,7 @@ public class PipeTableTest
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["PipeTables"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void PipeTableTest_Custom()
     {
         var options = new PipeTableOptions

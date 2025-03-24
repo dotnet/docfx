@@ -2,13 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Plugins;
-using Xunit;
 
 namespace Docfx.Build.TableOfContents.Tests;
 
+[TestClass]
 public class MarkdownTocReaderTest
 {
-    [Fact]
+    [TestMethod]
     public void TestTocMdReader()
     {
         var toc = MarkdownTocReader.LoadToc(@"
@@ -29,63 +29,63 @@ public class MarkdownTocReaderTest
 ## <xref:article8>
 ## [Article8](xref:article8)
 ", "test.md");
-        Assert.Equal(3, toc.Count);
-        Assert.Equal("Article1", toc[0].Name);
-        Assert.Equal("article1.md", toc[0].Href);
+        Assert.AreEqual(3, toc.Count);
+        Assert.AreEqual("Article1", toc[0].Name);
+        Assert.AreEqual("article1.md", toc[0].Href);
         {
             var toc0 = toc[0].Items;
-            Assert.Equal(3, toc0.Count);
-            Assert.Equal("Container1", toc0[0].Name);
-            Assert.Null(toc0[0].Href);
+            Assert.AreEqual(3, toc0.Count);
+            Assert.AreEqual("Container1", toc0[0].Name);
+            Assert.IsNull(toc0[0].Href);
             {
                 var toc0_0 = toc0[0].Items;
-                Assert.Equal(2, toc0_0.Count);
-                Assert.Equal("Article2", toc0_0[0].Name);
-                Assert.Equal("Article 2", toc0_0[0].DisplayName);
-                Assert.Equal("article2.md", toc0_0[0].Href);
-                Assert.Equal("Article3", toc0_0[1].Name);
-                Assert.Equal("article3.md", toc0_0[1].Href);
+                Assert.AreEqual(2, toc0_0.Count);
+                Assert.AreEqual("Article2", toc0_0[0].Name);
+                Assert.AreEqual("Article 2", toc0_0[0].DisplayName);
+                Assert.AreEqual("article2.md", toc0_0[0].Href);
+                Assert.AreEqual("Article3", toc0_0[1].Name);
+                Assert.AreEqual("article3.md", toc0_0[1].Href);
             }
-            Assert.Equal("Container2", toc0[1].Name);
-            Assert.Null(toc0[1].Href);
+            Assert.AreEqual("Container2", toc0[1].Name);
+            Assert.IsNull(toc0[1].Href);
             {
                 var toc0_1 = toc0[1].Items;
-                Assert.Single(toc0_1);
-                Assert.Equal("Article4", toc0_1[0].Name);
-                Assert.Equal("article4.md", toc0_1[0].Href);
+                Assert.ContainsSingle(toc0_1);
+                Assert.AreEqual("Article4", toc0_1[0].Name);
+                Assert.AreEqual("article4.md", toc0_1[0].Href);
                 {
                     var toc0_1_0 = toc0_1[0].Items;
-                    Assert.Single(toc0_1_0);
-                    Assert.Equal("Article5", toc0_1_0[0].Name);
-                    Assert.Equal("article5.md", toc0_1_0[0].Href);
+                    Assert.ContainsSingle(toc0_1_0);
+                    Assert.AreEqual("Article5", toc0_1_0[0].Name);
+                    Assert.AreEqual("article5.md", toc0_1_0[0].Href);
                 }
             }
-            Assert.Equal("Article6", toc0[2].Name);
-            Assert.Equal("article6.md", toc0[2].Href);
+            Assert.AreEqual("Article6", toc0[2].Name);
+            Assert.AreEqual("article6.md", toc0[2].Href);
         }
-        Assert.Equal("Article7", toc[1].Name);
-        Assert.Equal("article7.md", toc[1].Href);
+        Assert.AreEqual("Article7", toc[1].Name);
+        Assert.AreEqual("article7.md", toc[1].Href);
         {
             var toc1 = toc[1].Items;
-            Assert.Single(toc1);
-            Assert.Equal("External", toc1[0].Name);
-            Assert.Equal("http://www.microsoft.com", toc1[0].Href);
+            Assert.ContainsSingle(toc1);
+            Assert.AreEqual("External", toc1[0].Name);
+            Assert.AreEqual("http://www.microsoft.com", toc1[0].Href);
         }
-        Assert.Equal("XrefArticles", toc[2].Name);
-        Assert.Equal("xref", toc[2].Uid);
+        Assert.AreEqual("XrefArticles", toc[2].Name);
+        Assert.AreEqual("xref", toc[2].Uid);
         {
             var toc1 = toc[2].Items;
-            Assert.Equal(3, toc1.Count);
-            Assert.Null(toc1[0].Name);
-            Assert.Equal("article8", toc1[0].Uid);
-            Assert.Null(toc1[1].Name);
-            Assert.Equal("article8", toc1[1].Uid);
-            Assert.Equal("Article8", toc1[2].Name);
-            Assert.Equal("article8", toc1[2].Uid);
+            Assert.AreEqual(3, toc1.Count);
+            Assert.IsNull(toc1[0].Name);
+            Assert.AreEqual("article8", toc1[0].Uid);
+            Assert.IsNull(toc1[1].Name);
+            Assert.AreEqual("article8", toc1[1].Uid);
+            Assert.AreEqual("Article8", toc1[2].Name);
+            Assert.AreEqual("article8", toc1[2].Uid);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBadMdToc()
     {
         var ex = Assert.Throws<DocumentException>(() =>
@@ -96,9 +96,9 @@ public class MarkdownTocReaderTest
 >_<
 >_<
 ", "test.md"));
-        Assert.Equal(@"Invalid toc file: test.md, Details: Unknown syntax at line 3:
+        Assert.AreEqual(@"Invalid toc file: test.md, Details: Unknown syntax at line 3:
 [bad]()
 >_<
->_<", ex.Message, ignoreLineEndingDifferences: true);
+>_<".ReplaceLineEndings(), ex.Message.ReplaceLineEndings());
     }
 }

@@ -6,17 +6,18 @@ using FluentAssertions;
 
 namespace docfx.Tests;
 
+[TestClass]
 public partial class JsonSerializationEncoderTest
 {
-    [Theory]
-    [InlineData("abcdefghighlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")]
-    [InlineData("0123456789")]
-    [InlineData("\0\a\b\t\n\v\f\r\e")]
-    [InlineData("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")]
-    [InlineData("①②③")] // NonAscii chars (Enclosed Alphanumerics)
-    [InlineData("１２３")] // NonAscii chars (Full-width digits)
-    [InlineData("äöü")]   // Umlaut
-    [InlineData("漢字")]   // Kanji
+    [TestMethod]
+    [DataRow("abcdefghighlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")]
+    [DataRow("0123456789")]
+    [DataRow("\0\a\b\t\n\v\f\r\e")]
+    [DataRow("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")]
+    [DataRow("①②③")] // NonAscii chars (Enclosed Alphanumerics)
+    [DataRow("１２３")] // NonAscii chars (Full-width digits)
+    [DataRow("äöü")]   // Umlaut
+    [DataRow("漢字")]   // Kanji
     public void JsonEncoderTest(string data)
     {
         // Arrange
@@ -33,11 +34,11 @@ public partial class JsonSerializationEncoderTest
         ((object)systemTextJsonResult).Should().Be(newtonsoftJsonResult, StringComparer.OrdinalIgnoreCase); // Currently StringAssertions don't expose overload that accepts StringComparer. (See: https://github.com/fluentassertions/fluentassertions/issues/2720)
     }
 
-    [Theory]
-    [InlineData("　", @"\u3000")]                                 // Full-Width space (Excaped by global block list (https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/character-encoding#global-block-list))
-    [InlineData("𠮟", @"\uD842\uDF9F")]                           // Kanji (that use Surrogate Pair)
-    [InlineData("📄", @"\uD83D\uDCC4")]                          // Emoji
-    [InlineData("👁‍🗨", @"\uD83D\uDC41‍\uD83D\uDDE8")] // Emoji (with ZWJ (ZERO WIDTH JOINER))
+    [TestMethod]
+    [DataRow("　", @"\u3000")]                                 // Full-Width space (Excaped by global block list (https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/character-encoding#global-block-list))
+    [DataRow("𠮟", @"\uD842\uDF9F")]                           // Kanji (that use Surrogate Pair)
+    [DataRow("📄", @"\uD83D\uDCC4")]                          // Emoji
+    [DataRow("👁‍🗨", @"\uD83D\uDC41‍\uD83D\uDDE8")] // Emoji (with ZWJ (ZERO WIDTH JOINER))
     public void JsonEncoderTest_NoCompatibility(string data, string expected)
     {
         // Arrange

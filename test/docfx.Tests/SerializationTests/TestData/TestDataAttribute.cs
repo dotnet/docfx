@@ -2,13 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Reflection;
-using Xunit.Sdk;
 
 namespace docfx.Tests;
 
-public class TestDataAttribute<T> : DataAttribute
+public class TestDataAttribute<T> : Attribute, ITestDataSource
 {
-    public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+    public IEnumerable<object[]> GetData(MethodInfo testMethod)
     {
         var key = GetTestDataKey();
         var paths = TestData.GetTestDataFilePaths(key);
@@ -28,7 +27,10 @@ public class TestDataAttribute<T> : DataAttribute
                 throw new NotSupportedException($"{className} is not supported.");
         }
 
-        return new TheoryData<string>(paths);
+        foreach (var path in paths)
+        {
+            yield return new object[] { path };
+        }
     }
 
     private static string GetTestDataKey()
@@ -46,4 +48,6 @@ public class TestDataAttribute<T> : DataAttribute
                 return type.Name;
         }
     }
+
+    public string GetDisplayName(MethodInfo methodInfo, object[] data) => null;
 }

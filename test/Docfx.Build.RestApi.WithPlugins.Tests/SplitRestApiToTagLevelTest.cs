@@ -12,11 +12,11 @@ using Docfx.Plugins;
 using Docfx.Tests.Common;
 
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace Docfx.Build.RestApi.WithPlugins.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class SplitRestApiToTagLevelTest : TestBase
 {
     private readonly string _outputFolder;
@@ -40,7 +40,7 @@ public class SplitRestApiToTagLevelTest : TestBase
         _templateManager = new TemplateManager(["template"], null, "TestData/");
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessRestApiShouldSucceed()
     {
         var files = new FileCollection(_defaultFiles);
@@ -49,38 +49,38 @@ public class SplitRestApiToTagLevelTest : TestBase
         {
             // Verify original petstore page
             var outputRawModelPath = GetRawModelFilePath("petstore.json");
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
-            Assert.NotNull(model);
-            Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
-            Assert.Empty(model.Children);
-            Assert.Empty(model.Tags);
-            Assert.True((bool)model.Metadata["_isSplittedByTag"]);
-            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about Swagger</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
+            Assert.IsNotNull(model);
+            Assert.AreEqual("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
+            Assert.IsEmpty(model.Children);
+            Assert.IsEmpty(model.Tags);
+            Assert.IsTrue((bool)model.Metadata["_isSplittedByTag"]);
+            Assert.AreEqual("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about Swagger</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
         }
         {
             // Verify splitted tag page
             var outputRawModelPath = GetRawModelFilePath("petstore/pet.json");
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
-            Assert.NotNull(model);
-            Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", model.Uid);
-            Assert.Equal("pet", model.Name);
-            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
-            Assert.Equal(8, model.Children.Count);
-            Assert.Empty(model.Tags);
-            Assert.Empty(model.Children[0].Tags);
-            Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
-            Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
-            Assert.True(model.Metadata.ContainsKey("externalDocs"));
-            Assert.True((bool)model.Metadata["_isSplittedToTag"]);
+            Assert.IsNotNull(model);
+            Assert.AreEqual("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", model.Uid);
+            Assert.AreEqual("pet", model.Name);
+            Assert.AreEqual("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
+            Assert.AreEqual(8, model.Children.Count);
+            Assert.IsEmpty(model.Tags);
+            Assert.IsEmpty(model.Children[0].Tags);
+            Assert.AreEqual("swagger/petstore/pet.html", model.Metadata["_path"]);
+            Assert.AreEqual("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
+            Assert.IsTrue(model.Metadata.ContainsKey("externalDocs"));
+            Assert.IsTrue((bool)model.Metadata["_isSplittedToTag"]);
 
             // Test overwritten metadata
-            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about pets</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
+            Assert.AreEqual("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about pets</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessRestApiWithTocShouldSucceed()
     {
         var files = new FileCollection(_defaultFiles);
@@ -90,41 +90,41 @@ public class SplitRestApiToTagLevelTest : TestBase
         {
             // Verify original petstore page
             var outputRawModelPath = GetRawModelFilePath("petstore.json");
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
-            Assert.NotNull(model);
-            Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
-            Assert.Empty(model.Children);
-            Assert.Empty(model.Tags);
+            Assert.IsNotNull(model);
+            Assert.AreEqual("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
+            Assert.IsEmpty(model.Children);
+            Assert.IsEmpty(model.Tags);
         }
         {
             // Verify splitted tag page
             var outputRawModelPath = GetRawModelFilePath("petstore/pet.json");
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
-            Assert.NotNull(model);
-            Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", model.Uid);
-            Assert.Equal("pet", model.Name);
-            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
-            Assert.Equal(8, model.Children.Count);
-            Assert.Empty(model.Tags);
-            Assert.Empty(model.Children[0].Tags);
-            Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
-            Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
-            Assert.True(model.Metadata.ContainsKey("externalDocs"));
+            Assert.IsNotNull(model);
+            Assert.AreEqual("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", model.Uid);
+            Assert.AreEqual("pet", model.Name);
+            Assert.AreEqual("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
+            Assert.AreEqual(8, model.Children.Count);
+            Assert.IsEmpty(model.Tags);
+            Assert.IsEmpty(model.Children[0].Tags);
+            Assert.AreEqual("swagger/petstore/pet.html", model.Metadata["_path"]);
+            Assert.AreEqual("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
+            Assert.IsTrue(model.Metadata.ContainsKey("externalDocs"));
         }
         {
             // Verify toc page
             var outputRawModelPath = GetRawModelFilePath("toc.yml");
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
-            Assert.NotNull(model);
-            Assert.Single(model.Items);
+            Assert.IsNotNull(model);
+            Assert.ContainsSingle(model.Items);
             var rootModel = model.Items[0];
-            Assert.Equal("petstore.html", rootModel.TopicHref);
-            Assert.Equal(3, rootModel.Items.Count);
-            Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", rootModel.Items[0].TopicUid);
-            Assert.Equal("pet", rootModel.Items[0].Name);
+            Assert.AreEqual("petstore.html", rootModel.TopicHref);
+            Assert.AreEqual(3, rootModel.Items.Count);
+            Assert.AreEqual("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", rootModel.Items[0].TopicUid);
+            Assert.AreEqual("pet", rootModel.Items[0].Name);
         }
     }
 

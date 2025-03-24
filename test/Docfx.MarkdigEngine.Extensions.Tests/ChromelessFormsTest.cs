@@ -1,13 +1,12 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class ChromelessFormsTest
 {
-    [Fact]
+    [TestMethod]
     public void ChromelessFormsTestWithoutModel()
     {
         var content = @"::: form action=""create-resource"" submitText=""Create"" :::";
@@ -20,7 +19,7 @@ public class ChromelessFormsTest
         TestUtility.VerifyMarkup(content, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void ChromelessFormsTestWithModel()
     {
         var content = @"::: form model=""./devsandbox/ChromelessFormsTest.md"" action=""create-resource"" submitText=""Do it"" :::";
@@ -33,7 +32,7 @@ public class ChromelessFormsTest
         TestUtility.VerifyMarkup(content, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void ChromelessFormsAttributeStartQuotationsRequired()
     {
         var content = @"::: form submitText=something"" :::";
@@ -41,7 +40,7 @@ public class ChromelessFormsTest
         TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ChromelessFormsAttributeEndQuotationsRequired()
     {
         var content = @"::: form submitText=""something :::";
@@ -49,7 +48,7 @@ public class ChromelessFormsTest
         TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ChromelessFormsAttributeValueRequired()
     {
         var content = "::: form submitText :::";
@@ -57,7 +56,7 @@ public class ChromelessFormsTest
         TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ChromelessFormsAttributeValueSingleQuote()
     {
         var content = @"::: form submitText=""<script> >.< </script>"" action=""create-Resource"" :::";
@@ -69,7 +68,7 @@ public class ChromelessFormsTest
         TestUtility.VerifyMarkup(content, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void ChromelessFormsTestActionRequired()
     {
         var content = @"::: form submitText=""Do it"" :::";
@@ -77,7 +76,7 @@ public class ChromelessFormsTest
         TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ChromelessFormsTestSubmitTextRequired()
     {
         var content = @"::: form action=""create-Resource"" :::";
@@ -85,7 +84,7 @@ public class ChromelessFormsTest
         TestUtility.VerifyMarkup(content, null, ["invalid-form"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ChromelessFormsTestMultipleForms()
     {
         var content = @"
