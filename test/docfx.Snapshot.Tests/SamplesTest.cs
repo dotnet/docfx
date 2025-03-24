@@ -22,7 +22,7 @@ namespace Docfx.Tests;
 [DoNotParallelize]
 [TestProperty("Stage", "Snapshot")]
 [TestClass]
-public class SamplesTest : IDisposable
+public partial class SamplesTest : IDisposable
 {
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
 
