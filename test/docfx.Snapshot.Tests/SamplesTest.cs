@@ -53,7 +53,7 @@ public class SamplesTest : IDisposable
 
         public override string GroupName => nameof(SamplesConditionAttribute);
 
-        public override bool ShouldRun => IgnoreMessage is not null;
+        public override bool ShouldRun => IgnoreMessage is null;
     }
 
     [TestMethod]

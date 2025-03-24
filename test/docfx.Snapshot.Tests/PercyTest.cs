@@ -26,7 +26,7 @@ public class PercyTest
 
         public override string GroupName => nameof(PercyConditionAttribute);
 
-        public override bool ShouldRun => IgnoreMessage is not null;
+        public override bool ShouldRun => IgnoreMessage is null;
     }
 
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
