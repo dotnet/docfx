@@ -18,6 +18,7 @@ using UglyToad.PdfPig.Outline;
 
 namespace Docfx.Tests;
 
+[UsesVerify]
 [DoNotParallelize]
 [TestProperty("Stage", "Snapshot")]
 [TestClass]
