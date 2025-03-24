@@ -273,14 +273,14 @@ namespace Test1
 }";
         var output = Verify(code, new(), new() { IncludeApi = IncludeApi, IncludeAttribute = IncludeAttribute });
         var class1 = output.Items[0].Items[0];
-        Assert.AreEqual(
+        CollectionAssert.AreEqual(
             new[]
             {
                 "System.SerializableAttribute",
                 "System.Runtime.InteropServices.ComVisibleAttribute",
                 "Test1.A2",
             },
-            class1.Attributes.Select(a => a.Type));
+            class1.Attributes.Select(a => a.Type).ToArray());
         CollectionAssert.AreEqual(new[] { "Test1.Class1.M2" }, class1.Items.Select(m => m.Name).ToArray());
         CollectionAssert.AreEqual(new[] { "System.Object" }, class1.Inheritance.ToArray());
 

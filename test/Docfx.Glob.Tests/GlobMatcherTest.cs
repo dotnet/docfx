@@ -29,7 +29,7 @@ public class GlobMatcherTest
     public void TestGroupedGlobShouldExpand(string source, string[] expected)
     {
         var result = GlobMatcher.ExpandGroup(source);
-        Assert.AreEqual(expected, result);
+        CollectionAssert.AreEqual(expected, result);
     }
 
     [TestMethod]

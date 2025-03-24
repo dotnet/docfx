@@ -58,7 +58,7 @@ key: value
         Assert.AreEqual(expected, mr.Html);
 
         var expectedDependency = new List<string> { "b/linkAndRefRoot.md" };
-        Assert.AreEqual(expectedDependency.ToArray(), mr.Dependency.ToArray());
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), mr.Dependency.ToArray());
     }
 
     [TestMethod]

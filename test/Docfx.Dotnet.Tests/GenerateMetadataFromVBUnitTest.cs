@@ -462,7 +462,7 @@ End Namespace
         {
             var inheritedMembers = output.Items[0].Items[0].InheritedMembers;
             Assert.IsNotNull(inheritedMembers);
-            Assert.AreEqual(
+            CollectionAssert.AreEqual(
                 new string[]
                 {
                     "System.Object.ToString",
@@ -473,14 +473,14 @@ End Namespace
                     "System.Object.GetType",
                     "System.Object.Finalize",
                     "System.Object.MemberwiseClone",
-                }.OrderBy(s => s),
-                inheritedMembers.OrderBy(s => s));
+                }.OrderBy(s => s).ToArray(),
+                inheritedMembers.OrderBy(s => s).ToArray());
         }
         // inheritance of Bar
         {
             var inheritedMembers = output.Items[0].Items[1].InheritedMembers;
             Assert.IsNotNull(inheritedMembers);
-            Assert.AreEqual(
+            CollectionAssert.AreEqual(
                 new string[]
                 {
                     "Test1.Foo{System.String}.M4``1(System.String)",
@@ -493,7 +493,7 @@ End Namespace
                     "System.Object.Finalize",
                     "System.Object.MemberwiseClone",
                 }.OrderBy(s => s),
-                inheritedMembers.OrderBy(s => s));
+                inheritedMembers.OrderBy(s => s).ToArray());
         }
     }
 

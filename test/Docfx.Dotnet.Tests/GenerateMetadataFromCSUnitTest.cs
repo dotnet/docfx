@@ -474,18 +474,18 @@ namespace Test1
             Assert.AreEqual("Test1.Bar`1", item.Definition);
             Assert.AreEqual("Test1", item.Parent);
 
-            Assert.AreEqual(
-                ["Test1.Bar`1", null, "System.String", null],
-                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.Name));
-            Assert.AreEqual(
-                ["Bar", "<", "string", ">"],
-                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
-            Assert.AreEqual(
-                ["Bar", "<", "string", ">"],
-                item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
-            Assert.AreEqual(
-                ["Test1", ".", "Bar", "<", "string", ">"],
-                item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
+            CollectionAssert.AreEqual(
+                new[] { "Test1.Bar`1", null, "System.String", null },
+                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.Name).ToArray());
+            CollectionAssert.AreEqual(
+                new[] { "Bar", "<", "string", ">" },
+                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName).ToArray());
+            CollectionAssert.AreEqual(
+                new[] { "Bar", "<", "string", ">" },
+                item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName).ToArray());
+            CollectionAssert.AreEqual(
+                new[] { "Test1", ".", "Bar", "<", "string", ">" },
+                item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName).ToArray());
         }
         {
             var item = output.References["Test1.Foo{{T}[]}"];
@@ -495,18 +495,18 @@ namespace Test1
 
             Assert.AreEqual(6, item.NameParts[SyntaxLanguage.CSharp].Count);
 
-            Assert.AreEqual(
-                ["Test1.Foo`1", null, null, null, null, null],
-                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.Name));
-            Assert.AreEqual(
-                ["Foo", "<", "T", "[", "]", ">"],
-                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
-            Assert.AreEqual(
-                ["Foo", "<", "T", "[", "]", ">"],
-                item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
-            Assert.AreEqual(
-                ["Test1", ".", "Foo", "<", "T", "[", "]", ">"],
-                item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
+            CollectionAssert.AreEqual(
+                new string[] { "Test1.Foo`1", null, null, null, null, null },
+                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.Name).ToArray());
+            CollectionAssert.AreEqual(
+                new string[] { "Foo", "<", "T", "[", "]", ">" },
+                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName).ToArray());
+            CollectionAssert.AreEqual(
+                new string[] { "Foo", "<", "T", "[", "]", ">" },
+                item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName).ToArray());
+            CollectionAssert.AreEqual(
+                new string[] { "Test1", ".", "Foo", "<", "T", "[", "]", ">" },
+                item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName).ToArray());
         }
         {
             var item = output.References["Test1.Foo{System.String[]}"];
@@ -514,18 +514,18 @@ namespace Test1
             Assert.AreEqual("Test1.Foo`1", item.Definition);
             Assert.AreEqual("Test1", item.Parent);
 
-            Assert.AreEqual(
-                ["Test1.Foo`1", null, "System.String", null, null, null],
-                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.Name));
-            Assert.AreEqual(
-                ["Foo", "<", "string", "[", "]", ">"],
-                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
-            Assert.AreEqual(
-                ["Foo", "<", "string", "[", "]", ">"],
-                item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
-            Assert.AreEqual(
-                ["Test1", ".", "Foo", "<", "string", "[", "]", ">"],
-                item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
+            CollectionAssert.AreEqual(
+                new[] { "Test1.Foo`1", null, "System.String", null, null, null },
+                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.Name).ToArray());
+            CollectionAssert.AreEqual(
+                new[] { "Foo", "<", "string", "[", "]", ">" },
+                item.NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName).ToArray());
+            CollectionAssert.AreEqual(
+                new[] { "Foo", "<", "string", "[", "]", ">" },
+                item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName).ToArray());
+            CollectionAssert.AreEqual(
+                new[] { "Test1", ".", "Foo", "<", "string", "[", "]", ">" },
+                item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName).ToArray());
         }
     }
 
@@ -614,7 +614,7 @@ namespace Test1
         {
             var inheritedMembers = output.Items[0].Items[0].InheritedMembers;
             Assert.IsNotNull(inheritedMembers);
-            Assert.AreEqual(
+            CollectionAssert.AreEqual(
                 new string[]
                 {
                     "System.ValueType.ToString",
@@ -623,8 +623,8 @@ namespace Test1
                     "System.Object.Equals(System.Object,System.Object)",
                     "System.Object.ReferenceEquals(System.Object,System.Object)",
                     "System.Object.GetType",
-                }.OrderBy(s => s),
-                inheritedMembers.OrderBy(s => s));
+                }.OrderBy(s => s).ToArray(),
+                inheritedMembers.OrderBy(s => s).ToArray());
         }
     }
 
@@ -3603,40 +3603,40 @@ namespace Test1
         var output = Verify(code);
         var type = output.Items[0].Items[0];
 
-        Assert.AreEqual([
+        CollectionAssert.AreEqual(new[] {
             "Test.Bar.op_Implicit(System.UInt32)~Test.Bar",
             "Test.Bar.op_Implicit(System.String)~Test.Bar",
             "Test.Bar.op_CheckedExplicit(Test.Bar)~System.UInt32",
             "Test.Bar.op_CheckedExplicit(Test.Bar)~System.String[]"
-        ], type.Items.Select(item => item.Name));
+        }, type.Items.Select(item => item.Name).ToArray());
 
-        Assert.AreEqual([
+        CollectionAssert.AreEqual(new[] {
             "implicit operator Bar(uint)",
             "implicit operator Bar(string)",
             "explicit operator checked uint(Bar)",
             "explicit operator checked string[](Bar)"
-        ], type.Items.Select(item => item.DisplayNames[SyntaxLanguage.CSharp]));
+        }, type.Items.Select(item => item.DisplayNames[SyntaxLanguage.CSharp]).ToArray());
 
-        Assert.AreEqual([
+        CollectionAssert.AreEqual(new[] {
             "Bar.implicit operator Bar(uint)",
             "Bar.implicit operator Bar(string)",
             "Bar.explicit operator checked uint(Bar)",
             "Bar.explicit operator checked string[](Bar)"
-        ], type.Items.Select(item => item.DisplayNamesWithType[SyntaxLanguage.CSharp]));
+        }, type.Items.Select(item => item.DisplayNamesWithType[SyntaxLanguage.CSharp]).ToArray());
 
-        Assert.AreEqual([
+        CollectionAssert.AreEqual(new[] {
             "Test.Bar.implicit operator Test.Bar(uint)",
             "Test.Bar.implicit operator Test.Bar(string)",
             "Test.Bar.explicit operator checked uint(Test.Bar)",
             "Test.Bar.explicit operator checked string[](Test.Bar)"
-        ], type.Items.Select(item => item.DisplayQualifiedNames[SyntaxLanguage.CSharp]));
+        }, type.Items.Select(item => item.DisplayQualifiedNames[SyntaxLanguage.CSharp]).ToArray());
 
-        Assert.AreEqual([
+        CollectionAssert.AreEqual(new[] {
             "Test.Bar.op_Implicit*",
             "Test.Bar.op_Implicit*",
             "Test.Bar.op_CheckedExplicit*",
             "Test.Bar.op_CheckedExplicit*"
-        ], type.Items.Select(item => item.Overload));
+        }, type.Items.Select(item => item.Overload).ToArray());
 
         Assert.AreEqual("implicit operator", string.Concat(output.References["Test.Bar.op_Implicit*"].NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName)));
         Assert.AreEqual("explicit operator checked", string.Concat(output.References["Test.Bar.op_CheckedExplicit*"].NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName)));
@@ -3664,12 +3664,12 @@ namespace Test1
         var output = Verify(code, new() { IncludePrivateMembers = true });
         var foo = output.Items[0].Items[0];
         Assert.AreEqual("internal class Foo : IFoo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
-        Assert.AreEqual([
+        CollectionAssert.AreEqual(new[] {
             "internal void M1()",
             "protected internal void M2()",
             "private protected void M3()",
             "private void M4()"
-        ], foo.Items.Select(item => item.Syntax.Content[SyntaxLanguage.CSharp]));
+        }, foo.Items.Select(item => item.Syntax.Content[SyntaxLanguage.CSharp]).ToArray());
     }
 
     [TestMethod]

@@ -69,7 +69,7 @@ public class InclusionTest
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a.md", "b.md" };
-        Assert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
     [TestMethod]
@@ -110,7 +110,7 @@ public class InclusionTest
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a(x).md" };
-        Assert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
     [TestMethod]
@@ -151,7 +151,7 @@ public class InclusionTest
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a.md" };
-        Assert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
     [TestMethod]
@@ -241,7 +241,7 @@ public class InclusionTest
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a.md" };
-        Assert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
     [TestMethod]
@@ -304,7 +304,7 @@ public class InclusionTest
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a.md" };
-        Assert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
     [TestMethod]
@@ -368,7 +368,7 @@ public class InclusionTest
                        """.Replace("\r\n", "\n");
 
         Assert.AreEqual(expected, marked.Html);
-        Assert.AreEqual(
+        CollectionAssert.AreEqual(
             new[]
             {
                 "a/refc.md",
@@ -433,14 +433,14 @@ public class InclusionTest
                        """.Replace("\r\n", "\n") + "\n";
         var dependency = marked.Dependency;
         Assert.AreEqual(expected, marked.Html);
-        Assert.AreEqual(
+        CollectionAssert.AreEqual(
             new[] { "../b/token.md" },
             dependency.OrderBy(x => x).ToArray());
 
         marked = TestUtility.MarkupWithoutSourceInfo(d, "r/c/d/d.md");
         dependency = marked.Dependency;
         Assert.AreEqual(expected, marked.Html);
-        Assert.AreEqual(
+        CollectionAssert.AreEqual(
             new[] { "../../b/token.md" },
             dependency.OrderBy(x => x).ToArray());
 
@@ -448,7 +448,7 @@ public class InclusionTest
         marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
         dependency = marked.Dependency;
         Assert.AreEqual($"{expected}{expected}", marked.Html);
-        Assert.AreEqual(
+        CollectionAssert.AreEqual(
             new[] { "a/a.md", "b/token.md", "c/d/d.md" },
             dependency.OrderBy(x => x).ToArray());
     }
@@ -691,7 +691,7 @@ public class InclusionTest
         var expected = "<p>Inline ## Inline inclusion do not parse header [!include[root](root.md)]\nInline <strong>Hello</strong></p>\n";
 
         Assert.AreEqual(expected, marked.Html);
-        Assert.AreEqual(
+        CollectionAssert.AreEqual(
             new[] { "ref1.md", "ref2.md", "ref3.md", "root.md" },
             dependency.OrderBy(x => x).ToArray());
     }
@@ -728,7 +728,7 @@ public class InclusionTest
         var marked = TestUtility.MarkupWithoutSourceInfo(root, "root.md");
         var dependency = marked.Dependency;
         Assert.AreEqual(expected.Replace("\r\n", "\n"), marked.Html);
-        Assert.AreEqual(
+        CollectionAssert.AreEqual(
           new[] { "inc1.md", "inc2.md", "inc3.md" },
           dependency.OrderBy(x => x).ToArray());
     }
@@ -772,7 +772,7 @@ public class InclusionTest
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "../../include/a.md" };
-        Assert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
     [TestMethod]
@@ -812,7 +812,7 @@ public class InclusionTest
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "../../include/a.md" };
-        Assert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
     [TestMethod]
