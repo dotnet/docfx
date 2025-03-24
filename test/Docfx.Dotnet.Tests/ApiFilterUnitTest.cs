@@ -281,8 +281,8 @@ namespace Test1
                 "Test1.A2",
             },
             class1.Attributes.Select(a => a.Type));
-        Assert.AreEqual(new[] { "Test1.Class1.M2" }, class1.Items.Select(m => m.Name));
-        Assert.AreEqual(new[] { "System.Object" }, class1.Inheritance.ToArray());
+        CollectionAssert.AreEqual(new[] { "Test1.Class1.M2" }, class1.Items.Select(m => m.Name).ToArray());
+        CollectionAssert.AreEqual(new[] { "System.Object" }, class1.Inheritance.ToArray());
 
         SymbolIncludeState IncludeAttribute(ISymbol symbol)
         {

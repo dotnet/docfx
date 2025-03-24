@@ -32,7 +32,7 @@ public class GenerateMetadataFromAssemblyTest
             var @class = output.Items[0].Items[0];
             Assert.IsNotNull(@class);
             Assert.AreEqual("CarLibrary2.Cat2", @class.Name);
-            Assert.AreEqual(new[] { "System.Object", "CatLibrary.Cat{CatLibrary.Dog{System.String},System.Int32}" }, @class.Inheritance.ToArray());
+            CollectionAssert.AreEqual(new[] { "System.Object", "CatLibrary.Cat{CatLibrary.Dog{System.String},System.Int32}" }, @class.Inheritance.ToArray());
         }
     }
 

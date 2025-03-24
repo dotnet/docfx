@@ -23,7 +23,7 @@ public class FileAbstractLayerWithEnvironmentVariableTest : TestBase
         Assert.IsFalse(fal.Exists("~/temp.jpg"));
         Assert.IsFalse(fal.Exists("temp.jpg"));
         Assert.AreEqual("👍", fal.ReadAllText("temp.txt"));
-        Assert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles());
+        CollectionAssert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles().ToArray());
         Environment.SetEnvironmentVariable("input", null);
     }
 
@@ -47,7 +47,7 @@ public class FileAbstractLayerWithEnvironmentVariableTest : TestBase
         Assert.IsTrue(fal2.Exists("copy.txt"));
         Assert.IsFalse(fal2.Exists("temp.txt"));
         Assert.AreEqual("😈", fal2.ReadAllText("copy.txt"));
-        Assert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
+        CollectionAssert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles().ToArray());
         Assert.IsTrue(File.Exists(Path.Combine(output, "copy.txt")));
         Environment.SetEnvironmentVariable("input", null);
         Environment.SetEnvironmentVariable("output", null);
@@ -69,7 +69,7 @@ public class FileAbstractLayerWithEnvironmentVariableTest : TestBase
             .Create();
         Assert.IsTrue(fal2.Exists("temp.txt"));
         Assert.AreEqual("😆", fal2.ReadAllText("temp.txt"));
-        Assert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal2.GetAllInputFiles());
+        CollectionAssert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal2.GetAllInputFiles().ToArray());
         Assert.IsTrue(File.Exists(Path.Combine(output, "temp.txt")));
         Environment.SetEnvironmentVariable("output", null);
     }
@@ -94,7 +94,7 @@ public class FileAbstractLayerWithEnvironmentVariableTest : TestBase
             .Create();
         Assert.IsTrue(fal2.Exists("copy.txt"));
         Assert.AreEqual("😁", fal2.ReadAllText("copy.txt"));
-        Assert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
+        CollectionAssert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles().ToArray());
         Assert.IsTrue(File.Exists(Path.Combine(output, "copy.txt")));
         Assert.AreEqual("😄", File.ReadAllText(Path.Combine(input, "temp.txt")));
         Environment.SetEnvironmentVariable("input", null);

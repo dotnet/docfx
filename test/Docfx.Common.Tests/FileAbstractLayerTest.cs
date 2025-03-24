@@ -21,7 +21,7 @@ public class FileAbstractLayerTest : TestBase
         Assert.IsFalse(fal.Exists("~/temp.jpg"));
         Assert.IsFalse(fal.Exists("temp.jpg"));
         Assert.AreEqual("👍", fal.ReadAllText("temp.txt"));
-        Assert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles());
+        CollectionAssert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles().ToArray());
     }
 
     [TestMethod]
@@ -42,7 +42,7 @@ public class FileAbstractLayerTest : TestBase
         Assert.IsTrue(fal2.Exists("copy.txt"));
         Assert.IsFalse(fal2.Exists("temp.txt"));
         Assert.AreEqual("😈", fal2.ReadAllText("copy.txt"));
-        Assert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
+        CollectionAssert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles().ToArray());
         Assert.IsTrue(File.Exists(Path.Combine(output, "copy.txt")));
     }
 
@@ -61,7 +61,7 @@ public class FileAbstractLayerTest : TestBase
             .Create();
         Assert.IsTrue(fal2.Exists("temp.txt"));
         Assert.AreEqual("😆", fal2.ReadAllText("temp.txt"));
-        Assert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal2.GetAllInputFiles());
+        CollectionAssert.AreEqual(new[] { (RelativePath)"~/temp.txt" }, fal2.GetAllInputFiles().ToArray());
         Assert.IsTrue(File.Exists(Path.Combine(output, "temp.txt")));
     }
 
@@ -83,7 +83,7 @@ public class FileAbstractLayerTest : TestBase
             .Create();
         Assert.IsTrue(fal2.Exists("copy.txt"));
         Assert.AreEqual("😁", fal2.ReadAllText("copy.txt"));
-        Assert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
+        CollectionAssert.AreEqual(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles().ToArray());
         Assert.IsTrue(File.Exists(Path.Combine(output, "copy.txt")));
         Assert.AreEqual("😄", File.ReadAllText(Path.Combine(input, "temp.txt")));
     }

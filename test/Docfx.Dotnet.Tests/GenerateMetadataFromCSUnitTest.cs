@@ -435,7 +435,7 @@ namespace Test1
         Assert.AreEqual("public class Foo<T> : IFoo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
         Assert.IsNotNull(foo.Implements);
         Assert.ContainsSingle(foo.Implements);
-        Assert.AreEqual(new[] { "Test1.IFoo" }, foo.Implements.ToArray());
+        CollectionAssert.AreEqual(new[] { "Test1.IFoo" }, foo.Implements.ToArray());
 
         var bar = output.Items[0].Items[1];
         Assert.IsNotNull(bar);
@@ -443,8 +443,8 @@ namespace Test1
         Assert.AreEqual("Bar<T>", bar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
         Assert.AreEqual("Test1.Bar<T>", bar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
         Assert.AreEqual("public class Bar<T> : Foo<T[]>, IFoo, IBar", bar.Syntax.Content[SyntaxLanguage.CSharp]);
-        Assert.AreEqual(new[] { "System.Object", "Test1.Foo{{T}[]}" }, bar.Inheritance.ToArray());
-        Assert.AreEqual(new[] { "Test1.IFoo", "Test1.IBar" }, bar.Implements.ToArray());
+        CollectionAssert.AreEqual(new[] { "System.Object", "Test1.Foo{{T}[]}" }, bar.Inheritance.ToArray());
+        CollectionAssert.AreEqual(new[] { "Test1.IFoo", "Test1.IBar" }, bar.Implements.ToArray());
 
         var fooBar = output.Items[0].Items[2];
         Assert.IsNotNull(fooBar);
@@ -452,8 +452,8 @@ namespace Test1
         Assert.AreEqual("FooBar", fooBar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
         Assert.AreEqual("Test1.FooBar", fooBar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
         Assert.AreEqual("public class FooBar : Bar<string>, IFooBar, IFoo, IBar", fooBar.Syntax.Content[SyntaxLanguage.CSharp]);
-        Assert.AreEqual(new[] { "System.Object", "Test1.Foo{System.String[]}", "Test1.Bar{System.String}" }, fooBar.Inheritance.ToArray());
-        Assert.AreEqual(new[] { "Test1.IFoo", "Test1.IBar", "Test1.IFooBar" }.OrderBy(s => s), fooBar.Implements.OrderBy(s => s));
+        CollectionAssert.AreEqual(new[] { "System.Object", "Test1.Foo{System.String[]}", "Test1.Bar{System.String}" }, fooBar.Inheritance.ToArray());
+        CollectionAssert.AreEqual(new[] { "Test1.IFoo", "Test1.IBar", "Test1.IFooBar" }.OrderBy(s => s).ToArray(), fooBar.Implements.OrderBy(s => s).ToArray());
 
         Assert.IsNotNull(output.References);
         Assert.AreEqual(19, output.References.Count);
@@ -608,7 +608,7 @@ namespace Test1
             Assert.AreEqual("Test1.Bar<T>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.AreEqual("Test1.Bar`1", type.Name);
             Assert.AreEqual("public struct Bar<T> : IEnumerable<T>, IEnumerable", type.Syntax.Content[SyntaxLanguage.CSharp]);
-            Assert.AreEqual(new[] { "System.Collections.Generic.IEnumerable{{T}}", "System.Collections.IEnumerable" }, type.Implements.ToArray());
+            CollectionAssert.AreEqual(new[] { "System.Collections.Generic.IEnumerable{{T}}", "System.Collections.IEnumerable" }, type.Implements.ToArray());
         }
         // inheritance of Foo
         {
@@ -2826,7 +2826,7 @@ namespace Test1
         Assert.AreEqual("Test1.I2`1", i2.Name);
         Assert.IsEmpty(i2.Items);
         Assert.AreEqual(2, i2.InheritedMembers.Count);
-        Assert.AreEqual(new[] { "Test1.I1{System.String}.M1(System.String)", "Test1.I1{{T}}.M1({T})" }, i2.InheritedMembers.ToArray());
+        CollectionAssert.AreEqual(new[] { "Test1.I1{System.String}.M1(System.String)", "Test1.I1{{T}}.M1({T})" }, i2.InheritedMembers.ToArray());
 
         var r1 = output.References["Test1.I1{System.String}.M1(System.String)"];
         Assert.IsFalse(r1.IsDefinition);

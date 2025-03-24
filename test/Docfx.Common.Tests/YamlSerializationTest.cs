@@ -123,7 +123,7 @@ C: ""~""
 - FALSE
 "));
         Assert.IsNotNull(value2);
-        Assert.AreEqual(new[] { true, true, true, false, false, false }, value2.Cast<bool>());
+        CollectionAssert.AreEqual(new[] { true, true, true, false, false, false }, value2.Cast<bool>().ToArray());
     }
 
     [TestMethod]
@@ -239,7 +239,7 @@ bar: bar
         Assert.AreEqual(1, value.IntegerExtensions["x"]);
         Assert.AreEqual(2, value.IntegerExtensions["y"]);
         Assert.AreEqual(2, value.ObjectExtensions.Count);
-        Assert.AreEqual(new[] { "foo1" }, ((List<object>)value.ObjectExtensions["foo"]).ToArray());
+        CollectionAssert.AreEqual(new[] { "foo1" }, ((List<object>)value.ObjectExtensions["foo"]).ToArray());
         Assert.AreEqual("bar", (string)value.ObjectExtensions["bar"]);
     }
 
@@ -267,7 +267,7 @@ bar: bar
         Assert.AreEqual(1, value.IntegerExtensions["x"]);
         Assert.AreEqual(2, value.IntegerExtensions["y"]);
         Assert.AreEqual(2, value.ObjectExtensions.Count);
-        Assert.AreEqual(new[] { "foo1" }, ((List<object>)value.ObjectExtensions["foo"]).ToArray());
+        CollectionAssert.AreEqual(new[] { "foo1" }, ((List<object>)value.ObjectExtensions["foo"]).ToArray());
         Assert.AreEqual("bar", (string)value.ObjectExtensions["bar"]);
 
         var sw = new StringWriter();
@@ -317,7 +317,7 @@ bar: bar
             Assert.AreEqual(i + 1, values[i].IntegerExtensions[$"x{i}"]);
             Assert.AreEqual(i + 2, values[i].IntegerExtensions[$"y{i}"]);
             Assert.AreEqual(2, values[i].ObjectExtensions.Count);
-            Assert.AreEqual(new[] { $"foo{i}" }, ((List<object>)values[i].ObjectExtensions[$"foo{i}"]).ToArray());
+            CollectionAssert.AreEqual(new[] { $"foo{i}" }, ((List<object>)values[i].ObjectExtensions[$"foo{i}"]).ToArray());
             Assert.AreEqual($"bar{i}", (string)values[i].ObjectExtensions[$"bar{i}"]);
         }
     }

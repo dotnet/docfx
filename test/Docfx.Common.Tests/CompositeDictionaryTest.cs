@@ -36,7 +36,7 @@ public class CompositeDictionaryTest
         Assert.AreEqual("x", list[2].Value);
 
         CollectionAssert.AreEqual(new[] { "D1.a", "D2.b", "D3.c" }, c.CD.Keys.ToArray());
-        Assert.AreEqual<object>(new object[] { 1.0, 1, "x" }, c.CD.Values);
+        CollectionAssert.AreEqual(new object[] { 1.0, 1, "x" }, c.CD.Values.ToArray());
         Assert.IsTrue(c.CD.ContainsKey("D1.a"));
         Assert.IsFalse(c.CD.ContainsKey("D1.b"));
         Assert.IsFalse(c.CD.ContainsKey("a"));
