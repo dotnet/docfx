@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Use following setting when running tests withoug Globalization Invariant Mode. -->
+    <!-- Use following setting when running tests without Globalization Invariant Mode. -->
     <!--<InvariantGlobalization>false</InvariantGlobalization>-->
   </PropertyGroup>
 
