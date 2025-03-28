@@ -4,7 +4,6 @@
 using Docfx.Common;
 using Docfx.Tests.Common;
 using FluentAssertions;
-using Xunit;
 using Switches = Docfx.DataContracts.Common.Constants.Switches;
 
 namespace Docfx.Build.Engine.Tests;
@@ -17,8 +16,8 @@ public partial class TemplateManagerUnitTest
     /// <summary>
     /// DotnetToolsMode switch is not set or disabled. (it depends on test execution order)
     /// </summary>
-    [Trait("Related", "TemplateProcessor")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestMethod]
     public void TestDotnetToolsMode_Default()
     {
         // Arrange
@@ -35,8 +34,8 @@ public partial class TemplateManagerUnitTest
     /// <summary>
     /// DotnetToolsMode switch is enabled
     /// </summary>
-    [Trait("Related", "TemplateProcessor")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestMethod]
     public void TestDotnetToolsMode_Enabled()
     {
         // Arrange
@@ -71,8 +70,8 @@ public partial class TemplateManagerUnitTest
     /// <summary>
     /// DotnetToolMode is enabled but path is invalid.
     /// </summary>
-    [Trait("Related", "TemplateProcessor")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestMethod]
     public void TestDotnetToolsMode_InvalidPath()
     {
         // Arrange

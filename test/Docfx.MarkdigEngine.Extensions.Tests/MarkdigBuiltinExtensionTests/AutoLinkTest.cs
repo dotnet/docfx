@@ -4,7 +4,6 @@
 using System.Text.Json;
 using Docfx.MarkdigEngine.Extensions;
 using Markdig.Extensions.AutoLinks;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
@@ -12,10 +11,11 @@ namespace Docfx.MarkdigEngine.Tests;
 /// Unit tests for markdig <see cref="AutoLinkExtension"/>.
 /// </summary>
 /// <seealso href="https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/AutoLinks.md"/>
-[Trait("Related", "MarkdigExtension")]
+[TestProperty("Related", "MarkdigExtension")]
+[TestClass]
 public class AutoLinkTest
 {
-    [Fact]
+    [TestMethod]
     public void AutoLinkTest_DocfxDefault()
     {
         // docfx use `AutoIdentifierOptions.GitHub` as default options.
@@ -26,7 +26,7 @@ public class AutoLinkTest
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["AutoLinks"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void AutoLinkTest_Custom()
     {
         var options = new AutoLinkOptions

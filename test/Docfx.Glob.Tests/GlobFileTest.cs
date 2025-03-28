@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Tests.Common;
-using Xunit;
 
 namespace Docfx.Glob.Tests;
 
+[TestClass]
 public class GlobFileTest : TestBase
 {
     private readonly string _workingDirectory;
@@ -15,7 +15,7 @@ public class GlobFileTest : TestBase
         _workingDirectory = GetRandomFolder();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestGlobGetFilesShouldAbleToGetFiles()
     {
         // - Root/
@@ -53,32 +53,32 @@ public class GlobFileTest : TestBase
             _workingDirectory,
             ["**.md"],
             null).ToArray();
-        Assert.Equal(3, result.Length);
+        Assert.AreEqual(3, result.Length);
         result = FileGlob.GetFiles(
             _workingDirectory,
             null,
             ["**.md"]).ToArray();
-        Assert.Empty(result);
+        Assert.IsEmpty(result);
         result = FileGlob.GetFiles(
             _workingDirectory,
             ["**"],
             ["**.md"]).ToArray();
-        Assert.Equal(6, result.Length);
+        Assert.AreEqual(6, result.Length);
         result = FileGlob.GetFiles(
              _workingDirectory,
              ["**.md"],
              ["**{J,L}/**"]).ToArray();
-        Assert.Single(result);
+        Assert.ContainsSingle(result);
         result = FileGlob.GetFiles(
              _workingDirectory,
              ["**.md", "**.csproj"],
              ["**J/**", "**/M/**"]).ToArray();
-        Assert.Single(result);
+        Assert.ContainsSingle(result);
         result = FileGlob.GetFiles(
              _workingDirectory + "/Root",
              ["[EJ]/*.{md,cs,csproj}"],
              ["**.cs"]).ToArray();
-        Assert.Equal(2, result.Length);
+        Assert.AreEqual(2, result.Length);
     }
 
     private static void CreateFilesOrFolders(string cwd, params string[] items)

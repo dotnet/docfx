@@ -2,14 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Common.EntityMergers;
-using Xunit;
 
 namespace Docfx.Common.Tests;
 
-[Trait("Related", "ReflectionEntityMerger")]
+[TestProperty("Related", "ReflectionEntityMerger")]
+[TestClass]
 public class ReflectionEntityMergerTest
 {
-    [Fact]
+    [TestMethod]
     public void TestReflectionEntityMergerWithBasicScenarios()
     {
         var sample = new BasicSample
@@ -37,13 +37,13 @@ public class ReflectionEntityMergerTest
         new MergerFacade(
             new ReflectionEntityMerger())
             .Merge(ref sample, overrides);
-        Assert.Equal(10, sample.IntValue);
-        Assert.Equal(2, sample.NullableIntValue);
-        Assert.Equal("abc", sample.Text);
-        Assert.Equal(1, sample.Nested.IntValue);
-        Assert.Equal(22, sample.Nested.NullableIntValue);
-        Assert.Equal("Wow!", sample.Nested.Text);
-        Assert.Same(overrides.Nested.Nested, sample.Nested.Nested);
+        Assert.AreEqual(10, sample.IntValue);
+        Assert.AreEqual(2, sample.NullableIntValue);
+        Assert.AreEqual("abc", sample.Text);
+        Assert.AreEqual(1, sample.Nested.IntValue);
+        Assert.AreEqual(22, sample.Nested.NullableIntValue);
+        Assert.AreEqual("Wow!", sample.Nested.Text);
+        Assert.AreSame(overrides.Nested.Nested, sample.Nested.Nested);
     }
 
     public class BasicSample
@@ -54,7 +54,7 @@ public class ReflectionEntityMergerTest
         public BasicSample Nested { get; set; }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestReflectionEntityMergerWhenMergeNullOrDefault()
     {
         var sample = new MergeOptionSample
@@ -85,15 +85,15 @@ public class ReflectionEntityMergerTest
             new KeyedListMerger(
                 new ReflectionEntityMerger()))
             .Merge(ref sample, overrides);
-        Assert.Equal(10, sample.IntValue);
-        Assert.Equal(2, sample.NullableIntValue);
-        Assert.Null(sample.Text);
-        Assert.Same(overrides.Array1, sample.Array1);
-        Assert.Null(sample.Array2);
-        Assert.Equal(0, sample.Nested.IntValue);
-        Assert.Equal(2, sample.Nested.NullableIntValue);
-        Assert.Equal("Wow!", sample.Nested.Text);
-        Assert.Null(sample.Nested.Nested);
+        Assert.AreEqual(10, sample.IntValue);
+        Assert.AreEqual(2, sample.NullableIntValue);
+        Assert.IsNull(sample.Text);
+        Assert.AreSame(overrides.Array1, sample.Array1);
+        Assert.IsNull(sample.Array2);
+        Assert.AreEqual(0, sample.Nested.IntValue);
+        Assert.AreEqual(2, sample.Nested.NullableIntValue);
+        Assert.AreEqual("Wow!", sample.Nested.Text);
+        Assert.IsNull(sample.Nested.Nested);
     }
 
     public class MergeOptionSample
@@ -112,7 +112,7 @@ public class ReflectionEntityMergerTest
         public MergeOptionSample Nested { get; set; }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestReflectionEntityMergerWhenMergeListWithKey()
     {
         var sample = new List<ListItemSample>
@@ -134,9 +134,9 @@ public class ReflectionEntityMergerTest
                 ref sample,
                 overrides,
                 new Dictionary<string, object> { { "separator", "->" }, });
-        Assert.Equal("O1", sample[0].Text);
-        Assert.Equal("O2->N2", sample[1].Text);
-        Assert.Equal("O3->N3", sample[2].Text);
+        Assert.AreEqual("O1", sample[0].Text);
+        Assert.AreEqual("O2->N2", sample[1].Text);
+        Assert.AreEqual("O3->N3", sample[2].Text);
     }
 
     public class ListItemSample
@@ -159,7 +159,7 @@ public class ReflectionEntityMergerTest
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestMergeDictionary()
     {
         var sample = new Dictionary<string, BasicSample>
@@ -219,22 +219,22 @@ public class ReflectionEntityMergerTest
                 ref sample,
                 overrides);
 
-        Assert.Equal(10, sample["a"].IntValue);
-        Assert.Equal(2, sample["a"].NullableIntValue);
-        Assert.Equal("abc", sample["a"].Text);
-        Assert.Equal(1, sample["a"].Nested.IntValue);
-        Assert.Equal(22, sample["a"].Nested.NullableIntValue);
-        Assert.Equal("Wow!", sample["a"].Nested.Text);
-        Assert.Same(overrides["a"].Nested.Nested, sample["a"].Nested.Nested);
+        Assert.AreEqual(10, sample["a"].IntValue);
+        Assert.AreEqual(2, sample["a"].NullableIntValue);
+        Assert.AreEqual("abc", sample["a"].Text);
+        Assert.AreEqual(1, sample["a"].Nested.IntValue);
+        Assert.AreEqual(22, sample["a"].Nested.NullableIntValue);
+        Assert.AreEqual("Wow!", sample["a"].Nested.Text);
+        Assert.AreSame(overrides["a"].Nested.Nested, sample["a"].Nested.Nested);
 
-        Assert.Equal(101, sample["b"].IntValue);
-        Assert.Null(sample["b"].NullableIntValue);
-        Assert.Equal("xyz", sample["b"].Text);
-        Assert.Equal(102, sample["b"].Nested.IntValue);
-        Assert.Equal(2, sample["b"].Nested.NullableIntValue);
-        Assert.Null(sample["b"].Nested.Text);
-        Assert.Null(sample["b"].Nested.Nested);
+        Assert.AreEqual(101, sample["b"].IntValue);
+        Assert.IsNull(sample["b"].NullableIntValue);
+        Assert.AreEqual("xyz", sample["b"].Text);
+        Assert.AreEqual(102, sample["b"].Nested.IntValue);
+        Assert.AreEqual(2, sample["b"].Nested.NullableIntValue);
+        Assert.IsNull(sample["b"].Nested.Text);
+        Assert.IsNull(sample["b"].Nested.Nested);
 
-        Assert.Same(overrides["c"], sample["c"]);
+        Assert.AreSame(overrides["c"], sample["c"]);
     }
 }

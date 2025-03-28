@@ -8,11 +8,11 @@ using Docfx.Plugins;
 using Docfx.Tests.Common;
 
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace Docfx.Build.SchemaDriven.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class SchemaMergerTest : TestBase
 {
     private readonly string _outputFolder;
@@ -39,7 +39,7 @@ public class SchemaMergerTest : TestBase
         _templateManager = new TemplateManager(["template"], null, _templateFolder);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestSchemaOverwriteWithGeneralMergeTypes()
     {
         using var listener = new TestListenerScope();
@@ -221,72 +221,72 @@ Overwrite with content
         BuildDocument(files);
 
         // One plugin warning for yml and one plugin warning for overwrite file
-        Assert.Equal(7, listener.Items.Count);
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): testmerger")));
-        Assert.Equal(1, listener.Items.Count(s => s.Message.StartsWith("\"/stringArrayValue/0\" in overwrite object fails to overwrite \"/stringArrayValue\" for \"uid1\" because it does not match any existing item.")));
-        Assert.Equal(1, listener.Items.Count(s => s.Message.StartsWith("\"/intArrayValue/0\" in overwrite object fails to overwrite \"/intArrayValue\" for \"uid1\" because it does not match any existing item.")));
-        Assert.Equal(1, listener.Items.Count(s => s.Message.StartsWith("\"/emptyArray/0\" in overwrite object fails to overwrite \"/emptyArray\" for \"uid1\" because it does not match any existing item.")));
-        Assert.Equal(1, listener.Items.Count(s => s.Message.StartsWith("\"/array/0/stringArrayValue/0\" in overwrite object fails to overwrite \"/array/0/stringArrayValue\" for \"uid1\" because it does not match any existing item.")));
-        Assert.Equal(1, listener.Items.Count(s => s.Message.StartsWith("\"/dict/stringArrayValue/0\" in overwrite object fails to overwrite \"/dict/stringArrayValue\" for \"uid1\" because it does not match any existing item.")));
+        Assert.AreEqual(7, listener.Items.Count);
+        Assert.IsNotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): testmerger")));
+        Assert.AreEqual(1, listener.Items.Count(s => s.Message.StartsWith("\"/stringArrayValue/0\" in overwrite object fails to overwrite \"/stringArrayValue\" for \"uid1\" because it does not match any existing item.")));
+        Assert.AreEqual(1, listener.Items.Count(s => s.Message.StartsWith("\"/intArrayValue/0\" in overwrite object fails to overwrite \"/intArrayValue\" for \"uid1\" because it does not match any existing item.")));
+        Assert.AreEqual(1, listener.Items.Count(s => s.Message.StartsWith("\"/emptyArray/0\" in overwrite object fails to overwrite \"/emptyArray\" for \"uid1\" because it does not match any existing item.")));
+        Assert.AreEqual(1, listener.Items.Count(s => s.Message.StartsWith("\"/array/0/stringArrayValue/0\" in overwrite object fails to overwrite \"/array/0/stringArrayValue\" for \"uid1\" because it does not match any existing item.")));
+        Assert.AreEqual(1, listener.Items.Count(s => s.Message.StartsWith("\"/dict/stringArrayValue/0\" in overwrite object fails to overwrite \"/dict/stringArrayValue\" for \"uid1\" because it does not match any existing item.")));
 
         listener.Items.Clear();
 
         var rawModelFilePath = GetRawModelFilePath(inputFileName);
-        Assert.True(File.Exists(rawModelFilePath));
+        Assert.IsTrue(File.Exists(rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
-        Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
-        Assert.Equal(2, rawModel["intValue"].Value<int>());
-        Assert.Equal("string1", rawModel["stringValue"].Value<string>());
-        Assert.Equal("abc", rawModel["ignoreValue"].Value<string>());
-        Assert.True(rawModel["boolValue"].Value<bool>());
-        Assert.Equal("notEmpty", rawModel["empty"].Value<string>());
+        Assert.AreEqual("Hello world!", rawModel["meta"].Value<string>());
+        Assert.AreEqual(2, rawModel["intValue"].Value<int>());
+        Assert.AreEqual("string1", rawModel["stringValue"].Value<string>());
+        Assert.AreEqual("abc", rawModel["ignoreValue"].Value<string>());
+        Assert.IsTrue(rawModel["boolValue"].Value<bool>());
+        Assert.AreEqual("notEmpty", rawModel["empty"].Value<string>());
 
-        Assert.Single(rawModel["stringArrayValue"]);
-        Assert.Equal(".NET", rawModel["stringArrayValue"][0].Value<string>());
+        Assert.ContainsSingle(rawModel["stringArrayValue"]);
+        Assert.AreEqual(".NET", rawModel["stringArrayValue"][0].Value<string>());
 
-        Assert.Equal(2, rawModel["intArrayValue"].Count());
-        Assert.Equal(1, rawModel["intArrayValue"][0].Value<int>());
-        Assert.Equal(2, rawModel["intArrayValue"][1].Value<int>());
+        Assert.AreEqual(2, rawModel["intArrayValue"].Count());
+        Assert.AreEqual(1, rawModel["intArrayValue"][0].Value<int>());
+        Assert.AreEqual(2, rawModel["intArrayValue"][1].Value<int>());
 
-        Assert.Empty(rawModel["emptyArray"]);
+        Assert.IsEmpty(rawModel["emptyArray"]);
 
         var array1 = rawModel["array"][0];
 
-        Assert.Equal(2, array1["intValue"].Value<int>());
-        Assert.Equal($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"34\">Nice</p>\n", array1["stringValue"].Value<string>());
-        Assert.Equal("abcdef", array1["ignoreValue"].Value<string>());
-        Assert.False(array1["boolValue"].Value<bool>());
-        Assert.Equal(3, array1["empty"].Value<int>());
+        Assert.AreEqual(2, array1["intValue"].Value<int>());
+        Assert.AreEqual($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"34\">Nice</p>\n", array1["stringValue"].Value<string>());
+        Assert.AreEqual("abcdef", array1["ignoreValue"].Value<string>());
+        Assert.IsFalse(array1["boolValue"].Value<bool>());
+        Assert.AreEqual(3, array1["empty"].Value<int>());
 
-        Assert.Single(array1["stringArrayValue"]);
-        Assert.Equal(".NET", array1["stringArrayValue"][0].Value<string>());
+        Assert.ContainsSingle(array1["stringArrayValue"]);
+        Assert.AreEqual(".NET", array1["stringArrayValue"][0].Value<string>());
 
-        Assert.Equal(2, array1["intArrayValue"].Count());
-        Assert.Equal(1, array1["intArrayValue"][0].Value<int>());
-        Assert.Equal(2, array1["intArrayValue"][1].Value<int>());
+        Assert.AreEqual(2, array1["intArrayValue"].Count());
+        Assert.AreEqual(1, array1["intArrayValue"][0].Value<int>());
+        Assert.AreEqual(2, array1["intArrayValue"][1].Value<int>());
 
-        Assert.Empty(array1["emptyArray"]);
+        Assert.IsEmpty(array1["emptyArray"]);
 
         var dict = rawModel["dict"];
 
-        Assert.Equal(3, dict["intValue"].Value<int>());
-        Assert.Equal($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"34\">Nice</p>\n", dict["stringValue"].Value<string>());
-        Assert.False(dict["boolValue"].Value<bool>());
-        Assert.Equal(4, dict["empty"].Value<int>());
+        Assert.AreEqual(3, dict["intValue"].Value<int>());
+        Assert.AreEqual($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"34\">Nice</p>\n", dict["stringValue"].Value<string>());
+        Assert.IsFalse(dict["boolValue"].Value<bool>());
+        Assert.AreEqual(4, dict["empty"].Value<int>());
 
-        Assert.Single(dict["stringArrayValue"]);
-        Assert.Equal(".NET", dict["stringArrayValue"][0].Value<string>());
+        Assert.ContainsSingle(dict["stringArrayValue"]);
+        Assert.AreEqual(".NET", dict["stringArrayValue"][0].Value<string>());
 
-        Assert.Single(dict["intArrayValue"]);
-        Assert.Equal(4, dict["intArrayValue"][0].Value<int>());
+        Assert.ContainsSingle(dict["intArrayValue"]);
+        Assert.AreEqual(4, dict["intArrayValue"][0].Value<int>());
 
-        Assert.Empty(dict["emptyArray"]);
-        Assert.Equal($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"41\">Cool</p>\n", dict["another"].Value<string>());
-        Assert.Equal($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"47\">Overwrite with content</p>\n", dict["summary"].Value<string>());
+        Assert.IsEmpty(dict["emptyArray"]);
+        Assert.AreEqual($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"41\">Cool</p>\n", dict["another"].Value<string>());
+        Assert.AreEqual($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"47\">Overwrite with content</p>\n", dict["summary"].Value<string>());
     }
 
-    [Fact]
+    [TestMethod]
     public void TestSchemaOverwriteWithGeneralSchemaOptions()
     {
         using var listener = new TestListenerScope();
@@ -348,20 +348,20 @@ Nice
         BuildDocument(files);
 
         // One plugin warning for yml and one plugin warning for overwrite file
-        Assert.True(listener.Items.Count == 0, listener.Items.Select(s => s.Message).ToDelimitedString());
+        Assert.IsTrue(listener.Items.Count == 0, listener.Items.Select(s => s.Message).ToDelimitedString());
 
         var rawModelFilePath = GetRawModelFilePath(inputFileName);
-        Assert.True(File.Exists(rawModelFilePath));
+        Assert.IsTrue(File.Exists(rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
-        Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
-        Assert.Equal($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"8\">Nice</p>\n", rawModel["summary"].Value<string>());
-        Assert.Equal("src.html", rawModel["href"].Value<string>());
-        Assert.Equal("uid1", rawModel["xref"].Value<string>());
-        Assert.Equal($"<p sourcefile=\"{includeFile2}\" sourcestartlinenumber=\"1\" jsonPath=\"/reference\"><a href=\"~/{inputFile}\" sourcefile=\"{includeFile2}\" sourcestartlinenumber=\"1\">overwrite</a></p>\n", rawModel["reference"].Value<string>());
+        Assert.AreEqual("Hello world!", rawModel["meta"].Value<string>());
+        Assert.AreEqual($"\n<p sourcefile=\"{overwriteFile}\" sourcestartlinenumber=\"8\">Nice</p>\n", rawModel["summary"].Value<string>());
+        Assert.AreEqual("src.html", rawModel["href"].Value<string>());
+        Assert.AreEqual("uid1", rawModel["xref"].Value<string>());
+        Assert.AreEqual($"<p sourcefile=\"{includeFile2}\" sourcestartlinenumber=\"1\" jsonPath=\"/reference\"><a href=\"~/{inputFile}\" sourcefile=\"{includeFile2}\" sourcestartlinenumber=\"1\">overwrite</a></p>\n", rawModel["reference"].Value<string>());
 
         var outputFile = GetOutputFilePath(inputFileName);
-        Assert.Equal("<a class=\"xref\" href=\"src.html\">uid1</a>", File.ReadAllText(outputFile));
+        Assert.AreEqual("<a class=\"xref\" href=\"src.html\">uid1</a>", File.ReadAllText(outputFile));
     }
 
     private void BuildDocument(FileCollection files)

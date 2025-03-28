@@ -5,23 +5,23 @@ using Docfx.MarkdigEngine.Extensions;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class AggregatorTest
 {
-    [Theory]
-    [InlineData(
+    [TestMethod]
+    [DataRow(
 "# Test",
 @"<h1>Test</h1>
 ")]
-    [InlineData(
+    [DataRow(
 @"# Test
 - - -",
 @"<h2>Test</h2>
 ")]
-    [InlineData(
+    [DataRow(
 @"# Test1
 # Test2
 - - -
@@ -33,7 +33,7 @@ public class AggregatorTest
 <h2>Test3</h2>
 <h1>Test4</h1>
 ")]
-    [InlineData(
+    [DataRow(
 @"# Test1
 ## Test2
 - - -
@@ -51,15 +51,15 @@ public class AggregatorTest
         TestAggregator(content, expected, new Head1HrAggregateToHead2());
     }
 
-    [Theory]
-    [InlineData(
+    [TestMethod]
+    [DataRow(
 @"P1
 
 P2",
 @"<p>P1
 P2</p>
 ")]
-    [InlineData(
+    [DataRow(
 @"P1
 
 P2
@@ -69,7 +69,7 @@ P3",
 P2
 P3</p>
 ")]
-    [InlineData(
+    [DataRow(
 @"P1
 
 P2
@@ -135,6 +135,6 @@ P4</p>
         var pipeline = pipelineBuilder.Build();
         var html = Markdown.ToHtml(content, pipeline);
 
-        Assert.Equal(expected.Replace("\r\n", "\n"), html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), html);
     }
 }

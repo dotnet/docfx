@@ -7,7 +7,7 @@ namespace docfx.Tests;
 
 public partial class YamlSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<PageViewModel>]
     public void YamlSerializationTest_Universal(string path)
     {

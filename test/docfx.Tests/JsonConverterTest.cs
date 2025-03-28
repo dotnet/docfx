@@ -10,10 +10,11 @@ using Newtonsoft.Json.Serialization;
 
 namespace Docfx.Tests;
 
+[TestClass]
 public class JsonConverterTest
 {
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public void TestJObjectDictionaryToObjectDictionaryConverterSerializeAndDeserialize()
     {
         string jsonString = "{" +
@@ -37,7 +38,7 @@ public class JsonConverterTest
 
         BuildJsonConfig buildOptions = JsonConvert.DeserializeObject<BuildJsonConfig>(jsonString);
 
-        Assert.Equal(7, buildOptions.GlobalMetadata.Count);
+        Assert.AreEqual(7, buildOptions.GlobalMetadata.Count);
 
         JsonSerializerSettings settings = new()
         {
@@ -46,11 +47,11 @@ public class JsonConverterTest
             ContractResolver = new SkipEmptyOrNullContractResolver()
         };
 
-        Assert.Equal(jsonString, JsonConvert.SerializeObject(buildOptions, settings), ignoreLineEndingDifferences: true);
+        Assert.AreEqual(jsonString.ReplaceLineEndings(), JsonConvert.SerializeObject(buildOptions, settings).ReplaceLineEndings());
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public void TestFileMetadataPairsConverterCouldSerializeAndDeserialize()
     {
         FileMetadataPairs item = new(
@@ -65,27 +66,27 @@ public class JsonConverterTest
             });
 
         var result = JsonUtility.Serialize(item);
-        Assert.Equal("{\"*.md\":1,\"*.m\":true,\"abc\":\"string\",\"/[]\\\\*.cs\":{\"key\":\"2\"},\"*/*.cs\":[\"1\",\"2\"],\"**\":{\"key\":[\"1\",\"2\"]}}", result);
+        Assert.AreEqual("{\"*.md\":1,\"*.m\":true,\"abc\":\"string\",\"/[]\\\\*.cs\":{\"key\":\"2\"},\"*/*.cs\":[\"1\",\"2\"],\"**\":{\"key\":[\"1\",\"2\"]}}", result);
         using var reader = new StringReader(result);
         var pairs = JsonUtility.Deserialize<FileMetadataPairs>(reader);
-        Assert.Equal(item.Count, pairs.Count);
+        Assert.AreEqual(item.Count, pairs.Count);
 
         // Assert
         pairs.Should().BeEquivalentTo(item);
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public void TestFileMappingItemSrcInputShouldWork()
     {
         var input = "{\"files\":[\"file1\"],\"src\":\"folder1\"}";
         using var sr = new StringReader(input);
         var result = JsonUtility.Deserialize<FileMappingItem>(sr);
-        Assert.Equal("folder1", result.Src);
+        Assert.AreEqual("folder1", result.Src);
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public void TestFileMappingItemOutputShouldContainSrcOnly()
     {
         var fileMappingItem = new FileMappingItem
@@ -95,7 +96,7 @@ public class JsonConverterTest
         };
 
         var result = JsonUtility.Serialize(fileMappingItem);
-        Assert.Equal("{\"files\":[\"file1\"],\"src\":\"folder1\"}", result);
+        Assert.AreEqual("{\"files\":[\"file1\"],\"src\":\"folder1\"}", result);
     }
 }
 

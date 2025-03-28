@@ -7,7 +7,7 @@ namespace docfx.Tests;
 
 public partial class JsonSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<MergeJsonConfig>]
     public void JsonSerializationTest_MergeJsonConfig(string path)
     {

@@ -10,15 +10,23 @@ using Microsoft.Playwright;
 
 namespace Docfx.Tests;
 
-[Trait("Stage", "Percy")]
+[TestProperty("Stage", "Percy")]
+[TestClass]
 public class PercyTest
 {
-    private class PercyFactAttribute : FactAttribute
+    private class PercyConditionAttribute : ConditionBaseAttribute
     {
-        public PercyFactAttribute()
+        public PercyConditionAttribute()
+            : base(ConditionMode.Include)
         {
-            Skip = IsActiveLocalTcpPort(5338) ? null : "Run percy tests with `percy exec`";
+            IgnoreMessage = IsActiveLocalTcpPort(5338) ? null : "Run percy tests with `percy exec`";
         }
+
+        public override string IgnoreMessage { get; }
+
+        public override string GroupName => nameof(PercyConditionAttribute);
+
+        public override bool ShouldRun => IgnoreMessage is null;
     }
 
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
@@ -42,7 +50,8 @@ public class PercyTest
         Microsoft.Playwright.Program.Main(["install", "chromium", "--only-shell"]);
     }
 
-    [PercyFact]
+    [PercyCondition]
+    [TestMethod]
     public async Task SeedHtml()
     {
         var samplePath = $"{s_samplesDir}/seed";
@@ -52,8 +61,8 @@ public class PercyTest
         await process.WaitForExitAsync();
 
         var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-        Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
-        Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
+        Assert.AreEqual(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
+        Assert.AreEqual(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
 
         const int port = 8089;
         var _ = Task.Run(() => Program.Main(["serve", "--port", $"{port}", $"{samplePath}/_site"]))

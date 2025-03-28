@@ -10,19 +10,20 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class JsonSchemaTest : TestBase
 {
-    [Theory]
-    [InlineData("docs/docfx.json")]
-    [InlineData("samples/csharp/docfx.json")]
-    [InlineData("samples/extensions/docfx.json")]
-    [InlineData("samples/seed/docfx.json")]
-    [InlineData("test/docfx.Tests/Assets/docfx.json_build/docfx.json")]
-    [InlineData("test/docfx.Tests/Assets/docfx.json_empty/docfx.json")]
-    [InlineData("test/docfx.Tests/Assets/docfx.json_metadata/docfx.json")]
-    [InlineData("test/docfx.Tests/Assets/docfx.json_metadata/docfxWithFilter.json")]
-    [InlineData("test/docfx.Tests/Assets/docfx.json_metadata_build/docfx.json")]
+    [TestMethod]
+    [DataRow("docs/docfx.json")]
+    [DataRow("samples/csharp/docfx.json")]
+    [DataRow("samples/extensions/docfx.json")]
+    [DataRow("samples/seed/docfx.json")]
+    [DataRow("test/docfx.Tests/Assets/docfx.json_build/docfx.json")]
+    [DataRow("test/docfx.Tests/Assets/docfx.json_empty/docfx.json")]
+    [DataRow("test/docfx.Tests/Assets/docfx.json_metadata/docfx.json")]
+    [DataRow("test/docfx.Tests/Assets/docfx.json_metadata/docfxWithFilter.json")]
+    [DataRow("test/docfx.Tests/Assets/docfx.json_metadata_build/docfx.json")]
     public void JsonSchemaTest_Docfx_Json(string path)
     {
         // Arrange
@@ -35,9 +36,9 @@ public class JsonSchemaTest : TestBase
         result.IsValid.Should().BeTrue();
     }
 
-    [Theory]
-    [InlineData("test/docfx.Tests/Assets/docfx.json_invalid_format/docfx.json")]
-    [InlineData("test/docfx.Tests/Assets/docfx.json_invalid_key/docfx.json")]
+    [TestMethod]
+    [DataRow("test/docfx.Tests/Assets/docfx.json_invalid_format/docfx.json")]
+    [DataRow("test/docfx.Tests/Assets/docfx.json_invalid_key/docfx.json")]
     public void JsonSchemaTest_Docfx_Json_Invalid(string path)
     {
         // Arrange
@@ -50,11 +51,11 @@ public class JsonSchemaTest : TestBase
         result.IsValid.Should().BeFalse();
     }
 
-    [Theory]
-    [InlineData("src/Docfx.Dotnet/Resources/defaultfilterconfig.yml")]
-    [InlineData("test/Docfx.Dotnet.Tests/TestData/filterconfig.yml")]
-    [InlineData("test/Docfx.Dotnet.Tests/TestData/filterconfig_attribute.yml")]
-    [InlineData("test/Docfx.Dotnet.Tests/TestData/filterconfig_docs_sample.yml")]
+    [TestMethod]
+    [DataRow("src/Docfx.Dotnet/Resources/defaultfilterconfig.yml")]
+    [DataRow("test/Docfx.Dotnet.Tests/TestData/filterconfig.yml")]
+    [DataRow("test/Docfx.Dotnet.Tests/TestData/filterconfig_attribute.yml")]
+    [DataRow("test/Docfx.Dotnet.Tests/TestData/filterconfig_docs_sample.yml")]
     public void JsonSchemaTest_FilterConfig(string path)
     {
         // Arrange
@@ -67,17 +68,17 @@ public class JsonSchemaTest : TestBase
         result.IsValid.Should().BeTrue();
     }
 
-    [Theory]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.CSharp/api/toc.json.view.verified.json")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Extensions/api/toc.json.view.verified.json")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Extensions/toc.json.view.verified.json")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/api/toc.json.view.verified.json")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/apipage/toc.json.view.verified.json")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/articles/toc.json.view.verified.json")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/md/toc.json.view.verified.json")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/pdf/toc.json.view.verified.json")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/restapi/toc.json.view.verified.json")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/toc.json.view.verified.json")]
+    [TestMethod]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.CSharp/api/toc.json.view.verified.json")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Extensions/api/toc.json.view.verified.json")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Extensions/toc.json.view.verified.json")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Seed/api/toc.json.view.verified.json")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Seed/apipage/toc.json.view.verified.json")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Seed/articles/toc.json.view.verified.json")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Seed/md/toc.json.view.verified.json")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Seed/pdf/toc.json.view.verified.json")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Seed/restapi/toc.json.view.verified.json")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Seed/toc.json.view.verified.json")]
     public void JsonSchemaTest_Toc_Json(string path)
     {
         // Arrange
@@ -90,9 +91,9 @@ public class JsonSchemaTest : TestBase
         result.IsValid.Should().BeTrue();
     }
 
-    [Theory]
-    [InlineData("test/Docfx.Build.RestApi.WithPlugins.Tests/TestData/swagger/toc.yml")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.SeedMarkdown/toc.verified.yml")]
+    [TestMethod]
+    [DataRow("test/Docfx.Build.RestApi.WithPlugins.Tests/TestData/swagger/toc.yml")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.SeedMarkdown/toc.verified.yml")]
     public void JsonSchemaTest_Toc_Yaml(string path)
     {
         // Arrange
@@ -105,8 +106,8 @@ public class JsonSchemaTest : TestBase
         result.IsValid.Should().BeTrue();
     }
 
-    [Theory]
-    [InlineData("test/Docfx.Build.Tests/TestData/xrefmap.json")]
+    [TestMethod]
+    [DataRow("test/Docfx.Build.Tests/TestData/xrefmap.json")]
     public void JsonSchemaTest_XrefMap_Json(string path)
     {
         // Arrange
@@ -119,11 +120,11 @@ public class JsonSchemaTest : TestBase
         result.IsValid.Should().BeTrue();
     }
 
-    [Theory]
-    [InlineData("test/Docfx.Build.Tests/TestData/xrefmap.yml")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.CSharp/xrefmap.verified.yml")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Extensions/xrefmap.verified.yml")]
-    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/xrefmap.verified.yml")]
+    [TestMethod]
+    [DataRow("test/Docfx.Build.Tests/TestData/xrefmap.yml")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.CSharp/xrefmap.verified.yml")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Extensions/xrefmap.verified.yml")]
+    [DataRow("test/docfx.Snapshot.Tests/SamplesTest.Seed/xrefmap.verified.yml")]
     public void JsonSchemaTest_XrefMap_Yaml(string path)
     {
         // Arrange

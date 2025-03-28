@@ -5,14 +5,13 @@ using Docfx.Common.EntityMergers;
 
 using Newtonsoft.Json.Linq;
 
-using Xunit;
-
 namespace Docfx.Common.Tests;
 
-[Trait("Related", "JObjectMerger")]
+[TestProperty("Related", "JObjectMerger")]
+[TestClass]
 public class JObjectMergerTest
 {
-    [Fact]
+    [TestMethod]
     public void TestJObjectMergerWithBasicScenarios()
     {
         object source = new JObject
@@ -43,11 +42,11 @@ public class JObjectMergerTest
                 new ReflectionEntityMerger()))
                 .Merge(ref source, overrides);
         var sourceJObj = source as JObject;
-        Assert.NotNull(sourceJObj);
-        Assert.Equal("Overrides1", sourceJObj["StringKey"]);
-        Assert.Equal("Source2", sourceJObj["AdditionalSourceKey"]);
-        Assert.Equal("Overrides2", sourceJObj["AdditionalOverridesKey"]);
-        Assert.Equal("Overrides3", sourceJObj["JObjectValue"]["CommonKey"]);
-        Assert.Equal("Overrides4", sourceJObj["JObjectValue"]["AdditionalOverridesKey"]);
+        Assert.IsNotNull(sourceJObj);
+        Assert.AreEqual("Overrides1", sourceJObj["StringKey"]);
+        Assert.AreEqual("Source2", sourceJObj["AdditionalSourceKey"]);
+        Assert.AreEqual("Overrides2", sourceJObj["AdditionalOverridesKey"]);
+        Assert.AreEqual("Overrides3", sourceJObj["JObjectValue"]["CommonKey"]);
+        Assert.AreEqual("Overrides4", sourceJObj["JObjectValue"]["AdditionalOverridesKey"]);
     }
 }

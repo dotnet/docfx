@@ -2,13 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using FluentAssertions;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class PlantUmlTest
 {
-    [Fact(Skip = "Flaky Tests")]
+    [TestMethod]
+    [Ignore("Flaky Tests")]
     public void TestRenderSvg_SequenceDiagram()
     {
         var source = """

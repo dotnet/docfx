@@ -6,15 +6,15 @@ using Docfx.Build.Engine;
 using Docfx.DataContracts.Common;
 using Docfx.MarkdigEngine;
 using Docfx.Plugins;
-using Xunit;
 
 namespace Docfx.Build.Common.Tests;
 
+[TestClass]
 public class ModelAttributeHandlerTest
 {
     #region UniqueIdentityAttribute
 
-    [Fact]
+    [TestMethod]
     public void TestSimpleModelWithUniqueIdentityReferenceAttributeShouldSucceed()
     {
         var model = new SimpleModel
@@ -25,12 +25,12 @@ public class ModelAttributeHandlerTest
 
         var context = Handle(model);
 
-        Assert.Equal(2, context.LinkToUids.Count);
+        Assert.AreEqual(2, context.LinkToUids.Count);
         Assert.Contains(model.Identity, context.LinkToUids);
         Assert.Contains(model.Identities[0], context.LinkToUids);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestModelWithLoopShouldSucceed()
     {
         var model = new LoopModel
@@ -40,10 +40,10 @@ public class ModelAttributeHandlerTest
         };
         model.Reference = model;
         var context = Handle(model);
-        Assert.Single(context.LinkToUids);
+        Assert.ContainsSingle(context.LinkToUids);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestModelWithInvalidTypeShouldThrow()
     {
         var model = new InvalidModel
@@ -56,7 +56,7 @@ public class ModelAttributeHandlerTest
             );
     }
 
-    [Fact]
+    [TestMethod]
     public void TestModelWithInvalidItemTypeShouldThrow()
     {
         var model = new InvalidModel2
@@ -68,7 +68,7 @@ public class ModelAttributeHandlerTest
             );
     }
 
-    [Fact]
+    [TestMethod]
     public void TestComplexModelWithUniqueIdentityReferenceAttributeShouldSucceed()
     {
         var model = new ComplexModel
@@ -104,17 +104,17 @@ public class ModelAttributeHandlerTest
         };
         var context = Handle(model);
 
-        Assert.Equal(12, context.LinkToUids.Count);
-        Assert.Equal(new List<string> {
+        Assert.AreEqual(12, context.LinkToUids.Count);
+        CollectionAssert.AreEqual(new string[] {
             "0", "0.0", "0.0.0", "1", "1.1", "1.1.1","1.1.2", "1.2", "1.3","2",  "2.2", "3",
-        }, context.LinkToUids.OrderBy(x => x));
+        }, context.LinkToUids.OrderBy(x => x).ToArray());
     }
 
     #endregion
 
     #region MarkdownContentAttribute
 
-    [Fact]
+    [TestMethod]
     public void TestSimpleModelWithMarkdownContentAttributeShouldSucceed()
     {
         var model = new MarkdownModel1
@@ -130,17 +130,17 @@ public class ModelAttributeHandlerTest
 
         var context = Handle(model);
 
-        Assert.Single(context.LinkToUids);
-        Assert.Single(context.LinkToFiles);
-        Assert.Single(context.FileLinkSources);
-        Assert.Single(context.UidLinkSources);
-        Assert.Equal(
+        Assert.ContainsSingle(context.LinkToUids);
+        Assert.ContainsSingle(context.LinkToFiles);
+        Assert.ContainsSingle(context.FileLinkSources);
+        Assert.ContainsSingle(context.UidLinkSources);
+        Assert.AreEqual(
             @"<p sourcefile=""test"" sourcestartlinenumber=""1"">Hello <em sourcefile=""test"" sourcestartlinenumber=""1"">world</em>, <xref href=""xref"" data-throw-if-not-resolved=""False"" data-raw-source=""@xref"" sourcefile=""test"" sourcestartlinenumber=""1""></xref>, <a href=""link.md"" sourcefile=""test"" sourcestartlinenumber=""1"">link</a></p>
 ".Replace("\r\n", "\n"),
             model.Content);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestMarkdownContentAttributeWithContentPlaceholderShouldSucceed()
     {
         var model = new MarkdownModel1
@@ -171,22 +171,22 @@ public class ModelAttributeHandlerTest
         context.PlaceholderContent = "placeholder";
         context = Handle(model, context);
 
-        Assert.Single(context.LinkToUids);
-        Assert.Single(context.LinkToFiles);
-        Assert.Single(context.FileLinkSources);
-        Assert.Single(context.UidLinkSources);
+        Assert.ContainsSingle(context.LinkToUids);
+        Assert.ContainsSingle(context.LinkToFiles);
+        Assert.ContainsSingle(context.FileLinkSources);
+        Assert.ContainsSingle(context.UidLinkSources);
         var expected = @"<p sourcefile=""test"" sourcestartlinenumber=""1"">Hello <em sourcefile=""test"" sourcestartlinenumber=""1"">world</em>, <xref href=""xref"" data-throw-if-not-resolved=""False"" data-raw-source=""@xref"" sourcefile=""test"" sourcestartlinenumber=""1""></xref>, <a href=""link.md"" sourcefile=""test"" sourcestartlinenumber=""1"">link</a></p>
 ".Replace("\r\n", "\n");
-        Assert.Equal(expected, model.Content);
-        Assert.Equal(context.PlaceholderContent, model.Content2);
-        Assert.Equal(context.PlaceholderContent, model.Inner.Content);
-        Assert.Equal(context.PlaceholderContent, model.Inner.Content2);
-        Assert.Equal(context.PlaceholderContent, model.Inner.Content3[0]);
-        Assert.Equal(context.PlaceholderContent, model.Inner.Content4["key1"]);
-        Assert.Equal(context.PlaceholderContent, model.Inner.Content5["key1"]);
+        Assert.AreEqual(expected, model.Content);
+        Assert.AreEqual(context.PlaceholderContent, model.Content2);
+        Assert.AreEqual(context.PlaceholderContent, model.Inner.Content);
+        Assert.AreEqual(context.PlaceholderContent, model.Inner.Content2);
+        Assert.AreEqual(context.PlaceholderContent, model.Inner.Content3[0]);
+        Assert.AreEqual(context.PlaceholderContent, model.Inner.Content4["key1"]);
+        Assert.AreEqual(context.PlaceholderContent, model.Inner.Content5["key1"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestMarkdownContentIgnoreAttributeShouldSucceed()
     {
         var model = new MarkdownModelWithIgnore
@@ -218,22 +218,22 @@ public class ModelAttributeHandlerTest
         context.PlaceholderContent = "placeholder";
         context = Handle(model, context);
 
-        Assert.Equal(3, context.LinkToUids.Count);
-        Assert.Single(context.LinkToFiles);
-        Assert.Single(context.FileLinkSources);
-        Assert.Single(context.UidLinkSources);
+        Assert.AreEqual(3, context.LinkToUids.Count);
+        Assert.ContainsSingle(context.LinkToFiles);
+        Assert.ContainsSingle(context.FileLinkSources);
+        Assert.ContainsSingle(context.UidLinkSources);
         var expected = @"<p sourcefile=""test"" sourcestartlinenumber=""1"">Hello <em sourcefile=""test"" sourcestartlinenumber=""1"">world</em>, <xref href=""xref"" data-throw-if-not-resolved=""False"" data-raw-source=""@xref"" sourcefile=""test"" sourcestartlinenumber=""1""></xref>, <a href=""link.md"" sourcefile=""test"" sourcestartlinenumber=""1"">link</a></p>
 ".Replace("\r\n", "\n");
-        Assert.Equal(expected, model.Content);
-        Assert.Equal(context.PlaceholderContent, model.Content2);
-        Assert.Equal("*content", model.Inner.Content);
-        Assert.Equal("*content", model.Inner.Content2);
-        Assert.Equal("Identity1", model.Inner.Content3[0]);
-        Assert.Equal("*content", model.Inner.Content4["key1"]);
-        Assert.Equal("*content", model.Inner.Content5["key1"]);
+        Assert.AreEqual(expected, model.Content);
+        Assert.AreEqual(context.PlaceholderContent, model.Content2);
+        Assert.AreEqual("*content", model.Inner.Content);
+        Assert.AreEqual("*content", model.Inner.Content2);
+        Assert.AreEqual("Identity1", model.Inner.Content3[0]);
+        Assert.AreEqual("*content", model.Inner.Content4["key1"]);
+        Assert.AreEqual("*content", model.Inner.Content5["key1"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void TesteModelWithIListMarkdownContentAttributeShouldSucceed()
     {
         var model = new MarkdownModelWithIList
@@ -247,20 +247,20 @@ public class ModelAttributeHandlerTest
         context.PlaceholderContent = "placeholder";
         context = Handle(model, context);
 
-        Assert.Single(context.LinkToUids);
-        Assert.Empty(context.LinkToFiles);
-        Assert.Empty(context.FileLinkSources);
-        Assert.Single(context.UidLinkSources);
-        Assert.Equal("<p sourcefile=\"test\" sourcestartlinenumber=\"1\"><em sourcefile=\"test\" sourcestartlinenumber=\"1\">list</em></p>\n", model.ListContent[0]);
-        Assert.Equal("<p sourcefile=\"test\" sourcestartlinenumber=\"1\"><xref href=\"xref\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@xref\" sourcefile=\"test\" sourcestartlinenumber=\"1\"></xref></p>\n", model.ArrayContent[0]);
-        Assert.Equal("placeholder", model.ArrayContent[1]);
+        Assert.ContainsSingle(context.LinkToUids);
+        Assert.IsEmpty(context.LinkToFiles);
+        Assert.IsEmpty(context.FileLinkSources);
+        Assert.ContainsSingle(context.UidLinkSources);
+        Assert.AreEqual("<p sourcefile=\"test\" sourcestartlinenumber=\"1\"><em sourcefile=\"test\" sourcestartlinenumber=\"1\">list</em></p>\n", model.ListContent[0]);
+        Assert.AreEqual("<p sourcefile=\"test\" sourcestartlinenumber=\"1\"><xref href=\"xref\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@xref\" sourcefile=\"test\" sourcestartlinenumber=\"1\"></xref></p>\n", model.ArrayContent[0]);
+        Assert.AreEqual("placeholder", model.ArrayContent[1]);
     }
 
     #endregion
 
     #region UrlContentAttribute
 
-    [Fact]
+    [TestMethod]
     public void TestSimpleModelWithUrlContentAttributeShouldSucceed()
     {
         var model = new SimpleModel
@@ -270,11 +270,11 @@ public class ModelAttributeHandlerTest
 
         var context = Handle(model);
 
-        Assert.Empty(context.LinkToUids);
-        Assert.Empty(context.UidLinkSources);
-        Assert.Single(context.LinkToFiles);
-        Assert.Single(context.FileLinkSources);
-        Assert.Equal("~/linkTarget", model.Href);
+        Assert.IsEmpty(context.LinkToUids);
+        Assert.IsEmpty(context.UidLinkSources);
+        Assert.ContainsSingle(context.LinkToFiles);
+        Assert.ContainsSingle(context.FileLinkSources);
+        Assert.AreEqual("~/linkTarget", model.Href);
     }
     #endregion
 

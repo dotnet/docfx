@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Markdig.Extensions.EmphasisExtras;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
@@ -10,10 +9,11 @@ namespace Docfx.MarkdigEngine.Tests;
 /// Unit tests for markdig <see cref="EmphasisExtraExtension"/>.
 /// </summary>
 /// <seealso href="https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/EmphasisExtraSpecs.md"/>
-[Trait("Related", "MarkdigExtension")]
+[TestProperty("Related", "MarkdigExtension")]
+[TestClass]
 public class EmphasisExtraTest
 {
-    [Fact]
+    [TestMethod]
     public void EmphasisExtraTest_DocfxDefault()
     {
         var content = "The following text ~~is deleted~~";
@@ -23,7 +23,7 @@ public class EmphasisExtraTest
         TestUtility.VerifyMarkup(content, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void EmphasisExtraTest_ResetToMarkdigDefault()
     {
         var content =
@@ -48,7 +48,7 @@ public class EmphasisExtraTest
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["EmphasisExtras"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void EmphasisExtraTest_SuperscriptAndSubscript()
     {
         var content = "H~2~O is a liquid. 2^10^ is 1024";
@@ -66,7 +66,7 @@ public class EmphasisExtraTest
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void EmphasisExtraTest_Inserted()
     {
         var content = "++Inserted text++";
@@ -84,7 +84,7 @@ public class EmphasisExtraTest
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void EmphasisExtraTest_Marked()
     {
         var content = "==Marked text==";

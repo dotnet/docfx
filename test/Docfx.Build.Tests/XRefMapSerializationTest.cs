@@ -4,13 +4,13 @@
 using System.Text;
 using Docfx.Common;
 using FluentAssertions;
-using Xunit;
 
 namespace Docfx.Build.Engine.Tests;
 
+[TestClass]
 public class XRefMapSerializationTest
 {
-    [Fact]
+    [TestMethod]
     public void XRefMapSerializationRoundTripTest()
     {
         var model = new XRefMap

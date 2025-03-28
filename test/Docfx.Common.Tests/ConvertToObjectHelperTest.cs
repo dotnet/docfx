@@ -5,26 +5,26 @@ using System.Text.Json.Serialization;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace Docfx.Common.Tests;
 
-[Trait("Related", "ConvertToObjectHelper")]
+[TestProperty("Related", "ConvertToObjectHelper")]
+[TestClass]
 public class ConvertToObjectHelperTest
 {
-    [Theory]
-    [InlineData(1, typeof(int))]
-    [InlineData(1L, typeof(long))]
-    [InlineData(1.0, typeof(double))]
-    [InlineData("string", typeof(string))]
-    [InlineData('c', typeof(string))]
+    [TestMethod]
+    [DataRow(1, typeof(int))]
+    [DataRow(1L, typeof(long))]
+    [DataRow(1.0, typeof(double))]
+    [DataRow("string", typeof(string))]
+    [DataRow('c', typeof(string))]
     public void ConvertSimpleTypeToObjectShouldWork(object value, Type expectedType)
     {
         var result = ConvertToObjectHelper.ConvertStrongTypeToObject(value);
-        Assert.Equal(expectedType, result.GetType());
+        Assert.AreEqual(expectedType, result.GetType());
     }
 
-    [Fact]
+    [TestMethod]
     public void ConvertComplexTypeToObjectShouldWork()
     {
         var complexType = new ComplexType
@@ -34,12 +34,12 @@ public class ConvertToObjectHelperTest
             IntDictionary = []
         };
         var result = ConvertToObjectHelper.ConvertStrongTypeToObject(complexType);
-        Assert.Equal(typeof(Dictionary<string, object>), result.GetType());
-        Assert.Equal(typeof(object[]), ((Dictionary<string, object>)result)["List"].GetType());
-        Assert.Equal(typeof(Dictionary<string, object>), ((Dictionary<string, object>)result)["IntDictionary"].GetType());
+        Assert.AreEqual(typeof(Dictionary<string, object>), result.GetType());
+        Assert.AreEqual(typeof(object[]), ((Dictionary<string, object>)result)["List"].GetType());
+        Assert.AreEqual(typeof(Dictionary<string, object>), ((Dictionary<string, object>)result)["IntDictionary"].GetType());
     }
 
-    [Fact]
+    [TestMethod]
     public void ConvertComplexTypeWithJsonAttributeToObjectShouldUseAttributeAsPropertyName()
     {
         var complexType = new ComplexTypeWithJson
@@ -49,12 +49,12 @@ public class ConvertToObjectHelperTest
             IntDictionary = []
         };
         var result = ConvertToObjectHelper.ConvertStrongTypeToObject(complexType);
-        Assert.Equal(typeof(Dictionary<string, object>), result.GetType());
-        Assert.Equal(typeof(object[]), ((Dictionary<string, object>)result)["list"].GetType());
-        Assert.Equal(typeof(Dictionary<string, object>), ((Dictionary<string, object>)result)["dict"].GetType());
+        Assert.AreEqual(typeof(Dictionary<string, object>), result.GetType());
+        Assert.AreEqual(typeof(object[]), ((Dictionary<string, object>)result)["list"].GetType());
+        Assert.AreEqual(typeof(Dictionary<string, object>), ((Dictionary<string, object>)result)["dict"].GetType());
     }
 
-    [Fact]
+    [TestMethod]
     public void ConvertObjectWithCircularReferenceToDynamic()
     {
         var a = new Dictionary<string, object>
@@ -64,15 +64,15 @@ public class ConvertToObjectHelperTest
         a["key1"] = a;
 
         dynamic converted = ConvertToObjectHelper.ConvertToDynamic(a);
-        Assert.Same(converted.key1, converted);
-        Assert.Equal("value", converted.key1.key);
+        Assert.AreSame(converted.key1, converted);
+        Assert.AreEqual("value", converted.key1.key);
 
         Dictionary<string, object> obj = (Dictionary<string, object>)ConvertToObjectHelper.ConvertExpandoObjectToObject(converted);
-        Assert.True(ReferenceEquals(obj["key1"], obj));
-        Assert.Equal("value", ((Dictionary<string, object>)obj["key1"])["key"]);
+        Assert.IsTrue(ReferenceEquals(obj["key1"], obj));
+        Assert.AreEqual("value", ((Dictionary<string, object>)obj["key1"])["key"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ConvertJObjectToObject_UnexpectedType()
     {
         // Arrange

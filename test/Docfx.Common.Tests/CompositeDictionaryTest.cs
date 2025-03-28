@@ -1,14 +1,13 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.Common.Tests;
 
-[Trait("Related", "CompositeDictionary")]
+[TestProperty("Related", "CompositeDictionary")]
+[TestClass]
 public class CompositeDictionaryTest
 {
-    [Fact]
+    [TestMethod]
     public void TestAddRemoveGetSetForCompositeDictionary()
     {
         var c = new C
@@ -27,51 +26,51 @@ public class CompositeDictionaryTest
             },
         };
 
-        Assert.Equal(3, c.CD.Count);
+        Assert.AreEqual(3, c.CD.Count);
         var list = c.CD.ToList();
-        Assert.Equal("D1.a", list[0].Key);
-        Assert.Equal(1.0, list[0].Value);
-        Assert.Equal("D2.b", list[1].Key);
-        Assert.Equal(1, list[1].Value);
-        Assert.Equal("D3.c", list[2].Key);
-        Assert.Equal("x", list[2].Value);
+        Assert.AreEqual("D1.a", list[0].Key);
+        Assert.AreEqual(1.0, list[0].Value);
+        Assert.AreEqual("D2.b", list[1].Key);
+        Assert.AreEqual(1, list[1].Value);
+        Assert.AreEqual("D3.c", list[2].Key);
+        Assert.AreEqual("x", list[2].Value);
 
-        Assert.Equal<string>(new[] { "D1.a", "D2.b", "D3.c" }, c.CD.Keys);
-        Assert.Equal<object>(new object[] { 1.0, 1, "x" }, c.CD.Values);
-        Assert.True(c.CD.ContainsKey("D1.a"));
-        Assert.False(c.CD.ContainsKey("D1.b"));
-        Assert.False(c.CD.ContainsKey("a"));
+        CollectionAssert.AreEqual(new[] { "D1.a", "D2.b", "D3.c" }, c.CD.Keys.ToArray());
+        CollectionAssert.AreEqual(new object[] { 1.0, 1, "x" }, c.CD.Values.ToArray());
+        Assert.IsTrue(c.CD.ContainsKey("D1.a"));
+        Assert.IsFalse(c.CD.ContainsKey("D1.b"));
+        Assert.IsFalse(c.CD.ContainsKey("a"));
 
         c.CD.Add("D1.b", 2);
-        Assert.Equal(4, c.CD.Count);
-        Assert.Equal(2, c.D1.Count);
-        Assert.True(c.CD.ContainsKey("D1.b"));
-        Assert.Equal(2, c.CD["D1.b"]);
-        Assert.True(c.CD.TryGetValue("D1.b", out object value));
-        Assert.Equal(2, value);
-        Assert.True(c.CD.TryGetValue("D2.b", out value));
-        Assert.Equal(1, value);
+        Assert.AreEqual(4, c.CD.Count);
+        Assert.AreEqual(2, c.D1.Count);
+        Assert.IsTrue(c.CD.ContainsKey("D1.b"));
+        Assert.AreEqual(2, c.CD["D1.b"]);
+        Assert.IsTrue(c.CD.TryGetValue("D1.b", out object value));
+        Assert.AreEqual(2, value);
+        Assert.IsTrue(c.CD.TryGetValue("D2.b", out value));
+        Assert.AreEqual(1, value);
 
-        Assert.True(c.CD.Remove("D1.b"));
-        Assert.False(c.CD.Remove("D1.b"));
-        Assert.False(c.CD.Remove("x"));
-        Assert.False(c.CD.TryGetValue("D1.b", out value));
-        Assert.Null(value);
-        Assert.False(c.CD.TryGetValue("b", out value));
-        Assert.Null(value);
-        Assert.Equal(3, c.CD.Count);
-        Assert.Single(c.D1);
+        Assert.IsTrue(c.CD.Remove("D1.b"));
+        Assert.IsFalse(c.CD.Remove("D1.b"));
+        Assert.IsFalse(c.CD.Remove("x"));
+        Assert.IsFalse(c.CD.TryGetValue("D1.b", out value));
+        Assert.IsNull(value);
+        Assert.IsFalse(c.CD.TryGetValue("b", out value));
+        Assert.IsNull(value);
+        Assert.AreEqual(3, c.CD.Count);
+        Assert.ContainsSingle(c.D1);
 
-        Assert.Equal("x", c.CD["D3.c"]);
+        Assert.AreEqual("x", c.CD["D3.c"]);
         c.CD["D3.c"] = "y";
-        Assert.Equal("y", c.CD["D3.c"]);
-        Assert.Equal(3, c.CD.Count);
+        Assert.AreEqual("y", c.CD["D3.c"]);
+        Assert.AreEqual(3, c.CD.Count);
 
         c.CD.Clear();
-        Assert.Empty(c.CD);
+        Assert.IsEmpty(c.CD);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestThrowCaseForCompositeDictionary()
     {
         var c = new C
@@ -93,9 +92,9 @@ public class CompositeDictionaryTest
         Assert.Throws<InvalidOperationException>(() => c.CD["z"] = 1);
         Assert.Throws<InvalidOperationException>(() => c.CD.Add("z", 1));
 
-        Assert.Throws<KeyNotFoundException>(() => c.CD["z"]);
+        Assert.Throws<KeyNotFoundException>(() => _ = c.CD["z"]);
 
-        Assert.Throws<ArgumentNullException>(() => c.CD[null]);
+        Assert.Throws<ArgumentNullException>(() => _ = c.CD[null]);
         Assert.Throws<ArgumentNullException>(() => c.CD[null] = 1);
         Assert.Throws<ArgumentNullException>(() => c.CD.Add(null, 1));
         Assert.Throws<ArgumentNullException>(() => c.CD.Remove(null));

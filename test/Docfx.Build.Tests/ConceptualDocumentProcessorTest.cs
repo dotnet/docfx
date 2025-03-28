@@ -9,11 +9,11 @@ using Docfx.DataContracts.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace Docfx.Build.ManagedReference.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class ConceptualDocumentProcessorTest : TestBase
 {
     private readonly string _outputFolder;
@@ -52,9 +52,9 @@ public class ConceptualDocumentProcessorTest : TestBase
         base.Dispose();
     }
 
-    [Theory]
-    [InlineData(@"<p><a href=""%7E/docs/csharp/language-reference/keywords/select-clause.md""></p>", "~/docs/csharp/language-reference/keywords/select-clause.md")]
-    [InlineData(@"<p><a href=""%7E/../samples/readme.md""></p>", "~/../samples/readme.md")]
+    [TestMethod]
+    [DataRow(@"<p><a href=""%7E/docs/csharp/language-reference/keywords/select-clause.md""></p>", "~/docs/csharp/language-reference/keywords/select-clause.md")]
+    [DataRow(@"<p><a href=""%7E/../samples/readme.md""></p>", "~/../samples/readme.md")]
     public void ProcessMarkdownResultWithEncodedUrlShouldSucceed(string htmlContent, string expectedFileLink)
     {
         var markdownResult = new MarkupResult
@@ -63,10 +63,10 @@ public class ConceptualDocumentProcessorTest : TestBase
         };
 
         markdownResult = MarkupUtility.Parse(markdownResult, "docs/framework/data/wcf/how-to-project-query-results-wcf-data-services.md", ImmutableDictionary.Create<string, FileAndType>());
-        Assert.Equal(expectedFileLink, markdownResult.LinkToFiles.First());
+        Assert.AreEqual(expectedFileLink, markdownResult.LinkToFiles.First());
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessMarkdownFileWithComplexCharsShouldSucceed()
     {
         var fileName1 = "A#ctor.md";
@@ -82,16 +82,16 @@ public class ConceptualDocumentProcessorTest : TestBase
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath(file2);
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var outputHtml = GetOutputFilePath(file2);
-            Assert.True(File.Exists(outputHtml));
+            Assert.IsTrue(File.Exists(outputHtml));
             var content = File.ReadAllText(outputHtml);
-            Assert.Equal("<p><a href=\"A%23ctor.html\">Constructor</a></p>\n",
+            Assert.AreEqual("<p><a href=\"A%23ctor.html\">Constructor</a></p>\n",
 content);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessMarkdownFileWithBreakLinkShouldSucceed()
     {
         var fileName = "normal.md";
@@ -101,15 +101,15 @@ content);
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath(file);
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var outputHtml = GetOutputFilePath(file);
-            Assert.True(File.Exists(outputHtml));
+            Assert.IsTrue(File.Exists(outputHtml));
             var content = File.ReadAllText(outputHtml);
-            Assert.Equal("<p><a href=\"a#b\">Main</a></p>\n", content);
+            Assert.AreEqual("<p><a href=\"a#b\">Main</a></p>\n", content);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessMarkdownFileWithBreakLinkInTokenShouldSucceed()
     {
         var fileName = "normal.md";
@@ -121,17 +121,17 @@ content);
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath(file);
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var outputHtml = GetOutputFilePath(file);
-            Assert.True(File.Exists(outputHtml));
+            Assert.IsTrue(File.Exists(outputHtml));
             var content = File.ReadAllText(outputHtml);
-            Assert.Equal(@"<p><a href=""a#b"">Main</a></p>
+            Assert.AreEqual(@"<p><a href=""a#b"">Main</a></p>
 ".Replace("\r\n", "\n"),
 content);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void SystemKeysListShouldBeComplete()
     {
         var fileName = "test.md";
@@ -141,10 +141,10 @@ content);
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath(file);
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
             var systemKeys = ToList(model[Constants.PropertyName.SystemKeys]);
-            Assert.NotEmpty(systemKeys);
+            Assert.IsNotEmpty(systemKeys);
             foreach (var key in model.Keys.Where(key => key[0] != '_' && key != "meta"))
             {
                 Assert.Contains(key, systemKeys);
@@ -152,7 +152,7 @@ content);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessMarkdownFileWithRenameOutputFileName()
     {
         var fileName1 = "a.md";
@@ -176,16 +176,16 @@ outputFileName: {renameFile2}
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath(renameFile2);
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
             var outputHtml = GetOutputFilePath(renameFile2);
-            Assert.True(File.Exists(outputHtml));
+            Assert.IsTrue(File.Exists(outputHtml));
             var content = File.ReadAllText(outputHtml);
-            Assert.Equal($"\n<p><a href=\"{renameFile1}\">Constructor</a></p>\n",
+            Assert.AreEqual($"\n<p><a href=\"{renameFile1}\">Constructor</a></p>\n",
 content);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void ExtractTitle()
     {
         // arrange
@@ -202,17 +202,17 @@ Some content";
 
         // assert
         var outputRawModelPath = GetRawModelFilePath(file);
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        Assert.True(model.TryGetValue("title", out var title));
-        Assert.Equal("This is title", title);
-        Assert.True(model.TryGetValue("rawTitle", out var rawTitle));
-        Assert.Equal(
+        Assert.IsTrue(model.TryGetValue("title", out var title));
+        Assert.AreEqual("This is title", title);
+        Assert.IsTrue(model.TryGetValue("rawTitle", out var rawTitle));
+        Assert.AreEqual(
             "<h1 id=\"this-is-title\" sourcefile=\"title.md\" sourcestartlinenumber=\"1\">This is title</h1>",
             rawTitle);
     }
 
-    [Fact]
+    [TestMethod]
     public void ExtractTitleFromYamlHeader()
     {
         // arrange
@@ -233,13 +233,13 @@ Some content";
 
         // assert
         var outputRawModelPath = GetRawModelFilePath(file);
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        Assert.True(model.TryGetValue("title", out var title));
-        Assert.Equal("Overwrite title", title);
+        Assert.IsTrue(model.TryGetValue("title", out var title));
+        Assert.AreEqual("Overwrite title", title);
     }
 
-    [Fact]
+    [TestMethod]
     public void ExtractTitleFromH1IfItIsNullInYamlHeader()
     {
         // arrange
@@ -260,13 +260,13 @@ Some content";
 
         // assert
         var outputRawModelPath = GetRawModelFilePath(file);
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        Assert.True(model.TryGetValue("title", out var title));
-        Assert.Equal("This is title", title);
+        Assert.IsTrue(model.TryGetValue("title", out var title));
+        Assert.AreEqual("This is title", title);
     }
 
-    [Fact]
+    [TestMethod]
     public void ExtractTitleFromH1IfItIsEmptyInYamlHeader()
     {
         // arrange
@@ -287,13 +287,13 @@ Some content";
 
         // assert
         var outputRawModelPath = GetRawModelFilePath(file);
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        Assert.True(model.TryGetValue("title", out var title));
-        Assert.Equal("This is title", title);
+        Assert.IsTrue(model.TryGetValue("title", out var title));
+        Assert.AreEqual("This is title", title);
     }
 
-    [Fact]
+    [TestMethod]
     public void TitleOverwriteH1InMetadataCanOverwriteTitleFromH1()
     {
         // arrange
@@ -312,13 +312,13 @@ Some content";
 
         // assert
         var outputRawModelPath = GetRawModelFilePath(file);
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        Assert.True(model.TryGetValue("title", out var title));
-        Assert.Equal("this title overwrites title from H1", title);
+        Assert.IsTrue(model.TryGetValue("title", out var title));
+        Assert.AreEqual("this title overwrites title from H1", title);
     }
 
-    [Fact]
+    [TestMethod]
     public void TitleOverwriteH1InMetadataCannotOverwriteTitleFromYamlHeader()
     {
         // arrange
@@ -340,13 +340,13 @@ Some content";
 
         // assert
         var outputRawModelPath = GetRawModelFilePath(file);
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        Assert.True(model.TryGetValue("title", out var title));
-        Assert.Equal("This is title from YAML header", title);
+        Assert.IsTrue(model.TryGetValue("title", out var title));
+        Assert.AreEqual("This is title from YAML header", title);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessMarkdownFileWithRedirectUrl()
     {
         // arrange
@@ -377,15 +377,15 @@ Some content";
 
         // Test `redirection.raw.json` content.
         var outputRawModelPath = GetRawModelFilePath(file);
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        Assert.True(model.TryGetValue(Constants.PropertyName.RedirectUrl, out var redirectUrl));
-        Assert.Equal(RedirectUrl, redirectUrl);
+        Assert.IsTrue(model.TryGetValue(Constants.PropertyName.RedirectUrl, out var redirectUrl));
+        Assert.AreEqual(RedirectUrl, redirectUrl);
 
         // Test `manifest.json` content
         var manifest = GetOutputManifest();
-        Assert.Single(manifest.Files);
-        Assert.True(manifest.Files[0].Type == Constants.DocumentType.Redirection);
+        Assert.ContainsSingle(manifest.Files);
+        Assert.IsTrue(manifest.Files[0].Type == Constants.DocumentType.Redirection);
     }
 
     #region Private Helpers

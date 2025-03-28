@@ -1,14 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class LineNumberTest
 {
-    [Fact]
-    [Trait("Related", "LineNumber")]
+    [TestMethod]
+    [TestProperty("Related", "LineNumber")]
     public void LineNumberTest_General()
     {
         // prepare
@@ -32,8 +31,8 @@ http://spec.commonmark.org/0.27/)";
         TestUtility.VerifyMarkup(content, expected, lineNumber: true, filePath: "Topic.md");
     }
 
-    [Fact]
-    [Trait("Related", "LineNumber")]
+    [TestMethod]
+    [TestProperty("Related", "LineNumber")]
     public void LineNumberTest_CodeSnippet()
     {
         var content = @"// <tag>
@@ -51,8 +50,8 @@ line1
         });
     }
 
-    [Fact]
-    [Trait("Related", "LineNumber")]
+    [TestMethod]
+    [TestProperty("Related", "LineNumber")]
     public void LineNumberTest_Inclusion()
     {
         var root = @"

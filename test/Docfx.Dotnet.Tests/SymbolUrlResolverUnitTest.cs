@@ -3,13 +3,13 @@
 
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
-using Xunit;
 
 namespace Docfx.Dotnet.Tests;
 
+[TestClass]
 public class SymbolUrlResolverUnitTest
 {
-    [Fact]
+    [TestMethod]
     public void GetMicrosoftLearnUrlFromCommentIdTest()
     {
         var failures = new List<(string, Uri, Uri[])>();
@@ -54,44 +54,44 @@ public class SymbolUrlResolverUnitTest
         //
         // - When UID differs only by case, mslearn appends _1 to disambiguate.
         // - When > 180 chars, type name is used over fully-qualified names to reduce URL length.
-        Assert.Equal(56, failures.Count);
+        Assert.AreEqual(56, failures.Count);
     }
 
-    [Theory]
-    [InlineData("A.b[]", "a-b()")]
-    [InlineData("a b", "a-b")]
-    [InlineData("a\"b", "ab")]
-    [InlineData("a%b", "ab")]
-    [InlineData("a^b", "ab")]
-    [InlineData("a\\b", "ab")]
-    [InlineData("Dictionary<string, List<int>>*", "dictionary(string-list(int))*")]
-    [InlineData("a'b'c", "abc")]
-    [InlineData("{a|b_c'}", "((a-b-c))")]
-    [InlineData("---&&$$##List<string> test(int a`, int a@, string b*)---&&$$##", "list(string)-test(int-a-int-a@-string-b*)")]
-    [InlineData(
+    [TestMethod]
+    [DataRow("A.b[]", "a-b()")]
+    [DataRow("a b", "a-b")]
+    [DataRow("a\"b", "ab")]
+    [DataRow("a%b", "ab")]
+    [DataRow("a^b", "ab")]
+    [DataRow("a\\b", "ab")]
+    [DataRow("Dictionary<string, List<int>>*", "dictionary(string-list(int))*")]
+    [DataRow("a'b'c", "abc")]
+    [DataRow("{a|b_c'}", "((a-b-c))")]
+    [DataRow("---&&$$##List<string> test(int a`, int a@, string b*)---&&$$##", "list(string)-test(int-a-int-a@-string-b*)")]
+    [DataRow(
         "Microsoft.StreamProcessing.Streamable.AggregateByKey``4(Microsoft.StreamProcessing.IStreamable{Microsoft.StreamProcessing.Empty,``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``22,``23}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``30,``31}},System.Linq.Expressions.Expression{System.Func{``3,``5,``7,``9,``11,``13,``15,``17,``19,``21,``23,``25,``27,``29,``31,``32}})",
         "microsoft-streamprocessing-streamable-aggregatebykey-4(microsoft-streamprocessing-istreamable((microsoft-streamprocessing-empty-0))-system-linq-expressions-expression((system-func((-0-1))))-microsoft-streamprocessing-aggregates-iaggregate((-0-22-23))))-microsoft-streamprocessing-aggregates-iaggregate((-0-30-31))))-system-linq-expressions-expression((system-func((-3-5-7-9-11-13-15-17-19-21-23-25-27-29-31-32)))))")]
-    public static void GetUrlFragmentFromUidTest(string uid, string expectedFragment)
+    public void GetUrlFragmentFromUidTest(string uid, string expectedFragment)
     {
-        Assert.Equal(expectedFragment, SymbolUrlResolver.GetUrlFragmentFromUid(uid));
+        Assert.AreEqual(expectedFragment, SymbolUrlResolver.GetUrlFragmentFromUid(uid));
     }
 
-    [Fact]
-    public static void GetPdbSourceLinkUrlTest()
+    [TestMethod]
+    public void GetPdbSourceLinkUrlTest()
     {
         var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly($"{typeof(DotnetApiCatalog).Assembly.GetName().Name}.dll");
 
         var type = assembly.GetTypeByMetadataName(typeof(DotnetApiCatalog).FullName);
-        Assert.NotNull(type);
+        Assert.IsNotNull(type);
         var compilationLink = ReplaceSHA(SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, type));
-        Assert.True(compilationLink?.StartsWith("https://github.com/"));
-        Assert.True(compilationLink?.EndsWith(".cs"));
+        Assert.IsTrue(compilationLink?.StartsWith("https://github.com/"));
+        Assert.IsTrue(compilationLink?.EndsWith(".cs"));
 
         var method = type.GetMembers(nameof(DotnetApiCatalog.GenerateManagedReferenceYamlFiles)).FirstOrDefault();
-        Assert.NotNull(method);
+        Assert.IsNotNull(method);
         var methodLink = ReplaceSHA(SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, method));
-        Assert.True(compilationLink?.StartsWith("https://github.com/"));
-        Assert.True(compilationLink?.EndsWith(".cs"));
+        Assert.IsTrue(compilationLink?.StartsWith("https://github.com/"));
+        Assert.IsTrue(compilationLink?.EndsWith(".cs"));
 
         static string ReplaceSHA(string value)
         {

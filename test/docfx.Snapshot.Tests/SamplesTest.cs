@@ -18,9 +18,11 @@ using UglyToad.PdfPig.Outline;
 
 namespace Docfx.Tests;
 
-[Collection("docfx STA")]
-[Trait("Stage", "Snapshot")]
-public class SamplesTest : IDisposable
+[UsesVerify]
+[DoNotParallelize]
+[TestProperty("Stage", "Snapshot")]
+[TestClass]
+public partial class SamplesTest : IDisposable
 {
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
 
@@ -36,19 +38,27 @@ public class SamplesTest : IDisposable
         Environment.SetEnvironmentVariable(DOCFX_SOURCE_REPOSITORY_URL, null);
     }
 
-    private class SamplesFactAttribute : FactAttribute
+    private class SamplesConditionAttribute : ConditionBaseAttribute
     {
-        public SamplesFactAttribute()
+        public SamplesConditionAttribute()
+            : base(ConditionMode.Include)
         {
             // When target framework is changed.
             // It need to modify TargetFrameworks property of `docfx.Snapshot.Tests.csproj`
 #if !NET8_0
-            Skip = "Skip by target framework";
+            IgnoreMessage = "Skip by target framework";
 #endif
         }
+
+        public override string IgnoreMessage { get; }
+
+        public override string GroupName => nameof(SamplesConditionAttribute);
+
+        public override bool ShouldRun => IgnoreMessage is null;
     }
 
-    [SamplesFact]
+    [TestMethod]
+    [SamplesCondition]
     public async Task Seed()
     {
         var samplePath = $"{s_samplesDir}/seed";
@@ -61,12 +71,12 @@ public class SamplesTest : IDisposable
         if (Debugger.IsAttached || IsWslRemoteTest())
         {
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-            Assert.Equal(0, Program.Main([$"{samplePath}/docfx.json"]));
+            Assert.AreEqual(0, Program.Main([$"{samplePath}/docfx.json"]));
         }
         else
         {
             var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-            Assert.Equal(0, Exec(docfxPath, $"{samplePath}/docfx.json"));
+            Assert.AreEqual(0, Exec(docfxPath, $"{samplePath}/docfx.json"));
         }
 
         Parallel.ForEach(Directory.EnumerateFiles($"{samplePath}/_site", "*.pdf", SearchOption.AllDirectories), PdfToJson);
@@ -115,7 +125,8 @@ public class SamplesTest : IDisposable
         }
     }
 
-    [SamplesFact]
+    [TestMethod]
+    [SamplesCondition]
     public async Task SeedMarkdown()
     {
         var samplePath = $"{s_samplesDir}/seed";
@@ -123,12 +134,13 @@ public class SamplesTest : IDisposable
         Clean(samplePath);
 
         var exitCode = Program.Main(["metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath]);
-        Assert.Equal(0, exitCode);
+        Assert.AreEqual(0, exitCode);
 
         await VerifyDirectory(outputPath).AutoVerify(includeBuildServer: false);
     }
 
-    [SamplesFact]
+    [TestMethod]
+    [SamplesCondition]
     public async Task CSharp()
     {
         var samplePath = $"{s_samplesDir}/csharp";
@@ -149,7 +161,8 @@ public class SamplesTest : IDisposable
         await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
     }
 
-    [SamplesFact]
+    [TestMethod]
+    [SamplesCondition]
     public Task Extensions()
     {
         var samplePath = $"{s_samplesDir}/extensions";
@@ -159,12 +172,12 @@ public class SamplesTest : IDisposable
         using var process = Process.Start("dotnet", $"build \"{samplePath}/build\"");
         process.WaitForExit();
         VerifyExitCode(process);
-        Assert.Equal(0, Exec("dotnet", "run --no-build --project build", workingDirectory: samplePath));
+        Assert.AreEqual(0, Exec("dotnet", "run --no-build --project build", workingDirectory: samplePath));
 #else
         using var process = Process.Start("dotnet", $"build -c Release \"{samplePath}/build\"");
         process.WaitForExit();
         VerifyExitCode(process);
-        Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
+        Assert.AreEqual(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
         return VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
@@ -256,6 +269,6 @@ public class SamplesTest : IDisposable
         process.Close();
 
         // Assert exit code
-        Assert.Equal(0, exitCode);
+        Assert.AreEqual(0, exitCode);
     }
 }

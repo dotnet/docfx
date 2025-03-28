@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Plugins;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
@@ -11,13 +10,13 @@ public static class TestUtility
     public static void AssertEqual(string expected, string actual, Func<string, MarkupResult> markup)
     {
         var result = markup(actual);
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
     }
 
     public static void AssertEqual(string expected, string actual, Func<string, string, MarkupResult> markup)
     {
         var result = markup(actual, null);
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
     }
 
     public static MarkupResult Markup(string content, string filePath = null)

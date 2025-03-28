@@ -1,13 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class XrefTest
 {
-    [Fact]
+    [TestMethod]
     public void XrefTestGeneral()
     {
         //arrange

@@ -1,13 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class RenderZoneTest
 {
-    [Fact]
+    [TestMethod]
     public void KitchenSink()
     {
         //arrange
@@ -72,7 +71,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(content, expected, lineNumber: true, filePath: "fake.md");
     }
 
-    [Fact]
+    [TestMethod]
     public void AttributeMissingClosingQuote()
     {
         //arrange
@@ -84,7 +83,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void MissingEndTag()
     {
         //arrange
@@ -101,7 +100,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source1, expected, ["invalid-zone"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void NotNested()
     {
         //arrange
@@ -114,7 +113,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(content, null, ["invalid-zone"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void PermitsNestedBlocks()
     {
         var source = @"::: zone target=""chromeless""
@@ -135,7 +134,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void PdfPivotInvalid()
     {
         //arrange
@@ -147,7 +146,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void PivotInvalid()
     {
         //arrange
@@ -160,7 +159,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void PivotInvalid2()
     {
         //arrange
@@ -173,7 +172,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void PivotCommaDelimited()
     {
         //arrange
@@ -186,7 +185,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void UnexpectedAttribute()
     {
         //arrange
@@ -198,7 +197,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void DuplicateAttribute()
     {
         //arrange
@@ -210,7 +209,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void InvalidAttribute()
     {
         //arrange
@@ -222,7 +221,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected, ["invalid-zone"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void TextAfterEndTag()
     {
         //arrange

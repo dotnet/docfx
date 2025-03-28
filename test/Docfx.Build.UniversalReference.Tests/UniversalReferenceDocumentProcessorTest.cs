@@ -8,10 +8,9 @@ using Docfx.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 
-using Xunit;
-
 namespace Docfx.Build.UniversalReference.Tests;
 
+[TestClass]
 public class UniversalReferenceDocumentProcessorTest : TestBase
 {
     private readonly string _outputFolder;
@@ -39,7 +38,7 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
 
     #region Python
 
-    [Fact]
+    [TestMethod]
     public void ProcessPythonReferencesShouldSucceed()
     {
         var fileNames = new string[] { "cntk.core.yml", "cntk.core.Value.yml", "cntk.debugging.yml" };
@@ -51,11 +50,11 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
         foreach (var fileName in fileNames)
         {
             var outputRawModelPath = GetRawModelFilePath(fileName);
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessPythonModelShouldSucceed()
     {
         var moduleFileName = "cntk.core.yml";
@@ -70,60 +69,60 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
 
         var outputModuleRawModelPath = GetRawModelFilePath(moduleFileName);
         var outputClassRawModelPath = GetRawModelFilePath(classFileName);
-        Assert.True(File.Exists(outputClassRawModelPath));
+        Assert.IsTrue(File.Exists(outputClassRawModelPath));
 
         var moduleModel = JsonUtility.Deserialize<ApiBuildOutput>(outputModuleRawModelPath);
-        Assert.NotNull(moduleModel);
-        Assert.Equal("Test UniversalReferenceDocumentProcessor", moduleModel.Metadata["meta"]);
-        Assert.Equal(
+        Assert.IsNotNull(moduleModel);
+        Assert.AreEqual("Test UniversalReferenceDocumentProcessor", moduleModel.Metadata["meta"]);
+        Assert.AreEqual(
             "<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\">Bases: <xref href=\"cntk.cntk_py.Value\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@cntk.cntk_py.Value\" sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\"></xref>\nInternal representation of minibatch data.</p>\n",
             moduleModel.Children[0].Value[1].Summary);
-        Assert.Equal("Class", moduleModel.Children[0].Value[1].Type);
+        Assert.AreEqual("Class", moduleModel.Children[0].Value[1].Type);
 
         var classModel = JsonUtility.Deserialize<ApiBuildOutput>(outputClassRawModelPath);
-        Assert.NotNull(classModel);
-        Assert.Equal("Test UniversalReferenceDocumentProcessor", classModel.Metadata["meta"]);
+        Assert.IsNotNull(classModel);
+        Assert.AreEqual("Test UniversalReferenceDocumentProcessor", classModel.Metadata["meta"]);
 
-        Assert.Single(classModel.SupportedLanguages);
-        Assert.Equal("python", classModel.SupportedLanguages[0]);
+        Assert.ContainsSingle(classModel.SupportedLanguages);
+        Assert.AreEqual("python", classModel.SupportedLanguages[0]);
 
-        Assert.Equal("Class", classModel.Type);
+        Assert.AreEqual("Class", classModel.Type);
 
-        Assert.Equal("Value", classModel.Name[0].Value);
-        Assert.Equal("cntk.core.Value", classModel.FullName[0].Value);
+        Assert.AreEqual("Value", classModel.Name[0].Value);
+        Assert.AreEqual("cntk.core.Value", classModel.FullName[0].Value);
 
-        Assert.Equal("https://github.com/Microsoft/CNTK", classModel.Source[0].Value.Remote.Repo);
-        Assert.Equal("cntk/core.py", classModel.Source[0].Value.Remote.Path);
-        Assert.Equal(182, classModel.Source[0].Value.StartLine);
+        Assert.AreEqual("https://github.com/Microsoft/CNTK", classModel.Source[0].Value.Remote.Repo);
+        Assert.AreEqual("cntk/core.py", classModel.Source[0].Value.Remote.Path);
+        Assert.AreEqual(182, classModel.Source[0].Value.StartLine);
 
-        Assert.Equal(6, classModel.Syntax.Parameters.Count);
-        Assert.Equal("shape", classModel.Syntax.Parameters[0].Name);
-        Assert.Equal("tuple", classModel.Syntax.Parameters[0].Type[0].Uid);
-        Assert.Equal("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\">shape of the value</p>\n",
+        Assert.AreEqual(6, classModel.Syntax.Parameters.Count);
+        Assert.AreEqual("shape", classModel.Syntax.Parameters[0].Name);
+        Assert.AreEqual("tuple", classModel.Syntax.Parameters[0].Type[0].Uid);
+        Assert.AreEqual("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\">shape of the value</p>\n",
             classModel.Syntax.Parameters[0].Description);
 
-        Assert.Equal("cntk.cntk_py.Value", classModel.Inheritance[0].Value[0].Type.Uid);
-        Assert.Equal("builtins.object", classModel.Inheritance[0].Value[0].Inheritance[0].Type.Uid);
+        Assert.AreEqual("cntk.cntk_py.Value", classModel.Inheritance[0].Value[0].Type.Uid);
+        Assert.AreEqual("builtins.object", classModel.Inheritance[0].Value[0].Inheritance[0].Type.Uid);
 
-        Assert.Single(classModel.Children);
-        Assert.Equal("python", classModel.Children[0].Language);
-        Assert.Equal(5, classModel.Children[0].Value.Count);
+        Assert.ContainsSingle(classModel.Children);
+        Assert.AreEqual("python", classModel.Children[0].Language);
+        Assert.AreEqual(5, classModel.Children[0].Value.Count);
 
         var firstChildrenValue = classModel.Children[0].Value[0];
-        Assert.Equal("Method", firstChildrenValue.Type);
-        Assert.Equal("cntk.core.Value.create", firstChildrenValue.Uid);
-        Assert.Equal("create", firstChildrenValue.Name[0].Value);
-        Assert.Equal("cntk.core.Value.create", firstChildrenValue.FullName[0].Value);
-        Assert.Equal("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\">Creates a <xref href=\"cntk.core.Value\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@cntk.core.Value\" sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\"></xref> object.</p>\n",
+        Assert.AreEqual("Method", firstChildrenValue.Type);
+        Assert.AreEqual("cntk.core.Value.create", firstChildrenValue.Uid);
+        Assert.AreEqual("create", firstChildrenValue.Name[0].Value);
+        Assert.AreEqual("cntk.core.Value.create", firstChildrenValue.FullName[0].Value);
+        Assert.AreEqual("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\">Creates a <xref href=\"cntk.core.Value\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@cntk.core.Value\" sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\"></xref> object.</p>\n",
             firstChildrenValue.Summary);
-        Assert.Equal("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\"><xref href=\"cntk.core.Value\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@cntk.core.Value\" sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\"></xref> object.</p>\n",
+        Assert.AreEqual("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\"><xref href=\"cntk.core.Value\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@cntk.core.Value\" sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\"></xref> object.</p>\n",
             firstChildrenValue.Syntax.Return[0].Value.Description);
-        Assert.Equal("type1", firstChildrenValue.Syntax.Return[0].Value.Type[0].Uid);
-        Assert.Equal("type2", firstChildrenValue.Syntax.Return[0].Value.Type[1].Uid);
-        Assert.Equal("type3", firstChildrenValue.Syntax.Return[0].Value.Type[2].Uid);
+        Assert.AreEqual("type1", firstChildrenValue.Syntax.Return[0].Value.Type[0].Uid);
+        Assert.AreEqual("type2", firstChildrenValue.Syntax.Return[0].Value.Type[1].Uid);
+        Assert.AreEqual("type3", firstChildrenValue.Syntax.Return[0].Value.Type[2].Uid);
     }
 
-    [Fact]
+    [TestMethod]
     public void ApplyOverwriteDocumentForPythonShouldSucceed()
     {
         var fileName = "cntk.core.Value.yml";
@@ -135,19 +134,19 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
         BuildDocument(files);
 
         var outputRawModelPath = GetRawModelFilePath(fileName);
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
-        Assert.NotNull(model);
+        Assert.IsNotNull(model);
 
-        Assert.Equal("\n<p sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"5\"><strong sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"5\">conceptual</strong> of <code sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"5\">cntk.core.Value</code></p>\n", model.Conceptual);
-        Assert.Equal("<p sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"1\">summary of cntk.core.Value</p>\n", model.Summary);
+        Assert.AreEqual("\n<p sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"5\"><strong sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"5\">conceptual</strong> of <code sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"5\">cntk.core.Value</code></p>\n", model.Conceptual);
+        Assert.AreEqual("<p sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"1\">summary of cntk.core.Value</p>\n", model.Summary);
     }
 
     #endregion
 
     #region JavaScript
 
-    [Fact]
+    [TestMethod]
     public void ProcessJavaScriptReferencesShouldSucceed()
     {
         var fileNames = new string[] { "azure.ApplicationTokenCredentials.yml" };
@@ -159,13 +158,13 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
         foreach (var fileName in fileNames)
         {
             var outputRawModelPath = GetRawModelFilePath(fileName);
-            Assert.True(File.Exists(outputRawModelPath));
+            Assert.IsTrue(File.Exists(outputRawModelPath));
         }
     }
 
     #endregion
 
-    [Fact]
+    [TestMethod]
     public void ProcessItemWithEmptyUidShouldFail()
     {
         var fileNames = new string[] { "invalid.yml" };
@@ -174,8 +173,8 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
 
         using var listener = new TestListenerScope();
         BuildDocument(files);
-        Assert.NotNull(listener.Items);
-        Assert.Equal(2, listener.Items.Count);
+        Assert.IsNotNull(listener.Items);
+        Assert.AreEqual(2, listener.Items.Count);
         Assert.Contains("Uid must not be null or empty", listener.Items[1].Message);
     }
 

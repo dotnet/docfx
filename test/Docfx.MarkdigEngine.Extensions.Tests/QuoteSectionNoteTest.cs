@@ -1,14 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class QuoteSectionNoteTest
 {
-    [Fact]
-    [Trait("Related", "QuoteSectionNote")]
+    [TestMethod]
+    [TestProperty("Related", "QuoteSectionNote")]
     public void QuoteSectionNoteTest_CornerCases()
     {
         var source = @"> [!Video https://test]
@@ -31,8 +30,8 @@ public class QuoteSectionNoteTest
         TestUtility.VerifyMarkup(source, expected, ["invalid-note-section"]);
     }
 
-    [Fact]
-    [Trait("Related", "QuoteSectionNote")]
+    [TestMethod]
+    [TestProperty("Related", "QuoteSectionNote")]
     public void QuoteSectionNoteTest_TabInSection()
     {
         var source = "> [!div\t\tclass=\"tab\"] \n> section";
@@ -43,8 +42,8 @@ public class QuoteSectionNoteTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmNote_NoteWithLocalization()
     {
         var source = @"# Note not in one line
@@ -75,8 +74,8 @@ this is also warning</p>
         TestUtility.VerifyMarkup(source, expected, tokens: tokens);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmNote_NoteCaseSensitive()
     {
         var source = @"> [!noTe]
@@ -93,8 +92,8 @@ this is also warning</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmNote_NoteWithMix()
     {
         var source = @"# Note not in one line
@@ -135,8 +134,8 @@ world</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmNote_NoteWithTextFollow()
     {
         var source = @"# Note not in one line
@@ -161,8 +160,8 @@ this is also warning</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmVideo_ConsecutiveVideos()
     {
         // 1. Prepare data
@@ -178,8 +177,8 @@ this is also warning</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmVideo_Video()
     {
         // 1. Prepare data
@@ -194,8 +193,8 @@ this is also warning</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmVideo_MixWithNote()
     {
         // 1. Prepare data
@@ -217,10 +216,10 @@ this is also warning</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Theory]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     #region Inline Data
-    [InlineData(@"the following is note type
+    [DataRow(@"the following is note type
   > [!NOTE]
   > note text 1-1
   > note text 1-2  
@@ -240,7 +239,7 @@ This is also note with br</p>
 </div>
 <p>Skip the note</p>
 ")]
-    [InlineData(@"the following is not note type
+    [DataRow(@"the following is not note type
   > no-note text 1-1
   > [!NOTE]
   > no-note text 1-2  
@@ -255,7 +254,7 @@ This is also note with br</p>
 no-note text 2-1</p>
 </div>
 ")]
-    [InlineData(@"the following is not note type
+    [DataRow(@"the following is not note type
   > no-note text 1-1
   >
   > [!NOTE]
@@ -271,7 +270,7 @@ no-note text 2-1</p>
 no-note text 2-2</p>
 </div>
 ")]
-    [InlineData(@"the following is code
+    [DataRow(@"the following is code
 
     > code text 1-1
     > [!NOTE]
@@ -290,9 +289,9 @@ no-note text 2-2</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Theory]
-    [Trait("Related", "DfmMarkdown")]
-    [InlineData(@"> this is blockquote
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
+    [DataRow(@"> this is blockquote
 >
 > this line is also in the before blockquote
 > [!NOTE]
@@ -313,9 +312,9 @@ no-note text 2-2</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Theory]
-    [Trait("Related", "DfmMarkdown")]
-    [InlineData(@"> [!div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar""]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
+    [DataRow(@"> [!div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar""]
 >
 >```cs-i
 >    var outlookClient = await CreateOutlookClientAsync(""Calendar"");
@@ -360,9 +359,9 @@ no-note text 2-2</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Theory]
-    [Trait("Related", "DfmMarkdown")]
-    [InlineData(@"> [!div class=""All"" id=""All""]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
+    [DataRow(@"> [!div class=""All"" id=""All""]
 > this is out all
 > > [!div class=""A"" id=""A""]
 > > this is A
@@ -383,19 +382,19 @@ no-note text 2-2</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Theory]
-    [Trait("Related", "DfmMarkdown")]
-    [InlineData("> [!div]", "<div>\n</div>\n")]
-    [InlineData(@"> [!div `id=""error""]", "<div>\n</div>\n")]
-    [InlineData(@"> [!div `id=""right""`]", "<div id=\"right\">\n</div>\n")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
+    [DataRow("> [!div]", "<div>\n</div>\n")]
+    [DataRow(@"> [!div `id=""error""]", "<div>\n</div>\n")]
+    [DataRow(@"> [!div `id=""right""`]", "<div id=\"right\">\n</div>\n")]
     public void TestSectionCornerCase(string source, string expected)
     {
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Theory]
-    [Trait("Related", "DfmMarkdown")]
-    [InlineData(@"> [!div class=""All"" id=""All""] Followed text
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
+    [DataRow(@"> [!div class=""All"" id=""All""] Followed text
 > We should support that.")]
     public void TestSectionWithTextFollowed(string source)
     {
@@ -408,8 +407,8 @@ We should support that.</p>
         TestUtility.VerifyMarkup(source, expected, ["invalid-note-section"]);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestVideoBlock_Normal()
     {
         var source = @"# Article 2
@@ -421,8 +420,8 @@ We should support that.</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestVideoBlock_Http()
     {
         var source = @"# Article 2
@@ -434,8 +433,8 @@ We should support that.</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestVideoBlock_Channel9()
     {
         var source = @"# Article 2
@@ -447,8 +446,8 @@ We should support that.</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestVideoBlock_Channel9WithQueryString()
     {
         var source = @"# Article 2
@@ -460,8 +459,8 @@ We should support that.</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestVideoBlock_YouTube()
     {
         var source = @"# Article 2
@@ -473,8 +472,8 @@ We should support that.</p>
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void QuoteSectionNoteTest_ExtensionConfiguration()
     {
         var source = @"# Article 2

@@ -7,7 +7,7 @@ namespace docfx.Tests;
 
 public partial class YamlSerializationTest
 {
-    [Theory]
+    [TestMethod]
     [TestData<ConfigFilterRule>]
     public void YamlSerializationTest_FilterConfig(string path)
     {

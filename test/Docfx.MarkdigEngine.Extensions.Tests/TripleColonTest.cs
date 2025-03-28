@@ -2,13 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class TripleColonTest
 {
-    [Fact]
+    [TestMethod]
     public void TripleColonTestGeneral()
     {
         var source = @"::: zone pivot=""windows""
@@ -23,7 +23,7 @@ public class TripleColonTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void TripleColonTestSelfClosing()
     {
         var source = @"::: zone target=""chromeless""
@@ -41,7 +41,7 @@ public class TripleColonTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void TripleColonTestBlockClosed()
     {
         var source = @"::: zone target=""chromeless""
@@ -59,7 +59,7 @@ public class TripleColonTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void TripleColonWithInMonikerTestBlockClosed()
     {
         var source = new StringBuilder()
@@ -79,7 +79,7 @@ public class TripleColonTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void TripleColonWithInMonikerTestBlockUnClosed()
     {
         var source = new StringBuilder()
@@ -99,7 +99,7 @@ public class TripleColonTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void Issue8999()
     {
         TestUtility.VerifyMarkup(

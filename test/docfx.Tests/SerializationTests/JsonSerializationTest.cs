@@ -8,6 +8,7 @@ using FluentAssertions.Equivalency;
 
 namespace docfx.Tests;
 
+[TestClass]
 public partial class JsonSerializationTest
 {
     /// <summary>

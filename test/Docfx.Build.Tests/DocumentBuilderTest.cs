@@ -10,11 +10,11 @@ using Docfx.DataContracts.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class DocumentBuilderTest : TestBase
 {
     private const string RawModelFileExtension = ".raw.json";
@@ -39,7 +39,7 @@ public class DocumentBuilderTest : TestBase
         base.Dispose();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBuild()
     {
         #region Prepare test data
@@ -160,35 +160,35 @@ public class DocumentBuilderTest : TestBase
 
             {
                 // check toc.
-                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+                Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
                 var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
-                Assert.NotNull(model);
-                Assert.Equal("test1", model[0].Name);
-                Assert.Equal("test.html#bookmark", model[0].Href);
-                Assert.NotNull(model[0].Items);
-                Assert.Equal("test2", model[0].Items[0].Name);
-                Assert.Equal("test/test.html", model[0].Items[0].Href);
-                Assert.Equal("GitHub", model[0].Items[1].Name);
-                Assert.Equal("GH.md?isAbbreviated=true&shouldBeAbbreviated=true#test", model[0].Items[1].Href);
-                Assert.Equal("Api", model[1].Name);
-                Assert.Null(model[1].Href);
-                Assert.NotNull(model[1].Items);
-                Assert.Equal("Console", model[1].Items[0].Name);
-                Assert.Equal("../System.Console.csyml", model[1].Items[0].Href);
-                Assert.Equal("ConsoleColor", model[1].Items[1].Name);
-                Assert.Equal("../System.ConsoleColor.csyml", model[1].Items[1].Href);
+                Assert.IsNotNull(model);
+                Assert.AreEqual("test1", model[0].Name);
+                Assert.AreEqual("test.html#bookmark", model[0].Href);
+                Assert.IsNotNull(model[0].Items);
+                Assert.AreEqual("test2", model[0].Items[0].Name);
+                Assert.AreEqual("test/test.html", model[0].Items[0].Href);
+                Assert.AreEqual("GitHub", model[0].Items[1].Name);
+                Assert.AreEqual("GH.md?isAbbreviated=true&shouldBeAbbreviated=true#test", model[0].Items[1].Href);
+                Assert.AreEqual("Api", model[1].Name);
+                Assert.IsNull(model[1].Href);
+                Assert.IsNotNull(model[1].Items);
+                Assert.AreEqual("Console", model[1].Items[0].Name);
+                Assert.AreEqual("../System.Console.csyml", model[1].Items[0].Href);
+                Assert.AreEqual("ConsoleColor", model[1].Items[1].Name);
+                Assert.AreEqual("../System.ConsoleColor.csyml", model[1].Items[1].Href);
             }
 
             {
                 // check conceptual.
                 var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
-                Assert.True(File.Exists(conceptualOutputPath));
-                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                Assert.IsTrue(File.Exists(conceptualOutputPath));
+                Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
                 var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
-                Assert.Equal(
+                Assert.AreEqual(
                     $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\">Hello World</h1>",
                     model["rawTitle"]);
-                Assert.Equal(
+                Assert.AreEqual(
                     string.Join(
                         "\n",
                         "<!-- I'm comment -->",
@@ -222,7 +222,7 @@ public class DocumentBuilderTest : TestBase
                         "test",
                         "</p>"),
                     model["conceptual"]);
-                Assert.Equal(
+                Assert.AreEqual(
                     string.Join(
                         "\n",
                         "<!-- I'm comment -->",
@@ -256,39 +256,39 @@ public class DocumentBuilderTest : TestBase
                         "test",
                         "</p>"),
                     File.ReadAllText(conceptualOutputPath));
-                Assert.Equal("Conceptual", model["type"]);
-                Assert.Equal("Hello world!", model["meta"]);
-                Assert.Equal("b", model["a"]);
+                Assert.AreEqual("Conceptual", model["type"]);
+                Assert.AreEqual("Hello world!", model["meta"]);
+                Assert.AreEqual("b", model["a"]);
             }
 
             {
                 // check mref.
-                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.Console.csyml", RawModelFileExtension))));
-                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.ConsoleColor.csyml", RawModelFileExtension))));
+                Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.Console.csyml", RawModelFileExtension))));
+                Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("System.ConsoleColor.csyml", RawModelFileExtension))));
             }
 
             {
                 // check resource.
-                Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile)));
-                Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
+                Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, resourceFile)));
+                Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
                 var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
-                Assert.Single(meta);
-                Assert.False(meta.ContainsKey("meta"));
+                Assert.ContainsSingle(meta);
+                Assert.IsFalse(meta.ContainsKey("meta"));
             }
 
             {
                 // check xrefmap
-                Assert.True(File.Exists(Path.Combine(_outputFolder, "xrefmap.yml")));
+                Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, "xrefmap.yml")));
                 var xrefMap = YamlUtility.Deserialize<XRefMap>(Path.Combine(_outputFolder, "xrefmap.yml"));
-                Assert.Equal(71, xrefMap.References.Count);
+                Assert.AreEqual(71, xrefMap.References.Count);
 
                 var xref1 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef1")).ToList();
-                Assert.Single(xref1);
-                Assert.Equal(Path.ChangeExtension(conceptualFile3, "html").ToNormalizedPath(), xref1[0]?.Href);
+                Assert.ContainsSingle(xref1);
+                Assert.AreEqual(Path.ChangeExtension(conceptualFile3, "html").ToNormalizedPath(), xref1[0]?.Href);
 
                 var xref2 = xrefMap.References.Where(xref => xref.Uid.Equals("XRef2")).ToList();
-                Assert.Single(xref2);
-                Assert.Equal(Path.ChangeExtension(conceptualFile2, "html").ToNormalizedPath(), xref2[0]?.Href);
+                Assert.ContainsSingle(xref2);
+                Assert.AreEqual(Path.ChangeExtension(conceptualFile2, "html").ToNormalizedPath(), xref2[0]?.Href);
             }
         }
         finally
@@ -297,7 +297,7 @@ public class DocumentBuilderTest : TestBase
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBuildConceptualWithTemplateShouldSucceed()
     {
         CreateFile("conceptual.html.js", @"
@@ -354,7 +354,7 @@ exports.getOptions = function (){
 
         {
             // check toc.
-            Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+            Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension)));
             var expected = new Dictionary<string, object>
             {
@@ -422,8 +422,8 @@ exports.getOptions = function (){
         {
             // check conceptual.
             var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
-            Assert.True(File.Exists(conceptualOutputPath));
-            Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+            Assert.IsTrue(File.Exists(conceptualOutputPath));
+            Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
             var expected = new Dictionary<string, object>
             {
@@ -500,7 +500,7 @@ exports.getOptions = function (){
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBuildWithInvalidPath()
     {
         #region Prepare test data
@@ -553,26 +553,26 @@ exports.getOptions = function (){
 
             {
                 // check toc.
-                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+                Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
                 var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
-                Assert.NotNull(model);
-                Assert.Equal("test1", model[0].Name);
-                Assert.Equal("test.html", model[0].Href);
-                Assert.NotNull(model[0].Items);
-                Assert.Equal("test2", model[0].Items[0].Name);
-                Assert.Equal("test/test.html", model[0].Items[0].Href);
+                Assert.IsNotNull(model);
+                Assert.AreEqual("test1", model[0].Name);
+                Assert.AreEqual("test.html", model[0].Href);
+                Assert.IsNotNull(model[0].Items);
+                Assert.AreEqual("test2", model[0].Items[0].Name);
+                Assert.AreEqual("test/test.html", model[0].Items[0].Href);
             }
 
             {
                 // check conceptual.
                 var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
-                Assert.True(File.Exists(conceptualOutputPath));
-                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                Assert.IsTrue(File.Exists(conceptualOutputPath));
+                Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
                 var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
-                Assert.Equal(
+                Assert.AreEqual(
                     $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"1\">Hello World</h1>",
                     model["rawTitle"]);
-                Assert.Equal(
+                Assert.AreEqual(
                     string.Join(
                         "\n",
                         "",
@@ -588,7 +588,7 @@ exports.getOptions = function (){
                         $"Test link: <a href=\"#top\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\">link 10</a></p>",
                         ""),
                     model["conceptual"].ToString().Replace("\r", ""));
-                Assert.Equal(
+                Assert.AreEqual(
                     string.Join(
                         "\n",
                         "",
@@ -604,8 +604,8 @@ exports.getOptions = function (){
                         "Test link: <a href=\"#top\">link 10</a></p>",
                         ""),
                     File.ReadAllText(conceptualOutputPath));
-                Assert.Equal("Conceptual", model["type"]);
-                Assert.Equal("Hello world!", model["meta"]);
+                Assert.AreEqual("Conceptual", model["type"]);
+                Assert.AreEqual("Hello world!", model["meta"]);
             }
         }
         finally
@@ -613,7 +613,7 @@ exports.getOptions = function (){
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBuildWithInvalidPathWithTokenAndMapping()
     {
         #region Prepare test data
@@ -645,9 +645,9 @@ exports.getOptions = function (){
         {
             // check conceptual.
             var conceptualOutputPath = Path.Combine(_outputFolder, "a.html");
-            Assert.True(File.Exists(conceptualOutputPath));
-            Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("a.md", RawModelFileExtension))));
-            Assert.Equal(
+            Assert.IsTrue(File.Exists(conceptualOutputPath));
+            Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("a.md", RawModelFileExtension))));
+            Assert.AreEqual(
                 string.Join(
                     "\n",
                     "<p><a href=\"invalid-a.md\">link a</a>",
@@ -675,7 +675,7 @@ exports.getOptions = function (){
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBuildWithMultipleVersion()
     {
         #region Prepare test data
@@ -696,9 +696,9 @@ exports.getOptions = function (){
             versionDir: versionDir);
 
         var conceptualOutputPath = Path.Combine(_outputFolder, versionDir, Path.ChangeExtension("a.md", RawModelFileExtension));
-        Assert.True(File.Exists(conceptualOutputPath));
+        Assert.IsTrue(File.Exists(conceptualOutputPath));
         var conceptualWithFileMappingOutputPath = Path.Combine(_outputFolder, versionDir, subDir, Path.ChangeExtension("b.md", RawModelFileExtension));
-        Assert.True(File.Exists(conceptualWithFileMappingOutputPath));
+        Assert.IsTrue(File.Exists(conceptualWithFileMappingOutputPath));
     }
 
     private static void AssertMetadataEqual(object expected, object actual)
@@ -706,7 +706,7 @@ exports.getOptions = function (){
         var expectedJObject = JObject.FromObject(expected);
         var actualJObject = JObject.FromObject(actual);
         var equal = JObject.DeepEquals(expectedJObject, actualJObject);
-        Assert.True(equal, $"Expected: {expectedJObject.ToJsonString()};{Environment.NewLine}Actual: {actualJObject.ToJsonString()}.");
+        Assert.IsTrue(equal, $"Expected: {expectedJObject.ToJsonString()};{Environment.NewLine}Actual: {actualJObject.ToJsonString()}.");
     }
 
     private void BuildDocument(

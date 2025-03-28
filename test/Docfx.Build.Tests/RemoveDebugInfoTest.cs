@@ -4,11 +4,10 @@
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 
-using Xunit;
-
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class RemoveDebugInfoTest : TestBase
 {
     private readonly string _outputFolder;
@@ -26,7 +25,7 @@ public class RemoveDebugInfoTest : TestBase
         base.Dispose();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestBasicFeature()
     {
         Manifest manifest = new()
@@ -46,6 +45,6 @@ public class RemoveDebugInfoTest : TestBase
         }.Process(manifest, _outputFolder);
 
         var actual = File.ReadAllText(Path.Combine(_outputFolder, "a.html"));
-        Assert.Equal("<p id='b1'>section<a href='http://bing.com#top'>Microsoft Bing</a></p>", actual);
+        Assert.AreEqual("<p id='b1'>section<a href='http://bing.com#top'>Microsoft Bing</a></p>", actual);
     }
 }

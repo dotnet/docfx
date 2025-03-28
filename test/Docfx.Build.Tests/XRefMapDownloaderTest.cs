@@ -2,22 +2,23 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using FluentAssertions;
-using Xunit;
 
 namespace Docfx.Build.Engine.Tests;
 
+[TestClass]
 public class XRefMapDownloadTest
 {
-    [Fact(Skip = "Flaky SSL connection problems on GH windows CI")]
+    [TestMethod]
+    [Ignore("Flaky SSL connection problems on GH windows CI")]
     public async Task BaseUrlIsSet()
     {
         var downloader = new XRefMapDownloader();
         var xrefs = await downloader.DownloadAsync(new Uri("https://dotnet.github.io/docfx/xrefmap.yml")) as XRefMap;
-        Assert.NotNull(xrefs);
-        Assert.Equal("https://dotnet.github.io/docfx/", xrefs.BaseUrl);
+        Assert.IsNotNull(xrefs);
+        Assert.AreEqual("https://dotnet.github.io/docfx/", xrefs.BaseUrl);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task ReadLocalXRefMapWithFallback()
     {
         var basePath = Path.GetRandomFileName();
@@ -29,11 +30,11 @@ public class XRefMapDownloadTest
                                               select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(basePath, fallbackFolders);
 
         var xrefSpec = reader.Find("str");
-        Assert.NotNull(xrefSpec);
-        Assert.Equal("https://docs.python.org/3.5/library/stdtypes.html#str", xrefSpec.Href);
+        Assert.IsNotNull(xrefSpec);
+        Assert.AreEqual("https://docs.python.org/3.5/library/stdtypes.html#str", xrefSpec.Href);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task ReadLocalXRefMapJsonFileTest()
     {
         // Arrange
@@ -47,7 +48,7 @@ public class XRefMapDownloadTest
         xrefMap.References.Should().HaveCount(1);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task ReadLocalXRefMapGZippedJsonFileTest()
     {
         // Arrange
@@ -61,7 +62,7 @@ public class XRefMapDownloadTest
         xrefMap.References.Should().HaveCount(1);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task ReadLocalXRefMapGZippedYamlFileTest()
     {
         // Arrange
@@ -78,7 +79,8 @@ public class XRefMapDownloadTest
     /// <summary>
     /// XrefmapDownloader test for xrefmap that has no baseUrl and href is defined by relative path.
     /// </summary>
-    [Fact(Skip = "Has dependency to external site content.")]
+    [TestMethod]
+    [Ignore("Has dependency to external site content.")]
     public async Task ReadRemoteXRefMapYamlFileTest1()
     {
         // Arrange
@@ -107,7 +109,8 @@ public class XRefMapDownloadTest
     /// <summary>
     /// XrefmapDownloader test for xrefmap that has no baseUrl, and href is defined by absolute path.
     /// </summary>
-    [Fact(Skip = "Has dependency to external site content.")]
+    [TestMethod]
+    [Ignore("Has dependency to external site content.")]
     public async Task ReadRemoteXRefMapJsonFileTest2()
     {
         // Arrange

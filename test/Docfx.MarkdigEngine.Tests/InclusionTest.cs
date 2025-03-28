@@ -1,20 +1,19 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Immutable;
 using Docfx.Common;
 using Docfx.MarkdigEngine.Extensions;
 using Docfx.Plugins;
 using Markdig;
-using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class InclusionTest
 {
-    [Fact]
-    [Trait("Related", "Inclusion")]
+    [TestMethod]
+    [TestProperty("Related", "Inclusion")]
     public void TestBlockLevelInclusion_General()
     {
         var root = """
@@ -66,15 +65,15 @@ public class InclusionTest
                        <p>[!include<a href="a.md">refa</a> ]</p>
 
                        """;
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a.md", "b.md" };
-        Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "IncludeFile")]
+    [TestMethod]
+    [TestProperty("Related", "IncludeFile")]
     public void TestBlockLevelInclusion_Escape()
     {
         var root = """
@@ -107,15 +106,15 @@ public class InclusionTest
                        <p>This is a file A included by another file.</p>
 
                        """;
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a(x).md" };
-        Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "Inclusion")]
+    [TestMethod]
+    [TestProperty("Related", "Inclusion")]
     public void TestBlockLevelInclusion_RelativePath()
     {
         var root = """
@@ -148,15 +147,15 @@ public class InclusionTest
                        <p>This is a file A included by another file.</p>
 
                        """;
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a.md" };
-        Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "Inclusion")]
+    [TestMethod]
+    [TestProperty("Related", "Inclusion")]
     public void TestBlockLevelInclusion_CycleInclude()
     {
         var root = """
@@ -204,15 +203,16 @@ public class InclusionTest
                        [!include[refa](a.md)]
                        """;
 
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
         Logger.UnregisterListener(listener);
-        Assert.Collection(listener.Items, log => Assert.Equal(
+        var log = Assert.ContainsSingle(listener.Items);
+        Assert.AreEqual(
             "Build has identified file(s) referencing each other: 'r/root.md' --> '~/r/a.md' --> '~/r/b.md' --> '~/r/a.md'",
-            log.Message));
+            log.Message);
     }
 
-    [Fact]
-    [Trait("Related", "Inclusion")]
+    [TestMethod]
+    [TestProperty("Related", "Inclusion")]
     public void TestInlineLevelInclusion_General()
     {
         var root = """
@@ -237,15 +237,15 @@ public class InclusionTest
                        <p>Test Escaped Inline Included File: [!include<a href="%7E/r/a.md">refa</a>].</p>
 
                        """;
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a.md" };
-        Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "Inclusion")]
+    [TestMethod]
+    [TestProperty("Related", "Inclusion")]
     public void TestInlineLevelInclusion_CycleInclude()
     {
         var root = """
@@ -269,11 +269,11 @@ public class InclusionTest
 
                        """;
 
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
     }
 
-    [Fact]
-    [Trait("Related", "Inclusion")]
+    [TestMethod]
+    [TestProperty("Related", "Inclusion")]
     public void TestInlineLevelInclusion_Block()
     {
         var root = """
@@ -300,15 +300,15 @@ public class InclusionTest
                        <p>Test Inline Included File: ## This is a included tokenblock content in Inline Inclusion..</p>
 
                        """;
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "a.md" };
-        Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestBlockLevelInclusion()
     {
         // -r
@@ -367,8 +367,8 @@ public class InclusionTest
                        [!include[external](http://microsoft.com/a.md)]
                        """.Replace("\r\n", "\n");
 
-        Assert.Equal(expected, marked.Html);
-        Assert.Equal(
+        Assert.AreEqual(expected, marked.Html);
+        CollectionAssert.AreEqual(
             new[]
             {
                 "a/refc.md",
@@ -381,8 +381,8 @@ public class InclusionTest
             dependency.OrderBy(x => x).ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestBlockLevelInclusionWithSameFile()
     {
         // -r
@@ -432,29 +432,29 @@ public class InclusionTest
                        <a href="%7E/r/c/d/d.md#anchor">d</a></p>
                        """.Replace("\r\n", "\n") + "\n";
         var dependency = marked.Dependency;
-        Assert.Equal(expected, marked.Html);
-        Assert.Equal(
+        Assert.AreEqual(expected, marked.Html);
+        CollectionAssert.AreEqual(
             new[] { "../b/token.md" },
             dependency.OrderBy(x => x).ToArray());
 
         marked = TestUtility.MarkupWithoutSourceInfo(d, "r/c/d/d.md");
         dependency = marked.Dependency;
-        Assert.Equal(expected, marked.Html);
-        Assert.Equal(
+        Assert.AreEqual(expected, marked.Html);
+        CollectionAssert.AreEqual(
             new[] { "../../b/token.md" },
             dependency.OrderBy(x => x).ToArray());
 
         dependency.Clear();
         marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
         dependency = marked.Dependency;
-        Assert.Equal($"{expected}{expected}", marked.Html);
-        Assert.Equal(
+        Assert.AreEqual($"{expected}{expected}", marked.Html);
+        CollectionAssert.AreEqual(
             new[] { "a/a.md", "b/token.md", "c/d/d.md" },
             dependency.OrderBy(x => x).ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestBlockLevelInclusionWithWorkingFolder()
     {
         // -r
@@ -467,13 +467,14 @@ public class InclusionTest
         TestUtility.WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
         var marked = TestUtility.MarkupWithoutSourceInfo(root, "r/root.md");
         var expected = "<p>Paragraph1</p>" + "\n";
-        Assert.Equal(expected, marked.Html);
+        Assert.AreEqual(expected, marked.Html);
     }
 
     #region Fallback folders testing
 
-    [Fact(Skip = "won't support")]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [Ignore("won't support")]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestFallback_Inclusion_random_name()
     {
         // -root_folder (this is also docset folder)
@@ -530,7 +531,7 @@ public class InclusionTest
         var marked = service.Markup("place", "holder");
         var dependency = marked.Dependency;
 
-        Assert.Equal("""
+        Assert.AreEqual("""
                      <p>1markdown root.md main content start.</p>
                      <p>1markdown a.md main content start.</p>
                      <p>1markdown token1.md content start.</p>
@@ -541,13 +542,14 @@ public class InclusionTest
                      <p>markdown root.md main content end.</p>
 
                      """.Replace("\r\n", "\n"), marked.Html);
-        Assert.Equal(
+        Assert.AreEqual(
             new[] { $"../fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", $"a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md" },
             dependency.OrderBy(x => x).ToArray());
     }
 
-    [Fact(Skip = "won't support")]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [Ignore("won't support")]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestFallback_InclusionWithCodeFences()
     {
         // -root_folder (this is also docset folder)
@@ -623,7 +625,7 @@ public class InclusionTest
         //var rootMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), root, fallbackFolders, "root.md");
         var rootMarked = service.Markup("place", "holder");
         var rootDependency = rootMarked.Dependency;
-        Assert.Equal("""
+        Assert.AreEqual("""
                      <p>markdown root.md main content start.</p>
                      <p>markdown a content in root.md content start</p>
                      <p>markdown a.md main content start.</p>
@@ -641,7 +643,7 @@ public class InclusionTest
                      <p>markdown root.md main content end.</p>
 
                      """.Replace("\r\n", "\n"), rootMarked.Html);
-        Assert.Equal(
+        Assert.AreEqual(
             new[] { "../fallback_folder/a_folder/code_in_a.cs", "../fallback_folder/code_folder/sample2.cs", "a_folder/a.md", "a_folder/code_in_a.cs", "code_folder/sample1.cs", "code_folder/sample2.cs" },
             rootDependency.OrderBy(x => x).ToArray());
 
@@ -649,7 +651,7 @@ public class InclusionTest
         //var aMarked = service.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), a, fallbackFolders, "a_folder/a.md");
         var aMarked = service.Markup("place", "holder");
         var aDependency = aMarked.Dependency;
-        Assert.Equal("""
+        Assert.AreEqual("""
                      <p>markdown a.md main content start.</p>
                      <p>code_in_a code in a.md content start</p>
                      <pre><code class="lang-cs" name="this is code_in_a code">namespace code_in_a{}
@@ -657,15 +659,15 @@ public class InclusionTest
                      <p>markdown a.md a.md content end.</p>
 
                      """.Replace("\r\n", "\n"), aMarked.Html);
-        Assert.Equal(
+        Assert.AreEqual(
             new[] { "../../fallback_folder/a_folder/code_in_a.cs", "code_in_a.cs" },
             aDependency.OrderBy(x => x).ToArray());
     }
 
     #endregion
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestInclusion_InlineLevel()
     {
         // 1. Prepare data
@@ -688,14 +690,14 @@ public class InclusionTest
         var dependency = marked.Dependency;
         var expected = "<p>Inline ## Inline inclusion do not parse header [!include[root](root.md)]\nInline <strong>Hello</strong></p>\n";
 
-        Assert.Equal(expected, marked.Html);
-        Assert.Equal(
+        Assert.AreEqual(expected, marked.Html);
+        CollectionAssert.AreEqual(
             new[] { "ref1.md", "ref2.md", "ref3.md", "root.md" },
             dependency.OrderBy(x => x).ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestBlockInclude_ShouldExcludeBracketInRegex()
     {
         // 1. Prepare data
@@ -725,14 +727,14 @@ public class InclusionTest
 
         var marked = TestUtility.MarkupWithoutSourceInfo(root, "root.md");
         var dependency = marked.Dependency;
-        Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
-        Assert.Equal(
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), marked.Html);
+        CollectionAssert.AreEqual(
           new[] { "inc1.md", "inc2.md", "inc3.md" },
           dependency.OrderBy(x => x).ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "Inclusion")]
+    [TestMethod]
+    [TestProperty("Related", "Inclusion")]
     public void TestBlockInclude_ImageRelativePath()
     {
         var root = """
@@ -766,15 +768,15 @@ public class InclusionTest
                        <p><img src="%7E/r/include/media/refb.png" alt="img" /></p>
 
                        """;
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "../../include/a.md" };
-        Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
-    [Fact]
-    [Trait("Related", "Inclusion")]
+    [TestMethod]
+    [TestProperty("Related", "Inclusion")]
     public void TestBlockInclude_WithYamlHeader()
     {
         var root = """
@@ -806,15 +808,16 @@ public class InclusionTest
                        <p>body</p>
 
                        """;
-        Assert.Equal(expected.Replace("\r\n", "\n"), result.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), result.Html);
 
         var dependency = result.Dependency;
         var expectedDependency = new List<string> { "../../include/a.md" };
-        Assert.Equal(expectedDependency.ToImmutableList(), dependency);
+        CollectionAssert.AreEqual(expectedDependency.ToArray(), dependency.ToArray());
     }
 
-    [Fact(Skip = "failed frequently")]
-    [Trait("Related", "Inclusion")]
+    [TestMethod]
+    [Ignore("failed frequently")]
+    [TestProperty("Related", "Inclusion")]
     public void TestInclusionContext_CurrentFile_RootFile()
     {
         var root = "[!include[](embed)]";
@@ -822,36 +825,36 @@ public class InclusionTest
         var context = new MarkdownContext(
             readFile: (path, _) =>
             {
-                Assert.Equal("embed", path);
+                Assert.AreEqual("embed", path);
 
-                Assert.Equal("root", InclusionContext.RootFile);
-                Assert.Equal("root", InclusionContext.File);
+                Assert.AreEqual("root", InclusionContext.RootFile);
+                Assert.AreEqual("root", InclusionContext.File);
 
                 return ("embed [content](c.md)", "embed");
             });
 
         var pipeline = new MarkdownPipelineBuilder().UseDocfxExtensions(context).Build();
 
-        Assert.Null(InclusionContext.RootFile);
-        Assert.Null(InclusionContext.File);
+        Assert.IsNull(InclusionContext.RootFile);
+        Assert.IsNull(InclusionContext.File);
 
         using (InclusionContext.PushFile("root"))
         {
-            Assert.Equal("root", InclusionContext.RootFile);
-            Assert.Equal("root", InclusionContext.File);
+            Assert.AreEqual("root", InclusionContext.RootFile);
+            Assert.AreEqual("root", InclusionContext.File);
 
             var result = Markdown.ToHtml(root, pipeline);
 
-            Assert.Equal("<p>embed <a href=\"c.md\">content</a></p>", result.Trim());
-            Assert.Equal("root", InclusionContext.RootFile);
-            Assert.Equal("root", InclusionContext.File);
+            Assert.AreEqual("<p>embed <a href=\"c.md\">content</a></p>", result.Trim());
+            Assert.AreEqual("root", InclusionContext.RootFile);
+            Assert.AreEqual("root", InclusionContext.File);
         }
-        Assert.Null(InclusionContext.RootFile);
-        Assert.Null(InclusionContext.File);
+        Assert.IsNull(InclusionContext.RootFile);
+        Assert.IsNull(InclusionContext.File);
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestComplexImageBlockSrcResolveInToken()
     {
         // -r
@@ -883,10 +886,10 @@ public class InclusionTest
                        </p>
 
                        """;
-        Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), marked.Html);
     }
 
-    [Fact]
+    [TestMethod]
     public void ImageTestBlockGeneralWithInclude()
     {
         var source = "[!include[](includes/source.md)]";
@@ -932,11 +935,11 @@ public class InclusionTest
 
                        """;
 
-        Assert.Equal(expected.Replace("\r\n", "\n").Replace("\n", ""), marked.Html.Replace("\r\n", "\n").Replace("\n", ""));
+        Assert.AreEqual(expected.Replace("\r\n", "\n").Replace("\n", ""), marked.Html.Replace("\r\n", "\n").Replace("\n", ""));
     }
 
-    [Fact]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestImageWithIconTypeBlockSrcResolveInToken()
     {
         // -r
@@ -962,6 +965,6 @@ public class InclusionTest
                        </p>
 
                        """;
-        Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), marked.Html);
     }
 }

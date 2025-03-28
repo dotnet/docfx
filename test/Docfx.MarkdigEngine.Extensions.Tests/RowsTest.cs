@@ -1,14 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class RowTest
 {
-    [Fact]
-    [Trait("Related", "Row")]
+    [TestMethod]
+    [TestProperty("Related", "Row")]
     public void RowTest_SimpleRow()
     {
         var source = @":::row:::
@@ -26,8 +25,8 @@ public class RowTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "Row")]
+    [TestMethod]
+    [TestProperty("Related", "Row")]
     public void RowTest_WithColumns()
     {
         var source = @":::row:::
@@ -45,8 +44,8 @@ public class RowTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "Row")]
+    [TestMethod]
+    [TestProperty("Related", "Row")]
     public void RowTest_WithColumnsWithSpans()
     {
         var source = @":::row:::
@@ -70,8 +69,8 @@ public class RowTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "Row")]
+    [TestMethod]
+    [TestProperty("Related", "Row")]
     public void RowTest_WithThreeColumnsWithSpans()
     {
         var source = @":::row:::
@@ -101,8 +100,8 @@ public class RowTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "Row")]
+    [TestMethod]
+    [TestProperty("Related", "Row")]
     public void RowTest_WithColumnsWithThreeSpan()
     {
         var source = @":::row:::
@@ -126,8 +125,8 @@ public class RowTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "Row")]
+    [TestMethod]
+    [TestProperty("Related", "Row")]
     public void RowTest_WithColumnsOtherContent()
     {
         var source = @":::row:::
@@ -163,8 +162,8 @@ public class RowTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
-    [Trait("Related", "Row")]
+    [TestMethod]
+    [TestProperty("Related", "Row")]
     public void RowTest_FullWithWriteAttributes()
     {
         var source = @":::row:::

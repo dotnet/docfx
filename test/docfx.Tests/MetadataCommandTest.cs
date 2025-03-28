@@ -9,7 +9,8 @@ using Docfx.Tests.Common;
 
 namespace Docfx.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class MetadataCommandTest : TestBase
 {
     /// <summary>
@@ -24,8 +25,8 @@ public class MetadataCommandTest : TestBase
         _projectFolder = GetRandomFolder();
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public async Task TestMetadataCommandFromCSProject()
     {
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
@@ -40,8 +41,8 @@ public class MetadataCommandTest : TestBase
         CheckResult();
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public async Task TestMetadataCommandFromDll()
     {
         var dllFile = Path.Combine(_projectFolder, "test.dll");
@@ -54,8 +55,8 @@ public class MetadataCommandTest : TestBase
         CheckResult();
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public async Task TestMetadataCommandFromMultipleFrameworksCSProject()
     {
         // Create default project
@@ -76,8 +77,8 @@ public class MetadataCommandTest : TestBase
         CheckResult();
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public async Task TestMetadataCommandFromVBProject()
     {
         if (!OperatingSystem.IsWindows())
@@ -93,54 +94,54 @@ public class MetadataCommandTest : TestBase
             new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
             new(), Directory.GetCurrentDirectory());
 
-        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
+        Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
         var file = Path.Combine(_outputFolder, "toc.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         var tocViewModel = YamlUtility.Deserialize<TocItemViewModel>(file).Items;
-        Assert.Equal("testVBproj1.Foo", tocViewModel[0].Uid);
-        Assert.Equal("testVBproj1.Foo", tocViewModel[0].Name);
-        Assert.Equal("testVBproj1.Foo.Bar", tocViewModel[0].Items[0].Uid);
-        Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
+        Assert.AreEqual("testVBproj1.Foo", tocViewModel[0].Uid);
+        Assert.AreEqual("testVBproj1.Foo", tocViewModel[0].Name);
+        Assert.AreEqual("testVBproj1.Foo.Bar", tocViewModel[0].Items[0].Uid);
+        Assert.AreEqual("Bar", tocViewModel[0].Items[0].Name);
 
         file = Path.Combine(_outputFolder, "testVBproj1.Foo.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         var memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-        Assert.Equal("testVBproj1.Foo", memberViewModel.Items[0].Uid);
-        Assert.Equal("testVBproj1.Foo", memberViewModel.Items[0].Id);
-        Assert.Equal("testVBproj1.Foo", memberViewModel.Items[0].Name);
-        Assert.Equal("testVBproj1.Foo", memberViewModel.Items[0].FullName);
+        Assert.AreEqual("testVBproj1.Foo", memberViewModel.Items[0].Uid);
+        Assert.AreEqual("testVBproj1.Foo", memberViewModel.Items[0].Id);
+        Assert.AreEqual("testVBproj1.Foo", memberViewModel.Items[0].Name);
+        Assert.AreEqual("testVBproj1.Foo", memberViewModel.Items[0].FullName);
 
         file = Path.Combine(_outputFolder, "testVBproj1.Foo.Bar.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-        Assert.Equal("testVBproj1.Foo.Bar", memberViewModel.Items[0].Uid);
-        Assert.Equal("Bar", memberViewModel.Items[0].Id);
-        Assert.Equal("Bar", memberViewModel.Items[0].Name);
-        Assert.Equal("testVBproj1.Foo.Bar", memberViewModel.Items[0].FullName);
-        Assert.Equal("testVBproj1.Foo.Bar.FooBar``1(System.Int32[],System.Byte,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Uid);
-        Assert.Equal("FooBar``1(System.Int32[],System.Byte,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Id);
-        Assert.Equal("FooBar<TArg>(int[], byte, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
-        Assert.Equal("testVBproj1.Foo.Bar.FooBar<TArg>(int[], byte, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.AreEqual("testVBproj1.Foo.Bar", memberViewModel.Items[0].Uid);
+        Assert.AreEqual("Bar", memberViewModel.Items[0].Id);
+        Assert.AreEqual("Bar", memberViewModel.Items[0].Name);
+        Assert.AreEqual("testVBproj1.Foo.Bar", memberViewModel.Items[0].FullName);
+        Assert.AreEqual("testVBproj1.Foo.Bar.FooBar``1(System.Int32[],System.Byte,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Uid);
+        Assert.AreEqual("FooBar``1(System.Int32[],System.Byte,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Id);
+        Assert.AreEqual("FooBar<TArg>(int[], byte, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
+        Assert.AreEqual("testVBproj1.Foo.Bar.FooBar<TArg>(int[], byte, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("System.Collections.Generic.List{System.String}")
             ));
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("System.Int32[]")
             ));
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("System.Byte")
             ));
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("{TArg}")
             ));
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("System.Collections.Generic.List{{TArg}[]}")
             ));
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public async Task TestMetadataCommandFromCSProjectWithFilterInOption()
     {
         // Create default project
@@ -160,37 +161,37 @@ public class MetadataCommandTest : TestBase
             }),
             new(), Directory.GetCurrentDirectory());
 
-        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
+        Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
         var file = Path.Combine(_outputFolder, "toc.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         var tocViewModel = YamlUtility.Deserialize<TocItemViewModel>(file).Items;
-        Assert.Equal("Foo", tocViewModel[0].Uid);
-        Assert.Equal("Foo", tocViewModel[0].Name);
-        Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
-        Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
+        Assert.AreEqual("Foo", tocViewModel[0].Uid);
+        Assert.AreEqual("Foo", tocViewModel[0].Name);
+        Assert.AreEqual("Foo.Bar", tocViewModel[0].Items[0].Uid);
+        Assert.AreEqual("Bar", tocViewModel[0].Items[0].Name);
 
         file = Path.Combine(_outputFolder, "Foo.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         var memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-        Assert.Equal("Foo", memberViewModel.Items[0].Uid);
-        Assert.Equal("Foo", memberViewModel.Items[0].Id);
-        Assert.Equal("Foo", memberViewModel.Items[0].Name);
-        Assert.Equal("Foo", memberViewModel.Items[0].FullName);
+        Assert.AreEqual("Foo", memberViewModel.Items[0].Uid);
+        Assert.AreEqual("Foo", memberViewModel.Items[0].Id);
+        Assert.AreEqual("Foo", memberViewModel.Items[0].Name);
+        Assert.AreEqual("Foo", memberViewModel.Items[0].FullName);
 
         file = Path.Combine(_outputFolder, "Foo.Bar.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-        Assert.Equal("Foo.Bar", memberViewModel.Items[0].Uid);
-        Assert.Equal("Bar", memberViewModel.Items[0].Id);
-        Assert.Equal("Bar", memberViewModel.Items[0].Name);
-        Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
-        Assert.Single(memberViewModel.Items);
-        Assert.NotNull(memberViewModel.References.Find(s => s.Uid.Equals("Foo")));
+        Assert.AreEqual("Foo.Bar", memberViewModel.Items[0].Uid);
+        Assert.AreEqual("Bar", memberViewModel.Items[0].Id);
+        Assert.AreEqual("Bar", memberViewModel.Items[0].Name);
+        Assert.AreEqual("Foo.Bar", memberViewModel.Items[0].FullName);
+        Assert.ContainsSingle(memberViewModel.Items);
+        Assert.IsNotNull(memberViewModel.References.Find(s => s.Uid.Equals("Foo")));
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public async Task TestMetadataCommandFromCSProjectWithDuplicateProjectReference()
     {
         // Create default project
@@ -208,8 +209,8 @@ public class MetadataCommandTest : TestBase
         CheckResult();
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public async Task TestMetadataCommandFromCSProjectWithMultipleNamespaces()
     {
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
@@ -227,28 +228,28 @@ public class MetadataCommandTest : TestBase
             new(), Directory.GetCurrentDirectory());
 
         var file = Path.Combine(_outputFolder, "toc.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         var tocViewModel = YamlUtility.Deserialize<TocItemViewModel>(file).Items;
-        Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
-        Assert.Equal("OtherNamespace", tocViewModel[0].Name);
+        Assert.AreEqual("OtherNamespace", tocViewModel[0].Uid);
+        Assert.AreEqual("OtherNamespace", tocViewModel[0].Name);
 
-        Assert.Equal("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
-        Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
+        Assert.AreEqual("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
+        Assert.AreEqual("OtherBar", tocViewModel[0].Items[0].Name);
 
-        Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
-        Assert.Equal("Samples.Foo", tocViewModel[1].Name);
+        Assert.AreEqual("Samples.Foo", tocViewModel[1].Uid);
+        Assert.AreEqual("Samples.Foo", tocViewModel[1].Name);
 
-        Assert.Equal("Samples.Foo.Sub", tocViewModel[1].Items[0].Uid);
-        Assert.Equal("Sub", tocViewModel[1].Items[0].Name);
-        Assert.Equal("Samples.Foo.Sub.SubBar", tocViewModel[1].Items[0].Items[0].Uid);
-        Assert.Equal("SubBar", tocViewModel[1].Items[0].Items[0].Name);
+        Assert.AreEqual("Samples.Foo.Sub", tocViewModel[1].Items[0].Uid);
+        Assert.AreEqual("Sub", tocViewModel[1].Items[0].Name);
+        Assert.AreEqual("Samples.Foo.Sub.SubBar", tocViewModel[1].Items[0].Items[0].Uid);
+        Assert.AreEqual("SubBar", tocViewModel[1].Items[0].Items[0].Name);
 
-        Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[1].Uid);
-        Assert.Equal("Bar", tocViewModel[1].Items[1].Name);
+        Assert.AreEqual("Samples.Foo.Bar", tocViewModel[1].Items[1].Uid);
+        Assert.AreEqual("Bar", tocViewModel[1].Items[1].Name);
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public async Task TestMetadataCommandFromCSProjectWithMultipleNamespacesWithFlatToc()
     {
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
@@ -266,28 +267,28 @@ public class MetadataCommandTest : TestBase
             new(), Directory.GetCurrentDirectory());
 
         var file = Path.Combine(_outputFolder, "toc.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         var tocViewModel = YamlUtility.Deserialize<TocItemViewModel>(file).Items;
-        Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
-        Assert.Equal("OtherNamespace", tocViewModel[0].Name);
+        Assert.AreEqual("OtherNamespace", tocViewModel[0].Uid);
+        Assert.AreEqual("OtherNamespace", tocViewModel[0].Name);
 
-        Assert.Equal("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
-        Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
+        Assert.AreEqual("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
+        Assert.AreEqual("OtherBar", tocViewModel[0].Items[0].Name);
 
-        Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
-        Assert.Equal("Samples.Foo", tocViewModel[1].Name);
-        Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[0].Uid);
-        Assert.Equal("Bar", tocViewModel[1].Items[0].Name);
+        Assert.AreEqual("Samples.Foo", tocViewModel[1].Uid);
+        Assert.AreEqual("Samples.Foo", tocViewModel[1].Name);
+        Assert.AreEqual("Samples.Foo.Bar", tocViewModel[1].Items[0].Uid);
+        Assert.AreEqual("Bar", tocViewModel[1].Items[0].Name);
 
-        Assert.Equal("Samples.Foo.Sub", tocViewModel[2].Uid);
-        Assert.Equal("Samples.Foo.Sub", tocViewModel[2].Name);
+        Assert.AreEqual("Samples.Foo.Sub", tocViewModel[2].Uid);
+        Assert.AreEqual("Samples.Foo.Sub", tocViewModel[2].Name);
 
-        Assert.Equal("Samples.Foo.Sub.SubBar", tocViewModel[2].Items[0].Uid);
-        Assert.Equal("SubBar", tocViewModel[2].Items[0].Name);
+        Assert.AreEqual("Samples.Foo.Sub.SubBar", tocViewModel[2].Items[0].Uid);
+        Assert.AreEqual("SubBar", tocViewModel[2].Items[0].Name);
     }
 
-    [Fact]
-    [Trait("Related", "docfx")]
+    [TestMethod]
+    [TestProperty("Related", "docfx")]
     public async Task TestMetadataCommandFromCSProjectWithMultipleNamespacesWithGapsWithNestedToc()
     {
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
@@ -305,77 +306,77 @@ public class MetadataCommandTest : TestBase
             new(), Directory.GetCurrentDirectory());
 
         var file = Path.Combine(_outputFolder, "toc.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         var tocViewModel = YamlUtility.Deserialize<TocItemViewModel>(file).Items;
-        Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
-        Assert.Equal("OtherNamespace", tocViewModel[0].Name);
+        Assert.AreEqual("OtherNamespace", tocViewModel[0].Uid);
+        Assert.AreEqual("OtherNamespace", tocViewModel[0].Name);
 
-        Assert.Equal("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
-        Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
+        Assert.AreEqual("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
+        Assert.AreEqual("OtherBar", tocViewModel[0].Items[0].Name);
 
-        Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
-        Assert.Equal("Samples.Foo", tocViewModel[1].Name);
+        Assert.AreEqual("Samples.Foo", tocViewModel[1].Uid);
+        Assert.AreEqual("Samples.Foo", tocViewModel[1].Name);
 
-        Assert.Equal("Samples.Foo.Sub", tocViewModel[1].Items[0].Uid);
-        Assert.Equal("Sub", tocViewModel[1].Items[0].Name);
-        Assert.Equal("Samples.Foo.Sub.Subber1", tocViewModel[1].Items[0].Items[0].Uid);
-        Assert.Equal("Subber1", tocViewModel[1].Items[0].Items[0].Name);
-        Assert.Equal("Samples.Foo.Sub.Subber1.SubberBar", tocViewModel[1].Items[0].Items[0].Items[0].Uid);
-        Assert.Equal("SubberBar", tocViewModel[1].Items[0].Items[0].Items[0].Name);
+        Assert.AreEqual("Samples.Foo.Sub", tocViewModel[1].Items[0].Uid);
+        Assert.AreEqual("Sub", tocViewModel[1].Items[0].Name);
+        Assert.AreEqual("Samples.Foo.Sub.Subber1", tocViewModel[1].Items[0].Items[0].Uid);
+        Assert.AreEqual("Subber1", tocViewModel[1].Items[0].Items[0].Name);
+        Assert.AreEqual("Samples.Foo.Sub.Subber1.SubberBar", tocViewModel[1].Items[0].Items[0].Items[0].Uid);
+        Assert.AreEqual("SubberBar", tocViewModel[1].Items[0].Items[0].Items[0].Name);
 
-        Assert.Equal("Samples.Foo.Sub.Subber2", tocViewModel[1].Items[0].Items[1].Uid);
-        Assert.Equal("Subber2", tocViewModel[1].Items[0].Items[1].Name);
-        Assert.Equal("Samples.Foo.Sub.Subber2.Subber2Bar", tocViewModel[1].Items[0].Items[1].Items[0].Uid);
-        Assert.Equal("Subber2Bar", tocViewModel[1].Items[0].Items[1].Items[0].Name);
+        Assert.AreEqual("Samples.Foo.Sub.Subber2", tocViewModel[1].Items[0].Items[1].Uid);
+        Assert.AreEqual("Subber2", tocViewModel[1].Items[0].Items[1].Name);
+        Assert.AreEqual("Samples.Foo.Sub.Subber2.Subber2Bar", tocViewModel[1].Items[0].Items[1].Items[0].Uid);
+        Assert.AreEqual("Subber2Bar", tocViewModel[1].Items[0].Items[1].Items[0].Name);
 
-        Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[1].Uid);
-        Assert.Equal("Bar", tocViewModel[1].Items[1].Name);
+        Assert.AreEqual("Samples.Foo.Bar", tocViewModel[1].Items[1].Uid);
+        Assert.AreEqual("Bar", tocViewModel[1].Items[1].Name);
     }
 
     private void CheckResult()
     {
-        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
+        Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
         var file = Path.Combine(_outputFolder, "toc.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         var tocViewModel = YamlUtility.Deserialize<TocItemViewModel>(file).Items;
-        Assert.Equal("Foo", tocViewModel[0].Uid);
-        Assert.Equal("Foo", tocViewModel[0].Name);
-        Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
-        Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
+        Assert.AreEqual("Foo", tocViewModel[0].Uid);
+        Assert.AreEqual("Foo", tocViewModel[0].Name);
+        Assert.AreEqual("Foo.Bar", tocViewModel[0].Items[0].Uid);
+        Assert.AreEqual("Bar", tocViewModel[0].Items[0].Name);
 
         file = Path.Combine(_outputFolder, "Foo.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         var memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-        Assert.Equal("Foo", memberViewModel.Items[0].Uid);
-        Assert.Equal("Foo", memberViewModel.Items[0].Id);
-        Assert.Equal("Foo", memberViewModel.Items[0].Name);
-        Assert.Equal("Foo", memberViewModel.Items[0].FullName);
+        Assert.AreEqual("Foo", memberViewModel.Items[0].Uid);
+        Assert.AreEqual("Foo", memberViewModel.Items[0].Id);
+        Assert.AreEqual("Foo", memberViewModel.Items[0].Name);
+        Assert.AreEqual("Foo", memberViewModel.Items[0].FullName);
 
         file = Path.Combine(_outputFolder, "Foo.Bar.yml");
-        Assert.True(File.Exists(file));
+        Assert.IsTrue(File.Exists(file));
         memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-        Assert.Equal("Foo.Bar", memberViewModel.Items[0].Uid);
-        Assert.Equal("Bar", memberViewModel.Items[0].Id);
-        Assert.Equal("Bar", memberViewModel.Items[0].Name);
-        Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
-        Assert.Equal("Foo.Bar.FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Uid);
-        Assert.Equal("FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Id);
-        Assert.Equal("FooBar<TArg>(int[], byte*, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
-        Assert.Equal("Foo.Bar.FooBar<TArg>(int[], byte*, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.AreEqual("Foo.Bar", memberViewModel.Items[0].Uid);
+        Assert.AreEqual("Bar", memberViewModel.Items[0].Id);
+        Assert.AreEqual("Bar", memberViewModel.Items[0].Name);
+        Assert.AreEqual("Foo.Bar", memberViewModel.Items[0].FullName);
+        Assert.AreEqual("Foo.Bar.FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Uid);
+        Assert.AreEqual("FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Id);
+        Assert.AreEqual("FooBar<TArg>(int[], byte*, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
+        Assert.AreEqual("Foo.Bar.FooBar<TArg>(int[], byte*, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("System.Collections.Generic.List{System.String}")
             ));
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("System.Int32[]")
             ));
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("System.Byte*")
             ));
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("{TArg}")
             ));
-        Assert.NotNull(memberViewModel.References.Find(
+        Assert.IsNotNull(memberViewModel.References.Find(
             s => s.Uid.Equals("System.Collections.Generic.List{{TArg}[]}")
             ));
     }

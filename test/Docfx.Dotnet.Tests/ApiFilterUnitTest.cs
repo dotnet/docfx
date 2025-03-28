@@ -2,17 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.CodeAnalysis;
-using Xunit;
 
 namespace Docfx.Dotnet.Tests;
 
-[Trait("Related", "Filter")]
-[Collection("docfx STA")]
+[TestProperty("Related", "Filter")]
+[DoNotParallelize]
+[TestClass]
 public class ApiFilterUnitTest
 {
     private static readonly Dictionary<string, string> EmptyMSBuildProperties = [];
 
-    [Fact]
+    [TestMethod]
     public void TestApiFilter()
     {
         string code = @"
@@ -115,40 +115,40 @@ namespace Test1
 ";
         string configFile = "TestData/filterconfig.yml";
         MetadataItem output = Verify(code, new() { FilterConfigFile = configFile });
-        Assert.Single(output.Items);
+        Assert.ContainsSingle(output.Items);
         var @namespace = output.Items[0];
-        Assert.NotNull(@namespace);
-        Assert.Equal("Test1", @namespace.Name);
-        Assert.Equal(5, @namespace.Items.Count);
+        Assert.IsNotNull(@namespace);
+        Assert.AreEqual("Test1", @namespace.Name);
+        Assert.AreEqual(5, @namespace.Items.Count);
         {
             var class1 = @namespace.Items[0];
-            Assert.Equal("Test1.Class1", class1.Name);
-            Assert.Single(class1.Items);
+            Assert.AreEqual("Test1.Class1", class1.Name);
+            Assert.ContainsSingle(class1.Items);
             var method = class1.Items[0];
-            Assert.Equal("Test1.Class1.Func1(System.Int32)", method.Name);
+            Assert.AreEqual("Test1.Class1.Func1(System.Int32)", method.Name);
         }
         {
             var class3 = @namespace.Items[1];
-            Assert.Equal("Test1.Class3", class3.Name);
-            Assert.Equal(2, class3.Items.Count);
-            Assert.Equal("Test1.Class3.Func2", class3.Items[0].Name);
-            Assert.Equal("Test1.Class3.Func2(System.Int32)", class3.Items[1].Name);
+            Assert.AreEqual("Test1.Class3", class3.Name);
+            Assert.AreEqual(2, class3.Items.Count);
+            Assert.AreEqual("Test1.Class3.Func2", class3.Items[0].Name);
+            Assert.AreEqual("Test1.Class3.Func2(System.Int32)", class3.Items[1].Name);
         }
         {
             var class4 = @namespace.Items[2];
-            Assert.Equal("Test1.Class3.Class4", class4.Name);
-            Assert.Empty(class4.Items);
+            Assert.AreEqual("Test1.Class3.Class4", class4.Name);
+            Assert.IsEmpty(class4.Items);
         }
         {
             var class6 = @namespace.Items[3];
-            Assert.Equal("Test1.Class6", class6.Name);
-            Assert.Equal(2, class6.Items.Count);
-            Assert.Equal("Test1.Class6.D", class6.Items[0].Name);
-            Assert.Equal("Test1.Class6.Test(System.String)", class6.Items[1].Name);
+            Assert.AreEqual("Test1.Class6", class6.Name);
+            Assert.AreEqual(2, class6.Items.Count);
+            Assert.AreEqual("Test1.Class6.D", class6.Items[0].Name);
+            Assert.AreEqual("Test1.Class6.Test(System.String)", class6.Items[1].Name);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestAttributeFilter()
     {
         string code = @"
@@ -171,11 +171,11 @@ namespace Test1
         MetadataItem output = Verify(code, new() { FilterConfigFile = configFile });
         var @namespace = output.Items[0];
         var class1 = @namespace.Items[0];
-        Assert.Single(class1.Attributes);
-        Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
+        Assert.ContainsSingle(class1.Attributes);
+        Assert.AreEqual("System.SerializableAttribute", class1.Attributes[0].Type);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestDefaultFilter()
     {
         string code = @"
@@ -203,13 +203,13 @@ namespace Test1
 }";
         MetadataItem output = Verify(code);
         var @namespace = output.Items[0];
-        Assert.Single(@namespace.Items);
+        Assert.ContainsSingle(@namespace.Items);
         var class1 = @namespace.Items[0];
-        Assert.Single(class1.Attributes);
-        Assert.Equal("System.SerializableAttribute", class1.Attributes[0].Type);
+        Assert.ContainsSingle(class1.Attributes);
+        Assert.AreEqual("System.SerializableAttribute", class1.Attributes[0].Type);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestFilterBugIssue2547()
     {
         string code = @"using System;
@@ -240,11 +240,11 @@ namespace Test1
 }";
         MetadataItem output = Verify(code);
         var @namespace = output.Items[0];
-        Assert.NotNull(@namespace);
-        Assert.Equal(3, @namespace.Items.Count);
+        Assert.IsNotNull(@namespace);
+        Assert.AreEqual(3, @namespace.Items.Count);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestSymbolFilterOptions()
     {
         var code = @"
@@ -273,16 +273,16 @@ namespace Test1
 }";
         var output = Verify(code, new(), new() { IncludeApi = IncludeApi, IncludeAttribute = IncludeAttribute });
         var class1 = output.Items[0].Items[0];
-        Assert.Equal(
+        CollectionAssert.AreEqual(
             new[]
             {
                 "System.SerializableAttribute",
                 "System.Runtime.InteropServices.ComVisibleAttribute",
                 "Test1.A2",
             },
-            class1.Attributes.Select(a => a.Type));
-        Assert.Equal(new[] { "Test1.Class1.M2" }, class1.Items.Select(m => m.Name));
-        Assert.Equal(new[] { "System.Object" }, class1.Inheritance);
+            class1.Attributes.Select(a => a.Type).ToArray());
+        CollectionAssert.AreEqual(new[] { "Test1.Class1.M2" }, class1.Items.Select(m => m.Name).ToArray());
+        CollectionAssert.AreEqual(new[] { "System.Object" }, class1.Inheritance.ToArray());
 
         SymbolIncludeState IncludeAttribute(ISymbol symbol)
         {
@@ -304,7 +304,7 @@ namespace Test1
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void TestExcludeInterface_ExcludesExplicitInterfaceImplementations()
     {
         var code = @"
@@ -326,10 +326,10 @@ namespace Test1
             new() { IncludeApi = symbol => symbol.Name is "IClass1" ? SymbolIncludeState.Exclude : default });
 
         var class1 = output.Items[0].Items[0];
-        Assert.Empty(class1.Items);
+        Assert.IsEmpty(class1.Items);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestDocsSampleFilter()
     {
         var code = @"
@@ -350,27 +350,27 @@ namespace Microsoft.DevDiv.SpecialCase
         MetadataItem output = Verify(code, new() { FilterConfigFile = configFile });
 
         var namespaces = output.Items;
-        Assert.Single(namespaces);
+        Assert.ContainsSingle(namespaces);
 
         var @namespace = namespaces[0];
-        Assert.NotNull(@namespace);
-        Assert.Equal("Microsoft.DevDiv.SpecialCase", @namespace.Name);
-        Assert.Single(@namespace.Items);
+        Assert.IsNotNull(@namespace);
+        Assert.AreEqual("Microsoft.DevDiv.SpecialCase", @namespace.Name);
+        Assert.ContainsSingle(@namespace.Items);
 
         var nestedClass = @namespace.Items[0];
-        Assert.Equal("Microsoft.DevDiv.SpecialCase.NestedClass", nestedClass.Name);
+        Assert.AreEqual("Microsoft.DevDiv.SpecialCase.NestedClass", nestedClass.Name);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestExtendedSymbolKindFlags()
     {
-        Assert.True((ExtendedSymbolKind.Type | ExtendedSymbolKind.Member).Contains(new SymbolFilterData { Kind = ExtendedSymbolKind.Interface }));
+        Assert.IsTrue((ExtendedSymbolKind.Type | ExtendedSymbolKind.Member).Contains(new SymbolFilterData { Kind = ExtendedSymbolKind.Interface }));
     }
 
     private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, DotnetApiOptions options = null, IDictionary<string, string> msbuildProperties = null)
     {
         var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, msbuildProperties ?? EmptyMSBuildProperties, "test.dll");
-        Assert.Empty(compilation.GetDeclarationDiagnostics());
+        Assert.IsEmpty(compilation.GetDeclarationDiagnostics());
         return compilation.Assembly.GenerateMetadataItem(compilation, config, options);
     }
 }

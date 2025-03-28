@@ -1,13 +1,12 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.Dotnet.Tests;
 
+[TestClass]
 public class DefinitionMergeUnitTest
 {
-    [Fact]
+    [TestMethod]
     public void InterfaceWithTemplateDoesNotCrash()
     {
         // arrange
@@ -35,6 +34,6 @@ namespace A {
         var output = compilation.Assembly.GenerateMetadataItem(compilation);
 
         // assert
-        Assert.NotNull(output);
+        Assert.IsNotNull(output);
     }
 }

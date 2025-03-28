@@ -9,11 +9,11 @@ using Docfx.DataContracts.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 using Newtonsoft.Json.Linq;
-using Xunit;
 
 namespace Docfx.Build.TableOfContents.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class TocDocumentProcessorTest : TestBase
 {
     private readonly string _outputFolder;
@@ -40,7 +40,7 @@ public class TocDocumentProcessorTest : TestBase
         base.Dispose();
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessMarkdownTocWithComplexHrefShouldSucceed()
     {
         var fileName = "#ctor";
@@ -55,7 +55,7 @@ public class TocDocumentProcessorTest : TestBase
         BuildDocument(files);
 
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
@@ -73,7 +73,7 @@ public class TocDocumentProcessorTest : TestBase
         AssertTocEqual(expectedModel, model);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessMarkdownTocWithAbsoluteHrefShouldSucceed()
     {
         var content = @"
@@ -89,7 +89,7 @@ public class TocDocumentProcessorTest : TestBase
         BuildDocument(files);
 
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
@@ -135,7 +135,7 @@ public class TocDocumentProcessorTest : TestBase
         AssertTocEqual(expectedModel, model);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessMarkdownTocWithRelativeHrefShouldSucceed()
     {
         var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
@@ -153,7 +153,7 @@ public class TocDocumentProcessorTest : TestBase
         files.Add(DocumentType.Article, new[] { file1, file2, toc });
         BuildDocument(files);
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
@@ -207,7 +207,7 @@ public class TocDocumentProcessorTest : TestBase
         AssertTocEqual(expectedModel, model);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessYamlTocWithFolderShouldSucceed()
     {
         var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
@@ -233,7 +233,7 @@ public class TocDocumentProcessorTest : TestBase
         files.Add(DocumentType.Article, new[] { file1, file2, toc, subToc });
         BuildDocument(files);
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
@@ -276,7 +276,7 @@ public class TocDocumentProcessorTest : TestBase
         AssertTocEqual(expectedModel, model);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessYamlTocWithMetadataShouldSucceed()
     {
         var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
@@ -295,23 +295,23 @@ items:
         files.Add(DocumentType.Article, new[] { file1, toc, });
         BuildDocument(files);
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
 
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
 
         if (JsonUtility.IsSystemTextJsonSupported<TocItemViewModel>())
         {
             var meta = (IDictionary<string, object>)model.Metadata["metadata"];
-            Assert.NotNull(meta);
-            Assert.Single(meta);
-            Assert.Equal("content", meta["meta"]);
+            Assert.IsNotNull(meta);
+            Assert.ContainsSingle(meta);
+            Assert.AreEqual("content", meta["meta"]);
         }
         else
         {
             var meta = (JObject)model.Metadata["metadata"];
-            Assert.NotNull(meta);
-            Assert.Single(meta);
-            Assert.Equal("content", meta["meta"]);
+            Assert.IsNotNull(meta);
+            Assert.ContainsSingle<KeyValuePair<string, JToken>>(meta);
+            Assert.AreEqual("content", meta["meta"]);
         }
 
         var expectedModel = new TocItemViewModel
@@ -338,7 +338,7 @@ items:
         AssertTocEqual(expectedModel, model);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessYamlTocWithReferencedTocShouldSucceed()
     {
         var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
@@ -381,7 +381,7 @@ items:
         BuildDocument(files);
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
 
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
@@ -538,10 +538,10 @@ items:
 
         // Referenced TOC File should exist
         var referencedTocPath = Path.Combine(_outputFolder, Path.ChangeExtension(sub1tocmd, RawModelFileExtension));
-        Assert.True(File.Exists(referencedTocPath));
+        Assert.IsTrue(File.Exists(referencedTocPath));
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessTocWithCircularReferenceShouldFail()
     {
         var referencedToc = _fileCreator.CreateFile(@"
@@ -560,10 +560,10 @@ items:
         FileCollection files = new(_inputFolder);
         files.Add(DocumentType.Article, new[] { toc, subToc });
         var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
-        Assert.Equal($"Circular reference to {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, subToc)))} is found in {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, referencedToc)))}", e.Message, true);
+        Assert.AreEqual($"Circular reference to {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, subToc)))} is found in {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, referencedToc)))}", e.Message, true);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessMarkdownTocWithNonExistentReferencedTocShouldLogError()
     {
         var pathToReferencedToc = "non-existent/toc.yml";
@@ -580,14 +580,14 @@ items:
         BuildDocument(files);
         Logger.UnregisterListener(listener);
 
-        Assert.Single(listener.Items);
+        Assert.ContainsSingle(listener.Items);
 
-        Assert.Equal(WarningCodes.Build.InvalidTocInclude, listener.Items[0].Code);
-        Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", listener.Items[0].Message, true);
-        Assert.Equal(LogLevel.Error, listener.Items[0].LogLevel);
+        Assert.AreEqual(WarningCodes.Build.InvalidTocInclude, listener.Items[0].Code);
+        Assert.AreEqual($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", listener.Items[0].Message, true);
+        Assert.AreEqual(LogLevel.Error, listener.Items[0].LogLevel);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessYamlTocWithNonExistentReferencedTocShouldLogError()
     {
         var pathToReferencedToc = "non-existent/TOC.md";
@@ -603,14 +603,14 @@ items:
         BuildDocument(files);
         Logger.UnregisterListener(listener);
 
-        Assert.Single(listener.Items);
+        Assert.ContainsSingle(listener.Items);
 
-        Assert.Equal(WarningCodes.Build.InvalidTocInclude, listener.Items[0].Code);
-        Assert.Equal($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", listener.Items[0].Message, true);
-        Assert.Equal(LogLevel.Error, listener.Items[0].LogLevel);
+        Assert.AreEqual(WarningCodes.Build.InvalidTocInclude, listener.Items[0].Code);
+        Assert.AreEqual($"Referenced TOC file {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, pathToReferencedToc)))} does not exist.", listener.Items[0].Message, true);
+        Assert.AreEqual(LogLevel.Error, listener.Items[0].LogLevel);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessYamlTocWithTocHrefShouldSucceed()
     {
         var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
@@ -640,7 +640,7 @@ items:
         BuildDocument(files);
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
 
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
         var expectedModel = new TocItemViewModel
         {
@@ -687,7 +687,7 @@ items:
         AssertTocEqual(expectedModel, model);
     }
 
-    [Fact]
+    [TestMethod]
     public void RelativePathToTocShouldChooseTheNearestReferenceToc()
     {
         // |-toc.md
@@ -712,12 +712,12 @@ items:
 
         // Assert
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        Assert.Equal("../../toc.md", model["_tocRel"]);
+        Assert.AreEqual("../../toc.md", model["_tocRel"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void RelativePathToTocShouldExistWithUrlEncodedHref()
     {
         // Arrange
@@ -734,13 +734,13 @@ items:
 
         // Assert
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
-        Assert.Equal("../toc.md", model["_tocRel"]);
-        Assert.Equal("Hello world!", model["meta"]);
+        Assert.AreEqual("../toc.md", model["_tocRel"]);
+        Assert.AreEqual("Hello world!", model["meta"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ProcessYamlTocWithTocHrefAndHomepageShouldFail()
     {
         var content = @"
@@ -753,10 +753,10 @@ items:
         FileCollection files = new(_inputFolder);
         files.Add(DocumentType.Article, new[] { toc });
         var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
-        Assert.Equal("TopicHref should be used to specify the homepage for /Topic1/ when tocHref is used.", e.Message);
+        Assert.AreEqual("TopicHref should be used to specify the homepage for /Topic1/ when tocHref is used.", e.Message);
     }
 
-    [Fact]
+    [TestMethod]
     public void LoadBadTocYamlFileShouldGiveLineNumber()
     {
         var content = @"
@@ -768,10 +768,10 @@ items:
       href: x2.md";
         var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
         var ex = Assert.Throws<DocumentException>(() => TocHelper.LoadSingleToc(toc));
-        Assert.Equal("toc.yml is not a valid TOC File: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): While scanning a plain scalar value, found invalid mapping.", ex.Message);
+        Assert.AreEqual("toc.yml is not a valid TOC File: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): While scanning a plain scalar value, found invalid mapping.", ex.Message);
     }
 
-    [Fact]
+    [TestMethod]
     public void LoadTocYamlWithEmptyNodeShouldSucceed()
     {
         // Arrange
@@ -788,12 +788,12 @@ items:
 
         // Assert
         var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
-        Assert.True(File.Exists(outputRawModelPath));
+        Assert.IsTrue(File.Exists(outputRawModelPath));
         var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
-        Assert.Single(model.Items); // empty node is removed
+        Assert.ContainsSingle(model.Items); // empty node is removed
     }
 
-    [Fact]
+    [TestMethod]
     public void WarningShouldBeFromIncludedToc()
     {
         // Arrange
@@ -818,15 +818,15 @@ items:
         Logger.UnregisterListener(listener);
 
         // Assert
-        Assert.NotNull(listener.Items);
-        Assert.Equal(2, listener.Items.Count);
-        Assert.Equal(WarningCodes.Build.InvalidFileLink, listener.Items[0].Code);
-        Assert.Equal("~/included/toc.yml", listener.Items[0].File);
-        Assert.Equal(WarningCodes.Build.UidNotFound, listener.Items[1].Code);
-        Assert.Equal("~/included/toc.yml", listener.Items[1].File);
+        Assert.IsNotNull(listener.Items);
+        Assert.AreEqual(2, listener.Items.Count);
+        Assert.AreEqual(WarningCodes.Build.InvalidFileLink, listener.Items[0].Code);
+        Assert.AreEqual("~/included/toc.yml", listener.Items[0].File);
+        Assert.AreEqual(WarningCodes.Build.UidNotFound, listener.Items[1].Code);
+        Assert.AreEqual("~/included/toc.yml", listener.Items[1].File);
     }
 
-    [Fact]
+    [TestMethod]
     public void UrlDecodeHrefInYamlToc()
     {
         // Arrange
@@ -846,11 +846,11 @@ items:
         Logger.UnregisterListener(listener);
 
         // Assert
-        Assert.NotNull(listener.Items);
-        Assert.Empty(listener.Items);
+        Assert.IsNotNull(listener.Items);
+        Assert.IsEmpty(listener.Items);
     }
 
-    [Fact]
+    [TestMethod]
     public void UrlDecodeHrefInMarkdownToc()
     {
         // Arrange
@@ -868,8 +868,8 @@ items:
         Logger.UnregisterListener(listener);
 
         // Assert
-        Assert.NotNull(listener.Items);
-        Assert.Empty(listener.Items);
+        Assert.IsNotNull(listener.Items);
+        Assert.IsEmpty(listener.Items);
     }
     #region Helper methods
 
@@ -949,7 +949,7 @@ items:
             actual.Metadata.Clear();
         }
         YamlUtility.Serialize(swForActual, actual);
-        Assert.Equal(swForExpected.ToString(), swForActual.ToString());
+        Assert.AreEqual(swForExpected.ToString(), swForActual.ToString());
     }
 
     #endregion

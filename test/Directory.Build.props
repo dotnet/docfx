@@ -7,7 +7,7 @@
   <PropertyGroup>
     <!--
     .NET 9 preview 2 or later run tests in parallel by default.
-    It is necessary to disable this feature because there are tests that need to be executed sequentially that are marked with `[Collection("docfx STA")]`.
+    It is necessary to disable this feature because there are tests that need to be executed sequentially that are marked with `[DoNotParallelize]`.
     -->
     <TestTfmsInParallel>false</TestTfmsInParallel>
   </PropertyGroup>
@@ -30,8 +30,9 @@
 
   <ItemGroup>
     <PackageReference Include="AwesomeAssertions" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit.runner.visualstudio" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="MSTest" />
+
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+    <AssemblyAttribute Include="Microsoft.VisualStudio.TestTools.UnitTesting.Parallelize" />
   </ItemGroup>
 </Project>

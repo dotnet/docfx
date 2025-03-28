@@ -1,13 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class MonikerRangeTest
 {
-    [Fact]
+    [TestMethod]
     public void MonikerRangeTestGeneral()
     {
         //arrange
@@ -51,7 +50,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "fake.md");
     }
 
-    [Fact]
+    [TestMethod]
     public void MonikerRangeTestInvalid()
     {
         //arrange
@@ -63,7 +62,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source, expected, ["invalid-moniker-range"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void MonikerRangeTestNotClosed()
     {
         //arrange
@@ -79,7 +78,7 @@ Inline ::: should not end moniker zone.</p>
         TestUtility.VerifyMarkup(source1, expected, ["invalid-moniker-range"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void MonikerRangeWithCodeIndent()
     {
         var source = @"::: moniker range=""start""

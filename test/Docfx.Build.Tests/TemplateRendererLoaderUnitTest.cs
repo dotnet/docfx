@@ -3,11 +3,10 @@
 
 using Docfx.Tests.Common;
 
-using Xunit;
-
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class TemplateRendererLoaderUnitTest : TestBase
 {
     private readonly string _inputFolder;
@@ -17,32 +16,32 @@ public class TemplateRendererLoaderUnitTest : TestBase
         _inputFolder = GetRandomFolder();
     }
 
-    [Fact]
+    [TestMethod]
     public void TestLoaderWhenNoFileExists()
     {
         using var listener = new TestListenerScope();
         var renderers = LoadAllRenderers();
-        Assert.Empty(listener.Items);
-        Assert.Empty(renderers);
+        Assert.IsEmpty(listener.Items);
+        Assert.IsEmpty(renderers);
 
         var file1 = CreateFile("a.js", string.Empty, _inputFolder);
         renderers = LoadAllRenderers();
-        Assert.Empty(listener.Items);
-        Assert.Empty(renderers);
+        Assert.IsEmpty(listener.Items);
+        Assert.IsEmpty(renderers);
 
         // only allows file under root folder
         var file2 = CreateFile("sub/a.tmpl", string.Empty, _inputFolder);
         renderers = LoadAllRenderers();
-        Assert.Empty(listener.Items);
-        Assert.Empty(renderers);
+        Assert.IsEmpty(listener.Items);
+        Assert.IsEmpty(renderers);
 
         var file3 = CreateFile("a.tmpl.js", string.Empty, _inputFolder);
         renderers = LoadAllRenderers();
-        Assert.Empty(listener.Items);
-        Assert.Empty(renderers);
+        Assert.IsEmpty(listener.Items);
+        Assert.IsEmpty(renderers);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestLoaderWithValidInput()
     {
         var file1 = CreateFile("a.tmpl", "{{name}}", _inputFolder);
@@ -50,19 +49,19 @@ public class TemplateRendererLoaderUnitTest : TestBase
         using var listener = new TestListenerScope();
         var renderers = LoadAllRenderers();
 
-        Assert.Empty(listener.Items);
+        Assert.IsEmpty(listener.Items);
 
-        Assert.Single(renderers);
+        Assert.ContainsSingle(renderers);
         var renderer = renderers[0];
-        Assert.NotNull(renderer);
+        Assert.IsNotNull(renderer);
 
         var model = new { name = "model" };
 
         var output = renderer.Render(model);
-        Assert.Equal("model", output);
+        Assert.AreEqual("model", output);
     }
 
-    [Fact]
+    [TestMethod]
     public void TestSingleFileLoaderWithValidInput()
     {
         var path = "a.tmpl";
@@ -71,14 +70,14 @@ public class TemplateRendererLoaderUnitTest : TestBase
         using var listener = new TestListenerScope();
         var renderer = Load(path);
 
-        Assert.Empty(listener.Items);
+        Assert.IsEmpty(listener.Items);
 
-        Assert.NotNull(renderer);
+        Assert.IsNotNull(renderer);
 
         var model = new { name = "model" };
 
         var output = renderer.Render(model);
-        Assert.Equal("model", output);
+        Assert.AreEqual("model", output);
     }
 
     private List<ITemplateRenderer> LoadAllRenderers()

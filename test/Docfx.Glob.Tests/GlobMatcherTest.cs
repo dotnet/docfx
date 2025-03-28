@@ -1,201 +1,200 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.Glob.Tests;
 
+[TestClass]
 public class GlobMatcherTest
 {
-    [Theory]
-    [Trait("Related", "Glob")]
-    [InlineData("!!!!", false, "")]
-    [InlineData("!!!!!abc", true, "abc")]
-    [InlineData("abc", false, "abc")]
+    [TestMethod]
+    [TestProperty("Related", "Glob")]
+    [DataRow("!!!!", false, "")]
+    [DataRow("!!!!!abc", true, "abc")]
+    [DataRow("abc", false, "abc")]
     public void TestNegateGlobShouldAllowMultipleNegateChars(string pattern, bool expectedNegate, string expected)
     {
         var negate = GlobMatcher.ParseNegate(ref pattern);
-        Assert.Equal(expectedNegate, negate);
-        Assert.Equal(expected, pattern);
+        Assert.AreEqual(expectedNegate, negate);
+        Assert.AreEqual(expected, pattern);
     }
 
-    [Theory]
-    [Trait("Related", "Glob")]
-    [InlineData(@"a\{b,c\}d", new string[] { "a{b,c}d" })]
-    [InlineData("a{b,c}d", new string[] { "abd", "acd" })]
-    [InlineData("a{b,c,d}e{d}{}", new string[] { "abed", "aced", "aded" })]
-    [InlineData("{{a,b}}", new string[] { "a", "b" })]
-    [InlineData("z{a,b{,c}d", new string[] { })]
-    [InlineData(@"a\{b,c}d", new string[] { })]
+    [TestMethod]
+    [TestProperty("Related", "Glob")]
+    [DataRow(@"a\{b,c\}d", new string[] { "a{b,c}d" })]
+    [DataRow("a{b,c}d", new string[] { "abd", "acd" })]
+    [DataRow("a{b,c,d}e{d}{}", new string[] { "abed", "aced", "aded" })]
+    [DataRow("{{a,b}}", new string[] { "a", "b" })]
+    [DataRow("z{a,b{,c}d", new string[] { })]
+    [DataRow(@"a\{b,c}d", new string[] { })]
     public void TestGroupedGlobShouldExpand(string source, string[] expected)
     {
         var result = GlobMatcher.ExpandGroup(source);
-        Assert.Equal(expected, result);
+        CollectionAssert.AreEqual(expected, result);
     }
 
-    [Theory]
-    [Trait("Related", "Glob")]
-    [InlineData("", new string[]
+    [TestMethod]
+    [TestProperty("Related", "Glob")]
+    [DataRow("", new string[]
     {
         ""
     }, true)]
 
-    [InlineData("\\a", new string[]
+    [DataRow("\\a", new string[]
     {
         "a"
     }, true)]
-    [InlineData("a*", new string[]
+    [DataRow("a*", new string[]
     {
         "a", "abc", "abd", "abe"
     }, true)]
-    [InlineData(".a*", new string[]
+    [DataRow(".a*", new string[]
     {
         ".a", ".abc", ".abd", ".abe"
     }, true)]
-    [InlineData("b*/", new string[]
+    [DataRow("b*/", new string[]
     {
         "bdir/"
     }, true)]
-    [InlineData("**/a/*/b.cs", new string[]
+    [DataRow("**/a/*/b.cs", new string[]
     {
         "b/a/a/a/b.cs"
     }, true)]
     // ** is a shortcut for **/*
-    [InlineData("**", new string[]
+    [DataRow("**", new string[]
     {
         "a", "b", "abc", "bdir/cfile"
     }, true)]
 
-    [InlineData("A/**", new string[]
+    [DataRow("A/**", new string[]
     {
         "A/"
     }, false)]
     // ** is a shortcut for **/*
-    [InlineData("**/*", new string[]
+    [DataRow("**/*", new string[]
     {
       "a", "ab", "bdir/cfile", "a/b/c"
     }, true)]
 
-    [InlineData("**/*", new string[]
+    [DataRow("**/*", new string[]
     {
        "abc/"
     }, false)]
     // To match folders, / should be explicitly specified
-    [InlineData("**/", new string[]
+    [DataRow("**/", new string[]
     {
         "bdir/", "bdir/cdir/"
     }, true)]
-    [InlineData("[a-c]b*", new string[]
+    [DataRow("[a-c]b*", new string[]
     {
         "abc", "abd", "abe", "bb", "cb"
     }, true)]
-    [InlineData("[a-y]*[^c]", new string[]
+    [DataRow("[a-y]*[^c]", new string[]
     {
         "abd", "abe", "bb", "bcd"
     }, true)]
-    [InlineData("!abc", new string[]
+    [DataRow("!abc", new string[]
     {
         "d", "dd", "def"
     }, true)]
-    [InlineData("[^a-c]*", new string[]
+    [DataRow("[^a-c]*", new string[]
     {
         "d", "dd", "def"
     }, true)]
 
-    [InlineData("a\\*b/*", new string[]
+    [DataRow("a\\*b/*", new string[]
     {
         "a*b/ooo"
     }, true)]
 
-    [InlineData("a\\*?/*", new string[]
+    [DataRow("a\\*?/*", new string[]
     {
         "a*b/ooo"
     }, true)]
-    [InlineData("a[\\\\b]c", new string[]
+    [DataRow("a[\\\\b]c", new string[]
     {
         "abc"
     }, true)]
-    [InlineData("*.\\*", new string[]
+    [DataRow("*.\\*", new string[]
     {
         "r.*"
     }, true)]
-    [InlineData("a******?c", new string[]
+    [DataRow("a******?c", new string[]
     {
         "abc"
     }, true)]
-    [InlineData("?******??", new string[]
+    [DataRow("?******??", new string[]
     {
         "abc"
     }, true)]
-    [InlineData("*******??", new string[]
+    [DataRow("*******??", new string[]
     {
         "abc"
     }, true)]
-    [InlineData("***?***?c", new string[]
+    [DataRow("***?***?c", new string[]
     {
         "abc", "a/b/dec", "a/bcdc"
     }, true)]
-    [InlineData("***?***?c", new string[]
+    [DataRow("***?***?c", new string[]
     {
         "a/b/c/dc"
     }, false)]
-    [InlineData("*******c", new string[]
+    [DataRow("*******c", new string[]
     {
         "abc", "a/bc", "a/b/c"
     }, true)]
-    [InlineData("*******?", new string[]
+    [DataRow("*******?", new string[]
     {
         "abc", "a/b/c"
     }, true)]
-    [InlineData("[a[]", new string[]
+    [DataRow("[a[]", new string[]
     {
         "[", "a"
     }, true)]
-    [InlineData("[(]", new string[]
+    [DataRow("[(]", new string[]
     {
         "("
     }, true)]
-    [InlineData("[]]", new string[]
+    [DataRow("[]]", new string[]
     {
         "]"
     }, true)]
-    [InlineData("[", new string[]
+    [DataRow("[", new string[]
     {
         "["
     }, true)]
-    [InlineData("[abc[]]a", new string[]
+    [DataRow("[abc[]]a", new string[]
     {
         "a]a", "b]a", "[]a"
     }, true)]
-    [InlineData("[\\w]a", new string[]
+    [DataRow("[\\w]a", new string[]
     {
         "aa", "ba"
     }, true)]
-    [InlineData("[abc[]]a", new string[]
+    [DataRow("[abc[]]a", new string[]
     {
         "]"
     }, false)]
-    [InlineData(@"\[*", new string[]
+    [DataRow(@"\[*", new string[]
     {
         "[abc"
     }, true)]
-    [InlineData("b*/", new string[]
+    [DataRow("b*/", new string[]
     {
         "bfile"
     }, false)]
-    [InlineData("**", new string[]
+    [DataRow("**", new string[]
     {
         ".a", "a/.b", ".a/b"
     }, false)]
-    [InlineData("a/*", new string[]
+    [DataRow("a/*", new string[]
     {
         "a/"
     }, false)]
-    [InlineData("a/*", new string[]
+    [DataRow("a/*", new string[]
     {
         "a/.a"
     }, false)]
-    [InlineData("*.cs", new string[]
+    [DataRow("*.cs", new string[]
     {
         "acs"
     }, false)]
@@ -205,28 +204,28 @@ public class GlobMatcherTest
         foreach (var file in files)
         {
             var match = glob.Match(file);
-            Assert.Equal(expected, match);
+            Assert.AreEqual(expected, match);
         }
     }
 
-    [Theory]
-    [InlineData("a/*", new string[]
+    [TestMethod]
+    [DataRow("a/*", new string[]
     {
         "a/.a"
     }, true)]
-    [InlineData("*/", new string[]
+    [DataRow("*/", new string[]
     {
         ".a/"
     }, true)]
-    [InlineData("**", new string[]
+    [DataRow("**", new string[]
     {
         ".a/.a"
     }, true)]
-    [InlineData("**J/**", new string[]
+    [DataRow("**J/**", new string[]
     {
         "M", "M/JA", "a/b/c", "a/b/c.csproj"
     }, false)]
-    [InlineData("**/A/**", new string[]
+    [DataRow("**/A/**", new string[]
     {
         "A/B/C"
     }, true)]
@@ -236,42 +235,42 @@ public class GlobMatcherTest
         foreach (var file in files)
         {
             var match = glob.Match(file);
-            Assert.Equal(expected, match);
+            Assert.AreEqual(expected, match);
         }
     }
 
-    [Theory]
-    [InlineData("**", new string[]
+    [TestMethod]
+    [DataRow("**", new string[]
     {
         ".a/.a"
     }, true)]
-    [InlineData("**.csproj", new string[]
+    [DataRow("**.csproj", new string[]
     {
         ".a/", "a/", "a/a/", "a/.a/"
     }, true)]
-    [InlineData("E/*.md", new string[]
+    [DataRow("E/*.md", new string[]
     {
         "E/"
     }, true)]
-    [InlineData("*.cs", new string[]
+    [DataRow("*.cs", new string[]
     {
         "a", "a.c"
     }, false)]
-    [InlineData("**.md", new string[]
+    [DataRow("**.md", new string[]
     {
         "Root/"
     }, true)]
-    [InlineData("**", new string[]
+    [DataRow("**", new string[]
     {
         "Root/"
     }, true)]
     // partial match must match folder ends with "/"
-    [InlineData("**.md", new string[] {
+    [DataRow("**.md", new string[] {
         "a", "a/b"
     }, false)]
 
     // partial match must match folder ends with "/"
-    [InlineData("b/", new string[] {
+    [DataRow("b/", new string[] {
         "b/c/a"
     }, false)]
     public void TestGlobPartialMatchShouldMatchFolder(string pattern, string[] folders, bool expected)
@@ -280,7 +279,7 @@ public class GlobMatcherTest
         foreach (var file in folders)
         {
             var match = glob.Match(file, true);
-            Assert.Equal(expected, match);
+            Assert.AreEqual(expected, match);
         }
     }
 }

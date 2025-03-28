@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Common.Git;
-using Xunit;
 
 namespace Docfx.Common.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public class GitUtilityWithSourceRepositoryUrlTest : IDisposable
 {
     private readonly string _originalBranchName;
@@ -34,15 +34,15 @@ public class GitUtilityWithSourceRepositoryUrlTest : IDisposable
         Environment.SetEnvironmentVariable(DOCFX_SOURCE_REPOSITORY_URL, _originalSourceRepoUrl);
     }
 
-    [Fact]
+    [TestMethod]
     public void TryGetFileDetailTest()
     {
         var info = GitUtility.TryGetFileDetail(Directory.GetCurrentDirectory());
-        Assert.Equal(BRANCH_NAME, info.Branch);
-        Assert.Equal("https://github.com/dotnet/docfx", info.Repo);
+        Assert.AreEqual(BRANCH_NAME, info.Branch);
+        Assert.AreEqual("https://github.com/dotnet/docfx", info.Repo);
     }
 
-    [Fact]
+    [TestMethod]
     public void RawContentUrlToContentUrlTest()
     {
         string rawUrl = "https://raw.githubusercontent.com/dotnet/docfx/main/README.md";
@@ -50,15 +50,15 @@ public class GitUtilityWithSourceRepositoryUrlTest : IDisposable
 
         var result = GitUtility.RawContentUrlToContentUrl(rawUrl);
 
-        Assert.Equal(expected, result);
+        Assert.AreEqual(expected, result);
     }
 
-    [Theory]
-    [InlineData("https://github.com/user/repo.git", "main", "path/to/file.cs", 0, $"https://github.com/{ORG_NAME}/{REPO_NAME}/blob/main/path/to/file.cs")]
-    [InlineData("https://github.com/user/repo.git", "main", "path/to/file.cs", 10, $"https://github.com/{ORG_NAME}/{REPO_NAME}/blob/main/path/to/file.cs#L10")]
-    [InlineData("git@github.com:user/repo.git", "main", "path/to/file.cs", 0, $"https://github.com/{ORG_NAME}/{REPO_NAME}/blob/main/path/to/file.cs")]
+    [TestMethod]
+    [DataRow("https://github.com/user/repo.git", "main", "path/to/file.cs", 0, $"https://github.com/{ORG_NAME}/{REPO_NAME}/blob/main/path/to/file.cs")]
+    [DataRow("https://github.com/user/repo.git", "main", "path/to/file.cs", 10, $"https://github.com/{ORG_NAME}/{REPO_NAME}/blob/main/path/to/file.cs#L10")]
+    [DataRow("git@github.com:user/repo.git", "main", "path/to/file.cs", 0, $"https://github.com/{ORG_NAME}/{REPO_NAME}/blob/main/path/to/file.cs")]
     public void GetSourceUrlTest_GitHub(string repo, string branch, string path, int line, string result)
     {
-        Assert.Equal(result, GitUtility.GetSourceUrl(new(repo, branch, path, line)));
+        Assert.AreEqual(result, GitUtility.GetSourceUrl(new(repo, branch, path, line)));
     }
 }

@@ -1,13 +1,12 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class CodeSnippetTest
 {
-    [Fact]
+    [TestMethod]
     public void CodeSnippetNotFound()
     {
         var source = "[!code-csharp[name](Program1.cs)]";
@@ -28,7 +27,7 @@ public class CodeSnippetTest
             });
     }
 
-    [Fact]
+    [TestMethod]
     public void CodeSnippetGeneral()
     {
         //arrange
@@ -50,7 +49,7 @@ public class CodeSnippetTest
         });
     }
 
-    [Fact]
+    [TestMethod]
     public void NotebookCodeSnippetGeneral()
     {
         var content = @"{
@@ -80,7 +79,7 @@ print(azureml.core.VERSION)</code></pre>";
         });
     }
 
-    [Fact]
+    [TestMethod]
     public void NotebookCodeSnippetTagNotFound()
     {
         var content = @"{
@@ -113,7 +112,7 @@ print(azureml.core.VERSION)</code></pre>";
             });
     }
 
-    [Fact]
+    [TestMethod]
     public void NotebookCodeSnippetMultipleTagFound()
     {
         //arrange
@@ -159,7 +158,7 @@ print(azureml.core.VERSION)</code></pre>";
             });
     }
 
-    [Fact]
+    [TestMethod]
     public void CodeSnippetShouldNotWorkInParagraph()
     {
         var source = "text [!code[test](CodeSnippet.cs)]";
@@ -169,7 +168,7 @@ print(azureml.core.VERSION)</code></pre>";
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void CodeSnippetTagsShouldMatchCaseInsensitive()
     {
         var content = "\t// <tag1>\t\nline1\n// <tag2>\nline2\n// </tag2>\nline3\n// </TAG1>\n// <unmatched>\n";
@@ -184,7 +183,7 @@ print(azureml.core.VERSION)</code></pre>";
         });
     }
 
-    [Fact]
+    [TestMethod]
     public void CodeSnippetTagsShouldSucceedWhenDuplicateWithoutWarning()
     {
         var content = @"// <tag1>
@@ -209,7 +208,7 @@ line4
         });
     }
 
-    [Fact]
+    [TestMethod]
     public void CodeSnippetTagsShouldSucceedWhenDuplicateWithWarningWhenReferenced()
     {
         var content = @"// <tag1>
@@ -234,7 +233,7 @@ line4
         });
     }
 
-    [Fact]
+    [TestMethod]
     public void CodeSnippetTagsShouldSucceedWhenReferencedFileContainsRegionWithoutName()
     {
         var content = @"#region
@@ -263,8 +262,8 @@ public class MyClass
         });
     }
 
-    [Fact]
-    [Trait("Related", "Markdown")]
+    [TestMethod]
+    [TestProperty("Related", "Markdown")]
     public void TestFencesBlockLevel()
     {
         var root = @"
@@ -291,10 +290,10 @@ public class MyClass
         });
     }
 
-    [Theory]
-    [Trait("Related", "Markdown")]
+    [TestMethod]
+    [TestProperty("Related", "Markdown")]
     #region Inline Data
-    [InlineData("[!code-csharp[Main](Program.cs)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
+    [DataRow("[!code-csharp[Main](Program.cs)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
     using System;
@@ -325,13 +324,13 @@ public class MyClass
     #endregion
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs#L12-L16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">static void Main(string[] args)
+    [DataRow(@"[!code[Main](Program.cs#L12-L16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">static void Main(string[] args)
 {
     string s = &quot;\ntest&quot;;
     int i = 100;
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs#L12-L100 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">        static void Main(string[] args)
+    [DataRow(@"[!code[Main](Program.cs#L12-L100 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">        static void Main(string[] args)
         {
             string s = &quot;\ntest&quot;;
             int i = 100;
@@ -351,17 +350,17 @@ public class MyClass
     #endregion
 }
 </code></pre>")]
-    [InlineData(@"[!code-csharp[Main](Program.cs#namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
+    [DataRow(@"[!code-csharp[Main](Program.cs#namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
 
 using System.Collections.Generic;
 using System.IO;
 </code></pre>")]
-    [InlineData(@"[!code-csharp[Main](Program.cs#NAMESPACE ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
+    [DataRow(@"[!code-csharp[Main](Program.cs#NAMESPACE ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
 
 using System.Collections.Generic;
 using System.IO;
 </code></pre>")]
-    [InlineData(@"[!code-csharp[Main](Program.cs#program ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">class Program
+    [DataRow(@"[!code-csharp[Main](Program.cs#program ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">class Program
 {
     static void Main(string[] args)
     {
@@ -370,7 +369,7 @@ using System.IO;
     }
 }
 </code></pre>")]
-    [InlineData(@"[!code-csharp[Main](Program.cs#snippetprogram ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">class Program
+    [DataRow(@"[!code-csharp[Main](Program.cs#snippetprogram ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">class Program
 {
     static void Main(string[] args)
     {
@@ -379,29 +378,29 @@ using System.IO;
     }
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?name=Foo ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">public static void Foo()
+    [DataRow(@"[!code[Main](Program.cs?name=Foo ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">public static void Foo()
 {
 }
 </code></pre>")]
-    [InlineData(@"[!code-csharp[Main](Program.cs?name=namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
+    [DataRow(@"[!code-csharp[Main](Program.cs?name=namespace ""This is root"")]", @"<pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
 
 using System.Collections.Generic;
 using System.IO;
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?start=5&end=9 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">using System.Collections.Generic;
+    [DataRow(@"[!code[Main](Program.cs?start=5&end=9 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">using System.Collections.Generic;
 using System.IO;
 // &lt;/namespace&gt;
 
 // &lt;snippetprogram&gt;
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?name=Helper ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">internal static class Helper
+    [DataRow(@"[!code[Main](Program.cs?name=Helper ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">internal static class Helper
 {
     public static void Foo()
     {
     }
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?range=1-2,10,20-21,29- ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">namespace ConsoleApplication1
+    [DataRow(@"[!code[Main](Program.cs?range=1-2,10,20-21,29- ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">namespace ConsoleApplication1
 {
     class Program
     #region Helper
@@ -409,7 +408,7 @@ using System.IO;
     #endregion
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?range=1,21,24-26,1,10,12-16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">namespace ConsoleApplication1
+    [DataRow(@"[!code[Main](Program.cs?range=1,21,24-26,1,10,12-16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">namespace ConsoleApplication1
     internal static class Helper
         public static void Foo()
         {
@@ -422,7 +421,7 @@ namespace ConsoleApplication1
             int i = 100;
         }
 </code></pre>")]
-    [InlineData("[!code-csharp[Main](Program.cs?highlight=1)]", @"<pre><code class=""lang-csharp"" name=""Main"" highlight-lines=""1"">namespace ConsoleApplication1
+    [DataRow("[!code-csharp[Main](Program.cs?highlight=1)]", @"<pre><code class=""lang-csharp"" name=""Main"" highlight-lines=""1"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
     using System;
@@ -453,20 +452,20 @@ namespace ConsoleApplication1
     #endregion
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?start=5&end=9&highlight=1 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""1"">using System.Collections.Generic;
+    [DataRow(@"[!code[Main](Program.cs?start=5&end=9&highlight=1 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""1"">using System.Collections.Generic;
 using System.IO;
 // &lt;/namespace&gt;
 
 // &lt;snippetprogram&gt;
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?name=Helper&highlight=1 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""1"">internal static class Helper
+    [DataRow(@"[!code[Main](Program.cs?name=Helper&highlight=1 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""1"">internal static class Helper
 {
     public static void Foo()
     {
     }
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?range=1-2,10,20-21,29-&highlight=1-2,7- ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""1-2,7-"">namespace ConsoleApplication1
+    [DataRow(@"[!code[Main](Program.cs?range=1-2,10,20-21,29-&highlight=1-2,7- ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""1-2,7-"">namespace ConsoleApplication1
 {
     class Program
     #region Helper
@@ -474,7 +473,7 @@ using System.IO;
     #endregion
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?range=1,21,24-26,1,10,12-16&highlight=8-12 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""8-12"">namespace ConsoleApplication1
+    [DataRow(@"[!code[Main](Program.cs?range=1,21,24-26,1,10,12-16&highlight=8-12 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"" highlight-lines=""8-12"">namespace ConsoleApplication1
     internal static class Helper
         public static void Foo()
         {
@@ -487,7 +486,7 @@ namespace ConsoleApplication1
             int i = 100;
         }
 </code></pre>")]
-    [InlineData("[!code-csharp[Main](Program.cs?dedent=0)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
+    [DataRow("[!code-csharp[Main](Program.cs?dedent=0)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
     using System;
@@ -518,20 +517,20 @@ namespace ConsoleApplication1
     #endregion
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?start=5&end=9&dedent=0 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">    using System.Collections.Generic;
+    [DataRow(@"[!code[Main](Program.cs?start=5&end=9&dedent=0 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">    using System.Collections.Generic;
     using System.IO;
     // &lt;/namespace&gt;
 
     // &lt;snippetprogram&gt;
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?name=Helper&dedent=8 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">internal static class Helper
+    [DataRow(@"[!code[Main](Program.cs?name=Helper&dedent=8 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">internal static class Helper
 {
 public static void Foo()
 {
 }
 }
 </code></pre>")]
-    [InlineData(@"[!code[Main](Program.cs?range=1-2,10,20-21,29-&dedent=-4 ""Auto dedent if dedent < 0"")]", @"<pre><code name=""Main"" title=""Auto dedent if dedent &lt; 0"">namespace ConsoleApplication1
+    [DataRow(@"[!code[Main](Program.cs?range=1-2,10,20-21,29-&dedent=-4 ""Auto dedent if dedent < 0"")]", @"<pre><code name=""Main"" title=""Auto dedent if dedent &lt; 0"">namespace ConsoleApplication1
 {
     class Program
     #region Helper
@@ -580,8 +579,8 @@ public static void Foo()
         });
     }
 
-    [Fact]
-    [Trait("Related", "Markdown")]
+    [TestMethod]
+    [TestProperty("Related", "Markdown")]
     public void TestFencesBlockLevelWithWhitespaceLeading()
     {
         var root = @"
@@ -609,7 +608,7 @@ public static void Foo()
         });
     }
 
-    [Fact]
+    [TestMethod]
     public void Issue8777()
     {
         TestUtility.VerifyMarkup(
@@ -654,8 +653,8 @@ public static void Foo()
             });
     }
 
-    [Fact]
-    [Trait("Related", "Markdown")]
+    [TestMethod]
+    [TestProperty("Related", "Markdown")]
     public void TestFencesBlockLevelWithWorkingFolder()
     {
         var root = "[!code-REST[REST](~/api.json)]";
@@ -686,8 +685,8 @@ public static void Foo()
         });
     }
 
-    [Fact]
-    [Trait("Related", "Markdown")]
+    [TestMethod]
+    [TestProperty("Related", "Markdown")]
     public void CodeSnippetShouldVerifyTagname()
     {
         //arrange
@@ -711,8 +710,9 @@ public static void Foo()
         });
     }
 
-    [Fact(Skip = "won't support")]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [Ignore("won't support")]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmFencesInlineLevel()
     {
         var root = @"
@@ -793,8 +793,9 @@ public static void Foo()
         });
     }
 
-    [Fact(Skip = "won't support")]
-    [Trait("Related", "DfmMarkdown")]
+    [TestMethod]
+    [Ignore("won't support")]
+    [TestProperty("Related", "DfmMarkdown")]
     public void TestDfmFencesInlineLevel_Legacy()
     {
         var root = @"

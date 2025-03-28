@@ -3,24 +3,23 @@
 
 using System.Collections.Immutable;
 
-using Xunit;
-
 namespace Docfx.Common.Tests;
 
-[Trait("Related", "CollectionUtilityTest")]
+[TestProperty("Related", "CollectionUtilityTest")]
+[TestClass]
 public class CollectionUtilityTest
 {
-    [Theory]
-    [InlineData("ABCBDAB", "BDCABA", "BCBA")]
-    [InlineData("ACCGGTCGAGTGCGCGGAAGCCGGCCGAA", "GTCGTTCGGAATGCCGTTGCTCTGTAAA", "GTCGTCGGAAGCCGGCCGAA")]
+    [TestMethod]
+    [DataRow("ABCBDAB", "BDCABA", "BCBA")]
+    [DataRow("ACCGGTCGAGTGCGCGGAAGCCGGCCGAA", "GTCGTTCGGAATGCCGTTGCTCTGTAAA", "GTCGTCGGAAGCCGGCCGAA")]
     public void TestGetLongestCommonSequence(string input1, string input2, string expected)
     {
         var inputArray = input1.ToImmutableArray();
         var actual = inputArray.GetLongestCommonSequence(input2.ToImmutableArray());
-        Assert.Equal(expected.Length, actual.Length);
+        Assert.AreEqual(expected.Length, actual.Length);
         for (int i = 0; i < expected.Length; i++)
         {
-            Assert.Equal(expected[i], actual[i]);
+            Assert.AreEqual(expected[i], actual[i]);
         }
     }
 }

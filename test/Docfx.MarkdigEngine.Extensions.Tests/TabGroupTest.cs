@@ -1,14 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class TabGroupTest
 {
-    [Fact]
-    [Trait("Related", "TabGroup")]
+    [TestMethod]
+    [TestProperty("Related", "TabGroup")]
     public void Test_General()
     {
         TestMarkupInGeneral(
@@ -41,8 +40,8 @@ content-b
         );
     }
 
-    [Fact]
-    [Trait("Related", "TabGroup")]
+    [TestMethod]
+    [TestProperty("Related", "TabGroup")]
     public void Test_TabGroup_Combining()
     {
         TestMarkupInGeneral(
@@ -94,7 +93,7 @@ content-b or c
         );
     }
 
-    [Fact]
+    [TestMethod]
     public void TestTableInTabGroup()
     {
         TestMarkupInGeneral(@"# [title](#tab/id)

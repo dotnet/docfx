@@ -4,11 +4,10 @@
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 
-using Xunit;
-
 namespace Docfx.Build.Engine.Tests;
 
-[Collection("docfx STA")]
+[DoNotParallelize]
+[TestClass]
 public partial class TemplateManagerUnitTest : TestBase
 {
     private readonly string _inputFolder;
@@ -20,8 +19,8 @@ public partial class TemplateManagerUnitTest : TestBase
         _outputFolder = GetRandomFolder();
     }
 
-    [Trait("Related", "ResourceFinder")]
-    [Fact]
+    [TestProperty("Related", "ResourceFinder")]
+    [TestMethod]
     public void TestTemplateManagerWithMultipleThemesShouldWork()
     {
         // If the same resource name exists in the override folder, use the overridden one
@@ -31,20 +30,20 @@ public partial class TemplateManagerUnitTest : TestBase
         manager.ProcessTheme(outputFolder, true);
         // 1. Support tmpl1.zip
         var file1 = Path.Combine(outputFolder, "tmpl1.dot.$");
-        Assert.True(File.Exists(file1));
-        Assert.Equal("Override: This is file with complex filename characters", File.ReadAllText(file1));
+        Assert.IsTrue(File.Exists(file1));
+        Assert.AreEqual("Override: This is file with complex filename characters", File.ReadAllText(file1));
 
         // backslash is also supported
         var file2 = Path.Combine(outputFolder, "sub/file1");
-        Assert.True(File.Exists(file2));
-        Assert.Equal("Override: This is file inside a subfolder", File.ReadAllText(file2));
+        Assert.IsTrue(File.Exists(file2));
+        Assert.AreEqual("Override: This is file inside a subfolder", File.ReadAllText(file2));
     }
 
     #region Mustache template processor test
 
-    [Trait("Related", "TemplateProcessor")]
-    [Trait("Related", "Mustache")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestProperty("Related", "Mustache")]
+    [TestMethod]
     public void TestMustacheTemplateProcessSingleTemplateWithNoScriptShouldWork()
     {
         // 1. Prepare template
@@ -75,7 +74,7 @@ name2={{name2}};
         ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.tmpl", template));
 
         var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, null));
-        Assert.True(File.Exists(outputFile));
+        Assert.IsTrue(File.Exists(outputFile));
         AssertEqualIgnoreCrlf(@"
 name1=test1,
 name2=;
@@ -84,9 +83,9 @@ name2=test2;
 ", File.ReadAllText(outputFile));
     }
 
-    [Trait("Related", "TemplateProcessor")]
-    [Trait("Related", "Mustache")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestProperty("Related", "Mustache")]
+    [TestMethod]
     public void TestMustacheTemplateProcessSingleTemplateWithNoScriptWithPartialShouldWork()
     {
         // 1. Prepare template
@@ -132,7 +131,7 @@ name2=test2;
             Tuple.Create("partial2.tmpl.partial", partial2));
 
         var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, null));
-        Assert.True(File.Exists(outputFile));
+        Assert.IsTrue(File.Exists(outputFile));
         AssertEqualIgnoreCrlf(@"
 test1
 test2
@@ -143,9 +142,9 @@ test2
 ", File.ReadAllText(outputFile));
     }
 
-    [Trait("Related", "TemplateProcessor")]
-    [Trait("Related", "Mustache")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestProperty("Related", "Mustache")]
+    [TestMethod]
     public void TestMustacheTemplateWithMasterPageShouldWork()
     {
         // 1. Prepare template
@@ -204,8 +203,8 @@ Hello Body
             Tuple.Create("partial2.tmpl.partial", partial2));
 
         var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, null));
-        Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
-        Assert.True(File.Exists(outputFile));
+        Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
+        Assert.IsTrue(File.Exists(outputFile));
         AssertEqualIgnoreCrlf(@"
 Hello Master
 
@@ -226,9 +225,9 @@ test2
 ", File.ReadAllText(outputFile));
     }
 
-    [Trait("Related", "TemplateProcessor")]
-    [Trait("Related", "Mustache")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestProperty("Related", "Mustache")]
+    [TestMethod]
     public void TestMustacheTemplateProcessInvalidTemplateShouldFail()
     {
         var templateName = "InvalidTemplate.html";
@@ -249,9 +248,9 @@ test2
             );
     }
 
-    [Trait("Related", "TemplateProcessor")]
-    [Trait("Related", "Mustache")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestProperty("Related", "Mustache")]
+    [TestMethod]
     public void TestMustacheTemplateProcessSingleTemplateWithIncludesShouldWork()
     {
         var templateName = "WithIncludes.html";
@@ -293,17 +292,17 @@ exports.transform = function (model){
             Tuple.Create("reference2.html", string.Empty)
             );
         var outputFilePath = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, "html"));
-        Assert.True(File.Exists(outputFilePath));
-        Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
-        Assert.True(File.Exists(Path.Combine(_outputFolder, "reference2.html")));
+        Assert.IsTrue(File.Exists(outputFilePath));
+        Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
+        Assert.IsTrue(File.Exists(Path.Combine(_outputFolder, "reference2.html")));
         AssertEqualIgnoreCrlf(@"
 test1
 test2
 ", File.ReadAllText(outputFilePath));
     }
 
-    [Trait("Related", "TemplateProcessor")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestMethod]
     public void TestMustacheTemplateProcessSingleTemplateWithRequireScriptShouldWork()
     {
         var templateName = "WithRequireScript.html";
@@ -353,7 +352,7 @@ function isAbsolutePath(path) {
             Tuple.Create("util.js", utilScript)
             );
         var outputFilePath = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, "html"));
-        Assert.True(File.Exists(outputFilePath));
+        Assert.IsTrue(File.Exists(outputFilePath));
         AssertEqualIgnoreCrlf(@"
 result1 = true
 result2 = true
@@ -361,9 +360,9 @@ result3 = true
 ", File.ReadAllText(outputFilePath));
     }
 
-    [Trait("Related", "TemplateProcessor")]
-    [Trait("Related", "Mustache")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestProperty("Related", "Mustache")]
+    [TestMethod]
     public void TestMustacheTemplateProcessTemplateFolderWithDifferentTypeShouldWork()
     {
         var templateName = "TemplateFolder.html";
@@ -415,14 +414,14 @@ exports.transform = function (model){
             Tuple.Create("conceptual.md.js", script)
             );
         var outputFilePath1 = Path.Combine(_outputFolder, "TestTemplateProcessor_TemplateFolderWithDifferentType1.md");
-        Assert.True(File.Exists(outputFilePath1));
+        Assert.IsTrue(File.Exists(outputFilePath1));
         AssertEqualIgnoreCrlf(@"
 conceptual:
 test1
 test2
 ", File.ReadAllText(outputFilePath1));
         var outputFilePath2 = Path.Combine(_outputFolder, "TestTemplateProcessor_TemplateFolderWithDifferentType2.html");
-        Assert.True(File.Exists(outputFilePath2));
+        Assert.IsTrue(File.Exists(outputFilePath2));
         AssertEqualIgnoreCrlf(@"
 default:
 test1
@@ -430,9 +429,9 @@ test2
 ", File.ReadAllText(outputFilePath2));
     }
 
-    [Trait("Related", "TemplateProcessor")]
-    [Trait("Related", "Mustache")]
-    [Fact]
+    [TestProperty("Related", "TemplateProcessor")]
+    [TestProperty("Related", "Mustache")]
+    [TestMethod]
     public void TestMustacheTemplateWithScriptWithLongStringInModelShouldWork()
     {
         // https://github.com/sebastienros/jint/issues/357
@@ -469,11 +468,11 @@ exports.transform = function (model){
             Tuple.Create("default.html.js", script)
             );
         var outputFilePath1 = Path.Combine(_outputFolder, "TestMustacheTemplateWithScriptWithLongStringInModelShouldWork.html");
-        Assert.True(File.Exists(outputFilePath1));
-        Assert.Equal($"{{&quot;model&quot;:{{&quot;name&quot;:&quot;{longName}&quot;}},&quot;__global&quot;:{{}}}}", File.ReadAllText(outputFilePath1));
+        Assert.IsTrue(File.Exists(outputFilePath1));
+        Assert.AreEqual($"{{&quot;model&quot;:{{&quot;name&quot;:&quot;{longName}&quot;}},&quot;__global&quot;:{{}}}}", File.ReadAllText(outputFilePath1));
     }
 
-    [Fact]
+    [TestMethod]
     public void JsRegexShouldNotShareStatusAmongFunctions()
     {
         // https://github.com/sebastienros/jint/issues/364
@@ -509,11 +508,11 @@ exports.transform = function (model){
             Tuple.Create("default.html.js", script)
             );
         var outputFilePath1 = Path.Combine(_outputFolder, "file.html");
-        Assert.True(File.Exists(outputFilePath1));
-        Assert.Equal("True,True", File.ReadAllText(outputFilePath1));
+        Assert.IsTrue(File.Exists(outputFilePath1));
+        Assert.AreEqual("True,True", File.ReadAllText(outputFilePath1));
     }
 
-    [Fact]
+    [TestMethod]
     public void JsCreateDateShouldNotThrowError()
     {
         var templateName = "TemplateFolder.html";
@@ -538,8 +537,8 @@ exports.transform = function (model){
             Tuple.Create("default.html.js", script)
             );
         var outputFilePath1 = Path.Combine(_outputFolder, "file.html");
-        Assert.True(File.Exists(outputFilePath1));
-        Assert.Equal("2019-08-19T05:40:30.463Z", File.ReadAllText(outputFilePath1));
+        Assert.IsTrue(File.Exists(outputFilePath1));
+        Assert.AreEqual("2019-08-19T05:40:30.463Z", File.ReadAllText(outputFilePath1));
     }
     #endregion
 
@@ -592,6 +591,6 @@ exports.transform = function (model){
 
     private static void AssertEqualIgnoreCrlf(string expected, string actual)
     {
-        Assert.Equal(expected.Replace("\r\n", "\n"), actual.Replace("\r\n", "\n"));
+        Assert.AreEqual(expected.Replace("\r\n", "\n"), actual.Replace("\r\n", "\n"));
     }
 }

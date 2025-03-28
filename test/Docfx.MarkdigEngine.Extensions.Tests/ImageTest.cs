@@ -1,13 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 namespace Docfx.MarkdigEngine.Tests;
 
+[TestClass]
 public class ImageTest
 {
-    [Fact]
+    [TestMethod]
     public void ImageTestBlockGeneral()
     {
         var source = @":::image type=""content"" source=""example.jpg"" alt-text=""example"":::
@@ -84,7 +83,7 @@ public class ImageTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void ComplexImageTestBlockGeneral()
     {
         var source = @"
@@ -138,7 +137,7 @@ Lorem Ipsum is simply dummy text `code` of the printing and [link](https://micro
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void ContentImageTestBlock_LinkAttribute()
     {
         var source = @"
@@ -164,7 +163,7 @@ Lorem Ipsum is simply dummy text `code` of the printing and [link](https://micro
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void ImageTestBlock_InvalidImage_MissingSource()
     {
         var source = @"
@@ -177,7 +176,7 @@ Lorem Ipsum is simply dummy text `code` of the printing and [link](https://micro
         TestUtility.VerifyMarkup(source, expected, errors: ["invalid-image", "invalid-image"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ContentImageTestBlock_InvalidImage_MissingAlt()
     {
         var source = @"
@@ -190,7 +189,7 @@ Lorem Ipsum is simply dummy text `code` of the printing and [link](https://micro
         TestUtility.VerifyMarkup(source, expected, errors: ["invalid-image", "invalid-image"]);
     }
 
-    [Fact]
+    [TestMethod]
     public void ImageWithIconTypeTestBlockGeneral()
     {
         var source = @":::image type=""icon"" source=""example.svg"":::
@@ -214,7 +213,7 @@ Lorem Ipsum is simply dummy text `code` of the printing and [link](https://micro
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact]
+    [TestMethod]
     public void ImageBlockTestBlockClosed()
     {
         var source = @":::image source=""example.jpg"" type=""complex"" alt-text=""example"":::
@@ -224,7 +223,7 @@ Lorem Ipsum
         TestUtility.VerifyMarkup(source, null);
     }
 
-    [Fact]
+    [TestMethod]
     public void ImageTestNotImageBlock()
     {
         var source = @":::row:::

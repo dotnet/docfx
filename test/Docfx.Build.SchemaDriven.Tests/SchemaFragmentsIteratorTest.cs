@@ -3,14 +3,14 @@
 
 using Docfx.Build.OverwriteDocuments;
 
-using Xunit;
 using YamlDotNet.RepresentationModel;
 
 namespace Docfx.Build.SchemaDriven.Tests;
 
+[TestClass]
 public class SchemaFragmentsIteratorTest
 {
-    [Fact]
+    [TestMethod]
     public void TestSchemaFragmentsIterator()
     {
         // arrange
@@ -27,11 +27,11 @@ public class SchemaFragmentsIteratorTest
         iterator.Traverse(yamlStream.Documents[0].RootNode, [], schema);
 
         // assert
-        Assert.Single(counter.ExistingUids);
-        Assert.Equal("management.azure.com.advisor.suppressions", counter.ExistingUids[0]);
-        Assert.Single(counter.ExistingMarkdownProperties);
-        Assert.Equal("definitions[name=\"Application 1\"]/properties[name=\"id\"]/description", counter.ExistingMarkdownProperties[0]);
-        Assert.Equal(6, counter.MissingMarkdownProperties.Count);
+        Assert.ContainsSingle(counter.ExistingUids);
+        Assert.AreEqual("management.azure.com.advisor.suppressions", counter.ExistingUids[0]);
+        Assert.ContainsSingle(counter.ExistingMarkdownProperties);
+        Assert.AreEqual("definitions[name=\"Application 1\"]/properties[name=\"id\"]/description", counter.ExistingMarkdownProperties[0]);
+        Assert.AreEqual(6, counter.MissingMarkdownProperties.Count);
     }
 
     private class UidPropertyCounter : ISchemaFragmentsHandler
