@@ -62,7 +62,7 @@ partial class DotnetApiCatalog
             switch (symbol)
             {
                 case INamespaceSymbol { IsGlobalNamespace: true } ns:
-                    foreach (var child in ns.GetNamespaceMembers())
+                    foreach (var child in ns.GetMembers())
                         foreach (var item in CreateToc(child, compilation))
                             yield return item;
                     break;
