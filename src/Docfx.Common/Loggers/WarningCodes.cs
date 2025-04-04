@@ -25,6 +25,12 @@ public static class WarningCodes
         public const string InvalidTocInclude = "InvalidTocInclude";
     }
 
+    public static class Metadata
+    {
+        public const string FailedToResolveAnalyzer = "FailedToResolveAnalyzer";
+        public const string FailedToLoadAnalyzer = "FailedToLoadAnalyzer";
+    }
+
     public static class Markdown
     {
         public const string InvalidInclude = "InvalidInclude";

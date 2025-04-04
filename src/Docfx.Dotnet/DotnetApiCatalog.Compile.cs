@@ -147,7 +147,22 @@ partial class DotnetApiCatalog
                 {
                     Logger.LogWarning($"There is .NET Analyzer that can't be resolved. "
                                     + $"If this analyzer is .NET Source Generator project. "
-                                    + $"Try build with `dotnet build -c Release` command before running docfx. Path: {unresolvedAnalyzer.FullPath}");
+                                    + $"Try build with `dotnet build -c Release` command before running docfx. Path: {unresolvedAnalyzer.FullPath}",
+                                    code: WarningCodes.Metadata.FailedToResolveAnalyzer);
+                }
+
+                foreach (var analyzer in project.AnalyzerReferences.OfType<AnalyzerFileReference>())
+                {
+                    analyzer.AnalyzerLoadFailed += (sender, e) =>
+                    {
+                        var analyzerName = analyzer.Display;
+                        var errorCode = e.ErrorCode;
+                        var referencedCompilerVersion = e.ReferencedCompilerVersion;
+
+                        Logger.LogWarning($"Failed to load .NET Analyzer. AnalyzerName: {analyzerName}, ErrorCode: {errorCode}, ReferencedCompilerVersion: {referencedCompilerVersion}",
+                                          code: WarningCodes.Metadata.FailedToLoadAnalyzer);
+                    };
+
                 }
             }
 
