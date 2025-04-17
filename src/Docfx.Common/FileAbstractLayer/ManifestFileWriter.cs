@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Plugins;
@@ -41,21 +41,36 @@ public class ManifestFileWriter : FileWriterBase
             {
                 throw new InvalidOperationException("File entry not found.");
             }
-            if (_noRandomFile)
+
+            string path = _noRandomFile
+                            ? Path.Combine(_manifestFolder, file.RemoveWorkingFolder())
+                            : Path.Combine(OutputFolder, file.RemoveWorkingFolder());
+            path = Path.GetFullPath(path);
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+            int retryCount = 0;
+        Retry:
+            try
             {
-                Directory.CreateDirectory(
-                    Path.Combine(_manifestFolder, file.RemoveWorkingFolder().GetDirectoryPath()));
-                var result = File.Create(Path.Combine(_manifestFolder, file.RemoveWorkingFolder()));
+                var fileStream = File.Create(path);
                 entry.LinkToPath = null;
-                return result;
+                return fileStream;
             }
-            else
+            catch (IOException e) when ((e.HResult & 0x0000FFFF) == 32) // ERROR_SHARING_VIOLATION: 0x80070020
             {
-                var path = Path.Combine(OutputFolder, file.RemoveWorkingFolder());
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var result = File.Create(path);
-                entry.LinkToPath = path;
-                return result;
+                // If retry failed 3 times. throw exception
+                if (++retryCount > 3)
+                    throw;
+
+                var sleepDelay = 500 * retryCount;
+
+                var message = FileLockCheck.GetLockingProcessNames(path);
+                if (string.IsNullOrEmpty(message))
+                    message = "File is locked by other process";
+
+                Logger.LogWarning($"{message}. Retry after {sleepDelay}[ms]", file: path, code: WarningCodes.Build.LockedFile);
+                Thread.Sleep(500 * retryCount);
+                goto Retry;
             }
         }
     }
