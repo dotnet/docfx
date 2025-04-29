@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="HtmlAgilityPack" Version="1.12.1" />
-    <PackageVersion Include="ICSharpCode.Decompiler" Version="9.0.0.7889" />
+    <PackageVersion Include="ICSharpCode.Decompiler" Version="9.1.0.7988" />
     <PackageVersion Include="Jint" Version="4.2.2" />
     <PackageVersion Include="JsonSchema.Net" Version="7.3.4" />
     <PackageVersion Include="Markdig" Version="0.41.1" />
@@ -24,7 +24,7 @@
 
   <!-- .slnx solution format is supported Microsoft.Build 17.13.9 or later. -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Build" Version="[17.11.4]" Condition="'$(TargetFramework)' == 'net8.0'"/>
+    <PackageVersion Include="Microsoft.Build" Version="[17.13.9]" Condition="'$(TargetFramework)' == 'net8.0'"/>
     <PackageVersion Include="Microsoft.Build" Version="17.13.9"   Condition="'$(TargetFramework)' != 'net8.0'"/>
   </ItemGroup>
 
