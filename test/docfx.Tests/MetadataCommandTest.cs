@@ -34,7 +34,7 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
         await DotnetApiCatalog.Exec(
-            new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
+            new(new MetadataJsonItemConfig { Output = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
             new(), Directory.GetCurrentDirectory());
 
         CheckResult();
@@ -48,7 +48,7 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.dll.sample.1", dllFile);
 
         await DotnetApiCatalog.Exec(
-            new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(dllFile)) { Expanded = true } }),
+            new(new MetadataJsonItemConfig { Output = _outputFolder, Src = new(new FileMappingItem(dllFile)) { Expanded = true } }),
             new(), Directory.GetCurrentDirectory());
 
         CheckResult();
@@ -67,7 +67,7 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Dest = _outputFolder,
+                Output = _outputFolder,
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 Properties = new() { ["TargetFramework"] = "net8.0" },
             }),
@@ -90,7 +90,7 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.vb.sample.1", sourceFile);
 
         await DotnetApiCatalog.Exec(
-            new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
+            new(new MetadataJsonItemConfig { Output = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
             new(), Directory.GetCurrentDirectory());
 
         Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
@@ -154,7 +154,7 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Dest = _outputFolder,
+                Output = _outputFolder,
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 Filter = filterFile,
             }),
@@ -202,7 +202,7 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
         await DotnetApiCatalog.Exec(
-            new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
+            new(new MetadataJsonItemConfig { Output = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
             new(), Directory.GetCurrentDirectory());
 
         CheckResult();
@@ -220,7 +220,7 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Dest = _outputFolder,
+                Output = _outputFolder,
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 NamespaceLayout = NamespaceLayout.Nested,
             }),
@@ -259,7 +259,7 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Dest = _outputFolder,
+                Output = _outputFolder,
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 NamespaceLayout = NamespaceLayout.Flattened,
             }),
@@ -298,7 +298,7 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Dest = _outputFolder,
+                Output = _outputFolder,
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 NamespaceLayout = NamespaceLayout.Nested,
             }),

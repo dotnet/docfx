@@ -24,17 +24,20 @@ internal static class RunBuild
             config.Template = ["default"];
         }
 
+#pragma warning disable CS0618
         var baseDirectory = Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory);
-        var outputFolder = Path.GetFullPath(Path.Combine(
-            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(baseDirectory, config.Output ?? "") : outputDirectory,
-            config.Dest ?? ""));
+        var outputFolder = Path.GetFullPath(
+            string.IsNullOrEmpty(outputDirectory)
+              ? Path.Combine(baseDirectory, config.Output ?? config.Dest ?? "")
+              : outputDirectory);
+#pragma warning restore CS0618
 
         EnvironmentContext.SetGitFeaturesDisabled(config.DisableGitFeatures);
         EnvironmentContext.SetBaseDirectory(baseDirectory);
 
         try
         {
-            var templateManager = new TemplateManager(config.Template, config.Theme, configDirectory);
+            var templateManager = new TemplateManager(config.Template, config.Theme, baseDirectory);
 
             DocumentBuilderWrapper.BuildDocument(config, options, templateManager, baseDirectory, outputFolder, null, cancellationToken);
 
