@@ -1,6 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Runtime.InteropServices;
 using Docfx.DataContracts.ManagedReference;
 
 namespace Docfx.Dotnet;
@@ -22,6 +23,7 @@ internal class SetDerivedClass : IResolverPipeline
     {
         foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
         {
+            // Handle class inheritance
             var inheritance = item.Inheritance;
             if (inheritance is { Count: > 0 })
             {
@@ -35,15 +37,30 @@ internal class SetDerivedClass : IResolverPipeline
                 // ignore System.Object's derived class
                 if (superClass != "System.Object")
                 {
-                    if (_derivedClassMapping.TryGetValue(superClass, out List<string> derivedClasses))
-                    {
+                    ref var derivedClasses = ref CollectionsMarshal.GetValueRefOrAddDefault(_derivedClassMapping, superClass, out var exists);
+                    if (exists)
                         derivedClasses.Add(item.Name);
-                    }
                     else
-                    {
-                        _derivedClassMapping.Add(superClass, [item.Name]);
-                    }
+                        derivedClasses = [item.Name];
                 }
+            }
+
+            // Handle interface implementations
+            var implements = item.Implements;
+            if (implements is { Count: > 0 })
+            {
+                var superClass = implements[implements.Count - 1];
+
+                if (reference.TryGetValue(superClass, out var referenceItem))
+                {
+                    superClass = referenceItem.Definition ?? superClass;
+                }
+
+                ref var derivedClasses = ref CollectionsMarshal.GetValueRefOrAddDefault(_derivedClassMapping, superClass, out var exists);
+                if (exists)
+                    derivedClasses.Add(item.Name);
+                else
+                    derivedClasses = [item.Name];
             }
         }
     }
@@ -52,13 +69,16 @@ internal class SetDerivedClass : IResolverPipeline
     {
         foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
         {
-            if (item.Type == MemberType.Class)
+            switch (item.Type)
             {
-                if (_derivedClassMapping.TryGetValue(item.Name, out List<string> derivedClasses))
-                {
-                    derivedClasses.Sort();
-                    item.DerivedClasses = derivedClasses;
-                }
+                case MemberType.Class:
+                case MemberType.Interface:
+                    if (_derivedClassMapping.TryGetValue(item.Name, out List<string> derivedClasses))
+                    {
+                        derivedClasses.Sort();
+                        item.DerivedClasses = derivedClasses;
+                    }
+                    continue;
             }
         }
     }
