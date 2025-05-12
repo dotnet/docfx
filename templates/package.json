@@ -28,7 +28,7 @@
     "@websanova/url": "^2.6.3",
     "anchor-js": "^5.0.0",
     "bootstrap": "^5.3.6",
-    "bootstrap-icons": "^1.12.1",
+    "bootstrap-icons": "^1.13.1",
     "highlight.js": "^11.10.0",
     "idb-keyval": "^6.2.2",
     "jquery": "3.7.0",
