@@ -23,6 +23,7 @@ public static class WarningCodes
         public const string UnknownContentType = "UnknownContentType";
         public const string UnknownContentTypeForTemplate = "UnknownContentTypeForTemplate";
         public const string InvalidTocInclude = "InvalidTocInclude";
+        public const string LockedFile = "LockedFile";
     }
 
     public static class Metadata
