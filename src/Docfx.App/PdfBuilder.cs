@@ -34,6 +34,16 @@ namespace Docfx.Pdf;
 static class PdfBuilder
 {
     private static readonly SearchValues<char> InvalidPathChars = SearchValues.Create(Path.GetInvalidPathChars());
+    
+    // Environment variable to specify a font path that supports emoji characters
+    private const string EmojiFontPathEnvVar = "DOCFX_PDF_EMOJI_FONT";
+    
+    // Common paths for Noto Color Emoji font on Linux systems
+    private static readonly string[] KnownEmojiPaths = new[]
+    {
+        "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf",        // Ubuntu with fonts-noto-color-emoji
+        "/usr/share/fonts/google-noto-emoji/NotoColorEmoji.ttf"     // Some other distributions
+    };
 
     class Outline
     {
@@ -394,6 +404,9 @@ static class PdfBuilder
         {
             var pageNumber = 0;
             var font = builder.AddStandard14Font(UglyToad.PdfPig.Fonts.Standard14Fonts.Standard14Font.Helvetica);
+            
+            // Try to use an emoji font if specified via environment variable
+            TryLoadEmojiFont(builder);
 
             foreach (var (url, node) in pages)
             {
@@ -687,5 +700,41 @@ static class PdfBuilder
         return PathUtility.IsPathCaseInsensitive()
             ? StringComparison.OrdinalIgnoreCase
             : StringComparison.Ordinal;
+    }
+
+    // Try to load an emoji font from the environment variable or known paths
+    private static void TryLoadEmojiFont(PdfDocumentBuilder builder)
+    {
+        // First, check if a font is specified via environment variable
+        var emojiFontPath = Environment.GetEnvironmentVariable(EmojiFontPathEnvVar);
+        
+        // If no environment variable is set, try the known emoji font paths
+        if (string.IsNullOrEmpty(emojiFontPath))
+        {
+            foreach (var path in KnownEmojiPaths)
+            {
+                if (File.Exists(path))
+                {
+                    emojiFontPath = path;
+                    break;
+                }
+            }
+        }
+        
+        // Try to load the font if we found a path
+        if (!string.IsNullOrEmpty(emojiFontPath) && File.Exists(emojiFontPath))
+        {
+            try
+            {
+                // Load the font as a TrueType font
+                builder.AddTrueTypeFont(File.ReadAllBytes(emojiFontPath));
+                Logger.LogInfo($"Loaded emoji font from {emojiFontPath}");
+            }
+            catch (Exception ex)
+            {
+                // Log error but continue with standard fonts if emoji font loading fails
+                Logger.LogWarning($"Failed to load emoji font from {emojiFontPath}: {ex.Message}");
+            }
+        }
     }
 }
