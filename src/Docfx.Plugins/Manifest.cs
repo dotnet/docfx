@@ -16,6 +16,10 @@ public class Manifest
     [JsonPropertyName("sitemap")]
     public SitemapOptions Sitemap { get; set; }
 
+    [JsonProperty("llmsText")]
+    [JsonPropertyName("llmsText")]
+    public LlmsTextOptions LlmsText { get; set; }
+
     [JsonProperty("source_base_path")]
     [JsonPropertyName("source_base_path")]
     public string SourceBasePath { get; set; }
