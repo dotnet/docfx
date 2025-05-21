@@ -3782,4 +3782,33 @@ namespace Test
         Assert.Contains("TupleLibrary", output.References.Keys);
         Assert.Contains("TupleLibrary.XmlTasks", output.References.Keys);
     }
+
+    [Fact]
+    [Trait("Related", "Extension Method")]
+    [Trait("Related", "AllowsRefStruct")]
+    public void TestGenerateMetadataWithExtensionMethodAndAllowsRefStruct()
+    {
+        string code = @"
+namespace Test1
+{
+    public static class TestExtensions
+    {
+        public ref struct TestStruct { }
+        public static byte TestMethod<TRefStruct>(this TRefStruct value) where TRefStruct : allows ref struct => 1;
+    }
+
+    public class TestClass
+    {
+    }
+}
+";
+        // Act
+        var output = Verify(code);
+
+        // Assert
+        // Verify that the code doesn't throw an exception and the output is generated correctly
+        Assert.NotNull(output);
+        Assert.Single(output.Items); // Namespace
+        Assert.Equal(2, output.Items[0].Items.Count); // TestExtensions and TestClass
+    }
 }
