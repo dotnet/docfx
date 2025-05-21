@@ -59,17 +59,18 @@ public class ManifestFileWriter : FileWriterBase
             catch (IOException e) when ((e.HResult & 0x0000FFFF) == 32) // ERROR_SHARING_VIOLATION: 0x80070020
             {
                 // If retry failed 3 times. throw exception
-                if (++retryCount > 3)
+                if (retryCount > 3)
                     throw;
-
-                var sleepDelay = 500 * retryCount;
 
                 var message = FileLockCheck.GetLockingProcessNames(path);
                 if (string.IsNullOrEmpty(message))
                     message = "File is locked by other process";
 
+                var sleepDelay = 500 * retryCount; // Retry immediately on first exception.
                 Logger.LogWarning($"{message}. Retry after {sleepDelay}[ms]", file: path, code: WarningCodes.Build.LockedFile);
-                Thread.Sleep(500 * retryCount);
+                Thread.Sleep(sleepDelay);
+
+                ++retryCount;
                 goto Retry;
             }
         }
