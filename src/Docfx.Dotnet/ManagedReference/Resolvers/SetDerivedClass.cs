@@ -49,18 +49,21 @@ internal class SetDerivedClass : IResolverPipeline
             var implements = item.Implements;
             if (implements is { Count: > 0 })
             {
-                var superClass = implements[implements.Count - 1];
-
-                if (reference.TryGetValue(superClass, out var referenceItem))
+                foreach (var implementedInterface in implements)
                 {
-                    superClass = referenceItem.Definition ?? superClass;
-                }
+                    var superClass = implementedInterface;
 
-                ref var derivedClasses = ref CollectionsMarshal.GetValueRefOrAddDefault(_derivedClassMapping, superClass, out var exists);
-                if (exists)
-                    derivedClasses.Add(item.Name);
-                else
-                    derivedClasses = [item.Name];
+                    if (reference.TryGetValue(superClass, out var referenceItem))
+                    {
+                        superClass = referenceItem.Definition ?? superClass;
+                    }
+
+                    ref var derivedClasses = ref CollectionsMarshal.GetValueRefOrAddDefault(_derivedClassMapping, superClass, out var exists);
+                    if (exists)
+                        derivedClasses.Add(item.Name);
+                    else
+                        derivedClasses = [item.Name];
+                }
             }
         }
     }
