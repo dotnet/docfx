@@ -35,14 +35,21 @@ static class PdfBuilder
 {
     private static readonly SearchValues<char> InvalidPathChars = SearchValues.Create(Path.GetInvalidPathChars());
     
-    // Environment variable to specify a font path that supports emoji characters
+    /// <summary>
+    /// Environment variable to specify a custom path to a TrueType font that supports emoji characters.
+    /// If not set, DocFX will automatically look for Noto Color Emoji font in common system locations.
+    /// Example: DOCFX_PDF_EMOJI_FONT=/path/to/NotoColorEmoji.ttf
+    /// </summary>
     private const string EmojiFontPathEnvVar = "DOCFX_PDF_EMOJI_FONT";
     
-    // Common paths for Noto Color Emoji font on Linux systems
+    // Common paths for Noto Color Emoji font on various systems
     private static readonly string[] KnownEmojiPaths = new[]
     {
-        "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf",        // Ubuntu with fonts-noto-color-emoji
-        "/usr/share/fonts/google-noto-emoji/NotoColorEmoji.ttf"     // Some other distributions
+        "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf",            // Ubuntu with fonts-noto-color-emoji
+        "/usr/share/fonts/google-noto-emoji/NotoColorEmoji.ttf",         // Some other Linux distributions
+        "/System/Library/Fonts/Apple Color Emoji.ttc",                   // macOS system emoji font
+        "/Library/Fonts/NotoColorEmoji.ttf",                             // macOS with Noto font installed
+        "C:\\Windows\\Fonts\\NotoColorEmoji.ttf"                         // Windows with Noto font installed
     };
 
     class Outline
@@ -707,8 +714,13 @@ static class PdfBuilder
             : StringComparison.Ordinal;
     }
 
-    // Try to load an emoji font from the environment variable or known paths
-    // Returns the path of the loaded font, or null if no font was loaded
+    /// <summary>
+    /// Try to load an emoji font from the environment variable or known system paths.
+    /// When emoji characters like 👍 are present in the document, this ensures they 
+    /// are properly embedded in the PDF.
+    /// </summary>
+    /// <param name="builder">The PDF document builder</param>
+    /// <returns>The path of the loaded font, or null if no font was loaded</returns>
     private static string? TryLoadEmojiFont(PdfDocumentBuilder builder)
     {
         // First, check if a font is specified via environment variable
