@@ -82,7 +82,7 @@ internal static class FileLockCheck
     /// </param>
     /// <returns>System error codes that are defined in Winerror.h.</returns>
     /// <remarks>
-    /// The RmﾂｭﾂｭStartSession function doesn窶冲 properly null-terminate
+    /// The RmStartSession function doesn't properly null-terminate
     /// the session key, even though the function is documented as
     /// returning a null-terminated string. To work around this bug,
     /// we pre-fill the buffer with null characters so that whatever
