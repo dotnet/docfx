@@ -366,6 +366,14 @@ static class PdfBuilder
         using var builder = new PdfDocumentBuilder(output);
 
         builder.DocumentInformation = new() { Producer = producer };
+        
+        // Try to load emoji fonts
+        string? emojiFontPath = TryLoadEmojiFont(builder);
+        if (!string.IsNullOrEmpty(emojiFontPath))
+        {
+            builder.DocumentInformation.Keywords += $" emoji-font: {Path.GetFileName(emojiFontPath)}";
+        }
+        
         builder.Bookmarks = CreateBookmarks(outline.items);
 
         await MergePdf();
@@ -405,9 +413,6 @@ static class PdfBuilder
             var pageNumber = 0;
             var font = builder.AddStandard14Font(UglyToad.PdfPig.Fonts.Standard14Fonts.Standard14Font.Helvetica);
             
-            // Try to use an emoji font if specified via environment variable
-            TryLoadEmojiFont(builder);
-
             foreach (var (url, node) in pages)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -703,7 +708,8 @@ static class PdfBuilder
     }
 
     // Try to load an emoji font from the environment variable or known paths
-    private static void TryLoadEmojiFont(PdfDocumentBuilder builder)
+    // Returns the path of the loaded font, or null if no font was loaded
+    private static string? TryLoadEmojiFont(PdfDocumentBuilder builder)
     {
         // First, check if a font is specified via environment variable
         var emojiFontPath = Environment.GetEnvironmentVariable(EmojiFontPathEnvVar);
@@ -729,6 +735,7 @@ static class PdfBuilder
                 // Load the font as a TrueType font
                 builder.AddTrueTypeFont(File.ReadAllBytes(emojiFontPath));
                 Logger.LogInfo($"Loaded emoji font from {emojiFontPath}");
+                return emojiFontPath;
             }
             catch (Exception ex)
             {
@@ -736,5 +743,7 @@ static class PdfBuilder
                 Logger.LogWarning($"Failed to load emoji font from {emojiFontPath}: {ex.Message}");
             }
         }
+        
+        return null;
     }
 }
