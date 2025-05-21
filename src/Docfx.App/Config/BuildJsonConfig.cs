@@ -223,6 +223,13 @@ internal class BuildJsonConfig
     [JsonProperty("sitemap")]
     [JsonPropertyName("sitemap")]
     public SitemapOptions Sitemap { get; set; }
+    
+    /// <summary>
+    /// Specifies the options for the llms.txt file.
+    /// </summary>
+    [JsonProperty("llmsText")]
+    [JsonPropertyName("llmsText")]
+    public LlmsTextOptions LlmsText { get; set; }
 
     /// <summary>
     /// Disable fetching Git related information for articles.

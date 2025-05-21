@@ -120,6 +120,9 @@
         "sitemap": {
           "$ref": "#/$defs/sitemap"
         },
+        "llmsText": {
+          "$ref": "#/$defs/llmsText"
+        },
         "disableGitFeatures": {
           "type": "boolean",
           "default": false,
@@ -452,6 +455,51 @@
           }
         }
       }
+    },
+    "llmsText": {
+      "type": "object",
+      "description": "Specifies the options for the llms.txt file.",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the project or site, used as H1. Required section."
+        },
+        "summary": {
+          "type": "string",
+          "description": "A short summary of the project, displayed as a blockquote."
+        },
+        "details": {
+          "type": "string",
+          "description": "Additional details about the project, displayed as regular text."
+        },
+        "sections": {
+          "type": "object",
+          "description": "Main documentation sections as a dictionary of section name to list of links",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "The title of the link"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The URL of the link"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Optional description of the link"
+                }
+              },
+              "required": ["title", "url"]
+            }
+          }
+        }
+      },
+      "required": ["title"]
     },
     "changefreq": {
       "type": "string",
