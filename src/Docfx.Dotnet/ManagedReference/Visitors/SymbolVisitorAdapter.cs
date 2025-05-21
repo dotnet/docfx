@@ -639,7 +639,17 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         var extensions = new List<string>();
         foreach (var extensionMethod in _extensionMethods.Where(p => p.Language == symbol.Language))
         {
-            var reduced = extensionMethod.ReduceExtensionMethod(symbol);
+            IMethodSymbol reduced;
+            try
+            {
+                reduced = extensionMethod.ReduceExtensionMethod(symbol);
+            }
+            catch (NullReferenceException)
+            {
+                // Skip extension methods that fail due to constraint checking issues (e.g., 'allows ref struct')
+                continue;
+            }
+            
             if (reduced != null)
             {
                 // update reference
