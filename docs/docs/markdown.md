@@ -329,7 +329,7 @@ There are plenty of other diagrams supported by PlantUML such as:
 
 * [Sequence diagram](http://plantuml.com/sequence-diagram)
 * [Use Case diagram](http://plantuml.com/use-case-diagram)
-* [Class diagram](http://plantuml.com/activity-diagram-beta)
+* [Class diagram](http://plantuml.com/class-diagram)
 * [Activity diagram](http://plantuml.com/activity-diagram-beta)
 * [Component diagram](http://plantuml.com/component-diagram)
 * [State diagram](http://plantuml.com/state-diagram)
