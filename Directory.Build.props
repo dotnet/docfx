@@ -23,6 +23,12 @@
     <NoWarn>$(NoWarn);NU1507;NU5104;NU5111</NoWarn>
   </PropertyGroup>
 
+  <!-- Following settings is workaround to suppress warning NU1903: Package 'Microsoft.Build.Tasks.Core' 17.7.2 has a known high severity vulnerability -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <!-- `all` is default NuGetAuditMode for .NET SDK 10 or later -->
+    <NuGetAuditMode>direct</NuGetAuditMode>
+  </PropertyGroup>
+
   <PropertyGroup>
     <ContentTargetFolders>contentFiles</ContentTargetFolders>
 
