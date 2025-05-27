@@ -34,23 +34,6 @@ namespace Docfx.Pdf;
 static class PdfBuilder
 {
     private static readonly SearchValues<char> InvalidPathChars = SearchValues.Create(Path.GetInvalidPathChars());
-    
-    /// <summary>
-    /// Environment variable to specify a custom path to a TrueType font that supports emoji characters.
-    /// If not set, DocFX will automatically look for Noto Color Emoji font in common system locations.
-    /// Example: DOCFX_PDF_EMOJI_FONT=/path/to/NotoColorEmoji.ttf
-    /// </summary>
-    private const string EmojiFontPathEnvVar = "DOCFX_PDF_EMOJI_FONT";
-    
-    // Common paths for Noto Color Emoji font on various systems
-    private static readonly string[] KnownEmojiPaths = new[]
-    {
-        "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf",            // Ubuntu with fonts-noto-color-emoji
-        "/usr/share/fonts/google-noto-emoji/NotoColorEmoji.ttf",         // Some other Linux distributions
-        "/System/Library/Fonts/Apple Color Emoji.ttc",                   // macOS system emoji font
-        "/Library/Fonts/NotoColorEmoji.ttf",                             // macOS with Noto font installed
-        "C:\\Windows\\Fonts\\NotoColorEmoji.ttf"                         // Windows with Noto font installed
-    };
 
     class Outline
     {
@@ -373,14 +356,6 @@ static class PdfBuilder
         using var builder = new PdfDocumentBuilder(output);
 
         builder.DocumentInformation = new() { Producer = producer };
-        
-        // Try to load emoji fonts
-        string? emojiFontPath = TryLoadEmojiFont(builder);
-        if (!string.IsNullOrEmpty(emojiFontPath))
-        {
-            builder.DocumentInformation.Keywords += $" emoji-font: {Path.GetFileName(emojiFontPath)}";
-        }
-        
         builder.Bookmarks = CreateBookmarks(outline.items);
 
         await MergePdf();
@@ -419,7 +394,7 @@ static class PdfBuilder
         {
             var pageNumber = 0;
             var font = builder.AddStandard14Font(UglyToad.PdfPig.Fonts.Standard14Fonts.Standard14Font.Helvetica);
-            
+
             foreach (var (url, node) in pages)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -712,50 +687,5 @@ static class PdfBuilder
         return PathUtility.IsPathCaseInsensitive()
             ? StringComparison.OrdinalIgnoreCase
             : StringComparison.Ordinal;
-    }
-
-    /// <summary>
-    /// Try to load an emoji font from the environment variable or known system paths.
-    /// When emoji characters like 👍 are present in the document, this ensures they 
-    /// are properly embedded in the PDF.
-    /// </summary>
-    /// <param name="builder">The PDF document builder</param>
-    /// <returns>The path of the loaded font, or null if no font was loaded</returns>
-    private static string? TryLoadEmojiFont(PdfDocumentBuilder builder)
-    {
-        // First, check if a font is specified via environment variable
-        var emojiFontPath = Environment.GetEnvironmentVariable(EmojiFontPathEnvVar);
-        
-        // If no environment variable is set, try the known emoji font paths
-        if (string.IsNullOrEmpty(emojiFontPath))
-        {
-            foreach (var path in KnownEmojiPaths)
-            {
-                if (File.Exists(path))
-                {
-                    emojiFontPath = path;
-                    break;
-                }
-            }
-        }
-        
-        // Try to load the font if we found a path
-        if (!string.IsNullOrEmpty(emojiFontPath) && File.Exists(emojiFontPath))
-        {
-            try
-            {
-                // Load the font as a TrueType font
-                builder.AddTrueTypeFont(File.ReadAllBytes(emojiFontPath));
-                Logger.LogInfo($"Loaded emoji font from {emojiFontPath}");
-                return emojiFontPath;
-            }
-            catch (Exception ex)
-            {
-                // Log error but continue with standard fonts if emoji font loading fails
-                Logger.LogWarning($"Failed to load emoji font from {emojiFontPath}: {ex.Message}");
-            }
-        }
-        
-        return null;
     }
 }

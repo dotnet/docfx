@@ -24,6 +24,12 @@ jobs:
         ref: ${{ github.ref_name }}
         lfs: true
 
+    # Install fonts-noto-color-emoji for emoji support in PDF generation
+    - name: Install fonts-noto-color-emoji
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y fonts-noto-color-emoji
+
     # Build projects
     - uses: ./.github/actions/build
 
