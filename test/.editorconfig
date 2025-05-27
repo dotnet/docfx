@@ -10,3 +10,5 @@ dotnet_diagnostic.CA1861.severity = none # CA1861: Avoid constant arrays as argu
 dotnet_diagnostic.CA1869.severity = none # CA1869: Cache and reuse 'JsonSerializerOptions' instances
 
 dotnet_diagnostic.SYSLIB1045.severity = silent  # SYSLIB1045: Convert to 'GeneratedRegexAttribute'.
+
+indent_size = 2
