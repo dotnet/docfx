@@ -3809,6 +3809,6 @@ namespace Test1
         // Verify that the code doesn't throw an exception and the output is generated correctly
         Assert.NotNull(output);
         Assert.Single(output.Items); // Namespace
-        Assert.Equal(2, output.Items[0].Items.Count); // TestExtensions and TestClass
+        Assert.Equal(3, output.Items[0].Items.Count); // TestExtensions, TestStruct and TestClass
     }
 }

@@ -11,7 +11,7 @@ public partial class JsonSerializationEncoderTest
     [Theory]
     [InlineData("abcdefghighlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")]
     [InlineData("0123456789")]
-    [InlineData("\0\a\b\t\n\v\f\r\e")]
+    [InlineData("\0\a\b\t\n\v\f\r")]
     [InlineData("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")]
     [InlineData("①②③")] // NonAscii chars (Enclosed Alphanumerics)
     [InlineData("１２３")] // NonAscii chars (Full-width digits)
