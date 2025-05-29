@@ -1,7 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-
+using System.Reflection.PortableExecutable;
 using Docfx.Common;
 using Docfx.Exceptions;
 using ICSharpCode.Decompiler.Metadata;
@@ -103,7 +103,7 @@ internal static class CompilationHelper
             references: GetDefaultMetadataReferences("VB").Concat(references ?? []));
     }
 
-    public static (Compilation, IAssemblySymbol) CreateCompilationFromAssembly(string assemblyPath, bool includePrivateMembers = false, params MetadataReference[] references)
+    public static (Compilation, IAssemblySymbol) CreateCompilationFromAssembly(string assemblyPath, PEReader? peReader = null, bool includePrivateMembers = false, params MetadataReference[] references)
     {
         var metadataReference = CreateMetadataReference(assemblyPath);
         var compilation = CS.CSharpCompilation.Create(
@@ -115,7 +115,7 @@ internal static class CompilationHelper
                     : MetadataImportOptions.Public
             ),
             syntaxTrees: s_assemblyBootstrap,
-            references: GetReferenceAssemblies(assemblyPath, references)
+            references: GetReferenceAssemblies(assemblyPath, peReader, references)
                 .Select(CreateMetadataReference)
                 .Concat(references ?? [])
                 .Append(metadataReference));
@@ -164,9 +164,11 @@ internal static class CompilationHelper
         }
     }
 
-    private static IEnumerable<string> GetReferenceAssemblies(string assemblyPath, MetadataReference[] references)
+    private static IEnumerable<string> GetReferenceAssemblies(string assemblyPath, PEReader? peReader, MetadataReference[] references)
     {
-        using var assembly = new PEFile(assemblyPath);
+        using var assembly = peReader == null
+            ? new PEFile(assemblyPath)
+            : new PEFile(assemblyPath, peReader);
         var assemblyResolver = new UniversalAssemblyResolver(assemblyPath, false, assembly.DetectTargetFrameworkId());
         var result = new Dictionary<string, string>();
         Dictionary<string, string>? referenceFiles = default;
