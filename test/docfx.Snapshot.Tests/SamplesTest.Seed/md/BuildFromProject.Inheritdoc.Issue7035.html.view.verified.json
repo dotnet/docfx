@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/BuildFromProject.md\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"3\">BuildFromProject</a><br>\nAssembly: BuildFromProject.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"6\">public class Inheritdoc.Issue7035\n</code></pre>\n<h4 id=\"inheritance\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"10\">Inheritance</h4>\n<p sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"12\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"12\">object</a> ←\n<a href=\"~/obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"13\">Inheritdoc.Issue7035</a></p>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"15\">Inherited Members</h4>\n<p sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"17\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"17\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"18\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"19\">object.GetHashCode()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"20\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"21\">object.MemberwiseClone()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"22\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"23\">object.ToString()</a></p>\n<h2 id=\"methods\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"25\">Methods</h2>\n<h3 id=\"BuildFromProject_Inheritdoc_Issue7035_A\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"27\"> A()</h3>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"29\">public void A()\n</code></pre>\n<h3 id=\"BuildFromProject_Inheritdoc_Issue7035_B\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"33\"> B()</h3>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"35\">public void B()\n</code></pre>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Inheritdoc.Issue7035.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/BuildFromProject.Inheritdoc.Issue7035.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Inheritdoc.Issue7035.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"BuildFromProject_Inheritdoc_Issue7035\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue7035.md\" sourcestartlinenumber=\"1\"> Class Inheritdoc.Issue7035</h1>",
+  "title": " Class Inheritdoc.Issue7035",
+  "wordCount": 31,
+  "_key": "obj/md/BuildFromProject.Inheritdoc.Issue7035.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromProject.Inheritdoc.Issue7035.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromProject.Inheritdoc.Issue7035.md/#L1"
+}

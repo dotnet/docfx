@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Enum Class1.Issue9260",
+  "content": "<h1 class='section api' data-uid='BuildFromProject.Class1.Issue9260' data-commentId='T:BuildFromProject.Class1.Issue9260' id='BuildFromProject_Class1_Issue9260'>Enum Class1.Issue9260   <span class='badge rounded-pill text-bg-info' style='font-size: .4em; vertical-align: middle'>Preview</span>  <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L166'><i class='bi bi-code-slash'></i></a></h1>\r\n \n<div class='alert alert-info' role='alert'><p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue9260.yml\" sourceStartLineNumber=\"1\"><a href=\"https://example.org/DOCFX001\" sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue9260.yml\" sourceStartLineNumber=\"1\">DOCFX001</a>: 'BuildFromProject.Class1.Issue9260' is for evaluation purposes only and is subject to change or removal in future updates.</p>\n</div><div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='BuildFromProject.html'>BuildFromProject</a></dd></dl><dl><dt>Assembly</dt><dd>BuildFromProject.dll</dd></dl>\r\n</div><pre><code class='lang-csharp'>public enum Class1.Issue9260</code></pre><h2 class='section'>Fields</h2><dl class='parameters'><dt><code>Value = 0</code>   </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue9260.yml\" sourceStartLineNumber=\"1\">This is a regular enum value.</p>\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue9260.yml\" sourceStartLineNumber=\"3\">This is a remarks section. Very important remarks about Value go here.</p>\n\r\n</dd><dt><code style='text-decoration: line-through'>OldAndUnusedValue = 1</code>   <span class='badge rounded-pill text-bg-danger' style='font-size: .875em; vertical-align: middle'>Deprecated</span> </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue9260.yml\" sourceStartLineNumber=\"1\">This is old and unused. You shouldn't use it anymore.</p>\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue9260.yml\" sourceStartLineNumber=\"3\">Don't use this, seriously! Use Value instead.</p>\n\r\n</dd><dt><code style='text-decoration: line-through'>OldAndUnusedValue2 = 2</code>   <span class='badge rounded-pill text-bg-danger' style='font-size: .875em; vertical-align: middle'>Deprecated</span> </dt>\r\n<dd>\r\n\n<div class='alert alert-warning' role='alert'><p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue9260.yml\" sourceStartLineNumber=\"1\">Use Value</p>\n</div>\r\n\r\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue9260.yml\" sourceStartLineNumber=\"1\">This is old and unused. You shouldn't use it anymore.</p>\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue9260.yml\" sourceStartLineNumber=\"3\">Don't use this, seriously! Use Value instead.</p>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromProject.Class1.Issue9260.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromProject.Class1.Issue9260.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

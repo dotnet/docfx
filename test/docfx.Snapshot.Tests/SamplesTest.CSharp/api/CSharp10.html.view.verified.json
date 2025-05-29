@@ -1,0 +1,565 @@
+﻿{
+  "uid": "CSharp10",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inClass": true,
+      "typePropertyName": "inClass",
+      "id": "classes",
+      "children": [
+        {
+          "uid": "CSharp10.ConstantInterpolatedStrings",
+          "isExtensionMethod": false,
+          "href": "CSharp10.ConstantInterpolatedStrings.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ConstantInterpolatedStrings"
+            },
+            {
+              "lang": "vb",
+              "value": "ConstantInterpolatedStrings"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ConstantInterpolatedStrings"
+            },
+            {
+              "lang": "vb",
+              "value": "ConstantInterpolatedStrings"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.ConstantInterpolatedStrings"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.ConstantInterpolatedStrings"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings\" text=\"ConstantInterpolatedStrings\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings\" text=\"ConstantInterpolatedStrings\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_ConstantInterpolatedStrings",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp10.Issue7737",
+          "isExtensionMethod": false,
+          "href": "CSharp10.Issue7737.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue7737"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue7737"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Issue7737"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue7737"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.Issue7737"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.Issue7737"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.Issue7737\" text=\"Issue7737\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.Issue7737\" text=\"Issue7737\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_Issue7737",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp10.RecordClass",
+          "isExtensionMethod": false,
+          "href": "CSharp10.RecordClass.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "RecordClass"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordClass"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RecordClass"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordClass"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.RecordClass"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.RecordClass"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_RecordClass",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inStruct": true,
+      "typePropertyName": "inStruct",
+      "id": "structs",
+      "children": [
+        {
+          "uid": "CSharp10.ParameterlessStructConstructors",
+          "isExtensionMethod": false,
+          "href": "CSharp10.ParameterlessStructConstructors.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ParameterlessStructConstructors"
+            },
+            {
+              "lang": "vb",
+              "value": "ParameterlessStructConstructors"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ParameterlessStructConstructors"
+            },
+            {
+              "lang": "vb",
+              "value": "ParameterlessStructConstructors"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.ParameterlessStructConstructors"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.ParameterlessStructConstructors"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.ParameterlessStructConstructors\" text=\"ParameterlessStructConstructors\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.ParameterlessStructConstructors\" text=\"ParameterlessStructConstructors\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_ParameterlessStructConstructors",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp10.ReadOnlyRecordStruct",
+          "isExtensionMethod": false,
+          "href": "CSharp10.ReadOnlyRecordStruct.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyRecordStruct"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyRecordStruct"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyRecordStruct"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyRecordStruct"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.ReadOnlyRecordStruct"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.ReadOnlyRecordStruct"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_ReadOnlyRecordStruct",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp10.RecordStruct",
+          "isExtensionMethod": false,
+          "href": "CSharp10.RecordStruct.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "RecordStruct"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordStruct"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RecordStruct"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordStruct"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.RecordStruct"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.RecordStruct"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.RecordStruct\" text=\"RecordStruct\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.RecordStruct\" text=\"RecordStruct\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_RecordStruct",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CSharp10"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp10"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CSharp10"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp10"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp10"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp10"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "CSharp"
+  ],
+  "level": 0,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp10.yml",
+  "_path": "api/CSharp10.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp10",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

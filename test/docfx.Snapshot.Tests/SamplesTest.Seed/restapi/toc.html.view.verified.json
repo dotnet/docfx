@@ -1,0 +1,44 @@
+﻿{
+  "order": 100,
+  "items": [
+    {
+      "name": "Pet Store API",
+      "href": "petstore.html",
+      "topicHref": "petstore.html",
+      "tocHref": null,
+      "level": 2,
+      "items": [],
+      "leaf": true
+    },
+    {
+      "name": "Contacts API",
+      "href": "contacts.html",
+      "topicHref": "contacts.html",
+      "tocHref": null,
+      "level": 2,
+      "items": [],
+      "leaf": true
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "restapi/toc.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "restapi/toc.html",
+  "_rel": "../",
+  "_tocKey": "~/restapi/toc.md",
+  "_tocPath": "restapi/toc.html",
+  "_tocRel": "toc.html",
+  "topicHref": null,
+  "tocHref": null,
+  "name": null,
+  "level": 1,
+  "leaf": false,
+  "title": "Table of Content",
+  "_disableToc": true
+}

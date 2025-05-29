@@ -1,0 +1,773 @@
+﻿{
+  "uid": "BuildFromCSharpSourceCode.CSharp",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "BuildFromCSharpSourceCode",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromCSharpSourceCode.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromCSharpSourceCode"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromCSharpSourceCode"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromCSharpSourceCode"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromCSharpSourceCode"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromCSharpSourceCode"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromCSharpSourceCode"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "BuildFromCSharpSourceCode.CSharp.Main(System.String[])",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromCSharpSourceCode.CSharp",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Main(string[])"
+            },
+            {
+              "lang": "vb",
+              "value": "Main(String())"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "CSharp.Main(string[])"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp.Main(String())"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromCSharpSourceCode.CSharp.Main(string[])"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromCSharpSourceCode.CSharp.Main(String())"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static void Main(string[] args)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Sub Main(args As String())"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "args",
+                "type": {
+                  "uid": "System.String[]",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "string[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String()"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "string[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String()"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "string[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String()"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>()"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/csharp/CSharp.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Main",
+            "path": "dotnet/csharp/CSharp.cs",
+            "startLine": 9,
+            "endLine": 0
+          },
+          "namespace": "BuildFromCSharpSourceCode",
+          "overload": {
+            "uid": "BuildFromCSharpSourceCode.CSharp.Main*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Main"
+              },
+              {
+                "lang": "vb",
+                "value": "Main"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "CSharp.Main"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp.Main"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromCSharpSourceCode.CSharp.Main"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromCSharpSourceCode.CSharp.Main"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
+              }
+            ],
+            "id": "BuildFromCSharpSourceCode_CSharp_Main_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp_Main_System_String___.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp.Main(System.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L10",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromCSharpSourceCode_CSharp_Main_System_String___",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CSharp"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CSharp"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromCSharpSourceCode.CSharp"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromCSharpSourceCode.CSharp"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/csharp/CSharp.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "CSharp",
+    "path": "dotnet/csharp/CSharp.cs",
+    "startLine": 7,
+    "endLine": 0
+  },
+  "namespace": {
+    "uid": "BuildFromCSharpSourceCode",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromCSharpSourceCode.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromCSharpSourceCode"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromCSharpSourceCode"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromCSharpSourceCode"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromCSharpSourceCode"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromCSharpSourceCode"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromCSharpSourceCode"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class CSharp"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class CSharp"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "level": 1,
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromCSharpSourceCode.CSharp.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromCSharpSourceCode.CSharp.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L8",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "BuildFromCSharpSourceCode_CSharp",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

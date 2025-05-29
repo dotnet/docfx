@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.md\" sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"3\">CatLibrary</a><br>\nAssembly: CatLibrary.dll</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"6\">Generic delegate with many constrains.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"8\">public delegate void MRefDelegate&lt;K, T, L&gt;(K k, T t, L l) where K : class, IComparable where T : struct where L : Tom, IEnumerable&lt;long&gt;\n</code></pre>\n<h4 id=\"parameters\" sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"12\">Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"14\"><code sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"14\">k</code> K</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"16\">Type K.</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"18\"><code sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"18\">t</code> T</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"20\">Type T.</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"22\"><code sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"22\">l</code> L</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"24\">Type L.</p>\n<h4 id=\"type-parameters\" sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"26\">Type Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"28\"><code sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"28\">K</code></p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"30\">Generic K.</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"32\"><code sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"32\">T</code></p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"34\">Generic T.</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"36\"><code sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"36\">L</code></p>\n<p sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"38\">Generic L.</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.MRefDelegate-3.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.MRefDelegate-3.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.MRefDelegate-3.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_MRefDelegate_3\" sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"1\"> Delegate MRefDelegate&lt;K, T, L&gt;</h1>",
+  "title": " Delegate MRefDelegate<K, T, L>",
+  "wordCount": 55,
+  "_key": "obj/md/CatLibrary.MRefDelegate-3.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.MRefDelegate-3.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.MRefDelegate-3.md/#L1"
+}

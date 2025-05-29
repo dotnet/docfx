@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Namespace MRef.Demo.Enumeration",
+  "content": "<h1 class='section api' data-uid='MRef.Demo.Enumeration' data-commentId='N:MRef.Demo.Enumeration' id='MRef_Demo_Enumeration'>Namespace MRef.Demo.Enumeration   </h1>\r\n <h3 class='section'>Enums</h3><dl class='parameters'><dt> <a href='MRef.Demo.Enumeration.ColorType.html'>ColorType</a>  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/MRef.Demo.Enumeration.yml\" sourceStartLineNumber=\"1\">Enumeration ColorType</p>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/MRef.Demo.Enumeration.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/MRef.Demo.Enumeration.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

@@ -1,0 +1,200 @@
+﻿{
+  "uid": "BuildFromProject.Issue8540",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "isEii": false,
+    "isExtensionMethod": false,
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" displayProperty=\"name\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" displayProperty=\"name\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inNamespace": true,
+      "typePropertyName": "inNamespace",
+      "id": "namespaces",
+      "children": [
+        {
+          "uid": "BuildFromProject.Issue8540.A",
+          "isExtensionMethod": false,
+          "href": "BuildFromProject.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Issue8540.A"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Issue8540.A"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Issue8540.A"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Issue8540.A"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Issue8540.A"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Issue8540.A"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.html\">BuildFromProject</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.html\">Issue8540</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.A.html\">A</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.html\">BuildFromProject</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.html\">Issue8540</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.A.html\">A</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "namespace",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Issue8540_A",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Issue8540.B",
+          "isExtensionMethod": false,
+          "href": "BuildFromProject.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Issue8540.B"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Issue8540.B"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Issue8540.B"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Issue8540.B"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Issue8540.B"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Issue8540.B"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.html\">BuildFromProject</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.html\">Issue8540</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.B.html\">B</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.html\">BuildFromProject</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.html\">Issue8540</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.B.html\">B</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "namespace",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Issue8540_B",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromProject.Issue8540"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromProject.Issue8540"
+    }
+  ],
+  "type": "namespace",
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromProject.Issue8540.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromProject.Issue8540.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "BuildFromProject_Issue8540",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

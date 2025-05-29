@@ -1,0 +1,248 @@
+﻿{
+  "uid": "MyExample",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inClass": true,
+      "typePropertyName": "inClass",
+      "id": "classes",
+      "children": [
+        {
+          "uid": "MyExample.ExampleClass",
+          "isExtensionMethod": false,
+          "href": "MyExample.ExampleClass.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ExampleClass"
+            },
+            {
+              "lang": "vb",
+              "value": "ExampleClass"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ExampleClass"
+            },
+            {
+              "lang": "vb",
+              "value": "ExampleClass"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "MyExample.ExampleClass"
+            },
+            {
+              "lang": "vb",
+              "value": "MyExample.ExampleClass"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"MyExample.ExampleClass\" text=\"ExampleClass\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"MyExample.ExampleClass\" text=\"ExampleClass\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "MyExample_ExampleClass",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "MyExample"
+    },
+    {
+      "lang": "vb",
+      "value": "MyExample"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "MyExample"
+    },
+    {
+      "lang": "vb",
+      "value": "MyExample"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "MyExample"
+    },
+    {
+      "lang": "vb",
+      "value": "MyExample"
+    }
+  ],
+  "type": "namespace",
+  "level": 0,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/MyExample.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/MyExample.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "MyExample",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

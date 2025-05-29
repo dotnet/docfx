@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/BuildFromProject.md\" sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"3\">BuildFromProject</a><br>\nAssembly: BuildFromProject.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"6\">public interface Class1.IIssue8948\n</code></pre>\n<h2 id=\"methods\" sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"10\">Methods</h2>\n<h3 id=\"BuildFromProject_Class1_IIssue8948_DoNothing__1\" sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"12\"> DoNothing&lt;T&gt;()</h3>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"14\">Does nothing with generic type <code class=\"typeparamref\">T</code>.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"16\">void DoNothing&lt;T&gt;()\n</code></pre>\n<h4 id=\"type-parameters\" sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"20\">Type Parameters</h4>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"22\"><code sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"22\">T</code></p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"24\">A generic type.</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Class1.IIssue8948.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/BuildFromProject.Class1.IIssue8948.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Class1.IIssue8948.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"BuildFromProject_Class1_IIssue8948\" sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"1\"> Interface Class1.IIssue8948</h1>",
+  "title": " Interface Class1.IIssue8948",
+  "wordCount": 23,
+  "_key": "obj/md/BuildFromProject.Class1.IIssue8948.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromProject.Class1.IIssue8948.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromProject.Class1.IIssue8948.md/#L1"
+}

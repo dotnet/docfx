@@ -1,0 +1,1131 @@
+﻿{
+  "uid": "CatLibrary.IAnimal",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "CatLibrary.IAnimal.Item(System.Int32)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.IAnimal",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "this[int]"
+            },
+            {
+              "lang": "vb",
+              "value": "this[](Integer)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "IAnimal.this[int]"
+            },
+            {
+              "lang": "vb",
+              "value": "IAnimal.this[](Integer)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.IAnimal.this[int]"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.IAnimal.this[](Integer)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"this[int]\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"this[int]\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "string this[int index] { get; }"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnly Default Property this[](index As Integer) As String"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "index",
+                "type": {
+                  "uid": "System.Int32",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    }
+                  ]
+                },
+                "description": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Animal number.</p>\n"
+              }
+            ],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              },
+              "description": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Animal name.</p>\n"
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "this[]",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 30,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "CatLibrary",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.IAnimal.Item*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "this"
+              },
+              {
+                "lang": "vb",
+                "value": "this[]"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "IAnimal.this"
+              },
+              {
+                "lang": "vb",
+                "value": "IAnimal.this[]"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.IAnimal.this"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.IAnimal.this[]"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Item*\" text=\"this\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Item*\" text=\"this\"/>"
+              }
+            ],
+            "id": "CatLibrary_IAnimal_Item_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Return specific number animal's name.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Item_System_Int32_.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Item(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L31",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CatLibrary_IAnimal_Item_System_Int32_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.IAnimal.Name",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.IAnimal",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Name"
+            },
+            {
+              "lang": "vb",
+              "value": "Name"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "IAnimal.Name"
+            },
+            {
+              "lang": "vb",
+              "value": "IAnimal.Name"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.IAnimal.Name"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.IAnimal.Name"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Name\" text=\"Name\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Name\" text=\"Name\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "string Name { get; }"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnly Property Name As String"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Name",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 23,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "CatLibrary",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.IAnimal.Name*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Name"
+              },
+              {
+                "lang": "vb",
+                "value": "Name"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "IAnimal.Name"
+              },
+              {
+                "lang": "vb",
+                "value": "IAnimal.Name"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.IAnimal.Name"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.IAnimal.Name"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Name*\" text=\"Name\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Name*\" text=\"Name\"/>"
+              }
+            ],
+            "id": "CatLibrary_IAnimal_Name_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Name of Animal.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Name.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L24",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CatLibrary_IAnimal_Name",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CatLibrary.IAnimal.Eat",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.IAnimal",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Eat()"
+            },
+            {
+              "lang": "vb",
+              "value": "Eat()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "IAnimal.Eat()"
+            },
+            {
+              "lang": "vb",
+              "value": "IAnimal.Eat()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.IAnimal.Eat()"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.IAnimal.Eat()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat\" text=\"Eat()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat\" text=\"Eat()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "void Eat()"
+              },
+              {
+                "lang": "vb",
+                "value": "Sub Eat()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Eat",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 35,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "CatLibrary",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.IAnimal.Eat*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Eat"
+              },
+              {
+                "lang": "vb",
+                "value": "Eat"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "IAnimal.Eat"
+              },
+              {
+                "lang": "vb",
+                "value": "IAnimal.Eat"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.IAnimal.Eat"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.IAnimal.Eat"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Eat*\" text=\"Eat\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Eat*\" text=\"Eat\"/>"
+              }
+            ],
+            "id": "CatLibrary_IAnimal_Eat_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Animal's eat method.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Eat.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Eat%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L36",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CatLibrary_IAnimal_Eat",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.IAnimal.Eat(System.String)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.IAnimal",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Eat(string)"
+            },
+            {
+              "lang": "vb",
+              "value": "Eat(String)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "IAnimal.Eat(string)"
+            },
+            {
+              "lang": "vb",
+              "value": "IAnimal.Eat(String)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.IAnimal.Eat(string)"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.IAnimal.Eat(String)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat(System.String)\" text=\"Eat(string)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat(System.String)\" text=\"Eat(string)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "void Eat(string food)"
+              },
+              {
+                "lang": "vb",
+                "value": "Sub Eat(food As String)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "food",
+                "type": {
+                  "uid": "System.String",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    }
+                  ]
+                },
+                "description": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Food to eat</p>\n"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Eat",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 49,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "CatLibrary",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.IAnimal.Eat*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Eat"
+              },
+              {
+                "lang": "vb",
+                "value": "Eat"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "IAnimal.Eat"
+              },
+              {
+                "lang": "vb",
+                "value": "IAnimal.Eat"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.IAnimal.Eat"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.IAnimal.Eat"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Eat*\" text=\"Eat\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Eat*\" text=\"Eat\"/>"
+              }
+            ],
+            "id": "CatLibrary_IAnimal_Eat_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Feed the animal with some food</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Eat_System_String_.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Eat(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L50",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CatLibrary_IAnimal_Eat_System_String_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.IAnimal.Eat``1(``0)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.IAnimal",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Eat<Tool>(Tool)"
+            },
+            {
+              "lang": "vb",
+              "value": "Eat(Of Tool)(Tool)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "IAnimal.Eat<Tool>(Tool)"
+            },
+            {
+              "lang": "vb",
+              "value": "IAnimal.Eat(Of Tool)(Tool)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.IAnimal.Eat<Tool>(Tool)"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.IAnimal.Eat(Of Tool)(Tool)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat&lt;Tool&gt;(Tool)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat&lt;Tool&gt;(Tool)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "void Eat<Tool>(Tool tool) where Tool : class"
+              },
+              {
+                "lang": "vb",
+                "value": "Sub Eat(Of Tool As Class)(tool As Tool)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "tool",
+                "type": {
+                  "uid": "{Tool}",
+                  "definition": "Tool",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "Tool"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Tool"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "Tool"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Tool"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "Tool"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Tool"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"{Tool}\" text=\"Tool\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"{Tool}\" text=\"Tool\"/>"
+                    }
+                  ]
+                },
+                "description": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Tool name.</p>\n"
+              }
+            ],
+            "typeParameters": [
+              {
+                "id": "Tool",
+                "description": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">It's a class type.</p>\n"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Eat",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 42,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "CatLibrary",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.IAnimal.Eat*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Eat"
+              },
+              {
+                "lang": "vb",
+                "value": "Eat"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "IAnimal.Eat"
+              },
+              {
+                "lang": "vb",
+                "value": "IAnimal.Eat"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.IAnimal.Eat"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.IAnimal.Eat"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Eat*\" text=\"Eat\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.IAnimal.Eat*\" text=\"Eat\"/>"
+              }
+            ],
+            "id": "CatLibrary_IAnimal_Eat_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">Overload method of eat. This define the animal eat by which tool.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Eat__1___0_.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Eat%60%601(%60%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L43",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CatLibrary_IAnimal_Eat__1___0_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "IAnimal"
+    },
+    {
+      "lang": "vb",
+      "value": "IAnimal"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "IAnimal"
+    },
+    {
+      "lang": "vb",
+      "value": "IAnimal"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.IAnimal"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.IAnimal"
+    }
+  ],
+  "type": "interface",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "IAnimal",
+    "path": "dotnet/solution/CatLibrary/Class1.cs",
+    "startLine": 17,
+    "endLine": 0
+  },
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/specs/CatLibrary.IAnimal.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "path": "specs/CatLibrary.IAnimal.md",
+    "startLine": 1,
+    "endLine": 4
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">This is <b>basic</b> interface of all animal.</p>\n",
+  "remarks": "<p sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"1\"><em sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"1\">THIS</em> is remarks overridden in <em sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"1\">MARKDWON</em> file</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public interface IAnimal"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Interface IAnimal"
+      }
+    ]
+  },
+  "level": 0,
+  "conceptual": "<h3 id=\"welcome-to-the-animal-world\" sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"6\">Welcome to the <strong sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"6\">Animal</strong> world!</h3>\n",
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/CatLibrary.IAnimal.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CatLibrary.IAnimal.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/specs/CatLibrary.IAnimal.md/#L2",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L18",
+  "description": "This is basic interface of all animal.",
+  "implements": "",
+  "seealso": [],
+  "id": "CatLibrary_IAnimal",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inInterface": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

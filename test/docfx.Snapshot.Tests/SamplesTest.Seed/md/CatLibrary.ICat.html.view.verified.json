@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.md\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"3\">CatLibrary</a><br>\nAssembly: CatLibrary.dll</p>\n<p sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"6\">Cat's interface</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"8\">public interface ICat : IAnimal\n</code></pre>\n<h4 id=\"implements\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"12\">Implements</h4>\n<p sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"14\"><a href=\"~/obj/md/CatLibrary.IAnimal.md\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"14\">IAnimal</a></p>\n<h4 id=\"extension-methods\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"16\">Extension Methods</h4>\n<p sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"18\"><a href=\"~/obj/md/CatLibrary.ICatExtension.md#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"18\">ICatExtension.Play(ICat, ContainersRefType.ColorType)</a>,\n<a href=\"~/obj/md/CatLibrary.ICatExtension.md#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"19\">ICatExtension.Sleep(ICat, long)</a></p>\n<h3 id=\"CatLibrary_ICat_eat\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"21\"> eat</h3>\n<p sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"23\">eat event of cat. Every cat must implement this event.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"25\">event EventHandler eat\n</code></pre>\n<h4 id=\"event-type\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"29\">Event Type</h4>\n<p sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"31\"><a href=\"https://learn.microsoft.com/dotnet/api/system.eventhandler\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"31\">EventHandler</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.ICat.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.ICat.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.ICat.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_ICat\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"1\"> Interface ICat</h1>",
+  "title": " Interface ICat",
+  "wordCount": 35,
+  "_key": "obj/md/CatLibrary.ICat.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.ICat.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.ICat.md/#L1"
+}

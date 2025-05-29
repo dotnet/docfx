@@ -1,0 +1,340 @@
+﻿{
+  "uid": "BuildFromProject.Class1.IIssue8948",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "BuildFromProject.Class1.IIssue8948.DoNothing``1",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1.IIssue8948",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "DoNothing<T>()"
+            },
+            {
+              "lang": "vb",
+              "value": "DoNothing(Of T)()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.IIssue8948.DoNothing<T>()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.IIssue8948.DoNothing(Of T)()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.IIssue8948.DoNothing<T>()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.IIssue8948.DoNothing(Of T)()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.IIssue8948.DoNothing``1\" text=\"DoNothing&lt;T&gt;()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.IIssue8948.DoNothing``1\" text=\"DoNothing&lt;T&gt;()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "void DoNothing<T>()"
+              },
+              {
+                "lang": "vb",
+                "value": "Sub DoNothing(Of T)()"
+              }
+            ],
+            "typeParameters": [
+              {
+                "id": "T",
+                "description": "<p sourcefile=\"obj/api/BuildFromProject.Class1.IIssue8948.yml\" sourcestartlinenumber=\"1\">A generic type.</p>\n"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "DoNothing",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 139,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Class1.IIssue8948.DoNothing*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "DoNothing"
+              },
+              {
+                "lang": "vb",
+                "value": "DoNothing"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.IIssue8948.DoNothing"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.IIssue8948.DoNothing"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.IIssue8948.DoNothing"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.IIssue8948.DoNothing"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.IIssue8948.DoNothing*\" text=\"DoNothing\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.IIssue8948.DoNothing*\" text=\"DoNothing\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_IIssue8948_DoNothing_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.IIssue8948.yml\" sourcestartlinenumber=\"1\">Does nothing with generic type <code class=\"typeparamref\">T</code>.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_IIssue8948_DoNothing__1.md&value=---%0Auid%3A%20BuildFromProject.Class1.IIssue8948.DoNothing%60%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L140",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_IIssue8948_DoNothing__1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Class1.IIssue8948"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1.IIssue8948"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "Class1.IIssue8948"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1.IIssue8948"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromProject.Class1.IIssue8948"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromProject.Class1.IIssue8948"
+    }
+  ],
+  "type": "interface",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/project/Project/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "IIssue8948",
+    "path": "dotnet/project/Project/Class1.cs",
+    "startLine": 133,
+    "endLine": 0
+  },
+  "assemblies": [
+    "BuildFromProject"
+  ],
+  "namespace": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public interface Class1.IIssue8948"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Interface Class1.IIssue8948"
+      }
+    ]
+  },
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromProject.Class1.IIssue8948.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromProject.Class1.IIssue8948.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_IIssue8948.md&value=---%0Auid%3A%20BuildFromProject.Class1.IIssue8948%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L134",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "BuildFromProject_Class1_IIssue8948",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inInterface": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

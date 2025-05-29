@@ -1,0 +1,591 @@
+﻿{
+  "uid": "CSharp12.InlineArrays",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp12",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp12.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "InlineArrays"
+    },
+    {
+      "lang": "vb",
+      "value": "InlineArrays"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "InlineArrays"
+    },
+    {
+      "lang": "vb",
+      "value": "InlineArrays"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp12.InlineArrays"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp12.InlineArrays"
+    }
+  ],
+  "type": "struct",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp12.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "InlineArrays",
+    "path": "src/CSharp12.cs",
+    "startLine": 76,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp12",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp12.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public struct InlineArrays"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Structure InlineArrays"
+      }
+    ]
+  },
+  "level": 0,
+  "inheritedMembers": [
+    {
+      "uid": "System.ValueType.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.ValueType.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.ValueType.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp12.InlineArrays.yml",
+  "_path": "api/CSharp12.InlineArrays.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_InlineArrays.md&value=---%0Auid%3A%20CSharp12.InlineArrays%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L77",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp12_InlineArrays",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inStruct": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

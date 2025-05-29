@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/BuildFromAssembly.md\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"3\">BuildFromAssembly</a><br>\nAssembly: BuildFromAssembly.dll</p>\n<p sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"6\">This is a test class.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"8\">public class Class1\n</code></pre>\n<h4 id=\"inheritance\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"12\">Inheritance</h4>\n<p sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"14\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"14\">object</a> ←\n<a href=\"~/obj/md/BuildFromAssembly.Class1.md\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"15\">Class1</a></p>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"17\">Inherited Members</h4>\n<p sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"19\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"19\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"20\">object.MemberwiseClone()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"21\">object.ToString()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"22\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"23\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"24\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"25\">object.GetHashCode()</a></p>\n<h2 id=\"constructors\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"27\">Constructors</h2>\n<h3 id=\"BuildFromAssembly_Class1__ctor\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"29\"> Class1()</h3>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"31\">public Class1()\n</code></pre>\n<h2 id=\"methods\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"35\">Methods</h2>\n<h3 id=\"BuildFromAssembly_Class1_HelloWorld\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"37\"> HelloWorld()</h3>\n<p sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"39\">Hello World.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"41\">public static void HelloWorld()\n</code></pre>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromAssembly.Class1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/BuildFromAssembly.Class1.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromAssembly.Class1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"BuildFromAssembly_Class1\" sourcefile=\"obj/md/BuildFromAssembly.Class1.md\" sourcestartlinenumber=\"1\"> Class Class1</h1>",
+  "title": " Class Class1",
+  "wordCount": 39,
+  "_key": "obj/md/BuildFromAssembly.Class1.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromAssembly.Class1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromAssembly.Class1.md/#L1"
+}

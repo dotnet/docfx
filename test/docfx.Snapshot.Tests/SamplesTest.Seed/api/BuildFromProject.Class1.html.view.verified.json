@@ -1,0 +1,2299 @@
+﻿{
+  "uid": "BuildFromProject.Class1",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "BuildFromProject.Class1.Issue1651",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue1651()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue1651()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue1651()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue1651()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue1651()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue1651()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue1651\" text=\"Issue1651()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue1651\" text=\"Issue1651()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue1651()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue1651()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue1651",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 32,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue1651*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue1651"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue1651"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue1651"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue1651"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue1651"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue1651"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue1651*\" text=\"Issue1651\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue1651*\" text=\"Issue1651\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue1651_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Pricing models are used to calculate theoretical option values</p>\n<ul><li><span class=\"term\">1</span>Black Scholes</li><li><span class=\"term\">2</span>Black76</li><li><span class=\"term\">3</span>Black76Fut</li><li><span class=\"term\">4</span>Equity Tree</li><li><span class=\"term\">5</span>Variance Swap</li><li><span class=\"term\">6</span>Dividend Forecast</li></ul>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue1651.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue1651%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L33",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue1651",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue1887",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue1887()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue1887()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue1887()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue1887()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue1887()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue1887()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue1887\" text=\"Issue1887()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue1887\" text=\"Issue1887()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue1887()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue1887()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue1887",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 151,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue1887*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue1887"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue1887"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue1887"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue1887"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue1887"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue1887"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue1887*\" text=\"Issue1887\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue1887*\" text=\"Issue1887\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue1887_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">IConfiguration related helper and extension routines.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue1887.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue1887%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L152",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue1887",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue2623",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue2623()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue2623()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue2623()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue2623()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue2623()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue2623()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue2623\" text=\"Issue2623()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue2623\" text=\"Issue2623()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue2623()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue2623()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue2623",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 77,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">For example:</p>\n<pre><code sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"3\">MyClass myClass = new MyClass();\n\nvoid Update()\n{\n    myClass.Execute();\n}\n</code></pre>\n",
+          "example": [
+            "<pre><code class=\"lang-csharp\" sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">MyClass myClass = new MyClass();\n\nvoid Update()\n{\n    myClass.Execute();\n}\n</code></pre>\n"
+          ],
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue2623*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue2623"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue2623"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue2623"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue2623"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue2623"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue2623"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue2623*\" text=\"Issue2623\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue2623*\" text=\"Issue2623\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue2623_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue2623.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue2623%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L78",
+          "description": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue2623",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue2723",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue2723()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue2723()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue2723()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue2723()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue2723()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue2723()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue2723\" text=\"Issue2723()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue2723\" text=\"Issue2723()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue2723()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue2723()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue2723",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 96,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "remarks": "<div class=\"NOTE\" sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">\n<h5>Note</h5>\n<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"2\">This is a &lt;note&gt;. &amp; &quot; '</p>\n</div>\n<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"4\">Inline <code sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"4\">&lt;angle brackets&gt;</code>.</p>\n<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"6\"><a href=\"https://www.github.com\" sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"6\" title=\"title\">link</a></p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"8\">for (var i = 0; i &gt; 10; i++) // &amp; &quot; '\nvar range = new Range&lt;int&gt; { Min = 0, Max = 10 };\n</code></pre>\n<pre><code class=\"lang-csharp\">var range = new Range&lt;int&gt; { Min = 0, Max = 10 };</code></pre>\n",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue2723*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue2723"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue2723"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue2723"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue2723"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue2723"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue2723"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue2723*\" text=\"Issue2723\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue2723*\" text=\"Issue2723\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue2723_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue2723.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue2723%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L97",
+          "description": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue2723",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue4017",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue4017()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue4017()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue4017()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue4017()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue4017()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue4017()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue4017\" text=\"Issue4017()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue4017\" text=\"Issue4017()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue4017()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue4017()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue4017",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 55,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "remarks": "<pre><code class=\"lang-csharp\">void Update()\n{\n    myClass.Execute();\n}</code></pre>\n",
+          "example": [
+            "<pre><code class=\"lang-cs\">public void HookMessageDeleted(BaseSocketClient client)\n{\n    client.MessageDeleted += HandleMessageDelete;\n}\n\npublic Task HandleMessageDelete(Cacheable&lt;IMessage, ulong&gt; cachedMessage, ISocketMessageChannel channel)\n{\n    // check if the message exists in cache; if not, we cannot report what was removed\n    if (!cachedMessage.HasValue) return;\n    var message = cachedMessage.Value;\n    Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the channel {channel.Name} ({channel.Id}):\"\n        + Environment.NewLine\n        + message.Content);\n    return Task.CompletedTask;\n}</code></pre>\n"
+          ],
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue4017*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue4017"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue4017"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue4017"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue4017"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue4017"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue4017"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue4017*\" text=\"Issue4017\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue4017*\" text=\"Issue4017\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue4017_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue4017.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue4017%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L56",
+          "description": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue4017",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue4392",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue4392()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue4392()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue4392()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue4392()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue4392()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue4392()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue4392\" text=\"Issue4392()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue4392\" text=\"Issue4392()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue4392()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue4392()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue4392",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 101,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\"><code><xref href=\"\\\\?\\\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@&quot;\\\\?\\&quot;\" sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\"></xref></code> <code sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">@&quot;\\\\?\\&quot;</code></p>\n",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue4392*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue4392"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue4392"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue4392"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue4392"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue4392"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue4392"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue4392*\" text=\"Issue4392\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue4392*\" text=\"Issue4392\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue4392_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue4392.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue4392%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L102",
+          "description": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue4392",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue7484",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue7484()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue7484()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue7484()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue7484()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue7484()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue7484()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue7484\" text=\"Issue7484()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue7484\" text=\"Issue7484()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue7484()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue7484()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue7484",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 42,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">There's really no reason to not believe that this class can test things.</p>\n<table><thead><tr><th class=\"term\">Term</th><th class=\"description\">Description</th></tr></thead><tbody><tr><td class=\"term\">A Term</td><td class=\"description\">A Description</td></tr><tr><td class=\"term\">Bee Term</td><td class=\"description\">Bee Description</td></tr></tbody></table>\n",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue7484*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue7484"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue7484"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue7484"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue7484"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue7484"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue7484"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue7484*\" text=\"Issue7484\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue7484*\" text=\"Issue7484\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue7484_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue7484.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue7484%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L43",
+          "description": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue7484",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue8764``1",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue8764<T>()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue8764(Of T)()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue8764<T>()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue8764(Of T)()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue8764<T>()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue8764(Of T)()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue8764``1\" text=\"Issue8764&lt;T&gt;()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue8764``1\" text=\"Issue8764&lt;T&gt;()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue8764<T>() where T : unmanaged"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue8764(Of T As Structure)()"
+              }
+            ],
+            "typeParameters": [
+              {
+                "id": "T",
+                "description": ""
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue8764",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 103,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue8764*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue8764"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue8764"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue8764"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue8764"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue8764"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue8764"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue8764*\" text=\"Issue8764\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue8764*\" text=\"Issue8764\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue8764_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue8764__1.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue8764%60%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L104",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue8764__1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue896",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue896()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue896()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue896()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue896()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue896()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue896()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue896\" text=\"Issue896()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue896\" text=\"Issue896()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue896()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue896()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue896",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 19,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue896*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue896"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue896"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue896"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue896"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue896"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue896"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue896*\" text=\"Issue896\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue896*\" text=\"Issue896\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue896_"
+          },
+          "seealso": [
+            {
+              "linkType": "cRef",
+              "type": {
+                "uid": "BuildFromProject.Class1.Test`1",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Test<T>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Test(Of T)"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Test<T>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Test(Of T)"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "BuildFromProject.Class1.Test<T>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "BuildFromProject.Class1.Test(Of T)"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Test-1.html\">Test</a>&lt;T&gt;"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Test-1.html\">Test</a>(Of T)"
+                  }
+                ]
+              },
+              "isCref": true
+            },
+            {
+              "linkType": "cRef",
+              "type": {
+                "uid": "BuildFromProject.Class1",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "BuildFromProject.Class1"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "BuildFromProject.Class1"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"BuildFromProject.Class1\" text=\"Class1\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"BuildFromProject.Class1\" text=\"Class1\"/>"
+                  }
+                ]
+              },
+              "isCref": true
+            }
+          ],
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Test</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue896.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue896%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L20",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "id": "BuildFromProject_Class1_Issue896",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue9216",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue9216()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue9216()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue9216()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue9216()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue9216()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue9216()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue9216\" text=\"Issue9216()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue9216\" text=\"Issue9216()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static double Issue9216()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function Issue9216() As Double"
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Double",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue9216",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 163,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue9216*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue9216"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue9216"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue9216"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue9216"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue9216"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue9216"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue9216*\" text=\"Issue9216\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue9216*\" text=\"Issue9216\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue9216_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Calculates the determinant of a 3-dimensional matrix:</p>\n<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"3\"><span class=\"math\" sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"3\">\\(A = \\begin{vmatrix} a_{11} &amp; a_{12} &amp; a_{13} \\\\ a_{21} &amp; a_{22} &amp; a_{23} \\\\ a_{31} &amp; a_{32} &amp; a_{33} \\end{vmatrix}\\)</span></p>\n<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"5\">Returns the smallest value:</p>\n<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"7\"><span class=\"math\" sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"7\">\\(\\left\\{\\begin{matrix}a, a&lt;b \\\\ b, b&gt;a\\\\ \\end{matrix} \\right.\\)</span></p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue9216.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue9216%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L164",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue9216",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.XmlCommentIncludeTag",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "XmlCommentIncludeTag()"
+            },
+            {
+              "lang": "vb",
+              "value": "XmlCommentIncludeTag()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.XmlCommentIncludeTag()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.XmlCommentIncludeTag()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.XmlCommentIncludeTag()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.XmlCommentIncludeTag()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.XmlCommentIncludeTag\" text=\"XmlCommentIncludeTag()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.XmlCommentIncludeTag\" text=\"XmlCommentIncludeTag()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void XmlCommentIncludeTag()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub XmlCommentIncludeTag()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "XmlCommentIncludeTag",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 11,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">This is remarks.</p>\n",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Class1.XmlCommentIncludeTag*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "XmlCommentIncludeTag"
+              },
+              {
+                "lang": "vb",
+                "value": "XmlCommentIncludeTag"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.XmlCommentIncludeTag"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.XmlCommentIncludeTag"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.XmlCommentIncludeTag"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.XmlCommentIncludeTag"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.XmlCommentIncludeTag*\" text=\"XmlCommentIncludeTag\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.XmlCommentIncludeTag*\" text=\"XmlCommentIncludeTag\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_XmlCommentIncludeTag_"
+          },
+          "level": 0,
+          "implements": [
+            {
+              "uid": "BuildFromProject.IClass1.XmlCommentIncludeTag",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "XmlCommentIncludeTag()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "XmlCommentIncludeTag()"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "IClass1.XmlCommentIncludeTag()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "IClass1.XmlCommentIncludeTag()"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "BuildFromProject.IClass1.XmlCommentIncludeTag()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "BuildFromProject.IClass1.XmlCommentIncludeTag()"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"BuildFromProject.IClass1.XmlCommentIncludeTag\" text=\"XmlCommentIncludeTag\"/>()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"BuildFromProject.IClass1.XmlCommentIncludeTag\" text=\"XmlCommentIncludeTag\"/>()"
+                }
+              ]
+            }
+          ],
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">This method should do something...</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_XmlCommentIncludeTag.md&value=---%0Auid%3A%20BuildFromProject.Class1.XmlCommentIncludeTag%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L12",
+          "description": "",
+          "conceptual": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_XmlCommentIncludeTag",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Class1"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "Class1"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromProject.Class1"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromProject.Class1"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/project/Project/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "Class1",
+    "path": "dotnet/project/Project/Class1.cs",
+    "startLine": 2,
+    "endLine": 0
+  },
+  "assemblies": [
+    "BuildFromProject"
+  ],
+  "namespace": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class Class1 : IClass1"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class Class1 Implements IClass1"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "level": 1,
+  "implements": [
+    {
+      "uid": "BuildFromProject.IClass1",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "IClass1"
+        },
+        {
+          "lang": "vb",
+          "value": "IClass1"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "IClass1"
+        },
+        {
+          "lang": "vb",
+          "value": "IClass1"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "BuildFromProject.IClass1"
+        },
+        {
+          "lang": "vb",
+          "value": "BuildFromProject.IClass1"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"BuildFromProject.IClass1\" text=\"IClass1\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"BuildFromProject.IClass1\" text=\"IClass1\"/>"
+        }
+      ]
+    }
+  ],
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromProject.Class1.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromProject.Class1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1.md&value=---%0Auid%3A%20BuildFromProject.Class1%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L3",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "example": "",
+  "seealso": [],
+  "id": "BuildFromProject_Class1",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

@@ -1,0 +1,1853 @@
+﻿{
+  "uid": "CSharp12.PrimaryConstructors.CheckAccount",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp12",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp12.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inConstructor": true,
+      "typePropertyName": "inConstructor",
+      "id": "constructors",
+      "children": [
+        {
+          "uid": "CSharp12.PrimaryConstructors.CheckAccount.#ctor(System.String,System.String,System.Decimal)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp12.PrimaryConstructors.CheckAccount",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "CheckAccount(string, string, decimal)"
+            },
+            {
+              "lang": "vb",
+              "value": "New(String, String, Decimal)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.CheckAccount.CheckAccount(string, string, decimal)"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.CheckAccount.New(String, String, Decimal)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.CheckAccount(string, string, decimal)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.New(String, String, Decimal)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.#ctor(System.String,System.String,System.Decimal)\" text=\"CheckAccount(string, string, decimal)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.#ctor(System.String,System.String,System.Decimal)\" text=\"CheckAccount(string, string, decimal)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public CheckAccount(string accountID, string owner, decimal overdraftLimit = 0)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub New(accountID As String, owner As String, overdraftLimit As Decimal = 0)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "accountID",
+                "type": {
+                  "uid": "System.String",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "owner",
+                "type": {
+                  "uid": "System.String",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "overdraftLimit",
+                "type": {
+                  "uid": "System.Decimal",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "decimal"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Decimal"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "decimal"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Decimal"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "decimal"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Decimal"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp12.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": ".ctor",
+            "path": "src/CSharp12.cs",
+            "startLine": 20,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp12",
+          "overload": {
+            "uid": "CSharp12.PrimaryConstructors.CheckAccount.#ctor*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "CheckAccount"
+              },
+              {
+                "lang": "vb",
+                "value": "New"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "PrimaryConstructors.CheckAccount.CheckAccount"
+              },
+              {
+                "lang": "vb",
+                "value": "PrimaryConstructors.CheckAccount.New"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.CheckAccount"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.New"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.#ctor*\" text=\"CheckAccount\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.#ctor*\" text=\"CheckAccount\"/>"
+              }
+            ],
+            "id": "CSharp12_PrimaryConstructors_CheckAccount__ctor_"
+          },
+          "level": 0,
+          "type": "constructor",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount__ctor_System_String_System_String_System_Decimal_.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.%23ctor(System.String%2CSystem.String%2CSystem.Decimal)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L21",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_PrimaryConstructors_CheckAccount__ctor_System_String_System_String_System_Decimal_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp12.PrimaryConstructors.CheckAccount",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "CurrentBalance"
+            },
+            {
+              "lang": "vb",
+              "value": "CurrentBalance"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.CheckAccount.CurrentBalance"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.CheckAccount.CurrentBalance"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance\" text=\"CurrentBalance\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance\" text=\"CurrentBalance\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public decimal CurrentBalance { get; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property CurrentBalance As Decimal"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Decimal",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "decimal"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Decimal"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "decimal"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Decimal"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "decimal"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Decimal"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp12.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "CurrentBalance",
+            "path": "src/CSharp12.cs",
+            "startLine": 22,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp12",
+          "overload": {
+            "uid": "CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "CurrentBalance"
+              },
+              {
+                "lang": "vb",
+                "value": "CurrentBalance"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "PrimaryConstructors.CheckAccount.CurrentBalance"
+              },
+              {
+                "lang": "vb",
+                "value": "PrimaryConstructors.CheckAccount.CurrentBalance"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance*\" text=\"CurrentBalance\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance*\" text=\"CurrentBalance\"/>"
+              }
+            ],
+            "id": "CSharp12_PrimaryConstructors_CheckAccount_CurrentBalance_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount_CurrentBalance.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L23",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_PrimaryConstructors_CheckAccount_CurrentBalance",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CSharp12.PrimaryConstructors.CheckAccount.Deposit(System.Decimal)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp12.PrimaryConstructors.CheckAccount",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Deposit(decimal)"
+            },
+            {
+              "lang": "vb",
+              "value": "Deposit(Decimal)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.CheckAccount.Deposit(decimal)"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.CheckAccount.Deposit(Decimal)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.Deposit(decimal)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.Deposit(Decimal)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.Deposit(System.Decimal)\" text=\"Deposit(decimal)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.Deposit(System.Decimal)\" text=\"Deposit(decimal)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Deposit(decimal amount)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Deposit(amount As Decimal)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "amount",
+                "type": {
+                  "uid": "System.Decimal",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "decimal"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Decimal"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "decimal"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Decimal"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "decimal"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Decimal"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp12.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Deposit",
+            "path": "src/CSharp12.cs",
+            "startLine": 24,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp12",
+          "overload": {
+            "uid": "CSharp12.PrimaryConstructors.CheckAccount.Deposit*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Deposit"
+              },
+              {
+                "lang": "vb",
+                "value": "Deposit"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "PrimaryConstructors.CheckAccount.Deposit"
+              },
+              {
+                "lang": "vb",
+                "value": "PrimaryConstructors.CheckAccount.Deposit"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.Deposit"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.Deposit"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.Deposit*\" text=\"Deposit\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.Deposit*\" text=\"Deposit\"/>"
+              }
+            ],
+            "id": "CSharp12_PrimaryConstructors_CheckAccount_Deposit_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount_Deposit_System_Decimal_.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.Deposit(System.Decimal)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L25",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_PrimaryConstructors_CheckAccount_Deposit_System_Decimal_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp12.PrimaryConstructors.CheckAccount.ToString",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp12.PrimaryConstructors.CheckAccount",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ToString()"
+            },
+            {
+              "lang": "vb",
+              "value": "ToString()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.CheckAccount.ToString()"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.CheckAccount.ToString()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.ToString()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.ToString()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.ToString\" text=\"ToString()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.ToString\" text=\"ToString()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public override string ToString()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Overrides Function ToString() As String"
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              },
+              "description": "<p sourcefile=\"api/CSharp12.PrimaryConstructors.CheckAccount.yml\" sourcestartlinenumber=\"1\">A string that represents the current object.</p>\n"
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp12.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "ToString",
+            "path": "src/CSharp12.cs",
+            "startLine": 46,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp12",
+          "example": [],
+          "overridden": {
+            "uid": "CSharp12.PrimaryConstructors.BankAccount.ToString",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ToString()"
+              },
+              {
+                "lang": "vb",
+                "value": "ToString()"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "PrimaryConstructors.BankAccount.ToString()"
+              },
+              {
+                "lang": "vb",
+                "value": "PrimaryConstructors.BankAccount.ToString()"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp12.PrimaryConstructors.BankAccount.ToString()"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp12.PrimaryConstructors.BankAccount.ToString()"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_ToString\">ToString</a>()"
+              },
+              {
+                "lang": "vb",
+                "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_ToString\">ToString</a>()"
+              }
+            ]
+          },
+          "overload": {
+            "uid": "CSharp12.PrimaryConstructors.CheckAccount.ToString*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ToString"
+              },
+              {
+                "lang": "vb",
+                "value": "ToString"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "PrimaryConstructors.CheckAccount.ToString"
+              },
+              {
+                "lang": "vb",
+                "value": "PrimaryConstructors.CheckAccount.ToString"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.ToString"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.ToString"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.ToString*\" text=\"ToString\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.ToString*\" text=\"ToString\"/>"
+              }
+            ],
+            "id": "CSharp12_PrimaryConstructors_CheckAccount_ToString_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"api/CSharp12.PrimaryConstructors.CheckAccount.yml\" sourcestartlinenumber=\"1\">Returns a string that represents the current object.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount_ToString.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L47",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CSharp12_PrimaryConstructors_CheckAccount_ToString",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(System.Decimal)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp12.PrimaryConstructors.CheckAccount",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Withdrawal(decimal)"
+            },
+            {
+              "lang": "vb",
+              "value": "Withdrawal(Decimal)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.CheckAccount.Withdrawal(decimal)"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.CheckAccount.Withdrawal(Decimal)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(decimal)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(Decimal)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(System.Decimal)\" text=\"Withdrawal(decimal)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(System.Decimal)\" text=\"Withdrawal(decimal)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Withdrawal(decimal amount)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Withdrawal(amount As Decimal)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "amount",
+                "type": {
+                  "uid": "System.Decimal",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "decimal"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Decimal"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "decimal"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Decimal"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "decimal"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Decimal"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp12.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Withdrawal",
+            "path": "src/CSharp12.cs",
+            "startLine": 33,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp12",
+          "overload": {
+            "uid": "CSharp12.PrimaryConstructors.CheckAccount.Withdrawal*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Withdrawal"
+              },
+              {
+                "lang": "vb",
+                "value": "Withdrawal"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "PrimaryConstructors.CheckAccount.Withdrawal"
+              },
+              {
+                "lang": "vb",
+                "value": "PrimaryConstructors.CheckAccount.Withdrawal"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.Withdrawal"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp12.PrimaryConstructors.CheckAccount.Withdrawal"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.Withdrawal*\" text=\"Withdrawal\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp12.PrimaryConstructors.CheckAccount.Withdrawal*\" text=\"Withdrawal\"/>"
+              }
+            ],
+            "id": "CSharp12_PrimaryConstructors_CheckAccount_Withdrawal_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount_Withdrawal_System_Decimal_.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount.Withdrawal(System.Decimal)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L34",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_PrimaryConstructors_CheckAccount_Withdrawal_System_Decimal_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "PrimaryConstructors.CheckAccount"
+    },
+    {
+      "lang": "vb",
+      "value": "PrimaryConstructors.CheckAccount"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "PrimaryConstructors.CheckAccount"
+    },
+    {
+      "lang": "vb",
+      "value": "PrimaryConstructors.CheckAccount"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp12.PrimaryConstructors.CheckAccount"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp12.PrimaryConstructors.CheckAccount"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp12.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "CheckAccount",
+    "path": "src/CSharp12.cs",
+    "startLine": 20,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp12",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp12.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp12"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp12"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp12\" text=\"CSharp12\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class PrimaryConstructors.CheckAccount : PrimaryConstructors.BankAccount"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class PrimaryConstructors.CheckAccount Inherits PrimaryConstructors.BankAccount"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    },
+    {
+      "uid": "CSharp12.PrimaryConstructors.BankAccount",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp12",
+      "href": "CSharp12.PrimaryConstructors.html",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "PrimaryConstructors.BankAccount"
+        },
+        {
+          "lang": "vb",
+          "value": "PrimaryConstructors.BankAccount"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "PrimaryConstructors.BankAccount"
+        },
+        {
+          "lang": "vb",
+          "value": "PrimaryConstructors.BankAccount"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp12.PrimaryConstructors.BankAccount"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp12.PrimaryConstructors.BankAccount"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html\">BankAccount</a>"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html\">BankAccount</a>"
+        }
+      ],
+      "level": 0,
+      "index": 1
+    }
+  ],
+  "level": 2,
+  "inheritedMembers": [
+    {
+      "uid": "CSharp12.PrimaryConstructors.BankAccount.AccountID",
+      "isExtensionMethod": false,
+      "parent": "CSharp12.PrimaryConstructors.BankAccount",
+      "href": "CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_AccountID",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "AccountID"
+        },
+        {
+          "lang": "vb",
+          "value": "AccountID"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "PrimaryConstructors.BankAccount.AccountID"
+        },
+        {
+          "lang": "vb",
+          "value": "PrimaryConstructors.BankAccount.AccountID"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp12.PrimaryConstructors.BankAccount.AccountID"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp12.PrimaryConstructors.BankAccount.AccountID"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp12.PrimaryConstructors.BankAccount.AccountID\" text=\"AccountID\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp12.PrimaryConstructors.BankAccount.AccountID\" text=\"AccountID\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "property",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "CSharp12.PrimaryConstructors.BankAccount.Owner",
+      "isExtensionMethod": false,
+      "parent": "CSharp12.PrimaryConstructors.BankAccount",
+      "href": "CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_Owner",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Owner"
+        },
+        {
+          "lang": "vb",
+          "value": "Owner"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "PrimaryConstructors.BankAccount.Owner"
+        },
+        {
+          "lang": "vb",
+          "value": "PrimaryConstructors.BankAccount.Owner"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp12.PrimaryConstructors.BankAccount.Owner"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp12.PrimaryConstructors.BankAccount.Owner"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp12.PrimaryConstructors.BankAccount.Owner\" text=\"Owner\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp12.PrimaryConstructors.BankAccount.Owner\" text=\"Owner\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "property",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp12.PrimaryConstructors.CheckAccount.yml",
+  "_path": "api/CSharp12.PrimaryConstructors.CheckAccount.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_CheckAccount.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.CheckAccount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L21",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp12_PrimaryConstructors_CheckAccount",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

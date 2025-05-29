@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/BuildFromProject.md\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"3\">BuildFromProject</a><br>\nAssembly: BuildFromProject.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"6\">public enum Class1.Issue9260\n</code></pre>\n<h2 id=\"fields\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"10\">Fields</h2>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"12\"><code sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"12\">Value = 0</code></p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"14\">This is a regular enum value.</p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"16\">This is a remarks section. Very important remarks about Value go here.</p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"18\"><code sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"18\">OldAndUnusedValue = 1</code></p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"20\">This is old and unused. You shouldn't use it anymore.</p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"22\">Don't use this, seriously! Use Value instead.</p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"24\"><code sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"24\">OldAndUnusedValue2 = 2</code></p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"26\">This is old and unused. You shouldn't use it anymore.</p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"28\">Don't use this, seriously! Use Value instead.</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Class1.Issue9260.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/BuildFromProject.Class1.Issue9260.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Class1.Issue9260.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"BuildFromProject_Class1_Issue9260\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue9260.md\" sourcestartlinenumber=\"1\"> Enum Class1.Issue9260</h1>",
+  "title": " Enum Class1.Issue9260",
+  "wordCount": 69,
+  "_key": "obj/md/BuildFromProject.Class1.Issue9260.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromProject.Class1.Issue9260.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromProject.Class1.Issue9260.md/#L1"
+}

@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.Core.md\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"3\">CatLibrary.Core</a><br>\nAssembly: CatLibrary.Core.dll</p>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"6\">Enumeration ColorType</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"8\">public enum ContainersRefType.ColorType\n</code></pre>\n<h2 id=\"fields\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"12\">Fields</h2>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"14\"><code sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"14\">Red = 0</code></p>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"16\">red</p>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"20\"><code sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"20\">Blue = 1</code></p>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"22\">blue</p>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"26\"><code sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"26\">Yellow = 2</code></p>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"28\">yellow</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.ContainersRefType.ColorType.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.Core.ContainersRefType.ColorType.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.ContainersRefType.ColorType.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_Core_ContainersRefType_ColorType\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"1\"> Enum ContainersRefType.ColorType</h1>",
+  "title": " Enum ContainersRefType.ColorType",
+  "wordCount": 22,
+  "_key": "obj/md/CatLibrary.Core.ContainersRefType.ColorType.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.Core.ContainersRefType.ColorType.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.Core.ContainersRefType.ColorType.md/#L1"
+}

@@ -1,0 +1,193 @@
+﻿{
+  "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary.Core",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
+      },
+      {
+        "lang": "vb",
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ContainersRefType.ContainersRefTypeDelegate"
+    },
+    {
+      "lang": "vb",
+      "value": "ContainersRefType.ContainersRefTypeDelegate"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ContainersRefType.ContainersRefTypeDelegate"
+    },
+    {
+      "lang": "vb",
+      "value": "ContainersRefType.ContainersRefTypeDelegate"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate"
+    }
+  ],
+  "type": "delegate",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "ContainersRefTypeDelegate",
+    "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
+    "startLine": 43,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CatLibrary.Core"
+  ],
+  "namespace": {
+    "uid": "CatLibrary.Core",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
+      },
+      {
+        "lang": "vb",
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"1\">Delegate ContainersRefTypeDelegate</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public delegate void ContainersRefType.ContainersRefTypeDelegate()"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Delegate Sub ContainersRefType.ContainersRefTypeDelegate()"
+      }
+    ]
+  },
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ContainersRefTypeDelegate.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L44",
+  "description": "Delegate ContainersRefTypeDelegate",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "seealso": [],
+  "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeDelegate",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inDelegate": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/BuildFromProject.md\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"3\">BuildFromProject</a><br>\nAssembly: BuildFromProject.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"6\">public class Class1.Test&lt;T&gt;\n</code></pre>\n<h4 id=\"type-parameters\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"10\">Type Parameters</h4>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"12\"><code sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"12\">T</code></p>\n<h4 id=\"inheritance\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"14\">Inheritance</h4>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"16\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"16\">object</a> ←\n<a href=\"~/obj/md/BuildFromProject.Class1.Test-1.md\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"17\">Class1.Test&lt;T&gt;</a></p>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"19\">Inherited Members</h4>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"21\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"21\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"22\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"23\">object.GetHashCode()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"24\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"25\">object.MemberwiseClone()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"26\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"27\">object.ToString()</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Class1.Test-1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/BuildFromProject.Class1.Test-1.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Class1.Test-1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"BuildFromProject_Class1_Test_1\" sourcefile=\"obj/md/BuildFromProject.Class1.Test-1.md\" sourcestartlinenumber=\"1\"> Class Class1.Test&lt;T&gt;</h1>",
+  "title": " Class Class1.Test<T>",
+  "wordCount": 25,
+  "_key": "obj/md/BuildFromProject.Class1.Test-1.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromProject.Class1.Test-1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromProject.Class1.Test-1.md/#L1"
+}

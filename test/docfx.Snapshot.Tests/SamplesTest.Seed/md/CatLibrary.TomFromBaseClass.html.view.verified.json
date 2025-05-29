@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.md\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"3\">CatLibrary</a><br>\nAssembly: CatLibrary.dll</p>\n<p sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"6\"><em sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"6\">TomFromBaseClass</em> inherits from @</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"8\">public class TomFromBaseClass : Tom\n</code></pre>\n<h4 id=\"inheritance\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"12\">Inheritance</h4>\n<p sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"14\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"14\">object</a> ←\n<a href=\"~/obj/md/CatLibrary.Tom.md\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"15\">Tom</a> ←\n<a href=\"~/obj/md/CatLibrary.TomFromBaseClass.md\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"16\">TomFromBaseClass</a></p>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"18\">Inherited Members</h4>\n<p sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"20\"><a href=\"~/obj/md/CatLibrary.Tom.md#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"20\">Tom.TomMethod(Complex&lt;TomFromBaseClass, TomFromBaseClass&gt;, Tuple&lt;string, Tom&gt;)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"21\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"22\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"23\">object.GetHashCode()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"24\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"25\">object.MemberwiseClone()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"26\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"27\">object.ToString()</a></p>\n<h2 id=\"constructors\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"29\">Constructors</h2>\n<h3 id=\"CatLibrary_TomFromBaseClass__ctor_System_Int32_\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"31\"> TomFromBaseClass(int)</h3>\n<p sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"33\">This is a #ctor with parameter</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"35\">public TomFromBaseClass(int k)\n</code></pre>\n<h4 id=\"parameters\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"39\">Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"41\"><code sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"41\">k</code> <a href=\"https://learn.microsoft.com/dotnet/api/system.int32\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"41\">int</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.TomFromBaseClass.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.TomFromBaseClass.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.TomFromBaseClass.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_TomFromBaseClass\" sourcefile=\"obj/md/CatLibrary.TomFromBaseClass.md\" sourcestartlinenumber=\"1\"> Class TomFromBaseClass</h1>",
+  "title": " Class TomFromBaseClass",
+  "wordCount": 47,
+  "_key": "obj/md/CatLibrary.TomFromBaseClass.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.TomFromBaseClass.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.TomFromBaseClass.md/#L1"
+}

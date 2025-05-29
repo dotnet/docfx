@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<h3 id=\"classes\" sourcefile=\"obj/md/BuildFromProject.Issue8540.A.md\" sourcestartlinenumber=\"3\">Classes</h3>\n<p sourcefile=\"obj/md/BuildFromProject.Issue8540.A.md\" sourcestartlinenumber=\"5\"><a href=\"~/obj/md/BuildFromProject.Issue8540.A.A.md\" sourcefile=\"obj/md/BuildFromProject.Issue8540.A.md\" sourcestartlinenumber=\"5\">A</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Issue8540.A.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/BuildFromProject.Issue8540.A.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromProject.Issue8540.A.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"BuildFromProject_Issue8540_A\" sourcefile=\"obj/md/BuildFromProject.Issue8540.A.md\" sourcestartlinenumber=\"1\"> Namespace BuildFromProject.Issue8540.A</h1>",
+  "title": " Namespace BuildFromProject.Issue8540.A",
+  "wordCount": 2,
+  "_key": "obj/md/BuildFromProject.Issue8540.A.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromProject.Issue8540.A.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromProject.Issue8540.A.md/#L1"
+}

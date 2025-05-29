@@ -1,0 +1,559 @@
+﻿{
+  "uid": "CSharp9",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inClass": true,
+      "typePropertyName": "inClass",
+      "id": "classes",
+      "children": [
+        {
+          "uid": "CSharp9.FunctionPointers",
+          "isExtensionMethod": false,
+          "href": "CSharp9.FunctionPointers.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "FunctionPointers"
+            },
+            {
+              "lang": "vb",
+              "value": "FunctionPointers"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "FunctionPointers"
+            },
+            {
+              "lang": "vb",
+              "value": "FunctionPointers"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.FunctionPointers"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.FunctionPointers"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.FunctionPointers\" text=\"FunctionPointers\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.FunctionPointers\" text=\"FunctionPointers\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_FunctionPointers",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp9.InitOnlySetters",
+          "isExtensionMethod": false,
+          "href": "CSharp9.InitOnlySetters.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "InitOnlySetters"
+            },
+            {
+              "lang": "vb",
+              "value": "InitOnlySetters"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "InitOnlySetters"
+            },
+            {
+              "lang": "vb",
+              "value": "InitOnlySetters"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.InitOnlySetters"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.InitOnlySetters"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.InitOnlySetters\" text=\"InitOnlySetters\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.InitOnlySetters\" text=\"InitOnlySetters\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_InitOnlySetters",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp9.NativeSizedIntegers",
+          "isExtensionMethod": false,
+          "href": "CSharp9.NativeSizedIntegers.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "NativeSizedIntegers"
+            },
+            {
+              "lang": "vb",
+              "value": "NativeSizedIntegers"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "NativeSizedIntegers"
+            },
+            {
+              "lang": "vb",
+              "value": "NativeSizedIntegers"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.NativeSizedIntegers"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.NativeSizedIntegers"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.NativeSizedIntegers\" text=\"NativeSizedIntegers\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.NativeSizedIntegers\" text=\"NativeSizedIntegers\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_NativeSizedIntegers",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp9.RecordTypes",
+          "isExtensionMethod": false,
+          "href": "CSharp9.RecordTypes.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "RecordTypes"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordTypes"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RecordTypes"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordTypes"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.RecordTypes"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.RecordTypes"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_RecordTypes",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp9.RecordTypes.Person",
+          "isExtensionMethod": false,
+          "parent": "CSharp9",
+          "href": "CSharp9.RecordTypes.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "RecordTypes.Person"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordTypes.Person"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RecordTypes.Person"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordTypes.Person"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.RecordTypes.Person"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.RecordTypes.Person"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_RecordTypes_Person",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp9.RecordTypes.Teacher",
+          "isExtensionMethod": false,
+          "href": "CSharp9.RecordTypes.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "RecordTypes.Teacher"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordTypes.Teacher"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RecordTypes.Teacher"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordTypes.Teacher"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.RecordTypes.Teacher"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.RecordTypes.Teacher"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Teacher.html\">Teacher</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Teacher.html\">Teacher</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_RecordTypes_Teacher",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CSharp9"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp9"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CSharp9"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp9"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp9"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp9"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "CSharp"
+  ],
+  "level": 0,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp9.yml",
+  "_path": "api/CSharp9.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp9",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

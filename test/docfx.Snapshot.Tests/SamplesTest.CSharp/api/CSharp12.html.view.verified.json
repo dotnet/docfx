@@ -1,0 +1,690 @@
+﻿{
+  "uid": "CSharp12",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inClass": true,
+      "typePropertyName": "inClass",
+      "id": "classes",
+      "children": [
+        {
+          "uid": "CSharp12.CollectionExpressions",
+          "isExtensionMethod": false,
+          "href": "CSharp12.CollectionExpressions.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "CollectionExpressions"
+            },
+            {
+              "lang": "vb",
+              "value": "CollectionExpressions"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "CollectionExpressions"
+            },
+            {
+              "lang": "vb",
+              "value": "CollectionExpressions"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.CollectionExpressions"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.CollectionExpressions"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.CollectionExpressions\" text=\"CollectionExpressions\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.CollectionExpressions\" text=\"CollectionExpressions\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_CollectionExpressions",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp12.DefaultLambdaParameters",
+          "isExtensionMethod": false,
+          "href": "CSharp12.DefaultLambdaParameters.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "DefaultLambdaParameters"
+            },
+            {
+              "lang": "vb",
+              "value": "DefaultLambdaParameters"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "DefaultLambdaParameters"
+            },
+            {
+              "lang": "vb",
+              "value": "DefaultLambdaParameters"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.DefaultLambdaParameters"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.DefaultLambdaParameters"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.DefaultLambdaParameters\" text=\"DefaultLambdaParameters\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.DefaultLambdaParameters\" text=\"DefaultLambdaParameters\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_DefaultLambdaParameters",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp12.PrimaryConstructors",
+          "isExtensionMethod": false,
+          "href": "CSharp12.PrimaryConstructors.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.PrimaryConstructors"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.PrimaryConstructors"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors\" text=\"PrimaryConstructors\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.PrimaryConstructors\" text=\"PrimaryConstructors\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_PrimaryConstructors",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp12.PrimaryConstructors.BankAccount",
+          "isExtensionMethod": false,
+          "parent": "CSharp12",
+          "href": "CSharp12.PrimaryConstructors.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.BankAccount"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.BankAccount"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.BankAccount"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.BankAccount"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.PrimaryConstructors.BankAccount"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.PrimaryConstructors.BankAccount"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html\">BankAccount</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html\">BankAccount</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_PrimaryConstructors_BankAccount",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp12.PrimaryConstructors.CheckAccount",
+          "isExtensionMethod": false,
+          "href": "CSharp12.PrimaryConstructors.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.CheckAccount"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.CheckAccount"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.CheckAccount"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.CheckAccount"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.PrimaryConstructors.CheckAccount"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.CheckAccount.html\">CheckAccount</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.CheckAccount.html\">CheckAccount</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_PrimaryConstructors_CheckAccount",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp12.RefReadOnlyParameters",
+          "isExtensionMethod": false,
+          "href": "CSharp12.RefReadOnlyParameters.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "RefReadOnlyParameters"
+            },
+            {
+              "lang": "vb",
+              "value": "RefReadOnlyParameters"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RefReadOnlyParameters"
+            },
+            {
+              "lang": "vb",
+              "value": "RefReadOnlyParameters"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.RefReadOnlyParameters"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.RefReadOnlyParameters"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.RefReadOnlyParameters\" text=\"RefReadOnlyParameters\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.RefReadOnlyParameters\" text=\"RefReadOnlyParameters\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_RefReadOnlyParameters",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inStruct": true,
+      "typePropertyName": "inStruct",
+      "id": "structs",
+      "children": [
+        {
+          "uid": "CSharp12.InlineArrays",
+          "isExtensionMethod": false,
+          "href": "CSharp12.InlineArrays.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "InlineArrays"
+            },
+            {
+              "lang": "vb",
+              "value": "InlineArrays"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "InlineArrays"
+            },
+            {
+              "lang": "vb",
+              "value": "InlineArrays"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.InlineArrays"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.InlineArrays"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp12.InlineArrays\" text=\"InlineArrays\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp12.InlineArrays\" text=\"InlineArrays\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_InlineArrays",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp12.PrimaryConstructors.Distance",
+          "isExtensionMethod": false,
+          "href": "CSharp12.PrimaryConstructors.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.Distance"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.Distance"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "PrimaryConstructors.Distance"
+            },
+            {
+              "lang": "vb",
+              "value": "PrimaryConstructors.Distance"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp12.PrimaryConstructors.Distance"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp12.PrimaryConstructors.Distance"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.Distance.html\">Distance</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.html\">PrimaryConstructors</a>.<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.Distance.html\">Distance</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp12_PrimaryConstructors_Distance",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CSharp12"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp12"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CSharp12"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp12"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp12"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp12"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "CSharp"
+  ],
+  "level": 0,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp12.yml",
+  "_path": "api/CSharp12.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp12",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

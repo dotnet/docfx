@@ -1,0 +1,21 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "description": "Cat's interface",
+  "title": "Interface ICat",
+  "content": "<h1 class='section api' data-uid='CatLibrary.ICat' data-commentId='T:CatLibrary.ICat' id='CatLibrary_ICat'>Interface ICat    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs#L56'><i class='bi bi-code-slash'></i></a></h1>\r\n <div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='CatLibrary.html'>CatLibrary</a></dd></dl><dl><dt>Assembly</dt><dd>CatLibrary.dll</dd></dl>\r\n</div><p sourceFile=\"obj/apipage/CatLibrary.ICat.yml\" sourceStartLineNumber=\"1\">Cat's interface</p>\n<pre><code class='lang-csharp'>public interface ICat : IAnimal</code></pre><h4 class='section'>Implements</h4><dl class=\"typelist\"><dd>\r\n<div>\n<a href='CatLibrary.IAnimal.html'>IAnimal</a>\n</div>\n\r\n</dd></dl><h4 class='section'>Extension Methods</h4><dl class=\"typelist\"><dd>\r\n<div>\n<a href='CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_'>ICatExtension.Play(ICat, ContainersRefType.ColorType)</a>\n</div>\n<div>\n<a href='CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_'>ICatExtension.Sleep(ICat, long)</a>\n</div>\n\r\n</dd></dl><h3 class='section api' data-uid='CatLibrary.ICat.eat' data-commentId='E:CatLibrary.ICat.eat' id='CatLibrary_ICat_eat'>eat    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs#L62'><i class='bi bi-code-slash'></i></a></h3>\r\n <p sourceFile=\"obj/apipage/CatLibrary.ICat.yml\" sourceStartLineNumber=\"1\">eat event of cat. Every cat must implement this event.</p>\n<pre><code class='lang-csharp'>event EventHandler eat</code></pre><h4 class='section'>Event Type</h4><dl class='parameters'><dt> <a href='https://learn.microsoft.com/dotnet/api/system.eventhandler'>EventHandler</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/CatLibrary.ICat.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/CatLibrary.ICat.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

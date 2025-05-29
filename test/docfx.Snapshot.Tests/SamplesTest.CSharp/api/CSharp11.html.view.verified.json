@@ -1,0 +1,573 @@
+﻿{
+  "uid": "CSharp11",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inClass": true,
+      "typePropertyName": "inClass",
+      "id": "classes",
+      "children": [
+        {
+          "uid": "CSharp11.RequiredModifier",
+          "isExtensionMethod": false,
+          "href": "CSharp11.RequiredModifier.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "RequiredModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "RequiredModifier"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RequiredModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "RequiredModifier"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.RequiredModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.RequiredModifier"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp11.RequiredModifier\" text=\"RequiredModifier\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp11.RequiredModifier\" text=\"RequiredModifier\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp11_RequiredModifier",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp11.ScopedModifier",
+          "isExtensionMethod": false,
+          "href": "CSharp11.ScopedModifier.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ScopedModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "ScopedModifier"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ScopedModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "ScopedModifier"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.ScopedModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.ScopedModifier"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp11.ScopedModifier\" text=\"ScopedModifier\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp11.ScopedModifier\" text=\"ScopedModifier\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp11_ScopedModifier",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp11.StaticAbstractMembersInInterfaces",
+          "isExtensionMethod": false,
+          "href": "CSharp11.StaticAbstractMembersInInterfaces.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "StaticAbstractMembersInInterfaces"
+            },
+            {
+              "lang": "vb",
+              "value": "StaticAbstractMembersInInterfaces"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "StaticAbstractMembersInInterfaces"
+            },
+            {
+              "lang": "vb",
+              "value": "StaticAbstractMembersInInterfaces"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.StaticAbstractMembersInInterfaces"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.StaticAbstractMembersInInterfaces"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp11_StaticAbstractMembersInInterfaces",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inStruct": true,
+      "typePropertyName": "inStruct",
+      "id": "structs",
+      "children": [
+        {
+          "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
+          "isExtensionMethod": false,
+          "parent": "CSharp11",
+          "href": "CSharp11.StaticAbstractMembersInInterfaces.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
+            },
+            {
+              "lang": "vb",
+              "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
+            },
+            {
+              "lang": "vb",
+              "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inInterface": true,
+      "typePropertyName": "inInterface",
+      "id": "interfaces",
+      "children": [
+        {
+          "uid": "CSharp11.CheckedUserDefinedOperators`1",
+          "isExtensionMethod": false,
+          "href": "CSharp11.CheckedUserDefinedOperators-1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "CheckedUserDefinedOperators<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CheckedUserDefinedOperators(Of T)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "CheckedUserDefinedOperators<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CheckedUserDefinedOperators(Of T)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.CheckedUserDefinedOperators<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.CheckedUserDefinedOperators(Of T)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html\">CheckedUserDefinedOperators</a>&lt;T&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html\">CheckedUserDefinedOperators</a>(Of T)"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "interface",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp11_CheckedUserDefinedOperators_1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1",
+          "isExtensionMethod": false,
+          "href": "CSharp11.StaticAbstractMembersInInterfaces.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "StaticAbstractMembersInInterfaces.IGetNext<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "StaticAbstractMembersInInterfaces.IGetNext<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html\">IGetNext</a>&lt;T&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html\">IGetNext</a>(Of T)"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "interface",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CSharp11"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp11"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CSharp11"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp11"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp11"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp11"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "CSharp"
+  ],
+  "level": 0,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp11.yml",
+  "_path": "api/CSharp11.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp11",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

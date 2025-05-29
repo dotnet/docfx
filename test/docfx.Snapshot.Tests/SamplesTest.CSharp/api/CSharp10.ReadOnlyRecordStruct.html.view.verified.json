@@ -1,0 +1,1464 @@
+﻿{
+  "uid": "CSharp10.ReadOnlyRecordStruct",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp10",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp10.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp10"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp10"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp10"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp10"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp10"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp10"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inConstructor": true,
+      "typePropertyName": "inConstructor",
+      "id": "constructors",
+      "children": [
+        {
+          "uid": "CSharp10.ReadOnlyRecordStruct.#ctor(System.Double,System.Double,System.Double)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp10.ReadOnlyRecordStruct",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyRecordStruct(double, double, double)"
+            },
+            {
+              "lang": "vb",
+              "value": "New(Double, Double, Double)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyRecordStruct.ReadOnlyRecordStruct(double, double, double)"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyRecordStruct.New(Double, Double, Double)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.ReadOnlyRecordStruct.ReadOnlyRecordStruct(double, double, double)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.ReadOnlyRecordStruct.New(Double, Double, Double)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.#ctor(System.Double,System.Double,System.Double)\" text=\"ReadOnlyRecordStruct(double, double, double)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.#ctor(System.Double,System.Double,System.Double)\" text=\"ReadOnlyRecordStruct(double, double, double)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public ReadOnlyRecordStruct(double X, double Y, double Z)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub New(X As Double, Y As Double, Z As Double)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "X",
+                "type": {
+                  "uid": "System.Double",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "double"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Double"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "double"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Double"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "double"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Double"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "Y",
+                "type": {
+                  "uid": "System.Double",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "double"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Double"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "double"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Double"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "double"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Double"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "Z",
+                "type": {
+                  "uid": "System.Double",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "double"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Double"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "double"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Double"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "double"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Double"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp10.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": ".ctor",
+            "path": "src/CSharp10.cs",
+            "startLine": 2,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp10",
+          "overload": {
+            "uid": "CSharp10.ReadOnlyRecordStruct.#ctor*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyRecordStruct"
+              },
+              {
+                "lang": "vb",
+                "value": "New"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyRecordStruct.ReadOnlyRecordStruct"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnlyRecordStruct.New"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp10.ReadOnlyRecordStruct.ReadOnlyRecordStruct"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp10.ReadOnlyRecordStruct.New"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.#ctor*\" text=\"ReadOnlyRecordStruct\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.#ctor*\" text=\"ReadOnlyRecordStruct\"/>"
+              }
+            ],
+            "id": "CSharp10_ReadOnlyRecordStruct__ctor_"
+          },
+          "level": 0,
+          "type": "constructor",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct__ctor_System_Double_System_Double_System_Double_.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct.%23ctor(System.Double%2CSystem.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L3",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_ReadOnlyRecordStruct__ctor_System_Double_System_Double_System_Double_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "CSharp10.ReadOnlyRecordStruct.X",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp10.ReadOnlyRecordStruct",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "X"
+            },
+            {
+              "lang": "vb",
+              "value": "X"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyRecordStruct.X"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyRecordStruct.X"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.ReadOnlyRecordStruct.X"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.ReadOnlyRecordStruct.X"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.X\" text=\"X\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.X\" text=\"X\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public double X { get; init; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property X As Double"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Double",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp10.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "X",
+            "path": "src/CSharp10.cs",
+            "startLine": 2,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp10",
+          "overload": {
+            "uid": "CSharp10.ReadOnlyRecordStruct.X*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "X"
+              },
+              {
+                "lang": "vb",
+                "value": "X"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyRecordStruct.X"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnlyRecordStruct.X"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp10.ReadOnlyRecordStruct.X"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp10.ReadOnlyRecordStruct.X"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.X*\" text=\"X\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.X*\" text=\"X\"/>"
+              }
+            ],
+            "id": "CSharp10_ReadOnlyRecordStruct_X_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct_X.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L3",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_ReadOnlyRecordStruct_X",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp10.ReadOnlyRecordStruct.Y",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp10.ReadOnlyRecordStruct",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Y"
+            },
+            {
+              "lang": "vb",
+              "value": "Y"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyRecordStruct.Y"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyRecordStruct.Y"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.ReadOnlyRecordStruct.Y"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.ReadOnlyRecordStruct.Y"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.Y\" text=\"Y\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.Y\" text=\"Y\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public double Y { get; init; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property Y As Double"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Double",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp10.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Y",
+            "path": "src/CSharp10.cs",
+            "startLine": 2,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp10",
+          "overload": {
+            "uid": "CSharp10.ReadOnlyRecordStruct.Y*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Y"
+              },
+              {
+                "lang": "vb",
+                "value": "Y"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyRecordStruct.Y"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnlyRecordStruct.Y"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp10.ReadOnlyRecordStruct.Y"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp10.ReadOnlyRecordStruct.Y"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.Y*\" text=\"Y\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.Y*\" text=\"Y\"/>"
+              }
+            ],
+            "id": "CSharp10_ReadOnlyRecordStruct_Y_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct_Y.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L3",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_ReadOnlyRecordStruct_Y",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp10.ReadOnlyRecordStruct.Z",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp10.ReadOnlyRecordStruct",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Z"
+            },
+            {
+              "lang": "vb",
+              "value": "Z"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyRecordStruct.Z"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyRecordStruct.Z"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.ReadOnlyRecordStruct.Z"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.ReadOnlyRecordStruct.Z"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.Z\" text=\"Z\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.Z\" text=\"Z\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public double Z { get; init; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property Z As Double"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Double",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp10.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Z",
+            "path": "src/CSharp10.cs",
+            "startLine": 2,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp10",
+          "overload": {
+            "uid": "CSharp10.ReadOnlyRecordStruct.Z*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Z"
+              },
+              {
+                "lang": "vb",
+                "value": "Z"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyRecordStruct.Z"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnlyRecordStruct.Z"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp10.ReadOnlyRecordStruct.Z"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp10.ReadOnlyRecordStruct.Z"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.Z*\" text=\"Z\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct.Z*\" text=\"Z\"/>"
+              }
+            ],
+            "id": "CSharp10_ReadOnlyRecordStruct_Z_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct_Z.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct.Z%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L3",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp10_ReadOnlyRecordStruct_Z",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ReadOnlyRecordStruct"
+    },
+    {
+      "lang": "vb",
+      "value": "ReadOnlyRecordStruct"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ReadOnlyRecordStruct"
+    },
+    {
+      "lang": "vb",
+      "value": "ReadOnlyRecordStruct"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp10.ReadOnlyRecordStruct"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp10.ReadOnlyRecordStruct"
+    }
+  ],
+  "type": "struct",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp10.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "ReadOnlyRecordStruct",
+    "path": "src/CSharp10.cs",
+    "startLine": 2,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp10",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp10.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp10"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp10"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp10"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp10"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp10"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp10"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public readonly record struct ReadOnlyRecordStruct : IEquatable<ReadOnlyRecordStruct>"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Structure ReadOnlyRecordStruct Implements IEquatable(Of ReadOnlyRecordStruct)"
+      }
+    ]
+  },
+  "level": 0,
+  "implements": [
+    {
+      "uid": "System.IEquatable{CSharp10.ReadOnlyRecordStruct}",
+      "definition": "System.IEquatable`1",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "IEquatable<ReadOnlyRecordStruct>"
+        },
+        {
+          "lang": "vb",
+          "value": "IEquatable(Of ReadOnlyRecordStruct)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "IEquatable<ReadOnlyRecordStruct>"
+        },
+        {
+          "lang": "vb",
+          "value": "IEquatable(Of ReadOnlyRecordStruct)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.IEquatable<CSharp10.ReadOnlyRecordStruct>"
+        },
+        {
+          "lang": "vb",
+          "value": "System.IEquatable(Of CSharp10.ReadOnlyRecordStruct)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<a class=\"xref\" href=\"CSharp10.ReadOnlyRecordStruct.html\">ReadOnlyRecordStruct</a>&gt;"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <a class=\"xref\" href=\"CSharp10.ReadOnlyRecordStruct.html\">ReadOnlyRecordStruct</a>)"
+        }
+      ]
+    }
+  ],
+  "inheritedMembers": [
+    {
+      "uid": "System.ValueType.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.ValueType.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.ValueType.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp10.ReadOnlyRecordStruct.yml",
+  "_path": "api/CSharp10.ReadOnlyRecordStruct.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L3",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp10_ReadOnlyRecordStruct",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inStruct": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

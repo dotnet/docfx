@@ -1,0 +1,1141 @@
+﻿{
+  "_raw": "{\r\n  \"swagger\": \"2.0\",\r\n  \"info\": {\r\n    \"title\": \"Contacts\",\r\n    \"version\": \"1.6\"\r\n  },\r\n  \"paths\": {\r\n    \"/contacts\": {\r\n      \"get\": {\r\n        \"parameters\": [\r\n          {\r\n            \"in\": \"query\",\r\n            \"description\": \"The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.\",\r\n            \"name\": \"api-version\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"enum\": [\r\n              \"1.5\",\r\n              \"1.6\"\r\n            ],\r\n            \"default\": \"1.6\"\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"OK. Indicates success. The results are returned in the response body.\",\r\n            \"examples\": {\r\n              \"application/json\": {\r\n                \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObjects/Microsoft.DirectoryServices.Contact\",\r\n                \"value\": [\r\n                  {\r\n                    \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\r\n                    \"objectType\": \"Contact\",\r\n                    \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",\r\n                    \"deletionTimestamp\": null,\r\n                    \"city\": null,\r\n                    \"companyName\": null,\r\n                    \"country\": null,\r\n                    \"department\": null,\r\n                    \"dirSyncEnabled\": null,\r\n                    \"displayName\": \"Marcus Breyer\",\r\n                    \"facsimileTelephoneNumber\": null,\r\n                    \"givenName\": \"Marcus\",\r\n                    \"jobTitle\": null,\r\n                    \"lastDirSyncTime\": null,\r\n                    \"mail\": \"Marcus@contoso.com\",\r\n                    \"mailNickname\": \"MarcusBreyer\",\r\n                    \"mobile\": null,\r\n                    \"physicalDeliveryOfficeName\": null,\r\n                    \"postalCode\": null,\r\n                    \"provisioningErrors\": [],\r\n                    \"proxyAddresses\": [\r\n                      \"SMTP:Marcus@contoso.com\"\r\n                    ],\r\n                    \"sipProxyAddress\": null,\r\n                    \"state\": null,\r\n                    \"streetAddress\": null,\r\n                    \"surname\": \"Breyer\",\r\n                    \"telephoneNumber\": null\r\n                  },\r\n                  {\r\n                    \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\r\n                    \"objectType\": \"Contact\",\r\n                    \"objectId\": \"35110b16-360c-4c4a-93b2-03f065fabd93\",\r\n                    \"deletionTimestamp\": null,\r\n                    \"city\": null,\r\n                    \"companyName\": null,\r\n                    \"country\": null,\r\n                    \"department\": null,\r\n                    \"dirSyncEnabled\": null,\r\n                    \"displayName\": \"Yossi Ran\",\r\n                    \"facsimileTelephoneNumber\": null,\r\n                    \"givenName\": \"Yossi\",\r\n                    \"jobTitle\": null,\r\n                    \"lastDirSyncTime\": null,\r\n                    \"mail\": \"Yossi@contoso.com\",\r\n                    \"mailNickname\": \"YossiRan\",\r\n                    \"mobile\": null,\r\n                    \"physicalDeliveryOfficeName\": null,\r\n                    \"postalCode\": null,\r\n                    \"provisioningErrors\": [],\r\n                    \"proxyAddresses\": [\r\n                      \"SMTP:Yossi@contoso.com\"\r\n                    ],\r\n                    \"sipProxyAddress\": null,\r\n                    \"state\": null,\r\n                    \"streetAddress\": null,\r\n                    \"surname\": \"Ran\",\r\n                    \"telephoneNumber\": null\r\n                  },\r\n                  {\r\n                    \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\r\n                    \"objectType\": \"Contact\",\r\n                    \"objectId\": \"7163f3b8-70c9-43d2-b9e1-4467ddaf087a\",\r\n                    \"deletionTimestamp\": null,\r\n                    \"city\": null,\r\n                    \"companyName\": null,\r\n                    \"country\": null,\r\n                    \"department\": null,\r\n                    \"dirSyncEnabled\": null,\r\n                    \"displayName\": \"Jeremy Nelson\",\r\n                    \"facsimileTelephoneNumber\": null,\r\n                    \"givenName\": \"Jeremy\",\r\n                    \"jobTitle\": null,\r\n                    \"lastDirSyncTime\": null,\r\n                    \"mail\": \"Jeremy@contoso.com\",\r\n                    \"mailNickname\": \"JeremyNelson\",\r\n                    \"mobile\": null,\r\n                    \"physicalDeliveryOfficeName\": null,\r\n                    \"postalCode\": null,\r\n                    \"provisioningErrors\": [],\r\n                    \"proxyAddresses\": [\r\n                      \"SMTP:Jeremy@contoso.com\"\r\n                    ],\r\n                    \"sipProxyAddress\": null,\r\n                    \"state\": null,\r\n                    \"streetAddress\": null,\r\n                    \"surname\": \"Nelson\",\r\n                    \"telephoneNumber\": null\r\n                  },\r\n                  {\r\n                    \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\r\n                    \"objectType\": \"Contact\",\r\n                    \"objectId\": \"83234b5c-3a10-4108-8f36-39b1addadfdb\",\r\n                    \"deletionTimestamp\": null,\r\n                    \"city\": null,\r\n                    \"companyName\": null,\r\n                    \"country\": null,\r\n                    \"department\": null,\r\n                    \"dirSyncEnabled\": null,\r\n                    \"displayName\": \"David Strome\",\r\n                    \"facsimileTelephoneNumber\": null,\r\n                    \"givenName\": \"David\",\r\n                    \"jobTitle\": null,\r\n                    \"lastDirSyncTime\": null,\r\n                    \"mail\": \"David@contoso.com\",\r\n                    \"mailNickname\": \"DavidStrome\",\r\n                    \"mobile\": null,\r\n                    \"physicalDeliveryOfficeName\": null,\r\n                    \"postalCode\": null,\r\n                    \"provisioningErrors\": [],\r\n                    \"proxyAddresses\": [\r\n                      \"SMTP:David@contoso.com\"\r\n                    ],\r\n                    \"sipProxyAddress\": null,\r\n                    \"state\": null,\r\n                    \"streetAddress\": null,\r\n                    \"surname\": \"Strome\",\r\n                    \"telephoneNumber\": null\r\n                  },\r\n                  {\r\n                    \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\r\n                    \"objectType\": \"Contact\",\r\n                    \"objectId\": \"8c1315ce-bf6f-4e26-b24f-c830606ef41c\",\r\n                    \"deletionTimestamp\": null,\r\n                    \"city\": null,\r\n                    \"companyName\": null,\r\n                    \"country\": null,\r\n                    \"department\": null,\r\n                    \"dirSyncEnabled\": null,\r\n                    \"displayName\": \"Holly Holt\",\r\n                    \"facsimileTelephoneNumber\": null,\r\n                    \"givenName\": \"Holly\",\r\n                    \"jobTitle\": null,\r\n                    \"lastDirSyncTime\": null,\r\n                    \"mail\": \"Holly@contoso.com\",\r\n                    \"mailNickname\": \"HollyHolt\",\r\n                    \"mobile\": null,\r\n                    \"physicalDeliveryOfficeName\": null,\r\n                    \"postalCode\": null,\r\n                    \"provisioningErrors\": [],\r\n                    \"proxyAddresses\": [\r\n                      \"SMTP:Holly@contoso.com\"\r\n                    ],\r\n                    \"sipProxyAddress\": null,\r\n                    \"state\": null,\r\n                    \"streetAddress\": null,\r\n                    \"surname\": \"Holt\",\r\n                    \"telephoneNumber\": null\r\n                  }\r\n                ]\r\n              }\r\n            }\r\n          }\r\n        },\r\n        \"description\": \"<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\",\r\n        \"summary\": \"You can get a collection of contacts from your tenant.\",\r\n        \"operationId\": \"get contacts\"\r\n      }\r\n    },\r\n    \"/contacts/{object_id}\": {\r\n      \"get\": {\r\n        \"parameters\": [\r\n          {\r\n            \"in\": \"path\",\r\n            \"description\": \"The object ID (GUID) of the target contact.\",\r\n            \"name\": \"object_id\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"default\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\"\r\n          },\r\n          {\r\n            \"in\": \"query\",\r\n            \"description\": \"Specifies the version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.\",\r\n            \"name\": \"api-version\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"enum\": [\r\n              \"1.5\",\r\n              \"1.6\"\r\n            ],\r\n            \"default\": \"1.6\"\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"OK. Indicates success. The contact is returned in the response body.\",\r\n            \"examples\": {\r\n              \"application/json\": {\r\n                \"odata.metadata\": \"https://graph.windows.net/graphdir1.onmicrosoft.com/$metadata#directoryObjects/Microsoft.DirectoryServices.Contact/@Element\",\r\n                \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\r\n                \"objectType\": \"Contact\",\r\n                \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",\r\n                \"deletionTimestamp\": null,\r\n                \"city\": null,\r\n                \"companyName\": null,\r\n                \"country\": null,\r\n                \"department\": null,\r\n                \"dirSyncEnabled\": null,\r\n                \"displayName\": \"Marcus Breyer\",\r\n                \"facsimileTelephoneNumber\": null,\r\n                \"givenName\": \"Marcus\",\r\n                \"jobTitle\": null,\r\n                \"lastDirSyncTime\": null,\r\n                \"mail\": \"Marcus@contoso.com\",\r\n                \"mailNickname\": \"MarcusBreyer\",\r\n                \"mobile\": null,\r\n                \"physicalDeliveryOfficeName\": null,\r\n                \"postalCode\": null,\r\n                \"provisioningErrors\": [],\r\n                \"proxyAddresses\": [\r\n                  \"SMTP:Marcus@contoso.com\"\r\n                ],\r\n                \"sipProxyAddress\": null,\r\n                \"state\": null,\r\n                \"streetAddress\": null,\r\n                \"surname\": \"Breyer\",\r\n                \"telephoneNumber\": null\r\n              }\r\n            }\r\n          }\r\n        },\r\n        \"description\": \"<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\",\r\n        \"summary\": \"Get a contact by using the object ID.\",\r\n        \"operationId\": \"get contact by id\"\r\n      },\r\n      \"patch\": {\r\n        \"parameters\": [\r\n          {\r\n            \"in\": \"path\",\r\n            \"description\": \"The object ID (GUID) of the target contact.\",\r\n            \"name\": \"object_id\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"default\": \"7163f3b8-70c9-43d2-b9e1-4467ddaf087a\"\r\n          },\r\n          {\r\n            \"in\": \"query\",\r\n            \"description\": \"The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.\",\r\n            \"name\": \"api-version\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"enum\": [\r\n              \"1.5\",\r\n              \"1.6\"\r\n            ],\r\n            \"default\": \"1.6\"\r\n          },\r\n          {\r\n            \"in\": \"body\",\r\n            \"description\": \"this is request body, not real parameter\",\r\n            \"name\": \"bodyparam\",\r\n            \"required\": false,\r\n            \"schema\": {\r\n              \"$ref\": \"#/definitions/contact\",\r\n              \"example\": {\r\n                \"department\": \"Sales\",\r\n                \"jobTitle\": \"Sales Rep\"\r\n              }\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"204\": {\r\n            \"description\": \"No Content. Indicates success. No response body is returned.\"\r\n          }\r\n        },\r\n        \"description\": \"<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>\",\r\n        \"summary\": \"Change a contact's properties.\",\r\n        \"operationId\": \"update contact\"\r\n      },\r\n      \"delete\": {\r\n        \"parameters\": [\r\n          {\r\n            \"in\": \"path\",\r\n            \"description\": \"The object ID (GUID) of the target contact.\",\r\n            \"name\": \"object_id\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"default\": \"7163f3b8-70c9-43d2-b9e1-4467ddaf087a\"\r\n          },\r\n          {\r\n            \"in\": \"query\",\r\n            \"description\": \"Specifies the version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.\",\r\n            \"name\": \"api-version\",\r\n            \"required\": false,\r\n            \"type\": \"string\",\r\n            \"enum\": [\r\n              \"1.5\",\r\n              \"1.6\"\r\n            ],\r\n            \"default\": \"1.6\"\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"204\": {\r\n            \"description\": \"No Content. Indicates success.\"\r\n          }\r\n        },\r\n        \"description\": \"<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>\",\r\n        \"summary\": \"Delete a contact.\",\r\n        \"operationId\": \"delete contact\"\r\n      }\r\n    },\r\n    \"/contacts/{object_id}/$links/manager\": {\r\n      \"get\": {\r\n        \"parameters\": [\r\n          {\r\n            \"in\": \"path\",\r\n            \"description\": \"The object ID (GUID) of the target contact.\",\r\n            \"name\": \"object_id\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"default\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\"\r\n          },\r\n          {\r\n            \"in\": \"query\",\r\n            \"description\": \"The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.\",\r\n            \"name\": \"api-version\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"enum\": [\r\n              \"1.5\",\r\n              \"1.6\"\r\n            ],\r\n            \"default\": \"1.6\"\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"OK. Indicates success. A link to the contact's manager is returned.\",\r\n            \"examples\": {\r\n              \"application/json\": {\r\n                \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObjects/$links/manager\",\r\n                \"url\": \"https://graph.windows.net/myorganization/directoryObjects/35110b16-360c-4c4a-93b2-03f065fabd93/Microsoft.WindowsAzure.ActiveDirectory.Contact\"\r\n              }\r\n            }\r\n          },\r\n          \"404\": {\r\n            \"description\": \"Not Found. The requested resource was not found. This can occur if the manager property is not currently set for the specified contact. It can also have other causes, for example, a bad domain. A code and associated message is returned with the error.\",\r\n            \"examples\": {\r\n              \"application/json\": {\r\n                \"odata.error\": {\r\n                  \"code\": \"Request_ResourceNotFound\",\r\n                  \"message\": {\r\n                    \"lang\": \"en\",\r\n                    \"value\": \"Resource not found for the segment 'manager'.\"\r\n                  }\r\n                }\r\n              }\r\n            }\r\n          }\r\n        },\r\n        \"description\": \"<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\",\r\n        \"summary\": \"Get a link to the contact's manager.\",\r\n        \"operationId\": \"get contact manager link\"\r\n      },\r\n      \"put\": {\r\n        \"parameters\": [\r\n          {\r\n            \"in\": \"path\",\r\n            \"description\": \"The object ID (GUID) of the target contact.\",\r\n            \"name\": \"object_id\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"default\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\"\r\n          },\r\n          {\r\n            \"in\": \"query\",\r\n            \"description\": \"The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.\",\r\n            \"name\": \"api-version\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"enum\": [\r\n              \"1.5\",\r\n              \"1.6\"\r\n            ],\r\n            \"default\": \"1.6\"\r\n          },\r\n          {\r\n            \"in\": \"body\",\r\n            \"description\": \"The request body contains a single property that specifies the URL of the user or contact to add as manager.\",\r\n            \"name\": \"bodyparam\",\r\n            \"required\": true,\r\n            \"schema\": {\r\n              \"required\": [\r\n                \"url\"\r\n              ],\r\n              \"properties\": {\r\n                \"url\": {\r\n                  \"type\": \"string\"\r\n                }\r\n              },\r\n              \"example\": {\r\n                \"url\": \"https://graph.windows.net/myorganization/directoryObjects/35110b16-360c-4c4a-93b2-03f065fabd93\"\r\n              }\r\n            }\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"204\": {\r\n            \"description\": \"No Content. Indicates success. No response body is returned.\"\r\n          }\r\n        },\r\n        \"description\": \"<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>\",\r\n        \"summary\": \"Update the contact's manager\",\r\n        \"operationId\": \"update contact manager\"\r\n      },\r\n      \"delete\": {\r\n        \"parameters\": [\r\n          {\r\n            \"in\": \"path\",\r\n            \"description\": \"The object ID (GUID) of the target contact.\",\r\n            \"name\": \"object_id\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"default\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\"\r\n          },\r\n          {\r\n            \"in\": \"query\",\r\n            \"description\": \"The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.\",\r\n            \"name\": \"api-version\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"enum\": [\r\n              \"1.5\",\r\n              \"1.6\"\r\n            ],\r\n            \"default\": \"1.6\"\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"204\": {\r\n            \"description\": \"No Content. Indicates success. N response body is returned.\"\r\n          }\r\n        },\r\n        \"description\": \"<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>\",\r\n        \"summary\": \"Delete the contact's manager.\",\r\n        \"operationId\": \"delete contact manager by id\"\r\n      }\r\n    },\r\n    \"/contacts/{object_id}/$links/directReports\": {\r\n      \"get\": {\r\n        \"parameters\": [\r\n          {\r\n            \"in\": \"path\",\r\n            \"description\": \"The object ID (GUID) of the target contact.\",\r\n            \"name\": \"object_id\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"default\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\"\r\n          },\r\n          {\r\n            \"in\": \"query\",\r\n            \"description\": \"The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.\",\r\n            \"name\": \"api-version\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"enum\": [\r\n              \"1.5\",\r\n              \"1.6\"\r\n            ],\r\n            \"default\": \"1.6\"\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"OK. Indicates success. One or more direct reports are returned.\",\r\n            \"examples\": {\r\n              \"application/json\": {\r\n                \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObjects/$links/directReports\",\r\n                \"value\": [\r\n                  {\r\n                    \"url\": \"https://graph.windows.net/myorganization/directoryObjects/8c1315ce-bf6f-4e26-b24f-c830606ef41c/Microsoft.DirectoryServices.Contact\"\r\n                  }\r\n                ]\r\n              }\r\n            }\r\n          }\r\n        },\r\n        \"description\": \"<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\",\r\n        \"summary\": \"Get a links to the contact's direct reports.\",\r\n        \"operationId\": \"get contact direct reports links\"\r\n      }\r\n    },\r\n    \"/contacts/{object_id}/$links/memberOf\": {\r\n      \"get\": {\r\n        \"parameters\": [\r\n          {\r\n            \"in\": \"path\",\r\n            \"description\": \"The object ID (GUID) of the target contact.\",\r\n            \"name\": \"object_id\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"default\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\"\r\n          },\r\n          {\r\n            \"in\": \"query\",\r\n            \"description\": \"The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.\",\r\n            \"name\": \"api-version\",\r\n            \"required\": true,\r\n            \"type\": \"string\",\r\n            \"enum\": [\r\n              \"1.5\",\r\n              \"1.6\"\r\n            ],\r\n            \"default\": \"1.6\"\r\n          }\r\n        ],\r\n        \"responses\": {\r\n          \"200\": {\r\n            \"description\": \"OK. Indicates success. One or more groups and/or directory roles are returned.\",\r\n            \"examples\": {\r\n              \"application/json\": {\r\n                \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObjects/$links/memberOf\",\r\n                \"value\": [\r\n                  {\r\n                    \"url\": \"https://graph.windows.net/myorganization/directoryObjects/12345678-b942-47c9-a10e-a4bee353ce60/Microsoft.DirectoryServices.Group\"\r\n                  }\r\n                ]\r\n              }\r\n            }\r\n          }\r\n        },\r\n        \"description\": \"<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\",\r\n        \"summary\": \"Get a links to the contact's direct group and directory role memberships.\",\r\n        \"operationId\": \"get contact memberOf links\"\r\n      }\r\n    }\r\n  },\r\n  \"host\": \"graph.windows.net\",\r\n  \"basePath\": \"/myorganization\",\r\n  \"schemes\": [\r\n    \"https\"\r\n  ],\r\n  \"definitions\": {\r\n    \"contact\": {\r\n      \"properties\": {\r\n        \"objectType\": {\r\n          \"type\": \"string\",\r\n          \"readOnly\": true\r\n        },\r\n        \"objectId\": {\r\n          \"type\": \"string\",\r\n          \"readOnly\": true\r\n        },\r\n        \"deletionTimestamp\": {\r\n          \"type\": \"string\",\r\n          \"format\": \"date-time\",\r\n          \"readOnly\": true\r\n        },\r\n        \"city\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"country\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"department\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"dirSyncEnabled\": {\r\n          \"type\": \"boolean\"\r\n        },\r\n        \"displayName\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"facsimileTelephoneNumber\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"givenName\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"jobTitle\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"lastDirSyncTime\": {\r\n          \"type\": \"string\",\r\n          \"format\": \"date-time\",\r\n          \"readOnly\": true\r\n        },\r\n        \"mail\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"mailNickname\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"mobile\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"physicalDeliveryOfficeName\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"postalCode\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"provisioningErrors\": {\r\n          \"type\": \"array\",\r\n          \"items\": {\r\n            \"$ref\": \"#/definitions/ProvisioningError\"\r\n          },\r\n          \"readOnly\": true\r\n        },\r\n        \"proxyAddresses\": {\r\n          \"type\": \"array\",\r\n          \"items\": {\r\n            \"type\": \"string\"\r\n          },\r\n          \"readOnly\": true,\r\n          \"example\": {\r\n            \"proxyAddresses\": [\r\n              \"SMTP:garthf@a830edad9050849NDA1.onmicrosoft.com\"\r\n            ]\r\n          }\r\n        },\r\n        \"sipProxyAddress\": {\r\n          \"type\": \"string\",\r\n          \"readOnly\": true\r\n        },\r\n        \"state\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"streetAddress\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"surname\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"telephoneNumber\": {\r\n          \"type\": \"string\"\r\n        },\r\n        \"thumbnailPhoto\": {\r\n          \"type\": \"string\"\r\n        }\r\n      },\r\n      \"required\": [\r\n        \"displayName\"\r\n      ]\r\n    },\r\n    \"ProvisioningError\": {\r\n      \"properties\": {\r\n        \"errorDetail\": {\r\n          \"type\": \"string\",\r\n          \"readOnly\": true\r\n        },\r\n        \"resolved\": {\r\n          \"type\": \"boolean\",\r\n          \"readOnly\": true\r\n        },\r\n        \"serviceInstance\": {\r\n          \"type\": \"string\",\r\n          \"readOnly\": true\r\n        },\r\n        \"timestamp\": {\r\n          \"type\": \"string\",\r\n          \"format\": \"date-time\",\r\n          \"readOnly\": true\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n",
+  "tags": [],
+  "children": [
+    {
+      "path": "/contacts?api-version",
+      "operation": "GET",
+      "operationId": "get contacts",
+      "parameters": [
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.</p>\n",
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "enum": [
+            "1.5",
+            "1.6"
+          ],
+          "default": "1.6"
+        }
+      ],
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">OK. Indicates success. The results are returned in the response body.</p>\n",
+          "examples": [
+            {
+              "mimeType": "application/json",
+              "content": "{\n  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObjects/Microsoft.DirectoryServices.Contact\",\n  \"value\": [\n    {\n      \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\n      \"objectType\": \"Contact\",\n      \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",\n      \"deletionTimestamp\": null,\n      \"city\": null,\n      \"companyName\": null,\n      \"country\": null,\n      \"department\": null,\n      \"dirSyncEnabled\": null,\n      \"displayName\": \"Marcus Breyer\",\n      \"facsimileTelephoneNumber\": null,\n      \"givenName\": \"Marcus\",\n      \"jobTitle\": null,\n      \"lastDirSyncTime\": null,\n      \"mail\": \"Marcus@contoso.com\",\n      \"mailNickname\": \"MarcusBreyer\",\n      \"mobile\": null,\n      \"physicalDeliveryOfficeName\": null,\n      \"postalCode\": null,\n      \"provisioningErrors\": [],\n      \"proxyAddresses\": [\n        \"SMTP:Marcus@contoso.com\"\n      ],\n      \"sipProxyAddress\": null,\n      \"state\": null,\n      \"streetAddress\": null,\n      \"surname\": \"Breyer\",\n      \"telephoneNumber\": null\n    },\n    {\n      \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\n      \"objectType\": \"Contact\",\n      \"objectId\": \"35110b16-360c-4c4a-93b2-03f065fabd93\",\n      \"deletionTimestamp\": null,\n      \"city\": null,\n      \"companyName\": null,\n      \"country\": null,\n      \"department\": null,\n      \"dirSyncEnabled\": null,\n      \"displayName\": \"Yossi Ran\",\n      \"facsimileTelephoneNumber\": null,\n      \"givenName\": \"Yossi\",\n      \"jobTitle\": null,\n      \"lastDirSyncTime\": null,\n      \"mail\": \"Yossi@contoso.com\",\n      \"mailNickname\": \"YossiRan\",\n      \"mobile\": null,\n      \"physicalDeliveryOfficeName\": null,\n      \"postalCode\": null,\n      \"provisioningErrors\": [],\n      \"proxyAddresses\": [\n        \"SMTP:Yossi@contoso.com\"\n      ],\n      \"sipProxyAddress\": null,\n      \"state\": null,\n      \"streetAddress\": null,\n      \"surname\": \"Ran\",\n      \"telephoneNumber\": null\n    },\n    {\n      \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\n      \"objectType\": \"Contact\",\n      \"objectId\": \"7163f3b8-70c9-43d2-b9e1-4467ddaf087a\",\n      \"deletionTimestamp\": null,\n      \"city\": null,\n      \"companyName\": null,\n      \"country\": null,\n      \"department\": null,\n      \"dirSyncEnabled\": null,\n      \"displayName\": \"Jeremy Nelson\",\n      \"facsimileTelephoneNumber\": null,\n      \"givenName\": \"Jeremy\",\n      \"jobTitle\": null,\n      \"lastDirSyncTime\": null,\n      \"mail\": \"Jeremy@contoso.com\",\n      \"mailNickname\": \"JeremyNelson\",\n      \"mobile\": null,\n      \"physicalDeliveryOfficeName\": null,\n      \"postalCode\": null,\n      \"provisioningErrors\": [],\n      \"proxyAddresses\": [\n        \"SMTP:Jeremy@contoso.com\"\n      ],\n      \"sipProxyAddress\": null,\n      \"state\": null,\n      \"streetAddress\": null,\n      \"surname\": \"Nelson\",\n      \"telephoneNumber\": null\n    },\n    {\n      \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\n      \"objectType\": \"Contact\",\n      \"objectId\": \"83234b5c-3a10-4108-8f36-39b1addadfdb\",\n      \"deletionTimestamp\": null,\n      \"city\": null,\n      \"companyName\": null,\n      \"country\": null,\n      \"department\": null,\n      \"dirSyncEnabled\": null,\n      \"displayName\": \"David Strome\",\n      \"facsimileTelephoneNumber\": null,\n      \"givenName\": \"David\",\n      \"jobTitle\": null,\n      \"lastDirSyncTime\": null,\n      \"mail\": \"David@contoso.com\",\n      \"mailNickname\": \"DavidStrome\",\n      \"mobile\": null,\n      \"physicalDeliveryOfficeName\": null,\n      \"postalCode\": null,\n      \"provisioningErrors\": [],\n      \"proxyAddresses\": [\n        \"SMTP:David@contoso.com\"\n      ],\n      \"sipProxyAddress\": null,\n      \"state\": null,\n      \"streetAddress\": null,\n      \"surname\": \"Strome\",\n      \"telephoneNumber\": null\n    },\n    {\n      \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\n      \"objectType\": \"Contact\",\n      \"objectId\": \"8c1315ce-bf6f-4e26-b24f-c830606ef41c\",\n      \"deletionTimestamp\": null,\n      \"city\": null,\n      \"companyName\": null,\n      \"country\": null,\n      \"department\": null,\n      \"dirSyncEnabled\": null,\n      \"displayName\": \"Holly Holt\",\n      \"facsimileTelephoneNumber\": null,\n      \"givenName\": \"Holly\",\n      \"jobTitle\": null,\n      \"lastDirSyncTime\": null,\n      \"mail\": \"Holly@contoso.com\",\n      \"mailNickname\": \"HollyHolt\",\n      \"mobile\": null,\n      \"physicalDeliveryOfficeName\": null,\n      \"postalCode\": null,\n      \"provisioningErrors\": [],\n      \"proxyAddresses\": [\n        \"SMTP:Holly@contoso.com\"\n      ],\n      \"sipProxyAddress\": null,\n      \"state\": null,\n      \"streetAddress\": null,\n      \"surname\": \"Holt\",\n      \"telephoneNumber\": null\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ],
+      "uid": "graph.windows.net/myorganization/Contacts/1.6/get contacts",
+      "htmlId": "graph_windows_net_myorganization_Contacts_1_6_get_contacts",
+      "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\n",
+      "summary": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">You can get a collection of contacts from your tenant.</p>\n",
+      "source": {
+        "remote": {
+          "path": "samples/seed/restapi/contacts_swagger2.json",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "startLine": 0,
+        "endLine": 0
+      },
+      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contacts.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contacts%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "conceptual": "",
+      "footer": "",
+      "remarks": ""
+    },
+    {
+      "path": "/contacts/{object_id}?api-version",
+      "operation": "GET",
+      "operationId": "get contact by id",
+      "parameters": [
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The object ID (GUID) of the target contact.</p>\n",
+          "name": "object_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Specifies the version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.</p>\n",
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "enum": [
+            "1.5",
+            "1.6"
+          ],
+          "default": "1.6"
+        }
+      ],
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">OK. Indicates success. The contact is returned in the response body.</p>\n",
+          "examples": [
+            {
+              "mimeType": "application/json",
+              "content": "{\n  \"odata.metadata\": \"https://graph.windows.net/graphdir1.onmicrosoft.com/$metadata#directoryObjects/Microsoft.DirectoryServices.Contact/@Element\",\n  \"odata.type\": \"Microsoft.DirectoryServices.Contact\",\n  \"objectType\": \"Contact\",\n  \"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",\n  \"deletionTimestamp\": null,\n  \"city\": null,\n  \"companyName\": null,\n  \"country\": null,\n  \"department\": null,\n  \"dirSyncEnabled\": null,\n  \"displayName\": \"Marcus Breyer\",\n  \"facsimileTelephoneNumber\": null,\n  \"givenName\": \"Marcus\",\n  \"jobTitle\": null,\n  \"lastDirSyncTime\": null,\n  \"mail\": \"Marcus@contoso.com\",\n  \"mailNickname\": \"MarcusBreyer\",\n  \"mobile\": null,\n  \"physicalDeliveryOfficeName\": null,\n  \"postalCode\": null,\n  \"provisioningErrors\": [],\n  \"proxyAddresses\": [\n    \"SMTP:Marcus@contoso.com\"\n  ],\n  \"sipProxyAddress\": null,\n  \"state\": null,\n  \"streetAddress\": null,\n  \"surname\": \"Breyer\",\n  \"telephoneNumber\": null\n}"
+            }
+          ]
+        }
+      ],
+      "uid": "graph.windows.net/myorganization/Contacts/1.6/get contact by id",
+      "htmlId": "graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id",
+      "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\n",
+      "summary": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Get a contact by using the object ID.</p>\n",
+      "source": {
+        "remote": {
+          "path": "samples/seed/restapi/contacts_swagger2.json",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "startLine": 0,
+        "endLine": 0
+      },
+      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20by%20id%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "conceptual": "",
+      "footer": "",
+      "remarks": ""
+    },
+    {
+      "path": "/contacts/{object_id}?api-version",
+      "operation": "PATCH",
+      "operationId": "update contact",
+      "parameters": [
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The object ID (GUID) of the target contact.</p>\n",
+          "name": "object_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "default": "7163f3b8-70c9-43d2-b9e1-4467ddaf087a"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.</p>\n",
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "enum": [
+            "1.5",
+            "1.6"
+          ],
+          "default": "1.6"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">this is request body, not real parameter</p>\n",
+          "name": "bodyparam",
+          "in": "body",
+          "required": false,
+          "schema": {
+            "properties": [
+              {
+                "key": "objectType",
+                "value": {
+                  "type": "string",
+                  "readOnly": true,
+                  "description": null
+                }
+              },
+              {
+                "key": "objectId",
+                "value": {
+                  "type": "string",
+                  "readOnly": true,
+                  "description": null
+                }
+              },
+              {
+                "key": "deletionTimestamp",
+                "value": {
+                  "type": "string",
+                  "format": "date-time",
+                  "readOnly": true,
+                  "description": null
+                }
+              },
+              {
+                "key": "city",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "country",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "department",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "dirSyncEnabled",
+                "value": {
+                  "type": "boolean",
+                  "description": null
+                }
+              },
+              {
+                "key": "displayName",
+                "value": {
+                  "type": "string",
+                  "required": true,
+                  "description": null
+                }
+              },
+              {
+                "key": "facsimileTelephoneNumber",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "givenName",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "jobTitle",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "lastDirSyncTime",
+                "value": {
+                  "type": "string",
+                  "format": "date-time",
+                  "readOnly": true,
+                  "description": null
+                }
+              },
+              {
+                "key": "mail",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "mailNickname",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "mobile",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "physicalDeliveryOfficeName",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "postalCode",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "provisioningErrors",
+                "value": {
+                  "type": "array",
+                  "items": {
+                    "properties": [
+                      {
+                        "key": "errorDetail",
+                        "value": {
+                          "type": "string",
+                          "readOnly": true,
+                          "description": null
+                        }
+                      },
+                      {
+                        "key": "resolved",
+                        "value": {
+                          "type": "boolean",
+                          "readOnly": true,
+                          "description": null
+                        }
+                      },
+                      {
+                        "key": "serviceInstance",
+                        "value": {
+                          "type": "string",
+                          "readOnly": true,
+                          "description": null
+                        }
+                      },
+                      {
+                        "key": "timestamp",
+                        "value": {
+                          "type": "string",
+                          "format": "date-time",
+                          "readOnly": true,
+                          "description": null
+                        }
+                      }
+                    ],
+                    "x-internal-ref-name": "ProvisioningError",
+                    "x-internal-loop-ref-name": null
+                  },
+                  "readOnly": true,
+                  "description": null
+                }
+              },
+              {
+                "key": "proxyAddresses",
+                "value": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "properties": null,
+                    "x-internal-ref-name": null,
+                    "x-internal-loop-ref-name": null
+                  },
+                  "readOnly": true,
+                  "example": {
+                    "proxyAddresses": [
+                      "SMTP:garthf@a830edad9050849NDA1.onmicrosoft.com"
+                    ]
+                  },
+                  "description": null
+                }
+              },
+              {
+                "key": "sipProxyAddress",
+                "value": {
+                  "type": "string",
+                  "readOnly": true,
+                  "description": null
+                }
+              },
+              {
+                "key": "state",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "streetAddress",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "surname",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "telephoneNumber",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              },
+              {
+                "key": "thumbnailPhoto",
+                "value": {
+                  "type": "string",
+                  "description": null
+                }
+              }
+            ],
+            "x-internal-ref-name": "contact",
+            "example": {
+              "department": "Sales",
+              "jobTitle": "Sales Rep"
+            },
+            "cTypeId": "contact",
+            "cType": "contact"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">No Content. Indicates success. No response body is returned.</p>\n"
+        }
+      ],
+      "uid": "graph.windows.net/myorganization/Contacts/1.6/update contact",
+      "htmlId": "graph_windows_net_myorganization_Contacts_1_6_update_contact",
+      "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>\n",
+      "summary": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Change a contact's properties.</p>\n",
+      "source": {
+        "remote": {
+          "path": "samples/seed/restapi/contacts_swagger2.json",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "startLine": 0,
+        "endLine": 0
+      },
+      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "conceptual": "",
+      "footer": "",
+      "remarks": ""
+    },
+    {
+      "path": "/contacts/{object_id}[?api-version]",
+      "operation": "DELETE",
+      "operationId": "delete contact",
+      "parameters": [
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The object ID (GUID) of the target contact.</p>\n",
+          "name": "object_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "default": "7163f3b8-70c9-43d2-b9e1-4467ddaf087a"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Specifies the version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.</p>\n",
+          "name": "api-version",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "enum": [
+            "1.5",
+            "1.6"
+          ],
+          "default": "1.6"
+        }
+      ],
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">No Content. Indicates success.</p>\n"
+        }
+      ],
+      "uid": "graph.windows.net/myorganization/Contacts/1.6/delete contact",
+      "htmlId": "graph_windows_net_myorganization_Contacts_1_6_delete_contact",
+      "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>\n",
+      "summary": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Delete a contact.</p>\n",
+      "source": {
+        "remote": {
+          "path": "samples/seed/restapi/contacts_swagger2.json",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "startLine": 0,
+        "endLine": 0
+      },
+      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "conceptual": "",
+      "footer": "",
+      "remarks": ""
+    },
+    {
+      "path": "/contacts/{object_id}/$links/manager?api-version",
+      "operation": "GET",
+      "operationId": "get contact manager link",
+      "parameters": [
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The object ID (GUID) of the target contact.</p>\n",
+          "name": "object_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.</p>\n",
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "enum": [
+            "1.5",
+            "1.6"
+          ],
+          "default": "1.6"
+        }
+      ],
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">OK. Indicates success. A link to the contact's manager is returned.</p>\n",
+          "examples": [
+            {
+              "mimeType": "application/json",
+              "content": "{\n  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObjects/$links/manager\",\n  \"url\": \"https://graph.windows.net/myorganization/directoryObjects/35110b16-360c-4c4a-93b2-03f065fabd93/Microsoft.WindowsAzure.ActiveDirectory.Contact\"\n}"
+            }
+          ]
+        },
+        {
+          "statusCode": "404",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Not Found. The requested resource was not found. This can occur if the manager property is not currently set for the specified contact. It can also have other causes, for example, a bad domain. A code and associated message is returned with the error.</p>\n",
+          "examples": [
+            {
+              "mimeType": "application/json",
+              "content": "{\n  \"odata.error\": {\n    \"code\": \"Request_ResourceNotFound\",\n    \"message\": {\n      \"lang\": \"en\",\n      \"value\": \"Resource not found for the segment 'manager'.\"\n    }\n  }\n}"
+            }
+          ]
+        }
+      ],
+      "uid": "graph.windows.net/myorganization/Contacts/1.6/get contact manager link",
+      "htmlId": "graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link",
+      "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\n",
+      "summary": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Get a link to the contact's manager.</p>\n",
+      "source": {
+        "remote": {
+          "path": "samples/seed/restapi/contacts_swagger2.json",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "startLine": 0,
+        "endLine": 0
+      },
+      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20manager%20link%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "conceptual": "",
+      "footer": "",
+      "remarks": ""
+    },
+    {
+      "path": "/contacts/{object_id}/$links/manager?api-version",
+      "operation": "PUT",
+      "operationId": "update contact manager",
+      "parameters": [
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The object ID (GUID) of the target contact.</p>\n",
+          "name": "object_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.</p>\n",
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "enum": [
+            "1.5",
+            "1.6"
+          ],
+          "default": "1.6"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The request body contains a single property that specifies the URL of the user or contact to add as manager.</p>\n",
+          "name": "bodyparam",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "properties": [
+              {
+                "key": "url",
+                "value": {
+                  "type": "string",
+                  "required": true,
+                  "description": null
+                }
+              }
+            ],
+            "example": {
+              "url": "https://graph.windows.net/myorganization/directoryObjects/35110b16-360c-4c4a-93b2-03f065fabd93"
+            }
+          }
+        }
+      ],
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">No Content. Indicates success. No response body is returned.</p>\n"
+        }
+      ],
+      "uid": "graph.windows.net/myorganization/Contacts/1.6/update contact manager",
+      "htmlId": "graph_windows_net_myorganization_Contacts_1_6_update_contact_manager",
+      "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>\n",
+      "summary": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Update the contact's manager</p>\n",
+      "source": {
+        "remote": {
+          "path": "samples/seed/restapi/contacts_swagger2.json",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "startLine": 0,
+        "endLine": 0
+      },
+      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact_manager.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%20manager%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "conceptual": "",
+      "footer": "",
+      "remarks": ""
+    },
+    {
+      "path": "/contacts/{object_id}/$links/manager?api-version",
+      "operation": "DELETE",
+      "operationId": "delete contact manager by id",
+      "parameters": [
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The object ID (GUID) of the target contact.</p>\n",
+          "name": "object_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.</p>\n",
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "enum": [
+            "1.5",
+            "1.6"
+          ],
+          "default": "1.6"
+        }
+      ],
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">No Content. Indicates success. N response body is returned.</p>\n"
+        }
+      ],
+      "uid": "graph.windows.net/myorganization/Contacts/1.6/delete contact manager by id",
+      "htmlId": "graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id",
+      "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>\n",
+      "summary": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Delete the contact's manager.</p>\n",
+      "source": {
+        "remote": {
+          "path": "samples/seed/restapi/contacts_swagger2.json",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "startLine": 0,
+        "endLine": 0
+      },
+      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%20manager%20by%20id%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "conceptual": "",
+      "footer": "",
+      "remarks": ""
+    },
+    {
+      "path": "/contacts/{object_id}/$links/directReports?api-version",
+      "operation": "GET",
+      "operationId": "get contact direct reports links",
+      "parameters": [
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The object ID (GUID) of the target contact.</p>\n",
+          "name": "object_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.</p>\n",
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "enum": [
+            "1.5",
+            "1.6"
+          ],
+          "default": "1.6"
+        }
+      ],
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">OK. Indicates success. One or more direct reports are returned.</p>\n",
+          "examples": [
+            {
+              "mimeType": "application/json",
+              "content": "{\n  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObjects/$links/directReports\",\n  \"value\": [\n    {\n      \"url\": \"https://graph.windows.net/myorganization/directoryObjects/8c1315ce-bf6f-4e26-b24f-c830606ef41c/Microsoft.DirectoryServices.Contact\"\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ],
+      "uid": "graph.windows.net/myorganization/Contacts/1.6/get contact direct reports links",
+      "htmlId": "graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links",
+      "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\n",
+      "summary": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Get a links to the contact's direct reports.</p>\n",
+      "source": {
+        "remote": {
+          "path": "samples/seed/restapi/contacts_swagger2.json",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "startLine": 0,
+        "endLine": 0
+      },
+      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20direct%20reports%20links%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "conceptual": "",
+      "footer": "",
+      "remarks": ""
+    },
+    {
+      "path": "/contacts/{object_id}/$links/memberOf?api-version",
+      "operation": "GET",
+      "operationId": "get contact memberOf links",
+      "parameters": [
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The object ID (GUID) of the target contact.</p>\n",
+          "name": "object_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+        },
+        {
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.</p>\n",
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "enum": [
+            "1.5",
+            "1.6"
+          ],
+          "default": "1.6"
+        }
+      ],
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">OK. Indicates success. One or more groups and/or directory roles are returned.</p>\n",
+          "examples": [
+            {
+              "mimeType": "application/json",
+              "content": "{\n  \"odata.metadata\": \"https://graph.windows.net/myorganization/$metadata#directoryObjects/$links/memberOf\",\n  \"value\": [\n    {\n      \"url\": \"https://graph.windows.net/myorganization/directoryObjects/12345678-b942-47c9-a10e-a4bee353ce60/Microsoft.DirectoryServices.Group\"\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ],
+      "uid": "graph.windows.net/myorganization/Contacts/1.6/get contact memberOf links",
+      "htmlId": "graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links",
+      "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>\n",
+      "summary": "<p sourcefile=\"restapi/contacts_swagger2.json\" sourcestartlinenumber=\"1\">Get a links to the contact's direct group and directory role memberships.</p>\n",
+      "source": {
+        "remote": {
+          "path": "samples/seed/restapi/contacts_swagger2.json",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "startLine": 0,
+        "endLine": 0
+      },
+      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20memberOf%20links%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "conceptual": "",
+      "footer": "",
+      "remarks": ""
+    }
+  ],
+  "uid": "graph.windows.net/myorganization/Contacts/1.6",
+  "htmlId": "graph_windows_net_myorganization_Contacts_1_6",
+  "name": "Contacts",
+  "swagger": "2.0",
+  "schemes": [
+    "https"
+  ],
+  "documentType": "RestApi",
+  "source": {
+    "remote": {
+      "path": "samples/seed/restapi/contacts_swagger2.json",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "restapi/contacts_swagger2.json",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "restapi/contacts.html",
+  "_rel": "../",
+  "_tocKey": "~/restapi/toc.md",
+  "_tocPath": "restapi/toc.html",
+  "_tocRel": "toc.html",
+  "_jsonPath": "contacts.swagger.json",
+  "title": "Contacts",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+  "definitions": [
+    {
+      "properties": [
+        {
+          "key": "objectType",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "objectId",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "deletionTimestamp",
+          "value": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "city",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "country",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "department",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "dirSyncEnabled",
+          "value": {
+            "type": "boolean",
+            "description": null
+          }
+        },
+        {
+          "key": "displayName",
+          "value": {
+            "type": "string",
+            "required": true,
+            "description": null
+          }
+        },
+        {
+          "key": "facsimileTelephoneNumber",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "givenName",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "jobTitle",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "lastDirSyncTime",
+          "value": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "mail",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "mailNickname",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "mobile",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "physicalDeliveryOfficeName",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "postalCode",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "provisioningErrors",
+          "value": {
+            "type": "array",
+            "items": {
+              "properties": [
+                {
+                  "key": "errorDetail",
+                  "value": {
+                    "type": "string",
+                    "readOnly": true,
+                    "description": null
+                  }
+                },
+                {
+                  "key": "resolved",
+                  "value": {
+                    "type": "boolean",
+                    "readOnly": true,
+                    "description": null
+                  }
+                },
+                {
+                  "key": "serviceInstance",
+                  "value": {
+                    "type": "string",
+                    "readOnly": true,
+                    "description": null
+                  }
+                },
+                {
+                  "key": "timestamp",
+                  "value": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true,
+                    "description": null
+                  }
+                }
+              ],
+              "x-internal-ref-name": "ProvisioningError",
+              "x-internal-loop-ref-name": null
+            },
+            "readOnly": true,
+            "description": null,
+            "cTypeId": "ProvisioningError",
+            "cType": "<wbr>Provisioning<wbr>Error",
+            "cTypeIsArray": true
+          }
+        },
+        {
+          "key": "proxyAddresses",
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "properties": null,
+              "x-internal-ref-name": null,
+              "x-internal-loop-ref-name": null
+            },
+            "readOnly": true,
+            "example": {
+              "proxyAddresses": [
+                "SMTP:garthf@a830edad9050849NDA1.onmicrosoft.com"
+              ]
+            },
+            "description": null
+          }
+        },
+        {
+          "key": "sipProxyAddress",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "state",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "streetAddress",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "surname",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "telephoneNumber",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "thumbnailPhoto",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        }
+      ],
+      "x-internal-ref-name": "contact",
+      "example": {
+        "department": "Sales",
+        "jobTitle": "Sales Rep"
+      },
+      "cTypeId": "contact",
+      "cType": "contact"
+    },
+    {
+      "type": "array",
+      "items": {
+        "properties": [
+          {
+            "key": "errorDetail",
+            "value": {
+              "type": "string",
+              "readOnly": true,
+              "description": null
+            }
+          },
+          {
+            "key": "resolved",
+            "value": {
+              "type": "boolean",
+              "readOnly": true,
+              "description": null
+            }
+          },
+          {
+            "key": "serviceInstance",
+            "value": {
+              "type": "string",
+              "readOnly": true,
+              "description": null
+            }
+          },
+          {
+            "key": "timestamp",
+            "value": {
+              "type": "string",
+              "format": "date-time",
+              "readOnly": true,
+              "description": null
+            }
+          }
+        ],
+        "x-internal-ref-name": "ProvisioningError",
+        "x-internal-loop-ref-name": null
+      },
+      "readOnly": true,
+      "description": null,
+      "cTypeId": "ProvisioningError",
+      "cType": "<wbr>Provisioning<wbr>Error",
+      "cTypeIsArray": true,
+      "properties": [
+        {
+          "key": "errorDetail",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "resolved",
+          "value": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "serviceInstance",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "timestamp",
+          "value": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": null
+          }
+        }
+      ],
+      "x-internal-ref-name": "ProvisioningError"
+    }
+  ],
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

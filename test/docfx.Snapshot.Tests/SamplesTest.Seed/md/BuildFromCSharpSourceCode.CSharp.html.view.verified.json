@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/BuildFromCSharpSourceCode.md\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"3\">BuildFromCSharpSourceCode</a></p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"5\">public class CSharp\n</code></pre>\n<h4 id=\"inheritance\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"9\">Inheritance</h4>\n<p sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"11\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"11\">object</a> ←\n<a href=\"~/obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"12\">CSharp</a></p>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"14\">Inherited Members</h4>\n<p sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"16\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"16\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"17\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"18\">object.GetHashCode()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"19\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"20\">object.MemberwiseClone()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"21\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"22\">object.ToString()</a></p>\n<h2 id=\"methods\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"24\">Methods</h2>\n<h3 id=\"BuildFromCSharpSourceCode_CSharp_Main_System_String___\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"26\"> Main(string[])</h3>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"28\">public static void Main(string[] args)\n</code></pre>\n<h4 id=\"parameters\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"32\">Parameters</h4>\n<p sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"34\"><code sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"34\">args</code> <a href=\"https://learn.microsoft.com/dotnet/api/system.string\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"34\">string</a>[]</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromCSharpSourceCode.CSharp.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/BuildFromCSharpSourceCode.CSharp.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromCSharpSourceCode.CSharp.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"BuildFromCSharpSourceCode_CSharp\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"1\"> Class CSharp</h1>",
+  "title": " Class CSharp",
+  "wordCount": 30,
+  "_key": "obj/md/BuildFromCSharpSourceCode.CSharp.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromCSharpSourceCode.CSharp.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromCSharpSourceCode.CSharp.md/#L1"
+}

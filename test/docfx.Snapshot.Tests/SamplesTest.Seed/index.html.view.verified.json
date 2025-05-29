@@ -1,0 +1,46 @@
+﻿{
+  "conceptual": "\n<h2 id=\"description\" sourcefile=\"index.md\" sourcestartlinenumber=\"9\">Description</h2>\n<p sourcefile=\"index.md\" sourcestartlinenumber=\"10\">This is a sample docfx documentation project. It contains .NET source code and markdown files.\n<code sourcefile=\"index.md\" sourcestartlinenumber=\"11\">docfx.json</code> is the configuration file for running <code sourcefile=\"index.md\" sourcestartlinenumber=\"11\">docfx</code>.\n<code sourcefile=\"index.md\" sourcestartlinenumber=\"12\">docfx</code> will generate a static website as similar to <a href=\"http://docascode.github.io/docfx-seed/index.html\" sourcefile=\"index.md\" sourcestartlinenumber=\"12\">http://docascode.github.io/docfx-seed</a>.</p>\n<h2 id=\"how-to-run\" sourcefile=\"index.md\" sourcestartlinenumber=\"14\">How to run</h2>\n<h3 id=\"under-windows\" sourcefile=\"index.md\" sourcestartlinenumber=\"15\">Under Windows</h3>\n<ul sourcefile=\"index.md\" sourcestartlinenumber=\"16\">\n<li sourcefile=\"index.md\" sourcestartlinenumber=\"16\">Download and unzip <a href=\"https://github.com/dotnet/docfx/releases/latest\" sourcefile=\"index.md\" sourcestartlinenumber=\"16\">docfx.zip</a> to run <code sourcefile=\"index.md\" sourcestartlinenumber=\"16\">docfx.exe</code> directly!</li>\n<li sourcefile=\"index.md\" sourcestartlinenumber=\"17\">Run <code sourcefile=\"index.md\" sourcestartlinenumber=\"17\">docfx</code> under current repo! Website will be generated under <code sourcefile=\"index.md\" sourcestartlinenumber=\"17\">_site</code> folder.</li>\n<li sourcefile=\"index.md\" sourcestartlinenumber=\"18\">Run any web hosting tool to host <code sourcefile=\"index.md\" sourcestartlinenumber=\"18\">_site</code> folder, e.g. <code sourcefile=\"index.md\" sourcestartlinenumber=\"18\">docfx serve _site</code>.</li>\n</ul>\n<h3 id=\"cross-platform-and-use-dnx\" sourcefile=\"index.md\" sourcestartlinenumber=\"20\">Cross platform and use <code sourcefile=\"index.md\" sourcestartlinenumber=\"20\">dnx</code></h3>\n<p sourcefile=\"index.md\" sourcestartlinenumber=\"21\">As a prerequisite, you will need to install <a href=\"http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm\" sourcefile=\"index.md\" sourcestartlinenumber=\"21\">DNVM</a> and <a href=\"http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx\" sourcefile=\"index.md\" sourcestartlinenumber=\"21\">DNX</a>.\n###Quick Start</p>\n<ul sourcefile=\"index.md\" sourcestartlinenumber=\"23\">\n<li sourcefile=\"index.md\" sourcestartlinenumber=\"23\"><p sourcefile=\"index.md\" sourcestartlinenumber=\"23\"><code sourcefile=\"index.md\" sourcestartlinenumber=\"23\">dnvm upgrade</code> to get the latest dnvm.</p>\n</li>\n<li sourcefile=\"index.md\" sourcestartlinenumber=\"24\"><p sourcefile=\"index.md\" sourcestartlinenumber=\"24\">Add feed <a href=\"https://www.myget.org/F/aspnetrelease/api/v2/\" sourcefile=\"index.md\" sourcestartlinenumber=\"24\">https://www.myget.org/F/aspnetrelease/api/v2/</a> to Nuget.config</p>\n<blockquote sourcefile=\"index.md\" sourcestartlinenumber=\"25\">\n<p sourcefile=\"index.md\" sourcestartlinenumber=\"25\">For Windows, the nuget config file is  <strong sourcefile=\"index.md\" sourcestartlinenumber=\"25\">%AppData%\\NuGet\\NuGet.config</strong>.</p>\n</blockquote>\n<blockquote sourcefile=\"index.md\" sourcestartlinenumber=\"27\">\n<p sourcefile=\"index.md\" sourcestartlinenumber=\"27\">For Linux/OSX, the nuget config file is <strong sourcefile=\"index.md\" sourcestartlinenumber=\"27\">~/.config/NuGet/NuGet.config</strong>.</p>\n</blockquote>\n<pre><code sourcefile=\"index.md\" sourcestartlinenumber=\"28\"></code></pre>\n</li>\n<li sourcefile=\"index.md\" sourcestartlinenumber=\"29\"><p sourcefile=\"index.md\" sourcestartlinenumber=\"29\"><code sourcefile=\"index.md\" sourcestartlinenumber=\"29\">dnu commands install docfx</code> to install <code sourcefile=\"index.md\" sourcestartlinenumber=\"29\">docfx</code> as a command</p>\n</li>\n<li sourcefile=\"index.md\" sourcestartlinenumber=\"30\"><p sourcefile=\"index.md\" sourcestartlinenumber=\"30\">Run <code sourcefile=\"index.md\" sourcestartlinenumber=\"30\">docfx</code> under current repo! Website will be generated under <code sourcefile=\"index.md\" sourcestartlinenumber=\"30\">_site</code> folder.</p>\n</li>\n<li sourcefile=\"index.md\" sourcestartlinenumber=\"31\"><p sourcefile=\"index.md\" sourcestartlinenumber=\"31\">Run any web hosting tool to host <code sourcefile=\"index.md\" sourcestartlinenumber=\"31\">_site</code> folder, e.g. <code sourcefile=\"index.md\" sourcestartlinenumber=\"31\">docfx serve _site</code>.</p>\n</li>\n</ul>\n<h2 id=\"further-information-about-docfx\" sourcefile=\"index.md\" sourcestartlinenumber=\"33\">Further information about <code sourcefile=\"index.md\" sourcestartlinenumber=\"33\">docfx</code></h2>\n<p sourcefile=\"index.md\" sourcestartlinenumber=\"34\"><code sourcefile=\"index.md\" sourcestartlinenumber=\"34\">docfx</code> is a tool to generate documentation towards .NET source code and markdown files. Please refer to <a href=\"http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html\" sourcefile=\"index.md\" sourcestartlinenumber=\"34\">docfx</a> to get start. The <code sourcefile=\"index.md\" sourcestartlinenumber=\"34\">docfx</code> website itself is generated by <code sourcefile=\"index.md\" sourcestartlinenumber=\"34\">docfx</code>!</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/index.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "index.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/index.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"docfx-seed\" sourcefile=\"index.md\" sourcestartlinenumber=\"8\">docfx-seed</h1>",
+  "_appLogoUrl": "https://github.com/dotnet/docfx",
+  "_disableNewTab": true,
+  "_lang": "zh-CN",
+  "_layout": "landing",
+  "title": "docfx-seed",
+  "wordCount": 186,
+  "_key": "index.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "toc.html",
+  "_path": "index.html",
+  "_rel": "",
+  "_tocKey": "~/toc.yml",
+  "_tocPath": "toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": true,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/index.md/#L1"
+}

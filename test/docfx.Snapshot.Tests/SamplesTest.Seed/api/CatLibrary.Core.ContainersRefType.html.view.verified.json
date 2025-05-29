@@ -1,0 +1,1294 @@
+﻿{
+  "uid": "CatLibrary.Core.ContainersRefType",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary.Core",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
+      },
+      {
+        "lang": "vb",
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inField": true,
+      "typePropertyName": "inField",
+      "id": "fields",
+      "children": [
+        {
+          "uid": "CatLibrary.Core.ContainersRefType.ColorCount",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.Core.ContainersRefType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "ColorCount"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ColorCount"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ContainersRefType.ColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ContainersRefType.ColorCount"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ColorCount\" text=\"ColorCount\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ColorCount\" text=\"ColorCount\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public long ColorCount"
+              },
+              {
+                "lang": "vb",
+                "value": "Public ColorCount As Long"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "System.Int64",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "long"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Long"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "long"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Long"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "long"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Long"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int64\" text=\"long\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int64\" text=\"long\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "ColorCount",
+            "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
+            "startLine": 17,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary.Core"
+          ],
+          "namespace": "CatLibrary.Core",
+          "example": [],
+          "level": 0,
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">ColorCount</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorCount.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L18",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ContainersRefType_ColorCount",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "CatLibrary.Core.ContainersRefType.GetColorCount",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.Core.ContainersRefType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "GetColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "GetColorCount"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.GetColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.GetColorCount"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ContainersRefType.GetColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ContainersRefType.GetColorCount"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.GetColorCount\" text=\"GetColorCount\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.GetColorCount\" text=\"GetColorCount\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public long GetColorCount { get; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property GetColorCount As Long"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Int64",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "long"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Long"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "long"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Long"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "long"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Long"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int64\" text=\"long\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int64\" text=\"long\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "GetColorCount",
+            "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
+            "startLine": 49,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary.Core"
+          ],
+          "namespace": "CatLibrary.Core",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.Core.ContainersRefType.GetColorCount*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "GetColorCount"
+              },
+              {
+                "lang": "vb",
+                "value": "GetColorCount"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ContainersRefType.GetColorCount"
+              },
+              {
+                "lang": "vb",
+                "value": "ContainersRefType.GetColorCount"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.Core.ContainersRefType.GetColorCount"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.Core.ContainersRefType.GetColorCount"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.GetColorCount*\" text=\"GetColorCount\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.GetColorCount*\" text=\"GetColorCount\"/>"
+              }
+            ],
+            "id": "CatLibrary_Core_ContainersRefType_GetColorCount_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">GetColorCount</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_GetColorCount.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.GetColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L50",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ContainersRefType_GetColorCount",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.Core.ContainersRefType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefTypeNonRefMethod(params object[])"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefTypeNonRefMethod(ParamArray Object())"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeNonRefMethod(params object[])"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(params object[])"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(params object[])\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(params object[])\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function ContainersRefTypeNonRefMethod(ParamArray parmsArray As Object()) As Integer"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "parmsArray",
+                "type": {
+                  "uid": "System.Object[]",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "object[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Object()"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "object[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Object()"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "object[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Object()"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Int32",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "ContainersRefTypeNonRefMethod",
+            "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
+            "startLine": 67,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary.Core"
+          ],
+          "namespace": "CatLibrary.Core",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ContainersRefTypeNonRefMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "ContainersRefTypeNonRefMethod"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ContainersRefType.ContainersRefTypeNonRefMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "ContainersRefType.ContainersRefTypeNonRefMethod"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod*\" text=\"ContainersRefTypeNonRefMethod\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod*\" text=\"ContainersRefTypeNonRefMethod\"/>"
+              }
+            ],
+            "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">ContainersRefTypeNonRefMethod</p>\n<param name=\"parmsArray\">array\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L68",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inEvent": true,
+      "typePropertyName": "inEvent",
+      "id": "events",
+      "children": [
+        {
+          "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.Core.ContainersRefType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefTypeEventHandler"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefTypeEventHandler"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeEventHandler"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeEventHandler"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler\" text=\"ContainersRefTypeEventHandler\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler\" text=\"ContainersRefTypeEventHandler\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public event EventHandler ContainersRefTypeEventHandler"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Event ContainersRefTypeEventHandler As EventHandler"
+              }
+            ],
+            "return": null,
+            "eventType": {
+              "type": {
+                "uid": "System.EventHandler",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "EventHandler"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "EventHandler"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "EventHandler"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "EventHandler"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.EventHandler"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.EventHandler"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "ContainersRefTypeEventHandler",
+            "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
+            "startLine": 85,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary.Core"
+          ],
+          "namespace": "CatLibrary.Core",
+          "level": 0,
+          "type": "event",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L86",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ContainersRefType"
+    },
+    {
+      "lang": "vb",
+      "value": "ContainersRefType"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ContainersRefType"
+    },
+    {
+      "lang": "vb",
+      "value": "ContainersRefType"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.Core.ContainersRefType"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.Core.ContainersRefType"
+    }
+  ],
+  "type": "struct",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "ContainersRefType",
+    "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
+    "startLine": 11,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CatLibrary.Core"
+  ],
+  "namespace": {
+    "uid": "CatLibrary.Core",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary.Core"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary.Core"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
+      },
+      {
+        "lang": "vb",
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">Struct ContainersRefType</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public struct ContainersRefType"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Structure ContainersRefType"
+      }
+    ]
+  },
+  "level": 0,
+  "inheritedMembers": [
+    {
+      "uid": "System.ValueType.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.ValueType.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.ValueType.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "extensionMethods": [
+    {
+      "uid": "CatLibrary.Core.ContainersRefType.CatLibrary.Core.Issue231.Bar",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CatLibrary.Core.Issue231",
+      "definition": "CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)",
+      "href": "CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Bar(ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "Bar(ContainersRefType)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Issue231.Bar(ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "Issue231.Bar(ContainersRefType)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_\">Bar</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_\">Bar</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "CatLibrary.Core.ContainersRefType.CatLibrary.Core.Issue231.Foo",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CatLibrary.Core.Issue231",
+      "definition": "CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)",
+      "href": "CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Foo(ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "Foo(ContainersRefType)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Issue231.Foo(ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "Issue231.Foo(ContainersRefType)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_\">Foo</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_\">Foo</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/CatLibrary.Core.ContainersRefType.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CatLibrary.Core.ContainersRefType.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L12",
+  "description": "Struct ContainersRefType",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "seealso": [],
+  "id": "CatLibrary_Core_ContainersRefType",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inStruct": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

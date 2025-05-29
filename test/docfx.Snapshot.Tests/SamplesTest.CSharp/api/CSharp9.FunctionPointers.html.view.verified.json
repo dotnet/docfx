@@ -1,0 +1,1092 @@
+﻿{
+  "uid": "CSharp9.FunctionPointers",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp9",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp9.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp9.FunctionPointers",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)"
+            },
+            {
+              "lang": "vb",
+              "value": "Example(Action(Of Integer), , , , , )"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "FunctionPointers.Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)"
+            },
+            {
+              "lang": "vb",
+              "value": "FunctionPointers.Example(Action(Of Integer), , , , , )"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.FunctionPointers.Example(System.Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.FunctionPointers.Example(System.Action(Of Integer), , , , , )"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;int&gt;, delegate*&lt;int, void&gt;, delegate*&lt;int, int&gt;, delegate* unmanaged&lt;int, int&gt;, delegate* unmanaged[Cdecl]&lt;int, int&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;int, int&gt;)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;int&gt;, delegate*&lt;int, void&gt;, delegate*&lt;int, int&gt;, delegate* unmanaged&lt;int, int&gt;, delegate* unmanaged[Cdecl]&lt;int, int&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;int, int&gt;)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static void Example(Action<int> a, delegate*<int, void> b, delegate*<int, int> c, delegate* unmanaged<int, int> d, delegate* unmanaged[Cdecl]<int, int> e, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int> f)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Sub Example(a As Action(Of Integer), b As , c As , d As , e As , f As )"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "a",
+                "type": {
+                  "uid": "System.Action{System.Int32}",
+                  "definition": "System.Action`1",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "Action<int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Action(Of Integer)"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "Action<int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Action(Of Integer)"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "System.Action<int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "System.Action(Of Integer)"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.action-1\">Action</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.action-1\">Action</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>)"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "b",
+                "type": {
+                  "uid": "delegate*<int, void>",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate*<int, void>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate*<int, void>"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate*<int, void>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate*<int, void>"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate*<int, void>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate*<int, void>"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate*&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.void\">void</a>&gt;"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "c",
+                "type": {
+                  "uid": "delegate*<int, int>",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate*<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate*<int, int>"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate*<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate*<int, int>"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate*<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate*<int, int>"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate*&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "d",
+                "type": {
+                  "uid": "delegate* unmanaged<int, int>",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate* unmanaged<int, int>"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate* unmanaged<int, int>"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate* unmanaged<int, int>"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "e",
+                "type": {
+                  "uid": "delegate* unmanaged[Cdecl]<int, int>",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged[Cdecl]<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate* unmanaged[Cdecl]<int, int>"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged[Cdecl]<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate* unmanaged[Cdecl]<int, int>"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged[Cdecl]<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate* unmanaged[Cdecl]<int, int>"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged[<xref uid=\".(System.Int32)\" text=\"Cdecl\"/>]&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "f",
+                "type": {
+                  "uid": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "delegate* unmanaged[<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.callconvstdcall\">Stdcall</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.callconvsuppressgctransition\">SuppressGCTransition</a>]&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp9.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Example",
+            "path": "src/CSharp9.cs",
+            "startLine": 29,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp9",
+          "overload": {
+            "uid": "CSharp9.FunctionPointers.Example*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Example"
+              },
+              {
+                "lang": "vb",
+                "value": "Example"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "FunctionPointers.Example"
+              },
+              {
+                "lang": "vb",
+                "value": "FunctionPointers.Example"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp9.FunctionPointers.Example"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp9.FunctionPointers.Example"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp9.FunctionPointers.Example*\" text=\"Example\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp9.FunctionPointers.Example*\" text=\"Example\"/>"
+              }
+            ],
+            "id": "CSharp9_FunctionPointers_Example_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_FunctionPointers_Example_System_Action_System_Int32_______.md&value=---%0Auid%3A%20CSharp9.FunctionPointers.Example(System.Action%7BSystem.Int32%7D%2C%2C%2C%2C%2C)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L30",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_FunctionPointers_Example_System_Action_System_Int32_______",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "FunctionPointers"
+    },
+    {
+      "lang": "vb",
+      "value": "FunctionPointers"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "FunctionPointers"
+    },
+    {
+      "lang": "vb",
+      "value": "FunctionPointers"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp9.FunctionPointers"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp9.FunctionPointers"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp9.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "FunctionPointers",
+    "path": "src/CSharp9.cs",
+    "startLine": 27,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp9",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp9.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class FunctionPointers"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class FunctionPointers"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "level": 1,
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp9.FunctionPointers.yml",
+  "_path": "api/CSharp9.FunctionPointers.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_FunctionPointers.md&value=---%0Auid%3A%20CSharp9.FunctionPointers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L28",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp9_FunctionPointers",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

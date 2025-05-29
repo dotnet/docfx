@@ -1,0 +1,422 @@
+﻿{
+  "uid": "MyExample.ExampleClass.MyMethod*",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "MyExample.ExampleClass.MyMethod",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "MyExample.ExampleClass",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "MyMethod()"
+            },
+            {
+              "lang": "vb",
+              "value": "MyMethod()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ExampleClass.MyMethod()"
+            },
+            {
+              "lang": "vb",
+              "value": "ExampleClass.MyMethod()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "MyExample.ExampleClass.MyMethod()"
+            },
+            {
+              "lang": "vb",
+              "value": "MyExample.ExampleClass.MyMethod()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"MyExample.ExampleClass.MyMethod\" text=\"MyMethod()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"MyExample.ExampleClass.MyMethod\" text=\"MyMethod()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "private string MyMethod()"
+              },
+              {
+                "lang": "vb",
+                "value": "Private Function MyMethod() As String"
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/extensions/src/ExampleClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "MyMethod",
+            "path": "src/ExampleClass.cs",
+            "startLine": 17,
+            "endLine": 0
+          },
+          "namespace": "MyExample",
+          "overload": {
+            "uid": "MyExample.ExampleClass.MyMethod*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "MyMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "MyMethod"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ExampleClass.MyMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "ExampleClass.MyMethod"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "MyExample.ExampleClass.MyMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "MyExample.ExampleClass.MyMethod"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"MyExample.ExampleClass.MyMethod*\" text=\"MyMethod\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"MyExample.ExampleClass.MyMethod*\" text=\"MyMethod\"/>"
+              }
+            ],
+            "id": "MyExample_ExampleClass_MyMethod_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MyExample_ExampleClass_MyMethod.md&value=---%0Auid%3A%20MyExample.ExampleClass.MyMethod%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/extensions/src/ExampleClass.cs/#L18",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "MyExample_ExampleClass_MyMethod",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "MyMethod"
+    },
+    {
+      "lang": "vb",
+      "value": "MyMethod"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ExampleClass.MyMethod"
+    },
+    {
+      "lang": "vb",
+      "value": "ExampleClass.MyMethod"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "MyExample.ExampleClass.MyMethod"
+    },
+    {
+      "lang": "vb",
+      "value": "MyExample.ExampleClass.MyMethod"
+    }
+  ],
+  "type": "method",
+  "source": {
+    "remote": {
+      "path": "samples/extensions/src/ExampleClass.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "MyMethod",
+    "path": "src/ExampleClass.cs",
+    "startLine": 17,
+    "endLine": 0
+  },
+  "namespace": {
+    "uid": "MyExample",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "MyExample.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "MyExample"
+      },
+      {
+        "lang": "vb",
+        "value": "MyExample"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "MyExample"
+      },
+      {
+        "lang": "vb",
+        "value": "MyExample"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "MyExample"
+      },
+      {
+        "lang": "vb",
+        "value": "MyExample"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "level": 0,
+  "_isOverload": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_splitReference": true,
+  "_key": "api/MyExample.ExampleClass.MyMethod.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/MyExample.ExampleClass.MyMethod.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MyExample_ExampleClass_MyMethod_.md&value=---%0Auid%3A%20MyExample.ExampleClass.MyMethod*%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/extensions/src/ExampleClass.cs/#L18",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "MyExample_ExampleClass_MyMethod_",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "_disableToc": false,
+  "_disableNextArticle": true,
+  "inMethod": true,
+  "isCollection": true
+}

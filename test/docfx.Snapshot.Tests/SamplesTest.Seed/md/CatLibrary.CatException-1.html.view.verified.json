@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.md\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"3\">CatLibrary</a><br>\nAssembly: CatLibrary.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"6\">public class CatException&lt;T&gt; : Exception, ISerializable\n</code></pre>\n<h4 id=\"type-parameters\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"10\">Type Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"12\"><code sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"12\">T</code></p>\n<h4 id=\"inheritance\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"14\">Inheritance</h4>\n<p sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"16\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"16\">object</a> ←\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"17\">Exception</a> ←\n<a href=\"~/obj/md/CatLibrary.CatException-1.md\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"18\">CatException&lt;T&gt;</a></p>\n<h4 id=\"implements\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"20\">Implements</h4>\n<p sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"22\"><a href=\"https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"22\">ISerializable</a></p>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"24\">Inherited Members</h4>\n<p sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"26\"><a href=\"https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"26\">Exception.GetBaseException()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.gettype\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"27\">Exception.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.tostring\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"28\">Exception.ToString()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.data\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"29\">Exception.Data</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.helplink\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"30\">Exception.HelpLink</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.hresult\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"31\">Exception.HResult</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.innerexception\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"32\">Exception.InnerException</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.message\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"33\">Exception.Message</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.source\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"34\">Exception.Source</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.stacktrace\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"35\">Exception.StackTrace</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.targetsite\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"36\">Exception.TargetSite</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"37\">Exception.SerializeObjectState</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"38\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"39\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"40\">object.GetHashCode()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"41\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"42\">object.MemberwiseClone()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"43\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"44\">object.ToString()</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.CatException-1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.CatException-1.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.CatException-1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_CatException_1\" sourcefile=\"obj/md/CatLibrary.CatException-1.md\" sourcestartlinenumber=\"1\"> Class CatException&lt;T&gt;</h1>",
+  "title": " Class CatException<T>",
+  "wordCount": 43,
+  "_key": "obj/md/CatLibrary.CatException-1.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.CatException-1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.CatException-1.md/#L1"
+}

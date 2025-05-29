@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.md\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"3\">CatLibrary</a><br>\nAssembly: CatLibrary.dll</p>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"6\">This is <b>basic</b> interface of all animal.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"8\">public interface IAnimal\n</code></pre>\n<h2 id=\"properties\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"12\">Properties</h2>\n<h3 id=\"CatLibrary_IAnimal_Name\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"14\"> Name</h3>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"16\">Name of Animal.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"18\">string Name { get; }\n</code></pre>\n<h4 id=\"property-value\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"22\">Property Value</h4>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"24\"><a href=\"https://learn.microsoft.com/dotnet/api/system.string\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"24\">string</a></p>\n<h3 id=\"CatLibrary_IAnimal_Item_System_Int32_\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"26\"> this[int]</h3>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"28\">Return specific number animal's name.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"30\">string this[int index] { get; }\n</code></pre>\n<h4 id=\"property-value-1\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"34\">Property Value</h4>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"36\"><a href=\"https://learn.microsoft.com/dotnet/api/system.string\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"36\">string</a></p>\n<h2 id=\"methods\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"38\">Methods</h2>\n<h3 id=\"CatLibrary_IAnimal_Eat\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"40\"> Eat()</h3>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"42\">Animal's eat method.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"44\">void Eat()\n</code></pre>\n<h3 id=\"CatLibrary_IAnimal_Eat__1___0_\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"48\"> Eat&lt;Tool&gt;(Tool)</h3>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"50\">Overload method of eat. This define the animal eat by which tool.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"52\">void Eat&lt;Tool&gt;(Tool tool) where Tool : class\n</code></pre>\n<h4 id=\"parameters\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"56\">Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"58\"><code sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"58\">tool</code> Tool</p>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"60\">Tool name.</p>\n<h4 id=\"type-parameters\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"62\">Type Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"64\"><code sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"64\">Tool</code></p>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"66\">It's a class type.</p>\n<h3 id=\"CatLibrary_IAnimal_Eat_System_String_\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"68\"> Eat(string)</h3>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"70\">Feed the animal with some food</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"72\">void Eat(string food)\n</code></pre>\n<h4 id=\"parameters-1\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"76\">Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"78\"><code sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"78\">food</code> <a href=\"https://learn.microsoft.com/dotnet/api/system.string\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"78\">string</a></p>\n<p sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"80\">Food to eat</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.IAnimal.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.IAnimal.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.IAnimal.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_IAnimal\" sourcefile=\"obj/md/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"1\"> Interface IAnimal</h1>",
+  "title": " Interface IAnimal",
+  "wordCount": 96,
+  "_key": "obj/md/CatLibrary.IAnimal.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.IAnimal.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.IAnimal.md/#L1"
+}

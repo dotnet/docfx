@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Interface ContainersRefType.ContainersRefTypeChildInterface",
+  "content": "<h1 class='section api' data-uid='CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface' data-commentId='T:CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface' id='CatLibrary_Core_ContainersRefType_ContainersRefTypeChildInterface'>Interface ContainersRefType.ContainersRefTypeChildInterface    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs#L74'><i class='bi bi-code-slash'></i></a></h1>\r\n <div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='CatLibrary.Core.html'>CatLibrary.Core</a></dd></dl><dl><dt>Assembly</dt><dd>CatLibrary.Core.dll</dd></dl>\r\n</div><pre><code class='lang-csharp'>public interface ContainersRefType.ContainersRefTypeChildInterface</code></pre>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

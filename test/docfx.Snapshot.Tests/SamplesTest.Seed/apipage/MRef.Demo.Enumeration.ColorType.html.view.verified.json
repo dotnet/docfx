@@ -1,0 +1,21 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "description": "Enumeration ColorType",
+  "title": "Enum ColorType",
+  "content": "<h1 class='section api' data-uid='MRef.Demo.Enumeration.ColorType' data-commentId='T:MRef.Demo.Enumeration.ColorType' id='MRef_Demo_Enumeration_ColorType'>Enum ColorType    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs#L406'><i class='bi bi-code-slash'></i></a></h1>\r\n <div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='MRef.Demo.Enumeration.html'>MRef.Demo.Enumeration</a></dd></dl><dl><dt>Assembly</dt><dd>CatLibrary.dll</dd></dl>\r\n</div><p sourceFile=\"obj/apipage/MRef.Demo.Enumeration.ColorType.yml\" sourceStartLineNumber=\"1\">Enumeration ColorType</p>\n<pre><code class='lang-csharp'>public enum ColorType</code></pre><h2 class='section'>Fields</h2><dl class='parameters'><dt><code>Red = 0</code>   </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/MRef.Demo.Enumeration.ColorType.yml\" sourceStartLineNumber=\"1\">this color is red</p>\n\r\n</dd><dt><code>Blue = 1</code>   </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/MRef.Demo.Enumeration.ColorType.yml\" sourceStartLineNumber=\"1\">blue like river</p>\n\r\n</dd><dt><code>Yellow = 2</code>   </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/MRef.Demo.Enumeration.ColorType.yml\" sourceStartLineNumber=\"1\">yellow comes from desert</p>\n\r\n</dd></dl><h2 class='section'>Remarks</h2><p>\nRed/Blue/Yellow can become all color you want.\n</p>\n<ul></ul>\n<h2 class='section'>See Also</h2><dl class=\"typelist\"><dd>\r\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object'>object</a>\n</div>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/MRef.Demo.Enumeration.ColorType.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/MRef.Demo.Enumeration.ColorType.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

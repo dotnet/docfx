@@ -1,0 +1,655 @@
+﻿{
+  "uid": "MRef.Demo.Enumeration.ColorType",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "MRef.Demo.Enumeration",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "MRef.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
+      },
+      {
+        "lang": "vb",
+        "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inField": true,
+      "typePropertyName": "inField",
+      "id": "fields",
+      "children": [
+        {
+          "uid": "MRef.Demo.Enumeration.ColorType.Red",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "MRef.Demo.Enumeration.ColorType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Red"
+            },
+            {
+              "lang": "vb",
+              "value": "Red"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ColorType.Red"
+            },
+            {
+              "lang": "vb",
+              "value": "ColorType.Red"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "MRef.Demo.Enumeration.ColorType.Red"
+            },
+            {
+              "lang": "vb",
+              "value": "MRef.Demo.Enumeration.ColorType.Red"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Red\" text=\"Red\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Red\" text=\"Red\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "Red = 0"
+              },
+              {
+                "lang": "vb",
+                "value": "Red = 0"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "MRef.Demo.Enumeration.ColorType",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "ColorType"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "ColorType"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "ColorType"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "ColorType"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "MRef.Demo.Enumeration.ColorType"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "MRef.Demo.Enumeration.ColorType"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Red",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 410,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "MRef.Demo.Enumeration",
+          "example": [],
+          "level": 0,
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">this color is red</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MRef_Demo_Enumeration_ColorType_Red.md&value=---%0Auid%3A%20MRef.Demo.Enumeration.ColorType.Red%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L411",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "MRef_Demo_Enumeration_ColorType_Red",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "MRef.Demo.Enumeration.ColorType.Blue",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "MRef.Demo.Enumeration.ColorType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Blue"
+            },
+            {
+              "lang": "vb",
+              "value": "Blue"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ColorType.Blue"
+            },
+            {
+              "lang": "vb",
+              "value": "ColorType.Blue"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "MRef.Demo.Enumeration.ColorType.Blue"
+            },
+            {
+              "lang": "vb",
+              "value": "MRef.Demo.Enumeration.ColorType.Blue"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Blue\" text=\"Blue\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Blue\" text=\"Blue\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "Blue = 1"
+              },
+              {
+                "lang": "vb",
+                "value": "Blue = 1"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "MRef.Demo.Enumeration.ColorType",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "ColorType"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "ColorType"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "ColorType"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "ColorType"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "MRef.Demo.Enumeration.ColorType"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "MRef.Demo.Enumeration.ColorType"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Blue",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 414,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "MRef.Demo.Enumeration",
+          "example": [],
+          "level": 0,
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">blue like river</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MRef_Demo_Enumeration_ColorType_Blue.md&value=---%0Auid%3A%20MRef.Demo.Enumeration.ColorType.Blue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L415",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "MRef_Demo_Enumeration_ColorType_Blue",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "MRef.Demo.Enumeration.ColorType.Yellow",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "MRef.Demo.Enumeration.ColorType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Yellow"
+            },
+            {
+              "lang": "vb",
+              "value": "Yellow"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ColorType.Yellow"
+            },
+            {
+              "lang": "vb",
+              "value": "ColorType.Yellow"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "MRef.Demo.Enumeration.ColorType.Yellow"
+            },
+            {
+              "lang": "vb",
+              "value": "MRef.Demo.Enumeration.ColorType.Yellow"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Yellow\" text=\"Yellow\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Yellow\" text=\"Yellow\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "Yellow = 2"
+              },
+              {
+                "lang": "vb",
+                "value": "Yellow = 2"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "MRef.Demo.Enumeration.ColorType",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "ColorType"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "ColorType"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "ColorType"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "ColorType"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "MRef.Demo.Enumeration.ColorType"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "MRef.Demo.Enumeration.ColorType"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Yellow",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 418,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "MRef.Demo.Enumeration",
+          "example": [],
+          "level": 0,
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">yellow comes from desert</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MRef_Demo_Enumeration_ColorType_Yellow.md&value=---%0Auid%3A%20MRef.Demo.Enumeration.ColorType.Yellow%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L419",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "MRef_Demo_Enumeration_ColorType_Yellow",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ColorType"
+    },
+    {
+      "lang": "vb",
+      "value": "ColorType"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ColorType"
+    },
+    {
+      "lang": "vb",
+      "value": "ColorType"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "MRef.Demo.Enumeration.ColorType"
+    },
+    {
+      "lang": "vb",
+      "value": "MRef.Demo.Enumeration.ColorType"
+    }
+  ],
+  "type": "enum",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "ColorType",
+    "path": "dotnet/solution/CatLibrary/Class1.cs",
+    "startLine": 405,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "MRef.Demo.Enumeration",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "MRef.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
+      },
+      {
+        "lang": "vb",
+        "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
+  "remarks": "<p>\nRed/Blue/Yellow can become all color you want.\n</p>\n<ul></ul>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public enum ColorType"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Enum ColorType"
+      }
+    ]
+  },
+  "seealso": [
+    {
+      "linkType": "cRef",
+      "type": {
+        "uid": "System.Object",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "object"
+          },
+          {
+            "lang": "vb",
+            "value": "Object"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "object"
+          },
+          {
+            "lang": "vb",
+            "value": "Object"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "object"
+          },
+          {
+            "lang": "vb",
+            "value": "Object"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+          }
+        ]
+      },
+      "isCref": true
+    }
+  ],
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/MRef.Demo.Enumeration.ColorType.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/MRef.Demo.Enumeration.ColorType.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MRef_Demo_Enumeration_ColorType.md&value=---%0Auid%3A%20MRef.Demo.Enumeration.ColorType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L406",
+  "description": "Enumeration ColorType",
+  "conceptual": "",
+  "implements": "",
+  "id": "MRef_Demo_Enumeration_ColorType",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": false,
+  "inEnum": true,
+  "isEnum": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

@@ -1,0 +1,1497 @@
+﻿{
+  "uid": "CSharp8.ReadOnlyMembers",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp8",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp8.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "CSharp8.ReadOnlyMembers.Counter",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.ReadOnlyMembers",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Counter"
+            },
+            {
+              "lang": "vb",
+              "value": "Counter"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyMembers.Counter"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyMembers.Counter"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.ReadOnlyMembers.Counter"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.ReadOnlyMembers.Counter"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Counter\" text=\"Counter\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Counter\" text=\"Counter\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public int Counter { readonly get; set; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property Counter As Integer"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Int32",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Counter",
+            "path": "src/CSharp8.cs",
+            "startLine": 20,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.ReadOnlyMembers.Counter*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Counter"
+              },
+              {
+                "lang": "vb",
+                "value": "Counter"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyMembers.Counter"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnlyMembers.Counter"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.ReadOnlyMembers.Counter"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.ReadOnlyMembers.Counter"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Counter*\" text=\"Counter\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Counter*\" text=\"Counter\"/>"
+              }
+            ],
+            "id": "CSharp8_ReadOnlyMembers_Counter_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Counter.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Counter%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L21",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp8_ReadOnlyMembers_Counter",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.ReadOnlyMembers.X",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.ReadOnlyMembers",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "X"
+            },
+            {
+              "lang": "vb",
+              "value": "X"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyMembers.X"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyMembers.X"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.ReadOnlyMembers.X"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.ReadOnlyMembers.X"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.X\" text=\"X\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.X\" text=\"X\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public readonly int X { get; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public ReadOnly Property X As Integer"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Int32",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "X",
+            "path": "src/CSharp8.cs",
+            "startLine": 9,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.ReadOnlyMembers.X*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "X"
+              },
+              {
+                "lang": "vb",
+                "value": "X"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyMembers.X"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnlyMembers.X"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.ReadOnlyMembers.X"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.ReadOnlyMembers.X"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.X*\" text=\"X\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.X*\" text=\"X\"/>"
+              }
+            ],
+            "id": "CSharp8_ReadOnlyMembers_X_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_X.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L10",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp8_ReadOnlyMembers_X",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.ReadOnlyMembers.Y",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.ReadOnlyMembers",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Y"
+            },
+            {
+              "lang": "vb",
+              "value": "Y"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyMembers.Y"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyMembers.Y"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.ReadOnlyMembers.Y"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.ReadOnlyMembers.Y"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Y\" text=\"Y\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Y\" text=\"Y\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public readonly int Y { get; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public ReadOnly Property Y As Integer"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Int32",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Y",
+            "path": "src/CSharp8.cs",
+            "startLine": 10,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.ReadOnlyMembers.Y*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Y"
+              },
+              {
+                "lang": "vb",
+                "value": "Y"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyMembers.Y"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnlyMembers.Y"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.ReadOnlyMembers.Y"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.ReadOnlyMembers.Y"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Y*\" text=\"Y\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Y*\" text=\"Y\"/>"
+              }
+            ],
+            "id": "CSharp8_ReadOnlyMembers_Y_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Y.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L11",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp8_ReadOnlyMembers_Y",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CSharp8.ReadOnlyMembers.Sum",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.ReadOnlyMembers",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Sum()"
+            },
+            {
+              "lang": "vb",
+              "value": "Sum()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyMembers.Sum()"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyMembers.Sum()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.ReadOnlyMembers.Sum()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.ReadOnlyMembers.Sum()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Sum\" text=\"Sum()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Sum\" text=\"Sum()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public readonly double Sum()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Function Sum() As Double"
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Double",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "double"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Double"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Sum",
+            "path": "src/CSharp8.cs",
+            "startLine": 12,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.ReadOnlyMembers.Sum*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Sum"
+              },
+              {
+                "lang": "vb",
+                "value": "Sum"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyMembers.Sum"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnlyMembers.Sum"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.ReadOnlyMembers.Sum"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.ReadOnlyMembers.Sum"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Sum*\" text=\"Sum\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.Sum*\" text=\"Sum\"/>"
+              }
+            ],
+            "id": "CSharp8_ReadOnlyMembers_Sum_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Sum.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Sum%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L13",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp8_ReadOnlyMembers_Sum",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.ReadOnlyMembers.ToString",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.ReadOnlyMembers",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ToString()"
+            },
+            {
+              "lang": "vb",
+              "value": "ToString()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ReadOnlyMembers.ToString()"
+            },
+            {
+              "lang": "vb",
+              "value": "ReadOnlyMembers.ToString()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.ReadOnlyMembers.ToString()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.ReadOnlyMembers.ToString()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.ToString\" text=\"ToString()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.ReadOnlyMembers.ToString\" text=\"ToString()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public override readonly string ToString()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Overrides Function ToString() As String"
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              },
+              "description": "<p sourcefile=\"api/CSharp8.ReadOnlyMembers.yml\" sourcestartlinenumber=\"1\">The fully qualified type name.</p>\n"
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "ToString",
+            "path": "src/CSharp8.cs",
+            "startLine": 17,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp8",
+          "example": [],
+          "overridden": {
+            "uid": "System.ValueType.ToString",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ToString()"
+              },
+              {
+                "lang": "vb",
+                "value": "ToString()"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ValueType.ToString()"
+              },
+              {
+                "lang": "vb",
+                "value": "ValueType.ToString()"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "System.ValueType.ToString()"
+              },
+              {
+                "lang": "vb",
+                "value": "System.ValueType.ToString()"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
+              },
+              {
+                "lang": "vb",
+                "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
+              }
+            ]
+          },
+          "overload": {
+            "uid": "CSharp8.ReadOnlyMembers.ToString*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ToString"
+              },
+              {
+                "lang": "vb",
+                "value": "ToString"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ReadOnlyMembers.ToString"
+              },
+              {
+                "lang": "vb",
+                "value": "ReadOnlyMembers.ToString"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.ReadOnlyMembers.ToString"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.ReadOnlyMembers.ToString"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.ToString*\" text=\"ToString\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.ReadOnlyMembers.ToString*\" text=\"ToString\"/>"
+              }
+            ],
+            "id": "CSharp8_ReadOnlyMembers_ToString_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"api/CSharp8.ReadOnlyMembers.yml\" sourcestartlinenumber=\"1\">Returns the fully qualified type name of this instance.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_ToString.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L18",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CSharp8_ReadOnlyMembers_ToString",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ReadOnlyMembers"
+    },
+    {
+      "lang": "vb",
+      "value": "ReadOnlyMembers"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ReadOnlyMembers"
+    },
+    {
+      "lang": "vb",
+      "value": "ReadOnlyMembers"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp8.ReadOnlyMembers"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp8.ReadOnlyMembers"
+    }
+  ],
+  "type": "struct",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp8.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "ReadOnlyMembers",
+    "path": "src/CSharp8.cs",
+    "startLine": 7,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp8",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp8.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public struct ReadOnlyMembers"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Structure ReadOnlyMembers"
+      }
+    ]
+  },
+  "level": 0,
+  "inheritedMembers": [
+    {
+      "uid": "System.ValueType.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.equals\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.ValueType.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.ValueType",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ValueType.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "ValueType.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.ValueType.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.ValueType.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp8.ReadOnlyMembers.yml",
+  "_path": "api/CSharp8.ReadOnlyMembers.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L8",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp8_ReadOnlyMembers",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inStruct": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

@@ -1,0 +1,21 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "description": "A nice class",
+  "title": "Class Issue8725",
+  "content": "<h1 class='section api' data-uid='BuildFromProject.Issue8725' data-commentId='T:BuildFromProject.Issue8725' id='BuildFromProject_Issue8725'>Class Issue8725    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L209'><i class='bi bi-code-slash'></i></a></h1>\r\n <div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='BuildFromProject.html'>BuildFromProject</a></dd></dl><dl><dt>Assembly</dt><dd>BuildFromProject.dll</dd></dl>\r\n</div><p sourceFile=\"obj/apipage/BuildFromProject.Issue8725.yml\" sourceStartLineNumber=\"1\">A nice class</p>\n<pre><code class='lang-csharp'>public class Issue8725</code></pre><h4 class='section'>Inheritance</h4><dl class=\"typelist inheritance\"><dd>\r\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object'>object</a>\n</div>\n<div>\n<a href='BuildFromProject.Issue8725.html'>Issue8725</a>\n</div>\n\r\n</dd></dl><h4 class='section'>Inherited Members</h4><dl class=\"typelist\"><dd>\r\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)'>object.Equals(object?)</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)'>object.Equals(object?, object?)</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.gethashcode'>object.GetHashCode()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.gettype'>object.GetType()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone'>object.MemberwiseClone()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.referenceequals'>object.ReferenceEquals(object?, object?)</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.tostring'>object.ToString()</a>\n</div>\n\r\n</dd></dl><h2 class='section'>Methods</h2><h3 class='section api' data-uid='BuildFromProject.Issue8725.MoreOperations' data-commentId='M:BuildFromProject.Issue8725.MoreOperations' id='BuildFromProject_Issue8725_MoreOperations'>MoreOperations()    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L215'><i class='bi bi-code-slash'></i></a></h3>\r\n <p sourceFile=\"obj/apipage/BuildFromProject.Issue8725.yml\" sourceStartLineNumber=\"1\">Another nice operation</p>\n<pre><code class='lang-csharp'>public void MoreOperations()</code></pre><h3 class='section api' data-uid='BuildFromProject.Issue8725.MyOperation' data-commentId='M:BuildFromProject.Issue8725.MyOperation' id='BuildFromProject_Issue8725_MyOperation'>MyOperation()    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L212'><i class='bi bi-code-slash'></i></a></h3>\r\n <p sourceFile=\"obj/apipage/BuildFromProject.Issue8725.yml\" sourceStartLineNumber=\"1\">A nice operation</p>\n<pre><code class='lang-csharp'>public void MyOperation()</code></pre><h2 class='section'>See Also</h2><dl class=\"typelist\"><dd>\r\n<div>\n<a href='BuildFromProject.Class1.html'>Class1</a>\n</div>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromProject.Issue8725.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromProject.Issue8725.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

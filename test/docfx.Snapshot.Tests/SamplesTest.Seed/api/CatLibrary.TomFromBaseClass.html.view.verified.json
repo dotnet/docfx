@@ -1,0 +1,881 @@
+﻿{
+  "uid": "CatLibrary.TomFromBaseClass",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inConstructor": true,
+      "typePropertyName": "inConstructor",
+      "id": "constructors",
+      "children": [
+        {
+          "uid": "CatLibrary.TomFromBaseClass.#ctor(System.Int32)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.TomFromBaseClass",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "TomFromBaseClass(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "New(Integer)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "TomFromBaseClass.TomFromBaseClass(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "TomFromBaseClass.New(Integer)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.TomFromBaseClass.TomFromBaseClass(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.TomFromBaseClass.New(Integer)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor(System.Int32)\" text=\"TomFromBaseClass(int)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor(System.Int32)\" text=\"TomFromBaseClass(int)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public TomFromBaseClass(int k)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub New(k As Integer)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "k",
+                "type": {
+                  "uid": "System.Int32",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    }
+                  ]
+                },
+                "description": ""
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": ".ctor",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 315,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "CatLibrary",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.TomFromBaseClass.#ctor*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "TomFromBaseClass"
+              },
+              {
+                "lang": "vb",
+                "value": "New"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "TomFromBaseClass.TomFromBaseClass"
+              },
+              {
+                "lang": "vb",
+                "value": "TomFromBaseClass.New"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.TomFromBaseClass.TomFromBaseClass"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.TomFromBaseClass.New"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor*\" text=\"TomFromBaseClass\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor*\" text=\"TomFromBaseClass\"/>"
+              }
+            ],
+            "id": "CatLibrary_TomFromBaseClass__ctor_"
+          },
+          "level": 0,
+          "type": "constructor",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"1\">This is a #ctor with parameter</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_TomFromBaseClass__ctor_System_Int32_.md&value=---%0Auid%3A%20CatLibrary.TomFromBaseClass.%23ctor(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L316",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "CatLibrary_TomFromBaseClass__ctor_System_Int32_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "TomFromBaseClass"
+    },
+    {
+      "lang": "vb",
+      "value": "TomFromBaseClass"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "TomFromBaseClass"
+    },
+    {
+      "lang": "vb",
+      "value": "TomFromBaseClass"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.TomFromBaseClass"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.TomFromBaseClass"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "TomFromBaseClass",
+    "path": "dotnet/solution/CatLibrary/Class1.cs",
+    "startLine": 308,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"1\"><em sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"1\">TomFromBaseClass</em> inherits from @</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class TomFromBaseClass : Tom"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class TomFromBaseClass Inherits Tom"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    },
+    {
+      "uid": "CatLibrary.Tom",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CatLibrary",
+      "href": "CatLibrary.Tom.html",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Tom"
+        },
+        {
+          "lang": "vb",
+          "value": "Tom"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Tom"
+        },
+        {
+          "lang": "vb",
+          "value": "Tom"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CatLibrary.Tom"
+        },
+        {
+          "lang": "vb",
+          "value": "CatLibrary.Tom"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 1
+    }
+  ],
+  "level": 2,
+  "inheritedMembers": [
+    {
+      "uid": "CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})",
+      "isExtensionMethod": false,
+      "parent": "CatLibrary.Tom",
+      "isExternal": true,
+      "href": "CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)"
+        },
+        {
+          "lang": "vb",
+          "value": "TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)"
+        },
+        {
+          "lang": "vb",
+          "value": "Tom.TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CatLibrary.Tom.TomMethod(CatLibrary.Complex<CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass>, System.Tuple<string, CatLibrary.Tom>)"
+        },
+        {
+          "lang": "vb",
+          "value": "CatLibrary.Tom.TomMethod(CatLibrary.Complex(Of CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass), System.Tuple(Of String, CatLibrary.Tom))"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__\">TomMethod</a>(<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>&lt;<a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>&gt;, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>, <a class=\"xref\" href=\"CatLibrary.Tom.html\">Tom</a>&gt;)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__\">TomMethod</a>(<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>(Of <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>), <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>, <a class=\"xref\" href=\"CatLibrary.Tom.html\">Tom</a>))"
+        }
+      ],
+      "level": 0,
+      "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">This is a Tom Method with complex type as return</p>\n",
+      "type": "method",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/CatLibrary.TomFromBaseClass.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CatLibrary.TomFromBaseClass.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_TomFromBaseClass.md&value=---%0Auid%3A%20CatLibrary.TomFromBaseClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L309",
+  "description": "TomFromBaseClass inherits from @",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "seealso": [],
+  "id": "CatLibrary_TomFromBaseClass",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

@@ -1,0 +1,147 @@
+﻿{
+  "uid": "MRef.Demo.Enumeration",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inEnum": true,
+      "typePropertyName": "inEnum",
+      "id": "enums",
+      "children": [
+        {
+          "uid": "MRef.Demo.Enumeration.ColorType",
+          "isExtensionMethod": false,
+          "parent": "MRef.Demo.Enumeration",
+          "href": "MRef.Demo.Enumeration.ColorType.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ColorType"
+            },
+            {
+              "lang": "vb",
+              "value": "ColorType"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ColorType"
+            },
+            {
+              "lang": "vb",
+              "value": "ColorType"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "MRef.Demo.Enumeration.ColorType"
+            },
+            {
+              "lang": "vb",
+              "value": "MRef.Demo.Enumeration.ColorType"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
+          "type": "enum",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "MRef_Demo_Enumeration_ColorType",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "MRef.Demo.Enumeration"
+    },
+    {
+      "lang": "vb",
+      "value": "MRef.Demo.Enumeration"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "MRef.Demo.Enumeration"
+    },
+    {
+      "lang": "vb",
+      "value": "MRef.Demo.Enumeration"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "MRef.Demo.Enumeration"
+    },
+    {
+      "lang": "vb",
+      "value": "MRef.Demo.Enumeration"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/MRef.Demo.Enumeration.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/MRef.Demo.Enumeration.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "MRef_Demo_Enumeration",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

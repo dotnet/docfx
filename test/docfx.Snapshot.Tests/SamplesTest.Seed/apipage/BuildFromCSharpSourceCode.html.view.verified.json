@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Namespace BuildFromCSharpSourceCode",
+  "content": "<h1 class='section api' data-uid='BuildFromCSharpSourceCode' data-commentId='N:BuildFromCSharpSourceCode' id='BuildFromCSharpSourceCode'>Namespace BuildFromCSharpSourceCode   </h1>\r\n <h3 class='section'>Classes</h3><dl class='parameters'><dt> <a href='BuildFromCSharpSourceCode.CSharp.html'>CSharp</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromCSharpSourceCode.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromCSharpSourceCode.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

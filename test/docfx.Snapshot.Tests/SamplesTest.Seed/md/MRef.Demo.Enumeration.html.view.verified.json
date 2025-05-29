@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<h3 id=\"enums\" sourcefile=\"obj/md/MRef.Demo.Enumeration.md\" sourcestartlinenumber=\"3\">Enums</h3>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.md\" sourcestartlinenumber=\"5\"><a href=\"~/obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcefile=\"obj/md/MRef.Demo.Enumeration.md\" sourcestartlinenumber=\"5\">ColorType</a></p>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.md\" sourcestartlinenumber=\"7\">Enumeration ColorType</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/MRef.Demo.Enumeration.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/MRef.Demo.Enumeration.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/MRef.Demo.Enumeration.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"MRef_Demo_Enumeration\" sourcefile=\"obj/md/MRef.Demo.Enumeration.md\" sourcestartlinenumber=\"1\"> Namespace MRef.Demo.Enumeration</h1>",
+  "title": " Namespace MRef.Demo.Enumeration",
+  "wordCount": 4,
+  "_key": "obj/md/MRef.Demo.Enumeration.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/MRef.Demo.Enumeration.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/MRef.Demo.Enumeration.md/#L1"
+}

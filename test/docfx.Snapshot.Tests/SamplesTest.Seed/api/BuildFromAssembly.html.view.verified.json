@@ -1,0 +1,217 @@
+﻿{
+  "uid": "BuildFromAssembly",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inClass": true,
+      "typePropertyName": "inClass",
+      "id": "classes",
+      "children": [
+        {
+          "uid": "BuildFromAssembly.Class1",
+          "isExtensionMethod": false,
+          "isExternal": true,
+          "href": "BuildFromAssembly.Class1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromAssembly.Class1"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromAssembly.Class1"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromAssembly.Class1\" text=\"Class1\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromAssembly.Class1\" text=\"Class1\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"1\">This is a test class.</p>\n",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromAssembly_Class1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inStruct": true,
+      "typePropertyName": "inStruct",
+      "id": "structs",
+      "children": [
+        {
+          "uid": "BuildFromAssembly.Issue5432",
+          "isExtensionMethod": false,
+          "isExternal": true,
+          "href": "BuildFromAssembly.Issue5432.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue5432"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue5432"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Issue5432"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue5432"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromAssembly.Issue5432"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromAssembly.Issue5432"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromAssembly.Issue5432\" text=\"Issue5432\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromAssembly.Issue5432\" text=\"Issue5432\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromAssembly_Issue5432",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromAssembly"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromAssembly"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromAssembly"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromAssembly"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromAssembly"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromAssembly"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "BuildFromAssembly"
+  ],
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromAssembly.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromAssembly.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "BuildFromAssembly",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

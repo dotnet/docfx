@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.Core.md\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"3\">CatLibrary.Core</a><br>\nAssembly: CatLibrary.Core.dll</p>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"6\">Struct ContainersRefType</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"8\">public struct ContainersRefType\n</code></pre>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"12\">Inherited Members</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"14\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"14\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"15\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"16\">object.GetHashCode()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"17\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"18\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"19\">object.ToString()</a></p>\n<h4 id=\"extension-methods\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"21\">Extension Methods</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"23\"><a href=\"~/obj/md/CatLibrary.Core.Issue231.md#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"23\">Issue231.Bar(ContainersRefType)</a>,\n<a href=\"~/obj/md/CatLibrary.Core.Issue231.md#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"24\">Issue231.Foo(ContainersRefType)</a></p>\n<h2 id=\"fields\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"26\">Fields</h2>\n<h3 id=\"CatLibrary_Core_ContainersRefType_ColorCount\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"28\"> ColorCount</h3>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"30\">ColorCount</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"32\">public long ColorCount\n</code></pre>\n<h4 id=\"field-value\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"36\">Field Value</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"38\"><a href=\"https://learn.microsoft.com/dotnet/api/system.int64\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"38\">long</a></p>\n<h2 id=\"properties\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"40\">Properties</h2>\n<h3 id=\"CatLibrary_Core_ContainersRefType_GetColorCount\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"42\"> GetColorCount</h3>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"44\">GetColorCount</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"46\">public long GetColorCount { get; }\n</code></pre>\n<h4 id=\"property-value\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"50\">Property Value</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"52\"><a href=\"https://learn.microsoft.com/dotnet/api/system.int64\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"52\">long</a></p>\n<h2 id=\"methods\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"54\">Methods</h2>\n<h3 id=\"CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"56\"> ContainersRefTypeNonRefMethod(params object[])</h3>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"58\">ContainersRefTypeNonRefMethod</p>\n<param name=\"parmsArray\">array\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"61\">public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)\n</code></pre>\n<h4 id=\"parameters\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"65\">Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"67\"><code sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"67\">parmsArray</code> <a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"67\">object</a>[]</p>\n<h4 id=\"returns\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"69\">Returns</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"71\"><a href=\"https://learn.microsoft.com/dotnet/api/system.int32\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"71\">int</a></p>\n<h3 id=\"CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"73\"> ContainersRefTypeEventHandler</h3>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"75\">public event EventHandler ContainersRefTypeEventHandler\n</code></pre>\n<h4 id=\"event-type\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"79\">Event Type</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"81\"><a href=\"https://learn.microsoft.com/dotnet/api/system.eventhandler\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"81\">EventHandler</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.ContainersRefType.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.Core.ContainersRefType.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.ContainersRefType.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_Core_ContainersRefType\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.md\" sourcestartlinenumber=\"1\"> Struct ContainersRefType</h1>",
+  "title": " Struct ContainersRefType",
+  "wordCount": 68,
+  "_key": "obj/md/CatLibrary.Core.ContainersRefType.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.Core.ContainersRefType.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.Core.ContainersRefType.md/#L1"
+}

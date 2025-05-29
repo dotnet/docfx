@@ -1,0 +1,90 @@
+﻿{
+  "order": 100,
+  "items": [
+    {
+      "name": "Getting Started with docfx",
+      "href": "docfx_getting_started.html",
+      "topicHref": "docfx_getting_started.html",
+      "tocHref": null,
+      "level": 2,
+      "items": [],
+      "leaf": true
+    },
+    {
+      "name": "Engineering Docs",
+      "items": [
+        {
+          "name": "Section 1",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Engineering Guidelines",
+          "href": "engineering_guidelines.html",
+          "topicHref": "engineering_guidelines.html",
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "C# Coding Standards",
+          "href": "csharp_coding_standards.html",
+          "topicHref": "csharp_coding_standards.html",
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "expanded": true,
+      "topicHref": null,
+      "tocHref": null,
+      "level": 2
+    },
+    {
+      "name": "Markdown",
+      "href": "markdown.html",
+      "topicHref": "markdown.html",
+      "tocHref": null,
+      "level": 2,
+      "items": [],
+      "leaf": true
+    },
+    {
+      "name": "Microsoft Docs",
+      "href": "https://docs.microsoft.com/en-us/",
+      "topicHref": "https://docs.microsoft.com/en-us/",
+      "tocHref": null,
+      "level": 2,
+      "items": [],
+      "leaf": true
+    }
+  ],
+  "pdfFileName": "seed.pdf",
+  "pdfCoverPage": "pdf/cover.html",
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "articles/toc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "articles/toc.html",
+  "_rel": "../",
+  "_tocKey": "~/articles/toc.yml",
+  "_tocPath": "articles/toc.html",
+  "_tocRel": "toc.html",
+  "topicHref": null,
+  "tocHref": null,
+  "name": null,
+  "level": 1,
+  "leaf": false,
+  "title": "Table of Content",
+  "_disableToc": true
+}

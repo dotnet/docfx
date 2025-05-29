@@ -1,0 +1,1172 @@
+﻿{
+  "uid": "BuildFromProject.Inheritdoc",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "BuildFromProject.Inheritdoc.Dispose",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Inheritdoc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Dispose()"
+            },
+            {
+              "lang": "vb",
+              "value": "Dispose()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Dispose()"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Dispose()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Dispose()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Dispose()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc.Dispose\" text=\"Dispose()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc.Dispose\" text=\"Dispose()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Dispose()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Dispose()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Dispose",
+            "path": "dotnet/project/Project/Inheritdoc.cs",
+            "startLine": 12,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Inheritdoc.Dispose*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Dispose"
+              },
+              {
+                "lang": "vb",
+                "value": "Dispose"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Inheritdoc.Dispose"
+              },
+              {
+                "lang": "vb",
+                "value": "Inheritdoc.Dispose"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Inheritdoc.Dispose"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Inheritdoc.Dispose"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Inheritdoc.Dispose*\" text=\"Dispose\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Inheritdoc.Dispose*\" text=\"Dispose\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Inheritdoc_Dispose_"
+          },
+          "level": 0,
+          "implements": [
+            {
+              "uid": "System.IDisposable.Dispose",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "Dispose()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "Dispose()"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "IDisposable.Dispose()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "IDisposable.Dispose()"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "System.IDisposable.Dispose()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "System.IDisposable.Dispose()"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.idisposable.dispose\">Dispose</a>()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.idisposable.dispose\">Dispose</a>()"
+                }
+              ]
+            }
+          ],
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.yml\" sourcestartlinenumber=\"1\">Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc_Dispose.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L13",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "seealso": [],
+          "id": "BuildFromProject_Inheritdoc_Dispose",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue7628",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Inheritdoc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue7628()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue7628()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue7628()"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue7628()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue7628()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue7628()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc.Issue7628\" text=\"Issue7628()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc.Issue7628\" text=\"Issue7628()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue7628()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue7628()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue7628",
+            "path": "dotnet/project/Project/Inheritdoc.cs",
+            "startLine": 17,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Inheritdoc.Issue7628*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue7628"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue7628"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Inheritdoc.Issue7628"
+              },
+              {
+                "lang": "vb",
+                "value": "Inheritdoc.Issue7628"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Inheritdoc.Issue7628"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Inheritdoc.Issue7628"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Inheritdoc.Issue7628*\" text=\"Issue7628\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Inheritdoc.Issue7628*\" text=\"Issue7628\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Inheritdoc_Issue7628_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.yml\" sourcestartlinenumber=\"1\">This method should do something...</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc_Issue7628.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc.Issue7628%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L18",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Inheritdoc_Issue7628",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue7629",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Inheritdoc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue7629()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue7629()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue7629()"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue7629()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue7629()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue7629()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc.Issue7629\" text=\"Issue7629()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc.Issue7629\" text=\"Issue7629()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue7629()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue7629()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue7629",
+            "path": "dotnet/project/Project/Inheritdoc.cs",
+            "startLine": 14,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.Inheritdoc.Issue7629*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue7629"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue7629"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Inheritdoc.Issue7629"
+              },
+              {
+                "lang": "vb",
+                "value": "Inheritdoc.Issue7629"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Inheritdoc.Issue7629"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Inheritdoc.Issue7629"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Inheritdoc.Issue7629*\" text=\"Issue7629\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Inheritdoc.Issue7629*\" text=\"Issue7629\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Inheritdoc_Issue7629_"
+          },
+          "level": 0,
+          "implements": [
+            {
+              "uid": "BuildFromProject.IInheritdoc.Issue7629",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "Issue7629()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "Issue7629()"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "IInheritdoc.Issue7629()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "IInheritdoc.Issue7629()"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "BuildFromProject.IInheritdoc.Issue7629()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "BuildFromProject.IInheritdoc.Issue7629()"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<a class=\"xref\" href=\"BuildFromProject.IInheritdoc.html#BuildFromProject_IInheritdoc_Issue7629\">Issue7629</a>()"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<a class=\"xref\" href=\"BuildFromProject.IInheritdoc.html#BuildFromProject_IInheritdoc_Issue7629\">Issue7629</a>()"
+                }
+              ]
+            }
+          ],
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.yml\" sourcestartlinenumber=\"1\">This method should do something...</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc_Issue7629.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc.Issue7629%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L15",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "seealso": [],
+          "id": "BuildFromProject_Inheritdoc_Issue7629",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Inheritdoc"
+    },
+    {
+      "lang": "vb",
+      "value": "Inheritdoc"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "Inheritdoc"
+    },
+    {
+      "lang": "vb",
+      "value": "Inheritdoc"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromProject.Inheritdoc"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromProject.Inheritdoc"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "Inheritdoc",
+    "path": "dotnet/project/Project/Inheritdoc.cs",
+    "startLine": 10,
+    "endLine": 0
+  },
+  "assemblies": [
+    "BuildFromProject"
+  ],
+  "namespace": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class Inheritdoc : IInheritdoc, IDisposable"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class Inheritdoc Implements IInheritdoc, IDisposable"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "level": 1,
+  "implements": [
+    {
+      "uid": "BuildFromProject.IInheritdoc",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "IInheritdoc"
+        },
+        {
+          "lang": "vb",
+          "value": "IInheritdoc"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "IInheritdoc"
+        },
+        {
+          "lang": "vb",
+          "value": "IInheritdoc"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "BuildFromProject.IInheritdoc"
+        },
+        {
+          "lang": "vb",
+          "value": "BuildFromProject.IInheritdoc"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"BuildFromProject.IInheritdoc\" text=\"IInheritdoc\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"BuildFromProject.IInheritdoc\" text=\"IInheritdoc\"/>"
+        }
+      ]
+    },
+    {
+      "uid": "System.IDisposable",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "IDisposable"
+        },
+        {
+          "lang": "vb",
+          "value": "IDisposable"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "IDisposable"
+        },
+        {
+          "lang": "vb",
+          "value": "IDisposable"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.IDisposable"
+        },
+        {
+          "lang": "vb",
+          "value": "System.IDisposable"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.IDisposable\" text=\"IDisposable\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.IDisposable\" text=\"IDisposable\"/>"
+        }
+      ]
+    }
+  ],
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromProject.Inheritdoc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromProject.Inheritdoc.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L11",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "example": "",
+  "seealso": [],
+  "id": "BuildFromProject_Inheritdoc",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.md\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"3\">CatLibrary</a><br>\nAssembly: CatLibrary.dll</p>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"6\">Fake delegate</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"8\">public delegate int FakeDelegate&lt;T&gt;(long num, string name, params object[] scores)\n</code></pre>\n<h4 id=\"parameters\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"12\">Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"14\"><code sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"14\">num</code> <a href=\"https://learn.microsoft.com/dotnet/api/system.int64\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"14\">long</a></p>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"16\">Fake para</p>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"18\"><code sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"18\">name</code> <a href=\"https://learn.microsoft.com/dotnet/api/system.string\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"18\">string</a></p>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"20\">Fake para</p>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"22\"><code sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"22\">scores</code> <a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"22\">object</a>[]</p>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"24\">Optional Parameter.</p>\n<h4 id=\"returns\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"26\">Returns</h4>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"28\"><a href=\"https://learn.microsoft.com/dotnet/api/system.int32\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"28\">int</a></p>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"30\">Return a fake number to confuse you.</p>\n<h4 id=\"type-parameters\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"32\">Type Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"34\"><code sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"34\">T</code></p>\n<p sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"36\">Fake para</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.FakeDelegate-1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.FakeDelegate-1.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.FakeDelegate-1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_FakeDelegate_1\" sourcefile=\"obj/md/CatLibrary.FakeDelegate-1.md\" sourcestartlinenumber=\"1\"> Delegate FakeDelegate&lt;T&gt;</h1>",
+  "title": " Delegate FakeDelegate<T>",
+  "wordCount": 43,
+  "_key": "obj/md/CatLibrary.FakeDelegate-1.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.FakeDelegate-1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.FakeDelegate-1.md/#L1"
+}

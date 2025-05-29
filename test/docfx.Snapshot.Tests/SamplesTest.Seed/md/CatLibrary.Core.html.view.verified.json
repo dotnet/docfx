@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<h3 id=\"classes\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"3\">Classes</h3>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"5\"><a href=\"~/obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.md\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"5\">ContainersRefType.ContainersRefTypeChild</a></p>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"7\"><a href=\"~/obj/md/CatLibrary.Core.ExplicitLayoutClass.md\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"7\">ExplicitLayoutClass</a></p>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"9\"><a href=\"~/obj/md/CatLibrary.Core.Issue231.md\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"9\">Issue231</a></p>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"11\"><a href=\"~/obj/md/CatLibrary.Core.Issue231.md\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"11\">Issue231</a></p>\n<h3 id=\"structs\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"13\">Structs</h3>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"15\"><a href=\"~/obj/md/CatLibrary.Core.ContainersRefType.md\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"15\">ContainersRefType</a></p>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"17\">Struct ContainersRefType</p>\n<h3 id=\"interfaces\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"19\">Interfaces</h3>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"21\"><a href=\"~/obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"21\">ContainersRefType.ContainersRefTypeChildInterface</a></p>\n<h3 id=\"enums\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"23\">Enums</h3>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"25\"><a href=\"~/obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"25\">ContainersRefType.ColorType</a></p>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"27\">Enumeration ColorType</p>\n<h3 id=\"delegates\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"29\">Delegates</h3>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"31\"><a href=\"~/obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.md\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"31\">ContainersRefType.ContainersRefTypeDelegate</a></p>\n<p sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"33\">Delegate ContainersRefTypeDelegate</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.Core.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_Core\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"1\"> Namespace CatLibrary.Core</h1>",
+  "title": " Namespace CatLibrary.Core",
+  "wordCount": 19,
+  "_key": "obj/md/CatLibrary.Core.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.Core.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.Core.md/#L1"
+}

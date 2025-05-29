@@ -1,0 +1,564 @@
+﻿{
+  "uid": "CatLibrary.Core",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "isEii": false,
+    "isExtensionMethod": false,
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" displayProperty=\"name\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" displayProperty=\"name\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inClass": true,
+      "typePropertyName": "inClass",
+      "id": "classes",
+      "children": [
+        {
+          "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
+          "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeChild"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeChild"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeChild"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeChild"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html\">ContainersRefTypeChild</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html\">ContainersRefTypeChild</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeChild",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.Core.ExplicitLayoutClass",
+          "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ExplicitLayoutClass.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ExplicitLayoutClass"
+            },
+            {
+              "lang": "vb",
+              "value": "ExplicitLayoutClass"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ExplicitLayoutClass"
+            },
+            {
+              "lang": "vb",
+              "value": "ExplicitLayoutClass"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ExplicitLayoutClass"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ExplicitLayoutClass"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Core.ExplicitLayoutClass\" text=\"ExplicitLayoutClass\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Core.ExplicitLayoutClass\" text=\"ExplicitLayoutClass\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ExplicitLayoutClass",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.Core.Issue231",
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.Core",
+          "href": "CatLibrary.Core.Issue231.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue231"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue231"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Issue231"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue231"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.Issue231"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.Issue231"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Core.Issue231\" text=\"Issue231\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Core.Issue231\" text=\"Issue231\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_Issue231",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inStruct": true,
+      "typePropertyName": "inStruct",
+      "id": "structs",
+      "children": [
+        {
+          "uid": "CatLibrary.Core.ContainersRefType",
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.Core",
+          "href": "CatLibrary.Core.ContainersRefType.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ContainersRefType"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ContainersRefType"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">Struct ContainersRefType</p>\n",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ContainersRefType",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inInterface": true,
+      "typePropertyName": "inInterface",
+      "id": "interfaces",
+      "children": [
+        {
+          "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface",
+          "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeChildInterface"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeChildInterface"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeChildInterface"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeChildInterface"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html\">ContainersRefTypeChildInterface</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html\">ContainersRefTypeChildInterface</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "interface",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeChildInterface",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inEnum": true,
+      "typePropertyName": "inEnum",
+      "id": "enums",
+      "children": [
+        {
+          "uid": "CatLibrary.Core.ContainersRefType.ColorType",
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.Core",
+          "href": "CatLibrary.Core.ContainersRefType.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ColorType"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ColorType"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ColorType"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ColorType"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ContainersRefType.ColorType"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ContainersRefType.ColorType"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
+          "type": "enum",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ContainersRefType_ColorType",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inDelegate": true,
+      "typePropertyName": "inDelegate",
+      "id": "delegates",
+      "children": [
+        {
+          "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
+          "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeDelegate"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeDelegate"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeDelegate"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeDelegate"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html\">ContainersRefTypeDelegate</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html\">ContainersRefTypeDelegate</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"1\">Delegate ContainersRefTypeDelegate</p>\n",
+          "type": "delegate",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeDelegate",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.Core"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.Core"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.Core"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.Core"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.Core"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.Core"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/CatLibrary.Core.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CatLibrary.Core.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CatLibrary_Core",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

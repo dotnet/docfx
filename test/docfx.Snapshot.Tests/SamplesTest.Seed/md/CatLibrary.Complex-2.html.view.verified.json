@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.md\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"3\">CatLibrary</a><br>\nAssembly: CatLibrary.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"6\">public class Complex&lt;T, J&gt;\n</code></pre>\n<h4 id=\"type-parameters\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"10\">Type Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"12\"><code sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"12\">T</code></p>\n<p sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"14\"><code sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"14\">J</code></p>\n<h4 id=\"inheritance\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"16\">Inheritance</h4>\n<p sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"18\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"18\">object</a> ←\n<a href=\"~/obj/md/CatLibrary.Complex-2.md\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"19\">Complex&lt;T, J&gt;</a></p>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"21\">Inherited Members</h4>\n<p sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"23\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"23\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"24\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"25\">object.GetHashCode()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"26\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"27\">object.MemberwiseClone()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"28\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"29\">object.ToString()</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Complex-2.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.Complex-2.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Complex-2.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_Complex_2\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"1\"> Class Complex&lt;T, J&gt;</h1>",
+  "title": " Class Complex<T, J>",
+  "wordCount": 28,
+  "_key": "obj/md/CatLibrary.Complex-2.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.Complex-2.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.Complex-2.md/#L1"
+}

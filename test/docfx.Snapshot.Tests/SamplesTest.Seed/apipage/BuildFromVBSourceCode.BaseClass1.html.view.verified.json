@@ -1,0 +1,21 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "description": "This is the BaseClass",
+  "title": "Class BaseClass1",
+  "content": "<h1 class='section api' data-uid='BuildFromVBSourceCode.BaseClass1' data-commentId='T:BuildFromVBSourceCode.BaseClass1' id='BuildFromVBSourceCode_BaseClass1'>Class BaseClass1    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb#L45'><i class='bi bi-code-slash'></i></a></h1>\r\n <div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='BuildFromVBSourceCode.html'>BuildFromVBSourceCode</a></dd></dl>\r\n</div><p sourceFile=\"obj/apipage/BuildFromVBSourceCode.BaseClass1.yml\" sourceStartLineNumber=\"1\">This is the BaseClass</p>\n<pre><code class='lang-csharp'>public abstract class BaseClass1</code></pre><h4 class='section'>Inheritance</h4><dl class=\"typelist inheritance\"><dd>\r\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object'>object</a>\n</div>\n<div>\n<a href='BuildFromVBSourceCode.BaseClass1.html'>BaseClass1</a>\n</div>\n\r\n</dd></dl><h4 class='section'>Derived</h4><dl class=\"typelist\"><dd>\r\n<div>\n<a href='BuildFromVBSourceCode.Class1.html'>Class1</a>\n</div>\n\r\n</dd></dl><h4 class='section'>Inherited Members</h4><dl class=\"typelist\"><dd>\r\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)'>object.Equals(object)</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)'>object.Equals(object, object)</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.finalize'>object.Finalize()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.gethashcode'>object.GetHashCode()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.gettype'>object.GetType()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone'>object.MemberwiseClone()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.referenceequals'>object.ReferenceEquals(object, object)</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.tostring'>object.ToString()</a>\n</div>\n\r\n</dd></dl><h2 class='section'>Methods</h2><h3 class='section api' data-uid='BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)' data-commentId='M:BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)' id='BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_'>WithDeclarationKeyword(Class1)    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb#L46'><i class='bi bi-code-slash'></i></a></h3>\r\n <pre><code class='lang-csharp'>public abstract DateTime WithDeclarationKeyword(Class1 keyword)</code></pre><h4 class='section'>Parameters</h4><dl class='parameters'><dt><code>keyword</code> <a href='BuildFromVBSourceCode.Class1.html'>Class1</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl><h4 class='section'>Returns</h4><dl class='parameters'><dt> <a href='https://learn.microsoft.com/dotnet/api/system.datetime'>DateTime</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromVBSourceCode.BaseClass1.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromVBSourceCode.BaseClass1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

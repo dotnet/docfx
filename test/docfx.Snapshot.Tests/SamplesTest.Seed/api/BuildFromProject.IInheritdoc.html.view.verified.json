@@ -1,0 +1,334 @@
+﻿{
+  "uid": "BuildFromProject.IInheritdoc",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "BuildFromProject.IInheritdoc.Issue7629",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.IInheritdoc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue7629()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue7629()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "IInheritdoc.Issue7629()"
+            },
+            {
+              "lang": "vb",
+              "value": "IInheritdoc.Issue7629()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.IInheritdoc.Issue7629()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.IInheritdoc.Issue7629()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.IInheritdoc.Issue7629\" text=\"Issue7629()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.IInheritdoc.Issue7629\" text=\"Issue7629()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "void Issue7629()"
+              },
+              {
+                "lang": "vb",
+                "value": "Sub Issue7629()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue7629",
+            "path": "dotnet/project/Project/Inheritdoc.cs",
+            "startLine": 7,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromProject.IInheritdoc.Issue7629*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue7629"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue7629"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "IInheritdoc.Issue7629"
+              },
+              {
+                "lang": "vb",
+                "value": "IInheritdoc.Issue7629"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.IInheritdoc.Issue7629"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.IInheritdoc.Issue7629"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.IInheritdoc.Issue7629*\" text=\"Issue7629\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.IInheritdoc.Issue7629*\" text=\"Issue7629\"/>"
+              }
+            ],
+            "id": "BuildFromProject_IInheritdoc_Issue7629_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.IInheritdoc.yml\" sourcestartlinenumber=\"1\">This method should do something...</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_IInheritdoc_Issue7629.md&value=---%0Auid%3A%20BuildFromProject.IInheritdoc.Issue7629%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L8",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_IInheritdoc_Issue7629",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "IInheritdoc"
+    },
+    {
+      "lang": "vb",
+      "value": "IInheritdoc"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "IInheritdoc"
+    },
+    {
+      "lang": "vb",
+      "value": "IInheritdoc"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromProject.IInheritdoc"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromProject.IInheritdoc"
+    }
+  ],
+  "type": "interface",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "IInheritdoc",
+    "path": "dotnet/project/Project/Inheritdoc.cs",
+    "startLine": 2,
+    "endLine": 0
+  },
+  "assemblies": [
+    "BuildFromProject"
+  ],
+  "namespace": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public interface IInheritdoc"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Interface IInheritdoc"
+      }
+    ]
+  },
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromProject.IInheritdoc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromProject.IInheritdoc.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_IInheritdoc.md&value=---%0Auid%3A%20BuildFromProject.IInheritdoc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L3",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "BuildFromProject_IInheritdoc",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inInterface": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

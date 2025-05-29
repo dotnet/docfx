@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Class Class1.Test<T>",
+  "content": "<h1 class='section api' data-uid='BuildFromProject.Class1.Test`1' data-commentId='T:BuildFromProject.Class1.Test`1' id='BuildFromProject_Class1_Test_1'>Class Class1.Test&lt;T&gt;   <span class='badge rounded-pill text-bg-info' style='font-size: .4em; vertical-align: middle'>Preview</span>  <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L6'><i class='bi bi-code-slash'></i></a></h1>\r\n \n<div class='alert alert-info' role='alert'><p sourceFile=\"obj/apipage/BuildFromProject.Class1.Test-1.yml\" sourceStartLineNumber=\"1\"><a href=\"https://example.org/DOCFX001\" sourceFile=\"obj/apipage/BuildFromProject.Class1.Test-1.yml\" sourceStartLineNumber=\"1\">DOCFX001</a>: 'BuildFromProject.Class1.Test<T>' is for evaluation purposes only and is subject to change or removal in future updates.</p>\n</div><div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='BuildFromProject.html'>BuildFromProject</a></dd></dl><dl><dt>Assembly</dt><dd>BuildFromProject.dll</dd></dl>\r\n</div><pre><code class='lang-csharp'>public class Class1.Test&lt;T&gt;</code></pre><h4 class='section'>Type Parameters</h4><dl class='parameters'><dt><code>T</code>   </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl><h4 class='section'>Inheritance</h4><dl class=\"typelist inheritance\"><dd>\r\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object'>object</a>\n</div>\n<div>\n<a href='BuildFromProject.Class1.Test-1.html'>Class1.Test&lt;T&gt;</a>\n</div>\n\r\n</dd></dl><h4 class='section'>Inherited Members</h4><dl class=\"typelist\"><dd>\r\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)'>object.Equals(object?)</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)'>object.Equals(object?, object?)</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.gethashcode'>object.GetHashCode()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.gettype'>object.GetType()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone'>object.MemberwiseClone()</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.referenceequals'>object.ReferenceEquals(object?, object?)</a>\n</div>\n<div>\n<a href='https://learn.microsoft.com/dotnet/api/system.object.tostring'>object.ToString()</a>\n</div>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromProject.Class1.Test-1.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromProject.Class1.Test-1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

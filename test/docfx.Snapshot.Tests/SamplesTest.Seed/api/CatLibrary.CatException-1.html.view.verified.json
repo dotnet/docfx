@@ -1,0 +1,1180 @@
+﻿{
+  "uid": "CatLibrary.CatException`1",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CatException<T>"
+    },
+    {
+      "lang": "vb",
+      "value": "CatException(Of T)"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CatException<T>"
+    },
+    {
+      "lang": "vb",
+      "value": "CatException(Of T)"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.CatException<T>"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.CatException(Of T)"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "CatException",
+    "path": "dotnet/solution/CatLibrary/Class1.cs",
+    "startLine": 322,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class CatException<T> : Exception, ISerializable"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class CatException(Of T) Inherits Exception Implements ISerializable"
+      }
+    ],
+    "typeParameters": [
+      {
+        "id": "T",
+        "description": ""
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    },
+    {
+      "uid": "System.Exception",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Exception"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception\" text=\"Exception\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception\" text=\"Exception\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 1
+    }
+  ],
+  "level": 2,
+  "implements": [
+    {
+      "uid": "System.Runtime.Serialization.ISerializable",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ISerializable"
+        },
+        {
+          "lang": "vb",
+          "value": "ISerializable"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ISerializable"
+        },
+        {
+          "lang": "vb",
+          "value": "ISerializable"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Runtime.Serialization.ISerializable"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Runtime.Serialization.ISerializable"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Runtime.Serialization.ISerializable\" text=\"ISerializable\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Runtime.Serialization.ISerializable\" text=\"ISerializable\"/>"
+        }
+      ]
+    }
+  ],
+  "inheritedMembers": [
+    {
+      "uid": "System.Exception.GetBaseException",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetBaseException()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetBaseException()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.GetBaseException()"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.GetBaseException()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.GetBaseException()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.GetBaseException()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception\">GetBaseException</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception\">GetBaseException</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.exception.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.Data",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.data",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Data"
+        },
+        {
+          "lang": "vb",
+          "value": "Data"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.Data"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.Data"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.Data"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.Data"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception.Data\" text=\"Data\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception.Data\" text=\"Data\"/>"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.HelpLink",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.helplink",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "HelpLink"
+        },
+        {
+          "lang": "vb",
+          "value": "HelpLink"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.HelpLink"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.HelpLink"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.HelpLink"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.HelpLink"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception.HelpLink\" text=\"HelpLink\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception.HelpLink\" text=\"HelpLink\"/>"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.HResult",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.hresult",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "HResult"
+        },
+        {
+          "lang": "vb",
+          "value": "HResult"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.HResult"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.HResult"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.HResult"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.HResult"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception.HResult\" text=\"HResult\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception.HResult\" text=\"HResult\"/>"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.InnerException",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "InnerException"
+        },
+        {
+          "lang": "vb",
+          "value": "InnerException"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.InnerException"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.InnerException"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.InnerException"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.InnerException"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception.InnerException\" text=\"InnerException\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception.InnerException\" text=\"InnerException\"/>"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.Message",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.message",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Message"
+        },
+        {
+          "lang": "vb",
+          "value": "Message"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.Message"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.Message"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.Message"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.Message"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception.Message\" text=\"Message\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception.Message\" text=\"Message\"/>"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.Source",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.source",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Source"
+        },
+        {
+          "lang": "vb",
+          "value": "Source"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.Source"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.Source"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.Source"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.Source"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception.Source\" text=\"Source\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception.Source\" text=\"Source\"/>"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.StackTrace",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "StackTrace"
+        },
+        {
+          "lang": "vb",
+          "value": "StackTrace"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.StackTrace"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.StackTrace"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.StackTrace"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.StackTrace"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception.StackTrace\" text=\"StackTrace\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception.StackTrace\" text=\"StackTrace\"/>"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.TargetSite",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "TargetSite"
+        },
+        {
+          "lang": "vb",
+          "value": "TargetSite"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.TargetSite"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.TargetSite"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.TargetSite"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.TargetSite"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception.TargetSite\" text=\"TargetSite\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception.TargetSite\" text=\"TargetSite\"/>"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Exception.SerializeObjectState",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Exception",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "SerializeObjectState"
+        },
+        {
+          "lang": "vb",
+          "value": "SerializeObjectState"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Exception.SerializeObjectState"
+        },
+        {
+          "lang": "vb",
+          "value": "Exception.SerializeObjectState"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Exception.SerializeObjectState"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Exception.SerializeObjectState"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Exception.SerializeObjectState\" text=\"SerializeObjectState\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Exception.SerializeObjectState\" text=\"SerializeObjectState\"/>"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/CatLibrary.CatException-1.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CatLibrary.CatException-1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_CatException_1.md&value=---%0Auid%3A%20CatLibrary.CatException%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L323",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "example": "",
+  "seealso": [],
+  "id": "CatLibrary_CatException_1",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

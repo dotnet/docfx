@@ -1,0 +1,626 @@
+﻿{
+  "uid": "BuildFromProject.Class1.Issue9260",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inField": true,
+      "typePropertyName": "inField",
+      "id": "fields",
+      "children": [
+        {
+          "uid": "BuildFromProject.Class1.Issue9260.Value",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1.Issue9260",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Value"
+            },
+            {
+              "lang": "vb",
+              "value": "Value"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue9260.Value"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue9260.Value"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue9260.Value"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue9260.Value"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue9260.Value\" text=\"Value\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue9260.Value\" text=\"Value\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "Value = 0"
+              },
+              {
+                "lang": "vb",
+                "value": "Value = 0"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "BuildFromProject.Class1.Issue9260",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue9260"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue9260"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue9260"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue9260"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "BuildFromProject.Class1.Issue9260"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "BuildFromProject.Class1.Issue9260"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue9260.html\">Issue9260</a>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue9260.html\">Issue9260</a>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Value",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 173,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">This is a remarks section. Very important remarks about Value go here.</p>\n",
+          "example": [],
+          "level": 0,
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">This is a regular enum value.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue9260_Value.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue9260.Value%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L174",
+          "description": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue9260_Value",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue9260.OldAndUnusedValue",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1.Issue9260",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "OldAndUnusedValue"
+            },
+            {
+              "lang": "vb",
+              "value": "OldAndUnusedValue"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue9260.OldAndUnusedValue"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue9260.OldAndUnusedValue"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue9260.OldAndUnusedValue"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue9260.OldAndUnusedValue"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue9260.OldAndUnusedValue\" text=\"OldAndUnusedValue\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue9260.OldAndUnusedValue\" text=\"OldAndUnusedValue\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "[Obsolete]\nOldAndUnusedValue = 1"
+              },
+              {
+                "lang": "vb",
+                "value": "<Obsolete>\nOldAndUnusedValue = 1"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "BuildFromProject.Class1.Issue9260",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue9260"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue9260"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue9260"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue9260"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "BuildFromProject.Class1.Issue9260"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "BuildFromProject.Class1.Issue9260"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue9260.html\">Issue9260</a>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue9260.html\">Issue9260</a>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "OldAndUnusedValue",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 181,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">Don't use this, seriously! Use Value instead.</p>\n",
+          "example": [],
+          "level": 0,
+          "attributes": [
+            {
+              "type": "System.ObsoleteAttribute",
+              "ctor": "System.ObsoleteAttribute.#ctor",
+              "arguments": []
+            }
+          ],
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">This is old and unused. You shouldn't use it anymore.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue9260_OldAndUnusedValue.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue9260.OldAndUnusedValue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L182",
+          "description": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue9260_OldAndUnusedValue",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue9260.OldAndUnusedValue2",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1.Issue9260",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "OldAndUnusedValue2"
+            },
+            {
+              "lang": "vb",
+              "value": "OldAndUnusedValue2"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue9260.OldAndUnusedValue2"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue9260.OldAndUnusedValue2"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue9260.OldAndUnusedValue2"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue9260.OldAndUnusedValue2"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue9260.OldAndUnusedValue2\" text=\"OldAndUnusedValue2\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue9260.OldAndUnusedValue2\" text=\"OldAndUnusedValue2\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "[Obsolete(\"Use Value\")]\nOldAndUnusedValue2 = 2"
+              },
+              {
+                "lang": "vb",
+                "value": "<Obsolete(\"Use Value\")>\nOldAndUnusedValue2 = 2"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "BuildFromProject.Class1.Issue9260",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue9260"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue9260"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue9260"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue9260"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "BuildFromProject.Class1.Issue9260"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "BuildFromProject.Class1.Issue9260"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue9260.html\">Issue9260</a>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue9260.html\">Issue9260</a>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "OldAndUnusedValue2",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 190,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">Don't use this, seriously! Use Value instead.</p>\n",
+          "example": [],
+          "level": 0,
+          "attributes": [
+            {
+              "type": "System.ObsoleteAttribute",
+              "ctor": "System.ObsoleteAttribute.#ctor(System.String)",
+              "arguments": [
+                {
+                  "type": "System.String",
+                  "value": "Use Value"
+                }
+              ]
+            }
+          ],
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue9260.yml\" sourcestartlinenumber=\"1\">This is old and unused. You shouldn't use it anymore.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue9260_OldAndUnusedValue2.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue9260.OldAndUnusedValue2%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L191",
+          "description": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue9260_OldAndUnusedValue2",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Class1.Issue9260"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1.Issue9260"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "Class1.Issue9260"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1.Issue9260"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromProject.Class1.Issue9260"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromProject.Class1.Issue9260"
+    }
+  ],
+  "type": "enum",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/project/Project/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "Issue9260",
+    "path": "dotnet/project/Project/Class1.cs",
+    "startLine": 165,
+    "endLine": 0
+  },
+  "assemblies": [
+    "BuildFromProject"
+  ],
+  "namespace": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public enum Class1.Issue9260"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Enum Class1.Issue9260"
+      }
+    ]
+  },
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromProject.Class1.Issue9260.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromProject.Class1.Issue9260.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue9260.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue9260%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L166",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "BuildFromProject_Class1_Issue9260",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": false,
+  "inEnum": true,
+  "isEnum": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

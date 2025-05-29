@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.Core.md\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"3\">CatLibrary.Core</a><br>\nAssembly: CatLibrary.dll, CatLibrary.Core.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"6\">public static class Issue231\n</code></pre>\n<h4 id=\"inheritance\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"10\">Inheritance</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"12\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"12\">object</a> ←\n<a href=\"~/obj/md/CatLibrary.Core.Issue231.md\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"13\">Issue231</a></p>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"15\">Inherited Members</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"17\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"17\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"18\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"19\">object.GetHashCode()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"20\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"21\">object.MemberwiseClone()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"22\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"23\">object.ToString()</a></p>\n<h2 id=\"methods\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"25\">Methods</h2>\n<h3 id=\"CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"27\"> Bar(ContainersRefType)</h3>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"29\">public static void Bar(this ContainersRefType c)\n</code></pre>\n<h4 id=\"parameters\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"33\">Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"35\"><code sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"35\">c</code> <a href=\"~/obj/md/CatLibrary.Core.ContainersRefType.md\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"35\">ContainersRefType</a></p>\n<h3 id=\"CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"37\"> Foo(ContainersRefType)</h3>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"39\">public static void Foo(this ContainersRefType c)\n</code></pre>\n<h4 id=\"parameters-1\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"43\">Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"45\"><code sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"45\">c</code> <a href=\"~/obj/md/CatLibrary.Core.ContainersRefType.md\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"45\">ContainersRefType</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.Issue231.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.Core.Issue231.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.Issue231.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_Core_Issue231\" sourcefile=\"obj/md/CatLibrary.Core.Issue231.md\" sourcestartlinenumber=\"1\"> Class Issue231</h1>",
+  "title": " Class Issue231",
+  "wordCount": 45,
+  "_key": "obj/md/CatLibrary.Core.Issue231.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.Core.Issue231.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.Core.Issue231.md/#L1"
+}

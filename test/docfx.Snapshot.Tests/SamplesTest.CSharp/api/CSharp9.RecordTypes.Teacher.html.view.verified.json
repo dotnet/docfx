@@ -1,0 +1,1400 @@
+﻿{
+  "uid": "CSharp9.RecordTypes.Teacher",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp9",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp9.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inConstructor": true,
+      "typePropertyName": "inConstructor",
+      "id": "constructors",
+      "children": [
+        {
+          "uid": "CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp9.RecordTypes.Teacher",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Teacher(string, string, int)"
+            },
+            {
+              "lang": "vb",
+              "value": "New(String, String, Integer)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RecordTypes.Teacher.Teacher(string, string, int)"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordTypes.Teacher.New(String, String, Integer)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.RecordTypes.Teacher.Teacher(string, string, int)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.RecordTypes.Teacher.New(String, String, Integer)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)\" text=\"Teacher(string, string, int)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)\" text=\"Teacher(string, string, int)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public Teacher(string FirstName, string LastName, int Grade)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub New(FirstName As String, LastName As String, Grade As Integer)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "FirstName",
+                "type": {
+                  "uid": "System.String",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "LastName",
+                "type": {
+                  "uid": "System.String",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "string"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "Grade",
+                "type": {
+                  "uid": "System.Int32",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp9.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": ".ctor",
+            "path": "src/CSharp9.cs",
+            "startLine": 11,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp9",
+          "overload": {
+            "uid": "CSharp9.RecordTypes.Teacher.#ctor*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Teacher"
+              },
+              {
+                "lang": "vb",
+                "value": "New"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "RecordTypes.Teacher.Teacher"
+              },
+              {
+                "lang": "vb",
+                "value": "RecordTypes.Teacher.New"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp9.RecordTypes.Teacher.Teacher"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp9.RecordTypes.Teacher.New"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp9.RecordTypes.Teacher.#ctor*\" text=\"Teacher\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp9.RecordTypes.Teacher.#ctor*\" text=\"Teacher\"/>"
+              }
+            ],
+            "id": "CSharp9_RecordTypes_Teacher__ctor_"
+          },
+          "level": 0,
+          "type": "constructor",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Teacher__ctor_System_String_System_String_System_Int32_.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Teacher.%23ctor(System.String%2CSystem.String%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L12",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_RecordTypes_Teacher__ctor_System_String_System_String_System_Int32_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "CSharp9.RecordTypes.Teacher.Grade",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp9.RecordTypes.Teacher",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Grade"
+            },
+            {
+              "lang": "vb",
+              "value": "Grade"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RecordTypes.Teacher.Grade"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordTypes.Teacher.Grade"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.RecordTypes.Teacher.Grade"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.RecordTypes.Teacher.Grade"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.RecordTypes.Teacher.Grade\" text=\"Grade\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.RecordTypes.Teacher.Grade\" text=\"Grade\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public int Grade { get; init; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property Grade As Integer"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Int32",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp9.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Grade",
+            "path": "src/CSharp9.cs",
+            "startLine": 11,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp9",
+          "overload": {
+            "uid": "CSharp9.RecordTypes.Teacher.Grade*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Grade"
+              },
+              {
+                "lang": "vb",
+                "value": "Grade"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "RecordTypes.Teacher.Grade"
+              },
+              {
+                "lang": "vb",
+                "value": "RecordTypes.Teacher.Grade"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp9.RecordTypes.Teacher.Grade"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp9.RecordTypes.Teacher.Grade"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp9.RecordTypes.Teacher.Grade*\" text=\"Grade\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp9.RecordTypes.Teacher.Grade*\" text=\"Grade\"/>"
+              }
+            ],
+            "id": "CSharp9_RecordTypes_Teacher_Grade_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Teacher_Grade.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Teacher.Grade%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L12",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_RecordTypes_Teacher_Grade",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "RecordTypes.Teacher"
+    },
+    {
+      "lang": "vb",
+      "value": "RecordTypes.Teacher"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "RecordTypes.Teacher"
+    },
+    {
+      "lang": "vb",
+      "value": "RecordTypes.Teacher"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp9.RecordTypes.Teacher"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp9.RecordTypes.Teacher"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp9.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "Teacher",
+    "path": "src/CSharp9.cs",
+    "startLine": 11,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp9",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp9.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public record RecordTypes.Teacher : RecordTypes.Person, IEquatable<RecordTypes.Person>, IEquatable<RecordTypes.Teacher>"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class RecordTypes.Teacher Inherits RecordTypes.Person Implements IEquatable(Of RecordTypes.Person), IEquatable(Of RecordTypes.Teacher)"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    },
+    {
+      "uid": "CSharp9.RecordTypes.Person",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp9",
+      "href": "CSharp9.RecordTypes.html",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "RecordTypes.Person"
+        },
+        {
+          "lang": "vb",
+          "value": "RecordTypes.Person"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "RecordTypes.Person"
+        },
+        {
+          "lang": "vb",
+          "value": "RecordTypes.Person"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp9.RecordTypes.Person"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp9.RecordTypes.Person"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>"
+        }
+      ],
+      "level": 0,
+      "index": 1
+    }
+  ],
+  "level": 2,
+  "implements": [
+    {
+      "uid": "System.IEquatable{CSharp9.RecordTypes.Person}",
+      "definition": "System.IEquatable`1",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "IEquatable<RecordTypes.Person>"
+        },
+        {
+          "lang": "vb",
+          "value": "IEquatable(Of RecordTypes.Person)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "IEquatable<RecordTypes.Person>"
+        },
+        {
+          "lang": "vb",
+          "value": "IEquatable(Of RecordTypes.Person)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.IEquatable<CSharp9.RecordTypes.Person>"
+        },
+        {
+          "lang": "vb",
+          "value": "System.IEquatable(Of CSharp9.RecordTypes.Person)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>&gt;"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>)"
+        }
+      ]
+    },
+    {
+      "uid": "System.IEquatable{CSharp9.RecordTypes.Teacher}",
+      "definition": "System.IEquatable`1",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "IEquatable<RecordTypes.Teacher>"
+        },
+        {
+          "lang": "vb",
+          "value": "IEquatable(Of RecordTypes.Teacher)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "IEquatable<RecordTypes.Teacher>"
+        },
+        {
+          "lang": "vb",
+          "value": "IEquatable(Of RecordTypes.Teacher)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.IEquatable<CSharp9.RecordTypes.Teacher>"
+        },
+        {
+          "lang": "vb",
+          "value": "System.IEquatable(Of CSharp9.RecordTypes.Teacher)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Teacher.html\">Teacher</a>&gt;"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Teacher.html\">Teacher</a>)"
+        }
+      ]
+    }
+  ],
+  "inheritedMembers": [
+    {
+      "uid": "CSharp9.RecordTypes.Person.FirstName",
+      "isExtensionMethod": false,
+      "parent": "CSharp9.RecordTypes.Person",
+      "href": "CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_FirstName",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "FirstName"
+        },
+        {
+          "lang": "vb",
+          "value": "FirstName"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "RecordTypes.Person.FirstName"
+        },
+        {
+          "lang": "vb",
+          "value": "RecordTypes.Person.FirstName"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp9.RecordTypes.Person.FirstName"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp9.RecordTypes.Person.FirstName"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp9.RecordTypes.Person.FirstName\" text=\"FirstName\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp9.RecordTypes.Person.FirstName\" text=\"FirstName\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "property",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "CSharp9.RecordTypes.Person.LastName",
+      "isExtensionMethod": false,
+      "parent": "CSharp9.RecordTypes.Person",
+      "href": "CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_LastName",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "LastName"
+        },
+        {
+          "lang": "vb",
+          "value": "LastName"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "RecordTypes.Person.LastName"
+        },
+        {
+          "lang": "vb",
+          "value": "RecordTypes.Person.LastName"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp9.RecordTypes.Person.LastName"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp9.RecordTypes.Person.LastName"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp9.RecordTypes.Person.LastName\" text=\"LastName\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp9.RecordTypes.Person.LastName\" text=\"LastName\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "property",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp9.RecordTypes.Teacher.yml",
+  "_path": "api/CSharp9.RecordTypes.Teacher.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Teacher.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Teacher%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L12",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp9_RecordTypes_Teacher",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

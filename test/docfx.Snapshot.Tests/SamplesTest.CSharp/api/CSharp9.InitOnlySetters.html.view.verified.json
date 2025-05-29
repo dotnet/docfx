@@ -1,0 +1,1240 @@
+﻿{
+  "uid": "CSharp9.InitOnlySetters",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp9",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp9.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "CSharp9.InitOnlySetters.PressureInMillibars",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp9.InitOnlySetters",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "PressureInMillibars"
+            },
+            {
+              "lang": "vb",
+              "value": "PressureInMillibars"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "InitOnlySetters.PressureInMillibars"
+            },
+            {
+              "lang": "vb",
+              "value": "InitOnlySetters.PressureInMillibars"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.InitOnlySetters.PressureInMillibars"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.InitOnlySetters.PressureInMillibars"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.InitOnlySetters.PressureInMillibars\" text=\"PressureInMillibars\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.InitOnlySetters.PressureInMillibars\" text=\"PressureInMillibars\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public decimal PressureInMillibars { get; init; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property PressureInMillibars As Decimal"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Decimal",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "decimal"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Decimal"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "decimal"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Decimal"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "decimal"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Decimal"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp9.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "PressureInMillibars",
+            "path": "src/CSharp9.cs",
+            "startLine": 18,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp9",
+          "overload": {
+            "uid": "CSharp9.InitOnlySetters.PressureInMillibars*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "PressureInMillibars"
+              },
+              {
+                "lang": "vb",
+                "value": "PressureInMillibars"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "InitOnlySetters.PressureInMillibars"
+              },
+              {
+                "lang": "vb",
+                "value": "InitOnlySetters.PressureInMillibars"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp9.InitOnlySetters.PressureInMillibars"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp9.InitOnlySetters.PressureInMillibars"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp9.InitOnlySetters.PressureInMillibars*\" text=\"PressureInMillibars\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp9.InitOnlySetters.PressureInMillibars*\" text=\"PressureInMillibars\"/>"
+              }
+            ],
+            "id": "CSharp9_InitOnlySetters_PressureInMillibars_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_InitOnlySetters_PressureInMillibars.md&value=---%0Auid%3A%20CSharp9.InitOnlySetters.PressureInMillibars%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L19",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_InitOnlySetters_PressureInMillibars",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp9.InitOnlySetters.RecordedAt",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp9.InitOnlySetters",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "RecordedAt"
+            },
+            {
+              "lang": "vb",
+              "value": "RecordedAt"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "InitOnlySetters.RecordedAt"
+            },
+            {
+              "lang": "vb",
+              "value": "InitOnlySetters.RecordedAt"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.InitOnlySetters.RecordedAt"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.InitOnlySetters.RecordedAt"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.InitOnlySetters.RecordedAt\" text=\"RecordedAt\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.InitOnlySetters.RecordedAt\" text=\"RecordedAt\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public DateTime RecordedAt { get; init; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property RecordedAt As Date"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.DateTime",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "DateTime"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Date"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "DateTime"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Date"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.DateTime"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Date"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp9.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "RecordedAt",
+            "path": "src/CSharp9.cs",
+            "startLine": 16,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp9",
+          "overload": {
+            "uid": "CSharp9.InitOnlySetters.RecordedAt*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "RecordedAt"
+              },
+              {
+                "lang": "vb",
+                "value": "RecordedAt"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "InitOnlySetters.RecordedAt"
+              },
+              {
+                "lang": "vb",
+                "value": "InitOnlySetters.RecordedAt"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp9.InitOnlySetters.RecordedAt"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp9.InitOnlySetters.RecordedAt"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp9.InitOnlySetters.RecordedAt*\" text=\"RecordedAt\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp9.InitOnlySetters.RecordedAt*\" text=\"RecordedAt\"/>"
+              }
+            ],
+            "id": "CSharp9_InitOnlySetters_RecordedAt_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_InitOnlySetters_RecordedAt.md&value=---%0Auid%3A%20CSharp9.InitOnlySetters.RecordedAt%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L17",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_InitOnlySetters_RecordedAt",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp9.InitOnlySetters.TemperatureInCelsius",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp9.InitOnlySetters",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "TemperatureInCelsius"
+            },
+            {
+              "lang": "vb",
+              "value": "TemperatureInCelsius"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "InitOnlySetters.TemperatureInCelsius"
+            },
+            {
+              "lang": "vb",
+              "value": "InitOnlySetters.TemperatureInCelsius"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.InitOnlySetters.TemperatureInCelsius"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.InitOnlySetters.TemperatureInCelsius"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.InitOnlySetters.TemperatureInCelsius\" text=\"TemperatureInCelsius\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.InitOnlySetters.TemperatureInCelsius\" text=\"TemperatureInCelsius\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public decimal TemperatureInCelsius { get; init; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property TemperatureInCelsius As Decimal"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Decimal",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "decimal"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Decimal"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "decimal"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Decimal"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "decimal"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Decimal"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp9.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "TemperatureInCelsius",
+            "path": "src/CSharp9.cs",
+            "startLine": 17,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp9",
+          "overload": {
+            "uid": "CSharp9.InitOnlySetters.TemperatureInCelsius*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "TemperatureInCelsius"
+              },
+              {
+                "lang": "vb",
+                "value": "TemperatureInCelsius"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "InitOnlySetters.TemperatureInCelsius"
+              },
+              {
+                "lang": "vb",
+                "value": "InitOnlySetters.TemperatureInCelsius"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp9.InitOnlySetters.TemperatureInCelsius"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp9.InitOnlySetters.TemperatureInCelsius"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp9.InitOnlySetters.TemperatureInCelsius*\" text=\"TemperatureInCelsius\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp9.InitOnlySetters.TemperatureInCelsius*\" text=\"TemperatureInCelsius\"/>"
+              }
+            ],
+            "id": "CSharp9_InitOnlySetters_TemperatureInCelsius_"
+          },
+          "level": 0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_InitOnlySetters_TemperatureInCelsius.md&value=---%0Auid%3A%20CSharp9.InitOnlySetters.TemperatureInCelsius%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L18",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp9_InitOnlySetters_TemperatureInCelsius",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "InitOnlySetters"
+    },
+    {
+      "lang": "vb",
+      "value": "InitOnlySetters"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "InitOnlySetters"
+    },
+    {
+      "lang": "vb",
+      "value": "InitOnlySetters"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp9.InitOnlySetters"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp9.InitOnlySetters"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp9.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "InitOnlySetters",
+    "path": "src/CSharp9.cs",
+    "startLine": 14,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp9",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp9.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class InitOnlySetters"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class InitOnlySetters"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "level": 1,
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.tostring",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp9.InitOnlySetters.yml",
+  "_path": "api/CSharp9.InitOnlySetters.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_InitOnlySetters.md&value=---%0Auid%3A%20CSharp9.InitOnlySetters%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L15",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp9_InitOnlySetters",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/BuildFromAssembly.md\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"3\">BuildFromAssembly</a><br>\nAssembly: BuildFromAssembly.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"6\">public struct Issue5432\n</code></pre>\n<h4 id=\"inherited-members\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"10\">Inherited Members</h4>\n<p sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"12\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"12\">object.GetType()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"13\">object.ToString()</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"14\">object.Equals(object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"15\">object.Equals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"16\">object.ReferenceEquals(object?, object?)</a>,\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"17\">object.GetHashCode()</a></p>\n<h2 id=\"properties\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"19\">Properties</h2>\n<h3 id=\"BuildFromAssembly_Issue5432_Name\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"21\"> Name</h3>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"23\">public string Name { get; }\n</code></pre>\n<h4 id=\"property-value\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"27\">Property Value</h4>\n<p sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"29\"><a href=\"https://learn.microsoft.com/dotnet/api/system.string\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"29\">string</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromAssembly.Issue5432.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/BuildFromAssembly.Issue5432.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromAssembly.Issue5432.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"BuildFromAssembly_Issue5432\" sourcefile=\"obj/md/BuildFromAssembly.Issue5432.md\" sourcestartlinenumber=\"1\"> Struct Issue5432</h1>",
+  "title": " Struct Issue5432",
+  "wordCount": 28,
+  "_key": "obj/md/BuildFromAssembly.Issue5432.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromAssembly.Issue5432.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromAssembly.Issue5432.md/#L1"
+}

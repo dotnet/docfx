@@ -1,0 +1,944 @@
+﻿{
+  "NumberOfPages": 27,
+  "Pages": [
+    {
+      "Number": 1,
+      "Text": "Table of Contents\nPet Store API 2\nContacts API 17",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 2,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 17,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 2,
+      "Text": "2 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nSwagger Petstore\nDescribe APIs in Pet Store\npet\nDescription for pet tag\nAddPet\nAdd a new pet to the store\nRequest\nParameters\nName Type Default Notes\n*body Pet Pet object that needs to be added to the store\nResponses\nStatus Code Type Description Samples\n405 Invalid input\nNOTE: Add pet only when you needs.\nUpdatePet\nUpdate an existing pet\nRequest\nParameters\nPOST /pet\nPUT /pet",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdatePet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdatePet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdatePet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 406.5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 3,
+      "Text": "3 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nName Type Default Notes\n*body Pet Pet object that needs to be added to the store\nResponses\nStatus Code Type Description Samples\n400 Invalid ID supplied\n404 Pet not found\n405 Validation exception\nFindPetsByStatus\nFinds Pets by status\nMultiple status values can be provided with comma separated strings\nRequest\nParameters\nName Type Default Notes\n*status Status values that need to be considered for filter\nResponses\nStatus Code Type Description Samples\n200 Pet[] successful operation\n400 Invalid status value\nFindPetsByTags\nGET /pet/findByStatus?status",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByStatus%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByStatus%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByStatus%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByTags%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByTags%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByTags%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 406.5
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 406.5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 4,
+      "Text": "4 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nFinds Pets by tags\nMuliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for\ntesting.\nRequest\nParameters\nName Type Default Notes\n*tags Tags to filter by\nResponses\nStatus Code Type Description Samples\n200 Pet[] successful operation\n400 Invalid tag value\nDeletePet\nDeletes a pet\nRequest\nParameters\nName Type Default Notes\napi_key\n*petId Pet id to delete\nResponses\nGET /pet/findByTags?tags\nDELETE /pet/{petId}",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeletePet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeletePet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeletePet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 406.5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 5,
+      "Text": "5 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nStatus Code Type Description Samples\n400 Invalid ID supplied\n404 Pet not found\nGetPetById\nFind pet by ID\nReturns a single pet\nRequest\nParameters\nName Type Default Notes\n*petId ID of pet to return\nResponses\nStatus Code Type Description Samples\n200 Pet successful operation\n400 Invalid ID supplied\n404 Pet not found\nUpdatePetWithForm\nUpdates a pet in the store with form data\nRequest\nGET /pet/{petId}\nPOST /pet/{petId}",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetPetById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetPetById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetPetById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdatePetWithForm%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdatePetWithForm%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdatePetWithForm%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 406.5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 6,
+      "Text": "6 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nParameters\nName Type Default Notes\n*petId ID of pet that needs to be updated\nname Updated name of the pet\nstatus Updated status of the pet\nResponses\nStatus Code Type Description Samples\n405 Invalid input\nUploadFile\nuploads an image\nRequest\nParameters\nName Type Default Notes\n*petId ID of pet to update\nadditionalMetadata Additional data to pass to server\nfile file to upload\nResponses\nStatus Code Type Description Samples\n200 ApiResponse successful operation\nPOST /pet/{petId}/uploadImage",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FuploadFile%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FuploadFile%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FuploadFile%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 553.5
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 553.5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 7,
+      "Text": "7 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nstore\nAccess to Petstore orders\nAdditional description for store tag\nAddPet\nAdd a new pet to the store\nRequest\nParameters\nName Type Default Notes\n*body Pet Pet object that needs to be added to the store\nResponses\nStatus Code Type Description Samples\n405 Invalid input\nNOTE: Add pet only when you needs.\nGetInventory\nReturns pet inventories by status\nReturns a map of status codes to quantities\nRequest\nResponses\nPOST /pet\nGET /store/inventory",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetInventory%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetInventory%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetInventory%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 406.5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 8,
+      "Text": "8 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nStatus Code Type Description Samples\n200 object successful operation\nPlaceOrder\nPlace an order for a pet\nRequest\nParameters\nName Type Default Notes\n*body Order order placed for purchasing the pet\nResponses\nStatus Code Type Description Samples\n200 Order successful operation\n400 Invalid Order\nDeleteOrder\nDelete purchase order by ID\nFor valid response try integer IDs with positive integer value. Negative or non-integer\nvalues will generate API errors\nRequest\nParameters\nPOST /store/order\nDELETE /store/order/{orderId}",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FplaceOrder%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FplaceOrder%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FplaceOrder%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeleteOrder%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeleteOrder%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeleteOrder%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 389.25
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 389.25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 9,
+      "Text": "9 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nName Type Default Notes\n*orderId ID of the order that needs to be deleted\nResponses\nStatus Code Type Description Samples\n400 Invalid ID supplied\n404 Order not found\nGetOrderById\nFind purchase order by ID\nFor valid response try integer IDs with value >= 1 and <= 10. Other values will generated\nexceptions\nRequest\nParameters\nName Type Default Notes\n*orderId ID of pet that needs to be fetched\nResponses\nStatus Code Type Description Samples\n200 Order successful operation\n400 Invalid ID supplied\n404 Order not found\nGET /store/order/{orderId}",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetOrderById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetOrderById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetOrderById%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 389.25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 10,
+      "Text": "10 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nuser\nOperations about user\nCreateUser\nCreate user\nThis can only be done by the logged in user.\nRequest\nParameters\nName Type Default Notes\n*body User Created user object\nResponses\nStatus Code Type Description Samples\ndefault successful operation\nCreateUsersWithArrayInput\nCreates list of users with given input array\nRequest\nParameters\nName Type Default Notes\n*body User[] List of user object\nResponses\nPOST /user\nPOST /user/createWithArray",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithArrayInput%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithArrayInput%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithArrayInput%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 120.75
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 120.75
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 11,
+      "Text": "11 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nStatus Code Type Description Samples\ndefault successful operation\nCreateUsersWithListInput\nCreates list of users with given input array\nRequest\nParameters\nName Type Default Notes\n*body User[] List of user object\nResponses\nStatus Code Type Description Samples\ndefault successful operation\nLoginUser\nLogs user into the system\nRequest\nParameters\nName Type Default Notes\n*username The user name for login\n*password The password for login in clear text\nPOST /user/createWithList\nGET /user/login?username&password",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithListInput%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithListInput%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithListInput%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FloginUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FloginUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FloginUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 120.75
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 12,
+      "Text": "12 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nResponses\nStatus Code Type Description Samples\n200 string successful operation\n400 Invalid username/password supplied\nLogoutUser\nLogs out current logged in user session\nRequest\nResponses\nStatus Code Type Description Samples\ndefault successful operation\nDeleteUser\nDelete user\nThis can only be done by the logged in user.\nRequest\nParameters\nName Type Default Notes\n*username The name that needs to be deleted\nResponses\nGET /user/logout\nDELETE /user/{username}",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FlogoutUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FlogoutUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FlogoutUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeleteUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeleteUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeleteUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        }
+      ]
+    },
+    {
+      "Number": 13,
+      "Text": "13 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nStatus Code Type Description Samples\n400 Invalid username supplied\n404 User not found\nGetUserByName\nGet user by user name\nRequest\nParameters\nName Type Default Notes\n*username The name that needs to be fetched. Use user1 for testing.\nResponses\nStatus Code Type Description Samples\n200 User successful operation\n400 Invalid username supplied\n404 User not found\nOther APIs\nUpdateUser\nUpdated user\nThis can only be done by the logged in user.\nRequest\nGET /user/{username}",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetUserByName%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetUserByName%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetUserByName%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdateUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdateUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdateUser%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 120.75
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 14,
+      "Text": "14 / 27\nParameters\nName Type Default Notes\n*username name that need to be updated\n*body User Updated user object\nResponses\nStatus Code Type Description Samples\n400 Invalid user supplied\n404 User not found\nDefinitions\nPet\nName Type Notes\ncategory Category[]\nid integer (int64)\nname string\nphotoUrls array\nstatus string pet status in the store\ntags Tag[]\nCategory\nPUT /user/{username}",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 120.75
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 14,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 138
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 15,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 687
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 15,
+      "Text": "15 / 27\nName Type Notes\nid integer (int64)\nname string\nTag\nName Type Notes\nid integer (int64)\nname string\nApiResponse\nName Type Notes\ncode integer (int32)\nmessage string\ntype string\nOrder\nName Type Notes\ncomplete boolean\nid integer (int64)\npetId integer (int64)\nquantity integer (int32)\nshipDate string (date-time)\nstatus string Order Status\nUser",
+      "Links": []
+    },
+    {
+      "Number": 16,
+      "Text": "16 / 27\nName Type Notes\nemail string\nfirstName string\nid integer (int64)\nlastName string\npassword string\nphone string\nuserStatus integer (int32) User Status\nusername string\nSee Alsos\nSee other REST APIs:\nContacts API",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 17,
+            "Type": 2,
+            "Coordinates": {
+              "Top": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 17,
+      "Text": "17 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\n| Improve this Doc\uF1C5View Source\uF1C5\nContacts\nGet Contacts\nYou can get a collection of contacts from your tenant.\nRequired scope: Contacts.Read or Contacts.Write\nRequest\nParameters\nName Type Default Notes\n*api-\nversion\n1.6 The version of the Graph API to target. Beginning with\nversion 1.5, the api-version string is represented in\nmajor.minor format. Prior releases were represented as date\nstrings: '2013-11-08' and '2013-04-05'. Required.\nResponses\nStatus\nCode Type Description Samples\n200 OK.\nIndicates\nsuccess. The\nresults are\nreturned in\nthe\nresponse\nbody.\nMime type: application/json\nGet Contact By Id\nGet a contact by using the object ID.\nRequired scope: Contacts.Read or Contacts.Write\nGET /contacts?api-version\n{ \n\"odata.metadata\":\n\"https://graph.windows.net/myorganization/$metadata#dir\n\"value\": [\n{     \n\"odata.type\": \"Microsoft.DirectoryServices.Contac\n\"objectType\": \"Contact\",\n\"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\n\"deletionTimestamp\": null,",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contacts.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contacts%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contacts.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contacts%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contacts.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contacts%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20by%20id%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20by%20id%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20by%20id%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        }
+      ]
+    },
+    {
+      "Number": 18,
+      "Text": "18 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nRequest\nParameters\nName Type Default Notes\n*object_id 31944231-fd52-\n4a7f-b32e-\n7902a01fddf9\nThe object ID (GUID) of the target contact.\n*api-\nversion\n1.6 Specifies the version of the Graph API to target.\nBeginning with version 1.5, the api-version string\nis represented in major.minor format. Prior\nreleases were represented as date strings:\n'2013-11-08' and '2013-04-05'. Required.\nResponses\nStatus\nCode Type Description Samples\n200 OK.\nIndicates\nsuccess. The\ncontact is\nreturned in\nthe\nresponse\nbody.\nMime type: application/json\nUpdate Contact\nChange a contact's properties.\nRequired scope: Contacts.Write\nRequest\nGET /contacts/{object_id}?api-version\n{ \n\"odata.metadata\":\n\"https://graph.windows.net/graphdir1.onmicrosoft.com/$m\n\"odata.type\": \"Microsoft.DirectoryServices.Contact\",\n\"objectType\": \"Contact\",\n\"objectId\": \"31944231-fd52-4a7f-b32e-7902a01fddf9\",\n\"deletionTimestamp\": null,\n\"city\": null,\n\"companyName\": null,",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        }
+      ]
+    },
+    {
+      "Number": 19,
+      "Text": "19 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nParameters\nName Type Default Notes\n*object_id 7163f3b8-70c9-\n43d2-b9e1-\n4467ddaf087a\nThe object ID (GUID) of the target contact.\n*api-\nversion\n1.6 The version of the Graph API to target.\nBeginning with version 1.5, the api-version\nstring is represented in major.minor format.\nPrior releases were represented as date\nstrings: '2013-11-08' and '2013-04-05'.\nRequired.\nbodyparam contact this is request body, not real parameter\nResponses\nStatus\nCode Type Description Samples\n204 No Content. Indicates success. No response body is\nreturned.\nDelete Contact\nDelete a contact.\nRequired scope: Contacts.Write\nRequest\nParameters\nPATCH /contacts/{object_id}?api-version\nDELETE /contacts/{object_id}[?api-version]",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Goto": {
+            "PageNumber": 25,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 324.75
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 20,
+      "Text": "20 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nName Type Default Notes\n*object_id 7163f3b8-70c9-\n43d2-b9e1-\n4467ddaf087a\nThe object ID (GUID) of the target contact.\napi-\nversion\n1.6 Specifies the version of the Graph API to target.\nBeginning with version 1.5, the api-version\nstring is represented in major.minor format. Prior\nreleases were represented as date strings:\n'2013-11-08' and '2013-04-05'. Required.\nResponses\nStatus Code Type Description Samples\n204 No Content. Indicates success.\nGet Contact Manager Link\nGet a link to the contact's manager.\nRequired scope: Contacts.Read or Contacts.Write\nRequest\nParameters\nName Type Default Notes\n*object_id 31944231-fd52-\n4a7f-b32e-\n7902a01fddf9\nThe object ID (GUID) of the target contact.\n*api-\nversion\n1.6 The version of the Graph API to target.\nBeginning with version 1.5, the api-version string\nis represented in major.minor format. Prior\nreleases were represented as date strings:\n'2013-11-08' and '2013-04-05'. Required.\nGET /contacts/{object_id}/$links/manager?api-version",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20manager%20link%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20manager%20link%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20manager%20link%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        }
+      ]
+    },
+    {
+      "Number": 21,
+      "Text": "21 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nResponses\nStatus\nCode Type Description Samples\n200 OK.\nIndicates\nsuccess. A\nlink to the\ncontact's\nmanager is\nreturned.\nMime type: application/json\n404 Not Found.\nThe\nrequested\nresource\nwas not\nfound. This\ncan occur if\nthe manager\nproperty is\nnot currently\nset for the\nspecified\ncontact. It\ncan also\nhave other\ncauses, for\nexample, a\nbad domain.\nA code and\nassociated\nmessage is\nreturned\nwith the\nerror.\nMime type: application/json\nUpdate Contact Manager\n{ \n\"odata.metadata\":\n\"https://graph.windows.net/myorganization/$metadata#dir\n\"url\": \"https://graph.windows.net/myorganization/dire\n4c4a-93b2-03f065fabd93/Microsoft.WindowsAzure.ActiveDir\n}\n{ \n\"odata.error\": {\n\"code\": \"Request_ResourceNotFound\",\n\"message\": {\n\"lang\": \"en\",\n\"value\": \"Resource not found for the segment 'man\n} \n}\n}",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact_manager.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%20manager%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact_manager.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%20manager%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact_manager.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%20manager%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        }
+      ]
+    },
+    {
+      "Number": 22,
+      "Text": "22 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nUpdate the contact's manager\nRequired scope: Contacts.Write\nRequest\nParameters\nName Type Default Notes\n*object_id 31944231-fd52-\n4a7f-b32e-\n7902a01fddf9\nThe object ID (GUID) of the target contact.\n*api-version 1.6 The version of the Graph API to target.\nBeginning with version 1.5, the api-version\nstring is represented in major.minor format.\nPrior releases were represented as date\nstrings: '2013-11-08' and '2013-04-05'.\nRequired.\n*bodyparam The request body contains a single property\nthat specifies the URL of the user or contact to\nadd as manager.\nResponses\nStatus\nCode Type Description Samples\n204 No Content. Indicates success. No response body is\nreturned.\nDelete Contact Manager By Id\nDelete the contact's manager.\nRequired scope: Contacts.Write\nRequest\nPUT /contacts/{object_id}/$links/manager?api-version",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%20manager%20by%20id%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%20manager%20by%20id%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%20manager%20by%20id%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        }
+      ]
+    },
+    {
+      "Number": 23,
+      "Text": "23 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nParameters\nName Type Default Notes\n*object_id 31944231-fd52-\n4a7f-b32e-\n7902a01fddf9\nThe object ID (GUID) of the target contact.\n*api-\nversion\n1.6 The version of the Graph API to target.\nBeginning with version 1.5, the api-version string\nis represented in major.minor format. Prior\nreleases were represented as date strings:\n'2013-11-08' and '2013-04-05'. Required.\nResponses\nStatus\nCode Type Description Samples\n204 No Content. Indicates success. N response body is\nreturned.\nGet Contact Direct Reports Links\nGet a links to the contact's direct reports.\nRequired scope: Contacts.Read or Contacts.Write\nRequest\nParameters\nName Type Default Notes\n*object_id 31944231-fd52-\n4a7f-b32e-\n7902a01fddf9\nThe object ID (GUID) of the target contact.\nDELETE /contacts/{object_id}/$links/manager?api-version\nGET /contacts/{object_id}/$links/directReports?api-version",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20direct%20reports%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20direct%20reports%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20direct%20reports%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        }
+      ]
+    },
+    {
+      "Number": 24,
+      "Text": "24 / 27\n| Improve this Doc\uF1C5View Source\uF1C5\nName Type Default Notes\n*api-\nversion\n1.6 The version of the Graph API to target.\nBeginning with version 1.5, the api-version string\nis represented in major.minor format. Prior\nreleases were represented as date strings:\n'2013-11-08' and '2013-04-05'. Required.\nResponses\nStatus\nCode Type Description Samples\n200 OK.\nIndicates\nsuccess.\nOne or more\ndirect\nreports are\nreturned.\nMime type: application/json\nGet Contact MemberOf Links\nGet a links to the contact's direct group and directory role memberships.\nRequired scope: Contacts.Read or Contacts.Write\nRequest\nParameters\nName Type Default Notes\n*object_id 31944231-fd52-\n4a7f-b32e-\n7902a01fddf9\nThe object ID (GUID) of the target contact.\n{ \n\"odata.metadata\":\n\"https://graph.windows.net/myorganization/$metadata#dir\n\"value\": [\n{     \n\"url\": \"https://graph.windows.net/myorganization/\n4e26-b24f-c830606ef41c/Microsoft.DirectoryServices.Cont\n} \n]\nGET /contacts/{object_id}/$links/memberOf?api-version",
+      "Links": [
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20memberOf%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20memberOf%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20memberOf%20links%0Asummary%3A%20%27*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax%27%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        },
+        {
+          "Uri": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1"
+        }
+      ]
+    },
+    {
+      "Number": 25,
+      "Text": "25 / 27\nName Type Default Notes\n*api-\nversion\n1.6 The version of the Graph API to target.\nBeginning with version 1.5, the api-version string\nis represented in major.minor format. Prior\nreleases were represented as date strings:\n'2013-11-08' and '2013-04-05'. Required.\nResponses\nStatus\nCode Type Description Samples\n200 OK.\nIndicates\nsuccess.\nOne or more\ngroups\nand/or\ndirectory\nroles are\nreturned.\nMime type: application/json\nDefinitions\nContact\nName Type Notes\nobjectType string\nobjectId string\ndeletionTimestamp string (date-time)\ncity string\ncountry string\ndepartment string\n{ \n\"odata.metadata\":\n\"https://graph.windows.net/myorganization/$metadata#dir\n\"value\": [\n{     \n\"url\": \"https://graph.windows.net/myorganization/\nb942-47c9-a10e-a4bee353ce60/Microsoft.DirectoryServices\n} \n]",
+      "Links": []
+    },
+    {
+      "Number": 26,
+      "Text": "26 / 27\nName Type Notes\ndirSyncEnabled boolean\ndisplayName string\nfacsimileTelephoneNumber string\ngivenName string\njobTitle string\nlastDirSyncTime string (date-time)\nmail string\nmailNickname string\nmobile string\nphysicalDeliveryOfficeName string\npostalCode string\nprovisioningErrors ProvisioningError[]\nproxyAddresses array\nsipProxyAddress string\nstate string\nstreetAddress string\nsurname string\ntelephoneNumber string\nthumbnailPhoto string\nProvisioningError\nName Type Notes\nerrorDetail string",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 26,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 164.25
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 26,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 164.25
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 27,
+      "Text": "27 / 27\nName Type Notes\nresolved boolean\nserviceInstance string\ntimestamp string (date-time)",
+      "Links": []
+    }
+  ],
+  "Bookmarks": [
+    {
+      "Title": "Pet Store API",
+      "Children": [],
+      "Destination": {
+        "PageNumber": 2,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    },
+    {
+      "Title": "Contacts API",
+      "Children": [],
+      "Destination": {
+        "PageNumber": 17,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+﻿{
+  "items": [
+    {
+      "name": "Namespaces",
+      "items": [
+        {
+          "name": "MyExample",
+          "href": "MyExample.html",
+          "topicHref": "MyExample.html",
+          "topicUid": "MyExample",
+          "type": "Namespace",
+          "items": [
+            {
+              "name": "Classes",
+              "items": [
+                {
+                  "name": "ExampleClass",
+                  "href": "MyExample.ExampleClass.html",
+                  "topicHref": "MyExample.ExampleClass.html",
+                  "topicUid": "MyExample.ExampleClass",
+                  "type": "Class",
+                  "items": [
+                    {
+                      "name": "Constructors",
+                      "items": [
+                        {
+                          "name": "ExampleClass",
+                          "href": "MyExample.ExampleClass.-ctor.html",
+                          "topicHref": "MyExample.ExampleClass.-ctor.html",
+                          "topicUid": "MyExample.ExampleClass.#ctor*",
+                          "type": "Constructor",
+                          "fullName": "MyExample.ExampleClass.ExampleClass",
+                          "nameWithType": "ExampleClass.ExampleClass",
+                          "isEii": false,
+                          "tocHref": null,
+                          "level": 7,
+                          "items": [],
+                          "leaf": true
+                        }
+                      ],
+                      "topicHref": null,
+                      "tocHref": null,
+                      "level": 6,
+                      "leaf": false
+                    },
+                    {
+                      "name": "Properties",
+                      "items": [
+                        {
+                          "name": "MyProperty",
+                          "href": "MyExample.ExampleClass.MyProperty.html",
+                          "topicHref": "MyExample.ExampleClass.MyProperty.html",
+                          "topicUid": "MyExample.ExampleClass.MyProperty*",
+                          "type": "Property",
+                          "fullName": "MyExample.ExampleClass.MyProperty",
+                          "nameWithType": "ExampleClass.MyProperty",
+                          "isEii": false,
+                          "tocHref": null,
+                          "level": 7,
+                          "items": [],
+                          "leaf": true
+                        }
+                      ],
+                      "topicHref": null,
+                      "tocHref": null,
+                      "level": 6,
+                      "leaf": false
+                    },
+                    {
+                      "name": "Methods",
+                      "items": [
+                        {
+                          "name": "MyMethod",
+                          "href": "MyExample.ExampleClass.MyMethod.html",
+                          "topicHref": "MyExample.ExampleClass.MyMethod.html",
+                          "topicUid": "MyExample.ExampleClass.MyMethod*",
+                          "type": "Method",
+                          "fullName": "MyExample.ExampleClass.MyMethod",
+                          "nameWithType": "ExampleClass.MyMethod",
+                          "isEii": false,
+                          "tocHref": null,
+                          "level": 7,
+                          "items": [],
+                          "leaf": true
+                        }
+                      ],
+                      "topicHref": null,
+                      "tocHref": null,
+                      "level": 6,
+                      "leaf": false
+                    },
+                    {
+                      "name": "Events",
+                      "items": [
+                        {
+                          "name": "MyEvent",
+                          "href": "MyExample.ExampleClass.MyEvent.html",
+                          "topicHref": "MyExample.ExampleClass.MyEvent.html",
+                          "topicUid": "MyExample.ExampleClass.MyEvent",
+                          "type": "Event",
+                          "fullName": "MyExample.ExampleClass.MyEvent",
+                          "nameWithType": "ExampleClass.MyEvent",
+                          "isEii": false,
+                          "tocHref": null,
+                          "level": 7,
+                          "items": [],
+                          "leaf": true
+                        }
+                      ],
+                      "topicHref": null,
+                      "tocHref": null,
+                      "level": 6,
+                      "leaf": false
+                    }
+                  ],
+                  "tocHref": null,
+                  "level": 5,
+                  "leaf": false
+                }
+              ],
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "leaf": false
+            }
+          ],
+          "tocHref": null,
+          "level": 3,
+          "leaf": false
+        }
+      ],
+      "topicHref": null,
+      "tocHref": null,
+      "level": 2,
+      "leaf": false
+    }
+  ],
+  "memberLayout": "SeparatePages",
+  "_key": "api/toc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/toc.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "topicHref": null,
+  "tocHref": null,
+  "name": null,
+  "level": 1,
+  "leaf": false
+}

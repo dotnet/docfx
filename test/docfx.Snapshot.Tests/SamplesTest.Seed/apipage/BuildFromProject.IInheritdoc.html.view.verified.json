@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Interface IInheritdoc",
+  "content": "<h1 class='section api' data-uid='BuildFromProject.IInheritdoc' data-commentId='T:BuildFromProject.IInheritdoc' id='BuildFromProject_IInheritdoc'>Interface IInheritdoc    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs#L3'><i class='bi bi-code-slash'></i></a></h1>\r\n <div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='BuildFromProject.html'>BuildFromProject</a></dd></dl><dl><dt>Assembly</dt><dd>BuildFromProject.dll</dd></dl>\r\n</div><pre><code class='lang-csharp'>public interface IInheritdoc</code></pre><h2 class='section'>Methods</h2><h3 class='section api' data-uid='BuildFromProject.IInheritdoc.Issue7629' data-commentId='M:BuildFromProject.IInheritdoc.Issue7629' id='BuildFromProject_IInheritdoc_Issue7629'>Issue7629()    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs#L8'><i class='bi bi-code-slash'></i></a></h3>\r\n <p sourceFile=\"obj/apipage/BuildFromProject.IInheritdoc.yml\" sourceStartLineNumber=\"1\">This method should do something...</p>\n<pre><code class='lang-csharp'>void Issue7629()</code></pre>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromProject.IInheritdoc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromProject.IInheritdoc.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

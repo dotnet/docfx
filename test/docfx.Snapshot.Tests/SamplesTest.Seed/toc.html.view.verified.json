@@ -1,0 +1,88 @@
+﻿{
+  "items": [
+    {
+      "name": "Home",
+      "href": "index.html",
+      "topicHref": "index.html",
+      "tocHref": null,
+      "level": 2,
+      "items": [],
+      "leaf": true
+    },
+    {
+      "name": "Articles",
+      "href": "articles/docfx_getting_started.html",
+      "tocHref": "articles/toc.html",
+      "topicHref": "articles/docfx_getting_started.html",
+      "level": 2,
+      "items": [],
+      "leaf": true
+    },
+    {
+      "name": "API Documentation",
+      "items": [
+        {
+          "name": ".NET API",
+          "href": "api/BuildFromAssembly.html",
+          "tocHref": "api/toc.html",
+          "topicHref": "api/BuildFromAssembly.html",
+          "topicUid": "BuildFromAssembly",
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": ".NET API (markdown)",
+          "href": "md/BuildFromAssembly.html",
+          "tocHref": "md/toc.html",
+          "topicHref": "md/BuildFromAssembly.html",
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": ".NET API (apipage)",
+          "href": "apipage/BuildFromAssembly.html",
+          "tocHref": "apipage/toc.html",
+          "topicHref": "apipage/BuildFromAssembly.html",
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "REST API",
+          "href": "restapi/petstore.html",
+          "tocHref": "restapi/toc.html",
+          "topicHref": "restapi/petstore.html",
+          "level": 3,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "topicHref": null,
+      "tocHref": null,
+      "level": 2
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "toc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "toc.html",
+  "_path": "toc.html",
+  "_rel": "",
+  "_tocKey": "~/toc.yml",
+  "_tocPath": "toc.html",
+  "_tocRel": "toc.html",
+  "topicHref": null,
+  "tocHref": null,
+  "name": null,
+  "level": 1,
+  "leaf": false,
+  "title": "Table of Content",
+  "_disableToc": true
+}

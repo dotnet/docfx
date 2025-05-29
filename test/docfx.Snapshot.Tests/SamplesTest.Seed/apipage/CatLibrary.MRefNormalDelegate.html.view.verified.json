@@ -1,0 +1,21 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "description": "Delegate in the namespace",
+  "title": "Delegate MRefNormalDelegate",
+  "content": "<h1 class='section api' data-uid='CatLibrary.MRefNormalDelegate' data-commentId='T:CatLibrary.MRefNormalDelegate' id='CatLibrary_MRefNormalDelegate'>Delegate MRefNormalDelegate    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs#L356'><i class='bi bi-code-slash'></i></a></h1>\r\n <div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='CatLibrary.html'>CatLibrary</a></dd></dl><dl><dt>Assembly</dt><dd>CatLibrary.dll</dd></dl>\r\n</div><p sourceFile=\"obj/apipage/CatLibrary.MRefNormalDelegate.yml\" sourceStartLineNumber=\"1\">Delegate in the namespace</p>\n<pre><code class='lang-csharp'>public delegate void MRefNormalDelegate(List&lt;string&gt; pics, out string name)</code></pre><h4 class='section'>Parameters</h4><dl class='parameters'><dt><code>pics</code> <a href='https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1'>List</a>&lt;<a href='https://learn.microsoft.com/dotnet/api/system.string'>string</a>&gt;  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.MRefNormalDelegate.yml\" sourceStartLineNumber=\"1\">a name list of pictures.</p>\n\r\n</dd><dt><code>name</code> <a href='https://learn.microsoft.com/dotnet/api/system.string'>string</a>  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.MRefNormalDelegate.yml\" sourceStartLineNumber=\"1\">give out the needed name.</p>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/CatLibrary.MRefNormalDelegate.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/CatLibrary.MRefNormalDelegate.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

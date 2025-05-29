@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.Core.md\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"3\">CatLibrary.Core</a><br>\nAssembly: CatLibrary.Core.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"6\">public interface ContainersRefType.ContainersRefTypeChildInterface\n</code></pre>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_Core_ContainersRefType_ContainersRefTypeChildInterface\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"1\"> Interface ContainersRefType.ContainersRefTypeChildInterface</h1>",
+  "title": " Interface ContainersRefType.ContainersRefTypeChildInterface",
+  "wordCount": 7,
+  "_key": "obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md/#L1"
+}

@@ -1,0 +1,21 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "description": "Fake delegate",
+  "title": "Delegate FakeDelegate<T>",
+  "content": "<h1 class='section api' data-uid='CatLibrary.FakeDelegate`1' data-commentId='T:CatLibrary.FakeDelegate`1' id='CatLibrary_FakeDelegate_1'>Delegate FakeDelegate&lt;T&gt;    <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs#L380'><i class='bi bi-code-slash'></i></a></h1>\r\n <div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='CatLibrary.html'>CatLibrary</a></dd></dl><dl><dt>Assembly</dt><dd>CatLibrary.dll</dd></dl>\r\n</div><p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Fake delegate</p>\n<pre><code class='lang-csharp'>public delegate int FakeDelegate&lt;T&gt;(long num, string name, params object[] scores)</code></pre><h4 class='section'>Parameters</h4><dl class='parameters'><dt><code>num</code> <a href='https://learn.microsoft.com/dotnet/api/system.int64'>long</a>  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Fake para</p>\n\r\n</dd><dt><code>name</code> <a href='https://learn.microsoft.com/dotnet/api/system.string'>string</a>  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Fake para</p>\n\r\n</dd><dt><code>scores</code> <a href='https://learn.microsoft.com/dotnet/api/system.object'>object</a>[]  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Optional Parameter.</p>\n\r\n</dd></dl><h4 class='section'>Returns</h4><dl class='parameters'><dt> <a href='https://learn.microsoft.com/dotnet/api/system.int32'>int</a>  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Return a fake number to confuse you.</p>\n\r\n</dd></dl><h4 class='section'>Type Parameters</h4><dl class='parameters'><dt><code>T</code>   </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Fake para</p>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/CatLibrary.FakeDelegate-1.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/CatLibrary.FakeDelegate-1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

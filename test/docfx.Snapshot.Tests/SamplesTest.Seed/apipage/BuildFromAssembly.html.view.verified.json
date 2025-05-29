@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Namespace BuildFromAssembly",
+  "content": "<h1 class='section api' data-uid='BuildFromAssembly' data-commentId='N:BuildFromAssembly' id='BuildFromAssembly'>Namespace BuildFromAssembly   </h1>\r\n <h3 class='section'>Classes</h3><dl class='parameters'><dt> <a href='BuildFromAssembly.Class1.html'>Class1</a>  </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/BuildFromAssembly.yml\" sourceStartLineNumber=\"1\">This is a test class.</p>\n\r\n</dd></dl><h3 class='section'>Structs</h3><dl class='parameters'><dt> <a href='BuildFromAssembly.Issue5432.html'>Issue5432</a>  </dt>\r\n<dd>\r\n\r\n\r\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromAssembly.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromAssembly.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

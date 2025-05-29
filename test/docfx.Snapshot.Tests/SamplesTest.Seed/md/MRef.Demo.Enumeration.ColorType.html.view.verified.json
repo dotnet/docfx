@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/MRef.Demo.Enumeration.md\" sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"3\">MRef.Demo.Enumeration</a><br>\nAssembly: CatLibrary.dll</p>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"6\">Enumeration ColorType</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"8\">public enum ColorType\n</code></pre>\n<h2 id=\"fields\" sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"12\">Fields</h2>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"14\"><code sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"14\">Red = 0</code></p>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"16\">this color is red</p>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"20\"><code sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"20\">Blue = 1</code></p>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"22\">blue like river</p>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"26\"><code sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"26\">Yellow = 2</code></p>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"28\">yellow comes from desert</p>\n<h2 id=\"remarks\" sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"32\">Remarks</h2>\n<p>\nRed/Blue/Yellow can become all color you want.\n</p>\n<ul></ul>\n<h2 id=\"see-also\" sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"39\">See Also</h2>\n<p sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"41\"><a href=\"https://learn.microsoft.com/dotnet/api/system.object\" sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"41\">object</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/MRef.Demo.Enumeration.ColorType.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/MRef.Demo.Enumeration.ColorType.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/MRef.Demo.Enumeration.ColorType.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"MRef_Demo_Enumeration_ColorType\" sourcefile=\"obj/md/MRef.Demo.Enumeration.ColorType.md\" sourcestartlinenumber=\"1\"> Enum ColorType</h1>",
+  "title": " Enum ColorType",
+  "wordCount": 41,
+  "_key": "obj/md/MRef.Demo.Enumeration.ColorType.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/MRef.Demo.Enumeration.ColorType.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/MRef.Demo.Enumeration.ColorType.md/#L1"
+}

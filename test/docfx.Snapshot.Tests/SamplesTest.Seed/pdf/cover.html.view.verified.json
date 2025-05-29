@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "<style>    \n@media print {\n    @page {\n        margin: 0 !important;\n    }\n    body {\n        -webkit-print-color-adjust: exact;\n        -moz-print-color-adjust: exact;\n        -ms-print-color-adjust: exact;\n        print-color-adjust: exact;\n    }\n}\n</style>\n<div style='background-color: green; width: 100%; height: 100%; display: flex; flex-direction: column'>\n  <p style='flex: 1'></p>\n  <h1 style='align-self: end; margin: 1rem 2rem; color: antiquewhite'>DOCFX PDF SAMPLE</h1>\n</div>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/pdf/cover.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "pdf/cover.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/pdf/cover.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "",
+  "title": "DOCFX PDF SAMPLE",
+  "wordCount": 3,
+  "_key": "pdf/cover.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "pdf/cover.html",
+  "_rel": "../",
+  "_tocKey": "~/toc.yml",
+  "_tocPath": "toc.html",
+  "_tocRel": "../toc.html",
+  "_disableToc": true,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/pdf/cover.md/#L1"
+}

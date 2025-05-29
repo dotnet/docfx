@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<h2 id=\"getting-started\" sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"5\">Getting Started</h2>\n<p sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"7\">This is a seed. <img src=\"~/articles/images/seed.jpg\" sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"7\" alt=\"Seed\"></p>\n<p sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"9\"><code sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"9\">docfx</code> is an API documentation generator for .NET, currently support C# and VB. It has the ability to extract triple slash comments out from your source code. What's more, it has syntax to link additional files to API to add additional remarks. <code sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"9\">docfx</code> will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. <code sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"9\">docfx</code> provides the flexibility for you to customize the website through templates. We currently have several embedded templates, including websites containing pure static html pages and also website managed by AngularJS.</p>\n<ul sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"11\">\n<li sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"11\">Click &quot;View Source&quot; for an API to route to the source code in GitHub (your API must be pushed to GitHub)</li>\n<li sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"12\"><code sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"12\">docfx</code> provide DNX version for cross platform use.</li>\n<li sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"13\"><code sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"13\">docfx</code> can be used within Visual Studio seamlessly. <strong sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"13\">NOTE</strong> offical <code sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"13\">docfx.msbuild</code> nuget package is now in pre-release version. You can also build your own with source code and use it locally.</li>\n<li sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"14\">We support <strong sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"14\">Docfx Flavored Markdown(DFM)</strong> for writing conceptual files. DFM is <strong sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"14\">100%</strong> compatible with <em sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"14\">Github Flavored Markdown(GFM)</em> and add several new features including <em sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"14\">file inclusion</em>, <em sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"14\">cross reference</em>, and <em sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"14\">yaml header</em>.</li>\n</ul>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/articles/docfx_getting_started.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "articles/docfx_getting_started.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/articles/docfx_getting_started.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"getting-started-with-docfx\" sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"2\">Getting Started with <code sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"2\">docfx</code></h1>",
+  "title": "Getting Started with docfx",
+  "wordCount": 189,
+  "_key": "articles/docfx_getting_started.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "articles/docfx_getting_started.html",
+  "_rel": "../",
+  "_tocKey": "~/articles/toc.yml",
+  "_tocPath": "articles/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/articles/docfx_getting_started.md/#L1"
+}

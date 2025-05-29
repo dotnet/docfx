@@ -1,0 +1,353 @@
+﻿{
+  "uid": "CatLibrary.MRefDelegate`3",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "MRefDelegate<K, T, L>"
+    },
+    {
+      "lang": "vb",
+      "value": "MRefDelegate(Of K, T, L)"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "MRefDelegate<K, T, L>"
+    },
+    {
+      "lang": "vb",
+      "value": "MRefDelegate(Of K, T, L)"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.MRefDelegate<K, T, L>"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.MRefDelegate(Of K, T, L)"
+    }
+  ],
+  "type": "delegate",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "MRefDelegate",
+    "path": "dotnet/solution/CatLibrary/Class1.cs",
+    "startLine": 366,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CatLibrary.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"1\">Generic delegate with many constrains.</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public delegate void MRefDelegate<K, T, L>(K k, T t, L l) where K : class, IComparable where T : struct where L : Tom, IEnumerable<long>"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Delegate Sub MRefDelegate(Of K As {Class, IComparable}, T As Structure, L As {Tom, IEnumerable(Of Long)})(k As K, t As T, l As L)"
+      }
+    ],
+    "parameters": [
+      {
+        "id": "k",
+        "type": {
+          "uid": "{K}",
+          "definition": "K",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "K"
+            },
+            {
+              "lang": "vb",
+              "value": "K"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "K"
+            },
+            {
+              "lang": "vb",
+              "value": "K"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "K"
+            },
+            {
+              "lang": "vb",
+              "value": "K"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"{K}\" text=\"K\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"{K}\" text=\"K\"/>"
+            }
+          ]
+        },
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"1\">Type K.</p>\n"
+      },
+      {
+        "id": "t",
+        "type": {
+          "uid": "{T}",
+          "definition": "T",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "T"
+            },
+            {
+              "lang": "vb",
+              "value": "T"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "T"
+            },
+            {
+              "lang": "vb",
+              "value": "T"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "T"
+            },
+            {
+              "lang": "vb",
+              "value": "T"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"{T}\" text=\"T\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"{T}\" text=\"T\"/>"
+            }
+          ]
+        },
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"1\">Type T.</p>\n"
+      },
+      {
+        "id": "l",
+        "type": {
+          "uid": "{L}",
+          "definition": "L",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "L"
+            },
+            {
+              "lang": "vb",
+              "value": "L"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "L"
+            },
+            {
+              "lang": "vb",
+              "value": "L"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "L"
+            },
+            {
+              "lang": "vb",
+              "value": "L"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"{L}\" text=\"L\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"{L}\" text=\"L\"/>"
+            }
+          ]
+        },
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"1\">Type L.</p>\n"
+      }
+    ],
+    "typeParameters": [
+      {
+        "id": "K",
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"1\">Generic K.</p>\n"
+      },
+      {
+        "id": "T",
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"1\">Generic T.</p>\n"
+      },
+      {
+        "id": "L",
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"1\">Generic L.</p>\n"
+      }
+    ]
+  },
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/CatLibrary.MRefDelegate-3.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CatLibrary.MRefDelegate-3.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_MRefDelegate_3.md&value=---%0Auid%3A%20CatLibrary.MRefDelegate%603%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L367",
+  "description": "Generic delegate with many constrains.",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "seealso": [],
+  "id": "CatLibrary_MRefDelegate_3",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inDelegate": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.md\" sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"3\">CatLibrary</a><br>\nAssembly: CatLibrary.dll</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"6\">Delegate in the namespace</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"8\">public delegate void MRefNormalDelegate(List&lt;string&gt; pics, out string name)\n</code></pre>\n<h4 id=\"parameters\" sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"12\">Parameters</h4>\n<p sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"14\"><code sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"14\">pics</code> <a href=\"https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1\" sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"14\">List</a>&lt;<a href=\"https://learn.microsoft.com/dotnet/api/system.string\" sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"14\">string</a>&gt;</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"16\">a name list of pictures.</p>\n<p sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"18\"><code sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"18\">name</code> <a href=\"https://learn.microsoft.com/dotnet/api/system.string\" sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"18\">string</a></p>\n<p sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"20\">give out the needed name.</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.MRefNormalDelegate.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/CatLibrary.MRefNormalDelegate.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/CatLibrary.MRefNormalDelegate.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"CatLibrary_MRefNormalDelegate\" sourcefile=\"obj/md/CatLibrary.MRefNormalDelegate.md\" sourcestartlinenumber=\"1\"> Delegate MRefNormalDelegate</h1>",
+  "title": " Delegate MRefNormalDelegate",
+  "wordCount": 33,
+  "_key": "obj/md/CatLibrary.MRefNormalDelegate.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/CatLibrary.MRefNormalDelegate.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/CatLibrary.MRefNormalDelegate.md/#L1"
+}
