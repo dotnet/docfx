@@ -3,8 +3,8 @@
 
 using System.Collections;
 using System.Reflection;
+using AwesomeAssertions;
 using Docfx.Common;
-using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

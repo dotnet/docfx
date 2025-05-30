@@ -1,13 +1,14 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using AwesomeAssertions;
 using Docfx.Common;
 using Docfx.Exceptions;
 using Docfx.Tests.Common;
-using FluentAssertions;
 using Xunit;
 
 namespace Docfx.Build.SchemaDriven.Tests;
+
 public class JsonPointerTest : TestBase
 {
     [Fact]

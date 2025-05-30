@@ -1,9 +1,9 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using AwesomeAssertions;
 using Docfx.Common;
 using Docfx.Tests.Common;
-using FluentAssertions;
 using Xunit;
 using Switches = Docfx.DataContracts.Common.Constants.Switches;
 
