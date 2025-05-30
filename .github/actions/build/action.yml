@@ -13,6 +13,13 @@ runs:
         9.x
         8.x
 
+  - name: Install fonts-noto-color-emoji package (Linux only)
+    if: runner.os == 'Linux'
+    shell: bash
+    run: |
+      sudo apt-get update
+      sudo apt-get install -y fonts-noto-color-emoji
+
   - run: npm ci
     shell: bash
     working-directory: templates
