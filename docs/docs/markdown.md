@@ -486,6 +486,8 @@ Tabs are indicated by using a specific link syntax within a Markdown header. The
 
 A tab starts with a Markdown header, `#`, and is followed by a Markdown link `[]()`. The text of the link will become the text of the tab header, displayed to the customer. In order for the header to be recognized as a tab, the link itself must start with `#tab/` and be followed by an ID representing the content of the tab. The ID is used to sync all same-ID tabs across the page. Using the above example, when a user selects a tab with the link `#tab/windows`, all tabs with the link `#tab/windows` on the page will be selected.
 
+To denote the end of a tab's content, use `***`.
+
 ### Dependent tabs
 
 It's possible to make the selection in one set of tabs dependent on the selection in another set of tabs. Here's an example of that in action:
