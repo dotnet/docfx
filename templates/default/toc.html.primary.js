@@ -59,6 +59,16 @@ function transformMemberPage(model) {
       "delegate":    { key: "delegatesInSubtitle" },
   };
 
+  var groupBy = [
+    "constructor",
+    "field",
+    "property",
+    "method",
+    "event",
+    "operator",
+    "eii",
+  ];
+
   groupChildren(model);
   transformItem(model, 1);
   return model;
@@ -71,7 +81,7 @@ function transformMemberPage(model) {
       var items = [];
       item.items.forEach(function (element) {
           groupChildren(element);
-          if (element.type) {
+          if (element.type && groupBy.includes(element.type)) {
               var type = element.isEii ? "eii" : element.type.toLowerCase();
               if (!grouped.hasOwnProperty(type)) {
                   if (!groupNames.hasOwnProperty(type)) {
