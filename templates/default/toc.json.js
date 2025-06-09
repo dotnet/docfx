@@ -45,13 +45,13 @@ exports.transform = function (model) {
     };
 
     var groupBy = [
-      "constructor",
-      "field",
-      "property",
-      "method",
-      "event",
-      "operator",
-      "eii",
+      "Constructor",
+      "Field",
+      "Property",
+      "Method",
+      "Event",
+      "Operator",
+      "Eii",
     ];
 
     groupChildren(model);
