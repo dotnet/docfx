@@ -45,7 +45,7 @@ jobs:
         git diff --name-only
 
     # Commit updated snapshot contents
-    - uses: stefanzweifel/git-auto-commit-action@v5
+    - uses: stefanzweifel/git-auto-commit-action@v6
       id: auto-commit-action
       if: ${{ github.event.inputs.dryrun == 'false'}} 
       with:
