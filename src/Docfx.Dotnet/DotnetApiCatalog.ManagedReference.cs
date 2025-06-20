@@ -172,7 +172,7 @@ partial class DotnetApiCatalog
                 return false;
             }
 
-            Logger.Log(LogLevel.Warning, $"Ignore duplicated member {node.Type}:{node.Name} from {node.Source?.Path} as it already exist in {existingNode.Source?.Path}.");
+            Logger.Log(LogLevel.Warning, $"Ignore duplicated member {node.Type}:{node.Name} from {node.Source?.Path} as it already exists in {existingNode.Source?.Path}.");
             return false;
         }
     }
