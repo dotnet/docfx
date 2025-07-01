@@ -31,6 +31,13 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
+    <!-- Generate XML documentation file for IntelliSense -->
+    <GenerateDocumentationFile Condition="'$(IsTestProject)' != 'true' and !$(MSBuildProjectName.EndsWith('Tests')) and !$(MSBuildProjectName.Contains('.Tests.'))">true</GenerateDocumentationFile>
+    <!-- Explicitly disable XML documentation for test projects -->
+    <GenerateDocumentationFile Condition="'$(IsTestProject)' == 'true' or $(MSBuildProjectName.EndsWith('Tests')) or $(MSBuildProjectName.Contains('.Tests.'))">false</GenerateDocumentationFile>
+    <!-- Suppress XML documentation warnings (CS1591) temporarily -->
+    <NoWarn Condition="'$(GenerateDocumentationFile)' == 'true'">$(NoWarn);CS1591</NoWarn>
+
     <Authors>.NET Foundation and Contributors</Authors>
     <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
     <Description>Technical documentation tool with markdown, API docs for .NET, REST API and more.</Description>
