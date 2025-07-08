@@ -1,4 +1,4 @@
-import { bicep } from './bicep.js'
+import bicep from './bicep.js'
 
 export default {
   iconLinks: [
