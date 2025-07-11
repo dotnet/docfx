@@ -39,11 +39,27 @@ static class ApiPageMarkdownTemplate
 
         FormattableString Api(Api api) => api.Value switch
         {
-            Api1 api1 => ToHeading(1, api1.api1, api1.id),
-            Api2 api2 => ToHeading(2, api2.api2, api2.id),
-            Api3 api3 => ToHeading(3, api3.api3, api3.id),
-            Api4 api4 => ToHeading(4, api4.api4, api4.id),
+            Api1 api1 => CombineFormattableStrings(ToHeading(1, api1.api1, api1.id), PreviewAlertNullable(api1.preview)),
+            Api2 api2 => CombineFormattableStrings(ToHeading(2, api2.api2, api2.id), PreviewAlertNullable(api2.preview)),
+            Api3 api3 => CombineFormattableStrings(ToHeading(3, api3.api3, api3.id), PreviewAlertNullable(api3.preview)),
+            Api4 api4 => CombineFormattableStrings(ToHeading(4, api4.api4, api4.id), PreviewAlertNullable(api4.preview)),
         };
+        
+        FormattableString CombineFormattableStrings(FormattableString first, FormattableString second) => 
+            $"{first}{second}";
+        
+        FormattableString PreviewAlertNullable(OneOf.OneOf<bool, string>? preview)
+        {
+            if (preview == null) return $"";
+            
+            if (preview.Value.IsT0 && preview.Value.AsT0) 
+                return $"> [!NOTE]\n> This API is experimental.\n\n";
+                
+            if (preview.Value.IsT1) 
+                return $"> [!NOTE]\n> {preview.Value.AsT1}\n\n";
+                
+            return $"";
+        }
 
         FormattableString ToHeading(int level, string title, string? id = null) =>
             $"{new string('#', level)}{(string.IsNullOrEmpty(id) ? null : $" <a id=\"{id}\"></a>")} {Escape(title)}\n\n";
@@ -76,6 +92,7 @@ static class ApiPageMarkdownTemplate
                     ? $"`{parameter.name}`"
                     : $"`{parameter.name} = {parameter.@default}`")} {Inline(parameter.type)}
 
+            {(parameter.preview == null ? "" : (parameter.preview.Value.IsT0 ? $"> [!NOTE]\n> This parameter is experimental.\n\n" : $"> [!NOTE]\n> {parameter.preview.Value.AsT1}\n\n"))}
             {(string.IsNullOrEmpty(parameter.description) ? null : $"{parameter.description}\n\n")}
             """;
 
