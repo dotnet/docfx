@@ -46,7 +46,7 @@ jobs:
       with:
         dotnet-version: 8.x
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v5
       with:
         name: nuget
         path: drop/nuget
@@ -80,12 +80,12 @@ jobs:
       with:
         dotnet-version: 8.x
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v5
       with:
         name: nuget-signed
         path: drop/nuget
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v5
       with:
         name: bin
         path: drop/bin
