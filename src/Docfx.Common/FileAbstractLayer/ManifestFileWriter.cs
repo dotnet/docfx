@@ -41,22 +41,35 @@ public class ManifestFileWriter : FileWriterBase
             {
                 throw new InvalidOperationException("File entry not found.");
             }
-            if (_noRandomFile)
+
+            string path = _noRandomFile
+                            ? Path.Combine(_manifestFolder, file.RemoveWorkingFolder())
+                            : Path.Combine(OutputFolder, file.RemoveWorkingFolder());
+            path = Path.GetFullPath(path);
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+            for (int retryCount = 0; retryCount <= 3; retryCount++)
             {
-                Directory.CreateDirectory(
-                    Path.Combine(_manifestFolder, file.RemoveWorkingFolder().GetDirectoryPath()));
-                var result = File.Create(Path.Combine(_manifestFolder, file.RemoveWorkingFolder()));
-                entry.LinkToPath = null;
-                return result;
+                try
+                {
+                    var fileStream = File.Create(path);
+                    entry.LinkToPath = null;
+                    return fileStream;
+                }
+                catch (IOException e) when (e.HResult == -2147024864)
+                {
+                    // ERROR_SHARING_VIOLATION
+                    if (retryCount >= 3)
+                        throw;
+
+                    // retry immediately on first exception
+                    var sleepDelay = 500 * retryCount;
+                    Logger.LogVerbose($"{e.Message}{Environment.NewLine}Retrying after {sleepDelay}ms...");
+                    Thread.Sleep(sleepDelay);
+                }
             }
-            else
-            {
-                var path = Path.Combine(OutputFolder, file.RemoveWorkingFolder());
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var result = File.Create(path);
-                entry.LinkToPath = path;
-                return result;
-            }
+
+            throw new InvalidOperationException($"Failed to create file \"{path}\".");
         }
     }
 
