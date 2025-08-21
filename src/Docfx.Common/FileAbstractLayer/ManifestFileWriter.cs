@@ -43,9 +43,9 @@ public class ManifestFileWriter : FileWriterBase
             }
             if (_noRandomFile)
             {
-                Directory.CreateDirectory(
-                    Path.Combine(_manifestFolder, file.RemoveWorkingFolder().GetDirectoryPath()));
-                var result = File.Create(Path.Combine(_manifestFolder, file.RemoveWorkingFolder()));
+                var path = Path.Combine(_manifestFolder, file.RemoveWorkingFolder());
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                var result = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                 entry.LinkToPath = null;
                 return result;
             }
@@ -53,7 +53,7 @@ public class ManifestFileWriter : FileWriterBase
             {
                 var path = Path.Combine(OutputFolder, file.RemoveWorkingFolder());
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var result = File.Create(path);
+                var result = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                 entry.LinkToPath = path;
                 return result;
             }
