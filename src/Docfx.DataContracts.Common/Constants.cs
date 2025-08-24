@@ -26,6 +26,7 @@ public static class Constants
 
     public static class PropertyName
     {
+        public const string Auto = "auto";
         public const string Uid = "uid";
         public const string CommentId = "commentId";
         public const string Id = "id";
