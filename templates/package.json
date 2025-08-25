@@ -46,7 +46,7 @@
     "browser-sync": "^3.0.4",
     "esbuild": "~0.25.9",
     "esbuild-sass-plugin": "~3.3.1",
-    "eslint": "^8.57.1",
+    "eslint": "^9.34.0",
     "eslint-config-standard": "^17.1.0",
     "stylelint": "^16.23.1",
     "stylelint-config-standard-scss": "^15.0.1",
