@@ -181,22 +181,42 @@ static class PdfBuilder
 
             try
             {
+                Uri beforeUri = new(page.Url);
                 var response = await page.GotoAsync(url.ToString(), new() { WaitUntil = WaitUntilState.DOMContentLoaded });
                 if (response?.Status is 404)
                     return null;
 
-                if (response is null || !response.Ok)
-                    throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
+                bool isSameUrlNavigation = response == null && beforeUri == url;
+                bool isHashFragmentNavigation = response == null
+                    && beforeUri.GetLeftPart(UriPartial.Path) == url.GetLeftPart(UriPartial.Path)
+                    && beforeUri.Fragment != url.Fragment;
 
-                try
+                if (isSameUrlNavigation)
                 {
-                    await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
-                    await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
-                    await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                    // Specified page content is already loaded.
                 }
-                catch (TimeoutException)
+                else if (isHashFragmentNavigation)
                 {
-                    Logger.LogWarning($"Timeout waiting for page to load, generated PDF page may be incomplete: {url}");
+                    // Hash fragment navigation inside page. network request is not executed.
+                    await page.WaitForURLAsync(url.ToString());
+                }
+                else if (response is null || !response.Ok)
+                {
+                    // Goto navigation failed.
+                    throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
+                }
+                else
+                {
+                    try
+                    {
+                        await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
+                        await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
+                        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                    }
+                    catch (TimeoutException)
+                    {
+                        Logger.LogWarning($"Timeout waiting for page to load, generated PDF page may be incomplete: {url}");
+                    }
                 }
 
                 return await page.PdfAsync(new PagePdfOptions
