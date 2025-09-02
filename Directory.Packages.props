@@ -24,15 +24,15 @@
 
   <!-- .slnx solution format is supported Microsoft.Build 17.13.9 or later. -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Build" Version="[17.11.31]" Condition="'$(TargetFramework)' == 'net8.0'"/>
-    <PackageVersion Include="Microsoft.Build" Version="17.14.8"    Condition="'$(TargetFramework)' != 'net8.0'"/>
+    <PackageVersion Include="Microsoft.Build" Version="[17.11.31]" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build" Version="17.14.8" Condition="'$(TargetFramework)' != 'net8.0'" />
   </ItemGroup>
 
   <!-- Temporary settings to suppress NU1901 warning. -->
   <!-- TODO: Remove these settings after `Microsoft.CodeAnalysis.Workspaces.MSBuild` dependency is updated. -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="[17.11.31]" Condition="'$(TargetFramework)' == 'net8.0'"/>
-    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.14.8"    Condition="'$(TargetFramework)' != 'net8.0'"/>
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="[17.11.31]" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.14.8" Condition="'$(TargetFramework)' != 'net8.0'" />
   </ItemGroup>
 
   <ItemGroup>

@@ -19,7 +19,7 @@ jobs:
       actions: write    # Required to invoke another workflow with `createWorkflowDispatch`.
       contents: write   # Required to commit snapshot diffs.
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: ${{ github.ref_name }}
         lfs: true
