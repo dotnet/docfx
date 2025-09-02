@@ -27,7 +27,7 @@
     "@default/url": "npm:@websanova/url@2.6.3",
     "@websanova/url": "^2.6.3",
     "anchor-js": "^5.0.0",
-    "bootstrap": "^5.3.7",
+    "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "highlight.js": "^11.10.0",
     "idb-keyval": "^6.2.2",
@@ -36,12 +36,12 @@
     "lunr": "2.3.9",
     "lunr-languages": "^1.14.0",
     "mathjax": "^3.2.2",
-    "mermaid": "^11.10.0",
-    "tsx": "^4.20.4"
+    "mermaid": "^11.10.1",
+    "tsx": "^4.20.5"
   },
   "devDependencies": {
     "@types/lunr": "^2.3.7",
-    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
     "@typescript-eslint/parser": "^8.32.1",
     "browser-sync": "^3.0.4",
     "esbuild": "~0.25.9",
