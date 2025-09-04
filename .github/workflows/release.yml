@@ -42,7 +42,7 @@ jobs:
     runs-on: windows-latest
     needs: build
     steps:
-    - uses: actions/setup-dotnet@v4
+    - uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 8.x
 
@@ -76,7 +76,7 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/setup-dotnet@v4
+    - uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 8.x
 
