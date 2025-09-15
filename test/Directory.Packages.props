@@ -6,7 +6,7 @@
     <PackageVersion Include="AwesomeAssertions" Version="9.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="Verify.DiffPlex" Version="3.1.2" />
-    <PackageVersion Include="Verify.Xunit" Version="30.12.0" />
+    <PackageVersion Include="Verify.Xunit" Version="30.13.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
     <PackageVersion Include="xunit" Version="2.9.3" />
   </ItemGroup>
