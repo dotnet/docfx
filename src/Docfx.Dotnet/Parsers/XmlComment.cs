@@ -586,13 +586,23 @@ internal partial class XmlComment
 
     private static string GetInnerXmlAsMarkdown(string xml)
     {
-        if (!xml.Contains('&'))
-            return xml;
-
         xml = HandleBlockQuote(xml);
-        var pipeline = new MarkdownPipelineBuilder().UseMathematics().EnableTrackTrivia().Build();
+        
+        // Configure the Markdown pipeline to properly handle lists 
+        var pipeline = new MarkdownPipelineBuilder()
+            .UseMathematics()
+            .EnableTrackTrivia()
+            .Configure(extensions: "advanced-tasklists-noindentcodeblock") // Disable indented code blocks
+            .Build();
+            
         var markdown = Markdown.Parse(xml, pipeline);
-        MarkdownXmlDecode(markdown);
+        
+        // Only process XML entities if they exist in the content
+        if (xml.Contains('&'))
+        {
+            MarkdownXmlDecode(markdown);
+        }
+        
         var sw = new StringWriter();
         var rr = new RoundtripRenderer(sw);
         rr.ObjectRenderers.Add(new MathInlineRenderer());
