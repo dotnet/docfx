@@ -2,6 +2,7 @@
   "name": "@docfx/template",
   "version": "1.0.0",
   "description": "Docfx static website templates",
+  "type": "module",
   "keywords": [
     "docfx",
     "template"
@@ -40,16 +41,17 @@
     "tsx": "^4.20.5"
   },
   "devDependencies": {
+    "@eslint/js": "^9.36.0",
     "@types/lunr": "^2.3.7",
     "@typescript-eslint/eslint-plugin": "^8.44.1",
-    "@typescript-eslint/parser": "^8.32.1",
+    "@typescript-eslint/parser": "^8.44.1",
     "browser-sync": "^3.0.4",
     "esbuild": "~0.25.10",
     "esbuild-sass-plugin": "~3.3.1",
-    "eslint": "^8.57.1",
-    "eslint-config-standard": "^17.1.0",
+    "eslint": "^9.36.0",
+    "neostandard": "^0.12.2",
     "stylelint": "^16.24.0",
-    "stylelint-config-standard-scss": "^15.0.1",
+    "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "^5.9.2",
     "yargs": "^18.0.0"
   }

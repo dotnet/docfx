@@ -1,14 +1,15 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-const esbuild = require('esbuild')
-const { sassPlugin } = require('esbuild-sass-plugin')
-const bs = require('browser-sync')
-const { cpSync, rmSync } = require('fs')
-const { join } = require('path')
-const { spawnSync } = require('child_process')
-const yargs = require('yargs/yargs')
-const { hideBin } = require('yargs/helpers')
+import esbuild from 'esbuild'
+import { sassPlugin } from 'esbuild-sass-plugin'
+import bs from 'browser-sync'
+import { cpSync, rmSync } from 'fs'
+import { join } from 'path'
+import { spawnSync } from 'child_process'
+import yargs from 'yargs/yargs'
+import { hideBin } from 'yargs/helpers'
+
 const argv = yargs(hideBin(process.argv)).argv
 
 const watch = argv.watch
@@ -56,7 +57,10 @@ async function buildModernTemplate() {
       './main.js'
     ],
     plugins: [
-      sassPlugin()
+      sassPlugin({
+        quetDeps: true,
+        silenceDeprecations: ['import', 'global-builtin', 'color-functions'],
+      })
     ],
     loader,
   }
