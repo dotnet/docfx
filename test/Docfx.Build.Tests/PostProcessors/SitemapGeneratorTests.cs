@@ -50,7 +50,7 @@ public class SitemapGeneratorTests : TestBase
         var sitemapPath = Path.Combine(outputFolder, "sitemap.xml");
 
         // Act
-        manifest = sitemapGenerator.Process(manifest, outputFolder);
+        manifest = sitemapGenerator.Process(manifest, outputFolder, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal("https://example.com/", manifest.Sitemap.BaseUrl);

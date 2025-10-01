@@ -1,4 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.Build\Docfx.Build.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.ManagedReference\Docfx.Build.ManagedReference.csproj" />
