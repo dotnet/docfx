@@ -731,6 +731,12 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
                     ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
                     : null);
 
+            if (basePath == null)
+            {
+                Logger.LogWarning($"Source file '{source}' not found.", code: "CodeNotFound");
+                return null;
+            }
+
             var path = Path.GetFullPath(Path.Combine(basePath, source));
             if (!File.Exists(path))
             {
