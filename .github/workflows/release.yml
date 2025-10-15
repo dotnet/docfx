@@ -75,6 +75,7 @@ jobs:
     needs: sign
     permissions:
       contents: write
+      id-token: write
     steps:
     - uses: actions/setup-dotnet@v5
       with:
@@ -90,9 +91,15 @@ jobs:
         name: bin
         path: drop/bin
 
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: nuget-login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
     - name: Publish NuGet packages
       run: |
-        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.NUGET_KEY }}" --skip-duplicate --source https://api.nuget.org/v3/index.json
+        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate --source https://api.nuget.org/v3/index.json
 
     - name: Upload GitHub release
       run: |
