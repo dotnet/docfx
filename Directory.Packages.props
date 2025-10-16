@@ -4,35 +4,35 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="HtmlAgilityPack" Version="1.12.1" />
+    <PackageVersion Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="9.1.0.7988" />
-    <PackageVersion Include="Jint" Version="4.2.2" />
-    <PackageVersion Include="JsonSchema.Net" Version="7.3.4" />
-    <PackageVersion Include="Markdig" Version="0.41.2" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.52.0" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Jint" Version="4.4.1" />
+    <PackageVersion Include="JsonSchema.Net" Version="7.4.0" />
+    <PackageVersion Include="Markdig" Version="0.42.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.55.0" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271" />
-    <PackageVersion Include="PdfPig" Version="0.1.10" />
+    <PackageVersion Include="PdfPig" Version="0.1.11" />
     <PackageVersion Include="PlantUml.Net" Version="1.4.80" />
     <PackageVersion Include="Spectre.Console" Version="0.52.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.52.0" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
-    <PackageVersion Include="System.Composition" Version="9.0.6" />
+    <PackageVersion Include="System.Composition" Version="9.0.10" />
     <PackageVersion Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 
+  <!-- TODO: Remove `Microsoft.Build` settings after `Microsoft.CodeAnalysis.Workspaces.MSBuild` dependency is updated to `5.0.0` -->
   <!-- .slnx solution format is supported Microsoft.Build 17.13.9 or later. -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Build" Version="[17.11.31]" Condition="'$(TargetFramework)' == 'net8.0'" />
-    <PackageVersion Include="Microsoft.Build" Version="17.14.8" Condition="'$(TargetFramework)' != 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build" Version="[17.11.48]" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build" Version="17.14.28" Condition="'$(TargetFramework)' != 'net8.0'" />
   </ItemGroup>
 
   <!-- Temporary settings to suppress NU1901 warning. -->
-  <!-- TODO: Remove these settings after `Microsoft.CodeAnalysis.Workspaces.MSBuild` dependency is updated. -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="[17.11.31]" Condition="'$(TargetFramework)' == 'net8.0'" />
-    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.14.8" Condition="'$(TargetFramework)' != 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="[17.11.48]" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.14.28" Condition="'$(TargetFramework)' != 'net8.0'" />
   </ItemGroup>
 
   <ItemGroup>
