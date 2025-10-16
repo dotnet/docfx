@@ -70,7 +70,7 @@ public class TocDocumentProcessorTest : TestBase
             ]
         };
 
-        AssertTocEqual(expectedModel, model);
+        TocHelperTest.AssertTocEqual(expectedModel, model);
     }
 
     [Fact]
@@ -132,7 +132,7 @@ public class TocDocumentProcessorTest : TestBase
             ]
         };
 
-        AssertTocEqual(expectedModel, model);
+        TocHelperTest.AssertTocEqual(expectedModel, model);
     }
 
     [Fact]
@@ -204,7 +204,7 @@ public class TocDocumentProcessorTest : TestBase
             ]
         };
 
-        AssertTocEqual(expectedModel, model);
+        TocHelperTest.AssertTocEqual(expectedModel, model);
     }
 
     [Fact]
@@ -273,7 +273,7 @@ public class TocDocumentProcessorTest : TestBase
             ]
         };
 
-        AssertTocEqual(expectedModel, model);
+        TocHelperTest.AssertTocEqual(expectedModel, model);
     }
 
     [Fact]
@@ -335,7 +335,7 @@ items:
                 }
             ]
         };
-        AssertTocEqual(expectedModel, model);
+        TocHelperTest.AssertTocEqual(expectedModel, model);
     }
 
     [Fact]
@@ -534,7 +534,7 @@ items:
             ]
         };
 
-        AssertTocEqual(expectedModel, model);
+        TocHelperTest.AssertTocEqual(expectedModel, model);
 
         // Referenced TOC File should exist
         var referencedTocPath = Path.Combine(_outputFolder, Path.ChangeExtension(sub1tocmd, RawModelFileExtension));
@@ -684,7 +684,7 @@ items:
             ]
         };
 
-        AssertTocEqual(expectedModel, model);
+        TocHelperTest.AssertTocEqual(expectedModel, model);
     }
 
     [Fact]
@@ -937,19 +937,6 @@ items:
 
         using var builder = new DocumentBuilder([], []);
         builder.Build(parameters);
-    }
-
-    private static void AssertTocEqual(TocItemViewModel expected, TocItemViewModel actual, bool noMetadata = true)
-    {
-        using var swForExpected = new StringWriter();
-        YamlUtility.Serialize(swForExpected, expected);
-        using var swForActual = new StringWriter();
-        if (noMetadata)
-        {
-            actual.Metadata.Clear();
-        }
-        YamlUtility.Serialize(swForActual, actual);
-        Assert.Equal(swForExpected.ToString(), swForActual.ToString());
     }
 
     #endregion

@@ -8,7 +8,7 @@ using Docfx.Build.Common;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
-
+using YamlDotNet.Core.Tokens;
 namespace Docfx.Build.TableOfContents;
 
 [Export(nameof(TocDocumentProcessor), typeof(IDocumentBuildStep))]
@@ -24,6 +24,21 @@ class BuildTocDocument : BaseDocumentBuildStep
     /// </summary>
     public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
     {
+
+        if (!models.Any())
+        {
+            return TocHelper.ResolveToc(models.ToImmutableList());
+        }
+
+        // Keep auto toc agnostic to the toc file naming convention.
+        var tocFileName = models.First().Key.Split('/').Last();
+        var tocModels = models.OrderBy(f => f.File.Split('/').Count());
+        var tocCache = new Dictionary<string, TocItemViewModel>();
+        models.ForEach(model =>
+        {
+            tocCache.Add(model.Key.Replace("\\", "/").Replace("/" + tocFileName, string.Empty), (TocItemViewModel)model.Content);
+        });
+        TocHelper.RecursivelyPopulateTocs(tocFileName, host.SourceFiles.Keys, tocCache);
         return TocHelper.ResolveToc(models);
     }
 
