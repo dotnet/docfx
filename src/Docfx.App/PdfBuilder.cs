@@ -26,6 +26,7 @@ using UglyToad.PdfPig.Outline.Destinations;
 using UglyToad.PdfPig.Writer;
 
 using static Docfx.Build.HtmlTemplate;
+using static UglyToad.PdfPig.Writer.PdfDocumentBuilder;
 
 #nullable enable
 
@@ -442,7 +443,10 @@ static class PdfBuilder
 
                     pageNumber++;
 
-                    var pageBuilder = builder.AddPage(document, i, x => CopyLink(node, x));
+                    var pageBuilder = builder.AddPage(document, i, new AddPageOptions
+                    {
+                        CopyLinkFunc = x => CopyLink(node, x),
+                    });
 
                     if (isCoverPage)
                         continue;
