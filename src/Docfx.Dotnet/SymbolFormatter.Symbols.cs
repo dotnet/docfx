@@ -345,6 +345,10 @@ partial class SymbolFormatter
 
         public bool HasUnsupportedMetadata => Inner.HasUnsupportedMetadata;
 
+        public bool IsIterator => Inner.IsIterator;
+
+        public IMethodSymbol AssociatedExtensionImplementation => Inner.AssociatedExtensionImplementation;
+
         ISymbol ISymbol.OriginalDefinition => ((ISymbol)Inner).OriginalDefinition;
 
         public void Accept(SymbolVisitor visitor) => Inner.Accept(visitor);

@@ -19,11 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: |
-            9.x
+          dotnet-version: 10.x
 
       - name: Run `dotnet format` command
         run: |
