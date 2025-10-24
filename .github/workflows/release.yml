@@ -41,6 +41,8 @@ jobs:
   sign:
     runs-on: windows-latest
     needs: build
+    permissions:
+      id-token: write
     steps:
     - uses: actions/setup-dotnet@v5
       with:
@@ -51,7 +53,13 @@ jobs:
         name: nuget
         path: drop/nuget
 
-    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.24170.3
+    - run: dotnet tool install --tool-path . --prerelease sign
+
+    - uses: azure/login@v1
+      with:
+        allow-no-subscriptions: true
+        client-id: ${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}
+        tenant-id: ${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}
 
     - run: >
         ./sign code azure-key-vault
@@ -59,11 +67,9 @@ jobs:
         --description "Docfx code sign"
         --description-url "https://dotnet.github.io/docfx"
         --timestamp-url http://timestamp.digicert.com
+        --azure-credential-type "azure-cli"
         --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
         --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE }}"
-        --azure-key-vault-tenant-id "${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}"
-        --azure-key-vault-client-id "${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}"
-        --azure-key-vault-client-secret "${{ secrets.SIGN_KEY_VAULT_CLIENT_SECRET }}"
 
     - uses: actions/upload-artifact@v4
       with:
@@ -108,3 +114,4 @@ jobs:
         gh release upload --repo dotnet/docfx ${GITHUB_REF_NAME} drop/bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip
       env:
         GH_TOKEN: ${{ github.token }}
+
