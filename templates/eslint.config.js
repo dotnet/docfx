@@ -5,7 +5,6 @@ import {defineConfig, globalIgnores} from 'eslint/config'
 import js from '@eslint/js'
 import tsesLint from 'typescript-eslint'
 import tsesLintParser from '@typescript-eslint/parser'
-import tsesLintPlugin from '@typescript-eslint/eslint-plugin'
 import neostandard from 'neostandard';
 
 export default defineConfig([
@@ -23,7 +22,7 @@ export default defineConfig([
       },
     },
     plugins: {
-      "@typescript-eslint": tsesLintPlugin,
+      "@typescript-eslint": neostandard.plugins['typescript-eslint'].plugin,
     },
     rules: {
       "@stylistic/space-before-function-paren": ["error", "never"],
