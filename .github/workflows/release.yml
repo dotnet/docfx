@@ -56,7 +56,7 @@ jobs:
 
     - run: dotnet tool install --tool-path . --prerelease sign
 
-    - uses: azure/login@v1
+    - uses: azure/login@v2
       with:
         allow-no-subscriptions: true
         client-id: ${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}
