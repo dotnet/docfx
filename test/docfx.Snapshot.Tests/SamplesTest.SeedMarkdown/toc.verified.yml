@@ -65,6 +65,8 @@
     href: BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.md
   - name: Issue8725
     href: BuildFromProject.Issue8725.md
+  - name: SourceGenerator
+    href: BuildFromProject.SourceGenerator.md
   - name: Structs
   - name: Inheritdoc.Issue8129
     href: BuildFromProject.Inheritdoc.Issue8129.md
