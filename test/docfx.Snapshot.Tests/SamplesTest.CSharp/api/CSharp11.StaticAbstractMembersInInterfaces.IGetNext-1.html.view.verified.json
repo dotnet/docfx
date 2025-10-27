@@ -396,6 +396,24 @@
       }
     ]
   },
+  "derivedClasses": [
+    {
+      "isEii": false,
+      "isExtensionMethod": false,
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\" displayProperty=\"name\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\" displayProperty=\"name\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 1
+    }
+  ],
   "level": 0,
   "_systemKeys": [
     "uid",
