@@ -8,7 +8,7 @@ namespace Docfx;
 
 internal class MergeCommand : Command<MergeCommandOptions>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] MergeCommandOptions options)
+    public override int Execute([NotNull] CommandContext context, [NotNull] MergeCommandOptions options, CancellationToken cancellationToken)
     {
         return CommandHelper.Run(options, () =>
         {
