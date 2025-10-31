@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Spectre.Console" VersionOverride="0.53.0" />
     <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
     <ProjectReference Include="..\Docfx.Build\Docfx.Build.csproj" />
     <ProjectReference Include="..\Docfx.Build.ManagedReference\Docfx.Build.ManagedReference.csproj" />
