@@ -63,7 +63,7 @@ public class ValidateBookmarkTest : TestBase
             new HtmlPostProcessor
             {
                 Handlers = { new ValidateBookmark() }
-            }.Process(manifest, _outputFolder);
+            }.Process(manifest, _outputFolder, TestContext.Current.CancellationToken);
         }
         finally
         {
@@ -107,7 +107,7 @@ public class ValidateBookmarkTest : TestBase
             new HtmlPostProcessor
             {
                 Handlers = { new ValidateBookmark() }
-            }.Process(manifest, _outputFolder);
+            }.Process(manifest, _outputFolder, TestContext.Current.CancellationToken);
         }
         finally
         {
@@ -150,7 +150,7 @@ public class ValidateBookmarkTest : TestBase
             new HtmlPostProcessor
             {
                 Handlers = { new ValidateBookmark() }
-            }.Process(manifest, _outputFolder);
+            }.Process(manifest, _outputFolder, TestContext.Current.CancellationToken);
         }
         finally
         {
