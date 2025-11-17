@@ -33,7 +33,7 @@ internal class ServeCommand : Command<ServeCommand.Settings>
         public string OpenFile { get; set; }
     }
 
-    public override int Execute([NotNull] CommandContext context, [NotNull] Settings options)
+    public override int Execute([NotNull] CommandContext context, [NotNull] Settings options, CancellationToken cancellationToken)
     {
         return CommandHelper.Run(() => RunServe.Exec(options.Folder, options.Host, options.Port, options.OpenBrowser, options.OpenFile));
     }

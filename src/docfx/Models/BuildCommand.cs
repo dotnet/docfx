@@ -8,11 +8,13 @@ using Spectre.Console.Cli;
 
 namespace Docfx;
 
-internal class BuildCommand : Command<BuildCommandOptions>
+# pragma warning disable 1998 // CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls
+
+internal class BuildCommand : AsyncCommand<BuildCommandOptions>
 {
-    public override int Execute(CommandContext context, BuildCommandOptions settings)
+    public override Task<int> ExecuteAsync(CommandContext context, BuildCommandOptions settings, CancellationToken cancellationToken)
     {
-        return CommandHelper.Run(settings, () =>
+        return CommandHelper.RunAsync(settings, async () =>
         {
             if (settings.Serve && CommandHelper.IsTcpPortAlreadyUsed(settings.Host, settings.Port))
             {
