@@ -13,7 +13,7 @@
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271" />
-    <PackageVersion Include="PdfPig" Version="0.1.11" />
+    <PackageVersion Include="PdfPig" Version="0.1.12" />
     <PackageVersion Include="PlantUml.Net" Version="1.4.80" />
     <PackageVersion Include="Spectre.Console" Version="0.52.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.52.0" />
