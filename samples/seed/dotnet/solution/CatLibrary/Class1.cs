@@ -94,7 +94,7 @@ namespace CatLibrary
     /// Template method.
     /// </listItem>
     /// <listItem>
-    /// Normal method wit generic parameter.
+    /// Normal method with generic parameter.
     /// </listItem>
     /// <listItem>
     /// Override method.
@@ -135,7 +135,7 @@ namespace CatLibrary
         /// </summary>
         /// <param name="nickName">it's string type.</param>
         /// <param name="age">It's an out and ref parameter.</param>
-        /// <param name="realName">It's an out paramter.</param>
+        /// <param name="realName">It's an out parameter.</param>
         /// <param name="isHealthy">It's an in parameter.</param>
         public Cat(string nickName, out int age, [Out] string realName, [In] bool isHealthy) { age = 1; }
 
@@ -164,7 +164,7 @@ namespace CatLibrary
         /// Override the method of <c>Object.Equals(object obj).</c>
         /// </summary>
         /// <param name="obj">Can pass any class type.</param>
-        /// <returns>The return value tell you whehter the compare operation is successful.</returns>
+        /// <returns>The return value tell you whether the compare operation is successful.</returns>
         public override bool Equals(object obj) { return false; }
 
         /// <summary>
