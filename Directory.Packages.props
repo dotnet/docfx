@@ -22,27 +22,20 @@
     <PackageVersion Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 
-  <!-- TODO: Remove `Microsoft.Build` settings after `Microsoft.CodeAnalysis.Workspaces.MSBuild` dependency is updated to `5.0.0` -->
-  <!-- .slnx solution format is supported Microsoft.Build 17.13.9 or later. -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.Build" Version="[17.11.48]" Condition="'$(TargetFramework)' == 'net8.0'" />
-    <PackageVersion Include="Microsoft.Build" Version="17.14.28" Condition="'$(TargetFramework)' != 'net8.0'" />
-  </ItemGroup>
-
-  <!-- Temporary settings to suppress NU1901 warning. -->
-  <ItemGroup>
-    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="[17.11.48]" Condition="'$(TargetFramework)' == 'net8.0'" />
-    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.14.28" Condition="'$(TargetFramework)' != 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build" Version="[17.14.28]" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageVersion Include="Microsoft.Build" Version="18.0.2"     Condition="'$(TargetFramework)' != 'net8.0' AND '$(TargetFramework)' != 'net9.0'" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="5.0.0-2.final" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.0.0-2.final" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0-2.final" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0-2.final" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="5.0.0-2.final" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="5.0.0-2.final" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0-2.final" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0-2.final" />
+    <PackageVersion Include="Microsoft.CodeAnalysis" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0" />
   </ItemGroup>
 </Project>
