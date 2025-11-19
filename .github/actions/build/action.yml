@@ -3,13 +3,14 @@ description: build the project
 runs:
   using: "composite"
   steps:
-  - uses: actions/setup-node@v4
+  - uses: actions/setup-node@v6
     with:
       node-version: 22
 
-  - uses: actions/setup-dotnet@v4
+  - uses: actions/setup-dotnet@v5
     with:
       dotnet-version: |
+        10.x
         9.x
         8.x
 

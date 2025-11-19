@@ -34,7 +34,7 @@ jobs:
     - uses: ./.github/actions/build
 
     # Update snapshots & accept changes
-    - run: dotnet test -c Release -f net8.0 --no-build --filter Stage=Snapshot
+    - run: dotnet test -c Release -f net10.0 --no-build --filter Stage=Snapshot
       working-directory: test/docfx.Snapshot.Tests
       env:
         BUILD_SERVER: false # Need to accept file changes automatically.
