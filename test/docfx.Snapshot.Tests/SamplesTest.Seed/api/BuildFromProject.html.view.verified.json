@@ -1039,6 +1039,68 @@
           "id": "BuildFromProject_Issue8725",
           "hideTitleType": false,
           "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.SourceGenerator",
+          "isExtensionMethod": false,
+          "href": "BuildFromProject.SourceGenerator.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "SourceGenerator"
+            },
+            {
+              "lang": "vb",
+              "value": "SourceGenerator"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "SourceGenerator"
+            },
+            {
+              "lang": "vb",
+              "value": "SourceGenerator"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.SourceGenerator"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.SourceGenerator"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.SourceGenerator\" text=\"SourceGenerator\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.SourceGenerator\" text=\"SourceGenerator\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_SourceGenerator",
+          "hideTitleType": false,
+          "hideSubtitle": false
         }
       ]
     },
