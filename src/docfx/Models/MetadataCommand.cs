@@ -7,15 +7,15 @@ using Spectre.Console.Cli;
 
 namespace Docfx;
 
-internal class MetadataCommand : Command<MetadataCommandOptions>
+internal class MetadataCommand : AsyncCommand<MetadataCommandOptions>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] MetadataCommandOptions options)
+    public override Task<int> ExecuteAsync([NotNull] CommandContext context, [NotNull] MetadataCommandOptions options, CancellationToken cancellationToken)
     {
-        return CommandHelper.Run(options, () =>
+        return CommandHelper.RunAsync(options, async () =>
         {
             var (config, baseDirectory) = Docset.GetConfig(options.Config);
             MergeOptionsToConfig(options, config);
-            DotnetApiCatalog.Exec(config.metadata, new(), baseDirectory, options.OutputFolder).GetAwaiter().GetResult();
+            await DotnetApiCatalog.Exec(config.metadata, new(), baseDirectory, options.OutputFolder, cancellationToken);
         });
     }
 
