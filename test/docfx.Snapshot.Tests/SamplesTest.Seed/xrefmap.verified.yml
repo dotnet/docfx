@@ -855,6 +855,41 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Issue8725.MyOperation
   nameWithType: Issue8725.MyOperation
+- uid: BuildFromProject.SourceGenerator
+  name: SourceGenerator
+  href: api/BuildFromProject.SourceGenerator.html
+  commentId: T:BuildFromProject.SourceGenerator
+  fullName: BuildFromProject.SourceGenerator
+  nameWithType: SourceGenerator
+- uid: BuildFromProject.SourceGenerator.GeneratedRegex
+  name: GeneratedRegex()
+  href: api/BuildFromProject.SourceGenerator.html#BuildFromProject_SourceGenerator_GeneratedRegex
+  commentId: M:BuildFromProject.SourceGenerator.GeneratedRegex
+  fullName: BuildFromProject.SourceGenerator.GeneratedRegex()
+  nameWithType: SourceGenerator.GeneratedRegex()
+- uid: BuildFromProject.SourceGenerator.GeneratedRegex*
+  name: GeneratedRegex
+  href: api/BuildFromProject.SourceGenerator.html#BuildFromProject_SourceGenerator_GeneratedRegex_
+  commentId: Overload:BuildFromProject.SourceGenerator.GeneratedRegex
+  isSpec: "True"
+  fullName: BuildFromProject.SourceGenerator.GeneratedRegex
+  nameWithType: SourceGenerator.GeneratedRegex
+- uid: BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger,System.String)
+  name: Log(ILogger, string)
+  href: api/BuildFromProject.SourceGenerator.html#BuildFromProject_SourceGenerator_Log_Microsoft_Extensions_Logging_ILogger_System_String_
+  commentId: M:BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger,System.String)
+  name.vb: Log(ILogger, String)
+  fullName: BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger, string)
+  fullName.vb: BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger, String)
+  nameWithType: SourceGenerator.Log(ILogger, string)
+  nameWithType.vb: SourceGenerator.Log(ILogger, String)
+- uid: BuildFromProject.SourceGenerator.Log*
+  name: Log
+  href: api/BuildFromProject.SourceGenerator.html#BuildFromProject_SourceGenerator_Log_
+  commentId: Overload:BuildFromProject.SourceGenerator.Log
+  isSpec: "True"
+  fullName: BuildFromProject.SourceGenerator.Log
+  nameWithType: SourceGenerator.Log
 - uid: BuildFromVBSourceCode
   name: BuildFromVBSourceCode
   href: api/BuildFromVBSourceCode.html
