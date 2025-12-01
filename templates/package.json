@@ -38,7 +38,7 @@
     "lunr-languages": "^1.14.0",
     "mathjax": "^3.2.2",
     "mermaid": "^11.12.1",
-    "tsx": "^4.20.6"
+    "tsx": "^4.21.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
