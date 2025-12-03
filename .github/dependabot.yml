@@ -28,6 +28,8 @@ updates:
   directory: "/templates"
   schedule:
     interval: daily
+  cooldown:
+    default-days: 14
   groups:
     typescript-eslint:
       patterns:
