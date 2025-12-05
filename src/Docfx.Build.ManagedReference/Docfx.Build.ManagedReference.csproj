@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis" VersionOverride="5.0.0" />
     <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
     <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
     <ProjectReference Include="..\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
