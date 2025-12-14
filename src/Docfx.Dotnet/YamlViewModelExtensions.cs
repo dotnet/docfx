@@ -12,7 +12,7 @@ internal static class YamlViewModelExtensions
 {
     public static bool IsPageLevel(this MemberType type)
     {
-        return type == MemberType.Namespace || type == MemberType.Class || type == MemberType.Enum || type == MemberType.Delegate || type == MemberType.Interface || type == MemberType.Struct;
+        return type == MemberType.Namespace || type == MemberType.Class || type == MemberType.Enum || type == MemberType.Delegate || type == MemberType.Interface || type == MemberType.Struct || type == MemberType.Extension;
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ internal static class YamlViewModelExtensions
     /// <returns></returns>
     public static bool AllowMultipleItems(this MemberType type)
     {
-        return type == MemberType.Class || type == MemberType.Enum || type == MemberType.Delegate || type == MemberType.Interface || type == MemberType.Struct;
+        return type == MemberType.Class || type == MemberType.Enum || type == MemberType.Delegate || type == MemberType.Interface || type == MemberType.Struct || type == MemberType.Extension;
     }
 
     public static MetadataItem ShrinkToSimpleToc(this MetadataItem item)

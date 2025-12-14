@@ -15,13 +15,18 @@ namespace Docfx.Dotnet;
 internal static partial class VisitorHelper
 {
     public static string GlobalNamespaceId { get; set; }
+    public static string OldPrefix { get; set; }
+    public static string NewPrefix { get; set; }
 
     [GeneratedRegex(@"``\d+$")]
     private static partial Regex GenericMethodPostFix();
 
+    [GeneratedRegex(@"\.\<G\>\$[0-9A-F]{32}(\{?`\d+\}?)?(\.\<M\>\$[0-9A-F]{32})?")]
+    private static partial Regex Extensions();
+
     public static string PathFriendlyId(string id)
     {
-        return id.Replace('`', '-').Replace('#', '-').Replace("*", "");
+        return id.Replace('`', '-').Replace('#', '-').Replace("*", "").Replace("<", "_").Replace(">", "");
     }
 
     public static string GetId(ISymbol symbol)
@@ -57,7 +62,7 @@ internal static partial class VisitorHelper
             return functionPointerTypeSymbol.ToString();
         }
 
-        return id;
+        return GetGlobalId(symbol, id);
     }
 
     private static string GetDocumentationCommentId(ISymbol symbol)
@@ -67,6 +72,8 @@ internal static partial class VisitorHelper
         {
             return null;
         }
+
+        str = Extensions().Replace(str, ".Extensions");
 
         if (InGlobalNamespace(symbol) && !string.IsNullOrEmpty(GlobalNamespaceId))
         {
@@ -92,8 +99,16 @@ internal static partial class VisitorHelper
             return "T:" + typeof(object).FullName;
         }
 
-        return GetDocumentationCommentId(symbol);
+        var id = GetDocumentationCommentId(symbol);
+
+        return GetGlobalId(symbol, id);
     }
+
+    private static string GetGlobalId(ISymbol symbol, string id) => id == null || !symbol.ContainingAssembly.Name.StartsWith("linq2db")
+                ? id
+                : symbol.ContainingAssembly.Name == OldPrefix
+                    ? $"{NewPrefix}.{id}"
+                    : $"{symbol.ContainingAssembly.Name}.{id}";
 
     public static string GetOverloadId(ISymbol symbol)
     {
@@ -192,6 +207,8 @@ internal static partial class VisitorHelper
                 return MemberType.Struct;
             case TypeKind.Delegate:
                 return MemberType.Delegate;
+            case TypeKind.Extension:
+                return MemberType.Extension;
             default:
                 return MemberType.Default;
         }

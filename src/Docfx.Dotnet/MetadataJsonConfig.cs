@@ -179,6 +179,13 @@ internal class MetadataJsonItemConfig
     public string GlobalNamespaceId { get; set; }
 
     /// <summary>
+    /// Specify the name to use for the global namespace.
+    /// </summary>
+    [JsonProperty("globalPrefix")]
+    [JsonPropertyName("globalPrefix")]
+    public string GlobalPrefix { get; set; }
+
+    /// <summary>
     /// An optional set of MSBuild properties used when interpreting project files. These
     ///  are the same properties that are passed to MSBuild via the /property:&lt;n&gt;=&lt;v&gt;
     ///  command line argument.

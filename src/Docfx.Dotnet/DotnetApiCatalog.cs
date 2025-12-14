@@ -62,18 +62,29 @@ public static partial class DotnetApiCatalog
         try
         {
             string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
+            var originalOldPrefix = VisitorHelper.OldPrefix;
+            var originalNewPrefix = VisitorHelper.NewPrefix;
 
             EnvironmentContext.SetBaseDirectory(configDirectory);
 
             foreach (var item in config)
             {
                 VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
+                if (item.GlobalPrefix != null)
+                {
+                    var parts = item.GlobalPrefix.Split('|');
+                    VisitorHelper.OldPrefix = parts[0];
+                    VisitorHelper.NewPrefix = parts[1];
+                }
+
                 EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
 
                 await Build(ConvertConfig(item, configDirectory, outputDirectory), options);
             }
 
             VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
+            VisitorHelper.OldPrefix = originalOldPrefix;
+            VisitorHelper.NewPrefix = originalNewPrefix;
         }
         finally
         {

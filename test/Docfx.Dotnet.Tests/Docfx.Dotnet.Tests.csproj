@@ -4,6 +4,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis" VersionOverride="5.0.0" />
     <ProjectReference Include="..\..\src\Docfx.Dotnet\Docfx.Dotnet.csproj" />
   </ItemGroup>
 </Project>

@@ -22,5 +22,6 @@ public enum MemberType
     Operator,
     Container,
     AttachedEvent,
-    AttachedProperty
+    AttachedProperty,
+    Extension
 }
