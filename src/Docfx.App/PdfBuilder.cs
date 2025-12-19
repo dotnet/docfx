@@ -5,6 +5,7 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using Docfx.Build;
@@ -72,6 +73,19 @@ static class PdfBuilder
         PlaywrightHelper.EnsurePlaywrightNodeJsPath();
 
         Program.Main(["install", "chromium", "--only-shell"]);
+
+        // Create linked CancellationToken with PosixSignalRegistration handler.
+        // It's required because default `Ctrl+C` interruption is canceled when using WebApplication inside Spectre.Console command.
+        using var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        void onSignal(PosixSignalContext context)
+        {
+            context.Cancel = true;
+            cancellationTokenSource.Cancel();
+        }
+        using var sigInt = PosixSignalRegistration.Create(PosixSignal.SIGINT, onSignal);
+        using var sigQuit = PosixSignalRegistration.Create(PosixSignal.SIGQUIT, onSignal);
+        using var sigTerm = PosixSignalRegistration.Create(PosixSignal.SIGTERM, onSignal);
+        cancellationToken = cancellationTokenSource.Token;
 
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();

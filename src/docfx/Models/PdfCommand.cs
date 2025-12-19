@@ -8,16 +8,16 @@ using Spectre.Console.Cli;
 
 namespace Docfx;
 
-internal class PdfCommand : CancellableCommandBase<PdfCommandOptions>
+internal class PdfCommand : AsyncCommand<PdfCommandOptions>
 {
-    public override int Execute(CommandContext context, PdfCommandOptions options, CancellationToken cancellationToken)
+    public override async Task<int> ExecuteAsync(CommandContext context, PdfCommandOptions options, CancellationToken cancellationToken)
     {
-        return CommandHelper.Run(options, () =>
+        return await CommandHelper.RunAsync(options, async () =>
         {
             var (config, configDirectory) = Docset.GetConfig(options.ConfigFile);
 
             if (config.build is not null)
-                PdfBuilder.Run(config.build, configDirectory, options.OutputFolder, cancellationToken).GetAwaiter().GetResult();
+                await PdfBuilder.Run(config.build, configDirectory, options.OutputFolder, cancellationToken);
         });
     }
 }
