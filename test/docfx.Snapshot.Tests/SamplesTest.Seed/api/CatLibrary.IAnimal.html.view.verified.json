@@ -1099,6 +1099,24 @@
       }
     ]
   },
+  "derivedClasses": [
+    {
+      "isEii": false,
+      "isExtensionMethod": false,
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CatLibrary.Cat`2\" displayProperty=\"name\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CatLibrary.Cat`2\" displayProperty=\"name\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 1
+    }
+  ],
   "level": 0,
   "conceptual": "<h3 id=\"welcome-to-the-animal-world\" sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"6\">Welcome to the <strong sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"6\">Animal</strong> world!</h3>\n",
   "_appName": "Seed",
