@@ -64,7 +64,7 @@ jobs:
         path: docs/_site
 
     - name: Upload Logs
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       if: ${{ !cancelled() }}
       with:
         name: logs-${{ matrix.os }}
@@ -73,7 +73,7 @@ jobs:
           test/**/TestResults/*.trx
           test/**/TestResults/*.html
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       if: ${{ failure() && matrix.os == 'ubuntu-latest' }}
       with:
         name: dump
