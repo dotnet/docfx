@@ -423,6 +423,17 @@
               "level": 4,
               "items": [],
               "leaf": true
+            },
+            {
+              "name": "SourceGenerator",
+              "href": "../api/BuildFromProject.SourceGenerator.html",
+              "topicHref": "../api/BuildFromProject.SourceGenerator.html",
+              "topicUid": "BuildFromProject.SourceGenerator",
+              "type": "Class",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
             }
           ],
           "tocHref": null,
