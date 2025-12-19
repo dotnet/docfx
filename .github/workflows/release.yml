@@ -16,9 +16,9 @@ jobs:
 
     - name: dotnet publish
       run: |
-        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
-        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64
-        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
+        dotnet publish src/docfx -f net10.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
+        dotnet publish src/docfx -f net10.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64
+        dotnet publish src/docfx -f net10.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
         mkdir -p drop/bin
 
     - run: zip -r ../../bin/docfx-win-x64-${GITHUB_REF_NAME}.zip .
@@ -47,13 +47,14 @@ jobs:
     steps:
     - uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.x
+        dotnet-version: 10.x
 
     - uses: actions/download-artifact@v5
       with:
         name: nuget
         path: drop/nuget
 
+    # Install `Sign CLI` to use Azure Key Vault (See: https://github.com/dotnet/sign/blob/main/docs/comparisons.md)
     - run: dotnet tool install --tool-path . --prerelease sign
 
     - uses: azure/login@v1
@@ -87,7 +88,7 @@ jobs:
     steps:
     - uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.x
+        dotnet-version: 10.x
 
     - uses: actions/download-artifact@v5
       with:
@@ -116,5 +117,3 @@ jobs:
         gh release upload --repo dotnet/docfx ${GITHUB_REF_NAME} drop/bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip
       env:
         GH_TOKEN: ${{ github.token }}
-
-
