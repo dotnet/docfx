@@ -288,6 +288,15 @@
           "leaf": true
         },
         {
+          "name": "SourceGenerator",
+          "href": "BuildFromProject.SourceGenerator.html",
+          "topicHref": "BuildFromProject.SourceGenerator.html",
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "Structs",
           "topicHref": null,
           "tocHref": null,

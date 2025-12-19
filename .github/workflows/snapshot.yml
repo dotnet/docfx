@@ -19,16 +19,22 @@ jobs:
       actions: write    # Required to invoke another workflow with `createWorkflowDispatch`.
       contents: write   # Required to commit snapshot diffs.
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: ${{ github.ref_name }}
         lfs: true
+
+    # Install fonts-noto-color-emoji for emoji support in PDF generation
+    - name: Install fonts-noto-color-emoji
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y fonts-noto-color-emoji
 
     # Build projects
     - uses: ./.github/actions/build
 
     # Update snapshots & accept changes
-    - run: dotnet test -c Release -f net8.0 --no-build --filter Stage=Snapshot
+    - run: dotnet test -c Release -f net10.0 --no-build --filter Stage=Snapshot
       working-directory: test/docfx.Snapshot.Tests
       env:
         BUILD_SERVER: false # Need to accept file changes automatically.
@@ -39,14 +45,14 @@ jobs:
         git diff --name-only
 
     # Commit updated snapshot contents
-    - uses: stefanzweifel/git-auto-commit-action@v5
+    - uses: stefanzweifel/git-auto-commit-action@v7
       id: auto-commit-action
       if: ${{ github.event.inputs.dryrun == 'false'}} 
       with:
         commit_message: 'test(snapshot): update snapshots ${{ github.sha }}'
 
     # Invoke CI workflow if changes are committed.
-    - uses: actions/github-script@v7
+    - uses: actions/github-script@v8
       if: ${{ steps.auto-commit-action.outputs.changes_detected == 'true' }} 
       with:
         script: |

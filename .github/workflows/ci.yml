@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{ github.event.pull_request.head.repo.full_name }}
@@ -31,17 +31,21 @@ jobs:
       shell: bash
       working-directory: templates
 
-    - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
-      id: test-net80
+    - run: dotnet test -c Release -f net10.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
+      id: test-net100
 
     - run: dotnet test -c Release -f net9.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
       if: matrix.os == 'ubuntu-latest'
       id: test-net90
 
+    - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
+      if: matrix.os == 'ubuntu-latest'
+      id: test-net80
+
     - run: npm i -g @percy/cli
       if: matrix.os == 'ubuntu-latest'
 
-    - run: percy exec -- dotnet test -c Release -f net8.0 --filter Stage=Percy --no-build --collect:"XPlat Code Coverage"
+    - run: percy exec -- dotnet test -c Release -f net10.0 --filter Stage=Percy --no-build --collect:"XPlat Code Coverage"
       if: matrix.os == 'ubuntu-latest'
       env:
         PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
@@ -55,16 +59,16 @@ jobs:
     - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
       if: matrix.os == 'ubuntu-latest'
 
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- docs/docfx.json
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
+    - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- docs/docfx.json
+    - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
 
-    - uses: actions/upload-pages-artifact@v3
+    - uses: actions/upload-pages-artifact@v4
       if: matrix.os == 'ubuntu-latest'
       with:
         path: docs/_site
 
     - name: Upload Logs
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       if: ${{ !cancelled() }}
       with:
         name: logs-${{ matrix.os }}
@@ -73,7 +77,7 @@ jobs:
           test/**/TestResults/*.trx
           test/**/TestResults/*.html
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       if: ${{ failure() && matrix.os == 'ubuntu-latest' }}
       with:
         name: dump

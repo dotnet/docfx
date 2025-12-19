@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Reflection.PortableExecutable;
 using Docfx.Common;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Framework;
@@ -25,6 +26,7 @@ partial class DotnetApiCatalog
         var msbuildProperties = config.MSBuildProperties ?? [];
         msbuildProperties.TryAdd("Configuration", "Release");
 
+        // TODO: Add BinaryLogger support and print log warnings/errors to console. (It requires Roslyn v5.0.0)
         // NOTE:
         // logger parameter is not works when using Roslyn 4.9.0 or later.
         // It'll be fixed in later releases.
@@ -38,7 +40,10 @@ partial class DotnetApiCatalog
         });
 
         using var workspace = MSBuildWorkspace.Create(msbuildProperties);
-        workspace.WorkspaceFailed += (sender, e) => Logger.LogWarning($"{e.Diagnostic}");
+        workspace.RegisterWorkspaceFailedHandler(e =>
+        {
+            Logger.LogWarning($"{e.Diagnostic}");
+        });
 
         if (files.TryGetValue(FileType.NotSupported, out var unsupportedFiles))
         {
@@ -109,8 +114,17 @@ partial class DotnetApiCatalog
         {
             foreach (var assemblyFile in assemblyFiles)
             {
-                Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
-                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, config.IncludePrivateMembers, metadataReferences);
+                var normalizedAssemblyPath = assemblyFile.NormalizedPath;
+
+                using var peReader = new PEReader(new FileStream(normalizedAssemblyPath, FileMode.Open, FileAccess.Read));
+                if (!peReader.HasMetadata)
+                {
+                    Logger.LogInfo($"Skip non-managed assembly {normalizedAssemblyPath}");
+                    continue;
+                }
+
+                Logger.LogInfo($"Loading assembly {normalizedAssemblyPath}");
+                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(normalizedAssemblyPath, peReader, config.IncludePrivateMembers, metadataReferences);
                 hasCompilationError |= compilation.CheckDiagnostics(config.AllowCompilationErrors);
                 assemblies.Add((assembly, compilation));
             }

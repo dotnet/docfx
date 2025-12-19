@@ -164,6 +164,11 @@
           "topicHref": "BuildFromProject.Issue8725.html"
         },
         {
+          "name": "SourceGenerator",
+          "href": "BuildFromProject.SourceGenerator.html",
+          "topicHref": "BuildFromProject.SourceGenerator.html"
+        },
+        {
           "name": "Structs"
         },
         {

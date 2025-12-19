@@ -15,18 +15,18 @@ exports.transform = function (model) {
     if (extension && extension.postTransform) {
       model = extension.postTransform(model);
     }
-  
+
     for (var key in model) {
       if (key[0] === '_') {
         delete model[key]
       }
     }
-  
+
     return {
       content: JSON.stringify(model)
     };
   }
-  
+
   function transformMemberPage(model) {
     var groupNames = {
         "constructor": { key: "constructorsInSubtitle" },
@@ -43,11 +43,21 @@ exports.transform = function (model) {
         "namespace":   { key: "namespacesInSubtitle" },
         "delegate":    { key: "delegatesInSubtitle" },
     };
-  
+
+    var groupBy = [
+      "Constructor",
+      "Field",
+      "Property",
+      "Method",
+      "Event",
+      "Operator",
+      "Eii",
+    ];
+
     groupChildren(model);
     transformItem(model, 1);
     return model;
-  
+
     function groupChildren(item) {
         if (!item || !item.items || item.items.length == 0) {
             return;
@@ -56,7 +66,7 @@ exports.transform = function (model) {
         var items = [];
         item.items.forEach(function (element) {
             groupChildren(element);
-            if (element.type) {
+            if (element.type && groupBy.includes(element.type)) {
                 var type = element.isEii ? "eii" : element.type.toLowerCase();
                 if (!grouped.hasOwnProperty(type)) {
                     if (!groupNames.hasOwnProperty(type)) {
@@ -72,7 +82,7 @@ exports.transform = function (model) {
                 items.push(element);
             }
         }, this);
-  
+
         // With order defined in groupNames
         for (var key in groupNames) {
             if (groupNames.hasOwnProperty(key) && grouped.hasOwnProperty(key)) {
@@ -82,18 +92,18 @@ exports.transform = function (model) {
                 })
             }
         }
-  
+
         item.items = items;
     }
-  
+
     function transformItem(item, level) {
         // set to null in case mustache looks up
         item.topicHref = item.topicHref || null;
         item.tocHref = item.tocHref || null;
         item.name = item.name || null;
-  
+
         item.level = level;
-  
+
         if (item.items && item.items.length > 0) {
             item.leaf = false;
             var length = item.items.length;
@@ -106,4 +116,3 @@ exports.transform = function (model) {
         }
     }
   }
-  
