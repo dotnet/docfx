@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Spectre.Console" VersionOverride="0.54.0" />
     <ProjectReference Include="..\Docfx.MarkdigEngine.Extensions\Docfx.MarkdigEngine.Extensions.csproj" />
     <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
     <ProjectReference Include="..\Docfx.YamlSerialization\Docfx.YamlSerialization.csproj" />

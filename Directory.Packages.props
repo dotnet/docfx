@@ -15,8 +15,8 @@
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271" />
     <PackageVersion Include="PdfPig" Version="0.1.12" />
     <PackageVersion Include="PlantUml.Net" Version="1.4.80" />
-    <PackageVersion Include="Spectre.Console" Version="0.53.0" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.53.0" />
+    <PackageVersion Include="Spectre.Console" Version="0.54.0" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.53.1" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
     <PackageVersion Include="System.Composition" Version="10.0.1" />
     <PackageVersion Include="YamlDotNet" Version="16.3.0" />
