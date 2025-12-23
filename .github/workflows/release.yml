@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - uses: ./.github/actions/build
 
@@ -49,7 +49,7 @@ jobs:
       with:
         dotnet-version: 10.x
 
-    - uses: actions/download-artifact@v5
+    - uses: actions/download-artifact@v7
       with:
         name: nuget
         path: drop/nuget
@@ -90,12 +90,12 @@ jobs:
       with:
         dotnet-version: 10.x
 
-    - uses: actions/download-artifact@v5
+    - uses: actions/download-artifact@v7
       with:
         name: nuget-signed
         path: drop/nuget
 
-    - uses: actions/download-artifact@v5
+    - uses: actions/download-artifact@v7
       with:
         name: bin
         path: drop/bin

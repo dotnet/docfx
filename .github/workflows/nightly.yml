@@ -16,7 +16,7 @@ jobs:
       packages: write
     steps:
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
  
@@ -53,7 +53,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Create NuGet.config
       shell: pwsh
@@ -63,6 +63,7 @@ jobs:
         <configuration>
           <packageSources>
             <clear />
+            <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
             <add key="github" value="https://nuget.pkg.github.com/dotnet/index.json" />
           </packageSources>
           <packageSourceCredentials>
