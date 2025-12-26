@@ -4,6 +4,8 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <IsTestingPlatformApplication>true</IsTestingPlatformApplication>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <!-- .NET 9 or later run tests per TargetFramework in parallel by default.
@@ -51,19 +53,20 @@
     <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-ctrf       --report-ctrf-filename       TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).ctrf</TestingPlatformCommandLineArguments>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
-
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
     <!-- Set [assembly:CaptureConsole] attribute to assembly -->
     <AssemblyAttribute Include="Xunit.CaptureConsole" />
 
+    <!-- Add project items -->
     <None Include="TestData\**" CopyToOutputDirectory="PreserveNewest" />
     <None Include="$(MSBuildThisFileDirectory)xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
 
     <!-- Add Docfx.Tests.Common` project reference to test projects -->
     <ProjectReference Include="$(MSBuildThisFileDirectory)Docfx.Tests.Common/Docfx.Tests.Common.csproj" />
 
+    <!-- Add common test package references -->
     <PackageReference Include="AwesomeAssertions" />
     <PackageReference Include="xunit.v3.mtp-v2" />
-
   </ItemGroup>
+
 </Project>
