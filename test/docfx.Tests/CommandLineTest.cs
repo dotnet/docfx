@@ -1,10 +1,12 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Docfx.Common;
+
 namespace Docfx.Tests;
 
 [Collection("docfx STA")]
-public static class CommandLineTest
+public class CommandLineTest
 {
     [Fact]
     public static void PrintsVersion()
@@ -31,7 +33,14 @@ public static class CommandLineTest
     [Fact]
     public static void FailForUnknownArgs()
     {
-        Assert.Equal(-1, Program.Main(["--unknown"]));
+        try
+        {
+            Assert.Equal(-1, Program.Main(["--unknown"]));
+        }
+        finally
+        {
+            Logger.ResetCount();
+        }
     }
 
     [Fact]
