@@ -38,7 +38,10 @@ public class SamplesTest : IDisposable
 
     private class SamplesFactAttribute : FactAttribute
     {
-        public SamplesFactAttribute()
+        public SamplesFactAttribute(
+            [CallerFilePath] string sourceFilePath = null,
+            [CallerLineNumber] int sourceLineNumber = -1
+        ) : base(sourceFilePath, sourceLineNumber)
         {
             // When target framework is changed.
             // It need to modify TargetFrameworks property of `docfx.Snapshot.Tests.csproj`
@@ -49,6 +52,7 @@ public class SamplesTest : IDisposable
     }
 
     [SamplesFact]
+    [UseCustomBranchName("main")]
     public async Task Seed()
     {
         var samplePath = $"{s_samplesDir}/seed";
@@ -60,7 +64,6 @@ public class SamplesTest : IDisposable
 
         if (Debugger.IsAttached || IsWslRemoteTest())
         {
-            Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
             Assert.Equal(0, Program.Main([$"{samplePath}/docfx.json"]));
         }
         else
@@ -116,6 +119,7 @@ public class SamplesTest : IDisposable
     }
 
     [SamplesFact]
+    [UseCustomBranchName("main")]
     public async Task SeedMarkdown()
     {
         var samplePath = $"{s_samplesDir}/seed";
@@ -129,32 +133,28 @@ public class SamplesTest : IDisposable
     }
 
     [SamplesFact]
+    [UseCustomBranchName("main")]
     public async Task CSharp()
     {
         var samplePath = $"{s_samplesDir}/csharp";
         Clean(samplePath);
 
-        Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-
-        try
-        {
-            await DotnetApiCatalog.GenerateManagedReferenceYamlFiles($"{samplePath}/docfx.json");
-            await Docset.Build($"{samplePath}/docfx.json");
-        }
-        finally
-        {
-            Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
-        }
+        await DotnetApiCatalog.GenerateManagedReferenceYamlFiles($"{samplePath}/docfx.json");
+        await Docset.Build($"{samplePath}/docfx.json");
 
         await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
     }
 
     [SamplesFact]
+    [UseCustomBranchName("main")]
     public Task Extensions()
     {
         var samplePath = $"{s_samplesDir}/extensions";
         Clean(samplePath);
 
+        // On some specific environment. `dotnet build` command takes about 15 minutes.
+        // So adding `-nodeReuse:false` parameter to resolve issue (https://github.com/dotnet/sdk/issues/9452)
+        // Additionaly use `--no-dependencies` parameter to suppress dependent projects build.
 #if DEBUG
         using var process = Process.Start("dotnet", $"build \"{samplePath}/build\"");
         process.WaitForExit();
@@ -172,13 +172,14 @@ public class SamplesTest : IDisposable
 
     private static int Exec(string filename, string args, string workingDirectory = null)
     {
-        var psi = new ProcessStartInfo(filename, args);
-        psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
-        if (workingDirectory != null)
-            psi.WorkingDirectory = Path.GetFullPath(workingDirectory);
-        using var process = Process.Start(psi);
-        process.WaitForExit();
-        return process.ExitCode;
+        var execTask = ProcessHelper.ExecAsync(
+            filename,
+            args,
+            workingDirectory,
+            environmentVariables: [],
+            TestContext.Current.CancellationToken);
+
+        return execTask.GetAwaiter().GetResult();
     }
 
     private static void Clean(string samplePath)
