@@ -540,8 +540,8 @@
   "type": "class",
   "source": {
     "id": "SourceGenerator",
-    "path": "{SolutionDirectory}samples/seed/dotnet/project/Project/obj/Release/net8.0/System.Text.RegularExpressions.Generator/System.Text.RegularExpressions.Generator.RegexGenerator/RegexGenerator.g.cs",
-    "startLine": 8,
+    "path": "{SolutionDirectory}samples/seed/dotnet/project/Project/obj/Release/net10.0/System.Text.RegularExpressions.Generator/System.Text.RegularExpressions.Generator.RegexGenerator/RegexGenerator.g.cs",
+    "startLine": 6,
     "endLine": 0
   },
   "assemblies": [
