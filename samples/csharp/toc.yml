@@ -1,0 +1,8 @@
+﻿- name: API Documentation
+  items:
+  - name: .NET API
+    href: obj/api/
+  - name: .NET API (apipage)
+    href: obj/apipage/
+  - name: .NET API (markdown)
+    href: obj/md/
