@@ -575,6 +575,42 @@ public class XmlCommentUnitTest
             """, comment.Remarks, ignoreLineEndingDifferences: true);
     }
 
+    [Fact]
+    public void Issue10559()
+    {
+        var comment = XmlComment.Parse(
+            """
+            <remarks>
+            <para>Test para</para>
+            
+            Test start list
+            <list type="bullet">
+                <item>
+                    <description>Item 1.</description>
+                </item>
+                <item>
+                    <description>Item 2.</description>
+                </item>
+            </list>
+            Test end list
+            
+            </remarks>
+            """);
+        Assert.Equal(
+            """
+            <p>Test para</p>
+            
+            Test start list
+            <ul><li>
+                    Item 1.
+                </li><li>
+                    Item 2.
+                </li></ul>
+            Test end list
+            
+            """, comment.Remarks, ignoreLineEndingDifferences: true);
+    }
+
 
 
 }
