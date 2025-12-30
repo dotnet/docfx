@@ -192,6 +192,8 @@ internal static partial class VisitorHelper
                 return MemberType.Struct;
             case TypeKind.Delegate:
                 return MemberType.Delegate;
+            case TypeKind.Extension:
+                return MemberType.Extension;
             default:
                 return MemberType.Default;
         }

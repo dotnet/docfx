@@ -16,6 +16,7 @@ internal static class YamlMetadataResolver
         new NormalizeSyntax(),
         new BuildMembers(),
         new SetDerivedClass(),
+        new ResolveExtensionMember(),
         new BuildToc()
     ];
 

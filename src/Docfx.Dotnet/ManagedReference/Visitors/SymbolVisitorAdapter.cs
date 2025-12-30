@@ -197,7 +197,15 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             }
         }
 
-        AddReference(symbol);
+        if (symbol.IsExtension)
+        {
+            // Currently extension symbol is skipped and reference is not added.
+            // TODO: Handle C# 14 Extension Member definition.
+        }
+        else
+        {
+            AddReference(symbol);
+        }
 
         item.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
