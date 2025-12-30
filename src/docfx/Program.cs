@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Docfx.Common;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -39,26 +40,34 @@ internal class Program
 
         static void OnException(Exception e, ITypeResolver? resolver)
         {
-            if (e is CommandAppException cae)
+            // Try to unwrap AggregateException.
+            if (e is AggregateException ae && ae.InnerExceptions.Count == 1)
+                e = ae.InnerExceptions[0];
+
+            if (!Console.IsOutputRedirected)
             {
-                if (cae.Pretty is { } pretty)
-                    AnsiConsole.Write(pretty);
-                else
-                    AnsiConsole.MarkupInterpolated($"[red]Error:[/] {e.Message}");
+                // Write exception to console.
+                AnsiConsole.Console.WriteException(e);
+
+                // Write exception to ReportLogListener if exists.
+                var reportLogListener = Logger.FindListener(x => x is ReportLogListener);
+                reportLogListener?.WriteLine(Logger.GetLogItem(LogLevel.Error, e.ToString(), code: ErrorCodes.Build.FatalError));
             }
             else
             {
-                AnsiConsole.WriteException(e, new ExceptionSettings()
-                {
-                    Format = ExceptionFormats.ShortenEverything,
-                    Style = new()
-                    {
-                        ParameterName = Color.Grey,
-                        ParameterType = Color.Grey78,
-                        LineNumber = Color.Grey78,
-                    },
-                });
+                // Write exception with Logger API if stdout is redirected.
+                // To avoid line wrap issue https://github.com/spectreconsole/spectre.console/issues/1782
+                var exceptions = e is AggregateException ae2
+                    ? ae2.Flatten().InnerExceptions.ToArray()
+                    : [e];
+
+                foreach (var ex in exceptions)
+                    Logger.LogError(e.ToString(), code: ErrorCodes.Build.FatalError);
             }
+
+            // Cleanup logger.
+            Logger.Flush();
+            Logger.UnregisterAllListeners();
         }
     }
 }
