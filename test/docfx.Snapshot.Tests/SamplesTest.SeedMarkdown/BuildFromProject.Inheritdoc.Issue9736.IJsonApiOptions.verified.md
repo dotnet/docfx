@@ -24,7 +24,6 @@ bool UseRelativeLinks { get; }
 #### Examples
 
 <pre><code class="lang-csharp">options.UseRelativeLinks = true;</code></pre>
-
 <pre><code class="lang-csharp">{
   "type": "articles",
   "id": "4309",

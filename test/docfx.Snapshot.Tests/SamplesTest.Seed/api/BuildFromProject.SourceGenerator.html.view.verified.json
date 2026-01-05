@@ -173,7 +173,7 @@
             "BuildFromProject"
           ],
           "namespace": "BuildFromProject",
-          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.SourceGenerator.yml\" sourcestartlinenumber=\"1\">Pattern:<br></p>\n<pre><code class=\"lang-csharp\">abc|def</code></pre><br>\n<p sourcefile=\"obj/api/BuildFromProject.SourceGenerator.yml\" sourcestartlinenumber=\"4\">Options:<br></p>\n<pre><code class=\"lang-csharp\">RegexOptions.IgnoreCase</code></pre><br>\n<p sourcefile=\"obj/api/BuildFromProject.SourceGenerator.yml\" sourcestartlinenumber=\"7\">Explanation:<br></p>\n<pre><code class=\"lang-csharp\">○ Match with 2 alternative expressions, atomically.\n    ○ Match a sequence of expressions.\n        ○ Match a character in the set [Aa].\n        ○ Match a character in the set [Bb].\n        ○ Match a character in the set [Cc].\n    ○ Match a sequence of expressions.\n        ○ Match a character in the set [Dd].\n        ○ Match a character in the set [Ee].\n        ○ Match a character in the set [Ff].</code></pre>\n",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.SourceGenerator.yml\" sourcestartlinenumber=\"1\">Pattern:<br></p>\n<pre><code class=\"lang-csharp\">abc|def</code></pre><br>\n<pre><code sourcefile=\"obj/api/BuildFromProject.SourceGenerator.yml\" sourcestartlinenumber=\"3\">Options:&lt;br /&gt;\n&lt;pre&gt;&lt;code class=&quot;lang-csharp&quot;&gt;RegexOptions.IgnoreCase&lt;/code&gt;&lt;/pre&gt;&lt;br /&gt;\nExplanation:&lt;br /&gt;\n&lt;pre&gt;&lt;code class=&quot;lang-csharp&quot;&gt;○ Match with 2 alternative expressions, atomically.\n○ Match a sequence of expressions.\n    ○ Match a character in the set [Aa].\n    ○ Match a character in the set [Bb].\n    ○ Match a character in the set [Cc].\n○ Match a sequence of expressions.\n    ○ Match a character in the set [Dd].\n    ○ Match a character in the set [Ee].\n    ○ Match a character in the set [Ff].&lt;/code&gt;&lt;/pre&gt;\n</code></pre>\n",
           "example": [],
           "overload": {
             "uid": "BuildFromProject.SourceGenerator.GeneratedRegex*",
@@ -540,8 +540,8 @@
   "type": "class",
   "source": {
     "id": "SourceGenerator",
-    "path": "{SolutionDirectory}samples/seed/dotnet/project/Project/obj/Release/net8.0/System.Text.RegularExpressions.Generator/System.Text.RegularExpressions.Generator.RegexGenerator/RegexGenerator.g.cs",
-    "startLine": 8,
+    "path": "{SolutionDirectory}samples/seed/dotnet/project/Project/obj/Release/net10.0/Microsoft.Extensions.Logging.Generators/Microsoft.Extensions.Logging.Generators.LoggerMessageGenerator/LoggerMessage.g.cs",
+    "startLine": 5,
     "endLine": 0
   },
   "assemblies": [

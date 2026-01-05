@@ -38,14 +38,11 @@ public static Regex GeneratedRegex()
 #### Remarks
 
 Pattern:<br />
-
 <pre><code class="lang-csharp">abc|def</code></pre><br />
-Options:<br />
-
-<pre><code class="lang-csharp">RegexOptions.IgnoreCase</code></pre><br />
-Explanation:<br />
-
-<pre><code class="lang-csharp">○ Match with 2 alternative expressions, atomically.
+    Options:<br />
+    <pre><code class="lang-csharp">RegexOptions.IgnoreCase</code></pre><br />
+    Explanation:<br />
+    <pre><code class="lang-csharp">○ Match with 2 alternative expressions, atomically.
     ○ Match a sequence of expressions.
         ○ Match a character in the set [Aa].
         ○ Match a character in the set [Bb].

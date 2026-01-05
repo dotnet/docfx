@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Docfx.Dotnet.Tests;
 
-public class XmlCommentUnitTest
+public partial class XmlCommentUnitTest
 {
     private static void Verify(string comment, string summary)
     {
@@ -28,6 +28,7 @@ public class XmlCommentUnitTest
         Assert.Equal(
             """
             a
+
             <p>b</p>
             <p>c</p>
             """,
@@ -64,8 +65,22 @@ public class XmlCommentUnitTest
     [Fact]
     public static void Issue8965()
     {
-        Verify("<seealso href=\"https://github.com\"><em>See also on MDN</em></seealso>", "<a href=\"https://github.com\">\n  <em>See also on MDN</em>\n</a>");
-        Verify("<see href=\"https://github.com\"><em>See also on MDN</em></see>", "<a href=\"https://github.com\">\n  <em>See also on MDN</em>\n</a>");
+        // <seealso>
+        Verify(
+            """
+            <seealso href="https://github.com"><em>See also on MDN</em></seealso>
+            """,
+            """
+            <a href="https://github.com"><em>See also on MDN</em></a>
+            """);
+        // <see>
+        Verify(
+            """
+            <see href="https://github.com"><em>See also on MDN</em></see>
+            """,
+            """
+            <a href="https://github.com"><em>See also on MDN</em></a>
+            """);
     }
 
     [Fact]
@@ -165,6 +180,7 @@ public class XmlCommentUnitTest
         Assert.Equal(
             """
             This is an example using source reference in a xaml file.
+
             <pre><code class="lang-xaml">&lt;Grid&gt;
               &lt;TextBlock Text="Hello World" /&gt;
             &lt;/Grid&gt;</code></pre>
@@ -324,18 +340,18 @@ public class XmlCommentUnitTest
                 </remarks>
                 <returns>Task<see cref='T:System.AccessViolationException'/> returns</returns>
 
-                    <param name='input'>This is <see cref='T:System.AccessViolationException'/>the input</param>
+                <param name='input'>This is <see cref='T:System.AccessViolationException'/>the input</param>
 
-                    <param name = 'output' > This is the output </param >
-                    <exception cref='T:System.Xml.XmlException'>This is a sample of exception node. Ref <see href="http://exception.com">Exception</see></exception>
-                    <exception cref='System.Xml.XmlException'>This is a sample of exception node with invalid cref</exception>
-                    <exception cref=''>This is a sample of invalid exception node</exception>
-                    <exception >This is a sample of another invalid exception node</exception>
+                <param name = 'output' > This is the output </param >
+                <exception cref='T:System.Xml.XmlException'>This is a sample of exception node. Ref <see href="http://exception.com">Exception</see></exception>
+                <exception cref='System.Xml.XmlException'>This is a sample of exception node with invalid cref</exception>
+                <exception cref=''>This is a sample of invalid exception node</exception>
+                <exception >This is a sample of another invalid exception node</exception>
 
                 <example>
                 This sample shows how to call the <see cref="M: Docfx.EntityModel.XmlCommentParser.GetExceptions(System.String, Docfx.EntityModel.XmlCommentParserContext)"/> method.
                 <code>
-               class TestClass
+                class TestClass
                 {
                     static int Main()
                     {
@@ -386,16 +402,16 @@ public class XmlCommentUnitTest
         Assert.Equal("This is <xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref>the input", paramInput);
 
         var remarks = commentModel.Remarks;
-        Assert.Equal("""
+        Assert.Equal(
+            """
             <a href="https://example.org">https://example.org</a>
             <a href="https://example.org">example</a>
             <p>This is <code class="paramref">ref</code> a sample of exception node</p>
             <ul><li>
-
                         <pre><code class="lang-c#">public class XmlElement
-                            : XmlLinkedNode</code></pre>
+                : XmlLinkedNode</code></pre>
                         <ol><li>
-                                    word inside list->listItem->list->listItem->para.>
+                                    word inside list-&gt;listItem-&gt;list-&gt;listItem-&gt;para.&gt;
                                     the second line.
                                 </li><li>item2 in numbered list</li></ol>
                     </li><li>item2 in bullet list</li><li>
@@ -413,13 +429,14 @@ public class XmlCommentUnitTest
             e => Assert.Equal(
                 """
                 This sample shows how to call the <see cref="M: Docfx.EntityModel.XmlCommentParser.GetExceptions(System.String, Docfx.EntityModel.XmlCommentParserContext)"></see> method.
+
                 <pre><code class="lang-csharp">class TestClass
-                 {
-                     static int Main()
-                     {
-                         return GetExceptions(null, null).Count();
-                     }
-                 }</code></pre>
+                {
+                    static int Main()
+                    {
+                        return GetExceptions(null, null).Count();
+                    }
+                }</code></pre>
                 """, e, ignoreLineEndingDifferences: true),
             e => Assert.Equal(
                 """
@@ -428,11 +445,13 @@ public class XmlCommentUnitTest
             e => Assert.Equal(
                 """
                 Check empty code.
+
                 <pre><code class="lang-csharp"></code></pre>
                 """, e, ignoreLineEndingDifferences: true),
             e => Assert.Equal(
                 """
                 This is an example using source reference.
+
                 <pre><code class="lang-cs"></code></pre>
                 """, e, ignoreLineEndingDifferences: true)
             );
@@ -521,7 +540,6 @@ public class XmlCommentUnitTest
         Assert.Equal(
             """
             <pre><code class="lang-csharp">options.UseRelativeLinks = true;</code></pre>
-
             <pre><code class="lang-csharp">{
               "type": "articles",
               "id": "4309",
@@ -563,7 +581,6 @@ public class XmlCommentUnitTest
             <p>
             Paragraph.
             </p>
-
             <pre><code class="lang-csharp">public sealed class Issue10385
             {
                 public int AAA {get;set;}
@@ -574,7 +591,4 @@ public class XmlCommentUnitTest
             }</code></pre>
             """, comment.Remarks, ignoreLineEndingDifferences: true);
     }
-
-
-
 }

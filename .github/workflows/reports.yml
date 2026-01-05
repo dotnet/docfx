@@ -20,7 +20,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
     steps:
     - name: Create Test Report
-      uses: dorny/test-reporter@fe45e9537387dac839af0d33ba56eed8e24189e8 # v2.3.0
+      uses: dorny/test-reporter@b082adf0eced0765477756c2a610396589b8c637 # v2.5.0
       id : test-reports
       with:
         artifact: /^logs-(.*)/         # Name of artifact to report
