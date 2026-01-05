@@ -1,0 +1,20 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "title": "Enum Class1.Issue10332.SampleEnum",
+  "content": "<h1 class='section api' data-uid='BuildFromProject.Class1.Issue10332.SampleEnum' data-commentId='T:BuildFromProject.Class1.Issue10332.SampleEnum' id='BuildFromProject_Class1_Issue10332_SampleEnum'>Enum Class1.Issue10332.SampleEnum   <span class='badge rounded-pill text-bg-info' style='font-size: .4em; vertical-align: middle'>Preview</span>  <a class='header-action link-secondary' title='View source' href='https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs#L209'><i class='bi bi-code-slash'></i></a></h1>\r\n \n<div class='alert alert-info' role='alert'><p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue10332.SampleEnum.yml\" sourceStartLineNumber=\"1\"><a href=\"https://example.org/DOCFX001\" sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue10332.SampleEnum.yml\" sourceStartLineNumber=\"1\">DOCFX001</a>: 'BuildFromProject.Class1.Issue10332.SampleEnum' is for evaluation purposes only and is subject to change or removal in future updates.</p>\n</div><div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='BuildFromProject.html'>BuildFromProject</a></dd></dl><dl><dt>Assembly</dt><dd>BuildFromProject.dll</dd></dl>\r\n</div><pre><code class='lang-csharp'>public enum Class1.Issue10332.SampleEnum</code></pre><h2 class='section'>Fields</h2><dl class='parameters'><dt><code>AAA = 0</code>   </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue10332.SampleEnum.yml\" sourceStartLineNumber=\"1\">3rd element when sorted by alphabetic order</p>\n\r\n</dd><dt><code>aaa = 1</code>   </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue10332.SampleEnum.yml\" sourceStartLineNumber=\"1\">2nd element when sorted by alphabetic order</p>\n\r\n</dd><dt><code>_aaa = 2</code>   </dt>\r\n<dd>\r\n\r\n\r\n<p sourceFile=\"obj/apipage/BuildFromProject.Class1.Issue10332.SampleEnum.yml\" sourceStartLineNumber=\"1\">1st element when sorted by alphabetic order</p>\n\r\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromProject.Class1.Issue10332.SampleEnum.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromProject.Class1.Issue10332.SampleEnum.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

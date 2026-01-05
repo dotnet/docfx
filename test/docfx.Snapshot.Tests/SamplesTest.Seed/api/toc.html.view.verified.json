@@ -141,6 +141,28 @@
           "leaf": true
         },
         {
+          "name": "Class1.Issue10332",
+          "href": "BuildFromProject.Class1.Issue10332.html",
+          "topicHref": "BuildFromProject.Class1.Issue10332.html",
+          "topicUid": "BuildFromProject.Class1.Issue10332",
+          "type": "Class",
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Class1.Issue10332.SampleEnum",
+          "href": "BuildFromProject.Class1.Issue10332.SampleEnum.html",
+          "topicHref": "BuildFromProject.Class1.Issue10332.SampleEnum.html",
+          "topicUid": "BuildFromProject.Class1.Issue10332.SampleEnum",
+          "type": "Enum",
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "Class1.Issue8665",
           "href": "BuildFromProject.Class1.Issue8665.html",
           "topicHref": "BuildFromProject.Class1.Issue8665.html",
@@ -493,10 +515,10 @@
           "level": 3
         },
         {
-          "name": "CatException<T>",
-          "href": "CatLibrary.CatException-1.html",
-          "topicHref": "CatLibrary.CatException-1.html",
-          "topicUid": "CatLibrary.CatException`1",
+          "name": "Cat<T, K>",
+          "href": "CatLibrary.Cat-2.html",
+          "topicHref": "CatLibrary.Cat-2.html",
+          "topicUid": "CatLibrary.Cat`2",
           "type": "Class",
           "tocHref": null,
           "level": 3,
@@ -504,10 +526,10 @@
           "leaf": true
         },
         {
-          "name": "Cat<T, K>",
-          "href": "CatLibrary.Cat-2.html",
-          "topicHref": "CatLibrary.Cat-2.html",
-          "topicUid": "CatLibrary.Cat`2",
+          "name": "CatException<T>",
+          "href": "CatLibrary.CatException-1.html",
+          "topicHref": "CatLibrary.CatException-1.html",
+          "topicUid": "CatLibrary.CatException`1",
           "type": "Class",
           "tocHref": null,
           "level": 3,

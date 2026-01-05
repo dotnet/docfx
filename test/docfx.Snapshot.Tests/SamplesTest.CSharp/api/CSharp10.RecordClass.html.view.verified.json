@@ -57,10 +57,8 @@
       "children": [
         {
           "uid": "CSharp10.RecordClass.#ctor(System.String,System.String)",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp10.RecordClass",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -101,180 +99,17 @@
               "value": "<xref uid=\"CSharp10.RecordClass.#ctor(System.String,System.String)\" text=\"RecordClass(string, string)\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public RecordClass(string FirstName, string LastName)"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Sub New(FirstName As String, LastName As String)"
-              }
-            ],
-            "parameters": [
-              {
-                "id": "FirstName",
-                "type": {
-                  "uid": "System.String",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "string"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "string"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "string"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "LastName",
-                "type": {
-                  "uid": "System.String",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "string"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "string"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "string"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp10.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": ".ctor",
-            "path": "src/CSharp10.cs",
-            "startLine": 6,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp10",
-          "overload": {
-            "uid": "CSharp10.RecordClass.#ctor*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "RecordClass"
-              },
-              {
-                "lang": "vb",
-                "value": "New"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "RecordClass.RecordClass"
-              },
-              {
-                "lang": "vb",
-                "value": "RecordClass.New"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp10.RecordClass.RecordClass"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp10.RecordClass.New"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp10.RecordClass.#ctor*\" text=\"RecordClass\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp10.RecordClass.#ctor*\" text=\"RecordClass\"/>"
-              }
-            ],
-            "id": "CSharp10_RecordClass__ctor_"
-          },
           "level": 0,
-          "type": "constructor",
           "summary": "",
+          "type": "constructor",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass__ctor_System_String_System_String_.md&value=---%0Auid%3A%20CSharp10.RecordClass.%23ctor(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -291,10 +126,8 @@
       "children": [
         {
           "uid": "CSharp10.RecordClass.FirstName",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp10.RecordClass",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -335,133 +168,17 @@
               "value": "<xref uid=\"CSharp10.RecordClass.FirstName\" text=\"FirstName\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public string FirstName { get; init; }"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Property FirstName As String"
-              }
-            ],
-            "parameters": [],
-            "return": null,
-            "propertyValue": {
-              "type": {
-                "uid": "System.String",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp10.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "FirstName",
-            "path": "src/CSharp10.cs",
-            "startLine": 6,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp10",
-          "overload": {
-            "uid": "CSharp10.RecordClass.FirstName*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "FirstName"
-              },
-              {
-                "lang": "vb",
-                "value": "FirstName"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "RecordClass.FirstName"
-              },
-              {
-                "lang": "vb",
-                "value": "RecordClass.FirstName"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp10.RecordClass.FirstName"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp10.RecordClass.FirstName"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp10.RecordClass.FirstName*\" text=\"FirstName\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp10.RecordClass.FirstName*\" text=\"FirstName\"/>"
-              }
-            ],
-            "id": "CSharp10_RecordClass_FirstName_"
-          },
           "level": 0,
-          "type": "property",
           "summary": "",
+          "type": "property",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass_FirstName.md&value=---%0Auid%3A%20CSharp10.RecordClass.FirstName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -471,10 +188,8 @@
         },
         {
           "uid": "CSharp10.RecordClass.LastName",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp10.RecordClass",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -515,133 +230,17 @@
               "value": "<xref uid=\"CSharp10.RecordClass.LastName\" text=\"LastName\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public string LastName { get; init; }"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Property LastName As String"
-              }
-            ],
-            "parameters": [],
-            "return": null,
-            "propertyValue": {
-              "type": {
-                "uid": "System.String",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp10.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "LastName",
-            "path": "src/CSharp10.cs",
-            "startLine": 6,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp10",
-          "overload": {
-            "uid": "CSharp10.RecordClass.LastName*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "LastName"
-              },
-              {
-                "lang": "vb",
-                "value": "LastName"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "RecordClass.LastName"
-              },
-              {
-                "lang": "vb",
-                "value": "RecordClass.LastName"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp10.RecordClass.LastName"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp10.RecordClass.LastName"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp10.RecordClass.LastName*\" text=\"LastName\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp10.RecordClass.LastName*\" text=\"LastName\"/>"
-              }
-            ],
-            "id": "CSharp10_RecordClass_LastName_"
-          },
           "level": 0,
-          "type": "property",
           "summary": "",
+          "type": "property",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass_LastName.md&value=---%0Auid%3A%20CSharp10.RecordClass.LastName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -1240,10 +839,15 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp10.RecordClass.yml",
+  "_splitReference": true,
+  "_splitFrom": true,
+  "_key": "obj/api/CSharp10.RecordClass.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "api/CSharp10.RecordClass.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {
