@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Jint" />
+    <PackageReference Include="JsonSchema.Net" VersionOverride="8.0.5" />
     <PackageReference Include="Stubble.Core" />
     <PackageReference Include="OneOf" />
     <PackageReference Include="OneOf.SourceGenerator" PrivateAssets="All" />
