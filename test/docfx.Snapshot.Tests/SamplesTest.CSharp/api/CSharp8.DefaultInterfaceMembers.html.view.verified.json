@@ -57,10 +57,8 @@
       "children": [
         {
           "uid": "CSharp8.DefaultInterfaceMembers.GravitationalConstant",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp8.DefaultInterfaceMembers",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -101,88 +99,17 @@
               "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.GravitationalConstant\" text=\"GravitationalConstant\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public const double GravitationalConstant = 6.673E-11"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Const GravitationalConstant As Double = 6.673E-11"
-              }
-            ],
-            "return": null,
-            "fieldValue": {
-              "type": {
-                "uid": "System.Double",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "double"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Double"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "double"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Double"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "double"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Double"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp8.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "GravitationalConstant",
-            "path": "src/CSharp8.cs",
-            "startLine": 30,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp8",
           "level": 0,
-          "type": "field",
           "summary": "",
+          "type": "field",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DefaultInterfaceMembers_GravitationalConstant.md&value=---%0Auid%3A%20CSharp8.DefaultInterfaceMembers.GravitationalConstant%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L31",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -192,10 +119,8 @@
         },
         {
           "uid": "CSharp8.DefaultInterfaceMembers.X",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp8.DefaultInterfaceMembers",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -236,88 +161,17 @@
               "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.X\" text=\"X\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public const int X = 0"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Const X As Integer = 0"
-              }
-            ],
-            "return": null,
-            "fieldValue": {
-              "type": {
-                "uid": "System.Int32",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "int"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Integer"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "int"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Integer"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "int"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Integer"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp8.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "X",
-            "path": "src/CSharp8.cs",
-            "startLine": 29,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp8",
           "level": 0,
-          "type": "field",
           "summary": "",
+          "type": "field",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DefaultInterfaceMembers_X.md&value=---%0Auid%3A%20CSharp8.DefaultInterfaceMembers.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L30",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -334,10 +188,8 @@
       "children": [
         {
           "uid": "CSharp8.DefaultInterfaceMembers.DoSomething",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp8.DefaultInterfaceMembers",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -378,86 +230,17 @@
               "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething\" text=\"DoSomething()\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public static void DoSomething()"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Shared Sub DoSomething()"
-              }
-            ]
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp8.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "DoSomething",
-            "path": "src/CSharp8.cs",
-            "startLine": 45,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp8",
-          "overload": {
-            "uid": "CSharp8.DefaultInterfaceMembers.DoSomething*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "DoSomething"
-              },
-              {
-                "lang": "vb",
-                "value": "DoSomething"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "DefaultInterfaceMembers.DoSomething"
-              },
-              {
-                "lang": "vb",
-                "value": "DefaultInterfaceMembers.DoSomething"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp8.DefaultInterfaceMembers.DoSomething"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp8.DefaultInterfaceMembers.DoSomething"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething*\" text=\"DoSomething\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething*\" text=\"DoSomething\"/>"
-              }
-            ],
-            "id": "CSharp8_DefaultInterfaceMembers_DoSomething_"
-          },
           "level": 0,
-          "type": "method",
           "summary": "",
+          "type": "method",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DefaultInterfaceMembers_DoSomething.md&value=---%0Auid%3A%20CSharp8.DefaultInterfaceMembers.DoSomething%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L46",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -467,10 +250,8 @@
         },
         {
           "uid": "CSharp8.DefaultInterfaceMembers.DoSomethingElse",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp8.DefaultInterfaceMembers",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -511,86 +292,17 @@
               "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse\" text=\"DoSomethingElse()\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public static void DoSomethingElse()"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Shared Sub DoSomethingElse()"
-              }
-            ]
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp8.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "DoSomethingElse",
-            "path": "src/CSharp8.cs",
-            "startLine": 46,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp8",
-          "overload": {
-            "uid": "CSharp8.DefaultInterfaceMembers.DoSomethingElse*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "DoSomethingElse"
-              },
-              {
-                "lang": "vb",
-                "value": "DoSomethingElse"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "DefaultInterfaceMembers.DoSomethingElse"
-              },
-              {
-                "lang": "vb",
-                "value": "DefaultInterfaceMembers.DoSomethingElse"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp8.DefaultInterfaceMembers.DoSomethingElse"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp8.DefaultInterfaceMembers.DoSomethingElse"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse*\" text=\"DoSomethingElse\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse*\" text=\"DoSomethingElse\"/>"
-              }
-            ],
-            "id": "CSharp8_DefaultInterfaceMembers_DoSomethingElse_"
-          },
           "level": 0,
-          "type": "method",
           "summary": "",
+          "type": "method",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DefaultInterfaceMembers_DoSomethingElse.md&value=---%0Auid%3A%20CSharp8.DefaultInterfaceMembers.DoSomethingElse%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L47",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -607,10 +319,8 @@
       "children": [
         {
           "uid": "CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp8.DefaultInterfaceMembers",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -651,175 +361,17 @@
               "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)\" text=\"operator +(DefaultInterfaceMembers)\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public static DefaultInterfaceMembers operator +(DefaultInterfaceMembers a)"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Shared Operator +(a As DefaultInterfaceMembers) As DefaultInterfaceMembers"
-              }
-            ],
-            "parameters": [
-              {
-                "id": "a",
-                "type": {
-                  "uid": "CSharp8.DefaultInterfaceMembers",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "DefaultInterfaceMembers"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "DefaultInterfaceMembers"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "DefaultInterfaceMembers"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "DefaultInterfaceMembers"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "CSharp8.DefaultInterfaceMembers"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "CSharp8.DefaultInterfaceMembers"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
-                    }
-                  ]
-                }
-              }
-            ],
-            "return": {
-              "type": {
-                "uid": "CSharp8.DefaultInterfaceMembers",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "DefaultInterfaceMembers"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "DefaultInterfaceMembers"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "DefaultInterfaceMembers"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "DefaultInterfaceMembers"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "CSharp8.DefaultInterfaceMembers"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "CSharp8.DefaultInterfaceMembers"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp8.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "op_UnaryPlus",
-            "path": "src/CSharp8.cs",
-            "startLine": 33,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp8",
-          "overload": {
-            "uid": "CSharp8.DefaultInterfaceMembers.op_UnaryPlus*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "operator +"
-              },
-              {
-                "lang": "vb",
-                "value": "+"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "DefaultInterfaceMembers.operator +"
-              },
-              {
-                "lang": "vb",
-                "value": "DefaultInterfaceMembers.+"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp8.DefaultInterfaceMembers.operator +"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp8.DefaultInterfaceMembers.+"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_op_UnaryPlus_CSharp8_DefaultInterfaceMembers_\">+</a>"
-              }
-            ],
-            "id": "CSharp8_DefaultInterfaceMembers_op_UnaryPlus_"
-          },
           "level": 0,
-          "type": "operator",
           "summary": "",
+          "type": "operator",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DefaultInterfaceMembers_op_UnaryPlus_CSharp8_DefaultInterfaceMembers_.md&value=---%0Auid%3A%20CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L34",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -975,10 +527,15 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp8.DefaultInterfaceMembers.yml",
+  "_splitReference": true,
+  "_splitFrom": true,
+  "_key": "obj/api/CSharp8.DefaultInterfaceMembers.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "api/CSharp8.DefaultInterfaceMembers.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {

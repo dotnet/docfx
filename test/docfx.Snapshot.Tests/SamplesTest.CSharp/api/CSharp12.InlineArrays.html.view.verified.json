@@ -491,10 +491,13 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp12.InlineArrays.yml",
+  "_key": "obj/api/CSharp12.InlineArrays.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "api/CSharp12.InlineArrays.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {
