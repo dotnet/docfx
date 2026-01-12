@@ -130,6 +130,31 @@ var gitUrlPatternItems = {
         'generateNewFileUrl': function (gitInfo, uid) {
             return '';
         }
+    },
+    'codeberg': {
+        // HTTPS form: https://codeberg.org/{org}/{repo}.git
+        // SSH form: git@codeberg.org:{org}/{repo}.git
+        // generate URL: https://codeberg.org/{org}/{repo}/src/branch/{branch}/{path}
+        'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?codeberg\.org(\/|:).*/i,
+        'generateUrl': function (gitInfo) {
+            var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url = getRepoWithoutGitExtension(url);
+            url += '/src' + '/branch' + '/' + gitInfo.branch + '/' + gitInfo.path;
+            if (gitInfo.startLine && gitInfo.startLine > 0) {
+                url += '?display=source' + '#L' + gitInfo.startLine;
+            }
+            return url;
+        },
+        'generateNewFileUrl': function (gitInfo, uid) {
+            var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url = getRepoWithoutGitExtension(url);
+            url += '/_new';
+            url += '/' + gitInfo.branch;
+            url += '/' + getOverrideFolder(gitInfo.apiSpecFolder);
+            url += '?filename=' + getHtmlId(uid) + '.md';
+            url += '&value=' + encodeURIComponent(getOverrideTemplate(uid));
+            return url;
+        }
     }
 }
 
