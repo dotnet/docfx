@@ -109,11 +109,11 @@ HTML template for the print footer, or a path to an HTML page relative to the ro
 > For the cover page to appear in PDF, it needs to be included in build.
 > For instance, if `cover.md` is outputted to `_site/cover.html`, you should set `pdfCoverPage` to `cover.html`.
 
-## `pdfHeaderFooterOnCover`
+### `pdfHeaderFooterOnCover`
 
 Indicates whether to include the header and footer on the cover page.
 
-## `pdfHeaderFooterOnToc`
+### `pdfHeaderFooterOnToc`
 
 Indicates whether to include the header and footer on the table of contents (toc) pages.
 
