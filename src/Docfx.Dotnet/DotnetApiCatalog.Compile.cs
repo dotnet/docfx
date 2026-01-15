@@ -20,14 +20,6 @@ partial class DotnetApiCatalog
 {
     private static async Task<List<(IAssemblySymbol symbol, Compilation compilation)>> Compile(ExtractMetadataConfig config)
     {
-        var latestVersion = MSBuildLocator.QueryVisualStudioInstances().MaxBy(instance => instance.Version);
-        if (latestVersion == null)
-        {
-            throw new InvalidOperationException("Failed to find a version of Visual Studio or .NET SDK installed");
-        }
-
-        MSBuildLocator.RegisterInstance(latestVersion);
-
         var files = config.Files?.Select(s => new FileInformation(s))
             .GroupBy(f => f.Type)
             .ToDictionary(s => s.Key, s => s.Distinct().ToList()) ?? [];
