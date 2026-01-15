@@ -26,6 +26,16 @@
     <PackageVersion Include="Microsoft.Build" Version="[17.11.48]" Condition="'$(TargetFramework)' == 'net8.0'" />
     <PackageVersion Include="Microsoft.Build" Version="[17.14.28]" Condition="'$(TargetFramework)' == 'net9.0'" />
     <PackageVersion Include="Microsoft.Build" Version="18.0.2"     Condition="'$(TargetFramework)' != 'net8.0' AND '$(TargetFramework)' != 'net9.0'" />
+    <PackageVersion Include="Microsoft.Build.Framework" Version="[17.11.48]" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build.Framework" Version="[17.14.28]" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageVersion Include="Microsoft.Build.Framework" Version="18.0.2"     Condition="'$(TargetFramework)' != 'net8.0' AND '$(TargetFramework)' != 'net9.0'" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="[17.11.48]" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="[17.14.28]" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="18.0.2"     Condition="'$(TargetFramework)' != 'net8.0' AND '$(TargetFramework)' != 'net9.0'" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="[17.11.48]" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="[17.14.28]" Condition="'$(TargetFramework)' == 'net9.0'" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="18.0.2"     Condition="'$(TargetFramework)' != 'net8.0' AND '$(TargetFramework)' != 'net9.0'" />
+    <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
   </ItemGroup>
 
   <ItemGroup>

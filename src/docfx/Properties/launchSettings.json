@@ -1,40 +1,25 @@
 {
-  // Uncomment next line to enable intellisense.
-  // "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/launchsettings.json",
   "profiles": {
-    // Run `docfx init` command.
     "docfx init": {
       "commandName": "Project",
       "commandLineArgs": "init --output bin/init",
-      "workingDirectory": ".",
-      "environmentVariables": {
-      }
+      "workingDirectory": "."
     },
-    // Run `docfx build` command.
     "docfx build": {
       "commandName": "Project",
       "commandLineArgs": "build ../../samples/seed/docfx.json --serve",
-      "workingDirectory": ".",
-      "environmentVariables": {
-      }
+      "workingDirectory": "."
     },
-    // Run `docfx metadata` command.
     "docfx metadata": {
       "commandName": "Project",
-      "commandLineArgs": "metadata ../../samples/seed/docfx.json",
-      "workingDirectory": ".",
-      "environmentVariables": {
-      }
+      "commandLineArgs": "metadata F:\\github\\dpvreony\\Vetuviem\\eng\\docfx\\docfx.json",
+      "workingDirectory": "."
     },
-    // Run `docfx serve` command and launch browser.
     "docfx serve": {
       "commandName": "Project",
       "commandLineArgs": "serve ../../samples/seed/_site --open-file articles/markdown.html --open-browser",
-      "workingDirectory": ".",
-      "environmentVariables": {
-      }
+      "workingDirectory": "."
     },
-    // Run `docfx pdf` command and launch browser.
     "docfx pdf": {
       "commandName": "Project",
       "commandLineArgs": "pdf ../../samples/seed/docfx.json",
@@ -43,15 +28,11 @@
         "DOCFX_PDF_TIMEOUT": "0"
       }
     },
-    // Run `docfx download` command.
     "docfx download": {
       "commandName": "Project",
       "commandLineArgs": "download xrefmap.zip --xref https://github.com/dotnet/docfx/raw/main/.xrefmap.json",
-      "workingDirectory": ".",
-      "environmentVariables": {
-      }
+      "workingDirectory": "."
     },
-    // Run `docfx` command.
     "docfx": {
       "commandName": "Project",
       "commandLineArgs": "../../samples/seed/docfx.json",
