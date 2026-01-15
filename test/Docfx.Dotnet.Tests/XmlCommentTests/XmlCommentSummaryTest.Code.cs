@@ -29,6 +29,28 @@ public partial class XmlCommentSummaryTest
     }
 
     [Fact]
+    public void Code_Block_WithoutNewLine()
+    {
+        ValidateSummary(
+           // Input XML
+           """
+           <summary>
+           Paragraph1<code><![CDATA[
+           DELETE /articles/1 HTTP/1.1
+           ]]></code>Paragraph2
+           </summary>
+           """,
+           // Expected Markdown
+           """
+           Paragraph1
+
+           <pre><code class="lang-csharp">DELETE /articles/1 HTTP/1.1</code></pre>
+
+           Paragraph2
+           """);
+    }
+
+    [Fact]
     public void Code_Inline()
     {
         ValidateSummary(
