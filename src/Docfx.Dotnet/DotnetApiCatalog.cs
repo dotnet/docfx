@@ -153,6 +153,7 @@ public static partial class DotnetApiCatalog
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
             DisableGitFeatures = configModel?.DisableGitFeatures ?? false,
             NoRestore = configModel?.NoRestore ?? false,
+            ForceBuild = configModel?.ForceBuild ?? false,
             CategoryLayout = configModel?.CategoryLayout ?? default,
             NamespaceLayout = configModel?.NamespaceLayout ?? default,
             MemberLayout = configModel?.MemberLayout ?? default,

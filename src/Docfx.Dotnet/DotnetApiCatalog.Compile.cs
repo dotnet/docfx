@@ -153,30 +153,33 @@ partial class DotnetApiCatalog
             if (project is null)
             {
                 Logger.LogInfo($"Loading project {path}");
-                if (!config.NoRestore)
+                if (!config.NoRestore || config.ForceBuild)
                 {
                     using var process = Process.Start("dotnet", $"restore \"{path}\"");
                     await process.WaitForExitAsync();
                 }
 
-                // Build using MSBuild APIs
-                var buildParams = new Microsoft.Build.Execution.BuildParameters
+                if (config.ForceBuild)
                 {
-                    Loggers = new[] { msbuildLogger }
-                };
+                    // Build using MSBuild APIs
+                    var buildParams = new Microsoft.Build.Execution.BuildParameters
+                    {
+                        Loggers = new[] { msbuildLogger }
+                    };
 
-                var buildRequest = new Microsoft.Build.Execution.BuildRequestData(
-                    path,
-                    msbuildProperties,
-                    null,
-                    new[] { "Build" },
-                    null);
+                    var buildRequest = new Microsoft.Build.Execution.BuildRequestData(
+                        path,
+                        msbuildProperties,
+                        null,
+                        new[] { "Build" },
+                        null);
 
-                var buildResult = Microsoft.Build.Execution.BuildManager.DefaultBuildManager.Build(buildParams, buildRequest);
+                    var buildResult = Microsoft.Build.Execution.BuildManager.DefaultBuildManager.Build(buildParams, buildRequest);
 
-                if (buildResult.OverallResult != Microsoft.Build.Execution.BuildResultCode.Success)
-                {
-                    Logger.LogWarning($"Build failed for project {path}");
+                    if (buildResult.OverallResult != Microsoft.Build.Execution.BuildResultCode.Success)
+                    {
+                        Logger.LogWarning($"Build failed for project {path}");
+                    }
                 }
 
                 project = await workspace.OpenProjectAsync(path, msbuildLogger);
