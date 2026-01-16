@@ -76,6 +76,7 @@ public static partial class DotnetApiCatalog
                 }
 
                 MSBuildLocator.RegisterInstance(latestVersion);
+                Logger.LogInfo($"Located MSBuild for: {latestVersion.Name} - {latestVersion.Version}");
             }
 
             foreach (var item in config)
