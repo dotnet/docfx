@@ -1017,6 +1017,349 @@ references:
   isSpec: "True"
   fullName: CSharp12.RefReadOnlyParameters.Foo
   nameWithType: RefReadOnlyParameters.Foo
+- uid: CSharp13
+  name: CSharp13
+  href: api/CSharp13.html
+  commentId: N:CSharp13
+  fullName: CSharp13
+  nameWithType: CSharp13
+- uid: CSharp13.AllowRefStruct`1
+  name: AllowRefStruct<T>
+  href: api/CSharp13.AllowRefStruct-1.html
+  commentId: T:CSharp13.AllowRefStruct`1
+  name.vb: AllowRefStruct(Of T)
+  fullName: CSharp13.AllowRefStruct<T>
+  fullName.vb: CSharp13.AllowRefStruct(Of T)
+  nameWithType: AllowRefStruct<T>
+  nameWithType.vb: AllowRefStruct(Of T)
+- uid: CSharp13.AllowRefStruct`1.Method(`0)
+  name: Method(scoped T)
+  href: api/CSharp13.AllowRefStruct-1.html#CSharp13_AllowRefStruct_1_Method__0_
+  commentId: M:CSharp13.AllowRefStruct`1.Method(`0)
+  name.vb: Method(T)
+  fullName: CSharp13.AllowRefStruct<T>.Method(scoped T)
+  fullName.vb: CSharp13.AllowRefStruct(Of T).Method(T)
+  nameWithType: AllowRefStruct<T>.Method(scoped T)
+  nameWithType.vb: AllowRefStruct(Of T).Method(T)
+- uid: CSharp13.AllowRefStruct`1.Method*
+  name: Method
+  href: api/CSharp13.AllowRefStruct-1.html#CSharp13_AllowRefStruct_1_Method_
+  commentId: Overload:CSharp13.AllowRefStruct`1.Method
+  isSpec: "True"
+  fullName: CSharp13.AllowRefStruct<T>.Method
+  fullName.vb: CSharp13.AllowRefStruct(Of T).Method
+  nameWithType: AllowRefStruct<T>.Method
+  nameWithType.vb: AllowRefStruct(Of T).Method
+- uid: CSharp14
+  name: CSharp14
+  href: api/CSharp14.html
+  commentId: N:CSharp14
+  fullName: CSharp14
+  nameWithType: CSharp14
+- uid: CSharp14.FieldBackedPropertySample
+  name: FieldBackedPropertySample
+  href: api/CSharp14.FieldBackedPropertySample.html
+  commentId: T:CSharp14.FieldBackedPropertySample
+  fullName: CSharp14.FieldBackedPropertySample
+  nameWithType: FieldBackedPropertySample
+- uid: CSharp14.FieldBackedPropertySample.FieldBackedProperty
+  name: FieldBackedProperty
+  href: api/CSharp14.FieldBackedPropertySample.html#CSharp14_FieldBackedPropertySample_FieldBackedProperty
+  commentId: P:CSharp14.FieldBackedPropertySample.FieldBackedProperty
+  fullName: CSharp14.FieldBackedPropertySample.FieldBackedProperty
+  nameWithType: FieldBackedPropertySample.FieldBackedProperty
+- uid: CSharp14.FieldBackedPropertySample.FieldBackedProperty*
+  name: FieldBackedProperty
+  href: api/CSharp14.FieldBackedPropertySample.html#CSharp14_FieldBackedPropertySample_FieldBackedProperty_
+  commentId: Overload:CSharp14.FieldBackedPropertySample.FieldBackedProperty
+  isSpec: "True"
+  fullName: CSharp14.FieldBackedPropertySample.FieldBackedProperty
+  nameWithType: FieldBackedPropertySample.FieldBackedProperty
+- uid: CSharp14.SampleClass
+  name: SampleClass
+  href: api/CSharp14.SampleClass.html
+  commentId: T:CSharp14.SampleClass
+  fullName: CSharp14.SampleClass
+  nameWithType: SampleClass
+- uid: CSharp14.SampleClass.Value
+  name: Value
+  href: api/CSharp14.SampleClass.html#CSharp14_SampleClass_Value
+  commentId: P:CSharp14.SampleClass.Value
+  fullName: CSharp14.SampleClass.Value
+  nameWithType: SampleClass.Value
+- uid: CSharp14.SampleClass.Value*
+  name: Value
+  href: api/CSharp14.SampleClass.html#CSharp14_SampleClass_Value_
+  commentId: Overload:CSharp14.SampleClass.Value
+  isSpec: "True"
+  fullName: CSharp14.SampleClass.Value
+  nameWithType: SampleClass.Value
+- uid: CSharp14.SampleClassExtensions
+  name: SampleClassExtensions
+  href: api/CSharp14.SampleClassExtensions.html
+  commentId: T:CSharp14.SampleClassExtensions
+  fullName: CSharp14.SampleClassExtensions
+  nameWithType: SampleClassExtensions
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample
+  name: UserDefinedCompoundAssignmentOperatorsSample
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html
+  commentId: T:CSharp14.UserDefinedCompoundAssignmentOperatorsSample
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString
+  name: ToString()
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_ToString
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString()
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.ToString()
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString*
+  name: ToString
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_ToString_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString
+  isSpec: "True"
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.ToString
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value
+  name: Value
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_Value
+  commentId: P:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.Value
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value*
+  name: Value
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_Value_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value
+  isSpec: "True"
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.Value
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name: operator +=(UserDefinedCompoundAssignmentOperatorsSample)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_AdditionAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name.vb: op_AdditionAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator +=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator +=(UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment*
+  name: operator +=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_AdditionAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment
+  isSpec: "True"
+  name.vb: op_AdditionAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator +=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator +=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name: operator &=(UserDefinedCompoundAssignmentOperatorsSample)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_BitwiseAndAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name.vb: op_BitwiseAndAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator &=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator &=(UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment*
+  name: operator &=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_BitwiseAndAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment
+  isSpec: "True"
+  name.vb: op_BitwiseAndAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator &=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator &=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name: operator |=(UserDefinedCompoundAssignmentOperatorsSample)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_BitwiseOrAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name.vb: op_BitwiseOrAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator |=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator |=(UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment*
+  name: operator |=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_BitwiseOrAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment
+  isSpec: "True"
+  name.vb: op_BitwiseOrAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator |=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator |=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment
+  name: operator --()
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_DecrementAssignment
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment
+  name.vb: op_DecrementAssignment()
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator --()
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment()
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator --()
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment()
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment*
+  name: operator --
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_DecrementAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment
+  isSpec: "True"
+  name.vb: op_DecrementAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator --
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator --
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name: operator /=(UserDefinedCompoundAssignmentOperatorsSample)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_DivisionAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name.vb: op_DivisionAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator /=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator /=(UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment*
+  name: operator /=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_DivisionAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment
+  isSpec: "True"
+  name.vb: op_DivisionAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator /=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator /=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name: operator ^=(UserDefinedCompoundAssignmentOperatorsSample)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_ExclusiveOrAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name.vb: op_ExclusiveOrAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator ^=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator ^=(UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment*
+  name: operator ^=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_ExclusiveOrAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment
+  isSpec: "True"
+  name.vb: op_ExclusiveOrAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator ^=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator ^=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment
+  name: operator ++()
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_IncrementAssignment
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment
+  name.vb: op_IncrementAssignment()
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator ++()
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment()
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator ++()
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment()
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment*
+  name: operator ++
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_IncrementAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment
+  isSpec: "True"
+  name.vb: op_IncrementAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator ++
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator ++
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment(System.Int32)
+  name: operator <<=(int)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_LeftShiftAssignment_System_Int32_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment(System.Int32)
+  name.vb: op_LeftShiftAssignment(Integer)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator <<=(int)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment(Integer)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator <<=(int)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment(Integer)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment*
+  name: operator <<=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_LeftShiftAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment
+  isSpec: "True"
+  name.vb: op_LeftShiftAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator <<=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator <<=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name: operator %=(UserDefinedCompoundAssignmentOperatorsSample)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_ModulusAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name.vb: op_ModulusAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator %=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator %=(UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment*
+  name: operator %=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_ModulusAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment
+  isSpec: "True"
+  name.vb: op_ModulusAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator %=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator %=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name: operator *=(UserDefinedCompoundAssignmentOperatorsSample)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_MultiplicationAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name.vb: op_MultiplicationAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator *=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator *=(UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment*
+  name: operator *=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_MultiplicationAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment
+  isSpec: "True"
+  name.vb: op_MultiplicationAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator *=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator *=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment(System.Int32)
+  name: operator >>=(int)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_RightShiftAssignment_System_Int32_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment(System.Int32)
+  name.vb: op_RightShiftAssignment(Integer)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator >>=(int)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment(Integer)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator >>=(int)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment(Integer)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment*
+  name: operator >>=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_RightShiftAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment
+  isSpec: "True"
+  name.vb: op_RightShiftAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator >>=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator >>=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name: operator -=(UserDefinedCompoundAssignmentOperatorsSample)
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_SubtractionAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_
+  commentId: M:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  name.vb: op_SubtractionAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator -=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator -=(UserDefinedCompoundAssignmentOperatorsSample)
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment(UserDefinedCompoundAssignmentOperatorsSample)
+- uid: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment*
+  name: operator -=
+  href: api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_SubtractionAssignment_
+  commentId: Overload:CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment
+  isSpec: "True"
+  name.vb: op_SubtractionAssignment
+  fullName: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator -=
+  fullName.vb: CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment
+  nameWithType: UserDefinedCompoundAssignmentOperatorsSample.operator -=
+  nameWithType.vb: UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment
 - uid: CSharp8
   name: CSharp8
   href: api/CSharp8.html
