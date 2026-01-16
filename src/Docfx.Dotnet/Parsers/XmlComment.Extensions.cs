@@ -102,9 +102,15 @@ static file class XElementExtensions
 
         switch (prevNode.NodeType)
         {
-            // If prev node is HTML element. No need to insert empty line.
             case XmlNodeType.Element:
-                return false;
+
+                // No need to insert empty line, if prev node is HTML element and it's not <pre> tag. T
+                if (node.Name != "pre")
+                    return false;
+
+                // <pre> tag needs empty line before. Without this setting, markdown parser treat code as markdown block.
+                var prevElementNode = (XElement)prevNode;
+                return prevElementNode.Name.LocalName != "pre";
 
             // Ensure empty lines exists before text node.
             case XmlNodeType.Text:
@@ -125,6 +131,12 @@ static file class XElementExtensions
     {
         if (!elem.TryGetNonWhitespacePrevNode(out var prevNode))
             return;
+
+        if (prevNode.NodeType == XmlNodeType.Element)
+        {
+            elem.AddBeforeSelf(new XText("\n"));
+            return;
+        }
 
         Debug.Assert(prevNode.NodeType == XmlNodeType.Text);
 
