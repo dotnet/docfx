@@ -66,6 +66,18 @@ public static partial class DotnetApiCatalog
 
             EnvironmentContext.SetBaseDirectory(configDirectory);
 
+            // this is here because heading into Compile, MSBuildLocator must have been registered as it uses MSBuild APIs
+            if (!MSBuildLocator.IsRegistered)
+            {
+                var latestVersion = MSBuildLocator.QueryVisualStudioInstances().MaxBy(instance => instance.Version);
+                if (latestVersion == null)
+                {
+                    throw new InvalidOperationException("Failed to find a version of Visual Studio or .NET SDK installed");
+                }
+
+                MSBuildLocator.RegisterInstance(latestVersion);
+            }
+
             foreach (var item in config)
             {
                 VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
@@ -85,15 +97,6 @@ public static partial class DotnetApiCatalog
 
         async Task Build(ExtractMetadataConfig config, DotnetApiOptions options)
         {
-            // this is here because heading into Compile, MSBuildLocator must have been registered as it uses MSBuild APIs
-            var latestVersion = MSBuildLocator.QueryVisualStudioInstances().MaxBy(instance => instance.Version);
-            if (latestVersion == null)
-            {
-                throw new InvalidOperationException("Failed to find a version of Visual Studio or .NET SDK installed");
-            }
-
-            MSBuildLocator.RegisterInstance(latestVersion);
-
             var assemblies = await Compile(config);
 
             switch (config.OutputFormat)
