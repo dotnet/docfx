@@ -581,6 +581,7 @@ public partial class XmlCommentUnitTest
             <p>
             Paragraph.
             </p>
+
             <pre><code class="lang-csharp">public sealed class Issue10385
             {
                 public int AAA {get;set;}

@@ -69,4 +69,51 @@ public partial class XmlCommentSummaryTest
             Paragraph2
             """);
     }
+
+
+    [Fact]
+    public void Code_HtmlTagExistBefore()
+    {
+        ValidateSummary(
+            // Input XML
+            """
+            <summary>
+            paragraph1
+            <para>paragraph2</para>
+            <code><![CDATA[
+            public class Sample
+            {
+                line1
+            
+                line2
+            }]]></code>
+            <code><![CDATA[
+            public class Sample2
+            {
+                line1
+            
+                line2
+            }]]></code>
+            </summary>
+            """,
+            // Expected Markdown
+            """
+            paragraph1
+
+            <p>paragraph2</p>
+
+            <pre><code class="lang-csharp">public class Sample
+            {
+                line1
+           
+                line2
+            }</code></pre>
+            <pre><code class="lang-csharp">public class Sample2
+            {
+                line1
+            
+                line2
+            }</code></pre>
+            """);
+    }
 }
