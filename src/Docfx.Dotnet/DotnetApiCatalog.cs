@@ -69,7 +69,10 @@ public static partial class DotnetApiCatalog
             // this is here because heading into Compile, MSBuildLocator must have been registered as it uses MSBuild APIs
             if (!MSBuildLocator.IsRegistered)
             {
-                var latestVersion = MSBuildLocator.QueryVisualStudioInstances().MaxBy(instance => instance.Version);
+                var visualStudioInstanceQueryOptions = VisualStudioInstanceQueryOptions.Default;
+                Logger.LogInfo($"Searching for MSBuild based upon: DiscoveryTypes:{visualStudioInstanceQueryOptions.DiscoveryTypes} - AllowAllDotnetLocations:{visualStudioInstanceQueryOptions.AllowAllDotnetLocations} - AllowAllRuntimeVersions:{visualStudioInstanceQueryOptions.AllowAllRuntimeVersions} - WorkingDirectory:\"{visualStudioInstanceQueryOptions.WorkingDirectory}\"");
+
+                var latestVersion = MSBuildLocator.QueryVisualStudioInstances(visualStudioInstanceQueryOptions).MaxBy(instance => instance.Version);
                 if (latestVersion == null)
                 {
                     throw new InvalidOperationException("Failed to find a version of Visual Studio or .NET SDK installed");
