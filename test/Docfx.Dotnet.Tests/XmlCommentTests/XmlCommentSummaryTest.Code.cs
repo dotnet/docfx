@@ -29,6 +29,28 @@ public partial class XmlCommentSummaryTest
     }
 
     [Fact]
+    public void Code_Block_WithoutNewLine()
+    {
+        ValidateSummary(
+           // Input XML
+           """
+           <summary>
+           Paragraph1<code><![CDATA[
+           DELETE /articles/1 HTTP/1.1
+           ]]></code>Paragraph2
+           </summary>
+           """,
+           // Expected Markdown
+           """
+           Paragraph1
+
+           <pre><code class="lang-csharp">DELETE /articles/1 HTTP/1.1</code></pre>
+
+           Paragraph2
+           """);
+    }
+
+    [Fact]
     public void Code_Inline()
     {
         ValidateSummary(
@@ -45,6 +67,53 @@ public partial class XmlCommentSummaryTest
             Paragraph1
             text <code>InlineCode</code> text.
             Paragraph2
+            """);
+    }
+
+
+    [Fact]
+    public void Code_HtmlTagExistBefore()
+    {
+        ValidateSummary(
+            // Input XML
+            """
+            <summary>
+            paragraph1
+            <para>paragraph2</para>
+            <code><![CDATA[
+            public class Sample
+            {
+                line1
+            
+                line2
+            }]]></code>
+            <code><![CDATA[
+            public class Sample2
+            {
+                line1
+            
+                line2
+            }]]></code>
+            </summary>
+            """,
+            // Expected Markdown
+            """
+            paragraph1
+
+            <p>paragraph2</p>
+
+            <pre><code class="lang-csharp">public class Sample
+            {
+                line1
+           
+                line2
+            }</code></pre>
+            <pre><code class="lang-csharp">public class Sample2
+            {
+                line1
+            
+                line2
+            }</code></pre>
             """);
     }
 }

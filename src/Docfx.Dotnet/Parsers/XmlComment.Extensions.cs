@@ -43,7 +43,7 @@ internal partial class XmlComment
                 node.InsertEmptyLineBefore();
 
             if (node.NeedEmptyLineAfter())
-                node.AddAfterSelf(new XText("\n"));
+                node.InsertEmptyLineAfter();
         }
 
         return elem.GetInnerXml();
@@ -102,9 +102,15 @@ static file class XElementExtensions
 
         switch (prevNode.NodeType)
         {
-            // If prev node is HTML element. No need to insert empty line.
             case XmlNodeType.Element:
-                return false;
+
+                // No need to insert empty line, if prev node is HTML element and it's not <pre> tag. T
+                if (node.Name != "pre")
+                    return false;
+
+                // <pre> tag needs empty line before. Without this setting, markdown parser treat code as markdown block.
+                var prevElementNode = (XElement)prevNode;
+                return prevElementNode.Name.LocalName != "pre";
 
             // Ensure empty lines exists before text node.
             case XmlNodeType.Text:
@@ -126,6 +132,12 @@ static file class XElementExtensions
         if (!elem.TryGetNonWhitespacePrevNode(out var prevNode))
             return;
 
+        if (prevNode.NodeType == XmlNodeType.Element)
+        {
+            elem.AddBeforeSelf(new XText("\n"));
+            return;
+        }
+
         Debug.Assert(prevNode.NodeType == XmlNodeType.Text);
 
         var prevTextNode = (XText)prevNode;
@@ -143,7 +155,23 @@ static file class XElementExtensions
         }
         else
         {
-            elem.AddBeforeSelf(new XText("\n"));
+            if (prevTextNode.Value.EndsWith('\n'))
+            {
+                elem.AddBeforeSelf(new XText("\n"));
+            }
+            else
+            {
+                // HTML block tag is adjacent to markdown without new line.
+                // In this case, it need to append `\n\n` and copy last line indent chars.
+                int startIndex = lastLine.IndexOfAnyExcept(' ', '\t');
+                ReadOnlySpan<char> indent = startIndex switch
+                {
+                    < 0 => lastLine,
+                    0 => [],
+                    _ => lastLine.Slice(0, startIndex),
+                };
+                elem.AddBeforeSelf(new XText($"\n\n{indent}"));
+            }
         }
     }
 
@@ -203,6 +231,21 @@ static file class XElementExtensions
                 return false;
         }
     }
+
+    public static void InsertEmptyLineAfter(this XElement elem)
+    {
+        if (!elem.TryGetNonWhitespaceNextNode(out var nextNode))
+            return;
+
+        Debug.Assert(nextNode.NodeType == XmlNodeType.Text);
+
+        var nextTextNode = (XText)nextNode;
+        if (nextTextNode.Value.StartsWith('\n'))
+            elem.AddAfterSelf(new XText("\n"));
+        else
+            elem.AddAfterSelf(new XText("\n\n"));
+    }
+
     private static bool StartsWithEmptyLine(this ReadOnlySpan<char> span)
     {
         var index = span.IndexOfAnyExcept([' ', '\t']);
