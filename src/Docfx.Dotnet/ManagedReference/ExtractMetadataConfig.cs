@@ -45,4 +45,5 @@ internal class ExtractMetadataConfig
 
     public static bool UseClrTypeNames { get; set; }
 
+    public bool ForceBuild { get; init; }
 }
