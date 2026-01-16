@@ -6,7 +6,6 @@ using System.Reflection.PortableExecutable;
 using Docfx.Common;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Locator;
 using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
