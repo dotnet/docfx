@@ -116,4 +116,63 @@ public partial class XmlCommentSummaryTest
             }</code></pre>
             """);
     }
+
+    [Fact]
+    public void Code_ParentHtmlTagExist()
+    {
+        ValidateSummary(
+            // Input XML
+            """
+            <summary>
+            <para>Paragraph1</para>
+            <div>
+              <code><![CDATA[
+              public class Sample
+              {
+                  line1
+              
+                  line2
+              }]]></code>
+            </div>
+            <para>Paragraph2</para>
+            </summary>
+            """,
+            // Expected Markdown
+            """
+            <p>Paragraph1</p>
+            <div>
+
+              <pre><code class="lang-csharp">public class Sample
+            {
+                line1
+           
+                line2
+            }</code></pre>
+
+            </div>
+            <p>Paragraph2</p>
+            """);
+    }
+
+    [Fact]
+    public void Code_MultipleBlockWithoutNewLine()
+    {
+        ValidateSummary(
+            // Input XML
+            """
+            <summary>
+            Paragraph1
+            <code>var x = 1;</code><code>var x = 2;</code>
+            Paragraph2
+            </summary>
+            """,
+            // Expected Markdown
+            """
+            Paragraph1
+
+            <pre><code class="lang-csharp">var x = 1;</code></pre><pre><code class="lang-csharp">var x = 2;</code></pre>
+
+            Paragraph2
+            """);
+    }
 }

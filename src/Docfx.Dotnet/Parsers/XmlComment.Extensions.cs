@@ -2,9 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+
+#nullable enable
 
 namespace Docfx.Dotnet;
 
@@ -20,6 +24,8 @@ internal partial class XmlComment
         "ul",
 
         // Recommended XML tags for C# documentation comments
+        // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags
+        // Note: Some XML tags(e.g. `<para>`/`<list>`) are pre-processed and converted to HTML tags.
         "example",
         
         // Other tags
@@ -40,10 +46,10 @@ internal partial class XmlComment
         foreach (var node in nodes)
         {
             if (node.NeedEmptyLineBefore())
-                node.InsertEmptyLineBefore();
+                node.EnsureEmptyLineBefore();
 
             if (node.NeedEmptyLineAfter())
-                node.InsertEmptyLineAfter();
+                node.EnsureEmptyLineAfter();
         }
 
         return elem.GetInnerXml();
@@ -97,236 +103,287 @@ static file class XElementExtensions
 
     public static bool NeedEmptyLineBefore(this XElement node)
     {
-        if (!node.TryGetNonWhitespacePrevNode(out var prevNode))
+        // Case 1: There is a previous node that is non-whitespace.
+        if (node.TryGetNonWhitespacePrevNode(out var prevNode))
+        {
+            return prevNode switch
+            {
+                // XElement exists on previous nodes.
+                XElement prevElem =>
+                    node.IsPreTag() && !prevElem.IsPreTag(),
+
+                // XText node exists on previous nodes.
+                XText prevText =>
+                    !prevText.EndsWithEmptyLine(),
+
+                // Other node types is not expected, and no need to insert empty line.
+                _ => false
+            };
+        }
+
+        // Case 2: There is no previous non-whitespace node
+        // Empty Line is not needed except for <pre> tag.
+        if (!node.IsPreTag())
             return false;
 
-        switch (prevNode.NodeType)
+        // If previous node is XText. Check text ends with empty line.
+        if (node.PreviousNode is XText whitespaceNode)
+            return !whitespaceNode.EndsWithEmptyLine();
+
+        // Otherwise, empty line is needed when it has a parent node.
+        return node.Parent != null;
+    }
+
+    public static void EnsureEmptyLineBefore(this XNode node)
+    {
+        switch (node.PreviousNode)
         {
-            case XmlNodeType.Element:
+            case null:
+            case XElement:
+                node.AddBeforeSelf(new XText("\n\n"));
+                return;
 
-                // No need to insert empty line, if prev node is HTML element and it's not <pre> tag. T
-                if (node.Name != "pre")
-                    return false;
+            case XText textNode:
+                var text = textNode.Value;
 
-                // <pre> tag needs empty line before. Without this setting, markdown parser treat code as markdown block.
-                var prevElementNode = (XElement)prevNode;
-                return prevElementNode.Name.LocalName != "pre";
+                switch (CountTrailingNewLines(text, out var insertIndex))
+                {
+                    case 0:
+                        textNode.Value = text.Insert(insertIndex, "\n\n");
+                        return;
 
-            // Ensure empty lines exists before text node.
-            case XmlNodeType.Text:
-                var prevTextNode = (XText)prevNode;
+                    case 1:
+                        textNode.Value = text.Insert(insertIndex, "\n");
+                        return;
 
-                // No need to insert line if prev node ends with empty line.
-                if (prevTextNode.Value.EndsWithEmptyLine())
-                    return false;
+                    default:
+                        // This code path is not expected to be called.
+                        // Because it should be filtered by NeedEmptyLineBefore.
+                        Debug.Assert(textNode.EndsWithEmptyLine());
+                        return;
 
-                return true;
+                }
 
             default:
-                return false;
+                return;
         }
-    }
-
-    public static void InsertEmptyLineBefore(this XElement elem)
-    {
-        if (!elem.TryGetNonWhitespacePrevNode(out var prevNode))
-            return;
-
-        if (prevNode.NodeType == XmlNodeType.Element)
-        {
-            elem.AddBeforeSelf(new XText("\n"));
-            return;
-        }
-
-        Debug.Assert(prevNode.NodeType == XmlNodeType.Text);
-
-        var prevTextNode = (XText)prevNode;
-        var span = prevTextNode.Value.AsSpan();
-        int index = span.LastIndexOf('\n');
-
-        ReadOnlySpan<char> lastLine = index == -1
-            ? span
-            : span.Slice(index + 1);
-
-        if (lastLine.Length > 0 && lastLine.IsWhiteSpace())
-        {
-            // Insert new line before indent of last line.
-            prevTextNode.Value = prevTextNode.Value.Insert(index, "\n");
-        }
-        else
-        {
-            if (prevTextNode.Value.EndsWith('\n'))
-            {
-                elem.AddBeforeSelf(new XText("\n"));
-            }
-            else
-            {
-                // HTML block tag is adjacent to markdown without new line.
-                // In this case, it need to append `\n\n` and copy last line indent chars.
-                int startIndex = lastLine.IndexOfAnyExcept(' ', '\t');
-                ReadOnlySpan<char> indent = startIndex switch
-                {
-                    < 0 => lastLine,
-                    0 => [],
-                    _ => lastLine.Slice(0, startIndex),
-                };
-                elem.AddBeforeSelf(new XText($"\n\n{indent}"));
-            }
-        }
-    }
-
-    private static bool EndsWithEmptyLine(this ReadOnlySpan<char> span)
-    {
-        var index = span.LastIndexOfAnyExcept([' ', '\t']);
-        if (index >= 0 && span[index] == '\n')
-        {
-            span = span.Slice(0, index);
-            index = span.LastIndexOfAnyExcept([' ', '\t']);
-            if (index >= 0 && span[index] == '\n')
-                return true;
-        }
-
-        return false;
-    }
-
-    private static bool TryGetNonWhitespacePrevNode(this XElement elem, out XNode result)
-    {
-        var prev = elem.PreviousNode;
-        while (prev != null && prev.IsWhitespaceNode())
-            prev = prev.PreviousNode;
-
-        if (prev == null)
-        {
-            result = null;
-            return false;
-        }
-
-        result = prev;
-        return true;
     }
 
     public static bool NeedEmptyLineAfter(this XElement node)
     {
-        if (!node.TryGetNonWhitespaceNextNode(out var nextNode))
+        // Case 1: There is a next node that is non-whitespace.
+        if (node.TryGetNonWhitespaceNextNode(out var nextNode))
+        {
+            return nextNode switch
+            {
+                // XElement exists on previous nodes.
+                XElement nextElem =>
+                    node.IsPreTag() && !nextElem.IsPreTag(),
+
+                // XText node exists on previous nodes.
+                XText nextText =>
+                    !nextText.StartsWithEmptyLine(),
+
+                // Other node types is not expected, and no need to insert empty line.
+                _ => false
+            };
+        }
+
+        // Case 2: There is no next non-whitespace node
+        // Empty Line is not needed except for <pre> tag.
+        if (!node.IsPreTag())
             return false;
 
-        switch (nextNode.NodeType)
+        // If previous node is XText. Check text ends with empty line.
+        if (node.NextNode is XText whitespaceNode)
+            return !whitespaceNode.StartsWithEmptyLine();
+
+        var parentNextNode = node.Parent?.NextNode;
+        if (parentNextNode is XElement)
+            return true;
+
+        if (parentNextNode is XText textNode)
+            return !textNode.StartsWithEmptyLine();
+
+        return node.Parent != null;
+    }
+
+    public static void EnsureEmptyLineAfter(this XNode node)
+    {
+        switch (node.NextNode)
         {
-            // If next node is HTML element. No need to insert new line.
-            case XmlNodeType.Element:
-                return false;
+            case XElement:
+                node.AddAfterSelf(new XText("\n\n"));
+                return;
 
-            // Ensure empty lines exists after node.
-            case XmlNodeType.Text:
-                var nextTextNode = (XText)nextNode;
-                var textSpan = nextTextNode.Value.AsSpan();
+            case XText textNode:
+                var textValue = textNode.Value;
 
-                // No need to insert line if prev node ends with empty line.
-                if (textSpan.StartsWithEmptyLine())
-                    return false;
+                switch (CountLeadingNewLines(textValue, out var insertIndex))
+                {
+                    case 0:
+                        textNode.Value = textValue.Insert(insertIndex, "\n\n");
+                        return;
 
-                return true;
+                    case 1:
+                        textNode.Value = textValue.Insert(insertIndex, "\n");
+                        return;
+
+                    default:
+                        // This code path is not expected to be called.
+                        // Because it should be filtered by NeedEmptyLineAfter.
+                        Debug.Assert(textNode.StartsWithEmptyLine());
+                        return;
+                }
 
             default:
-                return false;
+                return;
         }
     }
 
-    public static void InsertEmptyLineAfter(this XElement elem)
+
+    /// <summary>
+    /// Get count of trailing new lines. space and tabs are ignored.
+    /// </summary>
+    private static int CountTrailingNewLines(ReadOnlySpan<char> span, out int insertIndex)
     {
-        if (!elem.TryGetNonWhitespaceNextNode(out var nextNode))
-            return;
+        insertIndex = span.Length;
+        bool insertIndexUpdated = false;
+        int count = 0;
 
-        Debug.Assert(nextNode.NodeType == XmlNodeType.Text);
-
-        var nextTextNode = (XText)nextNode;
-        if (nextTextNode.Value.StartsWith('\n'))
-            elem.AddAfterSelf(new XText("\n"));
-        else
-            elem.AddAfterSelf(new XText("\n\n"));
-    }
-
-    private static bool StartsWithEmptyLine(this ReadOnlySpan<char> span)
-    {
-        var index = span.IndexOfAnyExcept([' ', '\t']);
-        if (index >= 0 && span[index] == '\n')
+        int i = span.Length;
+        while (--i >= 0)
         {
-            ++index;
-            if (index > span.Length)
-                return false;
+            var c = span[i];
+            if (IsIndentChar(c))
+                continue;
 
-            span = span.Slice(index);
-            index = span.IndexOfAnyExcept([' ', '\t']);
+            if (c != '\n')
+                return count;
 
-            if (index < 0 || span[index] == '\n')
-                return true; // There is no content or empty line is already exists.
+            if (!insertIndexUpdated)
+            {
+                insertIndexUpdated = true;
+                insertIndex = i + 1;
+            }
+            ++count;
         }
-        return false;
+
+        return count;
     }
 
-    private static bool TryGetNonWhitespaceNextNode(this XElement elem, out XNode result)
+    /// <summary>
+    /// Get count of leading new lines. space and tabs are ignored.
+    /// </summary>
+    private static int CountLeadingNewLines(ReadOnlySpan<char> span, out int insertIndex)
+    {
+        insertIndex = 0;
+        bool insertIndexUpdated = false;
+        int count = 0;
+
+        for (int i = 0; i < span.Length; ++i)
+        {
+            var c = span[i];
+            if (IsIndentChar(c))
+                continue;
+
+            if (c != '\n')
+                return count;
+
+            if (!insertIndexUpdated)
+            {
+                insertIndexUpdated = true;
+                insertIndex = i;
+            }
+            ++count;
+        }
+
+        return count;
+    }
+
+    private static bool StartsWithEmptyLine(this XNode? node)
+    {
+        if (node is not XText textNode)
+            return false;
+
+        return CountLeadingNewLines(textNode.Value, out _) >= 2;
+    }
+
+    private static bool EndsWithEmptyLine(this XNode? node)
+    {
+        if (node is not XText textNode)
+            return false;
+
+        return CountTrailingNewLines(textNode.Value, out _) >= 2;
+    }
+
+    private static bool TryGetNonWhitespacePrevNode(this XElement elem, [NotNullWhen(true)] out XNode? result)
+    {
+        var prev = elem.PreviousNode;
+        while (prev is not null && prev.IsWhitespaceNode())
+            prev = prev.PreviousNode;
+
+        result = prev;
+        return result is not null;
+    }
+
+    private static bool TryGetNonWhitespaceNextNode(this XElement elem, [NotNullWhen(true)] out XNode? result)
     {
         var next = elem.NextNode;
         while (next != null && next.IsWhitespaceNode())
             next = next.NextNode;
 
-        if (next == null)
-        {
-            result = null;
-            return false;
-        }
-
         result = next;
-        return true;
+        return result is not null;
     }
 
     private static string RemoveCommonIndent(string text)
     {
-        var lines = text.Split('\n').ToArray();
+        var lines = text.Split('\n');
 
-        var inPre = false;
-        var indentCounts = new List<int>();
+        // 1st pass: Compute minimum indent (excluding <pre> blocks)
+        bool inPre = false;
+        int minIndent = int.MaxValue;
 
-        // Caluculate line's indent chars (<pre></pre> tag region is excluded)
         foreach (var line in lines)
         {
             if (!inPre && !string.IsNullOrWhiteSpace(line))
             {
-                int indent = line.TakeWhile(c => c == ' ' || c == '\t').Count();
-                indentCounts.Add(indent);
+                int indent = CountIndent(line);
+                minIndent = Math.Min(minIndent, indent);
             }
 
-            var trimmed = line.Trim();
-            if (trimmed.StartsWith("<pre", StringComparison.OrdinalIgnoreCase))
-                inPre = true;
-
-            if (trimmed.EndsWith("</pre>", StringComparison.OrdinalIgnoreCase))
-                inPre = false;
+            UpdatePreFlag(line, ref inPre);
         }
 
-        int minIndent = indentCounts.DefaultIfEmpty(0).Min();
+        if (minIndent == int.MaxValue)
+            minIndent = 0;
 
+        // 2nd pass: remove common indent
+        var sb = new StringBuilder(text.Length);
         inPre = false;
-        var resultLines = new List<string>();
+
         foreach (var line in lines)
         {
-            if (!inPre && line.Length >= minIndent)
-                resultLines.Add(line.Substring(minIndent));
+            if (!inPre && line.Length != 0)
+            {
+                int removeLength = Math.Min(minIndent, CountIndent(line));
+                sb.Append(line.AsSpan().Slice(removeLength));
+                sb.Append('\n');
+            }
             else
-                resultLines.Add(line);
+            {
+                sb.Append(line);
+                sb.Append('\n');
+            }
 
-            // Update inPre flag.
-            var trimmed = line.Trim();
-            if (trimmed.StartsWith("<pre>", StringComparison.OrdinalIgnoreCase))
-                inPre = true;
-            if (trimmed.EndsWith("</pre>", StringComparison.OrdinalIgnoreCase))
-                inPre = false;
+            UpdatePreFlag(line, ref inPre);
         }
 
-        // Insert empty line to append `\n`.
-        resultLines.Add("");
+        // Ensure trailing newline
+        sb.Append('\n');
 
-        return string.Join("\n", resultLines);
+        return sb.ToString();
     }
 
     private static bool IsWhitespaceNode(this XNode node)
@@ -335,5 +392,41 @@ static file class XElementExtensions
             return false;
 
         return textNode.Value.All(char.IsWhiteSpace);
+    }
+
+    private static bool IsPreTag(this XNode? node)
+        => node is XElement elem && elem.Name == "pre";
+
+    private static int CountIndent(ReadOnlySpan<char> line)
+    {
+        int i = 0;
+        while (i < line.Length && IsIndentChar(line[i]))
+            i++;
+        return i;
+    }
+
+    private static void UpdatePreFlag(ReadOnlySpan<char> line, ref bool inPre)
+    {
+        var trimmed = line.Trim();
+
+        // Check start tag (It might contains attribute）
+        if (!inPre && trimmed.StartsWith("<pre", StringComparison.OrdinalIgnoreCase))
+            inPre = true;
+
+        // Check tag end exits.
+        if (inPre && trimmed.EndsWith("</pre>", StringComparison.OrdinalIgnoreCase))
+            inPre = false;
+    }
+
+    private static bool IsIndentChar(char c)
+    {
+        switch (c)
+        {
+            case ' ':
+            case '\t':
+                return true;
+            default:
+                return false;
+        }
     }
 }
