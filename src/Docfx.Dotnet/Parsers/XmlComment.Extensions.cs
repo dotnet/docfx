@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.XPath;
 
 #nullable enable
 
@@ -14,33 +12,13 @@ namespace Docfx.Dotnet;
 
 internal partial class XmlComment
 {
-    // List of block tags that are defined by CommonMark
-    // https://spec.commonmark.org/0.31.2/#html-blocks
-    private static readonly string[] BlockTags =
-    {
-        "ol",
-        "p",
-        "table",
-        "ul",
-
-        // Recommended XML tags for C# documentation comments
-        // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags
-        // Note: Some XML tags(e.g. `<para>`/`<list>`) are pre-processed and converted to HTML tags.
-        "example",
-        
-        // Other tags
-        "pre",
-    };
-
-    private static readonly Lazy<string> BlockTagsXPath = new(string.Join(" | ", BlockTags.Select(tagName => $".//{tagName}")));
-
     /// <summary>
     /// Gets markdown text from XElement.
     /// </summary>
     private static string GetMarkdownText(XElement elem)
     {
-        // Gets HTML block tags by XPath.
-        var nodes = elem.XPathSelectElements(BlockTagsXPath.Value).ToArray();
+        // Gets HTML block tags from tree.
+        var nodes = elem.GetBlockTags();
 
         // Insert HTML/Markdown separator lines.
         foreach (var node in nodes)
@@ -59,12 +37,9 @@ internal partial class XmlComment
         => elem.GetInnerXml();
 }
 
-// Define file scoped extension methods.
-static file class XElementExtensions
+// Define file scoped extension methods for GetInnerXml.
+static file class GetInnerXmlExtensions
 {
-    /// <summary>
-    /// Gets inner XML text of XElement.
-    /// </summary>
     public static string GetInnerXml(this XElement elem)
     {
         using var sw = new StringWriter();
@@ -101,283 +76,55 @@ static file class XElementExtensions
         return xml;
     }
 
-    public static bool NeedEmptyLineBefore(this XElement node)
-    {
-        // Case 1: There is a previous node that is non-whitespace.
-        if (node.TryGetNonWhitespacePrevNode(out var prevNode))
-        {
-            return prevNode switch
-            {
-                // XElement exists on previous nodes.
-                XElement prevElem =>
-                    node.IsPreTag() && !prevElem.IsPreTag(),
-
-                // XText node exists on previous nodes.
-                XText prevText =>
-                    !prevText.EndsWithEmptyLine(),
-
-                // Other node types is not expected, and no need to insert empty line.
-                _ => false
-            };
-        }
-
-        // Case 2: There is no previous non-whitespace node
-        // Empty Line is not needed except for <pre> tag.
-        if (!node.IsPreTag())
-            return false;
-
-        // If previous node is XText. Check text ends with empty line.
-        if (node.PreviousNode is XText whitespaceNode)
-            return !whitespaceNode.EndsWithEmptyLine();
-
-        // Otherwise, empty line is needed when it has a parent node.
-        return node.Parent != null;
-    }
-
-    public static void EnsureEmptyLineBefore(this XNode node)
-    {
-        switch (node.PreviousNode)
-        {
-            case null:
-            case XElement:
-                node.AddBeforeSelf(new XText("\n\n"));
-                return;
-
-            case XText textNode:
-                var text = textNode.Value;
-
-                switch (CountTrailingNewLines(text, out var insertIndex))
-                {
-                    case 0:
-                        textNode.Value = text.Insert(insertIndex, "\n\n");
-                        return;
-
-                    case 1:
-                        textNode.Value = text.Insert(insertIndex, "\n");
-                        return;
-
-                    default:
-                        // This code path is not expected to be called.
-                        // Because it should be filtered by NeedEmptyLineBefore.
-                        Debug.Assert(textNode.EndsWithEmptyLine());
-                        return;
-
-                }
-
-            default:
-                return;
-        }
-    }
-
-    public static bool NeedEmptyLineAfter(this XElement node)
-    {
-        // Case 1: There is a next node that is non-whitespace.
-        if (node.TryGetNonWhitespaceNextNode(out var nextNode))
-        {
-            return nextNode switch
-            {
-                // XElement exists on previous nodes.
-                XElement nextElem =>
-                    node.IsPreTag() && !nextElem.IsPreTag(),
-
-                // XText node exists on previous nodes.
-                XText nextText =>
-                    !nextText.StartsWithEmptyLine(),
-
-                // Other node types is not expected, and no need to insert empty line.
-                _ => false
-            };
-        }
-
-        // Case 2: There is no next non-whitespace node
-        // Empty Line is not needed except for <pre> tag.
-        if (!node.IsPreTag())
-            return false;
-
-        // If previous node is XText. Check text ends with empty line.
-        if (node.NextNode is XText whitespaceNode)
-            return !whitespaceNode.StartsWithEmptyLine();
-
-        var parentNextNode = node.Parent?.NextNode;
-        if (parentNextNode is XElement)
-            return true;
-
-        if (parentNextNode is XText textNode)
-            return !textNode.StartsWithEmptyLine();
-
-        return node.Parent != null;
-    }
-
-    public static void EnsureEmptyLineAfter(this XNode node)
-    {
-        switch (node.NextNode)
-        {
-            case XElement:
-                node.AddAfterSelf(new XText("\n\n"));
-                return;
-
-            case XText textNode:
-                var textValue = textNode.Value;
-
-                switch (CountLeadingNewLines(textValue, out var insertIndex))
-                {
-                    case 0:
-                        textNode.Value = textValue.Insert(insertIndex, "\n\n");
-                        return;
-
-                    case 1:
-                        textNode.Value = textValue.Insert(insertIndex, "\n");
-                        return;
-
-                    default:
-                        // This code path is not expected to be called.
-                        // Because it should be filtered by NeedEmptyLineAfter.
-                        Debug.Assert(textNode.StartsWithEmptyLine());
-                        return;
-                }
-
-            default:
-                return;
-        }
-    }
-
-
-    /// <summary>
-    /// Get count of trailing new lines. space and tabs are ignored.
-    /// </summary>
-    private static int CountTrailingNewLines(ReadOnlySpan<char> span, out int insertIndex)
-    {
-        insertIndex = span.Length;
-        bool insertIndexUpdated = false;
-        int count = 0;
-
-        int i = span.Length;
-        while (--i >= 0)
-        {
-            var c = span[i];
-            if (IsIndentChar(c))
-                continue;
-
-            if (c != '\n')
-                return count;
-
-            if (!insertIndexUpdated)
-            {
-                insertIndexUpdated = true;
-                insertIndex = i + 1;
-            }
-            ++count;
-        }
-
-        return count;
-    }
-
-    /// <summary>
-    /// Get count of leading new lines. space and tabs are ignored.
-    /// </summary>
-    private static int CountLeadingNewLines(ReadOnlySpan<char> span, out int insertIndex)
-    {
-        insertIndex = 0;
-        bool insertIndexUpdated = false;
-        int count = 0;
-
-        for (int i = 0; i < span.Length; ++i)
-        {
-            var c = span[i];
-            if (IsIndentChar(c))
-                continue;
-
-            if (c != '\n')
-                return count;
-
-            if (!insertIndexUpdated)
-            {
-                insertIndexUpdated = true;
-                insertIndex = i;
-            }
-            ++count;
-        }
-
-        return count;
-    }
-
-    private static bool StartsWithEmptyLine(this XNode? node)
-    {
-        if (node is not XText textNode)
-            return false;
-
-        return CountLeadingNewLines(textNode.Value, out _) >= 2;
-    }
-
-    private static bool EndsWithEmptyLine(this XNode? node)
-    {
-        if (node is not XText textNode)
-            return false;
-
-        return CountTrailingNewLines(textNode.Value, out _) >= 2;
-    }
-
-    private static bool TryGetNonWhitespacePrevNode(this XElement elem, [NotNullWhen(true)] out XNode? result)
-    {
-        var prev = elem.PreviousNode;
-        while (prev is not null && prev.IsWhitespaceNode())
-            prev = prev.PreviousNode;
-
-        result = prev;
-        return result is not null;
-    }
-
-    private static bool TryGetNonWhitespaceNextNode(this XElement elem, [NotNullWhen(true)] out XNode? result)
-    {
-        var next = elem.NextNode;
-        while (next != null && next.IsWhitespaceNode())
-            next = next.NextNode;
-
-        result = next;
-        return result is not null;
-    }
-
     private static string RemoveCommonIndent(string text)
     {
-        var lines = text.Split('\n');
+        ReadOnlySpan<char> span = text.AsSpan();
 
         // 1st pass: Compute minimum indent (excluding <pre> blocks)
         bool inPre = false;
         int minIndent = int.MaxValue;
 
-        foreach (var line in lines)
+        int pos = 0;
+        while (pos < span.Length)
         {
-            if (!inPre && !string.IsNullOrWhiteSpace(line))
+            var line = ReadLine(span, ref pos);
+
+            if (!inPre && !IsWhitespaceLine(line))
             {
                 int indent = CountIndent(line);
-                minIndent = Math.Min(minIndent, indent);
+                if (indent < minIndent)
+                    minIndent = indent;
             }
 
-            UpdatePreFlag(line, ref inPre);
+            inPre = UpdatePreFlag(inPre, line);
         }
 
         if (minIndent == int.MaxValue)
             minIndent = 0;
 
-        // 2nd pass: remove common indent
-        var sb = new StringBuilder(text.Length);
-        inPre = false;
+        // 2nd pass: build result
+        var sb = new StringBuilder(text.Length + 8);
 
-        foreach (var line in lines)
+        inPre = false;
+        pos = 0;
+
+        while (pos < span.Length)
         {
+            var line = ReadLine(span, ref pos);
+
             if (!inPre && line.Length != 0)
             {
-                int removeLength = Math.Min(minIndent, CountIndent(line));
-                sb.Append(line.AsSpan().Slice(removeLength));
-                sb.Append('\n');
+                int remove = Math.Min(minIndent, CountIndent(line));
+                sb.Append(line.Slice(remove));
             }
             else
             {
                 sb.Append(line);
-                sb.Append('\n');
             }
 
-            UpdatePreFlag(line, ref inPre);
+            sb.Append('\n');
+
+            inPre = UpdatePreFlag(inPre, line);
         }
 
         // Ensure trailing newline
@@ -386,26 +133,15 @@ static file class XElementExtensions
         return sb.ToString();
     }
 
-    private static bool IsWhitespaceNode(this XNode node)
-    {
-        if (node is not XText textNode)
-            return false;
-
-        return textNode.Value.All(char.IsWhiteSpace);
-    }
-
-    private static bool IsPreTag(this XNode? node)
-        => node is XElement elem && elem.Name == "pre";
-
     private static int CountIndent(ReadOnlySpan<char> line)
     {
         int i = 0;
-        while (i < line.Length && IsIndentChar(line[i]))
+        while (i < line.Length && HelperMethods.IsIndentChar(line[i]))
             i++;
         return i;
     }
 
-    private static void UpdatePreFlag(ReadOnlySpan<char> line, ref bool inPre)
+    private static bool UpdatePreFlag(bool inPre, ReadOnlySpan<char> line)
     {
         var trimmed = line.Trim();
 
@@ -416,17 +152,292 @@ static file class XElementExtensions
         // Check tag end exits.
         if (inPre && trimmed.EndsWith("</pre>", StringComparison.OrdinalIgnoreCase))
             inPre = false;
+
+        return inPre;
     }
 
-    private static bool IsIndentChar(char c)
+    private static bool IsWhitespaceLine(ReadOnlySpan<char> line)
     {
-        switch (c)
+        foreach (var c in line)
         {
-            case ' ':
-            case '\t':
-                return true;
-            default:
+            if (!char.IsWhiteSpace(c))
                 return false;
         }
+        return true;
+    }
+
+    private static ReadOnlySpan<char> ReadLine(ReadOnlySpan<char> text, ref int pos)
+    {
+        int start = pos;
+        while (pos < text.Length && text[pos] != '\n')
+            ++pos;
+
+        int length = pos - start;
+
+        // skip '\n'
+        if (pos < text.Length && text[pos] == '\n')
+            ++pos;
+
+        return text.Slice(start, length);
+    }
+}
+
+// Define file scoped extension methods for XNode/XElement.
+static file class XNodeExtensions
+{
+    /// <summary>
+    /// The whole spacing rule is defined ONLY here.
+    /// Key = (left, right)
+    /// Value = need empty line between them
+    /// </summary>
+    private static readonly Dictionary<(NodeKind prev, NodeKind next), bool> NeedEmptyLineRules = new()
+    {
+        //Block-> *
+        [(NodeKind.Block, NodeKind.Other)] = false,
+        [(NodeKind.Block, NodeKind.Block)] = false,
+        [(NodeKind.Block, NodeKind.Pre)] = true,
+        [(NodeKind.Block, NodeKind.Text)] = true,
+
+        // Pre -> *
+        [(NodeKind.Pre, NodeKind.Other)] = true,
+        [(NodeKind.Pre, NodeKind.Block)] = true,
+        [(NodeKind.Pre, NodeKind.Pre)] = false,
+        [(NodeKind.Pre, NodeKind.Text)] = true,
+
+        // Other -> *
+        [(NodeKind.Other, NodeKind.Block)] = false,
+        [(NodeKind.Other, NodeKind.Pre)] = true,
+        [(NodeKind.Other, NodeKind.Other)] = false,
+        [(NodeKind.Other, NodeKind.Text)] = true,
+
+        // Text -> *
+        [(NodeKind.Text, NodeKind.Block)] = true,
+        [(NodeKind.Text, NodeKind.Pre)] = true,
+        [(NodeKind.Text, NodeKind.Other)] = true,
+        [(NodeKind.Text, NodeKind.Text)] = false,
+    };
+
+    private static readonly HashSet<string> BlockTags = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "ol",
+        "p",
+        "table",
+        "ul",
+
+        // Recommended XML tags for C# documentation comments
+        // https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags
+        // Note: Some XML tags(e.g. `<para>`/`<list>`) are pre-processed and converted to HTML tags.
+        "example",
+        
+        // Other tags
+        "pre",
+    };
+
+    private enum NodeKind
+    {
+        // XElement
+        Block, // HTML element that requires empty line before/after tag.
+        Pre,   // <pre> tag. It's handled same as block type. It require additional rules.
+        Other, // Other HTML tags
+
+        // XText
+        Text,
+    }
+
+    private enum Direction
+    {
+        Before,
+        After,
+    }
+
+    public static XElement[] GetBlockTags(this XElement elem)
+    {
+        return elem.Descendants()
+                   .Where(e => BlockTags.Contains(e.Name.LocalName))
+                   .ToArray();
+    }
+
+    public static bool NeedEmptyLineBefore(this XElement node)
+        => NeedEmptyLine(node, Direction.Before);
+
+    public static void EnsureEmptyLineBefore(this XElement node)
+        => EnsureEmptyLine(node, Direction.Before);
+
+    public static bool NeedEmptyLineAfter(this XElement node)
+        => NeedEmptyLine(node, Direction.After);
+
+    public static void EnsureEmptyLineAfter(this XElement node)
+        => EnsureEmptyLine(node, Direction.After);
+
+    private static bool NeedEmptyLine(this XElement node, Direction direction)
+    {
+        // Check whitespace text node.
+        XNode? neighborNode = FindNonWhitespaceNeighbor(node, direction);
+
+        if (neighborNode == null)
+            return false;
+
+        NodeKind leftKind;
+        NodeKind rightKind;
+
+        if (direction == Direction.Before)
+        {
+            leftKind = GetNodeKind(neighborNode);
+            rightKind = GetNodeKind(node);
+        }
+        else
+        {
+            leftKind = GetNodeKind(node);
+            rightKind = GetNodeKind(neighborNode);
+        }
+
+        return NeedEmptyLineRules.TryGetValue((leftKind, rightKind), out var result) && result;
+    }
+
+    private static void EnsureEmptyLine(this XNode node, Direction direction)
+    {
+        var adjacentNode = GetAdjacentNode(node, direction);
+
+        switch (adjacentNode)
+        {
+            case null:
+            case XElement:
+                if (direction == Direction.Before)
+                    node.AddBeforeSelf(new XText("\n\n"));
+                else
+                    node.AddAfterSelf(new XText("\n\n"));
+                return;
+
+            case XText textNode:
+
+                int count = textNode.CountNewLines(direction, out var insertIndex);
+
+                switch (count)
+                {
+                    case 0:
+                        textNode.Value = textNode.Value.Insert(insertIndex, "\n\n");
+                        return;
+                    case 1:
+                        textNode.Value = textNode.Value.Insert(insertIndex, "\n");
+                        return;
+                    default:
+                        Debug.Assert(textNode.HasEmptyLine(direction));
+                        return;
+                }
+
+            default:
+                return;
+        }
+    }
+
+    private static NodeKind GetNodeKind(XNode node)
+    {
+        if (node is not XElement elem)
+            return NodeKind.Text;
+
+        if (elem.IsPreTag())
+            return NodeKind.Pre;
+
+        if (elem.IsBlockTag())
+            return NodeKind.Block;
+
+        return NodeKind.Other;
+    }
+
+    private static XNode? GetAdjacentNode(this XNode node, Direction direction)
+    {
+        return direction == Direction.Before
+            ? node.PreviousNode
+            : node.NextNode;
+    }
+
+    private static XNode? FindNonWhitespaceNeighbor(this XNode node, Direction direction)
+    {
+        var current = node.GetAdjacentNode(direction);
+
+        while (current != null && current.IsWhitespaceNode())
+            current = current.GetAdjacentNode(direction);
+
+        // If node is not found. Use parent instead.
+        current ??= node.Parent;
+
+        return current;
+    }
+
+    private static bool HasEmptyLine(this XText node, Direction direction)
+      => CountNewLines(node, direction, out _) >= 2;
+
+    /// <summary>
+    /// Get count of new lines. space and tabs are ignored.
+    /// </summary>
+    private static int CountNewLines(this XText node, Direction direction, out int insertIndex)
+    {
+        var span = node.Value.AsSpan();
+        int count = 0;
+
+        switch (direction)
+        {
+            case Direction.Before:
+                insertIndex = span.Length;
+                for (int i = span.Length - 1; i >= 0; --i)
+                {
+                    char c = span[i];
+
+                    if (HelperMethods.IsIndentChar(c))
+                        continue;
+
+                    if (c != '\n')
+                        break;
+
+                    if (count == 0)
+                        insertIndex = i + 1;
+
+                    count++;
+                }
+                return count;
+
+            case Direction.After:
+                insertIndex = 0;
+                for (int i = 0; i < span.Length; ++i)
+                {
+                    char c = span[i];
+
+                    if (HelperMethods.IsIndentChar(c))
+                        continue;
+
+                    if (c != '\n')
+                        break;
+
+                    if (count == 0)
+                        insertIndex = i;
+
+                    count++;
+                }
+                return count;
+
+            default:
+                throw new UnreachableException();
+        }
+    }
+
+    private static bool IsPreTag(this XElement elem)
+        => elem.Name.LocalName == "pre";
+
+    private static bool IsBlockTag(this XElement elem)
+        => BlockTags.Contains(elem.Name.LocalName);
+}
+
+// Define helper methods that are shared between extensions.
+static file class HelperMethods
+{
+    public static bool IsIndentChar(char c)
+        => c == ' ' || c == '\t';
+
+    public static bool IsWhitespaceNode(this XNode node)
+    {
+        if (node is not XText textNode)
+            return false;
+
+        return textNode.Value.All(char.IsWhiteSpace);
     }
 }
