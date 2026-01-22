@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - uses: ./.github/actions/build
 
@@ -16,9 +16,9 @@ jobs:
 
     - name: dotnet publish
       run: |
-        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
-        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64
-        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
+        dotnet publish src/docfx -f net10.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
+        dotnet publish src/docfx -f net10.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64
+        dotnet publish src/docfx -f net10.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
         mkdir -p drop/bin
 
     - run: zip -r ../../bin/docfx-win-x64-${GITHUB_REF_NAME}.zip .
@@ -28,12 +28,12 @@ jobs:
     - run: zip -r ../../bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip .
       working-directory: drop/publish/osx-x64
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: nuget
         path: drop/nuget
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: bin
         path: drop/bin
@@ -41,17 +41,27 @@ jobs:
   sign:
     runs-on: windows-latest
     needs: build
+    environment: nuget.org
+    permissions:
+      id-token: write
     steps:
-    - uses: actions/setup-dotnet@v4
+    - uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.x
+        dotnet-version: 10.x
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: nuget
         path: drop/nuget
 
-    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.24170.3
+    # Install `Sign CLI` to use Azure Key Vault (See: https://github.com/dotnet/sign/blob/main/docs/comparisons.md)
+    - run: dotnet tool install --tool-path . --prerelease sign
+
+    - uses: azure/login@v2
+      with:
+        allow-no-subscriptions: true
+        client-id: ${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}
+        tenant-id: ${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}
 
     - run: >
         ./sign code azure-key-vault
@@ -59,13 +69,11 @@ jobs:
         --description "Docfx code sign"
         --description-url "https://dotnet.github.io/docfx"
         --timestamp-url http://timestamp.digicert.com
+        --azure-credential-type "azure-cli"
         --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
         --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE }}"
-        --azure-key-vault-tenant-id "${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}"
-        --azure-key-vault-client-id "${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}"
-        --azure-key-vault-client-secret "${{ secrets.SIGN_KEY_VAULT_CLIENT_SECRET }}"
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: nuget-signed
         path: drop/nuget
@@ -73,26 +81,34 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: sign
+    environment: nuget.org
     permissions:
       contents: write
+      id-token: write
     steps:
-    - uses: actions/setup-dotnet@v4
+    - uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 8.x
+        dotnet-version: 10.x
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: nuget-signed
         path: drop/nuget
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: bin
         path: drop/bin
 
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: nuget-login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
     - name: Publish NuGet packages
       run: |
-        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.NUGET_KEY }}" --skip-duplicate --source https://api.nuget.org/v3/index.json
+        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --skip-duplicate --source https://api.nuget.org/v3/index.json
 
     - name: Upload GitHub release
       run: |

@@ -53,7 +53,6 @@ This type is a struct type, class type can't be used for this parameter.
 ## Examples
 
 <p>Here's example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
-
 <pre><code class="lang-c#">var a = new Cat(object, int)();
 int catNumber = new int();
 unsafe
@@ -310,6 +309,7 @@ Result with <i>int</i> type.
 ### <a id="CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom"></a> explicit operator Tom\(Cat<T, K\>\)
 
 Expilicit operator of this class.
+
 <p>It means this cat can evolve to change to Tom. Tom and Jerry.</p>
 
 ```csharp

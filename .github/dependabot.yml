@@ -20,14 +20,22 @@ updates:
       - "xunit.*"
       - "xunit.v3"
       - "xunit.v3.*"
-      - "Verify.Xunit"
-      - "Verify.XunitV3"
+
+  - package-ecosystem: "nuget"
+    target-branch: main
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    allow:
+      - dependency-name: "Verify.*"
 
 - package-ecosystem: npm
   target-branch: main
   directory: "/templates"
   schedule:
     interval: daily
+  cooldown:
+    default-days: 14
   groups:
     typescript-eslint:
       patterns:

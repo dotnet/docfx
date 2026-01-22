@@ -141,7 +141,7 @@ internal class MetadataJsonItemConfig
 
     /// <summary>
     /// Specify additinal assembly reference files.
-    /// This settings is used when generating metadata from DLLs or source files.
+    /// This setting is used when generating metadata from DLLs or source files.
     /// Solution or project file-based metadata generation does not use this property.
     /// </summary>
     [JsonProperty("references")]

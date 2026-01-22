@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Spectre.Console" VersionOverride="0.54.0" />
     <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
   </ItemGroup>
 </Project>

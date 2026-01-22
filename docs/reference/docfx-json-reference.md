@@ -71,6 +71,20 @@ Specifies an array of resource files to include in the project. Supports [File M
 
 Contains all the conceptual files that contain yaml headers with `uid` values and is intended to override the existing metadata `yml` files. Supports [File Mappings](#file-mappings).
 
+### `xref`
+
+Specifies the urls of xrefmap used by content files. Currently, it supports following scheme: http, https, file.
+
+### `dest`
+
+Specifies the output folder of the generated metadata files relative to `docfx.json` directory.
+Command line --output argument prepends this value.
+
+### `output`
+
+Defines the output folder of the generated build files.
+Command line --output argument override this value.
+
 ### `globalMetadata`
 
 Contains metadata that will be applied to every file, in key-value pair format. For example, you can define `"_appTitle": "This is the title"` in this section, and when applying template `default`, it will be part of the page title as defined in the template.
@@ -88,6 +102,17 @@ Contains metadata that will be applied to every file, in key-value pair format. 
 
 See [Predefined Metadata](#predefined-metadata) section for a list of predefined metadata.
 
+### `globalMetadataFiles`
+
+Set [`globalMetadata`](#globalmetadata) from external files.
+
+```json
+{
+  "build": {
+    "globalMetadataFiles":  ["global1.json", "global2.json"]
+  }
+}
+```
 ### `fileMetadata`
 
 Specifies metadata associated with a particular file in order of metadata name, file [glob patterns](#glob-patterns) and metadata value:
@@ -114,17 +139,6 @@ Specifies metadata associated with a particular file in order of metadata name, 
 
 See [Predefined Metadata](#predefined-metadata) section for a list of predefined metadata.
 
-### `globalMetadataFiles`
-
-Set [`globalMetadata`](#globalmetadata) from external files.
-
-```json
-{
-  "build": {
-    "globalMetadataFiles":  ["global1.json", "global2.json"]
-  }
-}
-```
 
 ### `fileMetadataFiles`
 
@@ -170,9 +184,19 @@ The themes applied to the documentation. Theme is used to customize the styles g
 
 Theme is to provide general styles for all the generated pages. Files inside a theme will be generally copied to the output folder. A typical usage is, after YAML files are transformed to HTML pages, well-designed CSS style files in a Theme can then overwrite the default styles defined in template, e.g. `main.css`.
 
-### `xref`
+### `postProcessors`
 
-Specifies the urls of xrefmap used by content files. Currently, it supports following scheme: http, https, file.
+Specify PostProcessor array.
+Built-in HtmlProcessor is automatically added by default.
+
+### `debug`
+
+Run in debug mode. With debug mode, raw model and view model will be exported
+automatically when it encounters error when applying templates.
+
+### `debugOutput`
+
+The output folder for files generated for debugging purpose when in debug mode.
 
 ### `exportRawModel`
 
@@ -360,7 +384,7 @@ If set to true, DocFX would not render triple-slash-comments in source code as m
 ### `references`
 
 Specify additinal assembly reference files.
-This settings is used when generating metadata from DLLs or source files.
+This setting is used when generating metadata from DLLs or source files.
 Solution or project file-based metadata generation does not use this property.
 
 ### `filter`
@@ -414,7 +438,7 @@ Specifies how categories in TOC are organized:
 
 - `flattened` (default): Renders the namespaces as a plain label.
 - `nested`: Renders the categories in a nested tree form.
-- `none`: Don't render categoriy labels.
+- `none`: Don't render category labels.
 
 > [!NOTE]
 > This setting is valid when using `apiPage` or `markdown` output format. `mref` format don't support categories.
@@ -499,8 +523,8 @@ The folder name for the generated files.
 
 ### Glob Patterns
 
-- `*`: Matches 0 or more charactors in a single path portion.
-- `?`: Matches 1 character in a signle path portion.
+- `*`: Matches 0 or more characters in a single path portion.
+- `?`: Matches 1 character in a sigle path portion.
 - `**`: Matches 0 or more directories and subdirectories.
 - `{}`: Expands the comma-delimited sections within the braces into a set.
 

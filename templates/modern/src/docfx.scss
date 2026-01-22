@@ -5,6 +5,7 @@
 
 @use "mixins";
 @use "bootstrap/scss/bootstrap" with (
+  $enable-important-utilities: false,
   $container-max-widths: (
     xxl: 1768px
   )
@@ -25,8 +26,7 @@ h5,
 h6,
 .xref,
 .text-break {
-  word-wrap: break-word;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .divider {

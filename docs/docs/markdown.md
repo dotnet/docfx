@@ -329,7 +329,7 @@ There are plenty of other diagrams supported by PlantUML such as:
 
 * [Sequence diagram](http://plantuml.com/sequence-diagram)
 * [Use Case diagram](http://plantuml.com/use-case-diagram)
-* [Class diagram](http://plantuml.com/activity-diagram-beta)
+* [Class diagram](http://plantuml.com/class-diagram)
 * [Activity diagram](http://plantuml.com/activity-diagram-beta)
 * [Component diagram](http://plantuml.com/component-diagram)
 * [State diagram](http://plantuml.com/state-diagram)
@@ -485,6 +485,8 @@ Tabs are indicated by using a specific link syntax within a Markdown header. The
 ```
 
 A tab starts with a Markdown header, `#`, and is followed by a Markdown link `[]()`. The text of the link will become the text of the tab header, displayed to the customer. In order for the header to be recognized as a tab, the link itself must start with `#tab/` and be followed by an ID representing the content of the tab. The ID is used to sync all same-ID tabs across the page. Using the above example, when a user selects a tab with the link `#tab/windows`, all tabs with the link `#tab/windows` on the page will be selected.
+
+To denote the end of a tab's content, use `***`.
 
 ### Dependent tabs
 

@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
+using AwesomeAssertions;
+using AwesomeAssertions.Equivalency;
 using Docfx.Common;
-using FluentAssertions;
-using FluentAssertions.Equivalency;
 
 namespace docfx.Tests;
 

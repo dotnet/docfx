@@ -42,7 +42,7 @@ public class SamplesTest : IDisposable
         {
             // When target framework is changed.
             // It need to modify TargetFrameworks property of `docfx.Snapshot.Tests.csproj`
-#if !NET8_0
+#if !NET10_0
             Skip = "Skip by target framework";
 #endif
         }

@@ -84,6 +84,7 @@ $expand-stub-width: .85rem;
       position: absolute;
       left: .6rem;
       opacity: .5;
+      pointer-events: none;
     }
 
     >input {

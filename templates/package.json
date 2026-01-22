@@ -2,6 +2,7 @@
   "name": "@docfx/template",
   "version": "1.0.0",
   "description": "Docfx static website templates",
+  "type": "module",
   "keywords": [
     "docfx",
     "template"
@@ -27,30 +28,31 @@
     "@default/url": "npm:@websanova/url@2.6.3",
     "@websanova/url": "^2.6.3",
     "anchor-js": "^5.0.0",
-    "bootstrap": "^5.3.3",
-    "bootstrap-icons": "^1.11.3",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "highlight.js": "^11.10.0",
-    "idb-keyval": "^6.2.1",
+    "idb-keyval": "^6.2.2",
     "jquery": "3.7.0",
-    "lit-html": "^3.2.1",
+    "lit-html": "^3.3.2",
     "lunr": "2.3.9",
     "lunr-languages": "^1.14.0",
     "mathjax": "^3.2.2",
-    "mermaid": "^11.6.0",
-    "tsx": "^4.19.3"
+    "mermaid": "^11.12.2",
+    "tsx": "^4.21.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@types/lunr": "^2.3.7",
-    "@typescript-eslint/eslint-plugin": "^8.29.0",
-    "@typescript-eslint/parser": "^8.29.0",
-    "browser-sync": "^3.0.3",
-    "esbuild": "~0.25.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
+    "browser-sync": "^3.0.4",
+    "esbuild": "~0.27.2",
     "esbuild-sass-plugin": "~3.3.1",
-    "eslint": "^8.57.1",
-    "eslint-config-standard": "^17.1.0",
-    "stylelint": "^16.17.0",
-    "stylelint-config-standard-scss": "^14.0.0",
-    "typescript": "^5.8.2",
-    "yargs": "^17.7.2"
+    "eslint": "^9.39.2",
+    "neostandard": "^0.12.2",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard-scss": "^16.0.0",
+    "typescript": "^5.9.3",
+    "yargs": "^18.0.0"
   }
 }

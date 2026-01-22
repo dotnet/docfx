@@ -11,6 +11,6 @@ public sealed class XRefSpecUidComparer : Comparer<XRefSpec>
 
     public override int Compare(XRefSpec x, XRefSpec y)
     {
-        return StringComparer.InvariantCulture.Compare(x.Uid, y.Uid);
+        return StringComparer.Ordinal.Compare(x.Uid, y.Uid);
     }
 }

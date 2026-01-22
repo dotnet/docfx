@@ -197,7 +197,15 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             }
         }
 
-        AddReference(symbol);
+        if (symbol.IsExtension)
+        {
+            // Currently extension symbol is skipped and reference is not added.
+            // TODO: Handle C# 14 Extension Member definition.
+        }
+        else
+        {
+            AddReference(symbol);
+        }
 
         item.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
@@ -730,6 +738,12 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
                 item.Source?.Path is { } sourcePath
                     ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
                     : null);
+
+            if (basePath == null)
+            {
+                Logger.LogWarning($"Source file '{source}' not found.", code: "CodeNotFound");
+                return null;
+            }
 
             var path = Path.GetFullPath(Path.Combine(basePath, source));
             if (!File.Exists(path))

@@ -15,12 +15,8 @@ jobs:
     permissions:
       packages: write
     steps:
-    - uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: |
-          10.x
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
  
@@ -33,6 +29,9 @@ jobs:
 
     - name: dotnet test
       run: dotnet test -c Release -f net8.0 --no-build
+
+    - name: dotnet test
+      run: dotnet test -c Release -f net9.0 --no-build
 
     - name: dotnet test
       run: dotnet test -c Release -f net10.0 --no-build
@@ -54,7 +53,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Create NuGet.config
       shell: pwsh
@@ -64,6 +63,7 @@ jobs:
         <configuration>
           <packageSources>
             <clear />
+            <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
             <add key="github" value="https://nuget.pkg.github.com/dotnet/index.json" />
           </packageSources>
           <packageSourceCredentials>

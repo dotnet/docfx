@@ -4,6 +4,7 @@
 [![ci](https://github.com/dotnet/docfx/actions/workflows/ci.yml/badge.svg)](https://github.com/dotnet/docfx/actions/workflows/ci.yml)
 [![nightly](https://github.com/dotnet/docfx/actions/workflows/nightly.yml/badge.svg)](https://github.com/dotnet/docfx/actions/workflows/nightly.yml)
 [![Help Wanted](https://img.shields.io/github/issues/dotnet/docfx/help-wanted?label=help-wanted)](https://github.com/dotnet/docfx/labels/help-wanted)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/dotnet/docfx)
 
 * [Getting Started](#getting-started)
 * [Contributing](#contributing)
@@ -52,7 +53,7 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 
 - Install [Visual Studio 2022 (Community or higher)](https://www.visualstudio.com/) and make sure you have the latest updates.
 - Install [.NET SDK](https://dotnet.microsoft.com/download/dotnet) 8.x and 9.x.
-- Install NodeJS (22.x.x).
+- Install NodeJS (24.x.x).
 
 ### Build and Test
 

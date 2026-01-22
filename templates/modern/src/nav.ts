@@ -127,8 +127,8 @@ function inThisArticle(): TemplateResult {
     return html`
       <h5 class="border-bottom">${loc('inThisArticle')}</h5>
       <ul>${headings.map(h => h.tagName === 'H2'
-        ? html`<li><a class="link-body-emphasis" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
-        : html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
+        ? html`<li><a class="link-body-emphasis" href="#${h.id}">${breakWordLit(h.textContent)}</a></li>`
+        : html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.textContent)}</a></li>`
     )}</ul>`
   }
 }
