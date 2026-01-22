@@ -705,7 +705,7 @@
           "forceBuild": {
             "type": "boolean",
             "default": false,
-            "description": "When enabled, will force MSBuild to run a full build prior to metadata extraction is attempted."
+            "description": "When enabled, will force MSBuild to run a full build prior to metadata extraction being attempted."
           }
         }
       }
