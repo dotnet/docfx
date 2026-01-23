@@ -851,6 +851,164 @@ items:
     }
 
     [Fact]
+    public void AutoPopulateToc_ShouldAddFilesInSameFolder()
+    {
+        // Arrange
+        var tocContent = "auto: true";
+        var tocFile = _fileCreator.CreateFile(tocContent, FileType.YamlToc);
+        var file1 = _fileCreator.CreateFile("# Article 1", FileType.MarkdownContent, fileNameWithoutExtension: "article1");
+        var file2 = _fileCreator.CreateFile("# Article 2", FileType.MarkdownContent, fileNameWithoutExtension: "article2");
+
+        FileCollection files = new(_inputFolder);
+        files.Add(DocumentType.Article, new[] { tocFile, file1, file2 });
+
+        // Act
+        BuildDocument(files);
+
+        // Assert
+        var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension)));
+        Assert.True(File.Exists(outputRawModelPath));
+        var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+
+        Assert.True(model.Auto);
+        Assert.NotNull(model.Items);
+        Assert.Equal(2, model.Items.Count);
+        Assert.Contains(model.Items, i => i.Name == "Article1" && i.Href == "article1.md");
+        Assert.Contains(model.Items, i => i.Name == "Article2" && i.Href == "article2.md");
+    }
+
+    [Fact]
+    public void AutoPopulateToc_ShouldNotAddFiles_WhenAutoIsFalse()
+    {
+        // Arrange
+        var tocContent = "auto: false";
+        var tocFile = _fileCreator.CreateFile(tocContent, FileType.YamlToc);
+        var file1 = _fileCreator.CreateFile("# Article 1", FileType.MarkdownContent, fileNameWithoutExtension: "article1");
+
+        FileCollection files = new(_inputFolder);
+        files.Add(DocumentType.Article, new[] { tocFile, file1 });
+
+        // Act
+        BuildDocument(files);
+
+        // Assert
+        var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension)));
+        Assert.True(File.Exists(outputRawModelPath));
+        var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+
+        Assert.False(model.Auto);
+        Assert.Null(model.Items);
+    }
+
+    [Fact]
+    public void AutoPopulateToc_ShouldIncludeSubfoldersWithoutToc()
+    {
+        // Arrange
+        var tocContent = "auto: true";
+        var tocFile = _fileCreator.CreateFile(tocContent, FileType.YamlToc);
+        var file1 = _fileCreator.CreateFile("# Root Article", FileType.MarkdownContent, fileNameWithoutExtension: "index");
+        var file2 = _fileCreator.CreateFile("# Subfolder Article", FileType.MarkdownContent, folder: "subfolder", fileNameWithoutExtension: "article");
+
+        FileCollection files = new(_inputFolder);
+        files.Add(DocumentType.Article, new[] { tocFile, file1, file2 });
+
+        // Act
+        BuildDocument(files);
+
+        // Assert
+        var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension)));
+        Assert.True(File.Exists(outputRawModelPath));
+        var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+
+        Assert.True(model.Auto);
+        Assert.NotNull(model.Items);
+        Assert.Equal(2, model.Items.Count);
+
+        // Check for root file
+        Assert.Contains(model.Items, i => i.Name == "Index" && i.Href == "index.md");
+
+        // Check for subfolder with nested items
+        var subfolderItem = model.Items.FirstOrDefault(i => i.Name == "Subfolder");
+        Assert.NotNull(subfolderItem);
+        Assert.NotNull(subfolderItem.Items);
+        Assert.Single(subfolderItem.Items);
+        Assert.Equal("Article", subfolderItem.Items[0].Name);
+    }
+
+    [Fact]
+    public void AutoPopulateToc_ShouldStopAtFoldersWithOwnToc()
+    {
+        // Arrange
+        var rootTocContent = "auto: true";
+        var subTocContent = "auto: true";
+        var rootTocFile = _fileCreator.CreateFile(rootTocContent, FileType.YamlToc);
+        var subTocFile = _fileCreator.CreateFile(subTocContent, FileType.YamlToc, folder: "subfolder");
+        var file1 = _fileCreator.CreateFile("# Root Article", FileType.MarkdownContent, fileNameWithoutExtension: "index");
+        var file2 = _fileCreator.CreateFile("# Subfolder Article", FileType.MarkdownContent, folder: "subfolder", fileNameWithoutExtension: "subindex");
+
+        FileCollection files = new(_inputFolder);
+        files.Add(DocumentType.Article, new[] { rootTocFile, subTocFile, file1, file2 });
+
+        // Act
+        BuildDocument(files);
+
+        // Assert - Root TOC should only have root files, not subfolder content
+        var rootOutputPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(rootTocFile, RawModelFileExtension)));
+        Assert.True(File.Exists(rootOutputPath));
+        var rootModel = JsonUtility.Deserialize<TocItemViewModel>(rootOutputPath);
+
+        Assert.True(rootModel.Auto);
+        Assert.NotNull(rootModel.Items);
+        Assert.Single(rootModel.Items);
+        Assert.Equal("Index", rootModel.Items[0].Name);
+
+        // Assert - Subfolder TOC should have its own files
+        var subOutputPath = Path.GetFullPath(Path.Combine(_outputFolder, "subfolder", Path.ChangeExtension(Path.GetFileName(subTocFile), RawModelFileExtension)));
+        Assert.True(File.Exists(subOutputPath));
+        var subModel = JsonUtility.Deserialize<TocItemViewModel>(subOutputPath);
+
+        Assert.True(subModel.Auto);
+        Assert.NotNull(subModel.Items);
+        Assert.Single(subModel.Items);
+        Assert.Equal("Subindex", subModel.Items[0].Name);
+    }
+
+    [Fact]
+    public void AutoPopulateToc_ShouldNotDuplicateExistingItems()
+    {
+        // Arrange
+        var tocContent = """
+            auto: true
+            items:
+            - name: My Index
+              href: index.md
+            """;
+        var tocFile = _fileCreator.CreateFile(tocContent, FileType.YamlToc);
+        var file1 = _fileCreator.CreateFile("# Index", FileType.MarkdownContent, fileNameWithoutExtension: "index");
+        var file2 = _fileCreator.CreateFile("# Article", FileType.MarkdownContent, fileNameWithoutExtension: "article");
+
+        FileCollection files = new(_inputFolder);
+        files.Add(DocumentType.Article, new[] { tocFile, file1, file2 });
+
+        // Act
+        BuildDocument(files);
+
+        // Assert
+        var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension)));
+        Assert.True(File.Exists(outputRawModelPath));
+        var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+
+        Assert.True(model.Auto);
+        Assert.NotNull(model.Items);
+        Assert.Equal(2, model.Items.Count);
+
+        // Existing item should keep its custom name
+        Assert.Contains(model.Items, i => i.Name == "My Index" && i.Href == "index.md");
+        // New item should be added
+        Assert.Contains(model.Items, i => i.Name == "Article" && i.Href == "article.md");
+    }
+
+    [Fact]
     public void UrlDecodeHrefInMarkdownToc()
     {
         // Arrange

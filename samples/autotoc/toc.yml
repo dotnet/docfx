@@ -1,0 +1,6 @@
+# Root TOC with auto-populate enabled
+# This will automatically add files from the root folder and subfolders without their own toc.yml
+auto: true
+items:
+- name: Home
+  href: index.md
