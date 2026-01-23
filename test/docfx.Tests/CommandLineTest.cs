@@ -35,7 +35,8 @@ public class CommandLineTest
     {
         try
         {
-            Assert.Equal(-1, Program.Main(["--unknown"]));
+            // Unknown args throw an exception which is caught and mapped to UnhandledException (255)
+            Assert.Equal((int)ExitCode.UnhandledException, Program.Main(["--unknown"]));
         }
         finally
         {

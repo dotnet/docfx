@@ -44,7 +44,7 @@ In this example, files in the `articles` directory uses `docs` as the base URL: 
 The `redirect_url` metadata is a simple way to create redirects in your documentation. This metadata can be added to a Markdown file in your project, and it will be used to redirect users to a new URL when they try to access the original URL:
 
     ---
-    redirect_url: [new URL]  
+    redirect_url: [new URL]
     ---
 
 Replace [new URL] with the URL that you want to redirect users to. You can use any valid URL, including relative URLs or external URLs.

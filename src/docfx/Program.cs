@@ -15,6 +15,10 @@ internal class Program
 
     internal static int Main(string[] args)
     {
+        // Reset state at start of each invocation (important for testing)
+        _exitCode = (int)ExitCode.Success;
+        ExitCodeHelper.Reset();
+
         // Register Ctrl+C handler for graceful cancellation
         Console.CancelKeyPress += OnCancelKeyPress;
 
