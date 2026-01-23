@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Buffers;
 using System.Diagnostics;
 using System.Text;
 using System.Xml;
@@ -64,6 +65,7 @@ static file class GetInnerXmlExtensions
         xml = RemoveCommonIndent(xml);
 
         // Trim beginning spaces/lines if text starts with HTML tag.
+        // It is necessary to avoid it being handled as a markdown code block.
         var firstNode = nodes.FirstOrDefault(x => !x.IsWhitespaceNode());
         if (firstNode != null && firstNode.NodeType == XmlNodeType.Element)
             xml = xml.TrimStart();
@@ -103,7 +105,7 @@ static file class GetInnerXmlExtensions
             minIndent = 0;
 
         // 2nd pass: build result
-        var sb = new StringBuilder(text.Length + 8);
+        var sb = new StringBuilder(text.Length);
 
         inPre = false;
         pos = 0;
@@ -192,7 +194,7 @@ static file class XNodeExtensions
     /// </summary>
     private static readonly Dictionary<(NodeKind prev, NodeKind next), bool> NeedEmptyLineRules = new()
     {
-        //Block-> *
+        //Block -> *
         [(NodeKind.Block, NodeKind.Other)] = false,
         [(NodeKind.Block, NodeKind.Block)] = false,
         [(NodeKind.Block, NodeKind.Pre)] = true,
@@ -294,9 +296,9 @@ static file class XNodeExtensions
         return NeedEmptyLineRules.TryGetValue((leftKind, rightKind), out var result) && result;
     }
 
-    private static void EnsureEmptyLine(this XNode node, Direction direction)
+    private static void EnsureEmptyLine(this XElement node, Direction direction)
     {
-        var adjacentNode = GetAdjacentNode(node, direction);
+        var adjacentNode = node.GetAdjacentNode(direction);
 
         switch (adjacentNode)
         {
@@ -309,21 +311,25 @@ static file class XNodeExtensions
                 return;
 
             case XText textNode:
+                int count = textNode.CountConsecutiveNewLines(direction, out var insertIndex);
+                var indent = GetIndentToInsert(node, direction, insertIndex);
 
-                int count = textNode.CountNewLines(direction, out var insertIndex);
-
-                switch (count)
+                var newLineChars = count switch
                 {
-                    case 0:
-                        textNode.Value = textNode.Value.Insert(insertIndex, "\n\n");
-                        return;
-                    case 1:
-                        textNode.Value = textNode.Value.Insert(insertIndex, "\n");
-                        return;
-                    default:
-                        Debug.Assert(textNode.HasEmptyLine(direction));
-                        return;
+                    0 => "\n\n",
+                    1 => "\n",
+                    _ => "",
+                };
+
+                if (newLineChars == "")
+                {
+                    // It's not expected to be called. Because it's skipped by NeedEmptyLine check.
+                    Debug.Assert(textNode.HasEmptyLine(direction));
+                    return;
                 }
+
+                textNode.Value = textNode.Value.Insert(insertIndex, $"{newLineChars}{indent}");
+                return;
 
             default:
                 return;
@@ -364,13 +370,35 @@ static file class XNodeExtensions
         return current;
     }
 
+    private static T? FindNeighbor<T>(this XNode node, Direction direction)
+        where T : XNode
+    {
+        var current = node.GetAdjacentNode(direction);
+
+        while (current != null && current is not T)
+            current = current.GetAdjacentNode(direction);
+
+        return (T?)current;
+    }
+
     private static bool HasEmptyLine(this XText node, Direction direction)
-      => CountNewLines(node, direction, out _) >= 2;
+      => node.CountConsecutiveNewLines(direction, out _) >= 2;
 
     /// <summary>
-    /// Get count of new lines. space and tabs are ignored.
+    /// Counts consecutive '\n' characters that exist before/after
     /// </summary>
-    private static int CountNewLines(this XText node, Direction direction, out int insertIndex)
+    /// <param name="direction">
+    /// Direction.Before scans from the end
+    /// Direction.After scans from the beginning.
+    /// </param>
+    /// <param name="insertIndex">
+    /// The position where new content should be inserted.
+    /// It's determined from the first newline found.
+    /// </param>
+    /// <returns>
+    /// The number of consecutive newline characters found.
+    /// </returns>
+    private static int CountConsecutiveNewLines(this XText node, Direction direction, out int insertIndex)
     {
         var span = node.Value.AsSpan();
         int count = 0;
@@ -418,6 +446,110 @@ static file class XNodeExtensions
             default:
                 throw new UnreachableException();
         }
+    }
+
+    private static string GetIndentToInsert(XElement node, Direction direction, int insertIndex)
+    {
+        // Check whether there is an existing indent.
+        if (node.TryGetCurrentIndent(direction, out _))
+            return "";
+
+        // Try to get indent from text node that is placed before.
+        var beforeTextNode = node.FindNeighbor<XText>(Direction.Before);
+        if (beforeTextNode != null)
+            return beforeTextNode.GetIndentFromLastLine();
+
+        return "";
+    }
+
+    private static bool TryGetCurrentIndent(this XElement node, Direction direction, out string indent)
+    {
+        indent = "";
+
+        var adjacentNode = node.GetAdjacentNode(direction);
+        if (adjacentNode == null || adjacentNode is not XText textNode)
+            return false;
+
+        ReadOnlySpan<char> result = direction switch
+        {
+            Direction.Before => GetIndentBefore(textNode.Value),
+            Direction.After => GetIndentAfter(textNode.Value),
+            _ => throw new UnreachableException()
+        };
+
+        if (result.IsEmpty)
+            return false;
+
+        indent = result.ToString();
+        return true;
+    }
+
+    private static string GetIndentBefore(ReadOnlySpan<char> span)
+    {
+        int lastNewLine = span.LastIndexOf('\n');
+        if (lastNewLine < 0)
+            return "";
+
+        var lastLineSpan = span[(lastNewLine + 1)..];
+        if (lastLineSpan.Length == 0)
+            return "";
+
+        if (lastLineSpan.ContainsAnyExcept([' ', '\t']))
+            return "";
+
+        return lastLineSpan.ToString();
+    }
+
+    private static string GetIndentAfter(ReadOnlySpan<char> span)
+    {
+        int i = 0;
+
+        while (i < span.Length)
+        {
+            int lineStart = i;
+
+            int indentLength = span[i..].IndexOfAnyExcept([' ', '\t']);
+            if (indentLength < 0)
+                return "";
+
+            i += indentLength;
+            int indentEnd = i;
+
+            // Skip empty line
+            if (span[i] == '\n')
+            {
+                i++;
+                continue;
+            }
+
+            // Return indent
+            return span.Slice(lineStart, indentEnd - lineStart).ToString();
+        }
+
+        return "";
+    }
+
+    private static string GetIndentFromLastLine(this XText textNode)
+    {
+        ReadOnlySpan<char> text = textNode.Value;
+
+        int lastNewLineIndex = text.LastIndexOf('\n');
+        if (lastNewLineIndex < 0)
+            return "";
+
+        var line = text.Slice(lastNewLineIndex + 1);
+
+        if (line.IsEmpty)
+            return "";
+
+        if (!line.ContainsAnyExcept([' ', '\t']))
+            return line.ToString();
+
+        int index = line.IndexOfAnyExcept([' ', '\t']);
+        if (index <= 0)
+            return "";
+
+        return line.Slice(0, index).ToString();
     }
 
     private static bool IsPreTag(this XElement elem)

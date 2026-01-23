@@ -175,4 +175,111 @@ public partial class XmlCommentSummaryTest
             Paragraph2
             """);
     }
+
+    [Fact]
+    public void Code_StartsWithSameLine()
+    {
+        ValidateSummary(
+            // Input XML
+            """
+            <summary>
+              <example>
+              Paragraph: <code><![CDATA[
+                Code]]></code>
+              </example>
+            </summary>
+            """,
+            // Expected Markdown
+            """
+            <example>
+            Paragraph: 
+
+            <pre><code class="lang-csharp">Code</code></pre>
+
+            </example>
+            """);
+    }
+
+    [Fact]
+    public void Code_SingleLineWithParagraph()
+    {
+        ValidateSummary(
+            // Input XML
+            """
+            <summary>
+              <example>
+              Paragraph1<code>Code</code>
+              Paragraph2
+              </example>
+            </summary>
+            """,
+            // Expected Markdown
+            """
+            <example>
+            Paragraph1
+
+            <pre><code class="lang-csharp">Code</code></pre>
+
+            Paragraph2
+            </example>
+            """);
+    }
+
+    [Fact]
+    public void Code_SingleLineWithMultipleParagraphs()
+    {
+        ValidateSummary(
+            // Input XML
+            """
+            <summary>
+              <example>
+              aaa<p>bbb</p>ccc<code>Code</code>ddd<p>eee</p>fff
+              </example>
+            </summary>
+            """,
+            // Expected Markdown
+            """
+            <example>
+            aaa
+
+            <p>bbb</p>
+
+            ccc
+
+            <pre><code class="lang-csharp">Code</code></pre>
+
+            ddd
+            
+            <p>eee</p>
+            
+            fff
+            </example>
+            """);
+    }
+
+    [Fact]
+    public void Code_Indented()
+    {
+        ValidateSummary(
+            // Input XML
+            """
+            <summary>
+              <example>
+              Paragraph
+              <code>
+              Code
+              </code>
+              </example>
+            </summary>
+            """,
+            // Expected Markdown
+            """
+            <example>
+            Paragraph
+
+            <pre><code class="lang-csharp">Code</code></pre>
+
+            </example>
+            """);
+    }
 }
