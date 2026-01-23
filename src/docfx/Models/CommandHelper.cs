@@ -27,22 +27,24 @@ internal class CommandHelper
 
     public static int Run(LogOptions options, Action run)
     {
+        ExitCodeHelper.Reset();
         SetupLogger(options);
 
         run();
 
         CleanupLogger();
-        return Logger.HasError ? -1 : 0;
+        return ExitCodeHelper.DetermineExitCode(options);
     }
 
     public static async Task<int> RunAsync(LogOptions options, Func<Task> run)
     {
+        ExitCodeHelper.Reset();
         SetupLogger(options);
 
         await run();
 
         CleanupLogger();
-        return Logger.HasError ? -1 : 0;
+        return ExitCodeHelper.DetermineExitCode(options);
     }
 
     public static bool IsTcpPortAlreadyUsed(string? host, int? port)

@@ -116,3 +116,45 @@ Where:
 - [`changefreq`](https://www.sitemaps.org/protocol.html#changefreqdef) determines how frequently the page is likely to change. Valid values are `always`, `hourly`, `daily`, `weekly`, `monthly`, `yearly`, `never`. Default to `daily`.
 - [`priority`](https://www.sitemaps.org/protocol.html#priority) is the priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0. Default to `0.5`
 - `fileOptions` is a per file config of the above options. The key is the file glob pattern and value is the sitemap options.
+
+## Exit Codes
+
+Docfx returns different exit codes to indicate the result of the operation. This is useful for CI/CD pipelines to determine if the build was successful.
+
+| Exit Code | Name | Description |
+|-----------|------|-------------|
+| 0 | Success | Build completed successfully with no errors. |
+| 1 | SuccessWithWarnings | Build completed but with warnings (only with `--strict` flag). |
+| 2 | BuildError | Documentation build failed (invalid markdown, broken refs, etc.). |
+| 3 | ConfigError | Invalid `docfx.json` or configuration error. |
+| 4 | InputError | Source files not found or invalid paths. |
+| 5 | MetadataError | .NET API metadata extraction failed. |
+| 6 | TemplateError | Template preprocessing or rendering failed. |
+| 130 | UserCancelled | Operation was cancelled by user (Ctrl+C). |
+| 255 | UnhandledException | An unexpected fatal error occurred. |
+
+### Exit Code Options
+
+The following command-line options control exit code behavior:
+
+- `--strict`: Return exit code `1` when warnings are present. By default, warnings do not affect the exit code (returns `0`).
+- `--legacy-exit-codes`: Use the legacy exit code behavior for backward compatibility:
+  - `0` for success (with or without warnings)
+  - `-1` for any error
+
+### Examples
+
+Check for warnings in a CI pipeline:
+
+```bash
+docfx build --strict
+if [ $? -eq 1 ]; then
+  echo "Build succeeded but has warnings"
+fi
+```
+
+Use legacy exit codes for backward compatibility with existing scripts:
+
+```bash
+docfx build --legacy-exit-codes
+```

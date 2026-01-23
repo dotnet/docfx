@@ -10,6 +10,11 @@ public static class Logger
 {
     public const int WarningThrottling = 10000;
     public static bool HasError { get; private set; }
+    public static bool HasConfigError { get; private set; }
+    public static bool HasBuildError { get; private set; }
+    public static bool HasMetadataError { get; private set; }
+    public static bool HasTemplateError { get; private set; }
+    public static bool HasInputError { get; private set; }
     public static int WarningCount => _warningCount;
     public static int ErrorCount => _errorCount;
 
@@ -98,10 +103,48 @@ public static class Logger
         {
             HasError = true;
             Interlocked.Increment(ref _errorCount);
+            CategorizeError(item.Code);
         }
 
         Debug.WriteLine(item.Message);
         _syncListener.WriteLine(item);
+    }
+
+    private static void CategorizeError(string code)
+    {
+        if (string.IsNullOrEmpty(code))
+        {
+            HasBuildError = true;
+            return;
+        }
+
+        // Categorize based on error code patterns from ErrorCodes class
+        if (code.StartsWith("Config", StringComparison.OrdinalIgnoreCase) ||
+            code == ErrorCodes.Build.ViolateSchema)
+        {
+            HasConfigError = true;
+        }
+        else if (code.StartsWith("Metadata", StringComparison.OrdinalIgnoreCase))
+        {
+            HasMetadataError = true;
+        }
+        else if (code.StartsWith("Template", StringComparison.OrdinalIgnoreCase) ||
+                 code == ErrorCodes.Template.ApplyTemplatePreprocessorError ||
+                 code == ErrorCodes.Template.ApplyTemplateRendererError)
+        {
+            HasTemplateError = true;
+        }
+        else if (code == ErrorCodes.Build.InvalidInputFile ||
+                 code == ErrorCodes.Build.InvalidRelativePath ||
+                 code.StartsWith("FileNotFound", StringComparison.OrdinalIgnoreCase) ||
+                 code.StartsWith("InvalidPath", StringComparison.OrdinalIgnoreCase))
+        {
+            HasInputError = true;
+        }
+        else
+        {
+            HasBuildError = true;
+        }
     }
 
     public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null)
@@ -190,6 +233,11 @@ public static class Logger
         _warningCount = 0;
         _errorCount = 0;
         HasError = false;
+        HasConfigError = false;
+        HasBuildError = false;
+        HasMetadataError = false;
+        HasTemplateError = false;
+        HasInputError = false;
     }
 
     class LogItem : ILogItem

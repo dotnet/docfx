@@ -25,4 +25,12 @@ internal class LogOptions : CommandSettings
     [Description("Treats warnings as errors")]
     [CommandOption("--warningsAsErrors")]
     public bool WarningsAsErrors { get; set; }
+
+    [Description("Return exit code 1 if warnings are present (default: warnings return 0)")]
+    [CommandOption("--strict")]
+    public bool Strict { get; set; }
+
+    [Description("Use legacy exit codes (0 for success, -1 for any error) for backward compatibility")]
+    [CommandOption("--legacy-exit-codes")]
+    public bool LegacyExitCodes { get; set; }
 }
