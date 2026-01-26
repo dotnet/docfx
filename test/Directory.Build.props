@@ -1,37 +1,72 @@
 <Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('$(MSBuildThisFile)', '$(MSBuildThisFileDirectory)../'))" />
+
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <IsTestingPlatformApplication>true</IsTestingPlatformApplication>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <!-- .NET 9 or later run tests per TargetFramework in parallel by default.
+        It is necessary to disable this feature because there are tests that need to be executed sequentially that are marked with `[Collection("docfx STA")]`. -->
   <PropertyGroup>
-    <!--
-    .NET 9 preview 2 or later run tests in parallel by default.
-    It is necessary to disable this feature because there are tests that need to be executed sequentially that are marked with `[Collection("docfx STA")]`.
-    -->
     <TestTfmsInParallel>false</TestTfmsInParallel>
   </PropertyGroup>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove('$(MSBuildThisFile)', '$(MSBuildThisFileDirectory)../'))" />
+  <!-- Configure `Microsoft.Testing.Platform` mode behaviors (https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-platform-integration-dotnet-test)-->
 
-  <ItemGroup>
-    <None Include="TestData\**" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(PERCY_TOKEN)' == ''">
-    <VSTestResultsDirectory>$(MSBuildThisFileDirectory)TestResults</VSTestResultsDirectory>
-    <VSTestLogger>$(VSTestLogger);trx%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).trx</VSTestLogger>
-    <VSTestLogger>$(VSTestLogger);html%3BLogFileName=TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).html</VSTestLogger>
+  <!-- Following settings are required for .NET 9 SDK and earlier -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0' OR '$(TargetFramework)'=='net8.0'">
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <TestingPlatformCaptureOutput>false</TestingPlatformCaptureOutput>
+    <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+  <PropertyGroup>
+    <!-- Use `Microsoft.Testing.Platform` entrypoint -->
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Show xUnit.net headers and information -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --xunit-info</TestingPlatformCommandLineArguments>
+
+    <!-- Change TestResults output directory. And enable detailed log outputs -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --results-directory "$(MSBuildThisFileDirectory)TestResults"</TestingPlatformCommandLineArguments>
+
+    <!-- Ignore exit code 8 (the test session run zero tests) -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --ignore-exit-code 8</TestingPlatformCommandLineArguments>
+
+    <!-- Enable output for passed tests -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --output Detailed</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
+  <!-- Settings for CI environment -->
+  <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(PERCY_TOKEN)' == ''">
+    <!-- Disable progress reports -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --no-progress</TestingPlatformCommandLineArguments>
+
+    <!-- Enable reporters (trx/html/ctrf ) -->
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-xunit-trx  --report-xunit-trx-filename  TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).trx</TestingPlatformCommandLineArguments>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-xunit-html --report-xunit-html-filename TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).html</TestingPlatformCommandLineArguments>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-ctrf       --report-ctrf-filename       TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).ctrf</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
+    <!-- Set [assembly:CaptureConsole] attribute to assembly -->
+    <AssemblyAttribute Include="Xunit.CaptureConsole" />
+
+    <!-- Add project items -->
+    <None Include="TestData\**" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(MSBuildThisFileDirectory)xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+
+    <!-- Add Docfx.Tests.Common` project reference to test projects -->
     <ProjectReference Include="$(MSBuildThisFileDirectory)Docfx.Tests.Common/Docfx.Tests.Common.csproj" />
+
+    <!-- Add common test package references -->
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="xunit.v3.mtp-v2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AwesomeAssertions" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit.runner.visualstudio" />
-    <PackageReference Include="xunit" />
-  </ItemGroup>
 </Project>
