@@ -265,6 +265,13 @@ internal class MetadataJsonItemConfig
     [JsonProperty("useClrTypeNames")]
     [JsonPropertyName("useClrTypeNames")]
     public bool UseClrTypeNames { get; init; }
+
+    /// <summary>
+    /// Forces building the project before metadata extraction.
+    /// </summary>
+    [JsonProperty("forceBuild")]
+    [JsonPropertyName("forceBuild")]
+    public bool ForceBuild { get; set; }
 }
 
 /// <summary>
