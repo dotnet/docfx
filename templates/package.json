@@ -36,7 +36,7 @@
     "lit-html": "^3.3.2",
     "lunr": "2.3.9",
     "lunr-languages": "^1.14.0",
-    "mathjax": "^3.2.2",
+    "mathjax": "^4.1.0",
     "mermaid": "^11.12.2",
     "tsx": "^4.21.0"
   },
