@@ -1,158 +1,160 @@
 ﻿{
-  "uid": "BuildFromProject.SourceGenerator",
+  "uid": "CSharp14.FieldBackedPropertySample",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "BuildFromProject",
+    "uid": "CSharp14",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "BuildFromProject.html",
+    "href": "CSharp14.html",
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       },
       {
         "lang": "vb",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       },
       {
         "lang": "vb",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       },
       {
         "lang": "vb",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
       }
     ],
     "level": 0
   },
   "children": [
     {
-      "inMethod": true,
-      "typePropertyName": "inMethod",
-      "id": "methods",
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
       "children": [
         {
-          "uid": "BuildFromProject.SourceGenerator.GeneratedRegex",
+          "uid": "CSharp14.FieldBackedPropertySample.FieldBackedProperty",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "BuildFromProject.SourceGenerator",
+          "parent": "CSharp14.FieldBackedPropertySample",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "GeneratedRegex()"
+              "value": "FieldBackedProperty"
             },
             {
               "lang": "vb",
-              "value": "GeneratedRegex()"
+              "value": "FieldBackedProperty"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "SourceGenerator.GeneratedRegex()"
+              "value": "FieldBackedPropertySample.FieldBackedProperty"
             },
             {
               "lang": "vb",
-              "value": "SourceGenerator.GeneratedRegex()"
+              "value": "FieldBackedPropertySample.FieldBackedProperty"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "BuildFromProject.SourceGenerator.GeneratedRegex()"
+              "value": "CSharp14.FieldBackedPropertySample.FieldBackedProperty"
             },
             {
               "lang": "vb",
-              "value": "BuildFromProject.SourceGenerator.GeneratedRegex()"
+              "value": "CSharp14.FieldBackedPropertySample.FieldBackedProperty"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.SourceGenerator.GeneratedRegex\" text=\"GeneratedRegex()\"/>"
+              "value": "<xref uid=\"CSharp14.FieldBackedPropertySample.FieldBackedProperty\" text=\"FieldBackedProperty\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.SourceGenerator.GeneratedRegex\" text=\"GeneratedRegex()\"/>"
+              "value": "<xref uid=\"CSharp14.FieldBackedPropertySample.FieldBackedProperty\" text=\"FieldBackedProperty\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "[GeneratedRegex(\"abc|def\", RegexOptions.IgnoreCase)]\npublic static Regex GeneratedRegex()"
+                "value": "public int FieldBackedProperty { get; set; }"
               },
               {
                 "lang": "vb",
-                "value": "<GeneratedRegex(\"abc|def\", RegexOptions.IgnoreCase)>\nPublic Shared Function GeneratedRegex() As Regex"
+                "value": "Public Property FieldBackedProperty As Integer"
               }
             ],
-            "return": {
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
               "type": {
-                "uid": "System.Text.RegularExpressions.Regex",
+                "uid": "System.Int32",
                 "name": [
                   {
                     "lang": "csharp",
-                    "value": "Regex"
+                    "value": "int"
                   },
                   {
                     "lang": "vb",
-                    "value": "Regex"
+                    "value": "Integer"
                   }
                 ],
                 "nameWithType": [
                   {
                     "lang": "csharp",
-                    "value": "Regex"
+                    "value": "int"
                   },
                   {
                     "lang": "vb",
-                    "value": "Regex"
+                    "value": "Integer"
                   }
                 ],
                 "fullName": [
                   {
                     "lang": "csharp",
-                    "value": "System.Text.RegularExpressions.Regex"
+                    "value": "int"
                   },
                   {
                     "lang": "vb",
-                    "value": "System.Text.RegularExpressions.Regex"
+                    "value": "Integer"
                   }
                 ],
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"System.Text.RegularExpressions.Regex\" text=\"Regex\"/>"
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"System.Text.RegularExpressions.Regex\" text=\"Regex\"/>"
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
                   }
                 ]
               }
@@ -160,343 +162,76 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/dotnet/project/Project/SourceGenerator.cs",
+              "path": "samples/csharp/src/CSharp14.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "GeneratedRegex",
-            "path": "dotnet/project/Project/SourceGenerator.cs",
-            "startLine": 16,
+            "id": "FieldBackedProperty",
+            "path": "src/CSharp14.cs",
+            "startLine": 5,
             "endLine": 0
           },
           "assemblies": [
-            "BuildFromProject"
+            "CSharp"
           ],
-          "namespace": "BuildFromProject",
-          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.SourceGenerator.yml\" sourcestartlinenumber=\"1\">Pattern:<br></p>\n<pre><code class=\"lang-csharp\">abc|def</code></pre><br>\n<pre><code sourcefile=\"obj/api/BuildFromProject.SourceGenerator.yml\" sourcestartlinenumber=\"3\">Options:&lt;br /&gt;\n&lt;pre&gt;&lt;code class=&quot;lang-csharp&quot;&gt;RegexOptions.IgnoreCase&lt;/code&gt;&lt;/pre&gt;&lt;br /&gt;\nExplanation:&lt;br /&gt;\n&lt;pre&gt;&lt;code class=&quot;lang-csharp&quot;&gt;○ Match with 2 alternative expressions, atomically.\n○ Match a sequence of expressions.\n    ○ Match a character in the set [Aa].\n    ○ Match a character in the set [Bb].\n    ○ Match a character in the set [Cc].\n○ Match a sequence of expressions.\n    ○ Match a character in the set [Dd].\n    ○ Match a character in the set [Ee].\n    ○ Match a character in the set [Ff].&lt;/code&gt;&lt;/pre&gt;\n</code></pre>\n",
-          "example": [],
+          "namespace": "CSharp14",
           "overload": {
-            "uid": "BuildFromProject.SourceGenerator.GeneratedRegex*",
+            "uid": "CSharp14.FieldBackedPropertySample.FieldBackedProperty*",
             "name": [
               {
                 "lang": "csharp",
-                "value": "GeneratedRegex"
+                "value": "FieldBackedProperty"
               },
               {
                 "lang": "vb",
-                "value": "GeneratedRegex"
+                "value": "FieldBackedProperty"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "SourceGenerator.GeneratedRegex"
+                "value": "FieldBackedPropertySample.FieldBackedProperty"
               },
               {
                 "lang": "vb",
-                "value": "SourceGenerator.GeneratedRegex"
+                "value": "FieldBackedPropertySample.FieldBackedProperty"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "BuildFromProject.SourceGenerator.GeneratedRegex"
+                "value": "CSharp14.FieldBackedPropertySample.FieldBackedProperty"
               },
               {
                 "lang": "vb",
-                "value": "BuildFromProject.SourceGenerator.GeneratedRegex"
+                "value": "CSharp14.FieldBackedPropertySample.FieldBackedProperty"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"BuildFromProject.SourceGenerator.GeneratedRegex*\" text=\"GeneratedRegex\"/>"
+                "value": "<xref uid=\"CSharp14.FieldBackedPropertySample.FieldBackedProperty*\" text=\"FieldBackedProperty\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"BuildFromProject.SourceGenerator.GeneratedRegex*\" text=\"GeneratedRegex\"/>"
+                "value": "<xref uid=\"CSharp14.FieldBackedPropertySample.FieldBackedProperty*\" text=\"FieldBackedProperty\"/>"
               }
             ],
-            "id": "BuildFromProject_SourceGenerator_GeneratedRegex_"
+            "id": "CSharp14_FieldBackedPropertySample_FieldBackedProperty_"
           },
           "level": 0,
-          "attributes": [
-            {
-              "type": "System.Text.RegularExpressions.GeneratedRegexAttribute",
-              "ctor": "System.Text.RegularExpressions.GeneratedRegexAttribute.#ctor(System.String,System.Text.RegularExpressions.RegexOptions)",
-              "arguments": [
-                {
-                  "type": "System.String",
-                  "value": "abc|def"
-                },
-                {
-                  "type": "System.Text.RegularExpressions.RegexOptions",
-                  "value": 1
-                }
-              ]
-            }
-          ],
-          "type": "method",
+          "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_SourceGenerator_GeneratedRegex.md&value=---%0Auid%3A%20BuildFromProject.SourceGenerator.GeneratedRegex%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/SourceGenerator.cs/#L17",
-          "description": "",
-          "conceptual": "",
-          "implements": "",
-          "seealso": [],
-          "id": "BuildFromProject_SourceGenerator_GeneratedRegex",
-          "hideTitleType": false,
-          "hideSubtitle": false
-        },
-        {
-          "uid": "BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger,System.String)",
-          "isEii": false,
-          "isExtensionMethod": false,
-          "parent": "BuildFromProject.SourceGenerator",
-          "isExternal": false,
-          "name": [
-            {
-              "lang": "csharp",
-              "value": "Log(ILogger, string)"
-            },
-            {
-              "lang": "vb",
-              "value": "Log(ILogger, String)"
-            }
-          ],
-          "nameWithType": [
-            {
-              "lang": "csharp",
-              "value": "SourceGenerator.Log(ILogger, string)"
-            },
-            {
-              "lang": "vb",
-              "value": "SourceGenerator.Log(ILogger, String)"
-            }
-          ],
-          "fullName": [
-            {
-              "lang": "csharp",
-              "value": "BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger, string)"
-            },
-            {
-              "lang": "vb",
-              "value": "BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger, String)"
-            }
-          ],
-          "specName": [
-            {
-              "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger,System.String)\" text=\"Log(ILogger, string)\"/>"
-            },
-            {
-              "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger,System.String)\" text=\"Log(ILogger, string)\"/>"
-            }
-          ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "[LoggerMessage(EventId = 0, Level = LogLevel.Critical, Message = \"Log: {text}\")]\npublic static void Log(ILogger logger, string text)"
-              },
-              {
-                "lang": "vb",
-                "value": "<LoggerMessage(EventId:=0, Level:=LogLevel.Critical, Message:=\"Log: {text}\")>\nPublic Shared Sub Log(logger As ILogger, text As String)"
-              }
-            ],
-            "parameters": [
-              {
-                "id": "logger",
-                "type": {
-                  "uid": "Microsoft.Extensions.Logging.ILogger",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "ILogger"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "ILogger"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "ILogger"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "ILogger"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "Microsoft.Extensions.Logging.ILogger"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "Microsoft.Extensions.Logging.ILogger"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"Microsoft.Extensions.Logging.ILogger\" text=\"ILogger\"/>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"Microsoft.Extensions.Logging.ILogger\" text=\"ILogger\"/>"
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "text",
-                "type": {
-                  "uid": "System.String",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "string"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "string"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "string"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "source": {
-            "remote": {
-              "path": "samples/seed/dotnet/project/Project/SourceGenerator.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "Log",
-            "path": "dotnet/project/Project/SourceGenerator.cs",
-            "startLine": 10,
-            "endLine": 0
-          },
-          "assemblies": [
-            "BuildFromProject"
-          ],
-          "namespace": "BuildFromProject",
-          "example": [],
-          "overload": {
-            "uid": "BuildFromProject.SourceGenerator.Log*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "Log"
-              },
-              {
-                "lang": "vb",
-                "value": "Log"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "SourceGenerator.Log"
-              },
-              {
-                "lang": "vb",
-                "value": "SourceGenerator.Log"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "BuildFromProject.SourceGenerator.Log"
-              },
-              {
-                "lang": "vb",
-                "value": "BuildFromProject.SourceGenerator.Log"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"BuildFromProject.SourceGenerator.Log*\" text=\"Log\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"BuildFromProject.SourceGenerator.Log*\" text=\"Log\"/>"
-              }
-            ],
-            "id": "BuildFromProject_SourceGenerator_Log_"
-          },
-          "level": 0,
-          "attributes": [
-            {
-              "type": "Microsoft.Extensions.Logging.LoggerMessageAttribute",
-              "ctor": "Microsoft.Extensions.Logging.LoggerMessageAttribute.#ctor",
-              "arguments": [],
-              "namedArguments": [
-                {
-                  "name": "EventId",
-                  "type": "System.Int32",
-                  "value": 0
-                },
-                {
-                  "name": "Level",
-                  "type": "Microsoft.Extensions.Logging.LogLevel",
-                  "value": 5
-                },
-                {
-                  "name": "Message",
-                  "type": "System.String",
-                  "value": "Log: {text}"
-                }
-              ]
-            }
-          ],
-          "type": "method",
-          "summary": "<p sourcefile=\"obj/api/BuildFromProject.SourceGenerator.yml\" sourcestartlinenumber=\"1\">Logger API that generated by LoggerMessageGenerator.</p>\n",
-          "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_SourceGenerator_Log_Microsoft_Extensions_Logging_ILogger_System_String_.md&value=---%0Auid%3A%20BuildFromProject.SourceGenerator.Log(Microsoft.Extensions.Logging.ILogger%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/SourceGenerator.cs/#L11",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp14_FieldBackedPropertySample_FieldBackedProperty.md&value=---%0Auid%3A%20CSharp14.FieldBackedPropertySample.FieldBackedProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp14.cs/#L6",
           "description": "",
           "remarks": "",
           "conceptual": "",
           "implements": "",
+          "example": "",
           "seealso": [],
-          "id": "BuildFromProject_SourceGenerator_Log_Microsoft_Extensions_Logging_ILogger_System_String_",
+          "id": "CSharp14_FieldBackedPropertySample_FieldBackedProperty",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -510,86 +245,91 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "SourceGenerator"
+      "value": "FieldBackedPropertySample"
     },
     {
       "lang": "vb",
-      "value": "SourceGenerator"
+      "value": "FieldBackedPropertySample"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "SourceGenerator"
+      "value": "FieldBackedPropertySample"
     },
     {
       "lang": "vb",
-      "value": "SourceGenerator"
+      "value": "FieldBackedPropertySample"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "BuildFromProject.SourceGenerator"
+      "value": "CSharp14.FieldBackedPropertySample"
     },
     {
       "lang": "vb",
-      "value": "BuildFromProject.SourceGenerator"
+      "value": "CSharp14.FieldBackedPropertySample"
     }
   ],
   "type": "class",
   "source": {
-    "id": "SourceGenerator",
-    "path": "{SolutionDirectory}samples/seed/dotnet/project/Project/obj/Release/net10.0/System.Text.RegularExpressions.Generator/System.Text.RegularExpressions.Generator.RegexGenerator/RegexGenerator.g.cs",
-    "startLine": 6,
+    "remote": {
+      "path": "samples/csharp/src/CSharp14.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "FieldBackedPropertySample",
+    "path": "src/CSharp14.cs",
+    "startLine": 3,
     "endLine": 0
   },
   "assemblies": [
-    "BuildFromProject"
+    "CSharp"
   ],
   "namespace": {
-    "uid": "BuildFromProject",
+    "uid": "CSharp14",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "BuildFromProject.html",
+    "href": "CSharp14.html",
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       },
       {
         "lang": "vb",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       },
       {
         "lang": "vb",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       },
       {
         "lang": "vb",
-        "value": "BuildFromProject"
+        "value": "CSharp14"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
       }
     ],
     "level": 0
@@ -598,11 +338,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public static class SourceGenerator"
+        "value": "public class FieldBackedPropertySample"
       },
       {
         "lang": "vb",
-        "value": "Public Module SourceGenerator"
+        "value": "Public Class FieldBackedPropertySample"
       }
     ]
   },
@@ -1004,23 +744,125 @@
       "level": 0
     }
   ],
-  "_appName": "Seed",
-  "_appTitle": "docfx seed website",
-  "_enableSearch": true,
-  "pdf": true,
-  "pdfTocPage": true,
-  "_key": "obj/api/BuildFromProject.SourceGenerator.yml",
-  "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
-  "_path": "api/BuildFromProject.SourceGenerator.html",
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp14.FieldBackedPropertySample.yml",
+  "_path": "api/CSharp14.FieldBackedPropertySample.html",
   "_rel": "../",
-  "_tocKey": "~/obj/api/toc.yml",
+  "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
   "yamlmime": "ManagedReference",
-  "docurl": "",
-  "sourceurl": "",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp14_FieldBackedPropertySample.md&value=---%0Auid%3A%20CSharp14.FieldBackedPropertySample%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp14.cs/#L4",
   "summary": "",
   "description": "",
   "remarks": "",
@@ -1028,7 +870,7 @@
   "implements": "",
   "example": "",
   "seealso": [],
-  "id": "BuildFromProject_SourceGenerator",
+  "id": "CSharp14_FieldBackedPropertySample",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,
