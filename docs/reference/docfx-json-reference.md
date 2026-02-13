@@ -480,6 +480,10 @@ Specifies whether explicit interface implementations are included in the generat
 
 Specify the name to use for the global namespace. The default value is an empty string.
 
+### `forceBuild`
+
+When enabled, will force MSBuild to run a full build prior to metadata extraction being attempted.
+
 ## File Mappings
 
 In the short-hand form, these filenames are resolved relative to the directory containing the `docfx.json` file:
