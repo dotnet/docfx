@@ -85,13 +85,15 @@ export async function renderNavbar(): Promise<NavItem[]> {
 }
 
 export function renderBreadcrumb(breadcrumb: (NavItem | TocNode)[]) {
-  const container = document.getElementById('breadcrumb')
+  if (breadcrumb.length === 0) {
+    return
+  }
+
+  const container = document.querySelector<HTMLOListElement>('#breadcrumb .breadcrumb')
   if (container) {
+    container.innerHTML = ''
     render(
-      html`
-        <ol class="breadcrumb">
-          ${breadcrumb.map(i => html`<li class="breadcrumb-item"><a href="${i.href}">${breakWordLit(i.name)}</a></li>`)}
-        </ol>`,
+      breadcrumb.map(i => html`<li class="breadcrumb-item"><a href="${i.href}">${breakWordLit(i.name)}</a></li>`),
       container)
   }
 }
