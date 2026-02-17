@@ -1,0 +1,311 @@
+﻿{
+  "uid": "CSharp9.NativeSizedIntegers.Y",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "isEii": false,
+    "isExtensionMethod": false,
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9.NativeSizedIntegers\" displayProperty=\"name\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9.NativeSizedIntegers\" displayProperty=\"name\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Y"
+    },
+    {
+      "lang": "vb",
+      "value": "Y"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "NativeSizedIntegers.Y"
+    },
+    {
+      "lang": "vb",
+      "value": "NativeSizedIntegers.Y"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp9.NativeSizedIntegers.Y"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp9.NativeSizedIntegers.Y"
+    }
+  ],
+  "type": "field",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp9.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "Y",
+    "path": "src/CSharp9.cs",
+    "startLine": 24,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp9",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp9.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public nuint Y"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Y As UIntPtr"
+      }
+    ],
+    "return": {
+      "type": {
+        "uid": "System.UIntPtr",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "nuint"
+          },
+          {
+            "lang": "vb",
+            "value": "UIntPtr"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "nuint"
+          },
+          {
+            "lang": "vb",
+            "value": "UIntPtr"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "nuint"
+          },
+          {
+            "lang": "vb",
+            "value": "System.UIntPtr"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"System.UIntPtr\" text=\"nuint\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"System.UIntPtr\" text=\"nuint\"/>"
+          }
+        ]
+      }
+    }
+  },
+  "level": 0,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_splitReference": true,
+  "_key": "obj/api/CSharp9.NativeSizedIntegers.Y.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CSharp9.NativeSizedIntegers.Y.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_NativeSizedIntegers_Y.md&value=---%0Auid%3A%20CSharp9.NativeSizedIntegers.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L25",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp9_NativeSizedIntegers_Y",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "_disableToc": false,
+  "_disableNextArticle": true,
+  "inField": true,
+  "isItem": true
+}

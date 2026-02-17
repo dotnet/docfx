@@ -124,15 +124,12 @@ internal static class YamlViewModelExtensions
         {
             case MemberType.Toc:
             case MemberType.Namespace:
-                var result = new List<TocItemViewModel>();
-                foreach (var child in item.Items
+                return item.Items
                     .OrderBy(x => x.Type == MemberType.Namespace ? 0 : 1)
-                    .ThenBy(x => x.Name)
-                )
-                {
-                    result.Add(child.ToTocItemViewModel(parentNamespace));
-                }
-                return result;
+                    .ThenBy(x => x.Name, SymbolStringComparer.Instance)
+                    .Select(x => x.ToTocItemViewModel(parentNamespace))
+                    .ToList();
+
             default:
                 return null;
         }
@@ -249,7 +246,8 @@ internal static class YamlViewModelExtensions
 
         var children = model.Type is MemberType.Enum && config.EnumSortOrder is EnumSortOrder.DeclaringOrder
             ? model.Items?.Select(x => x.Name).ToList()
-            : model.Items?.Select(x => x.Name).OrderBy(s => s, StringComparer.Ordinal).ToList();
+            : model.Items?.Select(x => x.Name).OrderBy(s => s, SymbolStringComparer.Instance).ToList();
+
 
         var result = new ItemViewModel
         {

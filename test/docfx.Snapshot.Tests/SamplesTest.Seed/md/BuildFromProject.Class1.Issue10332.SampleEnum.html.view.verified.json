@@ -1,0 +1,32 @@
+﻿{
+  "conceptual": "\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/BuildFromProject.md\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"3\">BuildFromProject</a><br>\nAssembly: BuildFromProject.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"6\">public enum Class1.Issue10332.SampleEnum\n</code></pre>\n<h2 id=\"fields\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"10\">Fields</h2>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"12\"><code sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"12\">AAA = 0</code></p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"14\">3rd element when sorted by alphabetic order</p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"18\"><code sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"18\">aaa = 1</code></p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"20\">2nd element when sorted by alphabetic order</p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"24\"><code sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"24\">_aaa = 2</code></p>\n<p sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"26\">1st element when sorted by alphabetic order</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md",
+  "documentation": {
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"BuildFromProject_Class1_Issue10332_SampleEnum\" sourcefile=\"obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md\" sourcestartlinenumber=\"1\"> Enum Class1.Issue10332.SampleEnum</h1>",
+  "title": " Enum Class1.Issue10332.SampleEnum",
+  "wordCount": 38,
+  "_key": "obj/md/BuildFromProject.Class1.Issue10332.SampleEnum.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromProject.Class1.Issue10332.SampleEnum.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": ""
+}

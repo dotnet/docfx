@@ -57,10 +57,8 @@
       "children": [
         {
           "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -101,86 +99,17 @@
               "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor\" text=\"RepeatSequence()\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public RepeatSequence()"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Sub New()"
-              }
-            ]
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp11.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": ".ctor",
-            "path": "src/CSharp11.cs",
-            "startLine": 14,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp11",
-          "overload": {
-            "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "RepeatSequence"
-              },
-              {
-                "lang": "vb",
-                "value": "New"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence"
-              },
-              {
-                "lang": "vb",
-                "value": "StaticAbstractMembersInInterfaces.RepeatSequence.New"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.New"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor*\" text=\"RepeatSequence\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor*\" text=\"RepeatSequence\"/>"
-              }
-            ],
-            "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence__ctor_"
-          },
           "level": 0,
-          "type": "constructor",
           "summary": "",
+          "type": "constructor",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence__ctor.md&value=---%0Auid%3A%20CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L15",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -197,10 +126,8 @@
       "children": [
         {
           "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Text",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -241,88 +168,17 @@
               "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Text\" text=\"Text\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public string Text"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Text As String"
-              }
-            ],
-            "return": null,
-            "fieldValue": {
-              "type": {
-                "uid": "System.String",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp11.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "Text",
-            "path": "src/CSharp11.cs",
-            "startLine": 12,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp11",
           "level": 0,
-          "type": "field",
           "summary": "",
+          "type": "field",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_Text.md&value=---%0Auid%3A%20CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Text%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L13",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -339,10 +195,8 @@
       "children": [
         {
           "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -383,177 +237,19 @@
               "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString\" text=\"ToString()\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public override string ToString()"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Overrides Function ToString() As String"
-              }
-            ],
-            "return": {
-              "type": {
-                "uid": "System.String",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  }
-                ]
-              },
-              "description": "<p sourcefile=\"api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.yml\" sourcestartlinenumber=\"1\">The fully qualified type name.</p>\n"
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp11.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "ToString",
-            "path": "src/CSharp11.cs",
-            "startLine": 19,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp11",
-          "example": [],
-          "overridden": {
-            "uid": "System.ValueType.ToString",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "ToString()"
-              },
-              {
-                "lang": "vb",
-                "value": "ToString()"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "ValueType.ToString()"
-              },
-              {
-                "lang": "vb",
-                "value": "ValueType.ToString()"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "System.ValueType.ToString()"
-              },
-              {
-                "lang": "vb",
-                "value": "System.ValueType.ToString()"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
-              },
-              {
-                "lang": "vb",
-                "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.valuetype.tostring\">ToString</a>()"
-              }
-            ]
-          },
-          "overload": {
-            "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "ToString"
-              },
-              {
-                "lang": "vb",
-                "value": "ToString"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "StaticAbstractMembersInInterfaces.RepeatSequence.ToString"
-              },
-              {
-                "lang": "vb",
-                "value": "StaticAbstractMembersInInterfaces.RepeatSequence.ToString"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString*\" text=\"ToString\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString*\" text=\"ToString\"/>"
-              }
-            ],
-            "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_ToString_"
-          },
           "level": 0,
+          "summary": "<p sourcefile=\"obj/api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.yml\" sourcestartlinenumber=\"1\">Returns the fully qualified type name of this instance.</p>\n",
           "type": "method",
-          "summary": "<p sourcefile=\"api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.yml\" sourcestartlinenumber=\"1\">Returns the fully qualified type name of this instance.</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_ToString.md&value=---%0Auid%3A%20CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L20",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
+          "example": "",
           "seealso": [],
           "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_ToString",
           "hideTitleType": false,
@@ -568,10 +264,8 @@
       "children": [
         {
           "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -612,222 +306,19 @@
               "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\" text=\"operator ++(RepeatSequence)\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public static StaticAbstractMembersInInterfaces.RepeatSequence operator ++(StaticAbstractMembersInInterfaces.RepeatSequence other)"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Shared Function op_Increment(other As StaticAbstractMembersInInterfaces.RepeatSequence) As StaticAbstractMembersInInterfaces.RepeatSequence"
-              }
-            ],
-            "parameters": [
-              {
-                "id": "other",
-                "type": {
-                  "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>"
-                    }
-                  ]
-                }
-              }
-            ],
-            "return": {
-              "type": {
-                "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.html\">StaticAbstractMembersInInterfaces</a>.<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp11.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "op_Increment",
-            "path": "src/CSharp11.cs",
-            "startLine": 16,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp11",
-          "example": [],
-          "overload": {
-            "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "operator ++"
-              },
-              {
-                "lang": "vb",
-                "value": "op_Increment"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "StaticAbstractMembersInInterfaces.RepeatSequence.operator ++"
-              },
-              {
-                "lang": "vb",
-                "value": "StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_\">++</a>"
-              }
-            ],
-            "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_"
-          },
           "level": 0,
-          "implements": [
-            {
-              "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext{CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence}.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)",
-              "definition": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)",
-              "name": [
-                {
-                  "lang": "csharp",
-                  "value": "operator ++(RepeatSequence)"
-                },
-                {
-                  "lang": "vb",
-                  "value": "op_Increment(RepeatSequence)"
-                }
-              ],
-              "nameWithType": [
-                {
-                  "lang": "csharp",
-                  "value": "StaticAbstractMembersInInterfaces.IGetNext<StaticAbstractMembersInInterfaces.RepeatSequence>.operator ++(StaticAbstractMembersInInterfaces.RepeatSequence)"
-                },
-                {
-                  "lang": "vb",
-                  "value": "StaticAbstractMembersInInterfaces.IGetNext(Of StaticAbstractMembersInInterfaces.RepeatSequence).op_Increment(StaticAbstractMembersInInterfaces.RepeatSequence)"
-                }
-              ],
-              "fullName": [
-                {
-                  "lang": "csharp",
-                  "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext<CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence>.operator ++(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)"
-                },
-                {
-                  "lang": "vb",
-                  "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence).op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)"
-                }
-              ],
-              "specName": [
-                {
-                  "lang": "csharp",
-                  "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_\">++</a>(<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>)"
-                },
-                {
-                  "lang": "vb",
-                  "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_\">op_Increment</a>(<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>)"
-                }
-              ]
-            }
-          ],
-          "type": "operator",
           "summary": "",
+          "type": "operator",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_.md&value=---%0Auid%3A%20CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L17",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
           "seealso": [],
           "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_",
           "hideTitleType": false,
@@ -1274,10 +765,15 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.yml",
+  "_splitReference": true,
+  "_splitFrom": true,
+  "_key": "obj/api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {
