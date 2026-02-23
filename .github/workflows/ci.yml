@@ -45,7 +45,7 @@ jobs:
       run: dotnet tool install -g dotnet-coverage
 
     - name: Start dotnet-coverage with background server mode
-      run: dotnet coverage collect --session-id docfx_coverage --settings test/CodeCoverage.runsettings --server-mode --background
+      run: dotnet coverage collect --session-id docfx_coverage --settings test/CodeCoverage.config --server-mode --background
 
     - run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net10.0 --no-build"
       id: test-net100
