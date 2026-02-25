@@ -49,17 +49,14 @@ internal class ResolveReference : IResolverPipeline
 
                 if (current.Type.IsPageLevel())
                 {
-                    ClearMissingLocalHrefs(page, context);
+                    ClearBrokenHrefs(page, context);
                 }
 
                 return true;
             });
     }
 
-    // Clears hrefs that point to local pages which have no corresponding member (i.e. no generated page).
-    // This prevents broken links to parent namespaces that contain no types of their own.
-    // External URLs (Microsoft Learn, source links) are preserved as they begin with "http".
-    private static void ClearMissingLocalHrefs(MetadataItem page, ResolverContext context)
+    private static void ClearBrokenHrefs(MetadataItem page, ResolverContext context)
     {
         foreach (var reference in page.References.Values)
         {
