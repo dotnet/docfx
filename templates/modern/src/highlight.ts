@@ -13,7 +13,7 @@ export async function highlight() {
   const { configureHljs } = await options()
   configureHljs?.(hljs)
 
-  document.querySelectorAll('pre code').forEach(block => {
+  codeBlocks.forEach(block => {
     hljs.highlightElement(block as HTMLElement)
   })
 
