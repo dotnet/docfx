@@ -60,4 +60,8 @@ internal class MetadataCommandOptions : LogOptions
     [Description("Determines the member page layout.")]
     [CommandOption("--memberLayout")]
     public MemberLayout? MemberLayout { get; set; }
+
+    [Description("Forces a Full Build to be run before metadata is gathered.")]
+    [CommandOption("--forceBuild")]
+    public bool ForceBuild { get; set; }
 }

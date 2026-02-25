@@ -62,6 +62,8 @@ partial class DotnetApiCatalog
             foreach (var solution in solutionFiles.Select(s => s.NormalizedPath))
             {
                 Logger.LogInfo($"Loading solution {solution}");
+                var sf = SolutionFile.Parse(solution);
+
                 foreach (var project in SolutionFile.Parse(solution).ProjectsInOrder)
                 {
                     if (project.ProjectType is SolutionProjectType.KnownToBeMSBuildFormat &&
@@ -150,43 +152,67 @@ partial class DotnetApiCatalog
             if (project is null)
             {
                 Logger.LogInfo($"Loading project {path}");
-                if (!config.NoRestore)
+                if (!config.NoRestore || config.ForceBuild)
                 {
                     using var process = Process.Start("dotnet", $"restore \"{path}\"");
                     await process.WaitForExitAsync();
                 }
-                project = await workspace.OpenProjectAsync(path, msbuildLogger);
 
-                foreach (var unresolvedAnalyzer in project.AnalyzerReferences.OfType<UnresolvedAnalyzerReference>())
+                if (config.ForceBuild)
                 {
-                    Logger.LogWarning($"There is .NET Analyzer that can't be resolved. "
-                                    + $"If this analyzer is .NET Source Generator project. "
-                                    + $"Try build with `dotnet build -c Release` command before running docfx. Path: {unresolvedAnalyzer.FullPath}",
-                                    code: WarningCodes.Metadata.FailedToResolveAnalyzer);
-                }
-
-                foreach (var analyzer in project.AnalyzerReferences.OfType<AnalyzerFileReference>())
-                {
-                    analyzer.AnalyzerLoadFailed += (sender, e) =>
+                    // Build using MSBuild APIs
+                    var buildParams = new Microsoft.Build.Execution.BuildParameters
                     {
-                        var analyzerName = analyzer.Display;
-                        var errorCode = e.ErrorCode;
-                        var referencedCompilerVersion = e.ReferencedCompilerVersion;
-
-                        Logger.LogWarning($"Failed to load .NET Analyzer. AnalyzerName: {analyzerName}, ErrorCode: {errorCode}, ReferencedCompilerVersion: {referencedCompilerVersion}",
-                                          code: WarningCodes.Metadata.FailedToLoadAnalyzer);
+                        Loggers = new[] { msbuildLogger }
                     };
 
+                    var buildRequest = new Microsoft.Build.Execution.BuildRequestData(
+                        path,
+                        msbuildProperties,
+                        null,
+                        new[] { "Build" },
+                        null);
+
+                    var buildResult = Microsoft.Build.Execution.BuildManager.DefaultBuildManager.Build(buildParams, buildRequest);
+
+                    if (buildResult.OverallResult != Microsoft.Build.Execution.BuildResultCode.Success)
+                    {
+                        Logger.LogWarning($"Build failed for project {path}");
+                    }
                 }
+
+                project = await workspace.OpenProjectAsync(path, msbuildLogger);
             }
 
-            if (!project.SupportsCompilation)
+            var compilation = await project.GetCompilationAsync();
+            if (compilation == null)
             {
                 Logger.LogInfo($"Skip unsupported project {project.FilePath}.");
                 return null;
             }
 
-            return await project.GetCompilationAsync();
+            foreach (var unresolvedAnalyzer in project.AnalyzerReferences.OfType<UnresolvedAnalyzerReference>())
+            {
+                Logger.LogWarning($"There is .NET Analyzer that can't be resolved. "
+                                  + $"If this analyzer is .NET Source Generator project. "
+                                  + $"Try build with `dotnet build -c Release` command before running docfx. Path: {unresolvedAnalyzer.FullPath}",
+                    code: WarningCodes.Metadata.FailedToResolveAnalyzer);
+            }
+
+            foreach (var analyzer in project.AnalyzerReferences.OfType<AnalyzerFileReference>())
+            {
+                analyzer.AnalyzerLoadFailed += (sender, e) =>
+                {
+                    var analyzerName = analyzer.Display;
+                    var errorCode = e.ErrorCode;
+                    var referencedCompilerVersion = e.ReferencedCompilerVersion;
+
+                    Logger.LogWarning($"Failed to load .NET Analyzer. AnalyzerName: {analyzerName}, ErrorCode: {errorCode}, ReferencedCompilerVersion: {referencedCompilerVersion}",
+                        code: WarningCodes.Metadata.FailedToLoadAnalyzer);
+                };
+            }
+
+            return compilation;
         }
     }
 }
