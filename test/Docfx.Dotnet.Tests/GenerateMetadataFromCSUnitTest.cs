@@ -3782,4 +3782,59 @@ namespace Test
         Assert.Contains("TupleLibrary", output.References.Keys);
         Assert.Contains("TupleLibrary.XmlTasks", output.References.Keys);
     }
+
+    [Fact]
+    public void TestNamespacePartsHaveNoHrefForMissingParentNamespaces()
+    {
+        // Regression test for https://github.com/dotnet/docfx/issues/10588.
+        // Foo and Foo.Bar have no types, so no page is generated for them — their href must be null.
+        // Foo.Bar has a type (IntermediateClass), so Foo.Bar.Baz's "Bar" segment must keep its href.
+        var code = """
+            namespace Foo.Bar
+            {
+                public class IntermediateClass { }
+            }
+            namespace Foo.Bar.Baz
+            {
+                public class MyClass { }
+            }
+            """;
+
+        var assembly = Verify(code);
+
+        var allMembers = new Dictionary<string, MetadataItem>();
+        var allReferences = new Dictionary<string, ReferenceItem>();
+        foreach (var ns in assembly.Items ?? [])
+        {
+            allMembers[ns.Name] = ns;
+            foreach (var type in ns.Items ?? [])
+            {
+                allMembers[type.Name] = type;
+            }
+        }
+        if (assembly.References is not null)
+        {
+            foreach (var (key, value) in assembly.References)
+            {
+                allReferences[key] = value;
+            }
+        }
+
+        var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, NamespaceLayout.Flattened);
+
+        // On the Foo.Bar.Baz.MyClass page, parts are: "Foo", ".", "Bar", ".", "Baz"
+        var deepClassPage = model.Members.Single(m => m.Name == "Foo.Bar.Baz.MyClass");
+        var deepNsParts = deepClassPage.References["Foo.Bar.Baz"].NameParts[SyntaxLanguage.CSharp];
+        Assert.Equal(["Foo", ".", "Bar", ".", "Baz"], deepNsParts.Select(p => p.DisplayName));
+        Assert.Null(deepNsParts.Single(p => p.DisplayName == "Foo").Href);    // Foo has no page
+        Assert.NotNull(deepNsParts.Single(p => p.DisplayName == "Bar").Href); // Foo.Bar has a page
+        Assert.NotNull(deepNsParts.Single(p => p.DisplayName == "Baz").Href); // Foo.Bar.Baz has a page
+
+        // On the Foo.Bar.IntermediateClass page, parts are: "Foo", ".", "Bar"
+        var shallowClassPage = model.Members.Single(m => m.Name == "Foo.Bar.IntermediateClass");
+        var shallowNsParts = shallowClassPage.References["Foo.Bar"].NameParts[SyntaxLanguage.CSharp];
+        Assert.Equal(["Foo", ".", "Bar"], shallowNsParts.Select(p => p.DisplayName));
+        Assert.Null(shallowNsParts.Single(p => p.DisplayName == "Foo").Href);  // Foo has no page
+        Assert.NotNull(shallowNsParts.Single(p => p.DisplayName == "Bar").Href); // Foo.Bar has a page
+    }
 }
