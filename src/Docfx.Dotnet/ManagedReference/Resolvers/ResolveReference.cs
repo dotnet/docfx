@@ -46,8 +46,45 @@ internal class ResolveReference : IResolverPipeline
                     }
                 }
                 AddIndirectReference(context, page, addingReferences);
+
+                if (current.Type.IsPageLevel())
+                {
+                    ClearMissingLocalHrefs(page, context);
+                }
+
                 return true;
             });
+    }
+
+    // Clears hrefs that point to local pages which have no corresponding member (i.e. no generated page).
+    // This prevents broken links to parent namespaces that contain no types of their own.
+    // External URLs (Microsoft Learn, source links) are preserved as they begin with "http".
+    private static void ClearMissingLocalHrefs(MetadataItem page, ResolverContext context)
+    {
+        foreach (var reference in page.References.Values)
+        {
+            foreach (var parts in new[] { reference.NameParts, reference.NameWithTypeParts, reference.QualifiedNameParts })
+            {
+                if (parts is null)
+                {
+                    continue;
+                }
+
+                foreach (var items in parts.Values)
+                {
+                    foreach (var item in items)
+                    {
+                        if (item.Name is not null
+                            && item.Href is not null
+                            && !item.Href.StartsWith("http", StringComparison.Ordinal)
+                            && !context.Members.ContainsKey(item.Name))
+                        {
+                            item.Href = null;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static void TryAddReference(ResolverContext context, MetadataItem page, List<ReferenceItem> addingReferences, string key)
