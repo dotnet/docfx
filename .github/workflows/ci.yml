@@ -6,6 +6,9 @@ on:
     branches: [ main, feature/*, hotfix/* ]
   workflow_dispatch:
 
+env:
+  NO_COLOR: true
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -31,30 +34,47 @@ jobs:
       shell: bash
       working-directory: templates
 
-    - run: dotnet test -c Release -f net10.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
+    - name: Install Chromium headless shell
+      shell: pwsh
+      working-directory: src/docfx/bin/Release/net8.0
+      run: |
+        $env:PLAYWRIGHT_NODEJS_PATH = (Get-Command node).Path
+        ./playwright.ps1 install chromium --only-shell
+
+    - name: Install `dotnet-coverage` as .NET Global Tool
+      run: dotnet tool install -g dotnet-coverage
+
+    - name: Start dotnet-coverage with background server mode
+      run: dotnet coverage collect --session-id docfx_coverage --settings test/CodeCoverage.config --server-mode --background
+
+    - run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net10.0 --no-build"
       id: test-net100
 
-    - run: dotnet test -c Release -f net9.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
+    - run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net9.0 --no-build"
       if: matrix.os == 'ubuntu-latest'
       id: test-net90
 
-    - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
+    - run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net8.0 --no-build"
       if: matrix.os == 'ubuntu-latest'
       id: test-net80
 
     - run: npm i -g @percy/cli
       if: matrix.os == 'ubuntu-latest'
 
-    - run: percy exec -- dotnet test -c Release -f net10.0 --filter Stage=Percy --no-build --collect:"XPlat Code Coverage"
+    - run: dotnet coverage connect docfx_coverage "percy exec -- dotnet test -c Release -f net10.0 --no-build -- --filter-trait "Stage=Percy""
       if: matrix.os == 'ubuntu-latest'
       env:
         PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+
+    - name: Shutdown dotnet-coverage server.
+      run: dotnet coverage shutdown docfx_coverage  --timeout 60000
 
     - uses: codecov/codecov-action@v5
       if: matrix.os == 'ubuntu-latest'
       with:
         fail_ci_if_error: false
         token: ${{ secrets.CODECOV_TOKEN }}
+        directory: test/TestResults/code-coverages
 
     - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
       if: matrix.os == 'ubuntu-latest'
@@ -74,8 +94,10 @@ jobs:
         name: logs-${{ matrix.os }}
         path: |
           msbuild.binlog
+          test/**/TestResults/*.log
           test/**/TestResults/*.trx
           test/**/TestResults/*.html
+          test/**/TestResults/*.ctrf
 
     - uses: actions/upload-artifact@v6
       if: ${{ failure() && matrix.os == 'ubuntu-latest' }}

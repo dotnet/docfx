@@ -14,7 +14,7 @@ public class GenerateMetadataFromAssemblyTest
     {
         {
             var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary.dll");
-            Assert.Empty(compilation.GetDeclarationDiagnostics());
+            Assert.Empty(compilation.GetDeclarationDiagnostics(TestContext.Current.CancellationToken));
 
             var output = assembly.GenerateMetadataItem(compilation);
             var @class = output.Items[0].Items[2];
@@ -26,7 +26,7 @@ public class GenerateMetadataFromAssemblyTest
 
         {
             var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary2.dll");
-            Assert.Empty(compilation.GetDeclarationDiagnostics());
+            Assert.Empty(compilation.GetDeclarationDiagnostics(TestContext.Current.CancellationToken));
 
             var output = assembly.GenerateMetadataItem(compilation);
             var @class = output.Items[0].Items[0];
@@ -40,7 +40,7 @@ public class GenerateMetadataFromAssemblyTest
     public void TestGenerateMetadataFromAssemblyWithReferences()
     {
         var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/TupleLibrary.dll");
-        Assert.Empty(compilation.GetDeclarationDiagnostics());
+        Assert.Empty(compilation.GetDeclarationDiagnostics(TestContext.Current.CancellationToken));
 
         var output = assembly.GenerateMetadataItem(compilation);
         var @class = output.Items[0].Items[0];
