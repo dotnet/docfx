@@ -3787,48 +3787,81 @@ namespace Test
     public void TestGenerateMetadataWithNestedNamespaceHrefs()
     {
         // https://github.com/dotnet/docfx/issues/10588
-        var code = """
+        var codeA = """
             namespace Foo.Bar
             {
-                public class IntermediateClass { }
-            }
-            namespace Foo.Bar.Baz
-            {
-                public class MyClass { }
+                public class TypeFromA { }
             }
             """;
 
-        var output = Verify(code);
+        var codeB = """
+            namespace Foo.Bar.Baz
+            {
+                public class TypeFromB
+                {
+                    public Foo.Bar.TypeFromA GetA() => null;
+                }
+            }
+            """;
+
+        var compilationA = CompilationHelper.CreateCompilationFromCSharpCode(codeA, EmptyMSBuildProperties, "AssemblyA.dll");
+        var compilationB = CompilationHelper.CreateCompilationFromCSharpCode(codeB, EmptyMSBuildProperties, "AssemblyB.dll", compilationA.ToMetadataReference());
+
+        var allAssemblies = new HashSet<IAssemblySymbol>([compilationA.Assembly, compilationB.Assembly], SymbolEqualityComparer.Default);
+
+        var filter = new SymbolFilter(new(), new());
+
+        var outputA = compilationA.Assembly.Accept(new SymbolVisitorAdapter(compilationA, new(compilationA, MemberLayout.SamePage, allAssemblies), new(), filter, []));
+        var outputB = compilationB.Assembly.Accept(new SymbolVisitorAdapter(compilationB, new(compilationB, MemberLayout.SamePage, allAssemblies), new(), filter, []));
 
         var allMembers = new Dictionary<string, MetadataItem>();
         var allReferences = new Dictionary<string, ReferenceItem>();
-        foreach (var ns in output.Items ?? [])
+
+        foreach (var output in new[] { outputA, outputB })
         {
-            allMembers[ns.Name] = ns;
-            foreach (var type in ns.Items ?? [])
+            foreach (var ns in output.Items ?? [])
             {
-                allMembers[type.Name] = type;
+                allMembers.TryAdd(ns.Name, ns);
+                foreach (var type in ns.Items ?? [])
+                {
+                    allMembers.TryAdd(type.Name, type);
+                }
             }
-        }
-        if (output.References is not null)
-        {
-            foreach (var (key, value) in output.References)
+            if (output.References is not null)
             {
-                allReferences[key] = value;
+                foreach (var (key, value) in output.References)
+                {
+                    if (allReferences.TryGetValue(key, out var existing))
+                    {
+                        existing.Merge(value);
+                    }
+                    else
+                    {
+                        allReferences[key] = value;
+                    }
+                }
             }
         }
 
         var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, NamespaceLayout.Flattened);
 
-        var bazParts = model.Members.Single(m => m.Name == "Foo.Bar.Baz.MyClass").References["Foo.Bar.Baz"].NameParts[SyntaxLanguage.CSharp];
+        // Verify cross-assembly reference: TypeFromB references TypeFromA from another assembly
+        var typeBPage = model.Members.Single(m => m.Name == "Foo.Bar.Baz.TypeFromB");
+        var bazParts = typeBPage.References["Foo.Bar.Baz"].NameParts[SyntaxLanguage.CSharp];
         Assert.Equal(["Foo", ".", "Bar", ".", "Baz"], bazParts.Select(p => p.DisplayName));
         Assert.Null(bazParts.Single(p => p.DisplayName == "Foo").Href);
         Assert.NotNull(bazParts.Single(p => p.DisplayName == "Bar").Href);
         Assert.NotNull(bazParts.Single(p => p.DisplayName == "Baz").Href);
 
-        var barParts = model.Members.Single(m => m.Name == "Foo.Bar.IntermediateClass").References["Foo.Bar"].NameParts[SyntaxLanguage.CSharp];
+        var barParts = typeBPage.References["Foo.Bar"].NameParts[SyntaxLanguage.CSharp];
         Assert.Equal(["Foo", ".", "Bar"], barParts.Select(p => p.DisplayName));
         Assert.Null(barParts.Single(p => p.DisplayName == "Foo").Href);
         Assert.NotNull(barParts.Single(p => p.DisplayName == "Bar").Href);
+
+        // Same-assembly reference
+        var typeAPage = model.Members.Single(m => m.Name == "Foo.Bar.TypeFromA");
+        var barPartsA = typeAPage.References["Foo.Bar"].NameParts[SyntaxLanguage.CSharp];
+        Assert.Null(barPartsA.Single(p => p.DisplayName == "Foo").Href);
+        Assert.NotNull(barPartsA.Single(p => p.DisplayName == "Bar").Href);
     }
 }
