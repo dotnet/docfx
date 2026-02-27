@@ -10,6 +10,8 @@ internal class ResolveReference : IResolverPipeline
 {
     public void Run(MetadataModel yaml, ResolverContext context)
     {
+        var pages = new List<MetadataItem>();
+
         TreeIterator.Preorder(yaml.TocYamlViewModel, null,
             s => s.IsInvalid ? null : s.Items,
             (current, parent) =>
@@ -21,6 +23,7 @@ internal class ResolveReference : IResolverPipeline
                 {
                     page = current;
                     current.References = [];
+                    pages.Add(page);
                 }
                 else
                 {
@@ -47,13 +50,13 @@ internal class ResolveReference : IResolverPipeline
                 }
                 AddIndirectReference(context, page, addingReferences);
 
-                if (current.Type.IsPageLevel())
-                {
-                    ClearBrokenHrefs(page, context);
-                }
-
                 return true;
             });
+
+        foreach (var page in pages)
+        {
+            ClearBrokenHrefs(page, context);
+        }
     }
 
     private static void ClearBrokenHrefs(MetadataItem page, ResolverContext context)
