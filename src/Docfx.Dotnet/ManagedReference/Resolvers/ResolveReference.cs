@@ -10,6 +10,8 @@ internal class ResolveReference : IResolverPipeline
 {
     public void Run(MetadataModel yaml, ResolverContext context)
     {
+        var pages = new List<MetadataItem>();
+
         TreeIterator.Preorder(yaml.TocYamlViewModel, null,
             s => s.IsInvalid ? null : s.Items,
             (current, parent) =>
@@ -21,6 +23,7 @@ internal class ResolveReference : IResolverPipeline
                 {
                     page = current;
                     current.References = [];
+                    pages.Add(page);
                 }
                 else
                 {
@@ -46,8 +49,42 @@ internal class ResolveReference : IResolverPipeline
                     }
                 }
                 AddIndirectReference(context, page, addingReferences);
+
                 return true;
             });
+
+        foreach (var page in pages)
+        {
+            ClearBrokenHrefs(page, context);
+        }
+    }
+
+    private static void ClearBrokenHrefs(MetadataItem page, ResolverContext context)
+    {
+        foreach (var reference in page.References.Values)
+        {
+            foreach (var parts in new[] { reference.NameParts, reference.NameWithTypeParts, reference.QualifiedNameParts })
+            {
+                if (parts is null)
+                {
+                    continue;
+                }
+
+                foreach (var items in parts.Values)
+                {
+                    foreach (var item in items)
+                    {
+                        if (item.Name is not null
+                            && item.Href is not null
+                            && !item.Href.StartsWith("http", StringComparison.Ordinal)
+                            && !context.Members.ContainsKey(item.Name))
+                        {
+                            item.Href = null;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static void TryAddReference(ResolverContext context, MetadataItem page, List<ReferenceItem> addingReferences, string key)
