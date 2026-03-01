@@ -51,6 +51,8 @@ static class PdfBuilder
 
         public string? pdfHeaderTemplate { get; init; }
         public string? pdfFooterTemplate { get; init; }
+        public bool pdfHeaderFooterOnCover { get; init; }
+        public bool pdfHeaderFooterOnToc { get; init; }
     }
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null, CancellationToken cancellationToken = default)
@@ -462,10 +464,10 @@ static class PdfBuilder
                         CopyLinkFunc = x => CopyLink(node, x),
                     });
 
-                    if (isCoverPage)
+                    if (isCoverPage && !outline.pdfHeaderFooterOnCover)
                         continue;
 
-                    if (isTocPage)
+                    if (isTocPage && !outline.pdfHeaderFooterOnToc)
                         continue;
 
                     var headerFooter = await printHeaderFooter(outline, pageNumber, numberOfPages, document.GetPage(i));
