@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using AwesomeAssertions;
-using Xunit.Abstractions;
+using Xunit;
 
 namespace Docfx.Dotnet.Tests;
 
