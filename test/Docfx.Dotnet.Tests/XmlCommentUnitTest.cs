@@ -408,10 +408,12 @@ public partial class XmlCommentUnitTest
             <a href="https://example.org">example</a>
             <p>This is <code class="paramref">ref</code> a sample of exception node</p>
             <ul><li>
+
                         <pre><code class="lang-c#">public class XmlElement
                 : XmlLinkedNode</code></pre>
+
                         <ol><li>
-                                    word inside list-&gt;listItem-&gt;list-&gt;listItem-&gt;para.&gt;
+                                    word inside list->listItem->list->listItem->para.>
                                     the second line.
                                 </li><li>item2 in numbered list</li></ol>
                     </li><li>item2 in bullet list</li><li>
@@ -581,6 +583,7 @@ public partial class XmlCommentUnitTest
             <p>
             Paragraph.
             </p>
+
             <pre><code class="lang-csharp">public sealed class Issue10385
             {
                 public int AAA {get;set;}
