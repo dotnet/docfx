@@ -37,6 +37,15 @@ static class PdfBuilder
 {
     private static readonly SearchValues<char> InvalidPathChars = SearchValues.Create(Path.GetInvalidPathChars());
 
+    class HeadingInfo
+    {
+        public string Text { get; init; } = "";
+        public string Id { get; init; } = "";
+        public int Level { get; init; }
+        public Uri PageUrl { get; init; } = null!;
+        public int PageNumber { get; set; }
+    }
+
     class Outline
     {
         public string name { get; init; } = "";
@@ -51,6 +60,9 @@ static class PdfBuilder
 
         public string? pdfHeaderTemplate { get; init; }
         public string? pdfFooterTemplate { get; init; }
+
+        public string? pdfTocSource { get; init; }
+        public int pdfTocHeadingDepth { get; init; } = 3;
     }
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null, CancellationToken cancellationToken = default)
@@ -93,6 +105,7 @@ static class PdfBuilder
 
         Uri? baseUrl = null;
         var pdfPageNumbers = new ConcurrentDictionary<string, Dictionary<Outline, int>>();
+        var pdfHeadings = new ConcurrentDictionary<string, List<HeadingInfo>>();
 
         using var app = builder.Build();
         app.UseServe(outputFolder);
@@ -127,6 +140,7 @@ static class PdfBuilder
                 await CreatePdf(
                     PrintPdf, PrintHeaderFooter, task, new(baseUrl, url), toc, outputFolder, pdfOutputPath,
                     pageNumbers => pdfPageNumbers[url] = pageNumbers,
+                    headings => pdfHeadings[url] = headings,
                     cancellationToken);
 
                 task.Value = task.MaxValue;
@@ -186,20 +200,22 @@ static class PdfBuilder
         IResult TocPage(string url)
         {
             var pageNumbers = pdfPageNumbers.GetValueOrDefault(url);
-            return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], pageNumbers).ToString(), "text/html", Encoding.UTF8);
+            var headings = pdfHeadings.GetValueOrDefault(url);
+            return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], pageNumbers, headings).ToString(), "text/html", Encoding.UTF8);
         }
 
-        async Task<byte[]?> PrintPdf(Outline outline, Uri url)
+        async Task<(byte[]? bytes, List<HeadingInfo> headings)> PrintPdf(Outline outline, Uri url, int headingDepth)
         {
             await pageLimiter.WaitAsync(cancellationToken);
             var page = pagePool.TryTake(out var pooled) ? pooled : await context.NewPageAsync();
+            var headings = new List<HeadingInfo>();
 
             try
             {
                 Uri beforeUri = new(page.Url);
                 var response = await page.GotoAsync(url.ToString(), new() { WaitUntil = WaitUntilState.DOMContentLoaded });
                 if (response?.Status is 404)
-                    return null;
+                    return (null, headings);
 
                 bool isSameUrlNavigation = response == null && beforeUri == url;
                 bool isHashFragmentNavigation = response == null
@@ -234,17 +250,64 @@ static class PdfBuilder
                     }
                 }
 
-                return await page.PdfAsync(new PagePdfOptions
+                // Extract headings from the page if needed
+                if (outline.pdfTocSource == "headings" && headingDepth > 0 && !IsTocPage(url) && !IsCoverPage(url, outputFolder, outline.pdfCoverPage))
+                {
+                    headings = await ExtractHeadingsFromPage(page, url, headingDepth);
+                }
+
+                var bytes = await page.PdfAsync(new PagePdfOptions
                 {
                     PreferCSSPageSize = true,
                     PrintBackground = outline.pdfPrintBackground,
                 });
+
+                return (bytes, headings);
             }
             finally
             {
                 pagePool.Add(page);
                 pageLimiter.Release();
             }
+        }
+
+        async Task<List<HeadingInfo>> ExtractHeadingsFromPage(IPage page, Uri pageUrl, int maxDepth)
+        {
+            var headings = new List<HeadingInfo>();
+            var selector = string.Join(",", Enumerable.Range(1, maxDepth).Select(i => $"article h{i}, .content h{i}"));
+
+            try
+            {
+                var elements = await page.QuerySelectorAllAsync(selector);
+                foreach (var element in elements)
+                {
+                    var tagName = await element.EvaluateAsync<string>("e => e.tagName");
+                    var level = int.Parse(tagName[1].ToString());
+                    var id = await element.GetAttributeAsync("id") ?? "";
+                    var text = (await element.InnerTextAsync()).Trim();
+
+                    // Skip headings without id or text
+                    if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(text))
+                        continue;
+
+                    // Clean up text (remove source link icons, etc.)
+                    var cleanText = text.Split('\n')[0].Trim();
+
+                    headings.Add(new HeadingInfo
+                    {
+                        Text = cleanText,
+                        Id = id,
+                        Level = level,
+                        PageUrl = pageUrl
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Failed to extract headings from {pageUrl}: {ex.Message}");
+            }
+
+            return headings;
         }
 
         Task<byte[]> PrintHeaderFooter(Outline toc, int pageNumber, int totalPages, Page contentPage)
@@ -333,14 +396,15 @@ static class PdfBuilder
     }
 
     static async Task CreatePdf(
-        Func<Outline, Uri, Task<byte[]?>> printPdf, Func<Outline, int, int, Page, Task<byte[]>> printHeaderFooter, ProgressTask task,
-        Uri outlineUrl, Outline outline, string outputFolder, string pdfOutputPath, Action<Dictionary<Outline, int>> updatePageNumbers, CancellationToken cancellationToken)
+        Func<Outline, Uri, int, Task<(byte[]? bytes, List<HeadingInfo> headings)>> printPdf, Func<Outline, int, int, Page, Task<byte[]>> printHeaderFooter, ProgressTask task,
+        Uri outlineUrl, Outline outline, string outputFolder, string pdfOutputPath, Action<Dictionary<Outline, int>> updatePageNumbers, Action<List<HeadingInfo>> updateHeadings, CancellationToken cancellationToken)
     {
         var pages = GetPages(outline).ToArray();
         if (pages.Length == 0)
             return;
 
         var pageBytes = new Dictionary<Outline, byte[]>();
+        var pageHeadings = new Dictionary<Outline, List<HeadingInfo>>();
 
         // Make progress at 99% before merge PDF
         task.MaxValue = pages.Length + (pages.Length / 99.0);
@@ -348,17 +412,58 @@ static class PdfBuilder
         await Parallel.ForEachAsync(pages, new ParallelOptions { CancellationToken = cancellationToken }, async (item, _) =>
         {
             var (url, node) = item;
-            if (await printPdf(outline, url) is { } bytes)
+
+            // Skip TOC pages - they depend on data from content pages (headings, page numbers)
+            // and will be rendered later once that data is available.
+            if (IsTocPage(url))
+            {
+                task.Increment(1);
+                return;
+            }
+
+            var result = await printPdf(outline, url, outline.pdfTocHeadingDepth);
+            if (result.bytes is { } bytes)
             {
                 lock (pageBytes)
                     pageBytes[node] = bytes;
             }
+            if (result.headings.Count > 0)
+            {
+                lock (pageHeadings)
+                    pageHeadings[node] = result.headings;
+            }
             task.Increment(1);
         });
+
+        // Collect headings in document order:
+        // - Page order: preserved by iterating `pages` array (parallel processing loses this)
+        // - Within-page order: preserved by DOM order from QuerySelectorAllAsync
+        var allHeadings = pages
+            .Where(p => pageHeadings.ContainsKey(p.node))
+            .SelectMany(p => pageHeadings[p.node])
+            .ToList();
+
+        // Update headings before page numbers are calculated
+        updateHeadings(allHeadings);
+
+        // Render the TOC page now that headings are available.
+        // This is deferred from the parallel render because the TOC content depends on
+        // data extracted from content pages (headings for heading-based TOC).
+        // Rendering it here ensures the correct page count before calculating page numbers.
+        foreach (var (tocUrl, tocNode) in pages)
+        {
+            if (!IsTocPage(tocUrl))
+                continue;
+
+            var result = await printPdf(outline, tocUrl, 0);
+            if (result.bytes != null)
+                pageBytes[tocNode] = result.bytes;
+        }
 
         var pagesByNode = pages.ToDictionary(p => p.node);
         var pagesByUrl = new Dictionary<Uri, List<(Outline node, NamedDestinations namedDests)>>();
         var pageNumbers = new Dictionary<Outline, int>();
+        var urlPageNumbers = new Dictionary<Uri, int>();
         var numberOfPages = 0;
 
         foreach (var (url, node) in pages)
@@ -379,11 +484,38 @@ static class PdfBuilder
 
             pageBytes[node] = bytes;
             pageNumbers[node] = numberOfPages + 1;
+            urlPageNumbers[CleanUrl(url)] = numberOfPages + 1;
             numberOfPages += document.NumberOfPages;
         }
 
         if (numberOfPages is 0)
             return;
+
+        // Resolve actual page numbers for headings using named destinations.
+        // Each heading ID corresponds to a named destination in the document's PDF,
+        // so we can determine the exact page within the merged PDF.
+        foreach (var heading in allHeadings)
+        {
+            var cleanUrl = CleanUrl(heading.PageUrl);
+            if (pagesByUrl.TryGetValue(cleanUrl, out var dests))
+            {
+                var resolved = false;
+                foreach (var (node, namedDests) in dests)
+                {
+                    if (namedDests.TryGet(heading.Id, out var dest) && dest is not null)
+                    {
+                        heading.PageNumber = pageNumbers[node] - 1 + dest.PageNumber;
+                        resolved = true;
+                        break;
+                    }
+                }
+                // Fall back to document start page if heading ID wasn't found in named destinations
+                if (!resolved && urlPageNumbers.TryGetValue(cleanUrl, out var startPage))
+                {
+                    heading.PageNumber = startPage;
+                }
+            }
+        }
 
         var producer = $"docfx ({typeof(PdfBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version})";
 
@@ -444,7 +576,9 @@ static class PdfBuilder
                 {
                     // Refresh TOC page numbers
                     updatePageNumbers(pageNumbers);
-                    bytes = await printPdf(outline, url);
+                    updateHeadings(allHeadings);
+                    var result = await printPdf(outline, url, 0); // 0 = don't extract headings from TOC page
+                    bytes = result.bytes;
 
                     if (bytes == null)
                         continue;
@@ -525,21 +659,6 @@ static class PdfBuilder
 
         static Uri CleanUrl(Uri url) => new UriBuilder(url) { Query = null, Fragment = null }.Uri;
 
-        static bool IsCoverPage(Uri pageUri, string baseFolder, string? pdfCoverPage)
-        {
-            Debug.Assert(Path.IsPathFullyQualified(baseFolder));
-
-            if (string.IsNullOrEmpty(pdfCoverPage))
-                return false;
-
-            string pagePath = pageUri.AbsolutePath.TrimStart('/');
-            string covePagePath = PathUtility.MakeRelativePath(baseFolder, Path.GetFullPath(Path.Combine(baseFolder, pdfCoverPage)));
-
-            return pagePath.Equals(covePagePath, GetStringComparison());
-        }
-
-        static bool IsTocPage(Uri url) => url.AbsolutePath.StartsWith("/_pdftoc/");
-
         Bookmarks CreateBookmarks(Outline[]? items)
         {
             var nextPageNumber = 1;
@@ -607,8 +726,40 @@ static class PdfBuilder
         }
     }
 
-    static HtmlTemplate TocHtmlTemplate(Uri baseUrl, Outline node, Dictionary<Outline, int>? pageNumbers)
+    static HtmlTemplate TocHtmlTemplate(Uri baseUrl, Outline node, Dictionary<Outline, int>? pageNumbers, List<HeadingInfo>? headings)
     {
+        // If pdfTocSource is "headings" and we have headings, generate TOC from headings
+        if (node.pdfTocSource == "headings" && headings is { Count: > 0 })
+        {
+            var headingTocContent = BuildHeadingToc(baseUrl, headings);
+            var cssStyles = Html($"""
+                <style>
+                  /* Indentation for heading levels */
+                  li[data-level="1"] {"{ padding-left: 0; }"}
+                  li[data-level="2"] {"{ padding-left: 1.5em; }"}
+                  li[data-level="3"] {"{ padding-left: 3em; }"}
+                  li[data-level="4"] {"{ padding-left: 4.5em; }"}
+                  li[data-level="5"] {"{ padding-left: 6em; }"}
+                  li[data-level="6"] {"{ padding-left: 7.5em; }"}
+                </style>
+                """);
+            return Html($"""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                  <link rel="stylesheet" href="/public/docfx.min.css">
+                  <link rel="stylesheet" href="/public/main.css">
+                  {cssStyles}
+                </head>
+                <body class="pdftoc">
+                <h1>Table of Contents</h1>
+                <ul>{headingTocContent}</ul>
+                </body>
+                </html>
+                """);;
+        }
+
+        // Default: generate TOC from toc.yml structure
         return Html($"""
             <!DOCTYPE html>
             <html>
@@ -635,6 +786,34 @@ static class PdfBuilder
               {(node.items?.Length > 0 ? Html($"<ul>{node.items.Select(TocNode)}</ul>") : null)}
             </li>
             """);
+    }
+
+    static HtmlTemplate BuildHeadingToc(Uri baseUrl, List<HeadingInfo> headings)
+    {
+        // Build flat list of all headings with CSS-based indentation for hierarchy
+        var result = new List<HtmlTemplate>();
+
+        foreach (var heading in headings)
+        {
+            var href = new UriBuilder(heading.PageUrl) { Fragment = heading.Id }.Uri;
+
+            var pageNumberHtml = heading.PageNumber > 0
+                ? Html($"<span class='spacer'></span> <span class='page-number'>{heading.PageNumber}</span>")
+                : default;
+
+            // Use data-level attribute for CSS styling of indentation
+            var item = Html($"""
+                <li data-level='{heading.Level}'>
+                  <a href='{href}'>{System.Web.HttpUtility.HtmlEncode(heading.Text)}
+                  {pageNumberHtml}
+                  </a>
+                </li>
+                """);
+
+            result.Add(item);
+        }
+
+        return Html($"{result}");
     }
 
     /// <summary>
@@ -725,5 +904,20 @@ static class PdfBuilder
         return PathUtility.IsPathCaseInsensitive()
             ? StringComparison.OrdinalIgnoreCase
             : StringComparison.Ordinal;
+    }
+
+    private static bool IsTocPage(Uri url) => url.AbsolutePath.StartsWith("/_pdftoc/");
+
+    private static bool IsCoverPage(Uri pageUri, string baseFolder, string? pdfCoverPage)
+    {
+        Debug.Assert(Path.IsPathFullyQualified(baseFolder));
+
+        if (string.IsNullOrEmpty(pdfCoverPage))
+            return false;
+
+        string pagePath = pageUri.AbsolutePath.TrimStart('/');
+        string coverPagePath = PathUtility.MakeRelativePath(baseFolder, Path.GetFullPath(Path.Combine(baseFolder, pdfCoverPage)));
+
+        return pagePath.Equals(coverPagePath, GetStringComparison());
     }
 }

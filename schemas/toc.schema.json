@@ -106,6 +106,19 @@
           "type": "boolean",
           "default": false,
           "description": "If set to true, Child items are displayed as dropdown on top navigation bar."
+        },
+        "pdfTocSource": {
+          "type": "string",
+          "enum": ["toc", "headings"],
+          "default": "toc",
+          "description": "Source for PDF Table of Contents. 'toc' uses toc.yml structure (default), 'headings' extracts headings from document content."
+        },
+        "pdfTocHeadingDepth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6,
+          "default": 3,
+          "description": "Maximum heading level to include in PDF TOC when pdfTocSource is 'headings'. For example, 3 includes h1, h2, and h3."
         }
       }
     },
