@@ -24,6 +24,7 @@ public class CommandLineTest
         Assert.Equal(0, Program.Main(["serve", "--help"]));
         Assert.Equal(0, Program.Main(["metadata", "--help"]));
         Assert.Equal(0, Program.Main(["pdf", "--help"]));
+        Assert.Equal(0, Program.Main(["clean", "--help"]));
         Assert.Equal(0, Program.Main(["init", "--help"]));
         Assert.Equal(0, Program.Main(["download", "--help"]));
         Assert.Equal(0, Program.Main(["merge", "--help"]));
