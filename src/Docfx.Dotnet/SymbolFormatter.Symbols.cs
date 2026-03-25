@@ -217,6 +217,8 @@ partial class SymbolFormatter
         public IPropertySymbol PartialDefinitionPart => Inner.PartialDefinitionPart;
         public IPropertySymbol PartialImplementationPart => Inner.PartialImplementationPart;
         public bool IsPartialDefinition => Inner.IsPartialDefinition;
+        public IPropertySymbol ReduceExtensionMember(ITypeSymbol receiverType) => Inner.ReduceExtensionMember(receiverType);
+
     }
 
     public class MethodSymbol : IMethodSymbol
@@ -367,6 +369,7 @@ partial class SymbolFormatter
         public ImmutableArray<AttributeData> GetReturnTypeAttributes() => Inner.GetReturnTypeAttributes();
         public ITypeSymbol GetTypeInferredDuringReduction(ITypeParameterSymbol reducedFromTypeParameter) => Inner.GetTypeInferredDuringReduction(reducedFromTypeParameter);
         public IMethodSymbol ReduceExtensionMethod(ITypeSymbol receiverType) => Inner.ReduceExtensionMethod(receiverType);
+        public IMethodSymbol ReduceExtensionMember(ITypeSymbol receiverType) => Inner.ReduceExtensionMember(receiverType);
         public ImmutableArray<SymbolDisplayPart> ToDisplayParts(SymbolDisplayFormat format = null) => Inner.ToDisplayParts(format);
         public string ToDisplayString(SymbolDisplayFormat format = null) => Inner.ToDisplayString(format);
         public ImmutableArray<SymbolDisplayPart> ToMinimalDisplayParts(SemanticModel semanticModel, int position, SymbolDisplayFormat format = null) => Inner.ToMinimalDisplayParts(semanticModel, position, format);
