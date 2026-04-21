@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Spectre.Console" />
     <ProjectReference Include="..\..\src\Docfx.MarkdigEngine\Docfx.MarkdigEngine.csproj" />
   </ItemGroup>
 </Project>
