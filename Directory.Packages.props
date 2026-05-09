@@ -6,10 +6,10 @@
   <ItemGroup>
     <PackageVersion Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="9.1.0.7988" />
-    <PackageVersion Include="Jint" Version="4.5.0" />
+    <PackageVersion Include="Jint" Version="4.6.1" />
     <PackageVersion Include="JsonSchema.Net" Version="7.4.0" />
-    <PackageVersion Include="Markdig" Version="0.44.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.57.0" />
+    <PackageVersion Include="Markdig" Version="1.1.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.58.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271" />
@@ -18,7 +18,7 @@
     <PackageVersion Include="Spectre.Console" Version="0.54.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.53.1" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
-    <PackageVersion Include="System.Composition" Version="10.0.2" />
+    <PackageVersion Include="System.Composition" Version="10.0.3" />
     <PackageVersion Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 
