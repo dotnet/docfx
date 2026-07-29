@@ -71,6 +71,15 @@ public class JintProcessorHelperTest
         Assert.Equal("uid,type", engine.Evaluate("Object.keys(model0).join(',')").AsString());
         Assert.Equal("uid0|uid1|uid2", engine.Evaluate("[model0, model1, model2].map(function (m) { return m.uid; }).join('|')").AsString());
         Assert.True(engine.Evaluate("[model0, model1, model2].every(function (m) { return m.type === 'Class'; })").AsBoolean());
+
+        // The point of building models this way is the shared hidden class, and the conversion falls back to
+        // the ordinary property dictionary silently when it cannot reach it - so assert the optimization
+        // actually happened. GetObjectRepresentation is a diagnostic Jint documents for exactly this, and is
+        // deliberately not part of its compatibility contract: if a future Jint changes what these models get,
+        // this assertion is how docfx finds out.
+        Assert.Equal(
+            ObjectRepresentation.HiddenClass,
+            engine.Advanced.GetObjectRepresentation(engine.Evaluate("model0").AsObject()));
     }
 
     /// <summary>
@@ -95,6 +104,10 @@ public class JintProcessorHelperTest
         Assert.Equal("1,2,name", engine.Evaluate("Object.keys(model).join(',')").AsString());
         Assert.Equal("one", engine.Evaluate("model['1']").AsString());
         Assert.Equal("n", engine.Evaluate("model.name").AsString());
+
+        Assert.Equal(
+            ObjectRepresentation.Dictionary,
+            engine.Advanced.GetObjectRepresentation(engine.Evaluate("model").AsObject()));
     }
 
     [Trait("Related", "JintProcessor")]
