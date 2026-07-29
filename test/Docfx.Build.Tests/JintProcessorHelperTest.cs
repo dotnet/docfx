@@ -32,6 +32,72 @@ public class JintProcessorHelperTest
     }
 
     [Trait("Related", "JintProcessor")]
+    [Fact]
+    public void TestObjectConvertKeepsDeclarationOrder()
+    {
+        var engine = new Jint.Engine();
+        var model = new Dictionary<string, object>
+        {
+            ["title"] = "Hello",
+            ["nested"] = new Dictionary<string, object> { ["a"] = 1, ["b"] = "two" },
+            ["items"] = new List<object> { "x", "y" },
+        };
+
+        engine.SetValue("model", JintProcessorHelper.ConvertObjectToJsValue(engine, model));
+
+        Assert.Equal("title,nested,items", engine.Evaluate("Object.keys(model).join(',')").AsString());
+        Assert.Equal("Hello", engine.Evaluate("model.title").AsString());
+        Assert.Equal("a,b", engine.Evaluate("Object.keys(model.nested).join(',')").AsString());
+        Assert.Equal("two", engine.Evaluate("model.nested.b").AsString());
+        Assert.Equal("x,y", engine.Evaluate("model.items.join(',')").AsString());
+    }
+
+    /// <summary>
+    /// Documents of one document type share a model layout, which is what the conversion is built around.
+    /// Objects sharing a layout must stay indistinguishable from separately built ones.
+    /// </summary>
+    [Trait("Related", "JintProcessor")]
+    [Fact]
+    public void TestObjectConvertIsStableAcrossModelsOfTheSameShape()
+    {
+        var engine = new Jint.Engine();
+
+        for (var i = 0; i < 3; i++)
+        {
+            var model = new Dictionary<string, object> { ["uid"] = $"uid{i}", ["type"] = "Class" };
+            engine.SetValue($"model{i}", JintProcessorHelper.ConvertObjectToJsValue(engine, model));
+        }
+
+        Assert.Equal("uid,type", engine.Evaluate("Object.keys(model0).join(',')").AsString());
+        Assert.Equal("uid0|uid1|uid2", engine.Evaluate("[model0, model1, model2].map(function (m) { return m.uid; }).join('|')").AsString());
+        Assert.True(engine.Evaluate("[model0, model1, model2].every(function (m) { return m.type === 'Class'; })").AsBoolean());
+    }
+
+    /// <summary>
+    /// Integer-index-like keys cannot be expressed in the layout the conversion targets, so they take a
+    /// fallback path. It has to stay silent and correct.
+    /// </summary>
+    [Trait("Related", "JintProcessor")]
+    [Fact]
+    public void TestObjectConvertWithIntegerLikeKeys()
+    {
+        var engine = new Jint.Engine();
+        var model = new Dictionary<string, object>
+        {
+            ["name"] = "n",
+            ["1"] = "one",
+            ["2"] = "two",
+        };
+
+        engine.SetValue("model", JintProcessorHelper.ConvertObjectToJsValue(engine, model));
+
+        // Integer-like own keys are enumerated first in ascending order, exactly as for an object literal.
+        Assert.Equal("1,2,name", engine.Evaluate("Object.keys(model).join(',')").AsString());
+        Assert.Equal("one", engine.Evaluate("model['1']").AsString());
+        Assert.Equal("n", engine.Evaluate("model.name").AsString());
+    }
+
+    [Trait("Related", "JintProcessor")]
     [Theory]
     [InlineData("string", "string")]
     [InlineData(1, 1.0)]

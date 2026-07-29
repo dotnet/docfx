@@ -1,6 +1,10 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Concurrent;
+
+using Acornima.Ast;
+
 using Docfx.Common;
 using Jint;
 using Jint.Native;
@@ -57,7 +61,32 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
 
     private const string NullString = "null";
 
+    /// <summary>
+    /// Wall clock budget for a single preprocessor call, that is one <c>getOptions</c> or
+    /// <c>transform</c> for one document. Without it an accidental infinite loop in a template script
+    /// hangs a build thread forever instead of failing the document.
+    /// </summary>
+    private static readonly TimeSpan ExecutionTimeout = TimeSpan.FromSeconds(30);
+
+    /// <summary>
+    /// Statement budget for a single preprocessor call. Deliberately far above what transforming even a
+    /// very large model costs, so it only ever catches a runaway script. A saturated value such as
+    /// <see cref="int.MaxValue"/> would register no limit at all, so this has to be a real number.
+    /// </summary>
+    private const int MaxExecutionStatements = 50_000_000;
+
     private object _utilityObject;
+
+    private readonly CancellationToken _cancellationToken;
+
+    /// <summary>
+    /// Parsed sources, keyed by resource path, shared by every preprocessor instance created for the same
+    /// template. A <see cref="Prepared{TProgram}"/> is immutable and safe to execute from several engines
+    /// and threads, so the template and everything it <c>require</c>s is parsed once instead of once per
+    /// engine in the preprocessor pool.
+    /// </summary>
+    private readonly ConcurrentDictionary<string, Prepared<Script>> _preparedScripts;
+
     private static readonly object ConsoleObject = new
     {
         log = new Action<object>(s => Logger.Log(s ?? NullString)),
@@ -72,7 +101,20 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
     private Func<object, object> _getOptionsFunc;
 
     public TemplateJintPreprocessor(ResourceFileReader resourceCollection, ResourceInfo scriptResource, DocumentBuildContext context, string name = null)
+        : this(resourceCollection, scriptResource, context, name, new ConcurrentDictionary<string, Prepared<Script>>())
     {
+    }
+
+    internal TemplateJintPreprocessor(
+        ResourceFileReader resourceCollection,
+        ResourceInfo scriptResource,
+        DocumentBuildContext context,
+        string name,
+        ConcurrentDictionary<string, Prepared<Script>> preparedScripts)
+    {
+        _preparedScripts = preparedScripts;
+        _cancellationToken = context?.CancellationToken ?? CancellationToken.None;
+
         if (!string.IsNullOrWhiteSpace(scriptResource.Content))
         {
             SetupEngine(resourceCollection, scriptResource, context);
@@ -147,7 +189,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
                 {
                     cachedEngine = CreateEngine(engine, RequireFuncVariableName);
                     engineCache[s] = cachedEngine;
-                    cachedEngine.Execute(script, s);
+                    cachedEngine.Execute(Prepare(s, script));
                 }
 
                 return cachedEngine.GetValue(ExportsVariableName);
@@ -155,7 +197,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
 
         engine.SetValue(RequireFuncVariableName, requireAction);
         engineCache[rootPath] = engine;
-        engine.Execute(scriptResource.Content, scriptResource.Path);
+        engine.Execute(Prepare(scriptResource.Path, scriptResource.Content));
 
         var value = engine.GetValue(ExportsVariableName);
         if (value.IsObject())
@@ -186,9 +228,25 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
         return newEngine;
     }
 
+    /// <summary>
+    /// Parses <paramref name="content"/> once per <paramref name="path"/> and reuses the result. The
+    /// preprocessor pool builds one instance - and therefore one engine - per parallelism slot, and they
+    /// all run the same sources, so without this the template and every module it requires would be
+    /// re-parsed for each slot.
+    /// </summary>
+    private Prepared<Script> Prepare(string path, string content)
+    {
+        return _preparedScripts.GetOrAdd(path, static (source, code) => Jint.Engine.PrepareScript(code, source), content);
+    }
+
     private Jint.Engine CreateDefaultEngine()
     {
-        var engine = new Jint.Engine();
+        // Template scripts come from the docset being built, so a faulty one must fail the document
+        // instead of pinning a render thread. Both limits apply per call into the engine.
+        var engine = new Jint.Engine(options => options
+            .TimeoutInterval(ExecutionTimeout)
+            .MaxStatements(MaxExecutionStatements)
+            .CancellationToken(_cancellationToken));
 
         engine.SetValue(ExportsVariableName, new JsObject(engine));
         engine.SetValue(ConsoleVariableName, ConsoleObject);

@@ -1,9 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
+using Acornima.Ast;
+
 using Docfx.Common;
+using Jint;
 
 namespace Docfx.Build.Engine;
 
@@ -58,7 +62,10 @@ public class PreprocessorLoader
             var extension = Path.GetExtension(res.Path);
             if (extension.Equals(TemplateJintPreprocessor.Extension, System.StringComparison.OrdinalIgnoreCase))
             {
-                return new PreprocessorWithResourcePool(() => new TemplateJintPreprocessor(_reader, res, _context, name), _maxParallelism);
+                // Every preprocessor the pool creates for this template runs the same script sources,
+                // so let them share one parsed copy of each.
+                var preparedScripts = new ConcurrentDictionary<string, Prepared<Script>>();
+                return new PreprocessorWithResourcePool(() => new TemplateJintPreprocessor(_reader, res, _context, name, preparedScripts), _maxParallelism);
             }
             else
             {
