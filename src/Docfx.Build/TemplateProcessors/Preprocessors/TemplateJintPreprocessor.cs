@@ -167,35 +167,38 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
             markup = new Func<string, string, string>(utility.Markup),
         };
 
-        var engine = CreateDefaultEngine();
-
-        var requireAction = new Func<string, object>(
-            s =>
+        // Each engine registers `require` from this delegate itself. Copying the function object out of one
+        // engine and into another - which is what `CreateEngine(engine, RequireFuncVariableName)` used to do -
+        // hands a JsValue to an engine that did not create it; a JsValue holds a hard reference to the engine
+        // and realm that created it and passing one across is not a supported arrangement.
+        object Require(string s)
+        {
+            if (!s.StartsWith(RequireRelativePathPrefix, StringComparison.Ordinal))
             {
-                if (!s.StartsWith(RequireRelativePathPrefix, StringComparison.Ordinal))
-                {
-                    throw new ArgumentException($"Only relative path starting with `{RequireRelativePathPrefix}` is supported in require");
-                }
-                var relativePath = (RelativePath)s.Substring(RequireRelativePathPrefix.Length);
-                s = relativePath.BasedOn(rootPath);
+                throw new ArgumentException($"Only relative path starting with `{RequireRelativePathPrefix}` is supported in require");
+            }
+            var relativePath = (RelativePath)s.Substring(RequireRelativePathPrefix.Length);
+            s = relativePath.BasedOn(rootPath);
 
-                var script = resourceCollection?.GetResource(s);
-                if (string.IsNullOrWhiteSpace(script))
-                {
-                    return null;
-                }
+            var script = resourceCollection?.GetResource(s);
+            if (string.IsNullOrWhiteSpace(script))
+            {
+                return null;
+            }
 
-                if (!engineCache.TryGetValue(s, out Jint.Engine cachedEngine))
-                {
-                    cachedEngine = CreateEngine(engine, RequireFuncVariableName);
-                    engineCache[s] = cachedEngine;
-                    cachedEngine.Execute(Prepare(s, script));
-                }
+            if (!engineCache.TryGetValue(s, out Jint.Engine cachedEngine))
+            {
+                cachedEngine = CreateDefaultEngine();
+                cachedEngine.SetValue(RequireFuncVariableName, (Func<string, object>)Require);
+                engineCache[s] = cachedEngine;
+                cachedEngine.Execute(Prepare(s, script));
+            }
 
-                return cachedEngine.GetValue(ExportsVariableName);
-            });
+            return cachedEngine.GetValue(ExportsVariableName);
+        }
 
-        engine.SetValue(RequireFuncVariableName, requireAction);
+        var engine = CreateDefaultEngine();
+        engine.SetValue(RequireFuncVariableName, (Func<string, object>)Require);
         engineCache[rootPath] = engine;
         engine.Execute(Prepare(scriptResource.Path, scriptResource.Content));
 
@@ -214,20 +217,6 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
         return engine;
     }
 
-    private Jint.Engine CreateEngine(Jint.Engine engine, params string[] sharedVariables)
-    {
-        var newEngine = CreateDefaultEngine();
-        if (sharedVariables != null)
-        {
-            foreach (var sharedVariable in sharedVariables)
-            {
-                newEngine.SetValue(sharedVariable, engine.GetValue(sharedVariable));
-            }
-        }
-
-        return newEngine;
-    }
-
     /// <summary>
     /// Parses <paramref name="content"/> once per <paramref name="path"/> and reuses the result. The
     /// preprocessor pool builds one instance - and therefore one engine - per parallelism slot, and they
@@ -241,16 +230,24 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
 
     private Jint.Engine CreateDefaultEngine()
     {
-        // Template scripts come from the docset being built, so a faulty one must fail the document
-        // instead of pinning a render thread. Both limits apply per call into the engine.
+        var utilityObject = _utilityObject;
+
         var engine = new Jint.Engine(options => options
+            // Template scripts come from the docset being built, so a faulty one must fail the document
+            // instead of pinning a render thread. All three limits apply per call into the engine.
             .TimeoutInterval(ExecutionTimeout)
             .MaxStatements(MaxExecutionStatements)
-            .CancellationToken(_cancellationToken));
+            .CancellationToken(_cancellationToken)
+            // `console` and `templateUtility` are ambient conveniences that most template scripts never
+            // mention, so build the wrapper only for the engines whose script actually reads the name. That
+            // is worth doing here because engines are not scarce: the preprocessor pool creates one per
+            // parallelism slot, and `require` creates one more per module.
+            .AddLazyGlobal(ConsoleVariableName, static e => JsValue.FromObject(e, ConsoleObject))
+            .AddLazyGlobal(UtilityVariableName, e => JsValue.FromObject(e, utilityObject)));
 
+        // `exports` stays eager: it is read back off the engine after the script has run, whether or not the
+        // script itself ever mentioned the name.
         engine.SetValue(ExportsVariableName, new JsObject(engine));
-        engine.SetValue(ConsoleVariableName, ConsoleObject);
-        engine.SetValue(UtilityVariableName, _utilityObject);
 
         return engine;
     }

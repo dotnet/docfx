@@ -52,6 +52,44 @@ public class TemplatePreprocessorLoaderUnitTest : TestBase
         Assert.Equal("bookmark1", options.Bookmarks["uid1"]);
     }
 
+    /// <summary>
+    /// The shipped templates chain <c>require</c> - a primary script requires a common script which requires
+    /// another - and every module gets its own engine, so this covers the whole chain resolving and the
+    /// exported functions still being callable.
+    /// </summary>
+    [Fact]
+    public void TestRequireResolvesChainedModules()
+    {
+        using var listener = new TestListenerScope();
+        CreateFile("inner.js", "exports.value = function() { return 'inner'; };", _inputFolder);
+        CreateFile("outer.js", "var inner = require('./inner.js'); exports.value = function() { return inner.value() + '+outer'; };", _inputFolder);
+
+        var preprocessor = Load(
+            "a.ext.TMPL.js",
+            "var outer = require('./outer.js'); exports.transform = function(model) { return { value: outer.value() }; }");
+
+        Assert.NotNull(preprocessor);
+        Assert.True(preprocessor.ContainsModelTransformation);
+
+        var output = preprocessor.TransformModel(new { a = 1 });
+        Assert.Equal("inner+outer", ((dynamic)output).value);
+    }
+
+    /// <summary>
+    /// <c>console</c> is registered lazily, so it is only built for engines whose script mentions it. Reading
+    /// the name has to be indistinguishable from an eagerly registered global.
+    /// </summary>
+    [Fact]
+    public void TestConsoleIsAvailableToScripts()
+    {
+        using var listener = new TestListenerScope();
+        var preprocessor = Load("a.ext.TMPL.js", "exports.transform = function(model) { console.warn('from template'); return model; }");
+
+        preprocessor.TransformModel(new { a = 1 });
+
+        Assert.Contains(listener.Items, i => i.Message == "from template");
+    }
+
     [Fact]
     public void TestRunawayScriptIsStopped()
     {
