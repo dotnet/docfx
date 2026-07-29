@@ -34,6 +34,34 @@ public class TemplatePreprocessorLoaderUnitTest : TestBase
         Assert.Equal(input.a, ((dynamic)output).a);
     }
 
+    [Fact]
+    public void TestGetOptionsIsReadFromScriptResult()
+    {
+        using var listener = new TestListenerScope();
+        var preprocessor = Load(
+            "a.ext.TMPL.js",
+            "exports.getOptions = function(model) { return { isShared: true, bookmarks: { uid1: 'bookmark1' } }; }");
+
+        Assert.NotNull(preprocessor);
+        Assert.True(preprocessor.ContainsGetOptions);
+
+        var options = new Template(null, preprocessor).GetOptions(new { a = 1 });
+
+        Assert.NotNull(options);
+        Assert.True(options.IsShared);
+        Assert.Equal("bookmark1", options.Bookmarks["uid1"]);
+    }
+
+    [Fact]
+    public void TestRunawayScriptIsStopped()
+    {
+        using var listener = new TestListenerScope();
+        var preprocessor = Load("a.ext.TMPL.js", "exports.transform = function(model) { var i = 0; while (true) { i = i + 1; } }");
+
+        Assert.NotNull(preprocessor);
+        Assert.Throws<InvalidPreprocessorException>(() => preprocessor.TransformModel(new { a = 1 }));
+    }
+
     private ITemplatePreprocessor Load(string path, string content)
     {
         var loader = new PreprocessorLoader(new LocalFileResourceReader(_inputFolder), null, 64);
