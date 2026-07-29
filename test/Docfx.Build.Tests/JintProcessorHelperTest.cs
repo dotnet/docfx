@@ -105,6 +105,11 @@ public class JintProcessorHelperTest
         Assert.Equal("one", engine.Evaluate("model['1']").AsString());
         Assert.Equal("n", engine.Evaluate("model.name").AsString());
 
+        // Unlike the HiddenClass assertion above, this one pins a *limitation* rather than a property:
+        // integer-index-like keys are something today's Jint cannot express in a hidden class, so the
+        // conversion falls back. If a future Jint learns to shape them - a pure improvement for docfx - this
+        // line will go red on good news, not on a docfx defect. The assertions above it already cover
+        // correctness; delete this one at that point rather than working around it.
         Assert.Equal(
             ObjectRepresentation.Dictionary,
             engine.Advanced.GetObjectRepresentation(engine.Evaluate("model").AsObject()));

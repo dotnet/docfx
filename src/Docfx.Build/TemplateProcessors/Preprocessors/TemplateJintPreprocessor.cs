@@ -66,7 +66,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
     /// <c>transform</c> for one document. Without it an accidental infinite loop in a template script
     /// hangs a build thread forever instead of failing the document.
     /// </summary>
-    private static readonly TimeSpan ExecutionTimeout = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan DefaultExecutionTimeout = TimeSpan.FromSeconds(30);
 
     /// <summary>
     /// Statement budget for a single preprocessor call. Deliberately far above what transforming even a
@@ -78,6 +78,16 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
     private object _utilityObject;
 
     private readonly CancellationToken _cancellationToken;
+
+    private readonly TimeSpan _executionTimeout;
+
+    /// <summary>
+    /// Every engine this preprocessor owns, keyed by resource path: the template's engine under the
+    /// template's own path, plus one per <c>require</c>d module. A preprocessor instance is rented from
+    /// <c>PreprocessorWithResourcePool</c> for the duration of one call, so this is only ever touched by
+    /// one thread at a time.
+    /// </summary>
+    private readonly Dictionary<string, Jint.Engine> _engineCache = [];
 
     /// <summary>
     /// Parsed sources, keyed by resource path, shared by every preprocessor instance created for the same
@@ -110,10 +120,12 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
         ResourceInfo scriptResource,
         DocumentBuildContext context,
         string name,
-        ConcurrentDictionary<string, Prepared<Script>> preparedScripts)
+        ConcurrentDictionary<string, Prepared<Script>> preparedScripts,
+        TimeSpan? executionTimeout = null)
     {
         _preparedScripts = preparedScripts;
         _cancellationToken = context?.CancellationToken ?? CancellationToken.None;
+        _executionTimeout = executionTimeout ?? DefaultExecutionTimeout;
 
         if (!string.IsNullOrWhiteSpace(scriptResource.Content))
         {
@@ -138,6 +150,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
     {
         if (_getOptionsFunc != null)
         {
+            ResetConstraints();
             return _getOptionsFunc(model);
         }
 
@@ -148,16 +161,38 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
     {
         if (_transformFunc != null)
         {
+            ResetConstraints();
             return _transformFunc(model);
         }
 
         return model;
     }
 
+    /// <summary>
+    /// Rearms the timeout and clears the statement counter on every engine this preprocessor owns, so all
+    /// three limits bound one document rather than the lifetime of a pooled preprocessor.
+    /// <para>
+    /// Only the template's own engine is entered through a public Jint API - <see cref="Jint.Engine.Invoke"/>,
+    /// which resets that engine's constraints itself. A <c>require</c>d module's exported function belongs to
+    /// the module's engine, so calling it is an ordinary function call that charges the <em>module</em>
+    /// engine's constraint instances without ever going through an entry point that resets them. Since a
+    /// timeout deadline is armed only on reset and a statement counter is only cleared on reset, leaving
+    /// them alone would give a module engine a deadline fixed at preprocessor construction and a statement
+    /// budget spanning the whole build.
+    /// </para>
+    /// </summary>
+    private void ResetConstraints()
+    {
+        foreach (var engine in _engineCache.Values)
+        {
+            engine.Constraints.Reset();
+        }
+    }
+
     private Jint.Engine SetupEngine(ResourceFileReader resourceCollection, ResourceInfo scriptResource, DocumentBuildContext context)
     {
         var rootPath = (RelativePath)scriptResource.Path;
-        var engineCache = new Dictionary<string, Jint.Engine>();
+        var engineCache = _engineCache;
 
         var utility = new TemplateUtility(context);
         _utilityObject = new
@@ -234,8 +269,10 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
 
         var engine = new Jint.Engine(options => options
             // Template scripts come from the docset being built, so a faulty one must fail the document
-            // instead of pinning a render thread. All three limits apply per call into the engine.
-            .TimeoutInterval(ExecutionTimeout)
+            // instead of pinning a render thread. Every engine gets its own limits, including the ones
+            // `require` builds, so a runaway loop inside a module function is bounded too; ResetConstraints
+            // is what makes them bound one document rather than the preprocessor's whole lifetime.
+            .TimeoutInterval(_executionTimeout)
             .MaxStatements(MaxExecutionStatements)
             .CancellationToken(_cancellationToken)
             // `console` and `templateUtility` are ambient conveniences that most template scripts never
