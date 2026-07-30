@@ -44,9 +44,12 @@ async function renderMermaid() {
 
   const { default: mermaid } = await import('mermaid')
   const theme = getTheme() === 'dark' ? 'dark' : 'default'
-
+  const { default: elkLayouts } = await import('@mermaid-js/layout-elk')
+  const { default: tidyTreeLayouts } = await import('@mermaid-js/layout-tidy-tree')
   // Turn off deterministic ids on re-render
   const { mermaid: mermaidOptions } = await options()
+  mermaid.registerLayoutLoaders(elkLayouts)
+  mermaid.registerLayoutLoaders(tidyTreeLayouts)
   mermaid.initialize(Object.assign({ startOnLoad: false, theme }, mermaidOptions))
 
   const nodes = []
