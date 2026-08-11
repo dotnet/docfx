@@ -195,9 +195,11 @@ public class SamplesTest : IDisposable
 
     private static bool IncludeFile(string file)
     {
+        var fileName = Path.GetFileName(file);
         return Path.GetExtension(file) switch
         {
-            ".json" => Path.GetFileName(file) != "manifest.json",
+            ".json" => fileName != "manifest.json" &&
+                (OperatingSystem.IsLinux() || !fileName.EndsWith(".pdf.json", StringComparison.OrdinalIgnoreCase)),
             ".yml" or ".md" => true,
             _ => false,
         };
