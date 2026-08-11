@@ -16,12 +16,12 @@ jobs:
       packages: write
     steps:
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
  
     - id: version
-      uses: paulhatch/semantic-version@v6.0.1
+      uses: paulhatch/semantic-version@v6.0.2
       with:
         version_format: ${major}.${minor}.${patch}-preview.${increment}
 
@@ -53,7 +53,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Create NuGet.config
       shell: pwsh

@@ -32,9 +32,7 @@ updates:
     typescript-eslint:
       patterns:
       - "@typescript-eslint/*"
-  ignore:
-    # jQuery 4 requires a dedicated compatibility migration.
-  - dependency-name: 'jquery'
+      - "typescript-eslint"
 
 - package-ecosystem: "github-actions"
   directory: "/"

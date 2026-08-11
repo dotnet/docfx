@@ -23,6 +23,9 @@ namespace Docfx.Tests;
 public class SamplesTest : IDisposable
 {
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
+    private static readonly string s_solutionDir = Path.GetDirectoryName(s_samplesDir)! + Path.DirectorySeparatorChar;
+    private static readonly bool s_updateSnapshots =
+        string.Equals(Environment.GetEnvironmentVariable("DOCFX_UPDATE_SNAPSHOTS"), "true", StringComparison.OrdinalIgnoreCase);
 
     private const string DOCFX_SOURCE_REPOSITORY_URL = nameof(DOCFX_SOURCE_REPOSITORY_URL);
 
@@ -71,7 +74,7 @@ public class SamplesTest : IDisposable
 
         Parallel.ForEach(Directory.EnumerateFiles($"{samplePath}/_site", "*.pdf", SearchOption.AllDirectories), PdfToJson);
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: s_updateSnapshots);
 
         void PdfToJson(string path)
         {
@@ -125,7 +128,7 @@ public class SamplesTest : IDisposable
         var exitCode = Program.Main(["metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath]);
         Assert.Equal(0, exitCode);
 
-        await VerifyDirectory(outputPath).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory(outputPath).AutoVerify(includeBuildServer: s_updateSnapshots);
     }
 
     [SamplesFact]
@@ -146,7 +149,7 @@ public class SamplesTest : IDisposable
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
         }
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: s_updateSnapshots);
     }
 
     [SamplesFact]
@@ -167,7 +170,7 @@ public class SamplesTest : IDisposable
         Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
-        return VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        return VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: s_updateSnapshots);
     }
 
     private static int Exec(string filename, string args, string workingDirectory = null)
@@ -192,9 +195,11 @@ public class SamplesTest : IDisposable
 
     private static bool IncludeFile(string file)
     {
+        var fileName = Path.GetFileName(file);
         return Path.GetExtension(file) switch
         {
-            ".json" => Path.GetFileName(file) != "manifest.json",
+            ".json" => fileName != "manifest.json" &&
+                (OperatingSystem.IsLinux() || !fileName.EndsWith(".pdf.json", StringComparison.OrdinalIgnoreCase)),
             ".yml" or ".md" => true,
             _ => false,
         };
@@ -206,12 +211,52 @@ public class SamplesTest : IDisposable
         {
             obj.Remove("__global");
             obj.Remove("_systemKeys");
+            ScrubSolutionPaths(obj);
             builder.Clear();
             builder.Append(JsonSerializer.Serialize(obj, new JsonSerializerOptions
             {
                 WriteIndented = true,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             }));
+        }
+    }
+
+    private static void ScrubSolutionPaths(JsonNode node)
+    {
+        if (node is JsonObject obj)
+        {
+            foreach (var (key, value) in obj.ToArray())
+            {
+                if (value is JsonValue jsonValue &&
+                    jsonValue.TryGetValue<string>(out var text) &&
+                    text.StartsWith(s_solutionDir, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+                {
+                    var relativePath = text[s_solutionDir.Length..].Replace('\\', '/');
+                    var generatedPathIndex = relativePath.IndexOf("/obj/", StringComparison.Ordinal);
+                    if (generatedPathIndex >= 0)
+                    {
+                        relativePath = relativePath[..(generatedPathIndex + "/obj/".Length)] + "{GeneratedSource}";
+                        obj["startLine"] = 0;
+                        obj["endLine"] = 0;
+                    }
+
+                    obj[key] = "{SolutionDirectory}" + relativePath;
+                }
+                else if (value != null)
+                {
+                    ScrubSolutionPaths(value);
+                }
+            }
+        }
+        else if (node is JsonArray array)
+        {
+            foreach (var value in array)
+            {
+                if (value != null)
+                {
+                    ScrubSolutionPaths(value);
+                }
+            }
         }
     }
 

@@ -120,7 +120,8 @@ span.languagekeyword{
 .btn + .btn {
   margin-left: 10px;
 }
-.btn.pull-right {
+.btn.pull-right,
+.btn.float-end {
   margin-left: 10px;
   margin-top: 5px;
 }
@@ -237,7 +238,8 @@ article h4{
   margin-top: 2em;
 }
 
-article span.small.pull-right{
+article span.small.pull-right,
+article span.small.float-end {
   margin-top: 20px;
 }
 

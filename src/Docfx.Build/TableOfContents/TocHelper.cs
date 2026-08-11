@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
+using YamlException = YamlDotNet.Core.YamlException;
 
 namespace Docfx.Build.TableOfContents;
 
@@ -75,7 +76,8 @@ public static class TocHelper
         }
         catch (Exception e)
         {
-            var message = $"{file} is not a valid TOC File: {e}";
+            var details = e is YamlException yamlException ? yamlException.ToMessage() : e.ToString();
+            var message = $"{file} is not a valid TOC File: {details}";
             Logger.LogError(message, code: ErrorCodes.Toc.InvalidTocFile);
             throw new DocumentException(message, e);
         }

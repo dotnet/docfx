@@ -57,10 +57,8 @@
       "children": [
         {
           "uid": "CSharp11.RequiredModifier.FirstName",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp11.RequiredModifier",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -101,133 +99,17 @@
               "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName\" text=\"FirstName\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public required string FirstName { get; init; }"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Property FirstName As String"
-              }
-            ],
-            "parameters": [],
-            "return": null,
-            "propertyValue": {
-              "type": {
-                "uid": "System.String",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp11.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "FirstName",
-            "path": "src/CSharp11.cs",
-            "startLine": 46,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp11",
-          "overload": {
-            "uid": "CSharp11.RequiredModifier.FirstName*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "FirstName"
-              },
-              {
-                "lang": "vb",
-                "value": "FirstName"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "RequiredModifier.FirstName"
-              },
-              {
-                "lang": "vb",
-                "value": "RequiredModifier.FirstName"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp11.RequiredModifier.FirstName"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp11.RequiredModifier.FirstName"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName*\" text=\"FirstName\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName*\" text=\"FirstName\"/>"
-              }
-            ],
-            "id": "CSharp11_RequiredModifier_FirstName_"
-          },
           "level": 0,
-          "type": "property",
           "summary": "",
+          "type": "property",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_RequiredModifier_FirstName.md&value=---%0Auid%3A%20CSharp11.RequiredModifier.FirstName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L47",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -237,10 +119,8 @@
         },
         {
           "uid": "CSharp11.RequiredModifier.LastName",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp11.RequiredModifier",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -281,133 +161,17 @@
               "value": "<xref uid=\"CSharp11.RequiredModifier.LastName\" text=\"LastName\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public required string LastName { get; init; }"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Property LastName As String"
-              }
-            ],
-            "parameters": [],
-            "return": null,
-            "propertyValue": {
-              "type": {
-                "uid": "System.String",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp11.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "LastName",
-            "path": "src/CSharp11.cs",
-            "startLine": 48,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp11",
-          "overload": {
-            "uid": "CSharp11.RequiredModifier.LastName*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "LastName"
-              },
-              {
-                "lang": "vb",
-                "value": "LastName"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "RequiredModifier.LastName"
-              },
-              {
-                "lang": "vb",
-                "value": "RequiredModifier.LastName"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp11.RequiredModifier.LastName"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp11.RequiredModifier.LastName"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp11.RequiredModifier.LastName*\" text=\"LastName\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp11.RequiredModifier.LastName*\" text=\"LastName\"/>"
-              }
-            ],
-            "id": "CSharp11_RequiredModifier_LastName_"
-          },
           "level": 0,
-          "type": "property",
           "summary": "",
+          "type": "property",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_RequiredModifier_LastName.md&value=---%0Auid%3A%20CSharp11.RequiredModifier.LastName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L49",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -417,10 +181,8 @@
         },
         {
           "uid": "CSharp11.RequiredModifier.MiddleName",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp11.RequiredModifier",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -461,133 +223,17 @@
               "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName\" text=\"MiddleName\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public string MiddleName { get; init; }"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Property MiddleName As String"
-              }
-            ],
-            "parameters": [],
-            "return": null,
-            "propertyValue": {
-              "type": {
-                "uid": "System.String",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "string"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "String"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp11.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "MiddleName",
-            "path": "src/CSharp11.cs",
-            "startLine": 47,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp11",
-          "overload": {
-            "uid": "CSharp11.RequiredModifier.MiddleName*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "MiddleName"
-              },
-              {
-                "lang": "vb",
-                "value": "MiddleName"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "RequiredModifier.MiddleName"
-              },
-              {
-                "lang": "vb",
-                "value": "RequiredModifier.MiddleName"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp11.RequiredModifier.MiddleName"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp11.RequiredModifier.MiddleName"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName*\" text=\"MiddleName\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName*\" text=\"MiddleName\"/>"
-              }
-            ],
-            "id": "CSharp11_RequiredModifier_MiddleName_"
-          },
           "level": 0,
-          "type": "property",
           "summary": "",
+          "type": "property",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_RequiredModifier_MiddleName.md&value=---%0Auid%3A%20CSharp11.RequiredModifier.MiddleName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L48",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -1140,10 +786,15 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp11.RequiredModifier.yml",
+  "_splitReference": true,
+  "_splitFrom": true,
+  "_key": "obj/api/CSharp11.RequiredModifier.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "api/CSharp11.RequiredModifier.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {

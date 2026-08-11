@@ -3,7 +3,6 @@
 
 import esbuild from 'esbuild'
 import { sassPlugin } from 'esbuild-sass-plugin'
-import bs from 'browser-sync'
 import { cpSync, rmSync } from 'fs'
 import { join } from 'path'
 import { spawnSync } from 'child_process'
@@ -33,7 +32,7 @@ async function build() {
   copyToDist()
 
   if (watch) {
-    serve()
+    await serve()
   }
 }
 
@@ -127,7 +126,8 @@ function buildContent() {
   }
 }
 
-function serve() {
+async function serve() {
+  const { default: bs } = await import('browser-sync')
   buildContent()
 
   return bs.create('docfx').init({

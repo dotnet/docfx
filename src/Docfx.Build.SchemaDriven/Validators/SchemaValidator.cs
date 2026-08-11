@@ -11,36 +11,48 @@ public class SchemaValidator
 {
     private readonly JsonSchema _schema;
 
+    private static readonly Uri[] DocfxDialectIds =
+    [
+        new("http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"),
+        new("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#"),
+    ];
+
     private static readonly EvaluationOptions DefaultOptions = new()
     {
-        ValidateAgainstMetaSchema = false,
+        IncludeApplicatorErrors = false,
         OutputFormat = OutputFormat.List,
     };
 
     static SchemaValidator()
     {
-        SchemaRegistry.Global.Register(new("http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"), MetaSchemas.Draft7);
-        SchemaRegistry.Global.Register(new("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#"), MetaSchemas.Draft7);
+        foreach (var id in DocfxDialectIds)
+        {
+            DialectRegistry.Global.Register(Dialect.Draft07.With([], id));
+        }
     }
 
     public SchemaValidator(string json)
     {
-        _schema = JsonSchema.FromText(json, new() { AllowTrailingCommas = true });
+        _schema = JsonSchema.FromText(
+            json,
+            new() { SchemaRegistry = new() },
+            jsonOptions: new() { AllowTrailingCommas = true });
     }
 
     public void Validate(object obj)
     {
         var json = JsonSerializer.Serialize(obj);
-        var result = _schema.Evaluate(JsonDocument.Parse(json), DefaultOptions);
+        using var document = JsonDocument.Parse(json);
+        var result = _schema.Evaluate(document.RootElement, DefaultOptions);
 
         if (result.IsValid)
             return;
 
         foreach (var detail in result.Details)
         {
-            if (detail.HasErrors)
+            if (detail.Errors is { } errors)
             {
-                foreach (var (type, message) in detail.Errors)
+                foreach (var (type, message) in errors)
                 {
                     Logger.LogError($"[{detail.InstanceLocation}] {type}: {message} ", code: "ViolateSchema");
                 }

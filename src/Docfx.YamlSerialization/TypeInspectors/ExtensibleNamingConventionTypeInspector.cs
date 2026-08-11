@@ -31,4 +31,10 @@ public sealed class ExtensibleNamingConventionTypeInspector : ExtensibleTypeInsp
 
     public override string GetEnumValue(object enumValue) =>
         innerTypeDescriptor.GetEnumValue(enumValue);
+
+    public override bool HasParseMethod(Type type) =>
+        innerTypeDescriptor.HasParseMethod(type);
+
+    public override object? Parse(string value, Type expectedType) =>
+        innerTypeDescriptor.Parse(value, expectedType);
 }

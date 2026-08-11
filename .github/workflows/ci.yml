@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{ github.event.pull_request.head.repo.full_name }}
@@ -42,7 +42,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       id: test-net80
 
-    - run: npm i -g @percy/cli
+    - run: npm i -g @percy/cli@1.32.5
       if: matrix.os == 'ubuntu-latest'
 
     - run: percy exec -- dotnet test -c Release -f net10.0 --filter Stage=Percy --no-build --collect:"XPlat Code Coverage"
@@ -50,7 +50,7 @@ jobs:
       env:
         PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
 
-    - uses: codecov/codecov-action@v5
+    - uses: codecov/codecov-action@v7
       if: matrix.os == 'ubuntu-latest'
       with:
         fail_ci_if_error: false
@@ -62,7 +62,7 @@ jobs:
     - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- docs/docfx.json
     - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
 
-    - uses: actions/upload-pages-artifact@v4
+    - uses: actions/upload-pages-artifact@v5
       if: matrix.os == 'ubuntu-latest'
       with:
         path: docs/_site
@@ -96,4 +96,4 @@ jobs:
       id-token: write
     steps:
     - id: deployment
-      uses: actions/deploy-pages@v4
+      uses: actions/deploy-pages@v5

@@ -1,0 +1,2078 @@
+﻿{
+  "items": [
+    {
+      "name": "CSharp10",
+      "href": "CSharp10.html",
+      "topicHref": "CSharp10.html",
+      "items": [
+        {
+          "name": "Classes",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "ConstantInterpolatedStrings",
+          "href": "CSharp10.ConstantInterpolatedStrings.html",
+          "topicHref": "CSharp10.ConstantInterpolatedStrings.html",
+          "items": [
+            {
+              "name": "Fields",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "S1",
+              "href": "CSharp10.ConstantInterpolatedStrings.S1.html",
+              "topicHref": "CSharp10.ConstantInterpolatedStrings.S1.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "S2",
+              "href": "CSharp10.ConstantInterpolatedStrings.S2.html",
+              "topicHref": "CSharp10.ConstantInterpolatedStrings.S2.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "S3",
+              "href": "CSharp10.ConstantInterpolatedStrings.S3.html",
+              "topicHref": "CSharp10.ConstantInterpolatedStrings.S3.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "Issue7737",
+          "href": "CSharp10.Issue7737.html",
+          "topicHref": "CSharp10.Issue7737.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Foo",
+              "href": "CSharp10.Issue7737.Foo.html",
+              "topicHref": "CSharp10.Issue7737.Foo.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "RecordClass",
+          "href": "CSharp10.RecordClass.html",
+          "topicHref": "CSharp10.RecordClass.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "RecordClass",
+              "href": "CSharp10.RecordClass.-ctor.html",
+              "topicHref": "CSharp10.RecordClass.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "FirstName",
+              "href": "CSharp10.RecordClass.FirstName.html",
+              "topicHref": "CSharp10.RecordClass.FirstName.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "LastName",
+              "href": "CSharp10.RecordClass.LastName.html",
+              "topicHref": "CSharp10.RecordClass.LastName.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "Structs",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "ParameterlessStructConstructors",
+          "href": "CSharp10.ParameterlessStructConstructors.html",
+          "topicHref": "CSharp10.ParameterlessStructConstructors.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "ParameterlessStructConstructors",
+              "href": "CSharp10.ParameterlessStructConstructors.-ctor.html",
+              "topicHref": "CSharp10.ParameterlessStructConstructors.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Fields",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "X",
+              "href": "CSharp10.ParameterlessStructConstructors.X.html",
+              "topicHref": "CSharp10.ParameterlessStructConstructors.X.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Description",
+              "href": "CSharp10.ParameterlessStructConstructors.Description.html",
+              "topicHref": "CSharp10.ParameterlessStructConstructors.Description.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Y",
+              "href": "CSharp10.ParameterlessStructConstructors.Y.html",
+              "topicHref": "CSharp10.ParameterlessStructConstructors.Y.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "ReadOnlyRecordStruct",
+          "href": "CSharp10.ReadOnlyRecordStruct.html",
+          "topicHref": "CSharp10.ReadOnlyRecordStruct.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "ReadOnlyRecordStruct",
+              "href": "CSharp10.ReadOnlyRecordStruct.-ctor.html",
+              "topicHref": "CSharp10.ReadOnlyRecordStruct.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "X",
+              "href": "CSharp10.ReadOnlyRecordStruct.X.html",
+              "topicHref": "CSharp10.ReadOnlyRecordStruct.X.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Y",
+              "href": "CSharp10.ReadOnlyRecordStruct.Y.html",
+              "topicHref": "CSharp10.ReadOnlyRecordStruct.Y.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Z",
+              "href": "CSharp10.ReadOnlyRecordStruct.Z.html",
+              "topicHref": "CSharp10.ReadOnlyRecordStruct.Z.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "RecordStruct",
+          "href": "CSharp10.RecordStruct.html",
+          "topicHref": "CSharp10.RecordStruct.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "RecordStruct",
+              "href": "CSharp10.RecordStruct.-ctor.html",
+              "topicHref": "CSharp10.RecordStruct.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Measurement",
+              "href": "CSharp10.RecordStruct.Measurement.html",
+              "topicHref": "CSharp10.RecordStruct.Measurement.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "TakenAt",
+              "href": "CSharp10.RecordStruct.TakenAt.html",
+              "topicHref": "CSharp10.RecordStruct.TakenAt.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        }
+      ],
+      "tocHref": null,
+      "level": 2
+    },
+    {
+      "name": "CSharp11",
+      "href": "CSharp11.html",
+      "topicHref": "CSharp11.html",
+      "items": [
+        {
+          "name": "Classes",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "RequiredModifier",
+          "href": "CSharp11.RequiredModifier.html",
+          "topicHref": "CSharp11.RequiredModifier.html",
+          "items": [
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "FirstName",
+              "href": "CSharp11.RequiredModifier.FirstName.html",
+              "topicHref": "CSharp11.RequiredModifier.FirstName.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "LastName",
+              "href": "CSharp11.RequiredModifier.LastName.html",
+              "topicHref": "CSharp11.RequiredModifier.LastName.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "MiddleName",
+              "href": "CSharp11.RequiredModifier.MiddleName.html",
+              "topicHref": "CSharp11.RequiredModifier.MiddleName.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "ScopedModifier",
+          "href": "CSharp11.ScopedModifier.html",
+          "topicHref": "CSharp11.ScopedModifier.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "CreateSpan",
+              "href": "CSharp11.ScopedModifier.CreateSpan.html",
+              "topicHref": "CSharp11.ScopedModifier.CreateSpan.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "StaticAbstractMembersInInterfaces",
+          "href": "CSharp11.StaticAbstractMembersInInterfaces.html",
+          "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.html",
+          "items": [],
+          "tocHref": null,
+          "level": 3,
+          "leaf": true
+        },
+        {
+          "name": "Structs",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "StaticAbstractMembersInInterfaces.RepeatSequence",
+          "href": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html",
+          "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "RepeatSequence",
+              "href": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.-ctor.html",
+              "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Fields",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Text",
+              "href": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Text.html",
+              "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Text.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "ToString",
+              "href": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString.html",
+              "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Operators",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator ++",
+              "href": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment.html",
+              "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "Interfaces",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "CheckedUserDefinedOperators<T>",
+          "href": "CSharp11.CheckedUserDefinedOperators-1.html",
+          "topicHref": "CSharp11.CheckedUserDefinedOperators-1.html",
+          "items": [
+            {
+              "name": "Operators",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "explicit operator",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_Explicit.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_Explicit.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "explicit operator checked",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedExplicit.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedExplicit.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator *",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_Multiply.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_Multiply.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator +",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_Addition.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_Addition.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator ++",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_Increment.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_Increment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator -",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_UnaryNegation.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_UnaryNegation.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator -",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_Subtraction.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_Subtraction.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator --",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_Decrement.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_Decrement.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator /",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_Division.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_Division.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator checked *",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedMultiply.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedMultiply.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator checked +",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedAddition.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedAddition.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator checked ++",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedIncrement.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedIncrement.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator checked -",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedUnaryNegation.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedUnaryNegation.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator checked -",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedSubtraction.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedSubtraction.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator checked --",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedDecrement.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedDecrement.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator checked /",
+              "href": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedDivision.html",
+              "topicHref": "CSharp11.CheckedUserDefinedOperators-1.op_CheckedDivision.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "StaticAbstractMembersInInterfaces.IGetNext<T>",
+          "href": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html",
+          "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html",
+          "items": [
+            {
+              "name": "Operators",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator ++",
+              "href": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.op_Increment.html",
+              "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.op_Increment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        }
+      ],
+      "tocHref": null,
+      "level": 2
+    },
+    {
+      "name": "CSharp12",
+      "href": "CSharp12.html",
+      "topicHref": "CSharp12.html",
+      "items": [
+        {
+          "name": "Classes",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "CollectionExpressions",
+          "href": "CSharp12.CollectionExpressions.html",
+          "topicHref": "CSharp12.CollectionExpressions.html",
+          "items": [
+            {
+              "name": "Fields",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "a",
+              "href": "CSharp12.CollectionExpressions.a.html",
+              "topicHref": "CSharp12.CollectionExpressions.a.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "twoD",
+              "href": "CSharp12.CollectionExpressions.twoD.html",
+              "topicHref": "CSharp12.CollectionExpressions.twoD.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "DefaultLambdaParameters",
+          "href": "CSharp12.DefaultLambdaParameters.html",
+          "topicHref": "CSharp12.DefaultLambdaParameters.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Foo",
+              "href": "CSharp12.DefaultLambdaParameters.Foo.html",
+              "topicHref": "CSharp12.DefaultLambdaParameters.Foo.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "PrimaryConstructors",
+          "href": "CSharp12.PrimaryConstructors.html",
+          "topicHref": "CSharp12.PrimaryConstructors.html",
+          "items": [],
+          "tocHref": null,
+          "level": 3,
+          "leaf": true
+        },
+        {
+          "name": "PrimaryConstructors.BankAccount",
+          "href": "CSharp12.PrimaryConstructors.BankAccount.html",
+          "topicHref": "CSharp12.PrimaryConstructors.BankAccount.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "BankAccount",
+              "href": "CSharp12.PrimaryConstructors.BankAccount.-ctor.html",
+              "topicHref": "CSharp12.PrimaryConstructors.BankAccount.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "AccountID",
+              "href": "CSharp12.PrimaryConstructors.BankAccount.AccountID.html",
+              "topicHref": "CSharp12.PrimaryConstructors.BankAccount.AccountID.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Owner",
+              "href": "CSharp12.PrimaryConstructors.BankAccount.Owner.html",
+              "topicHref": "CSharp12.PrimaryConstructors.BankAccount.Owner.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "ToString",
+              "href": "CSharp12.PrimaryConstructors.BankAccount.ToString.html",
+              "topicHref": "CSharp12.PrimaryConstructors.BankAccount.ToString.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "PrimaryConstructors.CheckAccount",
+          "href": "CSharp12.PrimaryConstructors.CheckAccount.html",
+          "topicHref": "CSharp12.PrimaryConstructors.CheckAccount.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "CheckAccount",
+              "href": "CSharp12.PrimaryConstructors.CheckAccount.-ctor.html",
+              "topicHref": "CSharp12.PrimaryConstructors.CheckAccount.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "CurrentBalance",
+              "href": "CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance.html",
+              "topicHref": "CSharp12.PrimaryConstructors.CheckAccount.CurrentBalance.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Deposit",
+              "href": "CSharp12.PrimaryConstructors.CheckAccount.Deposit.html",
+              "topicHref": "CSharp12.PrimaryConstructors.CheckAccount.Deposit.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "ToString",
+              "href": "CSharp12.PrimaryConstructors.CheckAccount.ToString.html",
+              "topicHref": "CSharp12.PrimaryConstructors.CheckAccount.ToString.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Withdrawal",
+              "href": "CSharp12.PrimaryConstructors.CheckAccount.Withdrawal.html",
+              "topicHref": "CSharp12.PrimaryConstructors.CheckAccount.Withdrawal.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "RefReadOnlyParameters",
+          "href": "CSharp12.RefReadOnlyParameters.html",
+          "topicHref": "CSharp12.RefReadOnlyParameters.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Foo",
+              "href": "CSharp12.RefReadOnlyParameters.Foo.html",
+              "topicHref": "CSharp12.RefReadOnlyParameters.Foo.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "Structs",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "InlineArrays",
+          "href": "CSharp12.InlineArrays.html",
+          "topicHref": "CSharp12.InlineArrays.html",
+          "items": [],
+          "tocHref": null,
+          "level": 3,
+          "leaf": true
+        },
+        {
+          "name": "PrimaryConstructors.Distance",
+          "href": "CSharp12.PrimaryConstructors.Distance.html",
+          "topicHref": "CSharp12.PrimaryConstructors.Distance.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Distance",
+              "href": "CSharp12.PrimaryConstructors.Distance.-ctor.html",
+              "topicHref": "CSharp12.PrimaryConstructors.Distance.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Fields",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Direction",
+              "href": "CSharp12.PrimaryConstructors.Distance.Direction.html",
+              "topicHref": "CSharp12.PrimaryConstructors.Distance.Direction.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Magnitude",
+              "href": "CSharp12.PrimaryConstructors.Distance.Magnitude.html",
+              "topicHref": "CSharp12.PrimaryConstructors.Distance.Magnitude.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        }
+      ],
+      "tocHref": null,
+      "level": 2
+    },
+    {
+      "name": "CSharp13",
+      "href": "CSharp13.html",
+      "topicHref": "CSharp13.html",
+      "items": [
+        {
+          "name": "Classes",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "AllowRefStruct<T>",
+          "href": "CSharp13.AllowRefStruct-1.html",
+          "topicHref": "CSharp13.AllowRefStruct-1.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Method",
+              "href": "CSharp13.AllowRefStruct-1.Method.html",
+              "topicHref": "CSharp13.AllowRefStruct-1.Method.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        }
+      ],
+      "tocHref": null,
+      "level": 2
+    },
+    {
+      "name": "CSharp14",
+      "href": "CSharp14.html",
+      "topicHref": "CSharp14.html",
+      "items": [
+        {
+          "name": "Classes",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "FieldBackedPropertySample",
+          "href": "CSharp14.FieldBackedPropertySample.html",
+          "topicHref": "CSharp14.FieldBackedPropertySample.html",
+          "items": [
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "FieldBackedProperty",
+              "href": "CSharp14.FieldBackedPropertySample.FieldBackedProperty.html",
+              "topicHref": "CSharp14.FieldBackedPropertySample.FieldBackedProperty.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "SampleClass",
+          "href": "CSharp14.SampleClass.html",
+          "topicHref": "CSharp14.SampleClass.html",
+          "items": [
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Value",
+              "href": "CSharp14.SampleClass.Value.html",
+              "topicHref": "CSharp14.SampleClass.Value.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "SampleClassExtensions",
+          "href": "CSharp14.SampleClassExtensions.html",
+          "topicHref": "CSharp14.SampleClassExtensions.html",
+          "items": [],
+          "tocHref": null,
+          "level": 3,
+          "leaf": true
+        },
+        {
+          "name": "UserDefinedCompoundAssignmentOperatorsSample",
+          "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html",
+          "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html",
+          "items": [
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Value",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "ToString",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Operators",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator %=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator &=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator *=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator ++",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator +=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator --",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator -=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator /=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator <<=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator >>=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator ^=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator |=",
+              "href": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment.html",
+              "topicHref": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        }
+      ],
+      "tocHref": null,
+      "level": 2
+    },
+    {
+      "name": "CSharp8",
+      "href": "CSharp8.html",
+      "topicHref": "CSharp8.html",
+      "items": [
+        {
+          "name": "Classes",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "DefaultInterfaceMembers.Nested",
+          "href": "CSharp8.DefaultInterfaceMembers.Nested.html",
+          "topicHref": "CSharp8.DefaultInterfaceMembers.Nested.html",
+          "items": [],
+          "tocHref": null,
+          "level": 3,
+          "leaf": true
+        },
+        {
+          "name": "Issue4007",
+          "href": "CSharp8.Issue4007.html",
+          "topicHref": "CSharp8.Issue4007.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "SomeMethod",
+              "href": "CSharp8.Issue4007.SomeMethod.html",
+              "topicHref": "CSharp8.Issue4007.SomeMethod.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "SomeOtherMethod",
+              "href": "CSharp8.Issue4007.SomeOtherMethod.html",
+              "topicHref": "CSharp8.Issue4007.SomeOtherMethod.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "Misc",
+          "href": "CSharp8.Misc.html",
+          "topicHref": "CSharp8.Misc.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "AsynchronousStreams",
+              "href": "CSharp8.Misc.AsynchronousStreams.html",
+              "topicHref": "CSharp8.Misc.AsynchronousStreams.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "GenerateSequence",
+              "href": "CSharp8.Misc.GenerateSequence.html",
+              "topicHref": "CSharp8.Misc.GenerateSequence.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "IndicesAndRanges",
+              "href": "CSharp8.Misc.IndicesAndRanges.html",
+              "topicHref": "CSharp8.Misc.IndicesAndRanges.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "IsExpression",
+              "href": "CSharp8.Misc.IsExpression.html",
+              "topicHref": "CSharp8.Misc.IsExpression.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "NullCoalescingAssignment",
+              "href": "CSharp8.Misc.NullCoalescingAssignment.html",
+              "topicHref": "CSharp8.Misc.NullCoalescingAssignment.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "StackallocInNestedExpressions",
+              "href": "CSharp8.Misc.StackallocInNestedExpressions.html",
+              "topicHref": "CSharp8.Misc.StackallocInNestedExpressions.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "StaticLocalFunctions",
+              "href": "CSharp8.Misc.StaticLocalFunctions.html",
+              "topicHref": "CSharp8.Misc.StaticLocalFunctions.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "SwitchExpression",
+              "href": "CSharp8.Misc.SwitchExpression.html",
+              "topicHref": "CSharp8.Misc.SwitchExpression.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "UsingDeclaration",
+              "href": "CSharp8.Misc.UsingDeclaration.html",
+              "topicHref": "CSharp8.Misc.UsingDeclaration.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "NullableReferenceTypes",
+          "href": "CSharp8.NullableReferenceTypes.html",
+          "topicHref": "CSharp8.NullableReferenceTypes.html",
+          "items": [
+            {
+              "name": "Fields",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Field",
+              "href": "CSharp8.NullableReferenceTypes.Field.html",
+              "topicHref": "CSharp8.NullableReferenceTypes.Field.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Property",
+              "href": "CSharp8.NullableReferenceTypes.Property.html",
+              "topicHref": "CSharp8.NullableReferenceTypes.Property.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "DoSomething",
+              "href": "CSharp8.NullableReferenceTypes.DoSomething.html",
+              "topicHref": "CSharp8.NullableReferenceTypes.DoSomething.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "Structs",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "DisposableRefStructs",
+          "href": "CSharp8.DisposableRefStructs.html",
+          "topicHref": "CSharp8.DisposableRefStructs.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Dispose",
+              "href": "CSharp8.DisposableRefStructs.Dispose.html",
+              "topicHref": "CSharp8.DisposableRefStructs.Dispose.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "DoSomething",
+              "href": "CSharp8.DisposableRefStructs.DoSomething.html",
+              "topicHref": "CSharp8.DisposableRefStructs.DoSomething.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "ReadOnlyMembers",
+          "href": "CSharp8.ReadOnlyMembers.html",
+          "topicHref": "CSharp8.ReadOnlyMembers.html",
+          "items": [
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Counter",
+              "href": "CSharp8.ReadOnlyMembers.Counter.html",
+              "topicHref": "CSharp8.ReadOnlyMembers.Counter.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "X",
+              "href": "CSharp8.ReadOnlyMembers.X.html",
+              "topicHref": "CSharp8.ReadOnlyMembers.X.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Y",
+              "href": "CSharp8.ReadOnlyMembers.Y.html",
+              "topicHref": "CSharp8.ReadOnlyMembers.Y.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Sum",
+              "href": "CSharp8.ReadOnlyMembers.Sum.html",
+              "topicHref": "CSharp8.ReadOnlyMembers.Sum.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "ToString",
+              "href": "CSharp8.ReadOnlyMembers.ToString.html",
+              "topicHref": "CSharp8.ReadOnlyMembers.ToString.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "Interfaces",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "DefaultInterfaceMembers",
+          "href": "CSharp8.DefaultInterfaceMembers.html",
+          "topicHref": "CSharp8.DefaultInterfaceMembers.html",
+          "items": [
+            {
+              "name": "Fields",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "GravitationalConstant",
+              "href": "CSharp8.DefaultInterfaceMembers.GravitationalConstant.html",
+              "topicHref": "CSharp8.DefaultInterfaceMembers.GravitationalConstant.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "X",
+              "href": "CSharp8.DefaultInterfaceMembers.X.html",
+              "topicHref": "CSharp8.DefaultInterfaceMembers.X.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "DoSomething",
+              "href": "CSharp8.DefaultInterfaceMembers.DoSomething.html",
+              "topicHref": "CSharp8.DefaultInterfaceMembers.DoSomething.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "DoSomethingElse",
+              "href": "CSharp8.DefaultInterfaceMembers.DoSomethingElse.html",
+              "topicHref": "CSharp8.DefaultInterfaceMembers.DoSomethingElse.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Operators",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "operator +",
+              "href": "CSharp8.DefaultInterfaceMembers.op_UnaryPlus.html",
+              "topicHref": "CSharp8.DefaultInterfaceMembers.op_UnaryPlus.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "DefaultInterfaceMembers.IA",
+          "href": "CSharp8.DefaultInterfaceMembers.IA.html",
+          "topicHref": "CSharp8.DefaultInterfaceMembers.IA.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "M",
+              "href": "CSharp8.DefaultInterfaceMembers.IA.M.html",
+              "topicHref": "CSharp8.DefaultInterfaceMembers.IA.M.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        }
+      ],
+      "tocHref": null,
+      "level": 2
+    },
+    {
+      "name": "CSharp9",
+      "href": "CSharp9.html",
+      "topicHref": "CSharp9.html",
+      "items": [
+        {
+          "name": "Classes",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "FunctionPointers",
+          "href": "CSharp9.FunctionPointers.html",
+          "topicHref": "CSharp9.FunctionPointers.html",
+          "items": [
+            {
+              "name": "Methods",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Example",
+              "href": "CSharp9.FunctionPointers.Example.html",
+              "topicHref": "CSharp9.FunctionPointers.Example.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "InitOnlySetters",
+          "href": "CSharp9.InitOnlySetters.html",
+          "topicHref": "CSharp9.InitOnlySetters.html",
+          "items": [
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "PressureInMillibars",
+              "href": "CSharp9.InitOnlySetters.PressureInMillibars.html",
+              "topicHref": "CSharp9.InitOnlySetters.PressureInMillibars.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "RecordedAt",
+              "href": "CSharp9.InitOnlySetters.RecordedAt.html",
+              "topicHref": "CSharp9.InitOnlySetters.RecordedAt.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "TemperatureInCelsius",
+              "href": "CSharp9.InitOnlySetters.TemperatureInCelsius.html",
+              "topicHref": "CSharp9.InitOnlySetters.TemperatureInCelsius.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "NativeSizedIntegers",
+          "href": "CSharp9.NativeSizedIntegers.html",
+          "topicHref": "CSharp9.NativeSizedIntegers.html",
+          "items": [
+            {
+              "name": "Fields",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "X",
+              "href": "CSharp9.NativeSizedIntegers.X.html",
+              "topicHref": "CSharp9.NativeSizedIntegers.X.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Y",
+              "href": "CSharp9.NativeSizedIntegers.Y.html",
+              "topicHref": "CSharp9.NativeSizedIntegers.Y.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "RecordTypes",
+          "href": "CSharp9.RecordTypes.html",
+          "topicHref": "CSharp9.RecordTypes.html",
+          "items": [],
+          "tocHref": null,
+          "level": 3,
+          "leaf": true
+        },
+        {
+          "name": "RecordTypes.Person",
+          "href": "CSharp9.RecordTypes.Person.html",
+          "topicHref": "CSharp9.RecordTypes.Person.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Person",
+              "href": "CSharp9.RecordTypes.Person.-ctor.html",
+              "topicHref": "CSharp9.RecordTypes.Person.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "FirstName",
+              "href": "CSharp9.RecordTypes.Person.FirstName.html",
+              "topicHref": "CSharp9.RecordTypes.Person.FirstName.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "LastName",
+              "href": "CSharp9.RecordTypes.Person.LastName.html",
+              "topicHref": "CSharp9.RecordTypes.Person.LastName.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        },
+        {
+          "name": "RecordTypes.Teacher",
+          "href": "CSharp9.RecordTypes.Teacher.html",
+          "topicHref": "CSharp9.RecordTypes.Teacher.html",
+          "items": [
+            {
+              "name": "Constructors",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Teacher",
+              "href": "CSharp9.RecordTypes.Teacher.-ctor.html",
+              "topicHref": "CSharp9.RecordTypes.Teacher.-ctor.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Properties",
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Grade",
+              "href": "CSharp9.RecordTypes.Teacher.Grade.html",
+              "topicHref": "CSharp9.RecordTypes.Teacher.Grade.html",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            }
+          ],
+          "tocHref": null,
+          "level": 3
+        }
+      ],
+      "tocHref": null,
+      "level": 2
+    }
+  ],
+  "_key": "obj/md/toc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/toc.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "topicHref": null,
+  "tocHref": null,
+  "name": null,
+  "level": 1,
+  "leaf": false,
+  "title": "Table of Content",
+  "_disableToc": true
+}
