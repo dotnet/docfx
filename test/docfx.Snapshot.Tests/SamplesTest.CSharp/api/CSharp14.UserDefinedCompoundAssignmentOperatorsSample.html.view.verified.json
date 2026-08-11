@@ -1,0 +1,1538 @@
+﻿{
+  "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp14",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp14.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp14"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp14"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp14"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp14"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp14"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp14"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Value"
+            },
+            {
+              "lang": "vb",
+              "value": "Value"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.Value"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.Value"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value\" text=\"Value\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.Value\" text=\"Value\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "property",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_Value",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ToString()"
+            },
+            {
+              "lang": "vb",
+              "value": "ToString()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.ToString()"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.ToString()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString\" text=\"ToString()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.ToString\" text=\"ToString()\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "<p sourcefile=\"obj/api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.yml\" sourcestartlinenumber=\"1\">Returns a string that represents the current object.</p>\n",
+          "type": "method",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_ToString",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inOperator": true,
+      "typePropertyName": "inOperator",
+      "id": "operators",
+      "children": [
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator +=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_AdditionAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator +=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator +=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator +=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_AdditionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator +=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_AdditionAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator &=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_BitwiseAndAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator &=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator &=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator &amp;=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseAndAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator &amp;=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_BitwiseAndAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator |=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_BitwiseOrAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator |=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator |=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator |=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_BitwiseOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator |=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_BitwiseOrAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator --()"
+            },
+            {
+              "lang": "vb",
+              "value": "op_DecrementAssignment()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator --()"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator --()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment\" text=\"operator --()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DecrementAssignment\" text=\"operator --()\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_DecrementAssignment",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator /=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_DivisionAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator /=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator /=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator /=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_DivisionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator /=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_DivisionAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator ^=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_ExclusiveOrAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator ^=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator ^=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator ^=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ExclusiveOrAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator ^=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_ExclusiveOrAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator ++()"
+            },
+            {
+              "lang": "vb",
+              "value": "op_IncrementAssignment()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator ++()"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator ++()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment\" text=\"operator ++()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_IncrementAssignment\" text=\"operator ++()\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_IncrementAssignment",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment(System.Int32)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator <<=(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_LeftShiftAssignment(Integer)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator <<=(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment(Integer)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator <<=(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment(Integer)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment(System.Int32)\" text=\"operator &lt;&lt;=(int)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_LeftShiftAssignment(System.Int32)\" text=\"operator &lt;&lt;=(int)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_LeftShiftAssignment_System_Int32_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator %=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_ModulusAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator %=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator %=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator %=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_ModulusAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator %=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_ModulusAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator *=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_MultiplicationAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator *=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator *=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator *=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator *=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_MultiplicationAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment(System.Int32)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator >>=(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_RightShiftAssignment(Integer)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator >>=(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment(Integer)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator >>=(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment(Integer)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment(System.Int32)\" text=\"operator &gt;&gt;=(int)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_RightShiftAssignment(System.Int32)\" text=\"operator &gt;&gt;=(int)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_RightShiftAssignment_System_Int32_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)",
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator -=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_SubtractionAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator -=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator -=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator -=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_SubtractionAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator -=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "operator",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_SubtractionAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "UserDefinedCompoundAssignmentOperatorsSample"
+    },
+    {
+      "lang": "vb",
+      "value": "UserDefinedCompoundAssignmentOperatorsSample"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "UserDefinedCompoundAssignmentOperatorsSample"
+    },
+    {
+      "lang": "vb",
+      "value": "UserDefinedCompoundAssignmentOperatorsSample"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp14.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "UserDefinedCompoundAssignmentOperatorsSample",
+    "path": "src/CSharp14.cs",
+    "startLine": 48,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp14",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp14.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp14"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp14"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp14"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp14"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp14"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp14"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class UserDefinedCompoundAssignmentOperatorsSample"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class UserDefinedCompoundAssignmentOperatorsSample"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "level": 1,
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_splitReference": true,
+  "_splitFrom": true,
+  "_key": "obj/api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp14_UserDefinedCompoundAssignmentOperatorsSample.md&value=---%0Auid%3A%20CSharp14.UserDefinedCompoundAssignmentOperatorsSample%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp14.cs/#L49",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

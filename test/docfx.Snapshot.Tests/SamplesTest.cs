@@ -23,6 +23,7 @@ namespace Docfx.Tests;
 public class SamplesTest : IDisposable
 {
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
+    private static readonly string s_solutionDir = Path.GetDirectoryName(s_samplesDir)! + Path.DirectorySeparatorChar;
 
     private const string DOCFX_SOURCE_REPOSITORY_URL = nameof(DOCFX_SOURCE_REPOSITORY_URL);
 
@@ -206,12 +207,43 @@ public class SamplesTest : IDisposable
         {
             obj.Remove("__global");
             obj.Remove("_systemKeys");
+            ScrubSolutionPaths(obj);
             builder.Clear();
             builder.Append(JsonSerializer.Serialize(obj, new JsonSerializerOptions
             {
                 WriteIndented = true,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             }));
+        }
+    }
+
+    private static void ScrubSolutionPaths(JsonNode node)
+    {
+        if (node is JsonObject obj)
+        {
+            foreach (var (key, value) in obj.ToArray())
+            {
+                if (value is JsonValue jsonValue &&
+                    jsonValue.TryGetValue<string>(out var text) &&
+                    text.StartsWith(s_solutionDir, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+                {
+                    obj[key] = "{SolutionDirectory}" + text[s_solutionDir.Length..].Replace('\\', '/');
+                }
+                else if (value != null)
+                {
+                    ScrubSolutionPaths(value);
+                }
+            }
+        }
+        else if (node is JsonArray array)
+        {
+            foreach (var value in array)
+            {
+                if (value != null)
+                {
+                    ScrubSolutionPaths(value);
+                }
+            }
         }
     }
 
