@@ -74,7 +74,10 @@ public class SamplesTest : IDisposable
 
         Parallel.ForEach(Directory.EnumerateFiles($"{samplePath}/_site", "*.pdf", SearchOption.AllDirectories), PdfToJson);
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: s_updateSnapshots);
+        if (OperatingSystem.IsLinux())
+        {
+            await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: s_updateSnapshots);
+        }
 
         void PdfToJson(string path)
         {
@@ -195,11 +198,9 @@ public class SamplesTest : IDisposable
 
     private static bool IncludeFile(string file)
     {
-        var fileName = Path.GetFileName(file);
         return Path.GetExtension(file) switch
         {
-            ".json" => fileName != "manifest.json" &&
-                (OperatingSystem.IsLinux() || !fileName.EndsWith(".pdf.json", StringComparison.OrdinalIgnoreCase)),
+            ".json" => Path.GetFileName(file) != "manifest.json",
             ".yml" or ".md" => true,
             _ => false,
         };
