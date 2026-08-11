@@ -4,7 +4,7 @@
   <div class="grad-bottom"></div>
   <div class="footer">
     <div class="container">
-      <span class="float-end">
+      <span class="pull-right">
         <a href="#top">{{__global.backToTop}}</a>
       </span>
       {{{_appFooter}}}

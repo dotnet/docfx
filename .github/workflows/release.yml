@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v6
 
     - uses: ./.github/actions/build
 
@@ -45,7 +45,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-    - uses: actions/setup-dotnet@v6
+    - uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 10.x
 
@@ -55,9 +55,9 @@ jobs:
         path: drop/nuget
 
     # Install `Sign CLI` to use Azure Key Vault (See: https://github.com/dotnet/sign/blob/main/docs/comparisons.md)
-    - run: dotnet tool install --tool-path . --version 1.1.5 sign
+    - run: dotnet tool install --tool-path . --prerelease sign
 
-    - uses: azure/login@v3
+    - uses: azure/login@v2
       with:
         allow-no-subscriptions: true
         client-id: ${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}
@@ -86,7 +86,7 @@ jobs:
       contents: write
       id-token: write
     steps:
-    - uses: actions/setup-dotnet@v6
+    - uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 10.x
 

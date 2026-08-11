@@ -368,8 +368,8 @@ partial class SymbolFormatter
         public string GetDocumentationCommentXml(CultureInfo preferredCulture = null, bool expandIncludes = false, CancellationToken cancellationToken = default) => Inner.GetDocumentationCommentXml(preferredCulture, expandIncludes, cancellationToken);
         public ImmutableArray<AttributeData> GetReturnTypeAttributes() => Inner.GetReturnTypeAttributes();
         public ITypeSymbol GetTypeInferredDuringReduction(ITypeParameterSymbol reducedFromTypeParameter) => Inner.GetTypeInferredDuringReduction(reducedFromTypeParameter);
-        public IMethodSymbol ReduceExtensionMember(ITypeSymbol receiverType) => Inner.ReduceExtensionMember(receiverType);
         public IMethodSymbol ReduceExtensionMethod(ITypeSymbol receiverType) => Inner.ReduceExtensionMethod(receiverType);
+        public IMethodSymbol ReduceExtensionMember(ITypeSymbol receiverType) => Inner.ReduceExtensionMember(receiverType);
         public ImmutableArray<SymbolDisplayPart> ToDisplayParts(SymbolDisplayFormat format = null) => Inner.ToDisplayParts(format);
         public string ToDisplayString(SymbolDisplayFormat format = null) => Inner.ToDisplayString(format);
         public ImmutableArray<SymbolDisplayPart> ToMinimalDisplayParts(SemanticModel semanticModel, int position, SymbolDisplayFormat format = null) => Inner.ToMinimalDisplayParts(semanticModel, position, format);

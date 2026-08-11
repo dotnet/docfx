@@ -19,7 +19,7 @@ jobs:
       actions: write    # Required to invoke another workflow with `createWorkflowDispatch`.
       contents: write   # Required to commit snapshot diffs.
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v6
       with:
         ref: ${{ github.ref_name }}
         lfs: true
@@ -37,7 +37,7 @@ jobs:
     - run: dotnet test -c Release -f net10.0 --no-build --filter Stage=Snapshot
       working-directory: test/docfx.Snapshot.Tests
       env:
-        DOCFX_UPDATE_SNAPSHOTS: true
+        BUILD_SERVER: false # Need to accept file changes automatically.
 
     # Show diff file names (It's required when using dryrun option)
     - name: Show diff file names
@@ -52,7 +52,7 @@ jobs:
         commit_message: 'test(snapshot): update snapshots ${{ github.sha }}'
 
     # Invoke CI workflow if changes are committed.
-    - uses: actions/github-script@v9
+    - uses: actions/github-script@v8
       if: ${{ steps.auto-commit-action.outputs.changes_detected == 'true' }} 
       with:
         script: |

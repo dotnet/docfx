@@ -12,7 +12,7 @@ internal class TemplateCommand
 {
     public class ListCommand : Command
     {
-        protected override int Execute(CommandContext context, CancellationToken cancellationToken)
+        public override int Execute(CommandContext context, CancellationToken cancellationToken)
         {
             foreach (var path in Directory.GetDirectories(GetTemplateBaseDirectory()))
                 Console.WriteLine(Path.GetFileName(path));
@@ -38,7 +38,7 @@ internal class TemplateCommand
             public string OutputFolder { get; set; }
         }
 
-        protected override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
+        public override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
         {
             return CommandHelper.Run(() =>
             {

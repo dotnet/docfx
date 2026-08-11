@@ -459,13 +459,10 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/CSharp9.yml",
-  "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
+  "_key": "api/CSharp9.yml",
   "_path": "api/CSharp9.html",
   "_rel": "../",
-  "_tocKey": "~/obj/api/toc.yml",
+  "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {

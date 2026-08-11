@@ -1,6 +1,6 @@
 /** @type {import('stylelint').Config} */
 export default {
-  extends: ["stylelint-config-standard-scss"],
+  extends: ["stylelint-config-recommended-scss"],
   ignoreFiles: [
     "**/*.ts",
     "**/*.js"
