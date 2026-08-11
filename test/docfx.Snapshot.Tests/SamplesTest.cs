@@ -227,7 +227,16 @@ public class SamplesTest : IDisposable
                     jsonValue.TryGetValue<string>(out var text) &&
                     text.StartsWith(s_solutionDir, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
                 {
-                    obj[key] = "{SolutionDirectory}" + text[s_solutionDir.Length..].Replace('\\', '/');
+                    var relativePath = text[s_solutionDir.Length..].Replace('\\', '/');
+                    var generatedPathIndex = relativePath.IndexOf("/obj/", StringComparison.Ordinal);
+                    if (generatedPathIndex >= 0)
+                    {
+                        relativePath = relativePath[..(generatedPathIndex + "/obj/".Length)] + "{GeneratedSource}";
+                        obj["startLine"] = 0;
+                        obj["endLine"] = 0;
+                    }
+
+                    obj[key] = "{SolutionDirectory}" + relativePath;
                 }
                 else if (value != null)
                 {
