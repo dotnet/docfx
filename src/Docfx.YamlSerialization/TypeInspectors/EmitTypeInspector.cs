@@ -117,20 +117,6 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         return valueText;
     }
 
-    public override bool HasParseMethod(Type type) =>
-        type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, [typeof(string)], null) != null;
-
-    public override object? Parse(string value, Type expectedType)
-    {
-        var method = expectedType.GetMethod("Parse", [typeof(string)]);
-        if (method == null)
-        {
-            throw new InvalidOperationException($"Type '{expectedType.FullName}' does not have a static Parse method.");
-        }
-
-        return method.Invoke(null, [value]);
-    }
-
     private sealed class CachingItem
     {
         private CachingItem() { }

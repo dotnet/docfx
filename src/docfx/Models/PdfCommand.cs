@@ -10,7 +10,7 @@ namespace Docfx;
 
 internal class PdfCommand : AsyncCommand<PdfCommandOptions>
 {
-    protected override async Task<int> ExecuteAsync(CommandContext context, PdfCommandOptions options, CancellationToken cancellationToken)
+    public override async Task<int> ExecuteAsync(CommandContext context, PdfCommandOptions options, CancellationToken cancellationToken)
     {
         return await CommandHelper.RunAsync(options, async () =>
         {

@@ -52,7 +52,7 @@ $(function () {
   // Styling for tables in conceptual documents using Bootstrap.
   // See http://getbootstrap.com/css/#tables
   function renderTables() {
-    $('table').addClass('table table-bordered table-sm').wrap('<div class=\"table-responsive\"></div>');
+    $('table').addClass('table table-bordered table-condensed').wrap('<div class=\"table-responsive\"></div>');
   }
 
   // Styling for alerts.
@@ -182,7 +182,7 @@ $(function () {
       }
 
       indexReady.promise().done(function () {
-        $("body").on("queryReady", function () {
+        $("body").bind("queryReady", function () {
           worker.postMessage({ q: query });
         });
         if (query && (query.length >= 3)) {
@@ -206,12 +206,12 @@ $(function () {
     }
 
     function addSearchEvent() {
-      $('body').on("searchEvent", function () {
-        $('#search-query').on('keypress', function (e) {
+      $('body').bind("searchEvent", function () {
+        $('#search-query').keypress(function (e) {
           return e.which !== 13;
         });
 
-        $('#search-query').on('keyup', function () {
+        $('#search-query').keyup(function () {
           query = $(this).val();
           if (query === '') {
             flipContents("show");
@@ -429,10 +429,10 @@ $(function () {
       var tocFilterInput = $('#toc_filter_input');
       var tocFilterClearButton = $('#toc_filter_clear');
 
-      $('.toc .nav > li > .expand-stub').on('click', function (e) {
+      $('.toc .nav > li > .expand-stub').click(function (e) {
         $(e.target).parent().toggleClass(expanded);
       });
-      $('.toc .nav > li > .expand-stub + a:not([href])').on('click', function (e) {
+      $('.toc .nav > li > .expand-stub + a:not([href])').click(function (e) {
         $(e.target).parent().toggleClass(expanded);
       });
       tocFilterInput.on('input', function (e) {
@@ -1209,7 +1209,7 @@ $(function () {
 
     $(document).ready(function () {
         // Exclude tabbed content case
-        $('a:not([data-tab])').on('click', function (e) { delegateAnchors(e); });
+        $('a:not([data-tab])').click(function (e) { delegateAnchors(e); });
     });
   }
 });

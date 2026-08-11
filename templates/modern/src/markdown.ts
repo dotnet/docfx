@@ -28,7 +28,7 @@ export async function renderMarkdown() {
 async function renderMath() {
   const math = document.querySelectorAll('.math')
   if (math.length > 0) {
-    await import('mathjax/tex-svg.js')
+    await import('mathjax/es5/tex-svg-full.js')
   }
 }
 

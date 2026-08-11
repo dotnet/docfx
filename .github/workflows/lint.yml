@@ -17,9 +17,9 @@ jobs:
     if: github.event.pull_request.draft == false   
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-dotnet@v6
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.x
 

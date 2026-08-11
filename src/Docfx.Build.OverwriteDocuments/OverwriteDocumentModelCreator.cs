@@ -4,7 +4,6 @@
 using Docfx.Build.Common;
 using Docfx.Common;
 using Markdig.Syntax;
-using YamlException = YamlDotNet.Core.YamlException;
 
 namespace Docfx.Build.OverwriteDocuments;
 
@@ -48,9 +47,8 @@ public class OverwriteDocumentModelCreator
         }
         catch (Exception ex)
         {
-            var details = ex is YamlException yamlException ? yamlException.ToMessage() : ex.ToString();
             throw new MarkdownFragmentsException(
-                $"Encountered an invalid YAML code block: {details}",
+                $"Encountered an invalid YAML code block: {ex}",
                 yamlCodeBlockSource.Line,
                 ex);
         }

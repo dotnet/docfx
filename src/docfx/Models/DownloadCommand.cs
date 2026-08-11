@@ -10,7 +10,7 @@ namespace Docfx;
 
 internal class DownloadCommand : Command<DownloadCommandOptions>
 {
-    protected override int Execute([NotNull] CommandContext context, [NotNull] DownloadCommandOptions options, CancellationToken cancellationToken)
+    public override int Execute([NotNull] CommandContext context, [NotNull] DownloadCommandOptions options, CancellationToken cancellationToken)
     {
         return CommandHelper.Run(() =>
         {

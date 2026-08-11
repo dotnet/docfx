@@ -540,8 +540,8 @@
   "type": "class",
   "source": {
     "id": "SourceGenerator",
-    "path": "{SolutionDirectory}samples/seed/dotnet/project/Project/obj/{GeneratedSource}",
-    "startLine": 0,
+    "path": "{SolutionDirectory}samples/seed/dotnet/project/Project/obj/Release/net10.0/Microsoft.Extensions.Logging.Generators/Microsoft.Extensions.Logging.Generators.LoggerMessageGenerator/LoggerMessage.g.cs",
+    "startLine": 5,
     "endLine": 0
   },
   "assemblies": [

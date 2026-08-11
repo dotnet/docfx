@@ -58,7 +58,9 @@ $expand-stub-width: .85rem;
     transform-origin: .5em 50%;
 
     @media (prefers-reduced-motion) {
-      transition: none;
+      & {
+        transition: none;
+      }
     }
   }
 
