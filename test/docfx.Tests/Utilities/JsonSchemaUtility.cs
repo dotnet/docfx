@@ -27,7 +27,10 @@ internal static class JsonSchemaUtility
         if (!File.Exists(jsonSchemaPath))
             throw new FileNotFoundException(jsonSchemaPath);
 
-        var schema = JsonSchema.FromText(File.ReadAllText(jsonSchemaPath), jsonOptions: DefaultJsonDocumentOptions);
+        var schema = JsonSchema.FromText(
+            File.ReadAllText(jsonSchemaPath),
+            new() { SchemaRegistry = new() },
+            jsonOptions: DefaultJsonDocumentOptions);
 
         var result = schema.Evaluate(jsonElement, DefaultEvaluationOptions);
         return result;

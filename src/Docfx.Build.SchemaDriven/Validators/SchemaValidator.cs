@@ -11,6 +11,12 @@ public class SchemaValidator
 {
     private readonly JsonSchema _schema;
 
+    private static readonly Uri[] DocfxDialectIds =
+    [
+        new("http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"),
+        new("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#"),
+    ];
+
     private static readonly EvaluationOptions DefaultOptions = new()
     {
         IncludeApplicatorErrors = false,
@@ -19,19 +25,18 @@ public class SchemaValidator
 
     static SchemaValidator()
     {
-        RegisterDialect(new("http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"));
-        RegisterDialect(new("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#"));
-
-        static void RegisterDialect(Uri id)
+        foreach (var id in DocfxDialectIds)
         {
-            SchemaRegistry.Global.Register(id, MetaSchemas.Draft7);
             DialectRegistry.Global.Register(Dialect.Draft07.With([], id));
         }
     }
 
     public SchemaValidator(string json)
     {
-        _schema = JsonSchema.FromText(json, jsonOptions: new() { AllowTrailingCommas = true });
+        _schema = JsonSchema.FromText(
+            json,
+            new() { SchemaRegistry = new() },
+            jsonOptions: new() { AllowTrailingCommas = true });
     }
 
     public void Validate(object obj)
