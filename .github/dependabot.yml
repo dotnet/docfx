@@ -21,14 +21,6 @@ updates:
       - "xunit.v3"
       - "xunit.v3.*"
 
-- package-ecosystem: "nuget"
-  target-branch: main
-  directory: "/"
-  schedule:
-    interval: "monthly"
-  allow:
-  - dependency-name: "Verify.*"
-
 - package-ecosystem: npm
   target-branch: main
   directory: "/templates"
