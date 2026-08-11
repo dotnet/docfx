@@ -37,7 +37,7 @@ jobs:
     - run: dotnet test -c Release -f net10.0 --no-build --filter Stage=Snapshot
       working-directory: test/docfx.Snapshot.Tests
       env:
-        BUILD_SERVER: false # Need to accept file changes automatically.
+        DOCFX_UPDATE_SNAPSHOTS: true
 
     # Show diff file names (It's required when using dryrun option)
     - name: Show diff file names

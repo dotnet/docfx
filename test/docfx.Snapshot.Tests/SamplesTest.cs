@@ -24,6 +24,8 @@ public class SamplesTest : IDisposable
 {
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
     private static readonly string s_solutionDir = Path.GetDirectoryName(s_samplesDir)! + Path.DirectorySeparatorChar;
+    private static readonly bool s_updateSnapshots =
+        string.Equals(Environment.GetEnvironmentVariable("DOCFX_UPDATE_SNAPSHOTS"), "true", StringComparison.OrdinalIgnoreCase);
 
     private const string DOCFX_SOURCE_REPOSITORY_URL = nameof(DOCFX_SOURCE_REPOSITORY_URL);
 
@@ -72,7 +74,7 @@ public class SamplesTest : IDisposable
 
         Parallel.ForEach(Directory.EnumerateFiles($"{samplePath}/_site", "*.pdf", SearchOption.AllDirectories), PdfToJson);
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: s_updateSnapshots);
 
         void PdfToJson(string path)
         {
@@ -126,7 +128,7 @@ public class SamplesTest : IDisposable
         var exitCode = Program.Main(["metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath]);
         Assert.Equal(0, exitCode);
 
-        await VerifyDirectory(outputPath).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory(outputPath).AutoVerify(includeBuildServer: s_updateSnapshots);
     }
 
     [SamplesFact]
@@ -147,7 +149,7 @@ public class SamplesTest : IDisposable
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
         }
 
-        await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: s_updateSnapshots);
     }
 
     [SamplesFact]
@@ -168,7 +170,7 @@ public class SamplesTest : IDisposable
         Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
-        return VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        return VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: s_updateSnapshots);
     }
 
     private static int Exec(string filename, string args, string workingDirectory = null)
