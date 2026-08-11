@@ -52,7 +52,7 @@ $(function () {
   // Styling for tables in conceptual documents using Bootstrap.
   // See http://getbootstrap.com/css/#tables
   function renderTables() {
-    $('table').addClass('table table-bordered table-condensed').wrap('<div class=\"table-responsive\"></div>');
+    $('table').addClass('table table-bordered table-sm').wrap('<div class=\"table-responsive\"></div>');
   }
 
   // Styling for alerts.
@@ -143,9 +143,9 @@ $(function () {
     function renderSearchBox() {
       autoCollapse();
       $(window).on('resize', autoCollapse);
-      $(document).on('click', '.navbar-collapse.in', function (e) {
+      $(document).on('click', '.navbar-collapse.show', function (e) {
         if ($(e.target).is('a')) {
-          $(this).collapse('hide');
+          window.bootstrap.Collapse.getOrCreateInstance(this).hide();
         }
       });
 
@@ -182,7 +182,7 @@ $(function () {
       }
 
       indexReady.promise().done(function () {
-        $("body").bind("queryReady", function () {
+        $("body").on("queryReady", function () {
           worker.postMessage({ q: query });
         });
         if (query && (query.length >= 3)) {
@@ -206,12 +206,12 @@ $(function () {
     }
 
     function addSearchEvent() {
-      $('body').bind("searchEvent", function () {
-        $('#search-query').keypress(function (e) {
+      $('body').on("searchEvent", function () {
+        $('#search-query').on('keypress', function (e) {
           return e.which !== 13;
         });
 
-        $('#search-query').keyup(function () {
+        $('#search-query').on('keyup', function () {
           query = $(this).val();
           if (query === '') {
             flipContents("show");
@@ -268,43 +268,61 @@ $(function () {
       var numPerPage = 10;
       var pagination = $('#pagination');
       pagination.empty();
-      pagination.removeData("twbs-pagination");
       if (hits.length === 0) {
         $('#search-results>.sr-items').html('<p>No results found</p>');
       } else {
-        pagination.twbsPagination({
-          first: pagination.data('first'),
-          prev: pagination.data('prev'),
-          next: pagination.data('next'),
-          last: pagination.data('last'),
-          totalPages: Math.ceil(hits.length / numPerPage),
-          visiblePages: 5,
-          onPageClick: function (event, page) {
-            var start = (page - 1) * numPerPage;
-            var curHits = hits.slice(start, start + numPerPage);
-            $('#search-results>.sr-items').empty().append(
-              curHits.map(function (hit) {
-                var currentUrl = window.location.href;
-                var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
-                var itemHref = relHref + hit.href + "?q=" + query;
-                var itemTitle = hit.title;
-                var itemBrief = extractContentBrief(hit.summary || '');
+        var totalPages = Math.ceil(hits.length / numPerPage);
+        pagination.addClass('pagination');
+        renderPage(1);
 
-                var itemNode = $('<div>').attr('class', 'sr-item');
-                var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").attr("rel", "noopener noreferrer").text(itemTitle));
-                var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
-                var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
-                itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
-                return itemNode;
-              })
-            );
-            query.split(/\s+/).forEach(function (word) {
-              if (word !== '') {
-                $('#search-results>.sr-items *').mark(word);
-              }
-            });
+        function renderPage(page) {
+          var start = (page - 1) * numPerPage;
+          var curHits = hits.slice(start, start + numPerPage);
+          $('#search-results>.sr-items').empty().append(
+            curHits.map(function (hit) {
+              var currentUrl = window.location.href;
+              var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
+              var itemHref = relHref + hit.href + "?q=" + query;
+              var itemTitle = hit.title;
+              var itemBrief = extractContentBrief(hit.summary || '');
+
+              var itemNode = $('<div>').attr('class', 'sr-item');
+              var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").attr("rel", "noopener noreferrer").text(itemTitle));
+              var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
+              var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
+              itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
+              return itemNode;
+            })
+          );
+          query.split(/\s+/).forEach(function (word) {
+            if (word !== '') {
+              $('#search-results>.sr-items *').mark(word);
+            }
+          });
+
+          pagination.empty();
+          var firstVisiblePage = Math.max(1, Math.min(page - 2, totalPages - 4));
+          var lastVisiblePage = Math.min(totalPages, firstVisiblePage + 4);
+          addPageLink(pagination.data('first'), 1, page === 1);
+          addPageLink(pagination.data('prev'), page - 1, page === 1);
+          for (var pageNumber = firstVisiblePage; pageNumber <= lastVisiblePage; pageNumber++) {
+            addPageLink(pageNumber, pageNumber, false, pageNumber === page);
           }
-        });
+          addPageLink(pagination.data('next'), page + 1, page === totalPages);
+          addPageLink(pagination.data('last'), totalPages, page === totalPages);
+        }
+
+        function addPageLink(label, page, disabled, current) {
+          var item = $('<li>').addClass('page-item').toggleClass('disabled', disabled).toggleClass('active', current);
+          var button = $('<button type="button">').addClass('page-link').text(label).prop('disabled', disabled);
+          if (current) {
+            button.attr('aria-current', 'page');
+          }
+          button.on('click', function () {
+            renderPage(page);
+          });
+          pagination.append(item.append(button));
+        }
       }
     }
   };
@@ -344,6 +362,8 @@ $(function () {
           navrel = navbarPath.substr(0, index + 1);
         }
         $('#navbar>ul').addClass('navbar-nav');
+        $('#navbar>ul>li').addClass('nav-item');
+        $('#navbar>ul>li>a').addClass('nav-link');
         var currentAbsPath = util.getCurrentWindowAbsolutePath();
         // set active item
         $('#navbar').find('a[href]').each(function (i, e) {
@@ -361,7 +381,7 @@ $(function () {
               }
             } else {
               if (util.getAbsolutePath(href) === currentAbsPath) {
-                var dropdown = $(e).attr('data-toggle') == "dropdown"
+                var dropdown = $(e).attr('data-bs-toggle') == "dropdown"
                 if (!dropdown) {
                   isActive = true;
                 }
@@ -409,10 +429,10 @@ $(function () {
       var tocFilterInput = $('#toc_filter_input');
       var tocFilterClearButton = $('#toc_filter_clear');
 
-      $('.toc .nav > li > .expand-stub').click(function (e) {
+      $('.toc .nav > li > .expand-stub').on('click', function (e) {
         $(e.target).parent().toggleClass(expanded);
       });
-      $('.toc .nav > li > .expand-stub + a:not([href])').click(function (e) {
+      $('.toc .nav > li > .expand-stub + a:not([href])').on('click', function (e) {
         $(e.target).parent().toggleClass(expanded);
       });
       tocFilterInput.on('input', function (e) {
@@ -575,13 +595,20 @@ $(function () {
       if ($('footer').is(':visible')) {
         $(".sideaffix").css("bottom", "70px");
       }
-      $('#affix a').click(function(e) {
-        var scrollspy = $('[data-spy="scroll"]').data()['bs.scrollspy'];
-        var target = e.target.hash;
-        if (scrollspy && target) {
-          scrollspy.activate(target);
-        }
-      });
+      if (!document.body.dataset.docfxScrollSpyListener) {
+        document.body.addEventListener('activate.bs.scrollspy', function (event) {
+          $('#affix li').removeClass(active);
+          var relatedTarget = event.relatedTarget;
+          var link = relatedTarget instanceof Element
+            ? $(relatedTarget)
+            : $('#affix a').filter(function () {
+                return this.getAttribute('href') === relatedTarget;
+              });
+          link.parents('li').addClass(active);
+        });
+        document.body.dataset.docfxScrollSpyListener = 'true';
+      }
+      window.bootstrap.ScrollSpy.getOrCreateInstance(document.body).refresh();
     }
 
     function getHierarchy() {
@@ -1182,7 +1209,7 @@ $(function () {
 
     $(document).ready(function () {
         // Exclude tabbed content case
-        $('a:not([data-tab])').click(function (e) { delegateAnchors(e); });
+        $('a:not([data-tab])').on('click', function (e) { delegateAnchors(e); });
     });
   }
 });

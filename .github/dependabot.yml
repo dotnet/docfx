@@ -21,13 +21,13 @@ updates:
       - "xunit.v3"
       - "xunit.v3.*"
 
-  - package-ecosystem: "nuget"
-    target-branch: main
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    allow:
-      - dependency-name: "Verify.*"
+- package-ecosystem: "nuget"
+  target-branch: main
+  directory: "/"
+  schedule:
+    interval: "monthly"
+  allow:
+  - dependency-name: "Verify.*"
 
 - package-ecosystem: npm
   target-branch: main
@@ -40,10 +40,7 @@ updates:
     typescript-eslint:
       patterns:
       - "@typescript-eslint/*"
-  ignore:
-     # Ignore default template dependency update due to missing tests
-  - dependency-name: '@default/*'
-  - dependency-name: 'jquery'
+      - "typescript-eslint"
 
 - package-ecosystem: "github-actions"
   directory: "/"

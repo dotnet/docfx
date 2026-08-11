@@ -200,7 +200,7 @@ body[data-layout="landing"] {
 
           @include stick-to-header;
 
-          @media only screen and (max-width: 1140px) {
+          @media (width <= 1140px) {
             display: none;
           }
         }

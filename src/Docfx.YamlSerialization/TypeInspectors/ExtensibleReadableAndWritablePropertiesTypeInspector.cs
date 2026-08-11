@@ -27,4 +27,10 @@ public sealed class ExtensibleReadableAndWritablePropertiesTypeInspector : Exten
 
     public override string GetEnumValue(object enumValue) =>
         _innerTypeDescriptor.GetEnumValue(enumValue);
+
+    public override bool HasParseMethod(Type type) =>
+        _innerTypeDescriptor.HasParseMethod(type);
+
+    public override object? Parse(string value, Type expectedType) =>
+        _innerTypeDescriptor.Parse(value, expectedType);
 }

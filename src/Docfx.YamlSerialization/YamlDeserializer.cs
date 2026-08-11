@@ -65,6 +65,16 @@ public sealed class YamlDeserializer
         {
             return TypeDescriptor.GetEnumValue(enumValue);
         }
+
+        public bool HasParseMethod(Type type)
+        {
+            return TypeDescriptor.HasParseMethod(type);
+        }
+
+        public object? Parse(string value, Type expectedType)
+        {
+            return TypeDescriptor.Parse(value, expectedType);
+        }
     }
 
     public YamlDeserializer(

@@ -64,4 +64,8 @@ public abstract class ExtensibleTypeInspectorSkeleton : ITypeInspector, IExtensi
     public abstract string GetEnumName(Type enumType, string name);
 
     public abstract string GetEnumValue(object enumValue);
+
+    public abstract bool HasParseMethod(Type type);
+
+    public abstract object? Parse(string value, Type expectedType);
 }
