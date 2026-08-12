@@ -7,6 +7,7 @@ require('@default/highlight.js/styles/github.css')
 window.$ = window.jQuery = require('jquery')
 
 window.bootstrap = require('@default/bootstrap')
+require('@default/twbs-pagination')
 require('@default/mark.js/src/jquery')
 
 const AnchorJS = require('@default/anchor-js')

@@ -24,6 +24,7 @@
     "@default/highlight.js": "npm:highlight.js@11.8.0",
     "@default/lunr": "npm:lunr@2.3.9",
     "@default/mark.js": "npm:mark.js@8.11.1",
+    "@default/twbs-pagination": "npm:twbs-pagination@1.4.2",
     "@default/url": "npm:@websanova/url@2.6.3",
     "@websanova/url": "^2.6.3",
     "anchor-js": "^5.0.0",

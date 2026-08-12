@@ -3,15 +3,15 @@
 <ul class="nav level{{level}} navbar-nav">
   {{#items}}
     {{^dropdown}}
-      <li>
+      <li class="nav-item">
         {{^leaf}}
           <span class="expand-stub"></span>
         {{/leaf}}
         {{#topicHref}}
-          <a href="{{topicHref}}" title="{{name}}">{{name}}</a>
+          <a class="nav-link" href="{{topicHref}}" title="{{name}}">{{name}}</a>
         {{/topicHref}}
         {{^topicHref}}
-          <a>{{{name}}}</a>
+          <a class="nav-link">{{{name}}}</a>
         {{/topicHref}}
         {{^leaf}}
           {{>partials/navbar-li}}
@@ -19,8 +19,8 @@
       </li>
     {{/dropdown}}
     {{#dropdown}}
-      <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{name}} <span class="caret"></span></a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{name}} <span aria-hidden="true">&#9662;</span></a>
         <ul class="dropdown-menu level{{level}}">
           {{>partials/dd-li}}
         </ul>

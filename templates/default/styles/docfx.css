@@ -922,24 +922,22 @@ pre > code .line-highlight {
     position:relative;
     top:1px;
     display:inline-block;
-    font-family:'Glyphicons Halflings';
+    font-family:sans-serif;
     line-height:1;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
     margin-right: 5px;
     font-weight: normal;
 }
 
 .alert-info h5:before {
-    content:"\e086"
+    content:"\2139";
 }
 
 .alert-warning h5:before {
-    content:"\e127"
+    content:"\26a0";
 }
 
 .alert-danger h5:before {
-    content:"\e107"
+    content:"\2716";
 }
 
 /* For Embedded Video */
