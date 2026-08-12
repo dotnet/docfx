@@ -124,7 +124,7 @@ span.languagekeyword{
   margin-left: 10px;
   margin-top: 5px;
 }
-/* Preserve Bootstrap 3 utilities still emitted by the default template. */
+/* Bootstrap 5 removed these utilities, but the default template still emits them. */
 .pull-right {
   float: right !important;
 }
