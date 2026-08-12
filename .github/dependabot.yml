@@ -21,6 +21,14 @@ updates:
       - "xunit.v3"
       - "xunit.v3.*"
 
+  - package-ecosystem: "nuget"
+    target-branch: main
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    allow:
+      - dependency-name: "Verify.*"
+
 - package-ecosystem: npm
   target-branch: main
   directory: "/templates"
@@ -33,7 +41,8 @@ updates:
       patterns:
       - "@typescript-eslint/*"
   ignore:
-    # jQuery 4 requires a dedicated compatibility migration.
+     # Ignore default template dependency update due to missing tests
+  - dependency-name: '@default/*'
   - dependency-name: 'jquery'
 
 - package-ecosystem: "github-actions"
