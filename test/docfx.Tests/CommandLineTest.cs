@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Common;
+using Spectre.Console;
 
 namespace Docfx.Tests;
 
@@ -28,6 +29,24 @@ public class CommandLineTest
         Assert.Equal(0, Program.Main(["download", "--help"]));
         Assert.Equal(0, Program.Main(["merge", "--help"]));
         Assert.Equal(0, Program.Main(["template", "--help"]));
+    }
+
+    [Fact]
+    public static void PrintsRootUsageInCommandFirstOrder()
+    {
+        using var writer = new StringWriter();
+        var console = AnsiConsole.Create(new()
+        {
+            Ansi = AnsiSupport.No,
+            ColorSystem = ColorSystemSupport.NoColors,
+            Out = new AnsiConsoleOutput(writer),
+        });
+
+        Assert.Equal(0, Program.Run(["-?"], console));
+
+        var output = writer.ToString();
+        Assert.Contains("docfx [COMMAND] [config] [OPTIONS]", output);
+        Assert.DoesNotContain("docfx [config] [OPTIONS] [COMMAND]", output);
     }
 
     [Fact]
