@@ -12,7 +12,7 @@ namespace Docfx;
 
 internal class BuildCommand : AsyncCommand<BuildCommandOptions>
 {
-    public override Task<int> ExecuteAsync(CommandContext context, BuildCommandOptions settings, CancellationToken cancellationToken)
+    protected override Task<int> ExecuteAsync(CommandContext context, BuildCommandOptions settings, CancellationToken cancellationToken)
     {
         return CommandHelper.RunAsync(settings, async () =>
         {
