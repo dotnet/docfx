@@ -644,6 +644,9 @@ body .toc{
   bottom: 10px;
   position: fixed;
 }
+.sideaffix ul.nav {
+  flex-direction: column;
+}
 .sideaffix.shiftup {
   bottom: 70px;
 }
