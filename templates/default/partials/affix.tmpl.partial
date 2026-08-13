@@ -1,6 +1,6 @@
 {{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
 
-<div class="d-none d-lg-block col-lg-2" role="complementary">
+<div class="d-none d-md-block col-md-2" role="complementary">
   <div class="sideaffix">
     {{^_disableContribution}}
     <div class="contribution">

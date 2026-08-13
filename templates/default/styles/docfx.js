@@ -8,6 +8,7 @@ $(function () {
   var show = 'show';
   var hide = 'hide';
   var util = new utility();
+  var headerResizeObserver;
 
   function getAnchorTarget(hash) {
     var id = hash.substring(1);
@@ -30,6 +31,7 @@ $(function () {
   renderLinks();
   renderNavbar();
   setupNavbar();
+  setupLayout();
   renderSidebar();
   renderAffix();
   renderFooter();
@@ -65,7 +67,7 @@ $(function () {
   // Styling for tables in conceptual documents using Bootstrap.
   // See http://getbootstrap.com/css/#tables
   function renderTables() {
-    $('table').addClass('table table-bordered table-condensed').wrap('<div class=\"table-responsive\"></div>');
+    $('table').addClass('table table-bordered').wrap('<div class=\"table-responsive\"></div>');
   }
 
   // Styling for alerts.
@@ -388,8 +390,25 @@ $(function () {
     }
     navbar.removeClass(collapsed);
     var element = navbar[0];
-    if (navbar.outerHeight() > 60 || element.scrollWidth > element.clientWidth) {
+    if (element.scrollWidth > element.clientWidth + 1) {
       navbar.addClass(collapsed);
+    }
+  }
+
+  function setupLayout() {
+    var header = document.querySelector('header');
+    if (!header) {
+      return;
+    }
+    function updateHeaderHeight() {
+      document.documentElement.style.setProperty('--docfx-header-height', header.getBoundingClientRect().height + 'px');
+    }
+    updateHeaderHeight();
+    if (window.ResizeObserver) {
+      headerResizeObserver = new ResizeObserver(updateHeaderHeight);
+      headerResizeObserver.observe(header);
+    } else {
+      $(window).off('resize.docfx-layout').on('resize.docfx-layout', updateHeaderHeight);
     }
   }
 
@@ -737,9 +756,9 @@ $(function () {
     }
 
     function needFooter() {
-      var scrollHeight = $(document).height();
-      var scrollPosition = $(window).height() + $(window).scrollTop();
-      return (scrollHeight - scrollPosition) < 1;
+      var scrollHeight = document.documentElement.scrollHeight;
+      var scrollPosition = window.innerHeight + window.scrollY;
+      return scrollPosition >= scrollHeight - 1;
     }
 
     function resetBottomCss() {
