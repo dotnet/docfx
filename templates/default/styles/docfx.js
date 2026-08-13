@@ -9,6 +9,18 @@ $(function () {
   var hide = 'hide';
   var util = new utility();
 
+  function getAnchorTarget(hash) {
+    var id = hash.substring(1);
+    try {
+      id = decodeURIComponent(id);
+    } catch (error) {
+      if (!(error instanceof URIError)) {
+        throw error;
+      }
+    }
+    return document.getElementById(id);
+  }
+
   workAroundFixedHeaderForAnchors();
   highlight();
   enableSearch();
@@ -17,6 +29,7 @@ $(function () {
   renderAlerts();
   renderLinks();
   renderNavbar();
+  setupNavbar();
   renderSidebar();
   renderAffix();
   renderFooter();
@@ -132,33 +145,10 @@ $(function () {
         return;
       }
       webWorkerSearch();
-      renderSearchBox();
       highlightKeywords();
       addSearchEvent();
     } catch (e) {
       console.error(e);
-    }
-
-    //Adjust the position of search box in navbar
-    function renderSearchBox() {
-      autoCollapse();
-      $(window).on('resize', autoCollapse);
-      $(document).on('click', '.navbar-collapse.show', function (e) {
-        if ($(e.target).is('a')) {
-          window.bootstrap.Collapse.getOrCreateInstance(this).hide();
-        }
-      });
-
-      function autoCollapse() {
-        var navbar = $('#autocollapse');
-        if (navbar.height() === null) {
-          setTimeout(autoCollapse, 300);
-        }
-        navbar.removeClass(collapsed);
-        if (navbar.height() > 60) {
-          navbar.addClass(collapsed);
-        }
-      }
     }
 
     function webWorkerSearch() {
@@ -375,7 +365,31 @@ $(function () {
           }
         });
         renderNavbar();
+        autoCollapseNavbar();
       });
+    }
+  }
+
+  function setupNavbar() {
+    autoCollapseNavbar();
+    $(window).off('resize.docfx-navbar').on('resize.docfx-navbar', autoCollapseNavbar);
+    $(document).off('click.docfx-navbar', '.navbar-collapse.show')
+      .on('click.docfx-navbar', '.navbar-collapse.show', function (e) {
+        if ($(e.target).is('a:not([data-bs-toggle="dropdown"])')) {
+          window.bootstrap.Collapse.getOrCreateInstance(this).hide();
+        }
+      });
+  }
+
+  function autoCollapseNavbar() {
+    var navbar = $('#autocollapse');
+    if (!navbar.length) {
+      return;
+    }
+    navbar.removeClass(collapsed);
+    var element = navbar[0];
+    if (navbar.outerHeight() > 60 || element.scrollWidth > element.clientWidth) {
+      navbar.addClass(collapsed);
     }
   }
 
@@ -567,35 +581,45 @@ $(function () {
 
   //Setup Affix
   function renderAffix() {
+    $(window).off('scroll.docfx-affix');
     var hierarchy = getHierarchy();
     if (!hierarchy || hierarchy.length <= 0) {
       $("#affix").hide();
     }
     else {
+      $("#affix").show();
       var html = util.formList(hierarchy, ['nav', 'bs-docs-sidenav']);
       $("#affix>div").empty().append(html);
       if ($('footer').is(':visible')) {
         $(".sideaffix").css("bottom", "70px");
       }
-      if (!document.body.dataset.docfxScrollSpyListener) {
-        document.body.addEventListener('activate.bs.scrollspy', function (event) {
-          $('#affix li').removeClass(active);
-          var relatedTarget = event.relatedTarget;
-          var link = relatedTarget instanceof Element
-            ? $(relatedTarget)
-            : $('#affix a').filter(function () {
-                return this.getAttribute('href') === relatedTarget;
-              });
-          link.parents('li').addClass(active);
+      var affixLinks = $('#affix a[href^="#"]');
+      function updateAffix() {
+        var scrollTop = $(window).scrollTop() + 120;
+        var visibleLinks = affixLinks.filter(function () {
+          var target = getAnchorTarget(this.hash);
+          return target && $(target).is(':visible');
         });
-        document.body.dataset.docfxScrollSpyListener = 'true';
+        var activeLink = visibleLinks[0];
+        visibleLinks.each(function () {
+          var target = getAnchorTarget(this.hash);
+          if ($(target).offset().top <= scrollTop) {
+            activeLink = this;
+          }
+        });
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 1) {
+          activeLink = visibleLinks[visibleLinks.length - 1];
+        }
+        $('#affix li').removeClass(active);
+        $(activeLink).parents('li').addClass(active);
       }
-      window.bootstrap.ScrollSpy.getOrCreateInstance(document.body).refresh();
+      $(window).on('scroll.docfx-affix', updateAffix);
+      updateAffix();
     }
 
     function getHierarchy() {
       // supported headers are h1, h2, h3, and h4
-      var $headers = $($.map(['h1', 'h2', 'h3', 'h4'], function (h) { return ".article article " + h; }).join(", "));
+      var $headers = $($.map(['h1', 'h2', 'h3', 'h4'], function (h) { return ".article article " + h; }).join(", ")).filter(':visible');
 
       // a stack of hierarchy items that are currently being built
       var stack = [];
@@ -1022,8 +1046,7 @@ $(function () {
     }
 
     function notifyContentUpdated() {
-      // Dispatch this event when needed
-      // window.dispatchEvent(new CustomEvent('content-update'));
+      renderAffix();
     }
   }
 
@@ -1148,7 +1171,7 @@ $(function () {
         return false;
       }
 
-      match = document.getElementById(href.slice(1));
+      match = getAnchorTarget(href);
 
       if (match) {
         rect = match.getBoundingClientRect();
@@ -1175,7 +1198,7 @@ $(function () {
      * If the click event's target was an anchor, fix the scroll position.
      */
     function delegateAnchors(e) {
-      var elem = e.target;
+      var elem = e.currentTarget;
 
       if (scrollIfAnchor(elem.getAttribute('href'), true)) {
         e.preventDefault();
@@ -1189,9 +1212,7 @@ $(function () {
         scrollToCurrent();
     });
 
-    $(document).ready(function () {
-        // Exclude tabbed content case
-        $('a:not([data-tab])').click(function (e) { delegateAnchors(e); });
-    });
+    // Exclude tabbed content and delegate so dynamically rebuilt affix links work.
+    $(document).on('click.docfx-anchor', 'a:not([data-tab])', delegateAnchors);
   }
 });

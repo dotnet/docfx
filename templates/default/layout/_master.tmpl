@@ -9,7 +9,7 @@
 <html {{#_lang}}lang="{{_lang}}"{{/_lang}}>
   {{>partials/head}}
   {{^redirect_url}}
-  <body data-bs-spy="scroll" data-bs-target="#affix" data-bs-offset="120">
+  <body>
     <div id="wrapper">
       <header>
         {{^_disableNavbar}}
@@ -33,10 +33,10 @@
         <div class="article row grid">
         {{/_disableToc}}
           {{#_disableAffix}}
-          <div class="col-md-12">
+          <div class="col-lg-12">
           {{/_disableAffix}}
           {{^_disableAffix}}
-          <div class="col-md-10">
+          <div class="col-lg-10">
           {{/_disableAffix}}
             <article class="content wrap" id="_content" data-uid="{{uid}}">
                 {{!body}}

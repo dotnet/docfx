@@ -20,7 +20,7 @@
     {{/dropdown}}
     {{#dropdown}}
       <li class="dropdown">
-        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{name}} <span aria-hidden="true">&#9662;</span></a>
+        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{name}}</a>
         <ul class="dropdown-menu level{{level}}">
           {{>partials/dd-li}}
         </ul>

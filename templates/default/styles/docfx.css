@@ -111,6 +111,156 @@ span.languagekeyword{
     font-weight: bold;
 }
 
+/* Preserve Bootstrap 3.4.1 content styles expected by the default template. */
+body {
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333333;
+  background-color: #ffffff;
+}
+a {
+  text-decoration: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+}
+h1,
+.h1 {
+  font-size: 36px;
+}
+h2,
+.h2 {
+  font-size: 30px;
+}
+h3,
+.h3 {
+  font-size: 24px;
+}
+h4,
+.h4 {
+  font-size: 18px;
+}
+h5,
+.h5 {
+  font-size: 14px;
+}
+h6,
+.h6 {
+  font-size: 12px;
+}
+p {
+  margin: 0 0 10px;
+}
+small,
+.small {
+  font-size: 85%;
+}
+ul,
+ol {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+ul ul,
+ol ul,
+ul ol,
+ol ol {
+  margin-bottom: 0;
+}
+dl {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+dt {
+  font-weight: 700;
+}
+dd {
+  margin-left: 0;
+}
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  border-radius: 4px;
+}
+kbd {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #ffffff;
+  background-color: #333333;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: #333333;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+pre code {
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre-wrap;
+  background-color: transparent;
+  border-radius: 0;
+}
+hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 1px solid #eeeeee;
+  opacity: 1;
+}
+.container {
+  --bs-gutter-x: 30px;
+  max-width: none;
+}
+.row {
+  --bs-gutter-x: 30px;
+}
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+    max-width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+    max-width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+    max-width: 1170px;
+  }
+}
 .hljs {
   display: inline;
   background-color: inherit;
@@ -171,11 +321,14 @@ h6,
   margin-bottom: 5px;
 }
 .navbar {
+  min-height: 50px;
   margin-bottom: 0;
+  padding: 0;
 }
 #wrapper {
   min-height: 100%;
   position: relative;
+  padding-bottom: 70px;
 }
 /* blends header footer and content together with gradient effect */
 .grad-top {
@@ -260,6 +413,10 @@ article section {
 }
 #autocollapse.collapsed .navbar-toggler {
   display: block;
+}
+#autocollapse.collapsed,
+#autocollapse.collapsed > .container {
+  flex-wrap: wrap;
 }
 #autocollapse.collapsed .navbar-collapse {
   flex-basis: 100%;
@@ -635,6 +792,18 @@ body .toc{
 .article img {
   max-width: 100%;
 }
+/* Preserve Bootstrap 3.4.1 blockquote styling for Markdown output. */
+.article blockquote {
+  padding: 10px 20px;
+  margin: 0 0 20px;
+  font-size: 17.5px;
+  border-left: 5px solid #eeeeee;
+}
+.article blockquote p:last-child,
+.article blockquote ul:last-child,
+.article blockquote ol:last-child {
+  margin-bottom: 0;
+}
 .sideaffix {
   margin-top: 50px;
   font-size: 12px;
@@ -644,8 +813,23 @@ body .toc{
   bottom: 10px;
   position: fixed;
 }
-.sideaffix ul.nav {
-  flex-direction: column;
+.sideaffix ul.nav,
+.toc ul.nav {
+  display: block;
+}
+.sideaffix ul.nav > li {
+  position: relative;
+  display: block;
+}
+.sideaffix ul.nav > li > a {
+  position: relative;
+  display: block;
+}
+.toc ul.nav > li {
+  position: relative;
+}
+.toc li.hide {
+  display: none !important;
 }
 .sideaffix.shiftup {
   bottom: 70px;
@@ -963,6 +1147,9 @@ div.embeddedvideo iframe {
 
 /* For printer */
 @media print{
+  #wrapper {
+    padding-bottom: 0;
+  }
   .article.grid-right {
     margin-top: 0px;
     margin-left: 0px;
