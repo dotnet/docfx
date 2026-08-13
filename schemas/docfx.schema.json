@@ -20,6 +20,25 @@
     },
     "rules": {
       "$ref": "#/$defs/ruleConfig"
+    },
+    "assemblyUids": {
+      "description": "The assemblies whose APIs carry the assembly they are declared in as a component of their UID, as in `MyLib.Tools::MyLib.Tools.Widget`, to disambiguate assemblies that share namespaces. Assemblies that are not listed are left unchanged. This is a project level setting because every metadata entry has to agree on which assemblies are qualified: an entry mints UIDs for the APIs it references as well as the ones it documents. Accepts an array of assembly names, each qualified by its own name, or an object naming the component to use instead.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_\\-]+(\\.[A-Za-z0-9_\\-]+)*$"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "null"],
+            "pattern": "^[A-Za-z0-9_\\-]+(\\.[A-Za-z0-9_\\-]+)*$"
+          }
+        }
+      ]
     }
   },
   "$defs": {
@@ -629,6 +648,17 @@
           "globalNamespaceId": {
             "type": "string",
             "description": "Specify the name to use for the global namespace."
+          },
+          "assemblyUidOverride": {
+            "type": "string",
+            "description": "The assembly component to use in the UIDs of the assemblies documented by this entry, instead of their assembly name. Needed only when several entries document assemblies that share an assembly name, such as per target version builds of one project, which the project level assemblyUids cannot tell apart. Because it is scoped to its own entry, other entries cannot see it, so an assembly that other entries reference belongs in assemblyUids instead.",
+            "pattern": "^[A-Za-z0-9_\\-]+(\\.[A-Za-z0-9_\\-]+)*$"
+          },
+          "assemblyLabel": {
+            "type": "string",
+            "enum": ["auto", "suffix", "none", "page"],
+            "default": "auto",
+            "description": "Specifies how the assembly of a namespace is shown, for assemblies listed in assemblyUids. `auto` appends the assembly to the namespace label in a flattened layout and shows the namespace on its own in a nested layout, where the per assembly root node already names it. `suffix` always appends it, `none` never does, and `page` names the assembly on the namespace page instead, the way type pages do."
           },
           "properties": {
             "type": "object",

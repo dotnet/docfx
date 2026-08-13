@@ -23,6 +23,19 @@ internal class ExtractMetadataConfig
 
     public string GlobalNamespaceId { get; init; }
 
+    public string AssemblyUidOverride { get; init; }
+
+    public AssemblyLabel AssemblyLabel { get; init; }
+
+    /// <summary>
+    /// <see cref="AssemblyLabel"/> with <see cref="Docfx.AssemblyLabel.Auto"/> resolved against the
+    /// namespace layout: a nested layout groups by assembly already, while a flattened one has nothing
+    /// else to tell two assemblies that declare the same namespace apart.
+    /// </summary>
+    public AssemblyLabel ResolvedAssemblyLabel => AssemblyLabel is Docfx.AssemblyLabel.Auto
+        ? NamespaceLayout is Docfx.NamespaceLayout.Nested ? Docfx.AssemblyLabel.None : Docfx.AssemblyLabel.Suffix
+        : AssemblyLabel;
+
     public string CodeSourceBasePath { get; init; }
 
     public bool DisableDefaultFilter { get; init; }

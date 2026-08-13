@@ -112,6 +112,209 @@ When the file extension is `.cs` or `.vb`, docfx uses the latest supported .NET 
 }
 ```
 
+## Assemblies that share namespaces
+
+A UID, the identifier docfx uses to address an API, is derived from the fully qualified name of the API
+alone. When a single docfx project documents several assemblies that declare the same namespace, their
+APIs therefore end up with the same UID: pages overwrite each other, `DuplicateUids` warnings are
+reported, and every link to a shared namespace resolves to whichever assembly happened to win.
+
+This is common when shipping platform or version specific packages that intentionally expose the same
+API surface, for example `MyLib.Ef8` and `MyLib.Ef9`.
+
+### Put the assembly in the UID
+
+[`assemblyUids`](../reference/docfx-json-reference.md#assemblyuids) lists the assemblies whose APIs carry
+the assembly they are declared in as a component of their UID, separated from the rest by `::`. It sits at
+the top level of `docfx.json`, next to `metadata` rather than inside it, and covers every `src` entry of
+the project:
+
+```json
+{
+  "assemblyUids": [ "MyLib", "MyLib.Ef8", "MyLib.Ef9" ],
+  "metadata": [
+    { "src": [ "src/MyLib/MyLib.csproj" ],         "dest": "api/core" },
+    { "src": [ "src/MyLib.Ef8/MyLib.Ef8.csproj" ], "dest": "api/ef8" },
+    { "src": [ "src/MyLib.Ef9/MyLib.Ef9.csproj" ], "dest": "api/ef9" }
+  ]
+}
+```
+
+`MyLib.Widget` becomes `MyLib::MyLib.Widget`, `MyLib.Ef8::MyLib.Widget` and `MyLib.Ef9::MyLib.Widget`, so
+each keeps its own page, and `<see cref="..."/>` links and the table of contents follow. Everything
+displayed keeps naming the namespace as it is declared — `MyLib` stays `MyLib`, not
+`MyLib.Ef8.MyLib` — because the assembly is a component of the identity, not a namespace segment. How the
+assembly itself is shown is up to [`assemblyLabel`](#showing-which-assembly-a-namespace-comes-from).
+
+Give an assembly a shorter component by naming it explicitly, in which case the whole setting is an object
+instead of an array:
+
+```json
+{
+  "assemblyUids": {
+    "MyLib": null,
+    "MyLib.Ef8": "Ef8",
+    "MyLib.Ef9": "Ef9"
+  }
+}
+```
+
+`null` means the assembly's own name, so this yields `MyLib::MyLib.Widget` and `Ef8::MyLib.Widget`. A
+component may contain letters, digits, underscores and dashes, separated by dots.
+
+It is a project level setting because it has to be. An entry mints UIDs not only for the APIs it
+documents but also for the APIs it *references*: the `MyLib.Ef8` entry emits reference UIDs for the
+`MyLib` types that appear in its own signatures, and those must come out identical to the UIDs the
+`MyLib` entry produced. If each entry carried its own list, an entry could not see the others' and those
+references would come out unqualified, point at UIDs no page has, and **render as plain text with no link
+and no warning**.
+
+The practical consequence: **list every assembly whose APIs appear in another assembly's public
+signatures**, not just the ones you want split up. Leaving out a referenced assembly does not fail the
+build, it quietly drops links to it.
+
+### Showing which assembly a namespace comes from
+
+When two assemblies declare the same namespace, its pages need to say which one they belong to.
+[`assemblyLabel`](../reference/docfx-json-reference.md#assemblylabel), set per `metadata` entry, decides
+how:
+
+| value | what a namespace looks like |
+|---|---|
+| `auto` (default) | `suffix` with `"namespaceLayout": "flattened"`, `none` with `"nested"` |
+| `suffix` | `MyLib (MyLib.Ef8)` — the assembly is appended to the label and the page title |
+| `none` | `MyLib` — the namespace alone |
+| `page` | `MyLib`, with `Assembly: MyLib.Ef8.dll` named on the page, the way type pages do |
+
+With `"namespaceLayout": "nested"` the namespaces of each qualified assembly are grouped under a node
+naming that assembly, so the assembly is already visible and `auto` leaves the labels alone. That node has
+no page of its own. A flattened layout has nothing else to tell two assemblies apart, so `auto` appends
+the assembly to the label there.
+
+> [!NOTE]
+> With `"outputFormat": "apiPage"` or `"markdown"` this only affects the table of contents. Those formats
+> title a page from the symbol itself, so `suffix` does not reach the title and `page` has nowhere to name
+> the assembly.
+
+Authored links name the UID, so they name the assembly and the namespace as they really are:
+
+```md
+<xref:MyLib.Ef8::MyLib.Widget>
+@MyLib.Ef8::MyLib.Widget
+[the Ef8 widget](xref:MyLib.Ef8::MyLib.Widget)
+```
+
+### When several entries build the same assembly name
+
+Version specific packages are often *one* project built several times, sharing an `AssemblyName` and
+differing only by target framework. Qualifying by assembly name cannot tell those apart, so those entries
+use [`assemblyUidOverride`](../reference/docfx-json-reference.md#assemblyuidoverride), which names the
+entry instead:
+
+```json
+{
+  "assemblyUids": [ "MyLib" ],
+  "metadata": [
+    {
+      "src": [ "src/MyLib/MyLib.csproj" ],
+      "dest": "api/core"
+    },
+    {
+      "src": [ "src/MyLib.Ef/MyLib.Ef.Ef8.csproj" ],
+      "dest": "api/ef8",
+      "assemblyUidOverride": "Ef8"
+    },
+    {
+      "src": [ "src/MyLib.Ef/MyLib.Ef.Ef9.csproj" ],
+      "dest": "api/ef9",
+      "assemblyUidOverride": "Ef9"
+    }
+  ]
+}
+```
+
+Both `MyLib.Ef` projects build `MyLib.Ef.dll`. `assemblyUidOverride` separates them, and `MyLib` stays in
+`assemblyUids` because both of them reference it.
+
+#### What the override does and does not fix
+
+It fixes the collision *between the entries that declare it*: each gets its own pages, table of contents
+entries and file names, and everything inside those pages — references, `<see cref="..."/>` links, member
+anchors — is consistent with them.
+
+It does not fix two things, both following from the fact that it names an entry rather than an assembly:
+
+- **Links from other entries into those assemblies.** A fourth entry referencing `MyLib.Ef.dll` has no
+  way to know whether you meant `Ef8` or `Ef9`. Those references come out unqualified and lose their links,
+  with no warning. Fix this by
+  [nominating a default version](#nominate-a-default-version-for-links-from-elsewhere).
+- **Two same-named assemblies inside *one* entry.** Every assembly an entry documents gets the same
+  component, so if one entry's `src` glob matches the same assembly built for several target frameworks,
+  those copies still collide and are reported as `Ignore duplicated member`. The fix there is to narrow
+  the glob to one target framework.
+
+### Nominate a default version for links from elsewhere
+
+If anything else in the project references an assembly that several entries document, one of those
+versions has to be the target its links point at. Nominate it by giving the assembly that version's
+component in `assemblyUids` — **in addition to** the `assemblyUidOverride` on each entry, not instead of
+it:
+
+```json
+{
+  "assemblyUids": {
+    "MyLib": null,
+    "MyLib.Ef": "Ef9"
+  },
+  "metadata": [
+    { "src": [ "src/MyLib/MyLib.csproj" ],           "dest": "api/core" },
+    { "src": [ "src/MyLib.Ef/MyLib.Ef.Ef8.csproj" ], "dest": "api/ef8", "assemblyUidOverride": "Ef8" },
+    { "src": [ "src/MyLib.Ef/MyLib.Ef.Ef9.csproj" ], "dest": "api/ef9", "assemblyUidOverride": "Ef9" }
+  ]
+}
+```
+
+The two settings compose without any further option, because `assemblyUidOverride` only applies to the
+assemblies its own entry documents:
+
+| what is being generated | component used | why |
+|---|---|---|
+| the `api/ef8` pages | `Ef8` | that entry's `assemblyUidOverride` |
+| the `api/ef9` pages | `Ef9` | that entry's `assemblyUidOverride` |
+| a `MyLib.Ef` reference from any other entry | `Ef9` | `assemblyUids`, since no override applies |
+
+So both versions still get their own complete set of pages, and `MyLib::MyLib` pages that mention
+`MyLib.Ef` types link into `api/ef9`.
+
+**Which version to nominate**: normally the newest one you support, since that is where you want readers
+who arrive from an unrelated page to land. Nothing breaks if you pick another — the choice only decides
+where these particular links go.
+
+Two things to know about the nomination:
+
+- **All such links go to the one version you nominate.** A reference cannot resolve to "whichever version
+  the referencing assembly was built against": by the time the UID is minted, the only thing
+  distinguishing the versions is which entry documented them, and a reference carries no record of that.
+- **It does not affect hand-written `<xref>` links.** Those name a UID literally, so write the version you
+  mean — `<xref:Ef8::MyLib.Ef.Widget>` or `<xref:Ef9::MyLib.Ef.Widget>` — and the nomination is not
+  consulted.
+
+In short:
+
+| situation | option |
+|---|---|
+| the assembly has a name of its own | `assemblyUids` |
+| the assembly is referenced by other assemblies in the project | `assemblyUids` |
+| several entries build the same assembly name | `assemblyUidOverride` on each |
+| ... and other entries reference it | also give it a component in `assemblyUids`, naming the default target |
+| one entry matches the same assembly several times | narrow the `src` glob |
+
+> [!NOTE]
+> Enabling either option changes the UID, and therefore the output file name, of every API in the affected
+> assemblies: `::` becomes `--` in file names, as `:` is not legal there. Update anything that refers to
+> those UIDs by hand, such as `<xref>` links in markdown, overwrite files and external xref maps. Filter
+> rules in [`filter`](#filter-apis) configs are unaffected: they keep matching the unqualified API surface.
+
 ## Customization Options
 
 There are several options available for customizing .NET API pages that are tailored to your specific needs and preferences. To customize .NET API pages for DocFX, you can use the following options:

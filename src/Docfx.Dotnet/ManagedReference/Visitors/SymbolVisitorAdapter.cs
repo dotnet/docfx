@@ -130,6 +130,64 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             return null;
         }
         item.Type = MemberType.Namespace;
+
+        // Roslyn has no name for the global namespace, so its display names come out empty and its table of
+        // contents node shows nothing at all (dotnet/docfx#9458). `globalNamespaceId` is the name docfx
+        // gives it, and already its uid, so that is what it is called.
+        if (symbol.IsGlobalNamespace && !string.IsNullOrEmpty(VisitorHelper.GlobalNamespaceId))
+        {
+            SetDisplayNames(item.DisplayNames, VisitorHelper.GlobalNamespaceId);
+            SetDisplayNames(item.DisplayNamesWithType, VisitorHelper.GlobalNamespaceId);
+            SetDisplayNames(item.DisplayQualifiedNames, VisitorHelper.GlobalNamespaceId);
+        }
+
+        // The UID of this namespace carries the assembly it was declared in, but its display names must
+        // not: they name the namespace as it appears in the source. Where two assemblies declare the same
+        // namespace, `assemblyLabel` decides how they are told apart on the page and in the table of
+        // contents; a nested layout needs nothing, as it groups by assembly already.
+        if (VisitorHelper.GetAssemblyUid(symbol) is { } assemblyUid)
+        {
+            item.AssemblyUid = assemblyUid;
+
+            switch (_config.ResolvedAssemblyLabel)
+            {
+                case AssemblyLabel.Suffix:
+                    AppendAssembly(item.DisplayNames);
+                    AppendAssembly(item.DisplayNamesWithType);
+                    AppendAssembly(item.DisplayQualifiedNames);
+                    break;
+
+                case AssemblyLabel.Page:
+                    // The page names the assembly, so it names the real one rather than the component,
+                    // which may have been given a shorter name in the configuration. There is always a
+                    // containing assembly here, as that is what the component was looked up from.
+                    item.NamespaceAssembly = symbol.ContainingAssembly.Name;
+                    break;
+            }
+
+            void AppendAssembly(SortedList<SyntaxLanguage, string> names)
+            {
+                foreach (var language in names.Keys.ToArray())
+                {
+                    names[language] = $"{names[language]} ({assemblyUid})";
+                }
+            }
+        }
+
+        static void SetDisplayNames(SortedList<SyntaxLanguage, string> names, string name)
+        {
+            if (names.Count is 0)
+            {
+                names.Add(SyntaxLanguage.Default, name);
+                return;
+            }
+
+            foreach (var language in names.Keys.ToArray())
+            {
+                names[language] = name;
+            }
+        }
+
         item.Items = VisitDescendants(
             symbol.GetMembers().OfType<ITypeSymbol>(),
             t => t.GetMembers().OfType<ITypeSymbol>(),
@@ -721,6 +779,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             AddReferenceDelegate = AddReferenceDelegate,
             Source = item.Source,
             ResolveCode = ResolveCode,
+            ResolveAssemblyUid = commentId => VisitorHelper.GetAssemblyUidForCommentId(commentId, _compilation),
         };
 
         void AddReferenceDelegate(string id, string commentId)

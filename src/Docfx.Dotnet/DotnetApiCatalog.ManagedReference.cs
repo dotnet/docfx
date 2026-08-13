@@ -72,7 +72,10 @@ partial class DotnetApiCatalog
             var members = model.Members;
             foreach (var memberModel in members)
             {
-                var fileName = memberModel.Name.Replace('`', '-');
+                // Page level UIDs contain neither `#` nor `*`, so this only differs from replacing the
+                // backticks by also mapping the `::` of the assembly component, which is not a legal
+                // file name character. It has to match what `SymbolUrlResolver` builds hrefs from.
+                var fileName = VisitorHelper.PathFriendlyId(memberModel.Name);
                 var outputFileName = GetUniqueFileNameWithSuffix(fileName + Constants.YamlExtension, outputFileNames);
                 string itemFilePath = Path.Combine(config.OutputFolder, outputFileName);
                 var memberViewModel = memberModel.ToPageViewModel(config);

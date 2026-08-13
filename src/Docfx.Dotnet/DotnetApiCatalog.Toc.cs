@@ -47,13 +47,48 @@ partial class DotnetApiCatalog
 
         var filter = new SymbolFilter(config, options);
         var tocNodes = new Dictionary<string, TocNode>();
+        var assemblyRoots = new Dictionary<string, TocNode>();
         var ext = config.OutputFormat is MetadataOutputFormat.Markdown ? ".md" : ".yml";
-        var toc = assemblies.SelectMany(a => CreateToc(a.symbol.GlobalNamespace, a.compilation)).ToList();
+        var toc = assemblies.SelectMany(a => CreateAssemblyToc(a.symbol, a.compilation)).ToList();
 
         SortToc(toc, null);
 
         YamlUtility.Serialize(Path.Combine(config.OutputFolder, "toc.yml"), toc, YamlMime.TableOfContent);
         return toc;
+
+        // With a nested layout, the namespaces of an assembly that carries an assembly component in its
+        // UIDs are grouped under a node naming that assembly, which is the only place the assembly is
+        // named. The node has no page of its own, like the category nodes.
+        IEnumerable<TocNode> CreateAssemblyToc(IAssemblySymbol assembly, Compilation compilation)
+        {
+            var nodes = CreateToc(assembly.GlobalNamespace, compilation).ToList();
+
+            if (config.NamespaceLayout is not NamespaceLayout.Nested
+             || VisitorHelper.GetAssemblyUid(assembly) is not { } assemblyUid
+             || nodes.Count is 0)
+            {
+                return nodes;
+            }
+
+            // Two assemblies can resolve to the same component, e.g. under an `assemblyUidOverride` that
+            // covers several of them, and then they share the one node rather than repeating its name.
+            if (assemblyRoots.TryGetValue(assemblyUid, out var existing))
+            {
+                existing.items!.AddRange(nodes);
+                existing.containsLeafNodes |= nodes.Any(x => x.containsLeafNodes);
+                return [];
+            }
+
+            assemblyRoots[assemblyUid] = new TocNode
+            {
+                name = assemblyUid,
+                items = nodes,
+                type = TocNodeType.Namespace,
+                containsLeafNodes = nodes.Any(x => x.containsLeafNodes),
+            };
+
+            return [assemblyRoots[assemblyUid]];
+        }
 
         IEnumerable<TocNode> CreateToc(ISymbol symbol, Compilation compilation)
         {
@@ -94,10 +129,21 @@ partial class DotnetApiCatalog
                 if (!tocNodes.TryGetValue(id, out var node))
                 {
                     idExists = false;
+                    var name = config.NamespaceLayout is NamespaceLayout.Nested ? symbol.Name : symbol.ToString() ?? "";
+
+                    // In a flattened layout nothing else distinguishes two assemblies that declare the
+                    // same namespace, so the assembly is appended to the label. A nested layout groups by
+                    // assembly instead, see `CreateAssemblyToc`.
+                    if (config.ResolvedAssemblyLabel is AssemblyLabel.Suffix
+                     && VisitorHelper.GetAssemblyUid(symbol) is { } assemblyUid)
+                    {
+                        name = $"{name} ({assemblyUid})";
+                    }
+
                     tocNodes.Add(id, node = new()
                     {
                         id = id,
-                        name = config.NamespaceLayout is NamespaceLayout.Nested ? symbol.Name : symbol.ToString() ?? "",
+                        name = name,
                         href = $"{id}{ext}",
                         type = TocNodeType.Namespace,
                     });
