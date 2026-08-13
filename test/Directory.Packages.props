@@ -12,6 +12,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <GlobalPackageReference Include="coverlet.collector" Version="8.0.0" />
+    <GlobalPackageReference Include="coverlet.collector" Version="8.0.1" />
   </ItemGroup>
 </Project>
