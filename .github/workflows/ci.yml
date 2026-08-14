@@ -50,7 +50,7 @@ jobs:
       env:
         PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
 
-    - uses: codecov/codecov-action@v5
+    - uses: codecov/codecov-action@v7
       if: matrix.os == 'ubuntu-latest'
       with:
         fail_ci_if_error: false
