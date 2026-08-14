@@ -131,8 +131,9 @@ public class AssemblyUidUnitTest : IDisposable
 
     /// <summary>
     /// The assembly is a component of the UID, not a namespace segment, so it has no place in the names
-    /// that are displayed. With a flattened layout it is appended to the namespace label, as nothing else
-    /// there tells two assemblies declaring the same namespace apart.
+    /// that are displayed. The visitor never appends it — <c>assemblyLabel</c> is applied once the whole
+    /// metadata item has been visited, see <see cref="AssemblyLabelAppendsTheAssemblyWhereItIsAsked"/> —
+    /// but it does record the component, which both that pass and the nested layout grouping need.
     /// </summary>
     [Fact]
     public void NamespaceDisplayNamesKeepTheRealNamespace()
@@ -141,9 +142,10 @@ public class AssemblyUidUnitTest : IDisposable
 
         var @namespace = Verify(SharedLibraryCode).Items[0];
 
-        Assert.Equal("Shared (Pkg)", @namespace.DisplayNames[SyntaxLanguage.CSharp]);
-        Assert.Equal("Shared (Pkg)", @namespace.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-        Assert.Equal("Shared (Pkg)", @namespace.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("Shared", @namespace.DisplayNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("Shared", @namespace.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+        Assert.Equal("Shared", @namespace.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("Pkg", @namespace.AssemblyUid);
 
         // Type display names are unaffected, and keep naming the namespace as it is declared.
         var type = @namespace.Items[0];
@@ -152,32 +154,97 @@ public class AssemblyUidUnitTest : IDisposable
     }
 
     /// <summary>
-    /// The enums are internal, so the cases name them as strings.
+    /// `page` is the one value the visitor acts on, as it names the real assembly rather than the component
+    /// it was given. The enums are internal, so the cases name them as strings.
     /// </summary>
     [Theory]
-    [InlineData("None", "Flattened", "Shared", null)]
-    [InlineData("Suffix", "Flattened", "Shared (Pkg)", null)]
-    // `page` names the real assembly, `test.dll` here, rather than the component it was given.
-    [InlineData("Page", "Flattened", "Shared", "test.dll")]
-    [InlineData("Auto", "Flattened", "Shared (Pkg)", null)]
-    [InlineData("Auto", "Nested", "Shared", null)]
-    public void AssemblyLabelDecidesHowTheAssemblyIsShown(string assemblyLabel, string namespaceLayout, string expectedName, string expectedNamespaceAssembly)
+    [InlineData("None", null)]
+    [InlineData("Shared", null)]
+    [InlineData("Suffix", null)]
+    [InlineData("Page", "test.dll")]
+    public void AssemblyLabelPageNamesTheAssemblyOnThePage(string assemblyLabel, string expectedNamespaceAssembly)
     {
         UseAssemblyUids(("test.dll", "Pkg"));
 
-        var config = new ExtractMetadataConfig
-        {
-            AssemblyLabel = Enum.Parse<AssemblyLabel>(assemblyLabel),
-            NamespaceLayout = Enum.Parse<NamespaceLayout>(namespaceLayout),
-        };
+        var config = new ExtractMetadataConfig { AssemblyLabel = Enum.Parse<AssemblyLabel>(assemblyLabel) };
 
         var @namespace = Verify(SharedLibraryCode, config: config).Items[0];
 
-        Assert.Equal(expectedName, @namespace.DisplayNames[SyntaxLanguage.CSharp]);
         Assert.Equal(expectedNamespaceAssembly, @namespace.NamespaceAssembly);
 
         // Whatever is displayed, the UID is the same.
         Assert.Equal("Pkg::Shared", @namespace.Name);
+    }
+
+    /// <summary>
+    /// `shared` appends the assembly only to the namespaces more than one assembly of the same metadata
+    /// item declares, `suffix` to all of them, and the layout has no say in either. The cases pair a
+    /// namespace both assemblies declare with one only the first does.
+    /// </summary>
+    [Theory]
+    [InlineData("None", "Flattened", "Shared", "Shared", "Only")]
+    [InlineData("None", "Nested", "Shared", "Shared", "Only")]
+    [InlineData("Page", "Flattened", "Shared", "Shared", "Only")]
+    [InlineData("Shared", "Flattened", "Shared (A)", "Shared (B)", "Only")]
+    [InlineData("Shared", "Nested", "Shared (A)", "Shared (B)", "Only")]
+    [InlineData("Suffix", "Flattened", "Shared (A)", "Shared (B)", "Only (A)")]
+    [InlineData("Suffix", "Nested", "Shared (A)", "Shared (B)", "Only (A)")]
+    public void AssemblyLabelAppendsTheAssemblyWhereItIsAsked(
+        string assemblyLabel, string namespaceLayout, string expectedSharedInA, string expectedSharedInB, string expectedOnly)
+    {
+        var members = new[]
+        {
+            CreateNamespace("A::Shared", "Shared", "A"),
+            CreateNamespace("B::Shared", "Shared", "B"),
+            CreateNamespace("A::Only", "Only", "A"),
+        }.ToDictionary(x => x.Name);
+
+        DotnetApiCatalog.ApplyAssemblyLabel(members, new ExtractMetadataConfig
+        {
+            AssemblyLabel = Enum.Parse<AssemblyLabel>(assemblyLabel),
+            NamespaceLayout = Enum.Parse<NamespaceLayout>(namespaceLayout),
+        });
+
+        Assert.Equal(expectedSharedInA, members["A::Shared"].DisplayNames[SyntaxLanguage.Default]);
+        Assert.Equal(expectedSharedInB, members["B::Shared"].DisplayNames[SyntaxLanguage.Default]);
+        Assert.Equal(expectedOnly, members["A::Only"].DisplayNames[SyntaxLanguage.Default]);
+
+        // All three names are labelled together, so it is enough to spot check the other two.
+        Assert.Equal(expectedSharedInA, members["A::Shared"].DisplayNamesWithType[SyntaxLanguage.Default]);
+        Assert.Equal(expectedSharedInA, members["A::Shared"].DisplayQualifiedNames[SyntaxLanguage.Default]);
+    }
+
+    /// <summary>
+    /// A namespace declared by an assembly that is not qualified carries no component, so it is never
+    /// labelled — but it still counts as another declaration of its namespace, which is what makes the
+    /// qualified one worth labelling under `shared`.
+    /// </summary>
+    [Fact]
+    public void AnUnqualifiedAssemblyCountsAsADeclarationButIsNotLabelled()
+    {
+        var members = new[]
+        {
+            CreateNamespace("A::Shared", "Shared", "A"),
+            CreateNamespace("Shared", "Shared", assemblyUid: null),
+        }.ToDictionary(x => x.Name);
+
+        DotnetApiCatalog.ApplyAssemblyLabel(members, new ExtractMetadataConfig { AssemblyLabel = AssemblyLabel.Shared });
+
+        Assert.Equal("Shared (A)", members["A::Shared"].DisplayNames[SyntaxLanguage.Default]);
+        Assert.Equal("Shared", members["Shared"].DisplayNames[SyntaxLanguage.Default]);
+    }
+
+    private static MetadataItem CreateNamespace(string uid, string displayName, string assemblyUid)
+    {
+        return new MetadataItem
+        {
+            Type = MemberType.Namespace,
+            Name = uid,
+            AssemblyUid = assemblyUid,
+            DisplayNames = new() { [SyntaxLanguage.Default] = displayName },
+            DisplayNamesWithType = new() { [SyntaxLanguage.Default] = displayName },
+            DisplayQualifiedNames = new() { [SyntaxLanguage.Default] = displayName },
+        };
     }
 
     [Fact]

@@ -143,8 +143,12 @@ the project:
 `MyLib.Widget` becomes `MyLib::MyLib.Widget`, `MyLib.Ef8::MyLib.Widget` and `MyLib.Ef9::MyLib.Widget`, so
 each keeps its own page, and `<see cref="..."/>` links and the table of contents follow. Everything
 displayed keeps naming the namespace as it is declared — `MyLib` stays `MyLib`, not
-`MyLib.Ef8.MyLib` — because the assembly is a component of the identity, not a namespace segment. How the
-assembly itself is shown is up to [`assemblyLabel`](#showing-which-assembly-a-namespace-comes-from).
+`MyLib.Ef8.MyLib` — because the assembly is a component of the identity, not a namespace segment.
+
+So this changes the UIDs, the file names and therefore the page URLs, and nothing that is displayed. Existing
+`<xref>` links in markdown, overwrite files and external xref maps name UIDs, so they need updating by hand;
+titles, labels and breadcrumbs read as they did. To name the assembly as well, see
+[`assemblyLabel`](#showing-which-assembly-a-namespace-comes-from).
 
 Give an assembly a shorter component by naming it explicitly, in which case the whole setting is an object
 instead of an array:
@@ -175,26 +179,88 @@ build, it quietly drops links to it.
 
 ### Showing which assembly a namespace comes from
 
-When two assemblies declare the same namespace, its pages need to say which one they belong to.
-[`assemblyLabel`](../reference/docfx-json-reference.md#assemblylabel), set per `metadata` entry, decides
-how:
+Qualifying an assembly changes what its pages are *called by*, not what they *read as*: by default nothing
+displayed mentions the assembly, so enabling `assemblyUids` leaves every label, title and breadcrumb exactly
+as it was. Where two assemblies declare the same namespace, that leaves two pages reading alike, and
+[`assemblyLabel`](../reference/docfx-json-reference.md#assemblylabel), set per `metadata` entry, says how to
+tell them apart:
 
 | value | what a namespace looks like |
 |---|---|
-| `auto` (default) | `suffix` with `"namespaceLayout": "flattened"`, `none` with `"nested"` |
-| `suffix` | `MyLib (MyLib.Ef8)` — the assembly is appended to the label and the page title |
-| `none` | `MyLib` — the namespace alone |
+| `none` (default) | `MyLib` — the namespace alone |
+| `shared` | `MyLib (MyLib.Ef8)`, but only for the namespaces more than one assembly of this entry declares |
+| `suffix` | `MyLib (MyLib.Ef8)` for every namespace of a qualified assembly |
 | `page` | `MyLib`, with `Assembly: MyLib.Ef8.dll` named on the page, the way type pages do |
 
-With `"namespaceLayout": "nested"` the namespaces of each qualified assembly are grouped under a node
-naming that assembly, so the assembly is already visible and `auto` leaves the labels alone. That node has
-no page of its own. A flattened layout has nothing else to tell two assemblies apart, so `auto` appends
-the assembly to the label there.
+The examples below are all the same project, an entry documenting `MyLib` and `MyLib.Ef8` where both declare
+`MyLib` and `MyLib.Data` and only `MyLib.Ef8` declares `MyLib.Ef8.Internal`. The table of contents is
+ordered by UID, which is why the `MyLib.Ef8` namespaces come first.
+
+```
+none (default)                     shared
+──────────────────────────────     ──────────────────────────────
+MyLib                              MyLib (MyLib.Ef8)
+MyLib.Data                         MyLib.Data (MyLib.Ef8)
+MyLib.Ef8.Internal                 MyLib.Ef8.Internal
+MyLib                              MyLib (MyLib)
+MyLib.Data                         MyLib.Data (MyLib)
+
+# Namespace MyLib                  # Namespace MyLib (MyLib.Ef8)
+
+suffix                             page
+──────────────────────────────     ──────────────────────────────
+MyLib (MyLib.Ef8)                  MyLib
+MyLib.Data (MyLib.Ef8)             MyLib.Data
+MyLib.Ef8.Internal (MyLib.Ef8)     MyLib.Ef8.Internal
+MyLib (MyLib)                      MyLib
+MyLib.Data (MyLib)                 MyLib.Data
+
+# Namespace MyLib (MyLib.Ef8)      # Namespace MyLib
+                                   Assembly: MyLib.Ef8.dll
+```
+
+`MyLib.Ef8.Internal` is the difference between `shared` and `suffix`: only one assembly declares it, so
+there is nothing to tell apart and `shared` leaves it alone.
+
+`shared` compares the namespaces of one `metadata` entry, because that is all an entry can see — entries are
+generated one after another, each writing its output before the next is compiled. So a project that gives
+every assembly its own entry, which is the usual shape when each also has its own `dest`, gets no labels
+from `shared` even where its namespaces do collide across entries; use `suffix` on those entries instead. A
+project that documents several assemblies in one entry is what `shared` is for.
+
+`"namespaceLayout": "nested"` is the other way to show it: the namespaces of each qualified assembly are
+grouped under a node naming that assembly, which has no page of its own. That works with `none`, so the
+labels stay clean:
+
+```
+MyLib                  <- the assembly
+  MyLib
+    Data
+      Row
+    Widget
+MyLib.Ef8              <- the assembly
+  MyLib
+    Data
+      Row
+    Ef8.Internal
+      Helper
+    Widget
+```
 
 > [!NOTE]
 > With `"outputFormat": "apiPage"` or `"markdown"` this only affects the table of contents. Those formats
-> title a page from the symbol itself, so `suffix` does not reach the title and `page` has nowhere to name
-> the assembly.
+> title a page from the symbol itself, so `shared` and `suffix` do not reach the title and `page` has
+> nowhere to name the assembly.
+
+A few cases where a namespace is not labelled even though it looks like it should be, all following from the
+fact that the label is decided per entry, from the pages that entry produces:
+
+- A namespace no assembly declares directly, which a nested layout adds only to hold the ones below it, has
+  no assembly of its own, so its row stays plain while its children are labelled.
+- Two assemblies given the *same* component, which is what `assemblyUidOverride` does when one entry
+  documents several, share one set of pages. `suffix` labels them once; `shared` sees nothing to tell apart.
+- Two assemblies that are *not* in `assemblyUids` still collapse onto one page, as before, and no label can
+  separate them. Qualify them to fix that.
 
 Authored links name the UID, so they name the assembly and the namespace as they really are:
 

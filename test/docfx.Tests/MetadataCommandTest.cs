@@ -388,16 +388,107 @@ public class MetadataCommandTest : TestBase
             Assert.Contains($"{assembly}::Shared.Widget.Do", memberViewModel.Items.Select(x => x.Uid));
         }
 
-        // The namespaces are distinguishable in the TOC, and read as the namespace they are, with the
-        // assembly appended because a flattened layout has nothing else to tell them apart.
+        // The namespaces are distinguishable in the TOC by their UID, and read as the namespace they are:
+        // `assemblyLabel` is unset, so nothing names the assembly and the labels are what they were before
+        // any of this existed.
         var tocViewModel = YamlUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, "toc.yml")).Items;
         Assert.Equal(["a::Other", "a::Shared", "b::Other", "b::Shared"], tocViewModel.Select(x => x.Uid));
-        Assert.Equal(["Other (a)", "Shared (a)", "Other (b)", "Shared (b)"], tocViewModel.Select(x => x.Name));
+        Assert.Equal(["Other", "Shared", "Other", "Shared"], tocViewModel.Select(x => x.Name));
 
         // ... and both are addressable through the manifest.
         var manifest = JsonUtility.Deserialize<Dictionary<string, string>>(Path.Combine(_outputFolder, ".manifest"));
         Assert.Equal("a--Shared.Widget.yml", manifest["a::Shared.Widget"]);
         Assert.Equal("b--Shared.Widget.yml", manifest["b::Shared.Widget"]);
+    }
+
+    /// <summary>
+    /// `suffix` names the assembly of every namespace of a qualified assembly, in the table of contents and
+    /// on the page, whatever the layout.
+    /// </summary>
+    [Fact]
+    [Trait("Related", "docfx")]
+    public async Task TestMetadataCommandWithAssemblyLabelSuffix()
+    {
+        var projects = CreateProjectsSharingANamespace();
+
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig
+            {
+                Dest = _outputFolder,
+                Src = new(new FileMappingItem([.. projects])) { Expanded = true },
+                AssemblyLabel = AssemblyLabel.Suffix,
+            }),
+            new(), Directory.GetCurrentDirectory(),
+            assemblyUids: new(["a", "b"]));
+
+        var tocViewModel = YamlUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, "toc.yml")).Items;
+        Assert.Equal(["Other (a)", "Shared (a)", "Other (b)", "Shared (b)"], tocViewModel.Select(x => x.Name));
+
+        var @namespace = YamlUtility.Deserialize<PageViewModel>(Path.Combine(_outputFolder, "a--Shared.yml")).Items[0];
+        Assert.Equal("Shared (a)", @namespace.Name);
+        Assert.Equal("Shared (a)", @namespace.NameWithType);
+        Assert.Equal("Shared (a)", @namespace.FullName);
+    }
+
+    /// <summary>
+    /// `shared` names the assembly only where more than one assembly of this metadata item declares the
+    /// namespace. Assembly `a` declares `Shared` and `Other`, `b` declares `Shared` alone, so only `Shared`
+    /// is labelled.
+    /// </summary>
+    [Fact]
+    [Trait("Related", "docfx")]
+    public async Task TestMetadataCommandWithAssemblyLabelShared()
+    {
+        var projects = CreateProjects(("a", "assemblyuid.a.cs.sample.1"), ("b", "assemblyuid.single.b.cs.sample.1"));
+
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig
+            {
+                Dest = _outputFolder,
+                Src = new(new FileMappingItem([.. projects])) { Expanded = true },
+                AssemblyLabel = AssemblyLabel.Shared,
+            }),
+            new(), Directory.GetCurrentDirectory(),
+            assemblyUids: new(["a", "b"]));
+
+        // Ordered by UID: `a::Other`, `a::Shared`, `b::Shared`.
+        var tocViewModel = YamlUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, "toc.yml")).Items;
+        Assert.Equal(["a::Other", "a::Shared", "b::Shared"], tocViewModel.Select(x => x.Uid));
+        Assert.Equal(["Other", "Shared (a)", "Shared (b)"], tocViewModel.Select(x => x.Name));
+
+        // The page agrees with the table of contents, both for the labelled namespace and the plain one.
+        Assert.Equal("Shared (a)", YamlUtility.Deserialize<PageViewModel>(Path.Combine(_outputFolder, "a--Shared.yml")).Items[0].Name);
+        Assert.Equal("Other", YamlUtility.Deserialize<PageViewModel>(Path.Combine(_outputFolder, "a--Other.yml")).Items[0].Name);
+    }
+
+    /// <summary>
+    /// The `apiPage` and `markdown` formats build their table of contents on their own path, which follows
+    /// the same rule. Those formats title a page from the symbol, so only the labels can be asserted.
+    /// </summary>
+    [Theory]
+    [Trait("Related", "docfx")]
+    // Unset: nothing names the assembly.
+    [InlineData("None", "Other", "Shared", "Shared")]
+    [InlineData("Shared", "Other", "Shared (a)", "Shared (b)")]
+    [InlineData("Suffix", "Other (a)", "Shared (a)", "Shared (b)")]
+    public async Task TestMetadataCommandAssemblyLabelInMarkdownToc(
+        string assemblyLabel, string expectedOther, string expectedSharedInA, string expectedSharedInB)
+    {
+        var projects = CreateProjects(("a", "assemblyuid.a.cs.sample.1"), ("b", "assemblyuid.single.b.cs.sample.1"));
+
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig
+            {
+                Dest = _outputFolder,
+                Src = new(new FileMappingItem([.. projects])) { Expanded = true },
+                OutputFormat = MetadataOutputFormat.Markdown,
+                AssemblyLabel = Enum.Parse<AssemblyLabel>(assemblyLabel),
+            }),
+            new(), Directory.GetCurrentDirectory(),
+            assemblyUids: new(["a", "b"]));
+
+        var tocViewModel = YamlUtility.Deserialize<List<TocItemViewModel>>(Path.Combine(_outputFolder, "toc.yml"));
+        Assert.Equal([expectedOther, expectedSharedInA, expectedSharedInB], tocViewModel.Select(x => x.Name));
     }
 
     [Fact]
@@ -448,12 +539,12 @@ public class MetadataCommandTest : TestBase
             new(), Directory.GetCurrentDirectory(),
             assemblyUids: new(["a", "b"]));
 
-        // The namespace page is titled `Namespace {name}`, and that name is the namespace, qualified by
-        // the assembly it comes from rather than by a namespace segment that does not exist.
+        // The namespace page is titled `Namespace {name}`, and that name is the namespace as it is declared,
+        // not a namespace segment that does not exist. Only the UID and the file name carry the assembly.
         var @namespace = YamlUtility.Deserialize<PageViewModel>(Path.Combine(_outputFolder, "a--Shared.yml")).Items[0];
-        Assert.Equal("Shared (a)", @namespace.Name);
-        Assert.Equal("Shared (a)", @namespace.NameWithType);
-        Assert.Equal("Shared (a)", @namespace.FullName);
+        Assert.Equal("Shared", @namespace.Name);
+        Assert.Equal("Shared", @namespace.NameWithType);
+        Assert.Equal("Shared", @namespace.FullName);
 
         // The type pages of that namespace agree with it.
         var type = YamlUtility.Deserialize<PageViewModel>(Path.Combine(_outputFolder, "a--Shared.Widget.yml"));
@@ -573,16 +664,25 @@ public class MetadataCommandTest : TestBase
 
     private List<string> CreateProjects(string sourceAssetFormat)
     {
+        return CreateProjects([.. new[] { "a", "b" }.Select(name => (name, string.Format(sourceAssetFormat, name)))]);
+    }
+
+    /// <summary>
+    /// Creates one project per given name out of the named asset, so that the assemblies can contribute
+    /// different namespaces rather than mirroring each other.
+    /// </summary>
+    private List<string> CreateProjects(params (string name, string sourceAsset)[] projects)
+    {
         var result = new List<string>();
 
-        foreach (var name in new[] { "a", "b" })
+        foreach (var (name, sourceAsset) in projects)
         {
             var folder = Path.Combine(_projectFolder, name);
             Directory.CreateDirectory(folder);
 
             var projectFile = Path.Combine(folder, $"{name}.csproj");
             File.Copy("Assets/assemblyuid.csproj.sample.1", projectFile);
-            File.Copy($"Assets/{string.Format(sourceAssetFormat, name)}", Path.Combine(folder, "Widget.cs"));
+            File.Copy($"Assets/{sourceAsset}", Path.Combine(folder, "Widget.cs"));
 
             result.Add(projectFile);
         }

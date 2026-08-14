@@ -142,35 +142,20 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         // The UID of this namespace carries the assembly it was declared in, but its display names must
-        // not: they name the namespace as it appears in the source. Where two assemblies declare the same
-        // namespace, `assemblyLabel` decides how they are told apart on the page and in the table of
-        // contents; a nested layout needs nothing, as it groups by assembly already.
+        // not: they name the namespace as it appears in the source. Where `assemblyLabel` asks for the
+        // assembly to be appended to the label, that happens in `ApplyAssemblyLabel`, once every assembly
+        // of this metadata item has been visited, since only then is it known which namespaces more than
+        // one of them declares.
         if (VisitorHelper.GetAssemblyUid(symbol) is { } assemblyUid)
         {
             item.AssemblyUid = assemblyUid;
 
-            switch (_config.ResolvedAssemblyLabel)
+            if (_config.AssemblyLabel is AssemblyLabel.Page)
             {
-                case AssemblyLabel.Suffix:
-                    AppendAssembly(item.DisplayNames);
-                    AppendAssembly(item.DisplayNamesWithType);
-                    AppendAssembly(item.DisplayQualifiedNames);
-                    break;
-
-                case AssemblyLabel.Page:
-                    // The page names the assembly, so it names the real one rather than the component,
-                    // which may have been given a shorter name in the configuration. There is always a
-                    // containing assembly here, as that is what the component was looked up from.
-                    item.NamespaceAssembly = symbol.ContainingAssembly.Name;
-                    break;
-            }
-
-            void AppendAssembly(SortedList<SyntaxLanguage, string> names)
-            {
-                foreach (var language in names.Keys.ToArray())
-                {
-                    names[language] = $"{names[language]} ({assemblyUid})";
-                }
+                // The page names the assembly, so it names the real one rather than the component, which
+                // may have been given a shorter name in the configuration. There is always a containing
+                // assembly here, as that is what the component was looked up from.
+                item.NamespaceAssembly = symbol.ContainingAssembly.Name;
             }
         }
 

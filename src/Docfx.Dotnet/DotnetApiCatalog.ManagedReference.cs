@@ -42,6 +42,8 @@ partial class DotnetApiCatalog
             return;
         }
 
+        ApplyAssemblyLabel(allMembers, config);
+
         ResolveAndExportYamlMetadata(allMembers, allReferences);
 
         return;
@@ -131,6 +133,52 @@ partial class DotnetApiCatalog
                 }
                 return true;
             });
+        }
+    }
+
+    /// <summary>
+    /// Appends the assembly a namespace was declared in to the names it is displayed under, as
+    /// <c>assemblyLabel</c> asks. It runs after the merge rather than in the symbol visitor because
+    /// <see cref="AssemblyLabel.Shared"/> has to know which namespaces more than one of this item's
+    /// assemblies declares, and a visitor only ever sees one assembly at a time.
+    /// </summary>
+    internal static void ApplyAssemblyLabel(Dictionary<string, MetadataItem> allMembers, ExtractMetadataConfig config)
+    {
+        if (config.AssemblyLabel is not (AssemblyLabel.Shared or AssemblyLabel.Suffix))
+            return;
+
+        var namespaces = allMembers.Values.Where(x => x.Type is MemberType.Namespace).ToList();
+
+        // `allMembers` is keyed by uid, so two namespaces that trim to the same name are two distinct
+        // declarations of it. That also covers a qualified assembly colliding with an unqualified one,
+        // whose namespace carries no component and so is left alone below.
+        var shared = config.AssemblyLabel is AssemblyLabel.Shared
+            ? namespaces
+                .GroupBy(x => VisitorHelper.TrimAssemblyUid(x.Name), StringComparer.Ordinal)
+                .Where(x => x.Count() > 1)
+                .SelectMany(x => x)
+                .ToHashSet()
+            : null;
+
+        foreach (var @namespace in namespaces)
+        {
+            if (@namespace.AssemblyUid is not { } assemblyUid)
+                continue;
+
+            if (shared is not null && !shared.Contains(@namespace))
+                continue;
+
+            Append(@namespace.DisplayNames, assemblyUid);
+            Append(@namespace.DisplayNamesWithType, assemblyUid);
+            Append(@namespace.DisplayQualifiedNames, assemblyUid);
+        }
+
+        static void Append(SortedList<SyntaxLanguage, string> names, string assemblyUid)
+        {
+            foreach (var language in names.Keys.ToArray())
+            {
+                names[language] = $"{names[language]} ({assemblyUid})";
+            }
         }
     }
 

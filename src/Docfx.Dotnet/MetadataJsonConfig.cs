@@ -66,21 +66,23 @@ internal enum NamespaceLayout
 internal enum AssemblyLabel
 {
     /// <summary>
-    /// Appends the assembly to the namespace label in a flattened layout, where nothing else
-    /// distinguishes two assemblies that declare the same namespace, and shows the namespace on its own
-    /// in a nested layout, where the per assembly root node already names it. This is the default.
-    /// </summary>
-    Auto,
-
-    /// <summary>
-    /// Appends the assembly to the namespace label, as in <c>MyLib.Tools (MyLib.Tools.dll)</c>.
-    /// </summary>
-    Suffix,
-
-    /// <summary>
-    /// Shows the namespace on its own, with no mention of the assembly it comes from.
+    /// Shows the namespace on its own, with no mention of the assembly it comes from. This is the default,
+    /// so qualifying an assembly changes what a page is called by, not what it reads as.
     /// </summary>
     None,
+
+    /// <summary>
+    /// Appends the assembly to the namespace label, as in <c>MyLib (MyLib.Tools)</c>, but only for the
+    /// namespaces that more than one assembly documented by the same <c>metadata</c> entry declares. The
+    /// namespaces only one assembly declares are shown on their own, as there is nothing to tell apart.
+    /// </summary>
+    Shared,
+
+    /// <summary>
+    /// Appends the assembly to the namespace label, as in <c>MyLib (MyLib.Tools)</c>, for every namespace
+    /// of a qualified assembly.
+    /// </summary>
+    Suffix,
 
     /// <summary>
     /// Shows the namespace on its own, and names the assembly on the namespace page instead, the way

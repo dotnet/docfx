@@ -586,17 +586,20 @@ Specifies how the assembly of a namespace is shown, for assemblies listed in
 
 | value | what a namespace looks like |
 |---|---|
-| `auto` (default) | `suffix` with `"namespaceLayout": "flattened"`, `none` with `"nested"` |
-| `suffix` | `MyLib (MyLib.Ef8)` — the assembly is appended to the label and the page title |
-| `none` | `MyLib` — the namespace alone |
+| `none` (default) | `MyLib` — the namespace alone |
+| `shared` | `MyLib (MyLib.Ef8)`, but only for the namespaces more than one assembly of this entry declares |
+| `suffix` | `MyLib (MyLib.Ef8)` for every namespace of a qualified assembly |
 | `page` | `MyLib`, with `Assembly: MyLib.Ef8.dll` named on the page, the way type pages do |
 
 The assembly is never part of the namespace itself: a page always names the namespace as it is declared in
 the source, whatever this is set to. Only the UID carries the assembly.
 
-With `"namespaceLayout": "nested"` the namespaces of each qualified assembly are grouped under a node
-naming that assembly, so `auto` leaves the labels alone there. A flattened layout has nothing else to tell
-two assemblies apart, so `auto` appends the assembly.
+`shared` compares the namespaces of its own `metadata` entry, so an entry documenting a single assembly never
+labels anything. `"namespaceLayout": "nested"` is the alternative: it groups the namespaces of each qualified
+assembly under a node naming that assembly, which needs no label at all.
+
+See [Showing which assembly a namespace comes from](../docs/dotnet-api-docs.md#showing-which-assembly-a-namespace-comes-from)
+for what each value renders.
 
 ## File Mappings
 

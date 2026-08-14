@@ -656,9 +656,9 @@
           },
           "assemblyLabel": {
             "type": "string",
-            "enum": ["auto", "suffix", "none", "page"],
-            "default": "auto",
-            "description": "Specifies how the assembly of a namespace is shown, for assemblies listed in assemblyUids. `auto` appends the assembly to the namespace label in a flattened layout and shows the namespace on its own in a nested layout, where the per assembly root node already names it. `suffix` always appends it, `none` never does, and `page` names the assembly on the namespace page instead, the way type pages do."
+            "enum": ["none", "shared", "suffix", "page"],
+            "default": "none",
+            "description": "Specifies how the assembly of a namespace is shown, for assemblies listed in assemblyUids. `none` shows the namespace on its own, so qualifying an assembly changes what its pages are addressed by and not what they read as. `shared` appends the assembly to the namespace label, as in `MyLib (MyLib.Ef8)`, but only for the namespaces that more than one assembly documented by the same metadata entry declares. `suffix` appends it to every namespace of a qualified assembly. `page` names the assembly on the namespace page instead, the way type pages do."
           },
           "properties": {
             "type": "object",

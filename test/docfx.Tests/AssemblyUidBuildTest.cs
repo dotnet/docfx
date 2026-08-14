@@ -96,4 +96,66 @@ public class AssemblyUidBuildTest : TestBase
         Assert.Contains("href=\"a--Shared.html\">Shared</a>", type);
         Assert.Contains("data-uid=\"a::Shared.Widget\"", type);
     }
+
+    /// <summary>
+    /// Every `assemblyLabel` value asserted on the rendered HTML, which is the only place its effect is
+    /// actually visible: a value can be written into the `.yml` faithfully and still render nothing, as
+    /// `page` did. Assembly `a` declares `Shared` and `Other`, `b` declares `Shared` alone, so `Other` is
+    /// the namespace only one assembly declares.
+    /// </summary>
+    [Theory]
+    [Trait("Related", "docfx")]
+    // Unset: what a namespace read as before any of this existed.
+    [InlineData(null, "Namespace Shared", "Namespace Other", false)]
+    [InlineData("none", "Namespace Shared", "Namespace Other", false)]
+    [InlineData("shared", "Namespace Shared (a)", "Namespace Other", false)]
+    [InlineData("suffix", "Namespace Shared (a)", "Namespace Other (a)", false)]
+    [InlineData("page", "Namespace Shared", "Namespace Other", true)]
+    public async Task AssemblyLabelRendersOnTheNamespacePage(
+        string assemblyLabel, string expectedSharedTitle, string expectedOtherTitle, bool expectsAssemblyOnPage)
+    {
+        foreach (var (name, source) in new[] { ("a", "assemblyuid.a.cs.sample.1"), ("b", "assemblyuid.single.b.cs.sample.1") })
+        {
+            var folder = Path.Combine(_projectFolder, name);
+            Directory.CreateDirectory(folder);
+            File.Copy("Assets/assemblyuid.csproj.sample.1", Path.Combine(folder, $"{name}.csproj"));
+            File.Copy($"Assets/{source}", Path.Combine(folder, "Widget.cs"));
+        }
+
+        var label = assemblyLabel is null ? "" : $"\"assemblyLabel\": \"{assemblyLabel}\",";
+        var configPath = Path.Combine(_projectFolder, "docfx.json");
+        await File.WriteAllTextAsync(configPath,
+            $$"""
+            {
+              "assemblyUids": [ "a", "b" ],
+              "metadata": [
+                {
+                  "src": [ { "files": [ "*/*.csproj" ] } ],
+                  {{label}}
+                  "dest": "api"
+                }
+              ],
+              "build": {
+                "content": [ { "files": [ "api/**.yml" ] } ],
+                "template": [ "default" ],
+                "dest": "_site"
+              }
+            }
+            """);
+
+        await DotnetApiCatalog.GenerateManagedReferenceYamlFiles(configPath);
+        await Docset.Build(configPath);
+
+        var site = Path.Combine(_projectFolder, "_site", "api");
+        var shared = await File.ReadAllTextAsync(Path.Combine(site, "a--Shared.html"));
+        var other = await File.ReadAllTextAsync(Path.Combine(site, "a--Other.html"));
+
+        Assert.Contains($"<title>{expectedSharedTitle} ", shared);
+        Assert.Contains($">{expectedSharedTitle}</h1>", shared);
+        Assert.Contains($">{expectedOtherTitle}</h1>", other);
+
+        // `page` names the real assembly on the page rather than in the title, the way a type page does.
+        Assert.Equal(expectsAssemblyOnPage, shared.Contains("<strong>Assembly</strong>: a.dll"));
+        Assert.Equal(expectsAssemblyOnPage, other.Contains("<strong>Assembly</strong>: a.dll"));
+    }
 }
