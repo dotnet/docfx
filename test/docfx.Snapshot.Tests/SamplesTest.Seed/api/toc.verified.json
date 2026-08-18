@@ -103,6 +103,20 @@
           "type": "Interface"
         },
         {
+          "name": "Class1.Issue10332",
+          "href": "BuildFromProject.Class1.Issue10332.html",
+          "topicHref": "BuildFromProject.Class1.Issue10332.html",
+          "topicUid": "BuildFromProject.Class1.Issue10332",
+          "type": "Class"
+        },
+        {
+          "name": "Class1.Issue10332.SampleEnum",
+          "href": "BuildFromProject.Class1.Issue10332.SampleEnum.html",
+          "topicHref": "BuildFromProject.Class1.Issue10332.SampleEnum.html",
+          "topicUid": "BuildFromProject.Class1.Issue10332.SampleEnum",
+          "type": "Enum"
+        },
+        {
           "name": "Class1.Issue8665",
           "href": "BuildFromProject.Class1.Issue8665.html",
           "topicHref": "BuildFromProject.Class1.Issue8665.html",
@@ -333,17 +347,17 @@
           ]
         },
         {
-          "name": "CatException<T>",
-          "href": "CatLibrary.CatException-1.html",
-          "topicHref": "CatLibrary.CatException-1.html",
-          "topicUid": "CatLibrary.CatException`1",
-          "type": "Class"
-        },
-        {
           "name": "Cat<T, K>",
           "href": "CatLibrary.Cat-2.html",
           "topicHref": "CatLibrary.Cat-2.html",
           "topicUid": "CatLibrary.Cat`2",
+          "type": "Class"
+        },
+        {
+          "name": "CatException<T>",
+          "href": "CatLibrary.CatException-1.html",
+          "topicHref": "CatLibrary.CatException-1.html",
+          "topicUid": "CatLibrary.CatException`1",
           "type": "Class"
         },
         {

@@ -110,6 +110,68 @@
           "hideSubtitle": false
         },
         {
+          "uid": "BuildFromProject.Class1.Issue10332",
+          "isExtensionMethod": false,
+          "href": "BuildFromProject.Class1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue10332"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue10332"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue10332"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue10332"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue10332"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue10332"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue10332",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
           "uid": "BuildFromProject.Class1.Issue8665",
           "isExtensionMethod": false,
           "href": "BuildFromProject.Class1.html",
@@ -1374,6 +1436,69 @@
       "typePropertyName": "inEnum",
       "id": "enums",
       "children": [
+        {
+          "uid": "BuildFromProject.Class1.Issue10332.SampleEnum",
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject",
+          "href": "BuildFromProject.Class1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue10332.SampleEnum"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue10332.SampleEnum"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue10332.SampleEnum"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue10332.SampleEnum"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.SampleEnum.html\">SampleEnum</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.SampleEnum.html\">SampleEnum</a>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "enum",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue10332_SampleEnum",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
         {
           "uid": "BuildFromProject.Class1.Issue9260",
           "isExtensionMethod": false,

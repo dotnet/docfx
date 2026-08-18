@@ -153,6 +153,15 @@
           "leaf": true
         },
         {
+          "name": "Class1.Issue10332",
+          "href": "BuildFromProject.Class1.Issue10332.html",
+          "topicHref": "BuildFromProject.Class1.Issue10332.html",
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "Class1.Issue8665",
           "href": "BuildFromProject.Class1.Issue8665.html",
           "topicHref": "BuildFromProject.Class1.Issue8665.html",
@@ -351,6 +360,15 @@
         {
           "name": "Enums",
           "topicHref": null,
+          "tocHref": null,
+          "level": 3,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Class1.Issue10332.SampleEnum",
+          "href": "BuildFromProject.Class1.Issue10332.SampleEnum.html",
+          "topicHref": "BuildFromProject.Class1.Issue10332.SampleEnum.html",
           "tocHref": null,
           "level": 3,
           "items": [],

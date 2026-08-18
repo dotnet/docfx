@@ -216,6 +216,28 @@
               "leaf": true
             },
             {
+              "name": "Class1.Issue10332",
+              "href": "../api/BuildFromProject.Class1.Issue10332.html",
+              "topicHref": "../api/BuildFromProject.Class1.Issue10332.html",
+              "topicUid": "BuildFromProject.Class1.Issue10332",
+              "type": "Class",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
+              "name": "Class1.Issue10332.SampleEnum",
+              "href": "../api/BuildFromProject.Class1.Issue10332.SampleEnum.html",
+              "topicHref": "../api/BuildFromProject.Class1.Issue10332.SampleEnum.html",
+              "topicUid": "BuildFromProject.Class1.Issue10332.SampleEnum",
+              "type": "Enum",
+              "tocHref": null,
+              "level": 4,
+              "items": [],
+              "leaf": true
+            },
+            {
               "name": "Class1.Issue8665",
               "href": "../api/BuildFromProject.Class1.Issue8665.html",
               "topicHref": "../api/BuildFromProject.Class1.Issue8665.html",
@@ -568,10 +590,10 @@
               "level": 4
             },
             {
-              "name": "CatException<T>",
-              "href": "../api/CatLibrary.CatException-1.html",
-              "topicHref": "../api/CatLibrary.CatException-1.html",
-              "topicUid": "CatLibrary.CatException`1",
+              "name": "Cat<T, K>",
+              "href": "../api/CatLibrary.Cat-2.html",
+              "topicHref": "../api/CatLibrary.Cat-2.html",
+              "topicUid": "CatLibrary.Cat`2",
               "type": "Class",
               "tocHref": null,
               "level": 4,
@@ -579,10 +601,10 @@
               "leaf": true
             },
             {
-              "name": "Cat<T, K>",
-              "href": "../api/CatLibrary.Cat-2.html",
-              "topicHref": "../api/CatLibrary.Cat-2.html",
-              "topicUid": "CatLibrary.Cat`2",
+              "name": "CatException<T>",
+              "href": "../api/CatLibrary.CatException-1.html",
+              "topicHref": "../api/CatLibrary.CatException-1.html",
+              "topicUid": "CatLibrary.CatException`1",
               "type": "Class",
               "tocHref": null,
               "level": 4,

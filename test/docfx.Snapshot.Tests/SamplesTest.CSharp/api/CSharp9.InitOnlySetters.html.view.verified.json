@@ -57,10 +57,8 @@
       "children": [
         {
           "uid": "CSharp9.InitOnlySetters.PressureInMillibars",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp9.InitOnlySetters",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -101,133 +99,17 @@
               "value": "<xref uid=\"CSharp9.InitOnlySetters.PressureInMillibars\" text=\"PressureInMillibars\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public decimal PressureInMillibars { get; init; }"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Property PressureInMillibars As Decimal"
-              }
-            ],
-            "parameters": [],
-            "return": null,
-            "propertyValue": {
-              "type": {
-                "uid": "System.Decimal",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "decimal"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Decimal"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "decimal"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Decimal"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "decimal"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Decimal"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp9.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "PressureInMillibars",
-            "path": "src/CSharp9.cs",
-            "startLine": 18,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp9",
-          "overload": {
-            "uid": "CSharp9.InitOnlySetters.PressureInMillibars*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "PressureInMillibars"
-              },
-              {
-                "lang": "vb",
-                "value": "PressureInMillibars"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "InitOnlySetters.PressureInMillibars"
-              },
-              {
-                "lang": "vb",
-                "value": "InitOnlySetters.PressureInMillibars"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp9.InitOnlySetters.PressureInMillibars"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp9.InitOnlySetters.PressureInMillibars"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp9.InitOnlySetters.PressureInMillibars*\" text=\"PressureInMillibars\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp9.InitOnlySetters.PressureInMillibars*\" text=\"PressureInMillibars\"/>"
-              }
-            ],
-            "id": "CSharp9_InitOnlySetters_PressureInMillibars_"
-          },
           "level": 0,
-          "type": "property",
           "summary": "",
+          "type": "property",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_InitOnlySetters_PressureInMillibars.md&value=---%0Auid%3A%20CSharp9.InitOnlySetters.PressureInMillibars%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L19",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -237,10 +119,8 @@
         },
         {
           "uid": "CSharp9.InitOnlySetters.RecordedAt",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp9.InitOnlySetters",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -281,133 +161,17 @@
               "value": "<xref uid=\"CSharp9.InitOnlySetters.RecordedAt\" text=\"RecordedAt\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public DateTime RecordedAt { get; init; }"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Property RecordedAt As Date"
-              }
-            ],
-            "parameters": [],
-            "return": null,
-            "propertyValue": {
-              "type": {
-                "uid": "System.DateTime",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "DateTime"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Date"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "DateTime"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Date"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "System.DateTime"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Date"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp9.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "RecordedAt",
-            "path": "src/CSharp9.cs",
-            "startLine": 16,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp9",
-          "overload": {
-            "uid": "CSharp9.InitOnlySetters.RecordedAt*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "RecordedAt"
-              },
-              {
-                "lang": "vb",
-                "value": "RecordedAt"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "InitOnlySetters.RecordedAt"
-              },
-              {
-                "lang": "vb",
-                "value": "InitOnlySetters.RecordedAt"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp9.InitOnlySetters.RecordedAt"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp9.InitOnlySetters.RecordedAt"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp9.InitOnlySetters.RecordedAt*\" text=\"RecordedAt\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp9.InitOnlySetters.RecordedAt*\" text=\"RecordedAt\"/>"
-              }
-            ],
-            "id": "CSharp9_InitOnlySetters_RecordedAt_"
-          },
           "level": 0,
-          "type": "property",
           "summary": "",
+          "type": "property",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_InitOnlySetters_RecordedAt.md&value=---%0Auid%3A%20CSharp9.InitOnlySetters.RecordedAt%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L17",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -417,10 +181,8 @@
         },
         {
           "uid": "CSharp9.InitOnlySetters.TemperatureInCelsius",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp9.InitOnlySetters",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -461,133 +223,17 @@
               "value": "<xref uid=\"CSharp9.InitOnlySetters.TemperatureInCelsius\" text=\"TemperatureInCelsius\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public decimal TemperatureInCelsius { get; init; }"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Property TemperatureInCelsius As Decimal"
-              }
-            ],
-            "parameters": [],
-            "return": null,
-            "propertyValue": {
-              "type": {
-                "uid": "System.Decimal",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "decimal"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Decimal"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "decimal"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Decimal"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "decimal"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Decimal"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.Decimal\" text=\"decimal\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp9.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "TemperatureInCelsius",
-            "path": "src/CSharp9.cs",
-            "startLine": 17,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp9",
-          "overload": {
-            "uid": "CSharp9.InitOnlySetters.TemperatureInCelsius*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "TemperatureInCelsius"
-              },
-              {
-                "lang": "vb",
-                "value": "TemperatureInCelsius"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "InitOnlySetters.TemperatureInCelsius"
-              },
-              {
-                "lang": "vb",
-                "value": "InitOnlySetters.TemperatureInCelsius"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp9.InitOnlySetters.TemperatureInCelsius"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp9.InitOnlySetters.TemperatureInCelsius"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp9.InitOnlySetters.TemperatureInCelsius*\" text=\"TemperatureInCelsius\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp9.InitOnlySetters.TemperatureInCelsius*\" text=\"TemperatureInCelsius\"/>"
-              }
-            ],
-            "id": "CSharp9_InitOnlySetters_TemperatureInCelsius_"
-          },
           "level": 0,
-          "type": "property",
           "summary": "",
+          "type": "property",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_InitOnlySetters_TemperatureInCelsius.md&value=---%0Auid%3A%20CSharp9.InitOnlySetters.TemperatureInCelsius%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L18",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -1140,10 +786,15 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp9.InitOnlySetters.yml",
+  "_splitReference": true,
+  "_splitFrom": true,
+  "_key": "obj/api/CSharp9.InitOnlySetters.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "api/CSharp9.InitOnlySetters.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {
