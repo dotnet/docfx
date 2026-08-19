@@ -32,6 +32,7 @@ internal class MetadataCommand : AsyncCommand<MetadataCommandOptions>
             item.NamespaceLayout = options.NamespaceLayout ?? item.NamespaceLayout;
             item.MemberLayout = options.MemberLayout ?? item.MemberLayout;
             item.OutputFormat = options.OutputFormat ?? item.OutputFormat;
+            item.ForceBuild |= options.ForceBuild;
 
             if (!string.IsNullOrEmpty(options.FilterConfigFile))
             {

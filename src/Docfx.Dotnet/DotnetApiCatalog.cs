@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using Docfx.Common;
 using Docfx.Plugins;
+using Microsoft.Build.Locator;
 using Newtonsoft.Json.Linq;
 using YamlDotNet.Serialization;
 
@@ -64,6 +65,22 @@ public static partial class DotnetApiCatalog
             string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
 
             EnvironmentContext.SetBaseDirectory(configDirectory);
+
+            // this is here because heading into Compile, MSBuildLocator must have been registered as it uses MSBuild APIs
+            if (!MSBuildLocator.IsRegistered)
+            {
+                var visualStudioInstanceQueryOptions = VisualStudioInstanceQueryOptions.Default;
+                Logger.LogInfo($"Searching for MSBuild based upon: DiscoveryTypes:{visualStudioInstanceQueryOptions.DiscoveryTypes} - AllowAllDotnetLocations:{visualStudioInstanceQueryOptions.AllowAllDotnetLocations} - AllowAllRuntimeVersions:{visualStudioInstanceQueryOptions.AllowAllRuntimeVersions} - WorkingDirectory:\"{visualStudioInstanceQueryOptions.WorkingDirectory}\"");
+
+                var latestVersion = MSBuildLocator.QueryVisualStudioInstances(visualStudioInstanceQueryOptions).MaxBy(instance => instance.Version);
+                if (latestVersion == null)
+                {
+                    throw new InvalidOperationException("Failed to find a version of Visual Studio or .NET SDK installed");
+                }
+
+                MSBuildLocator.RegisterInstance(latestVersion);
+                Logger.LogInfo($"Located MSBuild for: {latestVersion.Name} - {latestVersion.Version}");
+            }
 
             foreach (var item in config)
             {
@@ -143,6 +160,7 @@ public static partial class DotnetApiCatalog
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
             DisableGitFeatures = configModel?.DisableGitFeatures ?? false,
             NoRestore = configModel?.NoRestore ?? false,
+            ForceBuild = configModel?.ForceBuild ?? false,
             CategoryLayout = configModel?.CategoryLayout ?? default,
             NamespaceLayout = configModel?.NamespaceLayout ?? default,
             MemberLayout = configModel?.MemberLayout ?? default,
