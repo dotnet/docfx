@@ -30,8 +30,10 @@ public class XmlCommentRemarksTest
             // Expected Markdown
             """
             <ul><li>
+
                         <pre><code class="lang-c#">public class XmlElement
                 : XmlLinkedNode</code></pre>
+
                     </li></ul>
             """
          );
@@ -62,6 +64,47 @@ public class XmlCommentRemarksTest
             <pre><code class="lang-csharp">CSharpCode2</code></pre>
             """
          );
+    }
+
+    // UnitTest for https://github.com/dotnet/docfx/issues/10965
+    [Fact]
+    public void Remarks_WithExample()
+    {
+        ValidateRemarks(
+            // Input XML
+            """
+            <member>
+              <remarks>
+              Message
+              <example>
+              <code><![CDATA[
+              public class User
+              {
+                  aaa
+              
+                  bbb
+                  ccc
+              }]]></code>
+              </example>
+              </remarks>
+            </member>
+            """,
+            // Expected Markdown
+            """
+            Message
+
+            <example>
+
+            <pre><code class="lang-csharp">public class User
+            {
+                aaa
+
+                bbb
+                ccc
+            }</code></pre>
+
+            </example>
+            """);
     }
 
     private static void ValidateRemarks(string input, string expected)
