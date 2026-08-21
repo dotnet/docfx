@@ -60,6 +60,38 @@ internal enum NamespaceLayout
 }
 
 /// <summary>
+/// Specifies how the assembly of a namespace is shown, for assemblies listed in
+/// <c>assemblyUids</c>. Has no effect on assemblies that are not listed there.
+/// </summary>
+internal enum AssemblyLabel
+{
+    /// <summary>
+    /// Shows the namespace on its own, with no mention of the assembly it comes from. This is the default,
+    /// so qualifying an assembly changes what a page is called by, not what it reads as.
+    /// </summary>
+    None,
+
+    /// <summary>
+    /// Appends the assembly to the namespace label, as in <c>MyLib (MyLib.Tools)</c>, but only for the
+    /// namespaces that more than one assembly documented by the same <c>metadata</c> entry declares. The
+    /// namespaces only one assembly declares are shown on their own, as there is nothing to tell apart.
+    /// </summary>
+    Shared,
+
+    /// <summary>
+    /// Appends the assembly to the namespace label, as in <c>MyLib (MyLib.Tools)</c>, for every namespace
+    /// of a qualified assembly.
+    /// </summary>
+    Suffix,
+
+    /// <summary>
+    /// Shows the namespace on its own, and names the assembly on the namespace page instead, the way
+    /// type pages do.
+    /// </summary>
+    Page,
+}
+
+/// <summary>
 /// Specifies the sort order for enums.
 /// </summary>
 internal enum EnumSortOrder
@@ -177,6 +209,28 @@ internal class MetadataJsonItemConfig
     [JsonProperty("globalNamespaceId")]
     [JsonPropertyName("globalNamespaceId")]
     public string GlobalNamespaceId { get; set; }
+
+    /// <summary>
+    /// The assembly component to use in the UIDs of the assemblies documented by this entry, instead of
+    /// their assembly name. Needed only when several entries document assemblies that share an assembly
+    /// name, such as per target version builds of one project, which the project level <c>assemblyUids</c>
+    /// cannot tell apart.
+    /// <para>
+    /// Because it is scoped to its own entry, other entries cannot see it, so an assembly that other
+    /// entries reference belongs in <c>assemblyUids</c> instead.
+    /// </para>
+    /// </summary>
+    [JsonProperty("assemblyUidOverride")]
+    [JsonPropertyName("assemblyUidOverride")]
+    public string AssemblyUidOverride { get; set; }
+
+    /// <summary>
+    /// Specifies how the assembly of a namespace is shown, for assemblies that carry an assembly
+    /// component in their UIDs.
+    /// </summary>
+    [JsonProperty("assemblyLabel")]
+    [JsonPropertyName("assemblyLabel")]
+    public AssemblyLabel AssemblyLabel { get; set; }
 
     /// <summary>
     /// An optional set of MSBuild properties used when interpreting project files. These
