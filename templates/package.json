@@ -18,6 +18,14 @@
     "test": "node --import tsx --test modern/src/*.test.ts",
     "start": "node build.js --watch"
   },
+  "overrides": {
+    "browser-sync": {
+      "immutable": "4.3.9"
+    },
+    "browser-sync-ui": {
+      "immutable": "4.3.9"
+    }
+  },
   "dependencies": {
     "@default/anchor-js": "npm:anchor-js@5.0.0",
     "@default/bootstrap": "npm:bootstrap@3.4.1",
