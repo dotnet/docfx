@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <OutputType>Library</OutputType>
     <IsTestProject>false</IsTestProject>
+    <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
   </PropertyGroup>
 
   <!-- Add assembly level ExcludeFromCodeCoverage attribute -->
@@ -10,5 +12,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.Common\Docfx.Common.csproj" />
+  </ItemGroup>
+  
+  <!-- Test library project need to reference separated package instead of `xunit.v3`-->
+  <ItemGroup>
+    <PackageReference Include="xunit.v3.assert" />
+    <PackageReference Include="xunit.v3.extensibility.core" />
   </ItemGroup>
 </Project>
