@@ -22,6 +22,10 @@ public class MetadataCommandTest : TestBase
     {
         _outputFolder = GetRandomFolder();
         _projectFolder = GetRandomFolder();
+
+        // Create empty `Directory.Build.props`.
+        var propsFilePath = Path.Combine(_projectFolder, "Directory.Build.props");
+        File.WriteAllText(propsFilePath, "<Project></Project>");
     }
 
     [Fact]
@@ -35,7 +39,7 @@ public class MetadataCommandTest : TestBase
 
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
-            new(), Directory.GetCurrentDirectory());
+            new(), Directory.GetCurrentDirectory(), cancellationToken: TestContext.Current.CancellationToken);
 
         CheckResult();
     }
@@ -49,7 +53,7 @@ public class MetadataCommandTest : TestBase
 
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(dllFile)) { Expanded = true } }),
-            new(), Directory.GetCurrentDirectory());
+            new(), Directory.GetCurrentDirectory(), cancellationToken: TestContext.Current.CancellationToken);
 
         CheckResult();
     }
@@ -71,7 +75,7 @@ public class MetadataCommandTest : TestBase
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 Properties = new() { ["TargetFramework"] = "net8.0" },
             }),
-            new(), Directory.GetCurrentDirectory());
+            new(), Directory.GetCurrentDirectory(), cancellationToken: TestContext.Current.CancellationToken);
 
         CheckResult();
     }
@@ -91,7 +95,7 @@ public class MetadataCommandTest : TestBase
 
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
-            new(), Directory.GetCurrentDirectory());
+            new(), Directory.GetCurrentDirectory(), cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
@@ -158,7 +162,7 @@ public class MetadataCommandTest : TestBase
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 Filter = filterFile,
             }),
-            new(), Directory.GetCurrentDirectory());
+            new(), Directory.GetCurrentDirectory(), cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
@@ -203,7 +207,7 @@ public class MetadataCommandTest : TestBase
 
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
-            new(), Directory.GetCurrentDirectory());
+            new(), Directory.GetCurrentDirectory(), cancellationToken: TestContext.Current.CancellationToken);
 
         CheckResult();
     }
@@ -224,7 +228,7 @@ public class MetadataCommandTest : TestBase
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 NamespaceLayout = NamespaceLayout.Nested,
             }),
-            new(), Directory.GetCurrentDirectory());
+            new(), Directory.GetCurrentDirectory(), cancellationToken: TestContext.Current.CancellationToken);
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -263,7 +267,7 @@ public class MetadataCommandTest : TestBase
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 NamespaceLayout = NamespaceLayout.Flattened,
             }),
-            new(), Directory.GetCurrentDirectory());
+            new(), Directory.GetCurrentDirectory(), cancellationToken: TestContext.Current.CancellationToken);
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -302,7 +306,7 @@ public class MetadataCommandTest : TestBase
                 Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 NamespaceLayout = NamespaceLayout.Nested,
             }),
-            new(), Directory.GetCurrentDirectory());
+            new(), Directory.GetCurrentDirectory(), cancellationToken: TestContext.Current.CancellationToken);
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));

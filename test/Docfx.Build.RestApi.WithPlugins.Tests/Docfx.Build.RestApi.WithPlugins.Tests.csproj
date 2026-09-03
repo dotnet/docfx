@@ -1,4 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.Build.OperationLevelRestApi\Docfx.Build.OperationLevelRestApi.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.TagLevelRestApi\Docfx.Build.TagLevelRestApi.csproj" />

@@ -24,10 +24,10 @@ public class XRefArchiveBuilderTest
                 ### YamlMime:XRefMap
                 sorted: true
                 references: []
-                """);
+                """, TestContext.Current.CancellationToken);
 
             var builder = new XRefArchiveBuilder();
-            Assert.True(await builder.DownloadAsync(new Uri(xrefMapFile), archiveFile));
+            Assert.True(await builder.DownloadAsync(new Uri(xrefMapFile), archiveFile, TestContext.Current.CancellationToken));
 
             using var xar = XRefArchive.Open(archiveFile, XRefArchiveMode.Read);
             var map = xar.GetMajor();

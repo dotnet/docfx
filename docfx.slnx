@@ -2,6 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
   </Folder>
   <Folder Name="/src/">
@@ -38,6 +39,7 @@
   </Folder>
   <Folder Name="/test/">
     <File Path="test/Directory.Build.props" />
+    <File Path="test/Directory.Build.targets" />
     <File Path="test/Directory.Packages.props" />
     <Project Path="test/Docfx.Build.Common.Tests/Docfx.Build.Common.Tests.csproj" />
     <Project Path="test/Docfx.Build.Tests/Docfx.Build.Tests.csproj" />
