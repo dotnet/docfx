@@ -5,6 +5,8 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+  ignore:
+    - dependency-name: "Verify.*"
   groups:
     roslyn:
       patterns:
@@ -20,14 +22,6 @@ updates:
       - "xunit.*"
       - "xunit.v3"
       - "xunit.v3.*"
-
-  - package-ecosystem: "nuget"
-    target-branch: main
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    allow:
-      - dependency-name: "Verify.*"
 
 - package-ecosystem: npm
   target-branch: main
