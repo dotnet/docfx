@@ -2,19 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
+using YamlDotNet.Core;
+using YamlDotNet.Core.Events;
+using Constants = Docfx.DataContracts.Common.Constants;
 
 namespace Docfx.Build.TableOfContents;
 
 public static class TocHelper
 {
-    private static readonly YamlDeserializerWithFallback _deserializer =
-        YamlDeserializerWithFallback.Create<List<TocItemViewModel>>()
-        .WithFallback<TocItemViewModel>();
-
     internal static List<FileModel> ResolveToc(ImmutableList<FileModel> models)
     {
         var tocCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
@@ -56,21 +54,20 @@ public static class TocHelper
         var fileType = Utility.GetTocFileType(file);
         try
         {
-            if (fileType == TocFileType.Markdown)
+            switch (fileType)
             {
-                return new()
-                {
-                    Items = MarkdownTocReader.LoadToc(EnvironmentContext.FileAbstractLayer.ReadAllText(file), file)
-                };
-            }
-            else if (fileType == TocFileType.Yaml)
-            {
-                return _deserializer.Deserialize(file) switch
-                {
-                    List<TocItemViewModel> vm => new() { Items = vm },
-                    TocItemViewModel root => root,
-                    _ => throw new NotSupportedException($"{file} is not a valid TOC file."),
-                };
+                case TocFileType.Markdown:
+                    return new()
+                    {
+                        Items = MarkdownTocReader.LoadToc(EnvironmentContext.FileAbstractLayer.ReadAllText(file), file)
+                    };
+                case TocFileType.Yaml:
+                    {
+                        var yaml = EnvironmentContext.FileAbstractLayer.ReadAllText(file);
+                        return DeserializeYamlToc(yaml);
+                    }
+                default:
+                    throw new NotSupportedException($"{file} is not a valid TOC file, supported TOC files should be either \"{Constants.TableOfContents.MarkdownTocFileName}\" or \"{Constants.TableOfContents.YamlTocFileName}\".");
             }
         }
         catch (Exception e)
@@ -79,7 +76,18 @@ public static class TocHelper
             Logger.LogError(message, code: ErrorCodes.Toc.InvalidTocFile);
             throw new DocumentException(message, e);
         }
+    }
 
-        throw new NotSupportedException($"{file} is not a valid TOC file, supported TOC files should be either \"{Constants.TableOfContents.MarkdownTocFileName}\" or \"{Constants.TableOfContents.YamlTocFileName}\".");
+    private static TocItemViewModel DeserializeYamlToc(string yaml)
+    {
+        // Parse yaml content to determine TOC type (`List<TocItemViewModel>` or TocItemViewModel).
+        var parser = new Parser(new Scanner(new StringReader(yaml), skipComments: true));
+        bool isListItems = parser.TryConsume<StreamStart>(out var _)
+                        && parser.TryConsume<DocumentStart>(out var _)
+                        && parser.TryConsume<SequenceStart>(out var _);
+
+        return isListItems
+            ? new TocItemViewModel { Items = YamlUtility.Deserialize<List<TocItemViewModel>>(new StringReader(yaml)) }
+            : YamlUtility.Deserialize<TocItemViewModel>(new StringReader(yaml));
     }
 }
