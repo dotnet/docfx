@@ -123,6 +123,143 @@ references:
   fullName.vb: BuildFromProject.Class1.IIssue8948.DoNothing(Of T)()
   nameWithType: Class1.IIssue8948.DoNothing<T>()
   nameWithType.vb: Class1.IIssue8948.DoNothing(Of T)()
+- uid: BuildFromProject.Class1.Issue10332
+  name: Class1.Issue10332
+  href: api/BuildFromProject.Class1.Issue10332.html
+  commentId: T:BuildFromProject.Class1.Issue10332
+  fullName: BuildFromProject.Class1.Issue10332
+  nameWithType: Class1.Issue10332
+- uid: BuildFromProject.Class1.Issue10332.IRoutedView
+  name: IRoutedView()
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_IRoutedView
+  commentId: M:BuildFromProject.Class1.Issue10332.IRoutedView
+  fullName: BuildFromProject.Class1.Issue10332.IRoutedView()
+  nameWithType: Class1.Issue10332.IRoutedView()
+- uid: BuildFromProject.Class1.Issue10332.IRoutedView*
+  name: IRoutedView
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_IRoutedView_
+  commentId: Overload:BuildFromProject.Class1.Issue10332.IRoutedView
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue10332.IRoutedView
+  nameWithType: Class1.Issue10332.IRoutedView
+- uid: BuildFromProject.Class1.Issue10332.IRoutedViewModel
+  name: IRoutedViewModel()
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_IRoutedViewModel
+  commentId: M:BuildFromProject.Class1.Issue10332.IRoutedViewModel
+  fullName: BuildFromProject.Class1.Issue10332.IRoutedViewModel()
+  nameWithType: Class1.Issue10332.IRoutedViewModel()
+- uid: BuildFromProject.Class1.Issue10332.IRoutedViewModel*
+  name: IRoutedViewModel
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_IRoutedViewModel_
+  commentId: Overload:BuildFromProject.Class1.Issue10332.IRoutedViewModel
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue10332.IRoutedViewModel
+  nameWithType: Class1.Issue10332.IRoutedViewModel
+- uid: BuildFromProject.Class1.Issue10332.IRoutedView``1
+  name: IRoutedView<TViewModel>()
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_IRoutedView__1
+  commentId: M:BuildFromProject.Class1.Issue10332.IRoutedView``1
+  name.vb: IRoutedView(Of TViewModel)()
+  fullName: BuildFromProject.Class1.Issue10332.IRoutedView<TViewModel>()
+  fullName.vb: BuildFromProject.Class1.Issue10332.IRoutedView(Of TViewModel)()
+  nameWithType: Class1.Issue10332.IRoutedView<TViewModel>()
+  nameWithType.vb: Class1.Issue10332.IRoutedView(Of TViewModel)()
+- uid: BuildFromProject.Class1.Issue10332.Method
+  name: Method()
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_Method
+  commentId: M:BuildFromProject.Class1.Issue10332.Method
+  fullName: BuildFromProject.Class1.Issue10332.Method()
+  nameWithType: Class1.Issue10332.Method()
+- uid: BuildFromProject.Class1.Issue10332.Method(System.Int32)
+  name: Method(int)
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_Method_System_Int32_
+  commentId: M:BuildFromProject.Class1.Issue10332.Method(System.Int32)
+  name.vb: Method(Integer)
+  fullName: BuildFromProject.Class1.Issue10332.Method(int)
+  fullName.vb: BuildFromProject.Class1.Issue10332.Method(Integer)
+  nameWithType: Class1.Issue10332.Method(int)
+  nameWithType.vb: Class1.Issue10332.Method(Integer)
+- uid: BuildFromProject.Class1.Issue10332.Method(System.Int32,System.Int32)
+  name: Method(int, int)
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_Method_System_Int32_System_Int32_
+  commentId: M:BuildFromProject.Class1.Issue10332.Method(System.Int32,System.Int32)
+  name.vb: Method(Integer, Integer)
+  fullName: BuildFromProject.Class1.Issue10332.Method(int, int)
+  fullName.vb: BuildFromProject.Class1.Issue10332.Method(Integer, Integer)
+  nameWithType: Class1.Issue10332.Method(int, int)
+  nameWithType.vb: Class1.Issue10332.Method(Integer, Integer)
+- uid: BuildFromProject.Class1.Issue10332.Method*
+  name: Method
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_Method_
+  commentId: Overload:BuildFromProject.Class1.Issue10332.Method
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue10332.Method
+  nameWithType: Class1.Issue10332.Method
+- uid: BuildFromProject.Class1.Issue10332.Null(System.Object)
+  name: Null(object?)
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_Null_System_Object_
+  commentId: M:BuildFromProject.Class1.Issue10332.Null(System.Object)
+  name.vb: Null(Object)
+  fullName: BuildFromProject.Class1.Issue10332.Null(object?)
+  fullName.vb: BuildFromProject.Class1.Issue10332.Null(Object)
+  nameWithType: Class1.Issue10332.Null(object?)
+  nameWithType.vb: Class1.Issue10332.Null(Object)
+- uid: BuildFromProject.Class1.Issue10332.Null*
+  name: "Null"
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_Null_
+  commentId: Overload:BuildFromProject.Class1.Issue10332.Null
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue10332.Null
+  nameWithType: Class1.Issue10332.Null
+- uid: BuildFromProject.Class1.Issue10332.NullOrEmpty(System.String)
+  name: NullOrEmpty(string)
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_NullOrEmpty_System_String_
+  commentId: M:BuildFromProject.Class1.Issue10332.NullOrEmpty(System.String)
+  name.vb: NullOrEmpty(String)
+  fullName: BuildFromProject.Class1.Issue10332.NullOrEmpty(string)
+  fullName.vb: BuildFromProject.Class1.Issue10332.NullOrEmpty(String)
+  nameWithType: Class1.Issue10332.NullOrEmpty(string)
+  nameWithType.vb: Class1.Issue10332.NullOrEmpty(String)
+- uid: BuildFromProject.Class1.Issue10332.NullOrEmpty*
+  name: NullOrEmpty
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_NullOrEmpty_
+  commentId: Overload:BuildFromProject.Class1.Issue10332.NullOrEmpty
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue10332.NullOrEmpty
+  nameWithType: Class1.Issue10332.NullOrEmpty
+- uid: BuildFromProject.Class1.Issue10332.Null``1(``0)
+  name: Null<T>(T)
+  href: api/BuildFromProject.Class1.Issue10332.html#BuildFromProject_Class1_Issue10332_Null__1___0_
+  commentId: M:BuildFromProject.Class1.Issue10332.Null``1(``0)
+  name.vb: Null(Of T)(T)
+  fullName: BuildFromProject.Class1.Issue10332.Null<T>(T)
+  fullName.vb: BuildFromProject.Class1.Issue10332.Null(Of T)(T)
+  nameWithType: Class1.Issue10332.Null<T>(T)
+  nameWithType.vb: Class1.Issue10332.Null(Of T)(T)
+- uid: BuildFromProject.Class1.Issue10332.SampleEnum
+  name: Class1.Issue10332.SampleEnum
+  href: api/BuildFromProject.Class1.Issue10332.SampleEnum.html
+  commentId: T:BuildFromProject.Class1.Issue10332.SampleEnum
+  fullName: BuildFromProject.Class1.Issue10332.SampleEnum
+  nameWithType: Class1.Issue10332.SampleEnum
+- uid: BuildFromProject.Class1.Issue10332.SampleEnum.AAA
+  name: AAA
+  href: api/BuildFromProject.Class1.Issue10332.SampleEnum.html#BuildFromProject_Class1_Issue10332_SampleEnum_AAA
+  commentId: F:BuildFromProject.Class1.Issue10332.SampleEnum.AAA
+  fullName: BuildFromProject.Class1.Issue10332.SampleEnum.AAA
+  nameWithType: Class1.Issue10332.SampleEnum.AAA
+- uid: BuildFromProject.Class1.Issue10332.SampleEnum._aaa
+  name: _aaa
+  href: api/BuildFromProject.Class1.Issue10332.SampleEnum.html#BuildFromProject_Class1_Issue10332_SampleEnum__aaa
+  commentId: F:BuildFromProject.Class1.Issue10332.SampleEnum._aaa
+  fullName: BuildFromProject.Class1.Issue10332.SampleEnum._aaa
+  nameWithType: Class1.Issue10332.SampleEnum._aaa
+- uid: BuildFromProject.Class1.Issue10332.SampleEnum.aaa
+  name: aaa
+  href: api/BuildFromProject.Class1.Issue10332.SampleEnum.html#BuildFromProject_Class1_Issue10332_SampleEnum_aaa
+  commentId: F:BuildFromProject.Class1.Issue10332.SampleEnum.aaa
+  fullName: BuildFromProject.Class1.Issue10332.SampleEnum.aaa
+  nameWithType: Class1.Issue10332.SampleEnum.aaa
 - uid: BuildFromProject.Class1.Issue1651
   name: Issue1651()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue1651

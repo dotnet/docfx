@@ -57,10 +57,8 @@
       "children": [
         {
           "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -101,177 +99,17 @@
               "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"operator ++(T)\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public static abstract T operator ++(T other)"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Shared MustInherit Function op_Increment(other As T) As T"
-              }
-            ],
-            "parameters": [
-              {
-                "id": "other",
-                "type": {
-                  "uid": "{T}",
-                  "definition": "T",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "T"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "T"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "T"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "T"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "T"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "T"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"{T}\" text=\"T\"/>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"{T}\" text=\"T\"/>"
-                    }
-                  ]
-                }
-              }
-            ],
-            "return": {
-              "type": {
-                "uid": "{T}",
-                "definition": "T",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "T"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "T"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "T"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "T"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "T"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "T"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"{T}\" text=\"T\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"{T}\" text=\"T\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp11.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "op_Increment",
-            "path": "src/CSharp11.cs",
-            "startLine": 6,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp11",
-          "overload": {
-            "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "operator ++"
-              },
-              {
-                "lang": "vb",
-                "value": "op_Increment"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++"
-              },
-              {
-                "lang": "vb",
-                "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_\">++</a>"
-              }
-            ],
-            "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment_"
-          },
           "level": 0,
-          "type": "operator",
           "summary": "",
+          "type": "operator",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_.md&value=---%0Auid%3A%20CSharp11.StaticAbstractMembersInInterfaces.IGetNext%601.op_Increment(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L7",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -451,10 +289,15 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.yml",
+  "_splitReference": true,
+  "_splitFrom": true,
+  "_key": "obj/api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {

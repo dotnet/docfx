@@ -592,10 +592,13 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp9.RecordTypes.yml",
+  "_key": "obj/api/CSharp9.RecordTypes.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "api/CSharp9.RecordTypes.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {

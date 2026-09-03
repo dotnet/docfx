@@ -1,0 +1,607 @@
+﻿{
+  "uid": "BuildFromProject.Class1.Issue10332.SampleEnum",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "inField": true,
+      "typePropertyName": "inField",
+      "id": "fields",
+      "children": [
+        {
+          "uid": "BuildFromProject.Class1.Issue10332.SampleEnum.AAA",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1.Issue10332.SampleEnum",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "AAA"
+            },
+            {
+              "lang": "vb",
+              "value": "AAA"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue10332.SampleEnum.AAA"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue10332.SampleEnum.AAA"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue10332.SampleEnum.AAA"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue10332.SampleEnum.AAA"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue10332.SampleEnum.AAA\" text=\"AAA\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue10332.SampleEnum.AAA\" text=\"AAA\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "AAA = 0"
+              },
+              {
+                "lang": "vb",
+                "value": "AAA = 0"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "BuildFromProject.Class1.Issue10332.SampleEnum",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.SampleEnum.html\">SampleEnum</a>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.SampleEnum.html\">SampleEnum</a>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "AAA",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 213,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "level": 0,
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue10332.SampleEnum.yml\" sourcestartlinenumber=\"1\">3rd element when sorted by alphabetic order</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue10332_SampleEnum_AAA.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue10332.SampleEnum.AAA%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L214",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue10332_SampleEnum_AAA",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue10332.SampleEnum.aaa",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1.Issue10332.SampleEnum",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "aaa"
+            },
+            {
+              "lang": "vb",
+              "value": "aaa"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue10332.SampleEnum.aaa"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue10332.SampleEnum.aaa"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue10332.SampleEnum.aaa"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue10332.SampleEnum.aaa"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue10332.SampleEnum.aaa\" text=\"aaa\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue10332.SampleEnum.aaa\" text=\"aaa\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "aaa = 1"
+              },
+              {
+                "lang": "vb",
+                "value": "aaa = 1"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "BuildFromProject.Class1.Issue10332.SampleEnum",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.SampleEnum.html\">SampleEnum</a>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.SampleEnum.html\">SampleEnum</a>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "aaa",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 218,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "level": 0,
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue10332.SampleEnum.yml\" sourcestartlinenumber=\"1\">2nd element when sorted by alphabetic order</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue10332_SampleEnum_aaa.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue10332.SampleEnum.aaa%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L219",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue10332_SampleEnum_aaa",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Issue10332.SampleEnum._aaa",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1.Issue10332.SampleEnum",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "_aaa"
+            },
+            {
+              "lang": "vb",
+              "value": "_aaa"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue10332.SampleEnum._aaa"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue10332.SampleEnum._aaa"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue10332.SampleEnum._aaa"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue10332.SampleEnum._aaa"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue10332.SampleEnum._aaa\" text=\"_aaa\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue10332.SampleEnum._aaa\" text=\"_aaa\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "_aaa = 2"
+              },
+              {
+                "lang": "vb",
+                "value": "_aaa = 2"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "BuildFromProject.Class1.Issue10332.SampleEnum",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1.Issue10332.SampleEnum"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.SampleEnum.html\">SampleEnum</a>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.html\">Issue10332</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue10332.SampleEnum.html\">SampleEnum</a>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "_aaa",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 223,
+            "endLine": 0
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "example": [],
+          "level": 0,
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.Issue10332.SampleEnum.yml\" sourcestartlinenumber=\"1\">1st element when sorted by alphabetic order</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue10332_SampleEnum__aaa.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue10332.SampleEnum._aaa%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L224",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": [],
+          "id": "BuildFromProject_Class1_Issue10332_SampleEnum__aaa",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Class1.Issue10332.SampleEnum"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1.Issue10332.SampleEnum"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "Class1.Issue10332.SampleEnum"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1.Issue10332.SampleEnum"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromProject.Class1.Issue10332.SampleEnum"
+    }
+  ],
+  "type": "enum",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/project/Project/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "SampleEnum",
+    "path": "dotnet/project/Project/Class1.cs",
+    "startLine": 208,
+    "endLine": 0
+  },
+  "assemblies": [
+    "BuildFromProject"
+  ],
+  "namespace": {
+    "uid": "BuildFromProject",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromProject"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromProject"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public enum Class1.Issue10332.SampleEnum"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Enum Class1.Issue10332.SampleEnum"
+      }
+    ]
+  },
+  "level": 0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "obj/api/BuildFromProject.Class1.Issue10332.SampleEnum.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromProject.Class1.Issue10332.SampleEnum.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue10332_SampleEnum.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue10332.SampleEnum%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L209",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "BuildFromProject_Class1_Issue10332_SampleEnum",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": false,
+  "inEnum": true,
+  "isEnum": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}

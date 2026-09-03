@@ -57,10 +57,8 @@
       "children": [
         {
           "uid": "CSharp12.PrimaryConstructors.Distance.#ctor(System.Double,System.Double)",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp12.PrimaryConstructors.Distance",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -101,180 +99,17 @@
               "value": "<xref uid=\"CSharp12.PrimaryConstructors.Distance.#ctor(System.Double,System.Double)\" text=\"Distance(double, double)\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public Distance(double dx, double dy)"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Sub New(dx As Double, dy As Double)"
-              }
-            ],
-            "parameters": [
-              {
-                "id": "dx",
-                "type": {
-                  "uid": "System.Double",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "double"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "Double"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "double"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "Double"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "double"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "Double"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "dy",
-                "type": {
-                  "uid": "System.Double",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "double"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "Double"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "double"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "Double"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "double"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "Double"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp12.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": ".ctor",
-            "path": "src/CSharp12.cs",
-            "startLine": 6,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp12",
-          "overload": {
-            "uid": "CSharp12.PrimaryConstructors.Distance.#ctor*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "Distance"
-              },
-              {
-                "lang": "vb",
-                "value": "New"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "PrimaryConstructors.Distance.Distance"
-              },
-              {
-                "lang": "vb",
-                "value": "PrimaryConstructors.Distance.New"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp12.PrimaryConstructors.Distance.Distance"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp12.PrimaryConstructors.Distance.New"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp12.PrimaryConstructors.Distance.#ctor*\" text=\"Distance\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp12.PrimaryConstructors.Distance.#ctor*\" text=\"Distance\"/>"
-              }
-            ],
-            "id": "CSharp12_PrimaryConstructors_Distance__ctor_"
-          },
           "level": 0,
-          "type": "constructor",
           "summary": "",
+          "type": "constructor",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_Distance__ctor_System_Double_System_Double_.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.Distance.%23ctor(System.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L7",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -291,10 +126,8 @@
       "children": [
         {
           "uid": "CSharp12.PrimaryConstructors.Distance.Direction",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp12.PrimaryConstructors.Distance",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -335,88 +168,17 @@
               "value": "<xref uid=\"CSharp12.PrimaryConstructors.Distance.Direction\" text=\"Direction\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public readonly double Direction"
-              },
-              {
-                "lang": "vb",
-                "value": "Public ReadOnly Direction As Double"
-              }
-            ],
-            "return": null,
-            "fieldValue": {
-              "type": {
-                "uid": "System.Double",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "double"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Double"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "double"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Double"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "double"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Double"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp12.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "Direction",
-            "path": "src/CSharp12.cs",
-            "startLine": 9,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp12",
           "level": 0,
-          "type": "field",
           "summary": "",
+          "type": "field",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_Distance_Direction.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.Distance.Direction%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L10",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -426,10 +188,8 @@
         },
         {
           "uid": "CSharp12.PrimaryConstructors.Distance.Magnitude",
-          "isEii": false,
           "isExtensionMethod": false,
           "parent": "CSharp12.PrimaryConstructors.Distance",
-          "isExternal": false,
           "name": [
             {
               "lang": "csharp",
@@ -470,88 +230,17 @@
               "value": "<xref uid=\"CSharp12.PrimaryConstructors.Distance.Magnitude\" text=\"Magnitude\"/>"
             }
           ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public readonly double Magnitude"
-              },
-              {
-                "lang": "vb",
-                "value": "Public ReadOnly Magnitude As Double"
-              }
-            ],
-            "return": null,
-            "fieldValue": {
-              "type": {
-                "uid": "System.Double",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "double"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Double"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "double"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Double"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "double"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Double"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.Double\" text=\"double\"/>"
-                  }
-                ]
-              }
-            }
-          },
-          "source": {
-            "remote": {
-              "path": "samples/csharp/src/CSharp12.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "Magnitude",
-            "path": "src/CSharp12.cs",
-            "startLine": 8,
-            "endLine": 0
-          },
-          "assemblies": [
-            "CSharp"
-          ],
-          "namespace": "CSharp12",
           "level": 0,
-          "type": "field",
           "summary": "",
+          "type": "field",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp12_PrimaryConstructors_Distance_Magnitude.md&value=---%0Auid%3A%20CSharp12.PrimaryConstructors.Distance.Magnitude%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp12.cs/#L9",
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
           "description": "",
           "remarks": "",
           "conceptual": "",
+          "syntax": "",
           "implements": "",
           "example": "",
           "seealso": [],
@@ -1003,10 +692,15 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp12.PrimaryConstructors.Distance.yml",
+  "_splitReference": true,
+  "_splitFrom": true,
+  "_key": "obj/api/CSharp12.PrimaryConstructors.Distance.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
   "_path": "api/CSharp12.PrimaryConstructors.Distance.html",
   "_rel": "../",
-  "_tocKey": "~/api/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {

@@ -18,6 +18,8 @@ Class representing a dog.
 
  [Inheritdoc](BuildFromProject.Inheritdoc.md)
 
+ [Class1.Issue10332](BuildFromProject.Class1.Issue10332.md)
+
  [Inheritdoc.Issue6366](BuildFromProject.Inheritdoc.Issue6366.md)
 
  [Inheritdoc.Issue7035](BuildFromProject.Inheritdoc.Issue7035.md)
@@ -61,4 +63,6 @@ A nice class
 ### Enums
 
  [Class1.Issue9260](BuildFromProject.Class1.Issue9260.md)
+
+ [Class1.Issue10332.SampleEnum](BuildFromProject.Class1.Issue10332.SampleEnum.md)
 

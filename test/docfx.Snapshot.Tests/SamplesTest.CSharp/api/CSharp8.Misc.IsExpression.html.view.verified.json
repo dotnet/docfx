@@ -1,0 +1,476 @@
+﻿{
+  "uid": "CSharp8.Misc.IsExpression*",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CSharp8.Misc.IsExpression(System.DateTime)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "IsExpression(DateTime)"
+            },
+            {
+              "lang": "vb",
+              "value": "IsExpression(Date)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.IsExpression(DateTime)"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.IsExpression(Date)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.IsExpression(System.DateTime)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.IsExpression(Date)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.IsExpression(System.DateTime)\" text=\"IsExpression(DateTime)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.IsExpression(System.DateTime)\" text=\"IsExpression(DateTime)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static bool IsExpression(DateTime date)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function IsExpression([date] As Date) As Boolean"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "date",
+                "type": {
+                  "uid": "System.DateTime",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "DateTime"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Date"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "DateTime"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Date"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "System.DateTime"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Date"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
+                    }
+                  ]
+                }
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Boolean",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "bool"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Boolean"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "bool"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Boolean"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "bool"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Boolean"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "IsExpression",
+            "path": "src/CSharp8.cs",
+            "startLine": 77,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.IsExpression*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "IsExpression"
+              },
+              {
+                "lang": "vb",
+                "value": "IsExpression"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.IsExpression"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.IsExpression"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.IsExpression"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.IsExpression"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.IsExpression*\" text=\"IsExpression\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.IsExpression*\" text=\"IsExpression\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_IsExpression_"
+          },
+          "level": 0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_IsExpression_System_DateTime_.md&value=---%0Auid%3A%20CSharp8.Misc.IsExpression(System.DateTime)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L78",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp8_Misc_IsExpression_System_DateTime_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "IsExpression"
+    },
+    {
+      "lang": "vb",
+      "value": "IsExpression"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "Misc.IsExpression"
+    },
+    {
+      "lang": "vb",
+      "value": "Misc.IsExpression"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp8.Misc.IsExpression"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp8.Misc.IsExpression"
+    }
+  ],
+  "type": "method",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp8.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "IsExpression",
+    "path": "src/CSharp8.cs",
+    "startLine": 77,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp8",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp8.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "level": 0,
+  "_isOverload": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_splitReference": true,
+  "_key": "obj/api/CSharp8.Misc.IsExpression.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CSharp8.Misc.IsExpression.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_IsExpression_.md&value=---%0Auid%3A%20CSharp8.Misc.IsExpression*%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L78",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp8_Misc_IsExpression_",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "_disableToc": false,
+  "_disableNextArticle": true,
+  "inMethod": true,
+  "isCollection": true
+}

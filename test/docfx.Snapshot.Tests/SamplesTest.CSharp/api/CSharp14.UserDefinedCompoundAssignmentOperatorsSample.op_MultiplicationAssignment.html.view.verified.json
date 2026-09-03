@@ -1,0 +1,427 @@
+﻿{
+  "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment*",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inOperator": true,
+      "typePropertyName": "inOperator",
+      "id": "operators",
+      "children": [
+        {
+          "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator *=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_MultiplicationAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.operator *=(UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator *=(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator *=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)\" text=\"operator *=(UserDefinedCompoundAssignmentOperatorsSample)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void operator *=(UserDefinedCompoundAssignmentOperatorsSample c)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Function op_MultiplicationAssignment(c As UserDefinedCompoundAssignmentOperatorsSample)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "c",
+                "type": {
+                  "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "UserDefinedCompoundAssignmentOperatorsSample"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "UserDefinedCompoundAssignmentOperatorsSample"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "UserDefinedCompoundAssignmentOperatorsSample"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "UserDefinedCompoundAssignmentOperatorsSample"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample\" text=\"UserDefinedCompoundAssignmentOperatorsSample\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample\" text=\"UserDefinedCompoundAssignmentOperatorsSample\"/>"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp14.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "op_MultiplicationAssignment",
+            "path": "src/CSharp14.cs",
+            "startLine": 62,
+            "endLine": 0
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp14",
+          "overload": {
+            "uid": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "operator *="
+              },
+              {
+                "lang": "vb",
+                "value": "op_MultiplicationAssignment"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "UserDefinedCompoundAssignmentOperatorsSample.operator *="
+              },
+              {
+                "lang": "vb",
+                "value": "UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator *="
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "operator <a class=\"xref\" href=\"CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment.html#CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_MultiplicationAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_\">*=</a>"
+              }
+            ],
+            "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_MultiplicationAssignment_"
+          },
+          "level": 0,
+          "type": "operator",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_MultiplicationAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_.md&value=---%0Auid%3A%20CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment(CSharp14.UserDefinedCompoundAssignmentOperatorsSample)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp14.cs/#L63",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_MultiplicationAssignment_CSharp14_UserDefinedCompoundAssignmentOperatorsSample_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "operator *="
+    },
+    {
+      "lang": "vb",
+      "value": "op_MultiplicationAssignment"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "UserDefinedCompoundAssignmentOperatorsSample.operator *="
+    },
+    {
+      "lang": "vb",
+      "value": "UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.operator *="
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment"
+    }
+  ],
+  "type": "operator",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp14.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "op_MultiplicationAssignment",
+    "path": "src/CSharp14.cs",
+    "startLine": 62,
+    "endLine": 0
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp14",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "href": "CSharp14.html",
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp14"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp14"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp14"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp14"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp14"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp14"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp14\" text=\"CSharp14\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "level": 0,
+  "_isOverload": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_splitReference": true,
+  "_key": "obj/api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_MultiplicationAssignment_.md&value=---%0Auid%3A%20CSharp14.UserDefinedCompoundAssignmentOperatorsSample.op_MultiplicationAssignment*%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp14.cs/#L63",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp14_UserDefinedCompoundAssignmentOperatorsSample_op_MultiplicationAssignment_",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "_disableToc": false,
+  "_disableNextArticle": true,
+  "inOperator": true,
+  "isCollection": true
+}
