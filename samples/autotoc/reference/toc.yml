@@ -1,0 +1,6 @@
+# Reference TOC
+# This folder has auto: false, so files must be manually added
+auto: false
+items:
+- name: API Reference
+  href: api.md

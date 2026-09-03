@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "build": {
+    "content": [
+      { "files": [ "**/*.{md,yml}" ] , "exclude": [ "obj/**", "**/bin/**", "**/node_modules/**", "_site/**" ] }
+    ],
+    "output": "_site",
+    "template": [
+      "default",
+      "modern"
+    ]
+  }
+}
