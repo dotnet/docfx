@@ -50,7 +50,7 @@ jobs:
       env:
         PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
 
-    - uses: codecov/codecov-action@v5
+    - uses: codecov/codecov-action@v7
       if: matrix.os == 'ubuntu-latest'
       with:
         fail_ci_if_error: false
@@ -62,7 +62,7 @@ jobs:
     - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- docs/docfx.json
     - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
 
-    - uses: actions/upload-pages-artifact@v4
+    - uses: actions/upload-pages-artifact@v5
       if: matrix.os == 'ubuntu-latest'
       with:
         path: docs/_site
