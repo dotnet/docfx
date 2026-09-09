@@ -9,7 +9,7 @@ namespace Docfx;
 
 internal class MetadataCommand : AsyncCommand<MetadataCommandOptions>
 {
-    public override Task<int> ExecuteAsync([NotNull] CommandContext context, [NotNull] MetadataCommandOptions options, CancellationToken cancellationToken)
+    protected override Task<int> ExecuteAsync([NotNull] CommandContext context, [NotNull] MetadataCommandOptions options, CancellationToken cancellationToken)
     {
         return CommandHelper.RunAsync(options, async () =>
         {

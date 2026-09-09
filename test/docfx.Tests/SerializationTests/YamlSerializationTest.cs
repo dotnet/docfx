@@ -10,7 +10,7 @@ namespace docfx.Tests;
 
 public partial class YamlSerializationTest
 {
-    private static readonly ThreadLocal<YamlSerializer> YamlJsonSerializer = new(() => new YamlSerializer(SerializationOptions.JsonCompatible | SerializationOptions.DisableAliases));
+    private static readonly YamlSerializer YamlJsonSerializer = new YamlSerializer(SerializationOptions.JsonCompatible | SerializationOptions.DisableAliases);
 
     /// <summary>
     /// Helper method to validate serialize/deserialize results.
@@ -35,7 +35,7 @@ public partial class YamlSerializationTest
     {
         // 1. Serialize to JSON with YamlDotNet
         using var writer = new StringWriter();
-        YamlJsonSerializer.Value.Serialize(writer, model);
+        YamlJsonSerializer.Serialize(writer, model);
         var json = writer.ToString();
 
         // 2. Deserialize JSON to models
