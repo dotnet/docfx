@@ -75,6 +75,33 @@ Sets the PDF output file name. The default value is `toc.pdf`.
 
 Indicates whether to include a "Table of Contents" pages at the beginning.
 
+### `pdfTocSource`
+
+Controls the source for the PDF Table of Contents. Possible values:
+
+- `toc` (default): Generates TOC from the `toc.yml` structure.
+- `headings`: Generates TOC from headings (h1, h2, h3, etc.) extracted from document content.
+
+When set to `headings`, the TOC reflects the actual heading structure within each document rather than the navigation defined in `toc.yml`. This is useful for single-document or small documentation sets where you want the PDF TOC to show the internal sections of each document.
+
+```yaml
+pdf: true
+pdfTocPage: true
+pdfTocSource: headings
+items:
+- name: My Document
+  href: my-document.md
+```
+
+### `pdfTocHeadingDepth`
+
+Maximum heading level to include in the PDF TOC when `pdfTocSource` is `headings`. Default is `3`, which includes h1, h2, and h3 headings. Set to a higher value (up to 6) to include deeper heading levels.
+
+```yaml
+pdfTocSource: headings
+pdfTocHeadingDepth: 4  # Include h1-h4 headings
+```
+
 ### `pdfCoverPage`
 
 A path to an HTML page relative to the root of the output directory. The HTML page will be inserted at the beginning of the PDF file as cover page.
