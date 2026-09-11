@@ -15,7 +15,7 @@ internal class MetadataCommand : AsyncCommand<MetadataCommandOptions>
         {
             var (config, baseDirectory) = Docset.GetConfig(options.Config);
             MergeOptionsToConfig(options, config);
-            await DotnetApiCatalog.Exec(config.metadata, new(), baseDirectory, options.OutputFolder, cancellationToken);
+            await DotnetApiCatalog.Exec(config.metadata, new(), baseDirectory, options.OutputFolder, config.assemblyUids, cancellationToken);
         });
     }
 

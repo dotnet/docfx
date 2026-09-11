@@ -72,6 +72,24 @@ internal class MetadataItem : ICloneable
     [JsonPropertyName("namespace")]
     public string NamespaceName { get; set; }
 
+    /// <summary>
+    /// The assembly component of <see cref="Name"/>, set on the namespaces of assemblies configured to
+    /// carry one. The nested table of contents groups by it, which is why it is kept next to the UID
+    /// instead of being parsed back out of it.
+    /// </summary>
+    [YamlIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string AssemblyUid { get; set; }
+
+    /// <summary>
+    /// The assembly to name on the page of this namespace, set only when <c>assemblyLabel</c> asks for it.
+    /// </summary>
+    [YamlMember(Alias = "namespaceAssembly")]
+    [JsonProperty("namespaceAssembly")]
+    [JsonPropertyName("namespaceAssembly")]
+    public string NamespaceAssembly { get; set; }
+
     [YamlMember(Alias = Constants.PropertyName.Source)]
     [JsonProperty(Constants.PropertyName.Source)]
     [JsonPropertyName(Constants.PropertyName.Source)]
