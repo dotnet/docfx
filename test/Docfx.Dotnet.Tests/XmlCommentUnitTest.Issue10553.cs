@@ -29,8 +29,11 @@ public partial class XmlCommentUnitTest
         var expected = """
                 Converts action result without parameters into action result with null parameter.
 
-                <example><pre><code class="lang-csharp">return NotFound() -&gt; return NotFound(null)
+                <example>
+
+                <pre><code class="lang-csharp">return NotFound() -&gt; return NotFound(null)
                 return NotFound() -&gt; return NotFound(null)</code></pre>
+
                 </example>
 
                 This ensures our formatter is invoked, where we'll build a JSON:API compliant response. For details, see:
