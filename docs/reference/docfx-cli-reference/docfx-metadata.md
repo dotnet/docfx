@@ -108,6 +108,15 @@ Run `docfx metadata --help` or `docfx -h` to get a list of all available options
     - `true`
         - The CLR type names are used: `Int32`.
 
+- **--forceBuild**
+
+  Indicates whether to force MSBuild to run a full build prior to metadata extraction being attempted. This is useful if you have code that is produced outside of normal design time mechanisms, but will increase the time taken depending on the size of the project(s).
+
+    - not specified or `false`
+        - A build is not attempted.
+    - `true`
+        - A build is attempted.
+
 ## Examples
 
 - Generate YAML files with default config.
