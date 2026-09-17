@@ -425,6 +425,8 @@ For example, omit links to files produced by a particular source generator witho
 
 Unlike `metadata.src[].exclude`, this setting filters source links, not input assemblies or source files. It does not infer whether a file is generated, check the local file system for PDB documents, or verify that a remote URL exists.
 
+See [source-link exclusion examples](../docs/dotnet-api-docs.md#exclude-selected-view-source-links) for combining input exclusions with generator-specific rules, targeting a single document, and restoring the default behavior.
+
 ### `codeSourceBasePath`
 
 Specify the base directory that is used to resolve code source (e.g. `<code source="Example.cs">`).

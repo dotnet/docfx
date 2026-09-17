@@ -66,6 +66,74 @@ If [source link](https://learn.microsoft.com/en-us/dotnet/standard/library-guida
 
 If a Source Link mapping covers generated files that are not available in the repository, use [`metadata.sourceLinkExclude`](../reference/docfx-json-reference.md#sourcelinkexclude) to omit their View Source links. The patterns match PDB document paths, not URLs, and do not remove the generated APIs from the documentation. No additional source links are excluded unless this setting is configured.
 
+### Exclude selected View Source links
+
+#### Exclude one generator, not its APIs
+
+For example, suppose your repository has sibling `docs` and `NetCord` directories, with `docfx.json` in `docs`. The project has been built in Release with a portable PDB alongside `NetCord.dll`. This configuration selects the compiled assembly and omits source links only for documents under `MethodsForPropertiesGenerator`:
+
+```json
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../",
+          "files": ["NetCord/**/Release/**/NetCord.dll"],
+          "exclude": ["**/obj/**"]
+        }
+      ],
+      "dest": "api",
+      "sourceLinkExclude": [
+        "**/MethodsForPropertiesGenerator/**"
+      ]
+    }
+  ]
+}
+```
+
+The two exclusions operate at different stages: `src[].exclude` skips intermediate DLLs under `obj`, but does not inspect PDB document paths inside the selected DLL. `sourceLinkExclude` then filters the source links for the chosen generator's documents.
+
+For documents with existing Source Link mappings, the results are:
+
+| Example PDB document path (build-specific prefixes omitted) | View Source |
+| --- | --- |
+| `Rest/MessageProperties.cs` | Existing link preserved |
+| `MethodsForPropertiesGenerator/Generator/NetCord.Rest.MessageProperties.g.cs` | Link omitted |
+| `OtherGenerator/Generated.g.cs` | Existing link preserved |
+| `Generated/CheckedIn.g.cs` | Existing link preserved |
+
+All these APIs remain in the generated documentation. In particular, the handwritten `Content` property keeps its link, while a generated `WithContent` method in the excluded document does not get one. Windows PDB paths using `\` match the same `/`-separated patterns.
+
+#### Exclude one document
+
+To keep links for the other documents from that generator, replace `sourceLinkExclude` in the example above with this more specific setting:
+
+```json
+{
+  "sourceLinkExclude": [
+    "**/NetCord.Rest.MessageProperties.g.cs"
+  ]
+}
+```
+
+This matches that filename under any directory, but not `NetCord.Rest.UserProperties.g.cs`. It excludes that document as a link target, not just one method's link. A type spanning other documents can still link to a non-excluded document.
+
+#### Remove the additional exclusions
+
+Remove `sourceLinkExclude` or use:
+
+```json
+{
+  "sourceLinkExclude": []
+}
+```
+
+This returns to the existing source-link behavior; it does not force links to appear when no mapping exists or another setting disables them.
+
+> [!NOTE]
+> Broader patterns such as `**/*.g.cs` or `**/obj/**` are also supported, but only use them if you want to omit links for every matching document, including checked-in files. Docfx does not assume that these names identify unavailable source.
+
 ## Generate from projects or solutions
 
 When the file extension is `.csproj`, `.vbproj`, `.sln`, `.slnf` or `.slnx` (.NET 9.0+), docfx uses [`MSBuildWorkspace`](https://gist.github.com/DustinCampbell/32cd69d04ea1c08a16ae5c4cd21dd3a3) to perform a design-time build of the projects before generating API docs.
