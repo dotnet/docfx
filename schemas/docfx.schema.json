@@ -701,6 +701,11 @@
             "type": "boolean",
             "default": false,
             "description": "When enabled, use CLR type names instead of language aliases."
+          },
+          "forceBuild": {
+            "type": "boolean",
+            "default": false,
+            "description": "When enabled, will force MSBuild to run a full build prior to metadata extraction being attempted."
           }
         }
       }
