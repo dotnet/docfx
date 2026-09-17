@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.RegularExpressions;
-using Microsoft.CodeAnalysis;
 using Xunit;
 
 namespace Docfx.Dotnet.Tests;
