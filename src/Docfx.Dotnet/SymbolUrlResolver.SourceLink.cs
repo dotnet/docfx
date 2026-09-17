@@ -103,6 +103,11 @@ partial class SymbolUrlResolver
             if (documentName is null)
                 return null;
 
+            // Match GitUtility.TryGetFileDetail: wildcard Source Link mappings can include build output.
+            var normalizedPath = documentName.Replace('\\', '/');
+            if (normalizedPath.StartsWith("obj/", StringComparison.Ordinal) || normalizedPath.Contains("/obj/"))
+                return null;
+
             foreach (var cdiHandle in _pdbReader.GetCustomDebugInformation(EntityHandle.ModuleDefinition))
             {
                 var cdi = _pdbReader.GetCustomDebugInformation(cdiHandle);

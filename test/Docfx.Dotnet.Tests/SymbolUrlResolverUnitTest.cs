@@ -1,12 +1,20 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Reflection.Metadata;
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using Docfx.Common.Git;
+using Docfx.Tests.Common;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 using Xunit;
 
 namespace Docfx.Dotnet.Tests;
 
-public class SymbolUrlResolverUnitTest
+public class SymbolUrlResolverUnitTest : TestBase
 {
     [Fact]
     public void GetMicrosoftLearnUrlFromCommentIdTest()
@@ -96,5 +104,108 @@ public class SymbolUrlResolverUnitTest
         {
             return Regex.Replace(value, "\\/[0-9a-zA-Z]{40}\\/", "/*/");
         }
+    }
+
+    [Theory]
+    [InlineData("", "NetCord/obj/Release/net10.0/MethodsForPropertiesGenerator/MethodsForPropertiesGenerator.MethodsForPropertiesGenerator/NetCord.Rest.MessageProperties.g.cs", false)]
+    [InlineData("/repo/", "obj/Generated.g.cs", false)]
+    [InlineData(@"C:\repo\", @"obj\Generated.g.cs", false)]
+    [InlineData("", "obj/Generated.g.cs", false)]
+    [InlineData("", @"obj\Generated.g.cs", false)]
+    [InlineData(@"C:\repo/", @"obj\Generated.g.cs", false)]
+    [InlineData(@"/repo\", "obj/Generated.g.cs", false)]
+    [InlineData("/repo/", "generated/Generated.g.cs", true)]
+    [InlineData(@"C:\repo\", @"generated\Generated.g.cs", true)]
+    [InlineData("/repo/", "objects/Generated.g.cs", true)]
+    [InlineData("", "obj.cs", true)]
+    [InlineData("/repo/", "obj.Generated.g.cs", true)]
+    [InlineData("/repo/", "Obj/Generated.g.cs", true)]
+    public void GetPdbSourceLinkUrlWithWildcardMapping(string prefix, string relativePath, bool expectSourceLink)
+    {
+        const string rawUrl = "https://raw.githubusercontent.com/dotnet/docfx/0123456789abcdef0123456789abcdef01234567/";
+        var (compilation, assembly) = CreateAssemblyWithSourceLink(prefix + relativePath, new()
+        {
+            [prefix + "*"] = rawUrl + "*",
+            ["/NetCord/Rest/MessageProperties.cs"] = rawUrl + "NetCord/Rest/MessageProperties.cs",
+        });
+
+        var type = assembly.GetTypeByMetadataName("NetCord.Rest.MessageProperties");
+        Assert.NotNull(type);
+        var property = Assert.Single(type.GetMembers("Content"));
+        var method = Assert.Single(type.GetMembers("WithContent"));
+        Assert.Empty(method.DeclaringSyntaxReferences);
+        Assert.True(method.Locations[0].IsInMetadata);
+
+        var handwrittenUrl = GitUtility.RawContentUrlToContentUrl(rawUrl + "NetCord/Rest/MessageProperties.cs");
+        Assert.Equal(handwrittenUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, property));
+        Assert.Equal(handwrittenUrl, VisitorHelper.GetSourceDetail(property, compilation)?.Href);
+
+        var expectedUrl = expectSourceLink ? GitUtility.RawContentUrlToContentUrl(rawUrl + relativePath.Replace('\\', '/')) : null;
+        Assert.Equal(expectedUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, method));
+        Assert.Equal(expectedUrl, VisitorHelper.GetSourceDetail(method, compilation)?.Href);
+        if (!expectSourceLink)
+        {
+            Assert.Null(VisitorHelper.GetSourceDetail(method, compilation));
+            Assert.Equal(handwrittenUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, type));
+        }
+    }
+
+    [Fact]
+    public void GetPdbSourceLinkUrlWithoutMatchingDocument()
+    {
+        var (compilation, assembly) = CreateAssemblyWithSourceLink("NetCord/obj/Generated.g.cs", new()
+        {
+            ["/NetCord/*"] = "https://raw.githubusercontent.com/dotnet/docfx/0123456789abcdef0123456789abcdef01234567/NetCord/*",
+        });
+        var type = assembly.GetTypeByMetadataName("NetCord.Rest.MessageProperties");
+        Assert.NotNull(type);
+        Assert.NotNull(VisitorHelper.GetSourceDetail(Assert.Single(type.GetMembers("Content")), compilation)?.Href);
+        Assert.Null(VisitorHelper.GetSourceDetail(Assert.Single(type.GetMembers("WithContent")), compilation));
+    }
+
+    private (Compilation, IAssemblySymbol) CreateAssemblyWithSourceLink(string generatedDocument, Dictionary<string, string> documents)
+    {
+        var handwrittenTree = CSharpSyntaxTree.ParseText(
+            """
+            namespace NetCord.Rest;
+            public partial class MessageProperties
+            {
+                public string Content { get; set; }
+            }
+            """, path: "/NetCord/Rest/MessageProperties.cs", encoding: Encoding.UTF8);
+        var generatedTree = CSharpSyntaxTree.ParseText(
+            """
+            namespace NetCord.Rest;
+            public partial class MessageProperties
+            {
+                public MessageProperties WithContent(string content)
+                {
+                    Content = content;
+                    return this;
+                }
+            }
+            """, path: generatedDocument, encoding: Encoding.UTF8);
+        var sourceCompilation = CompilationHelper.CreateCompilationFromCSharpCode("", new Dictionary<string, string>(), "SourceLinkTest")
+            .RemoveAllSyntaxTrees()
+            .AddSyntaxTrees(handwrittenTree, generatedTree);
+
+        using var peStream = new MemoryStream();
+        using var pdbStream = new MemoryStream();
+        using var sourceLinkStream = new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(new { documents }));
+        var result = sourceCompilation.Emit(peStream, pdbStream,
+            options: new EmitOptions(debugInformationFormat: DebugInformationFormat.PortablePdb),
+            sourceLinkStream: sourceLinkStream,
+            embeddedTexts: [EmbeddedText.FromSource(generatedDocument, generatedTree.GetText())]);
+        Assert.True(result.Success, string.Join(Environment.NewLine, result.Diagnostics));
+
+        pdbStream.Position = 0;
+        using var pdbReaderProvider = MetadataReaderProvider.FromPortablePdbStream(pdbStream, MetadataStreamOptions.LeaveOpen);
+        var pdbReader = pdbReaderProvider.GetMetadataReader();
+        Assert.Contains(generatedDocument, pdbReader.Documents.Select(handle => pdbReader.GetString(pdbReader.GetDocument(handle).Name)));
+
+        var assemblyPath = Path.GetFullPath(Path.Combine(GetRandomFolder(), "SourceLinkTest.dll"));
+        File.WriteAllBytes(assemblyPath, peStream.ToArray());
+        File.WriteAllBytes(Path.ChangeExtension(assemblyPath, ".pdb"), pdbStream.ToArray());
+        return CompilationHelper.CreateCompilationFromAssembly(assemblyPath);
     }
 }
