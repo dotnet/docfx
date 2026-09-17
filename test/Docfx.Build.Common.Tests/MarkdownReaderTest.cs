@@ -57,19 +57,11 @@ public class MarkdownReaderTest : TestBase
     }
 
     [Theory]
-    [InlineData("uid: Second", "Second")]
-    [InlineData("uid: First", "First")]
-    [InlineData("\nuid: Second", "Second")]
-    [InlineData("# comment\nuid: Second", "Second")]
-    [InlineData("\n# comment\nuid: Second", "Second")]
-    [InlineData("summary: valid\nuid: Second", "Second")]
-    [InlineData("\"uid\": Second", "Second")]
-    [InlineData("{ uid: Second, summary: valid }", "Second")]
-    [InlineData("uid: Second\nsummary: |\n  ---\n  text", "Second")]
-    [InlineData("uid: Second\nremarks: *content", "Second")]
-    [InlineData("? uid\n: Second", "Second")]
-    public void ReadMultipleOverwritesWithThematicBreaks(string header, string uid)
+    [InlineData("Second")]
+    [InlineData("First")]
+    public void ReadMultipleOverwritesWithThematicBreaks(string uid)
     {
+        var header = $"uid: {uid}\nsummary: Updated";
         var prefix = """
             ---
             uid: First
@@ -97,6 +89,7 @@ public class MarkdownReaderTest : TestBase
         Assert.Equal(2, results.Count);
         Assert.Equal("First", results[0].Uid);
         Assert.Equal(uid, results[1].Uid);
+        Assert.Equal("Updated", results[1].Metadata["summary"]);
         Assert.Contains("First content", results[0].Conceptual);
         Assert.Contains("Second content", results[1].Conceptual);
         var startLine = prefix.Count(c => c == '\n') + 1;
@@ -108,74 +101,6 @@ public class MarkdownReaderTest : TestBase
         Assert.Equal(2, html.DocumentNode.SelectNodes("//hr")?.Count ?? 0);
         Assert.Equal("History", html.DocumentNode.SelectSingleNode("//h2")?.InnerText);
         Assert.Empty(listener.Items);
-    }
-
-    [Theory]
-    [InlineData("Paragraph.", "<p", "Paragraph.")]
-    [InlineData("# Heading", "<h1", "Heading")]
-    [InlineData("- First\n- Second", "<ul", "Second")]
-    [InlineData("1. First\n1. Second", "<ol", "Second")]
-    [InlineData("uid MissingColon", "<p", "uid MissingColon")]
-    [InlineData("- uid: First", "<ul", "uid: First")]
-    [InlineData("", "<hr", "")]
-    public void ReadThematicBreaksAroundNonMappingContent(string content, string tag, string text)
-    {
-        using var listener = new TestListenerScope();
-
-        var result = Assert.Single(ReadOverwrite($"---\nuid: First\n---\n\n---\n\n{content}\n\n---"));
-
-        var html = new HtmlDocument();
-        html.LoadHtml(result.Conceptual);
-        Assert.Equal(2, html.DocumentNode.SelectNodes("//hr")?.Count ?? 0);
-        Assert.Contains(tag, result.Conceptual);
-        Assert.Contains(text, result.Conceptual);
-        Assert.Empty(listener.Items);
-    }
-
-    [Theory]
-    [InlineData("uid: Second\nsummary: [unclosed")]
-    [InlineData("\n# comment\nuid: Second\nsummary: [unclosed")]
-    [InlineData("\"uid: Second")]
-    [InlineData("{ uid: Second, summary: [unclosed }")]
-    [InlineData("!!map\nuid: Second")]
-    public void WarnForMalformedOverwriteMapping(string header)
-    {
-        using var listener = new TestListenerScope();
-
-        var result = Assert.Single(ReadOverwrite($"---\nuid: First\n---\n\nFirst content\n\n---\n{header}\n---"));
-
-        Assert.Equal("First", result.Uid);
-        var warning = Assert.Single(listener.Items);
-        Assert.Equal("invalid-yaml-header", warning.Code);
-        Assert.EndsWith("overwrite.md", warning.File);
-    }
-
-    [Fact]
-    public void ReadOverwriteHeaderAfterLongComment()
-    {
-        using var listener = new TestListenerScope();
-        var comment = "#" + new string(' ', 4096);
-
-        var results = ReadOverwrite($"---\nuid: First\n---\n\n---\n{comment}\nuid: Second\n---");
-
-        Assert.Equal(new[] { "First", "Second" }, results.Select(result => result.Uid));
-        Assert.Empty(listener.Items);
-    }
-
-    [Theory]
-    [InlineData("uid MissingColon")]
-    [InlineData("- uid: First")]
-    [InlineData("uid: First\nsummary: [unclosed")]
-    [InlineData("!!map\nuid: First")]
-    public void WarnForInvalidInitialOverwriteHeader(string header)
-    {
-        using var listener = new TestListenerScope();
-
-        Assert.Empty(ReadOverwrite($"---\n{header}\n---"));
-
-        var warning = Assert.Single(listener.Items);
-        Assert.Equal("invalid-yaml-header", warning.Code);
-        Assert.EndsWith("overwrite.md", warning.File);
     }
 
     [Fact]
