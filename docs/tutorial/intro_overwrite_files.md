@@ -27,6 +27,10 @@ some_property: value
 Further description for `microsoft.com/docfx/Contacts`
 ```
 
+After the initial header, a triple-dashed block starts another *Overwrite Section* only when its YAML root is a mapping (key/value properties). Non-mapping content, such as a paragraph, heading, or list between thematic breaks, remains Markdown instead of being reported as invalid metadata. Initial-header validation is unchanged. YAML syntax errors encountered while identifying a header, errors in a mapping, and mappings without `uid` are still reported.
+
+If Markdown between thematic breaks could also be interpreted as YAML metadata, use `***` or `------` for the thematic breaks to make the intent unambiguous.
+
 Each *Overwrite Section* is transformed to *Overwrite Model* inside DocFX. For the above example, the *Overwrite Model* represented in YAML format is:
 
 ```yaml

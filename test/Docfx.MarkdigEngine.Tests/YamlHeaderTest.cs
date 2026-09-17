@@ -2,12 +2,49 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Plugins;
+using Docfx.Tests.Common;
 using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
 
+[Collection("docfx STA")]
 public class YamlHeaderTest
 {
+    [Fact]
+    public void ConceptualBodyDoesNotStartAnotherYamlHeader()
+    {
+        using var listener = new TestListenerScope();
+        var service = TestUtility.CreateMarkdownService();
+
+        var result = service.Markup("---\ntitle: Test\n---\n\n---\n\nuid: Body\n\n---", "Topic.md");
+
+        Assert.Equal(
+            """
+            <yamlheader start="1" end="3">title: Test</yamlheader><hr />
+            <p>uid: Body</p>
+            <hr />
+
+            """,
+            result.Html,
+            ignoreLineEndingDifferences: true);
+        Assert.Empty(listener.Items);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void InitialYamlHeaderErrorsAreReported(bool multipleYamlHeader)
+    {
+        using var listener = new TestListenerScope();
+        var service = TestUtility.CreateMarkdownService();
+
+        service.Markup("---\nuid: [\n---", "Topic.md", multipleYamlHeader);
+
+        var warning = Assert.Single(listener.Items);
+        Assert.Equal("invalid-yaml-header", warning.Code);
+        Assert.Equal("Topic.md", warning.File);
+    }
+
     private static MarkupResult SimpleMarkup(string source)
     {
         var parameter = new MarkdownServiceParameters

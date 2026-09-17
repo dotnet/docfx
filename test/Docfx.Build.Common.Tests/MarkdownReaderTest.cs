@@ -6,12 +6,199 @@ using System.Text.RegularExpressions;
 using Docfx.Build.Engine;
 using Docfx.MarkdigEngine;
 using Docfx.Plugins;
+using Docfx.Tests.Common;
+using HtmlAgilityPack;
 using Xunit;
 
 namespace Docfx.Build.Common.Tests;
 
-public class MarkdownReaderTest
+public class MarkdownReaderTest : TestBase
 {
+    [Theory]
+    [InlineData("\n")]
+    [InlineData("\r\n")]
+    public void ReadOverwriteWithThematicBreaks(string newline)
+    {
+        var content = """
+            ---
+            uid: ToSic.Sys
+            summary: ToSic.Sys is for internal helpers and base classes which are just FYI.
+            ---
+
+            Some content
+
+            ---
+
+            ## History
+
+            1. Introduced in 2sxc 15.0 as `ToSic.Lib` (previously was part of `ToSic.Eav`)
+            1. Changed to `ToSic.Sys` in 2sxc 19.0 to better reflect that it's the core system functionality.
+
+            ---
+            """;
+        using var listener = new TestListenerScope();
+
+        var result = Assert.Single(ReadOverwrite(content.ReplaceLineEndings(newline)));
+
+        Assert.Equal("ToSic.Sys", result.Uid);
+        Assert.Equal("ToSic.Sys is for internal helpers and base classes which are just FYI.", result.Metadata["summary"]);
+        Assert.Equal(1, result.Documentation.StartLine);
+        Assert.Equal(4, result.Documentation.EndLine);
+        var html = new HtmlDocument();
+        html.LoadHtml(result.Conceptual);
+        Assert.Equal(2, html.DocumentNode.SelectNodes("//hr")?.Count ?? 0);
+        Assert.Equal("History", html.DocumentNode.SelectSingleNode("//h2")?.InnerText);
+        Assert.Equal("10", html.DocumentNode.SelectSingleNode("//h2")?.GetAttributeValue("sourcestartlinenumber", null));
+        Assert.Equal(2, html.DocumentNode.SelectNodes("//ol/li")?.Count ?? 0);
+        Assert.Equal(
+            new[] { "ToSic.Lib", "ToSic.Eav", "ToSic.Sys" },
+            html.DocumentNode.SelectNodes("//li/code").Select(node => node.InnerText));
+        Assert.Empty(listener.Items);
+    }
+
+    [Theory]
+    [InlineData("uid: Second", "Second")]
+    [InlineData("uid: First", "First")]
+    [InlineData("\nuid: Second", "Second")]
+    [InlineData("# comment\nuid: Second", "Second")]
+    [InlineData("\n# comment\nuid: Second", "Second")]
+    [InlineData("summary: valid\nuid: Second", "Second")]
+    [InlineData("\"uid\": Second", "Second")]
+    [InlineData("{ uid: Second, summary: valid }", "Second")]
+    [InlineData("uid: Second\nsummary: |\n  ---\n  text", "Second")]
+    [InlineData("uid: Second\nremarks: *content", "Second")]
+    [InlineData("? uid\n: Second", "Second")]
+    public void ReadMultipleOverwritesWithThematicBreaks(string header, string uid)
+    {
+        var prefix = """
+            ---
+            uid: First
+            ---
+            ```yaml
+            ---
+            uid: InCode
+            ---
+            ```
+
+            First content
+
+            ---
+
+            ## History
+
+            1. First change
+
+            ---
+            """ + "\n\n";
+        using var listener = new TestListenerScope();
+
+        var results = ReadOverwrite($"{prefix}---\n{header}\n---\n\nSecond content");
+
+        Assert.Equal(2, results.Count);
+        Assert.Equal("First", results[0].Uid);
+        Assert.Equal(uid, results[1].Uid);
+        Assert.Contains("First content", results[0].Conceptual);
+        Assert.Contains("Second content", results[1].Conceptual);
+        var startLine = prefix.Count(c => c == '\n') + 1;
+        Assert.Equal(startLine, results[1].Documentation.StartLine);
+        Assert.Equal(startLine + header.Split('\n').Length + 1, results[1].Documentation.EndLine);
+        var html = new HtmlDocument();
+        html.LoadHtml(results[0].Conceptual);
+        Assert.Contains("uid: InCode", html.DocumentNode.SelectSingleNode("//pre/code").InnerText);
+        Assert.Equal(2, html.DocumentNode.SelectNodes("//hr")?.Count ?? 0);
+        Assert.Equal("History", html.DocumentNode.SelectSingleNode("//h2")?.InnerText);
+        Assert.Empty(listener.Items);
+    }
+
+    [Theory]
+    [InlineData("Paragraph.", "<p", "Paragraph.")]
+    [InlineData("# Heading", "<h1", "Heading")]
+    [InlineData("- First\n- Second", "<ul", "Second")]
+    [InlineData("1. First\n1. Second", "<ol", "Second")]
+    [InlineData("uid MissingColon", "<p", "uid MissingColon")]
+    [InlineData("- uid: First", "<ul", "uid: First")]
+    [InlineData("", "<hr", "")]
+    public void ReadThematicBreaksAroundNonMappingContent(string content, string tag, string text)
+    {
+        using var listener = new TestListenerScope();
+
+        var result = Assert.Single(ReadOverwrite($"---\nuid: First\n---\n\n---\n\n{content}\n\n---"));
+
+        var html = new HtmlDocument();
+        html.LoadHtml(result.Conceptual);
+        Assert.Equal(2, html.DocumentNode.SelectNodes("//hr")?.Count ?? 0);
+        Assert.Contains(tag, result.Conceptual);
+        Assert.Contains(text, result.Conceptual);
+        Assert.Empty(listener.Items);
+    }
+
+    [Theory]
+    [InlineData("uid: Second\nsummary: [unclosed")]
+    [InlineData("\n# comment\nuid: Second\nsummary: [unclosed")]
+    [InlineData("\"uid: Second")]
+    [InlineData("{ uid: Second, summary: [unclosed }")]
+    [InlineData("!!map\nuid: Second")]
+    public void WarnForMalformedOverwriteMapping(string header)
+    {
+        using var listener = new TestListenerScope();
+
+        var result = Assert.Single(ReadOverwrite($"---\nuid: First\n---\n\nFirst content\n\n---\n{header}\n---"));
+
+        Assert.Equal("First", result.Uid);
+        var warning = Assert.Single(listener.Items);
+        Assert.Equal("invalid-yaml-header", warning.Code);
+        Assert.EndsWith("overwrite.md", warning.File);
+    }
+
+    [Fact]
+    public void ReadOverwriteHeaderAfterLongComment()
+    {
+        using var listener = new TestListenerScope();
+        var comment = "#" + new string(' ', 4096);
+
+        var results = ReadOverwrite($"---\nuid: First\n---\n\n---\n{comment}\nuid: Second\n---");
+
+        Assert.Equal(new[] { "First", "Second" }, results.Select(result => result.Uid));
+        Assert.Empty(listener.Items);
+    }
+
+    [Theory]
+    [InlineData("uid MissingColon")]
+    [InlineData("- uid: First")]
+    [InlineData("uid: First\nsummary: [unclosed")]
+    [InlineData("!!map\nuid: First")]
+    public void WarnForInvalidInitialOverwriteHeader(string header)
+    {
+        using var listener = new TestListenerScope();
+
+        Assert.Empty(ReadOverwrite($"---\n{header}\n---"));
+
+        var warning = Assert.Single(listener.Items);
+        Assert.Equal("invalid-yaml-header", warning.Code);
+        Assert.EndsWith("overwrite.md", warning.File);
+    }
+
+    [Fact]
+    public void RejectOverwriteMappingWithoutUid()
+    {
+        var exception = Assert.Throws<InvalidDataException>(
+            () => ReadOverwrite("---\nuid: First\n---\n\nFirst content\n\n---\nsummary: missing uid\n---"));
+
+        Assert.Contains("Required properties {{uid}} are not set", exception.Message);
+    }
+
+    private List<OverwriteDocumentModel> ReadOverwrite(string content)
+    {
+        var file = CreateFile("overwrite.md", content, GetRandomFolder());
+        var host = new HostService([])
+        {
+            MarkdownService = new MarkdigMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
+            SourceFiles = ImmutableDictionary.Create<string, FileAndType>()
+        };
+        var ft = new FileAndType(Directory.GetCurrentDirectory(), file, DocumentType.Overwrite);
+        return MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
+    }
+
     [Fact]
     public void TestReadMarkdownAsOverwrite()
     {
