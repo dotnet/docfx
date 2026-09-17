@@ -641,6 +641,16 @@
             "default": false,
             "description": "Disables generation of view source links."
           },
+          "sourceLinkExclude": {
+            "type": "array",
+            "default": [],
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "description": "Glob patterns for source document paths whose View Source links should be omitted. Matches source file paths or portable PDB document names, not URLs. Does not exclude APIs. Defaults to no additional exclusions."
+          },
           "codeSourceBasePath": {
             "type": "string",
             "description": "Specify the base directory that is used to resolve code source."

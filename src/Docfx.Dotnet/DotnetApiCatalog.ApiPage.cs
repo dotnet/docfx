@@ -128,7 +128,7 @@ partial class DotnetApiCatalog
                 var uid = VisitorHelper.GetId(symbol);
                 var id = NonWordCharRegex().Replace(uid, "_");
                 var commentId = VisitorHelper.GetCommentId(symbol);
-                var source = config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, compilation);
+                var source = config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, compilation, config.SourceLinkFilter);
                 var git = source?.Remote is null ? null
                     : new GitSource(source.Remote.Repo, source.Remote.Branch, source.Remote.Path, source.StartLine + 1);
                 var src = git is null ? null : options.SourceUrl?.Invoke(git) ?? GitUtility.GetSourceUrl(git);

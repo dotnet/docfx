@@ -64,6 +64,8 @@ Docfx examines the assembly and tries to load the reference assemblies from with
 
 If [source link](https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) is enabled on the assembly and the `.pdb` file exists along side the assembly, docfx shows the "View Source" link based on the source URL extract from source link.
 
+If a Source Link mapping covers generated files that are not available in the repository, use [`metadata.sourceLinkExclude`](../reference/docfx-json-reference.md#sourcelinkexclude) to omit their View Source links. The patterns match PDB document paths, not URLs, and do not remove the generated APIs from the documentation. No additional source links are excluded unless this setting is configured.
+
 ## Generate from projects or solutions
 
 When the file extension is `.csproj`, `.vbproj`, `.sln`, `.slnf` or `.slnx` (.NET 9.0+), docfx uses [`MSBuildWorkspace`](https://gist.github.com/DustinCampbell/32cd69d04ea1c08a16ae5c4cd21dd3a3) to perform a design-time build of the projects before generating API docs.

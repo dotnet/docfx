@@ -20,13 +20,13 @@ partial class SymbolUrlResolver
 {
     private static readonly ConditionalWeakTable<IAssemblySymbol, SourceLinkProvider?> s_sourceLinkProviders = [];
 
-    public static string? GetPdbSourceLinkUrl(Compilation compilation, ISymbol symbol)
+    public static string? GetPdbSourceLinkUrl(Compilation compilation, ISymbol symbol, SourceLinkFilter? sourceLinkFilter = null)
     {
         var assembly = symbol.ContainingAssembly;
         if (assembly is null || assembly.Locations.Length == 0 || !assembly.Locations[0].IsInMetadata)
             return null;
 
-        var rawUrl = s_sourceLinkProviders.GetValue(assembly, CreateSourceLinkProvider)?.TryGetSourceLinkUrl(symbol);
+        var rawUrl = s_sourceLinkProviders.GetValue(assembly, CreateSourceLinkProvider)?.TryGetSourceLinkUrl(symbol, sourceLinkFilter);
 
         return rawUrl is null ? null : GitUtility.RawContentUrlToContentUrl(rawUrl);
 
@@ -71,7 +71,7 @@ partial class SymbolUrlResolver
             _pdbReader = pdbReaderProvider.GetMetadataReader();
         }
 
-        public string? TryGetSourceLinkUrl(ISymbol symbol)
+        public string? TryGetSourceLinkUrl(ISymbol symbol, SourceLinkFilter? sourceLinkFilter)
         {
             var entityHandle = MetadataTokens.EntityHandle(symbol.MetadataToken);
             var documentHandles = SymbolSourceDocumentFinder.FindDocumentHandles(entityHandle, _dllReader, _pdbReader);
@@ -79,14 +79,14 @@ partial class SymbolUrlResolver
 
             foreach (var handle in documentHandles)
             {
-                if (TryGetSourceLinkUrl(handle) is { } sourceLinkUrl)
+                if (TryGetSourceLinkUrl(handle, sourceLinkFilter) is { } sourceLinkUrl)
                     sourceLinkUrls.Add(sourceLinkUrl);
             }
 
             return sourceLinkUrls.OrderBy(_ => _).FirstOrDefault();
         }
 
-        private string? TryGetSourceLinkUrl(DocumentHandle handle)
+        private string? TryGetSourceLinkUrl(DocumentHandle handle, SourceLinkFilter? sourceLinkFilter)
         {
             var document = _pdbReader.GetDocument(handle);
             try
@@ -103,9 +103,7 @@ partial class SymbolUrlResolver
             if (documentName is null)
                 return null;
 
-            // Match GitUtility.TryGetFileDetail: wildcard Source Link mappings can include build output.
-            var normalizedPath = documentName.Replace('\\', '/');
-            if (normalizedPath.StartsWith("obj/", StringComparison.Ordinal) || normalizedPath.Contains("/obj/"))
+            if (sourceLinkFilter?.IsExcluded(documentName) == true)
                 return null;
 
             foreach (var cdiHandle in _pdbReader.GetCustomDebugInformation(EntityHandle.ModuleDefinition))

@@ -119,8 +119,8 @@ public class SymbolUrlResolverUnitTest : TestBase
     [InlineData("/repo/", "objects/Generated.g.cs", true)]
     [InlineData("", "obj.cs", true)]
     [InlineData("/repo/", "obj.Generated.g.cs", true)]
-    [InlineData("/repo/", "Obj/Generated.g.cs", true)]
-    public void GetPdbSourceLinkUrlWithWildcardMapping(string prefix, string relativePath, bool expectSourceLink)
+    [InlineData("/repo/", "Obj/Generated.g.cs", false)]
+    public void GetPdbSourceLinkUrlWithConfiguredExclusions(string prefix, string relativePath, bool expectSourceLink)
     {
         const string rawUrl = "https://raw.githubusercontent.com/dotnet/docfx/0123456789abcdef0123456789abcdef01234567/";
         var (compilation, assembly) = CreateAssemblyWithSourceLink(prefix + relativePath, new()
@@ -140,14 +140,18 @@ public class SymbolUrlResolverUnitTest : TestBase
         Assert.Equal(handwrittenUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, property));
         Assert.Equal(handwrittenUrl, VisitorHelper.GetSourceDetail(property, compilation)?.Href);
 
-        var expectedUrl = expectSourceLink ? GitUtility.RawContentUrlToContentUrl(rawUrl + relativePath.Replace('\\', '/')) : null;
-        Assert.Equal(expectedUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, method));
-        Assert.Equal(expectedUrl, VisitorHelper.GetSourceDetail(method, compilation)?.Href);
+        var unfilteredUrl = GitUtility.RawContentUrlToContentUrl(rawUrl + relativePath.Replace('\\', '/'));
+        Assert.Equal(unfilteredUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, method));
+        var filter = new SourceLinkFilter(["**/obj/**"]);
+        var expectedUrl = expectSourceLink ? unfilteredUrl : null;
+        Assert.Equal(expectedUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, method, filter));
+        Assert.Equal(expectedUrl, VisitorHelper.GetSourceDetail(method, compilation, filter)?.Href);
         if (!expectSourceLink)
         {
-            Assert.Null(VisitorHelper.GetSourceDetail(method, compilation));
-            Assert.Equal(handwrittenUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, type));
+            Assert.Null(VisitorHelper.GetSourceDetail(method, compilation, filter));
+            Assert.Equal(handwrittenUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, type, filter));
         }
+        Assert.Equal(unfilteredUrl, SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, method));
     }
 
     [Fact]

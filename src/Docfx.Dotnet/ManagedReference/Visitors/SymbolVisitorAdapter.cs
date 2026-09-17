@@ -47,7 +47,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             DisplayNames = [],
             DisplayNamesWithType = [],
             DisplayQualifiedNames = [],
-            Source = _config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, _compilation),
+            Source = _config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, _compilation, _config.SourceLinkFilter),
         };
         var assemblyName = symbol.ContainingAssembly?.Name;
         item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) || assemblyName is "?" ? null : [assemblyName];
