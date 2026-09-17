@@ -38,10 +38,10 @@ class TocDocumentProcessor : DisposableDocumentProcessor
 
         var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
-        // Apply metadata to TOC
+        // Metadata declared in the TOC takes precedence over configured defaults.
         foreach (var (key, value) in metadata.OrderBy(item => item.Key))
         {
-            toc.Metadata[key] = value;
+            toc.Metadata.TryAdd(key, value);
         }
 
         return new FileModel(file, toc)

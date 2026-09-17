@@ -34,6 +34,9 @@ items:
   href: getting-started.md
 ```
 
+Values set directly in `toc.yml` take precedence over `fileMetadata` and `globalMetadata`.
+For example, set `pdf: false` in a TOC to exclude it when PDF generation is enabled globally.
+
 In case the TOC file is auto-generated, use [file metadata](./config.md#metadata) to configure PDF per TOC file:
 
 ```json

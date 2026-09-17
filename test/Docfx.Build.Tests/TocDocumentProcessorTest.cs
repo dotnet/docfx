@@ -338,6 +338,44 @@ items:
         AssertTocEqual(expectedModel, model);
     }
 
+    [Theory]
+    [InlineData("", false, true)]
+    [InlineData("", true, false)]
+    [InlineData("", null, true)]
+    [InlineData("", null, false)]
+    [InlineData("nested", false, true)]
+    [InlineData("nested", true, false)]
+    [InlineData("nested", null, true)]
+    [InlineData("nested", null, false)]
+    public void ProcessYamlTocMetadataTakesPrecedence(string folder, bool? pdf, bool globalPdf)
+    {
+        var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, folder);
+        var content = $@"
+{(pdf.HasValue ? $"pdf: {pdf.Value.ToString().ToLowerInvariant()}" : string.Empty)}
+pdfFileName: local.pdf
+items:
+- name: Topic
+  href: {Path.GetFileName(file)}
+";
+        var toc = _fileCreator.CreateFile(content, FileType.YamlToc, folder);
+        FileCollection files = new(_inputFolder);
+        files.Add(DocumentType.Article, new[] { file, toc });
+        var metadata = new Dictionary<string, object>
+        {
+            ["pdf"] = globalPdf,
+            ["pdfFileName"] = "global.pdf",
+            ["pdfTocPage"] = true,
+        }.ToImmutableDictionary();
+
+        BuildDocument(files, metadata);
+
+        var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
+        var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+        Assert.Equal(pdf ?? globalPdf, model.Metadata["pdf"]);
+        Assert.Equal("local.pdf", model.Metadata["pdfFileName"]);
+        Assert.Equal(true, model.Metadata["pdfTocPage"]);
+    }
+
     [Fact]
     public void ProcessYamlTocWithReferencedTocShouldSucceed()
     {
@@ -922,14 +960,14 @@ items:
         }
     }
 
-    private void BuildDocument(FileCollection files)
+    private void BuildDocument(FileCollection files, ImmutableDictionary<string, object> metadata = null)
     {
         var parameters = new DocumentBuildParameters
         {
             Files = files,
             OutputBaseDir = _outputFolder,
             ApplyTemplateSettings = _applyTemplateSettings,
-            Metadata = new Dictionary<string, object>
+            Metadata = metadata ?? new Dictionary<string, object>
             {
                 ["meta"] = "Hello world!",
             }.ToImmutableDictionary(),
