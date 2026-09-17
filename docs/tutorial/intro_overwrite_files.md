@@ -27,10 +27,6 @@ some_property: value
 Further description for `microsoft.com/docfx/Contacts`
 ```
 
-After the initial header, a triple-dashed block starts another *Overwrite Section* only when its YAML root is a mapping (key/value properties). Non-mapping content, such as a paragraph, heading, or list between thematic breaks, remains Markdown instead of being reported as invalid metadata. Initial-header validation is unchanged. YAML syntax errors encountered while identifying a header, errors in a mapping, and mappings without `uid` are still reported.
-
-If Markdown between thematic breaks could also be interpreted as YAML metadata, use `***` or `------` for the thematic breaks to make the intent unambiguous.
-
 Each *Overwrite Section* is transformed to *Overwrite Model* inside DocFX. For the above example, the *Overwrite Model* represented in YAML format is:
 
 ```yaml
@@ -38,6 +34,31 @@ uid: microsoft.com/docfx/Contacts
 some_property: value
 conceptual: <p><b>Content</b> in Markdown</p>
 ```
+
+### Thematic breaks and limitations
+
+Overwrite headers and Markdown thematic breaks both use `---`. A YAML header beginning on the first line of the file follows the usual header validation. For a candidate block later in the file, DocFX uses the YAML parser to identify the root node, skipping leading blank lines and YAML comments:
+
+- A mapping (key/value properties) continues to be processed as an overwrite header.
+- A non-mapping root, such as a scalar, sequence, or empty content, is processed as Markdown instead. This preserves paragraphs, headings, and lists between thematic breaks when their YAML root is not a mapping.
+- If identifying the root encounters a YAML syntax error, the existing header diagnostic path is retained. Errors in a mapping and mappings without `uid` are also still reported.
+
+> [!IMPORTANT]
+> This is a structural distinction, not a way to infer the author's intent or validate the whole block before choosing how to process it. It is **not** a "deserialize successfully or fall back to Markdown" rule, and it does not eliminate every ambiguity between overwrite metadata and Markdown.
+
+For example, this block in the middle of an overwrite file is still treated as metadata, even if the author intended to display `Title: Hello` as ordinary text:
+
+```md
+---
+Title: Hello
+---
+```
+
+It reports a missing `uid`; adding `uid` would make it an overwrite section, not prose. Likewise, a block that starts as a mapping but contains malformed YAML later still reports an error rather than falling back to Markdown.
+
+**Compatibility limitation:** a malformed later header such as `uid Some.Type` (missing the colon), or a sequence such as `- uid: Some.Type`, is now treated as Markdown rather than reported as invalid metadata. If the author intended an overwrite section, it will not be applied and there will be no invalid-header warning for that non-mapping root. The same invalid header at the beginning of the file still follows the original validation.
+
+Use `***` or `------` instead of `---` for thematic breaks when the enclosed Markdown could be interpreted as YAML or when you want to make its role as body content unambiguous.
 
 ### Anchor `*content`
 
@@ -244,4 +265,3 @@ Key | Type | Overwrite behavior
 |   *title*    | string |     Overwrite      |
 |  *rawTitle*  | string |     Overwrite      |
 | *conceptual* | string |     Overwrite      |
-
