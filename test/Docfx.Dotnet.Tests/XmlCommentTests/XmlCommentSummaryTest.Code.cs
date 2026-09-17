@@ -1,12 +1,41 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Markdig;
 using Xunit;
 
 namespace Docfx.Dotnet.Tests;
 
 public partial class XmlCommentSummaryTest
 {
+    [Theory]
+    [InlineData("<para>Paragraph</para><code>var x = 1;</code>")]
+    [InlineData("<code>var x = 1;</code><para>Paragraph</para>")]
+    [InlineData("<example><code>var x = 1;</code></example>")]
+    [InlineData("<example>Example:<code>var x = 1;</code></example>")]
+    [InlineData("<list type=\"bullet\"><item><description><code>var x = 1;</code></description></item></list>")]
+    public void Code_AdjacentBlocksPreserveCommentIndentation(string content)
+    {
+        foreach (var indent in new[] { "", "    ", "        ", "\t" })
+        {
+            var input = $"""
+                <summary>
+                {indent}Before **bold**.
+                {indent}{content}
+                {indent}After **bold**.
+                </summary>
+                """;
+
+            var summary = XmlComment.Parse(input).Summary;
+            var html = Markdown.ToHtml(summary);
+
+            Assert.Contains("<p>Before <strong>bold</strong>.</p>", html);
+            Assert.Contains("<pre><code class=\"lang-csharp\">var x = 1;</code></pre>", html);
+            Assert.Contains("<p>After <strong>bold</strong>.</p>", html);
+            Assert.DoesNotContain("&lt;pre&gt;", html);
+        }
+    }
+
     [Fact]
     public void Code_Block()
     {
