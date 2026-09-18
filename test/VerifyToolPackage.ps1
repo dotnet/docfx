@@ -111,6 +111,37 @@ try {
     [xml] $nuspec = Read-ZipText ($archive.Entries | Where-Object { $_.FullName.EndsWith('.nuspec') } | Select-Object -First 1)
     $packageId = $nuspec.package.metadata.id
     $version = $nuspec.package.metadata.version
+
+    $packageFrameworks = @($archive.Entries | Where-Object { $_.FullName -match '^tools/[^/]+/any/docfx.runtimeconfig.json$' } |
+        ForEach-Object { $_.FullName.Split('/')[1] } | Sort-Object -Unique)
+    $templateNames = @($templates | ForEach-Object { $_.FullName.Split('/')[1] } | Sort-Object -Unique)
+    $compressedTemplates = ($templates | Measure-Object CompressedLength -Sum).Sum
+    $expandedTemplates = ($templates | Measure-Object Length -Sum).Sum
+    $copiesAvoided = $templates.Count * ($packageFrameworks.Count - 1)
+    $estimatedBytesAvoided = $compressedTemplates * ($packageFrameworks.Count - 1)
+    $packageBytes = (Get-Item -LiteralPath $PackagePath).Length
+    $summary = @"
+## Tool package template sharing
+
+| Metric | Value |
+| --- | --- |
+| Package | $packageId $version |
+| Target frameworks | $($packageFrameworks -join ', ') |
+| Template directories | $($templateNames.Count): $($templateNames -join ', ') |
+| Shared template files | $($templates.Count) |
+| Framework-specific template entries | $($duplicateTemplates.Count) |
+| Duplicate file copies avoided | $copiesAvoided |
+| Shared templates, compressed | $([Math]::Round($compressedTemplates / 1MB, 2)) MiB |
+| Shared templates, expanded | $([Math]::Round($expandedTemplates / 1MB, 2)) MiB |
+| Estimated duplicate template data avoided, compressed | $([Math]::Round($estimatedBytesAvoided / 1MB, 2)) MiB |
+| Actual package size | $([Math]::Round($packageBytes / 1MB, 2)) MiB |
+
+Counts and sizes come from this package. Avoided data is estimated as the compressed shared templates times the number of additional frameworks; it excludes ZIP entry overhead and is not a separately built before/after measurement.
+"@
+    Write-Host $summary
+    if ($env:GITHUB_STEP_SUMMARY) {
+        Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value $summary -Encoding utf8
+    }
 }
 finally {
     $archive.Dispose()
