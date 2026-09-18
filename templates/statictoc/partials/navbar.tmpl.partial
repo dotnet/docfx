@@ -1,25 +1,18 @@
 {{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
 
-<nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+<nav id="autocollapse" class="navbar navbar-expand-md navbar-dark bg-dark" role="navigation">
   <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      {{>partials/logo}}
-    </div>
+    {{>partials/logo}}
+    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <div class="collapse navbar-collapse" id="navbar">
-      <form class="navbar-form navbar-right" role="search" id="search">
-        <div class="form-group">
-          <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-        </div>
-      </form>
       {{#_nav}}
         {{>partials/navbar-li}}
       {{/_nav}}
+      <form class="ms-auto" role="search" id="search">
+        <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+      </form>
     </div>
   </div>
 </nav>
