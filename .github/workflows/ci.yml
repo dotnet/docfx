@@ -62,6 +62,19 @@ jobs:
     - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- docs/docfx.json
     - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
 
+    - name: Pack tool for distribution tests
+      run: dotnet pack src/docfx -c Release --no-restore /p:Version=0.0.0-packaging-test -o drop/package-test
+
+    - name: Publish tool for distribution tests
+      run: dotnet publish src/docfx -c Release -f net10.0 --no-build --no-restore --no-self-contained /p:Version=0.0.0-packaging-test -o drop/publish-test
+
+    - name: Repack tool without rebuilding
+      run: dotnet pack src/docfx -c Release --no-build --no-restore /p:Version=0.0.0-packaging-test -o drop/package-test
+
+    - name: Verify distributed templates
+      shell: pwsh
+      run: ./test/VerifyToolPackage.ps1 -PackagePath drop/package-test/docfx.0.0.0-packaging-test.nupkg -PublishDirectory drop/publish-test
+
     - uses: actions/upload-pages-artifact@v5
       if: matrix.os == 'ubuntu-latest'
       with:
