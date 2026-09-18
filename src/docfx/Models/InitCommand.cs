@@ -13,7 +13,7 @@ namespace Docfx;
 
 class InitCommand : Command<InitCommandOptions>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] InitCommandOptions options, CancellationToken cancellationToken)
+    protected override int Execute([NotNull] CommandContext context, [NotNull] InitCommandOptions options, CancellationToken cancellationToken)
     {
         WriteLine(
             """

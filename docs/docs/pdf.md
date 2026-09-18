@@ -34,6 +34,15 @@ items:
   href: getting-started.md
 ```
 
+For TOCs, the metadata precedence is `fileMetadata` > values in `toc.yml` > `globalMetadata`.
+For example, set `pdf: false` in a TOC to exclude it when PDF generation is enabled globally,
+unless matching `fileMetadata` explicitly enables it. Likewise, `fileMetadata` can disable PDF
+for a TOC that declares `pdf: true`.
+
+Metadata values are selected per key, not deep-merged. Omit a key from the TOC to inherit its
+global value when no file metadata matches; an explicit value, including `false` or `null`,
+is not treated as an omitted key.
+
 In case the TOC file is auto-generated, use [file metadata](./config.md#metadata) to configure PDF per TOC file:
 
 ```json

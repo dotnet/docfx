@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 
+using Docfx.Build.TableOfContents;
 using Docfx.Common;
 using Docfx.Plugins;
 
@@ -52,11 +53,17 @@ class HostServiceCreator
         {
             Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Loading...");
 
+            var tocProcessor = processor as TocDocumentProcessor;
             var fileMeta = NeedApplyMetadata()
-                ? ApplyFileMetadata(file.FullPath, metadata, fileMetadata)
+                ? ApplyFileMetadata(file.FullPath, tocProcessor is null ? metadata : ImmutableDictionary<string, object>.Empty, fileMetadata)
                 : ImmutableDictionary<string, object>.Empty;
             try
             {
+                if (tocProcessor is not null)
+                {
+                    return (tocProcessor.Load(file, metadata, fileMeta), true);
+                }
+
                 return (processor.Load(file, fileMeta), true);
             }
             catch (DocumentException)
