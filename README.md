@@ -64,19 +64,6 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 - Run `dotnet test` to test the project or use Visual Studio test explorer.
   - Run `git lfs checkout` to checkout files for snapshot testing
 
-CI also checks the actual tool package and publish output. After building the templates, run these commands from the repository root in PowerShell:
-
-```powershell
-dotnet pack src/docfx -c Release /p:Version=0.0.0-packaging-test -o drop/package-test
-dotnet publish src/docfx -c Release -f net10.0 --no-build --no-self-contained /p:Version=0.0.0-packaging-test -o drop/publish-test
-dotnet pack src/docfx -c Release --no-build /p:Version=0.0.0-packaging-test -o drop/package-test
-./test/VerifyToolPackage.ps1 -PackagePath drop/package-test/docfx.0.0.0-packaging-test.nupkg -PublishDirectory drop/publish-test
-```
-
-These checks verify that templates are shared across framework targets, then install the package into isolated tool directories and exercise template listing, export, HTML, and PDF generation on .NET 8, 9, and 10. They require the corresponding .NET and ASP.NET Core runtimes, PowerShell 7, and Node.js. Use `-Frameworks net8.0,net10.0` for a local subset; CI runs all three. Alternating pack and publish without rebuilding also checks that each distribution gets the correct template lookup configuration.
-
-The check prints template file counts, actual package size, and estimated duplicate data avoided to the log and GitHub Actions job summary. The estimate uses this package's compressed template sizes, not a second baseline build.
-
 ### Branch and Release
 
 The `main` branch is the default branch for pull requests and most other development activities. We occasionally use `feature/*` branches for epic feature development.
