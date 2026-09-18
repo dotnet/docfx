@@ -333,6 +333,39 @@ public class SourceLinkGeneratorReproTest(ITestOutputHelper output) : TestBase
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void AnnotatedFieldsAndEventsHaveConsistentSourceAndMetadataExclusion(bool visualBasic)
+    {
+        var code = SourceLinkConfigurationTest.AnnotatedMembersSource(visualBasic);
+        SyntaxTree tree = visualBasic
+            ? Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxTree.ParseText(code, path: "/repo/Widget.vb", encoding: Encoding.UTF8)
+            : CSharpSyntaxTree.ParseText(code, path: "/repo/Widget.cs", encoding: Encoding.UTF8);
+        var compilation = (visualBasic
+            ? CompilationHelper.CreateCompilationFromVBCode("", new Dictionary<string, string>(), "MemberAttributes")
+            : CompilationHelper.CreateCompilationFromCSharpCode("", new Dictionary<string, string>(), "MemberAttributes"))
+            .RemoveAllSyntaxTrees().AddSyntaxTrees(tree);
+        var emitted = Emit(compilation, tree, new() { ["/repo/*"] = RawUrl + "*" },
+            embedHandwritten: false, embedGenerated: false);
+        var (loadedCompilation, assembly) = LoadAssembly(emitted);
+        var sourceType = compilation.GetTypeByMetadataName("Example.Widget");
+        var metadataType = assembly.GetTypeByMetadataName("Example.Widget");
+        var filter = new SourceLinkFilter([], excludeGenerated: true);
+        foreach (var name in SourceLinkConfigurationTest.AnnotatedMemberNames(visualBasic))
+        {
+            var sourceMember = Assert.Single(sourceType.GetMembers(name));
+            var metadataMember = Assert.Single(metadataType.GetMembers(name));
+            Assert.True(GeneratedCodeDetector.HasGeneratedAttribute(sourceMember));
+            Assert.True(GeneratedCodeDetector.HasGeneratedAttribute(metadataMember));
+            Assert.True(filter.IsExcluded(sourceMember, Assert.Single(sourceMember.DeclaringSyntaxReferences)));
+            Assert.NotNull(VisitorHelper.GetSourceDetail(metadataMember, loadedCompilation)?.Href);
+            Assert.Null(VisitorHelper.GetSourceDetail(metadataMember, loadedCompilation, filter));
+            Assert.NotNull(VisitorHelper.GetSourceDetail(metadataMember, loadedCompilation)?.Href);
+        }
+        Assert.NotNull(VisitorHelper.GetSourceDetail(Assert.Single(metadataType.GetMembers("Handwritten")), loadedCompilation, filter)?.Href);
+    }
+
+    [Theory]
     [InlineData("mref")]
     [InlineData("apiPage")]
     [InlineData("markdown")]

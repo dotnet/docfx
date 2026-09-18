@@ -6,6 +6,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using CS = Microsoft.CodeAnalysis.CSharp;
 using VB = Microsoft.CodeAnalysis.VisualBasic;
 
@@ -37,12 +38,20 @@ internal static partial class GeneratedCodeDetector
                     parent.SyntaxTree == declaration.SyntaxTree &&
                     parent.SyntaxTree == attributeSyntax.SyntaxTree &&
                     parent.Span.Contains(declaration.Span) &&
-                    parent.Span.Contains(attributeSyntax.Span)))
+                    AttributeDeclarationSpan(parent).Contains(attributeSyntax.Span)))
                     return true;
             }
         }
         return false;
     }
+
+    private static TextSpan AttributeDeclarationSpan(SyntaxReference declaration) => declaration.GetSyntax() switch
+    {
+        // Variable symbols point inside a field/event declaration; attributes belong to the enclosing declaration.
+        CS.Syntax.VariableDeclaratorSyntax { Parent.Parent: CS.Syntax.BaseFieldDeclarationSyntax field } => field.Span,
+        VB.Syntax.ModifiedIdentifierSyntax { Parent.Parent: VB.Syntax.FieldDeclarationSyntax field } => field.Span,
+        _ => declaration.Span,
+    };
 
     public static bool HasGeneratedHeader(SyntaxTree tree) =>
         HasGeneratedHeader(tree.GetRoot().GetLeadingTrivia(), tree.Options.Language);

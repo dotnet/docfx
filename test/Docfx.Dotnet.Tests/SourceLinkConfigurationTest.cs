@@ -124,4 +124,76 @@ public class SourceLinkConfigurationTest : TestBase
         stderrWriter.Flush();
         Assert.True(exitCode == 0, Encoding.UTF8.GetString(stderr.ToArray()));
     }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task AutomaticExclusionHandlesAnnotatedFieldsAndEvents(bool visualBasic)
+    {
+        var folder = Path.GetFullPath(GetRandomFolder());
+        RunGit(folder, "init --quiet --initial-branch=main");
+        RunGit(folder, "remote add origin https://github.com/dotnet/docfx.git");
+        var file = "Widget." + (visualBasic ? "vb" : "cs");
+        CreateFile(file, AnnotatedMembersSource(visualBasic), folder);
+        var configPath = Path.Combine(folder, "docfx.json");
+        await File.WriteAllTextAsync(configPath, JsonSerializer.Serialize(new
+        {
+            metadata = new[] { false, true, false }.Select((enabled, index) => new
+            {
+                src = new[] { new { files = new[] { file } } },
+                dest = index.ToString(),
+                excludeGeneratedSourceLinks = enabled,
+            }),
+        }));
+        await DotnetApiCatalog.GenerateManagedReferenceYamlFiles(configPath);
+        for (var index = 0; index < 3; index++)
+        {
+            var page = YamlUtility.Deserialize<PageViewModel>(Path.Combine(folder, index.ToString(), "Example.Widget.yml"));
+            foreach (var name in AnnotatedMemberNames(visualBasic))
+            {
+                var member = Assert.Single(page.Items, item => item.Uid == "Example.Widget." + name);
+                Assert.NotNull(member.Source?.Path);
+                Assert.Equal(index != 1, member.Source.Remote is not null);
+            }
+            var handwritten = Assert.Single(page.Items, item => item.Uid == "Example.Widget.Handwritten");
+            Assert.NotNull(handwritten.Source.Remote);
+        }
+    }
+
+    internal static string[] AnnotatedMemberNames(bool visualBasic) => visualBasic
+        ? ["SingleValue", "First", "Second", "Changed"]
+        : ["SingleValue", "First", "Second", "Changed", "FirstEvent", "SecondEvent"];
+
+    internal static string AnnotatedMembersSource(bool visualBasic) => visualBasic
+        ? """
+        Namespace Example
+            Public Class Widget
+                <System.CodeDom.Compiler.GeneratedCode("test", "1")>
+                Public SingleValue As Integer
+                <System.CodeDom.Compiler.GeneratedCode("test", "1")>
+                Public First, Second As Integer
+                <System.CodeDom.Compiler.GeneratedCode("test", "1")>
+                Public Event Changed()
+                Public Handwritten As Integer
+                Public Sub Keep()
+                End Sub
+            End Class
+        End Namespace
+        """
+        : """
+        namespace Example;
+        public class Widget
+        {
+            [System.CodeDom.Compiler.GeneratedCode("test", "1")]
+            public int SingleValue;
+            [System.CodeDom.Compiler.GeneratedCode("test", "1")]
+            public int First, Second;
+            [System.CodeDom.Compiler.GeneratedCode("test", "1")]
+            public event System.Action Changed;
+            [System.CodeDom.Compiler.GeneratedCode("test", "1")]
+            public event System.Action FirstEvent, SecondEvent;
+            public int Handwritten;
+            public void Keep() { }
+        }
+        """;
 }
