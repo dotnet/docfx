@@ -91,6 +91,8 @@ To apply identical metadata values to a folder or a set of content, use the `fil
 
 When the same metadata key is defined in multiple places, YAML Front Matter takes precedence over `fileMetadata` which in turn takes precedence over `globalMetadata`.
 
+For TOC files, `fileMetadata` takes precedence over metadata declared in `toc.yml`, which in turn takes precedence over `globalMetadata`. This allows file metadata to override settings in generated TOCs. See [PDF metadata](pdf.md#enable-pdf).
+
 ## Sitemap
 
 Docfx produces a [sitemap.xml](https://www.sitemaps.org/protocol.html) about the pages on your site for search engines like Google to crawl your site more efficiently.
