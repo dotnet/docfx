@@ -1,0 +1,4 @@
+# Tutorials TOC
+# This folder has its own toc.yml with auto: true
+# So it manages its own TOC independently from the root
+auto: true
