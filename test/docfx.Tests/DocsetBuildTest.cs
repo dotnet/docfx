@@ -232,6 +232,81 @@ public class DocsetBuildTest : TestBase
         Assert.False(urls.Any());
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public static async Task Build_Toc_Metadata_Precedence(bool globalPdf)
+    {
+        var outputs = await Build(new()
+        {
+            ["docfx.json"] = $$"""
+                {
+                  "build": {
+                    "content": [{ "files": ["**/*.md", "**/*.yml"] }],
+                    "template": ["default"],
+                    "dest": "_site",
+                    "exportRawModel": true,
+                    "globalMetadata": {
+                      "pdf": {{JsonSerializer.Serialize(globalPdf)}},
+                      "pdfFileName": "global.pdf",
+                      "pdfTocPage": true,
+                      "custom": "global"
+                    },
+                    "fileMetadata": {
+                      "pdf": {
+                        "toc.yml": {{JsonSerializer.Serialize(globalPdf)}},
+                        "overridden/toc.yml": {{JsonSerializer.Serialize(!globalPdf)}}
+                      },
+                      "pdfFileName": {
+                        "toc.yml": "file.pdf",
+                        "overridden/toc.yml": "file-only.pdf"
+                      },
+                      "custom": { "**/*.md": "file" }
+                    }
+                  }
+                }
+                """,
+            ["toc.yml"] = $$"""
+                pdf: {{JsonSerializer.Serialize(!globalPdf)}}
+                pdfFileName: local.pdf
+                items:
+                - href: index.md
+                - href: local/
+                - href: inherited/
+                - href: overridden/
+                """,
+            ["local/toc.yml"] = $$"""
+                pdf: {{JsonSerializer.Serialize(!globalPdf)}}
+                pdfFileName: local.pdf
+                items:
+                - href: ../index.md
+                """,
+            ["inherited/toc.yml"] = "- href: ../index.md",
+            ["overridden/toc.yml"] = "- href: ../index.md",
+            ["index.md"] = """
+                ---
+                custom: inline
+                ---
+                # Article
+                """,
+        });
+
+        AssertToc("toc.json", globalPdf, "file.pdf");
+        AssertToc(Path.Combine("local", "toc.json"), !globalPdf, "local.pdf");
+        AssertToc(Path.Combine("inherited", "toc.json"), globalPdf, "global.pdf");
+        AssertToc(Path.Combine("overridden", "toc.json"), !globalPdf, "file-only.pdf");
+        using var article = JsonDocument.Parse(outputs["index.raw.json"]());
+        Assert.Equal("inline", article.RootElement.GetProperty("custom").GetString());
+
+        void AssertToc(string path, bool pdf, string pdfFileName)
+        {
+            using var toc = JsonDocument.Parse(outputs[path]());
+            Assert.Equal(pdf, toc.RootElement.GetProperty("pdf").GetBoolean());
+            Assert.Equal(pdfFileName, toc.RootElement.GetProperty("pdfFileName").GetString());
+            Assert.True(toc.RootElement.GetProperty("pdfTocPage").GetBoolean());
+        }
+    }
+
     [Fact]
     public static async Task Build_Toc_Gen_Name()
     {
