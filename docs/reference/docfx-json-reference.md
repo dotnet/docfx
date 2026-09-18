@@ -401,13 +401,16 @@ Disables generation of view source links.
 
 ### `sourceLinkExclude`
 
-Specifies an array of glob patterns for source document paths whose **View Source** links should be omitted. Defaults to `[]`. When `excludeGeneratedSourceLinks` is also left at its default `false`, existing source-link behavior is unchanged. This setting does not remove APIs, their documentation, or API reference links. `disableGitFeatures` still disables all View Source links.
+Hides **View Source** links for matching **source document paths**, without removing APIs or their documentation. Defaults to `[]` (no additional exclusions).
 
-Patterns match the source file path when generating from source or projects, or the document name stored in the portable PDB when generating from assemblies. They do not match the final source URL and are not resolved relative to `docfx.json` or `metadata.src`. Use a leading `**/` to match a path regardless of its build-machine directory.
+| Input to Docfx | Path matched |
+| --- | --- |
+| Source files or projects | The source file path supplied by the compiler |
+| DLLs | The source document path recorded in the portable PDB, possibly from another build machine |
 
-Use `/` in patterns; document paths with either `/` or `\` separators are supported on all platforms. Patterns use the same glob syntax as [file mappings](#file-mappings), with case-insensitive matching. Wildcards also match path components starting with `.`, so hidden build directories do not prevent a match. A document is excluded if any pattern matches; the array is not an ordered include/exclude rule list. For a symbol with multiple PDB documents, another non-excluded document can still provide its source link.
+**These are path-string matches, not directory searches.** Docfx does not scan `obj` or require the source files to exist locally. Patterns are **not relative to `docfx.json` or `metadata.src`**, and do not match GitHub URLs.
 
-For example, omit links to files produced by a particular source generator without excluding other files under `obj` or other generated sources:
+For example, `**/MethodsForPropertiesGenerator/**` matches a PDB path such as `NetCord/obj/Release/net10.0/MethodsForPropertiesGenerator/Generated.g.cs`:
 
 ```json
 {
@@ -423,9 +426,11 @@ For example, omit links to files produced by a particular source generator witho
 }
 ```
 
-Unlike `metadata.src[].exclude`, this setting filters source links, not input assemblies or source files. It does not infer whether a file is generated, check the local file system for PDB documents, or verify that a remote URL exists.
+Use `/` in patterns; both `/` and `\` in document paths are supported. A leading `**/` matches any directory prefix. Matching uses the [file-mapping glob syntax](#glob-patterns), ignores case, and includes hidden directories.
 
-See [source-link exclusion examples](../docs/dotnet-api-docs.md#exclude-selected-view-source-links) for combining input exclusions with generator-specific rules, targeting a single document, and restoring the default behavior.
+A document is excluded if **any** pattern matches; these are not ordered include/exclude rules. Another non-excluded PDB document can still provide a partial type's link. API reference links are unchanged.
+
+`metadata.src[].exclude` instead excludes **input files**. `excludeGeneratedSourceLinks` independently checks generated-code markers, and `disableGitFeatures` disables all View Source links. See the [examples](../docs/dotnet-api-docs.md#exclude-selected-view-source-links) for combining these settings.
 
 ### `excludeGeneratedSourceLinks`
 

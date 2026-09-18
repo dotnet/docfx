@@ -90,7 +90,9 @@ The option defaults to `false`, since explicitly generated files can also be che
 
 #### Exclude one generator, not its APIs
 
-For example, suppose your repository has sibling `docs` and `NetCord` directories, with `docfx.json` in `docs`. The project has been built in Release with a portable PDB alongside `NetCord.dll`. This configuration selects the compiled assembly and omits source links only for documents under `MethodsForPropertiesGenerator`:
+For DLL input, `sourceLinkExclude` matches **source paths recorded in the PDB**, not files found by scanning your machine. The paths may contain `obj`, but that directory does not need to exist locally. Patterns are not relative to `docfx.json` or `metadata.src`; a leading `**/` matches any directory prefix.
+
+Suppose your repository has sibling `docs` and `NetCord` directories, with `docfx.json` in `docs` and a Release-built `NetCord.dll` with its portable PDB. This configuration selects the DLL and hides links for paths containing the `MethodsForPropertiesGenerator` directory:
 
 ```json
 {
@@ -112,18 +114,18 @@ For example, suppose your repository has sibling `docs` and `NetCord` directorie
 }
 ```
 
-The two exclusions operate at different stages: `src[].exclude` skips intermediate DLLs under `obj`, but does not inspect PDB document paths inside the selected DLL. `sourceLinkExclude` then filters the source links for the chosen generator's documents.
+`src[].exclude` skips **input DLLs** under `obj`. `sourceLinkExclude` then checks the **PDB source paths** for the selected DLL. It does not exclude APIs or match GitHub URLs.
 
 For documents with existing Source Link mappings, the results are:
 
-| Example PDB document path (build-specific prefixes omitted) | View Source |
+| Example PDB document path | View Source |
 | --- | --- |
-| `Rest/MessageProperties.cs` | Existing link preserved |
-| `MethodsForPropertiesGenerator/Generator/NetCord.Rest.MessageProperties.g.cs` | Link omitted |
-| `OtherGenerator/Generated.g.cs` | Existing link preserved |
-| `Generated/CheckedIn.g.cs` | Existing link preserved |
+| `/build/NetCord/Rest/MessageProperties.cs` | Existing link preserved |
+| `/build/NetCord/obj/MethodsForPropertiesGenerator/Generated.g.cs` | Link omitted |
+| `/build/NetCord/obj/OtherGenerator/Generated.g.cs` | Existing link preserved |
+| `/build/NetCord/Generated/CheckedIn.g.cs` | Existing link preserved |
 
-All these APIs remain in the generated documentation. In particular, the handwritten `Content` property keeps its link, while a generated `WithContent` method in the excluded document does not get one. Windows PDB paths using `\` match the same `/`-separated patterns.
+The handwritten `Content` property keeps its link; a generated `WithContent` method in the excluded document does not. Both remain in the API documentation. Windows paths using `\` match the same `/`-separated patterns.
 
 #### Exclude one document
 

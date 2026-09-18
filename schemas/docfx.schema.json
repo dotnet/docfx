@@ -649,7 +649,7 @@
               "minLength": 1,
               "pattern": "\\S"
             },
-            "description": "Glob patterns for source document paths whose View Source links should be omitted. Matches source file paths or portable PDB document names, not URLs. Does not exclude APIs. Defaults to no additional exclusions."
+            "description": "Hides View Source links by matching compiler source paths or paths recorded in portable PDBs. Does not scan directories, match URLs, or exclude APIs. Patterns are not relative to docfx.json or metadata.src; use **/ for any directory prefix. Defaults to no additional exclusions."
           },
           "excludeGeneratedSourceLinks": {
             "type": "boolean",
