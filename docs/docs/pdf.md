@@ -34,6 +34,15 @@ items:
   href: getting-started.md
 ```
 
+For TOCs, the metadata precedence is `fileMetadata` > values in `toc.yml` > `globalMetadata`.
+For example, set `pdf: false` in a TOC to exclude it when PDF generation is enabled globally,
+unless matching `fileMetadata` explicitly enables it. Likewise, `fileMetadata` can disable PDF
+for a TOC that declares `pdf: true`.
+
+Metadata values are selected per key, not deep-merged. Omit a key from the TOC to inherit its
+global value when no file metadata matches; an explicit value, including `false` or `null`,
+is not treated as an omitted key.
+
 In case the TOC file is auto-generated, use [file metadata](./config.md#metadata) to configure PDF per TOC file:
 
 ```json
@@ -108,6 +117,31 @@ HTML template for the print footer, or a path to an HTML page relative to the ro
 > [!NOTE]
 > For the cover page to appear in PDF, it needs to be included in build.
 > For instance, if `cover.md` is outputted to `_site/cover.html`, you should set `pdfCoverPage` to `cover.html`.
+
+### `pdfHeaderFooterOnCover`
+
+Indicates whether to include the header and footer on the cover page. Defaults to `false`. Set to `true` to use the configured header and footer templates (or the default footer) on the page specified by `pdfCoverPage`.
+
+### `pdfHeaderFooterOnToc`
+
+Indicates whether to include the header and footer on all table of contents (TOC) pages. Defaults to `false`. Set to `true` to use the configured header and footer templates (or the default footer) on the pages enabled by `pdfTocPage`.
+
+These options are independent and do not add a cover or TOC by themselves. For example, to include headers and footers on both:
+
+```yaml
+pdf: true
+pdfCoverPage: cover.html
+pdfTocPage: true
+pdfHeaderFooterOnCover: true
+pdfHeaderFooterOnToc: true
+items:
+- name: Getting Started
+  href: getting-started.md
+```
+
+Cover and TOC pages count toward `pageNumber` and `totalPages` whether or not their headers and footers are shown.
+
+Headers and footers use each page's size and orientation, so a landscape cover can be combined with portrait TOC and article pages.
 
 ## Customize PDF Pages
 
