@@ -8,7 +8,7 @@ namespace Docfx.Dotnet.Tests;
 public partial class XmlCommentSummaryTest
 {
     [Fact]
-    public void Example()
+    public void ExampleWithParagraph()
     {
         ValidateSummary(
             // Input XML
@@ -26,7 +26,9 @@ public partial class XmlCommentSummaryTest
             Paragraph1
 
             <example>
+
               <pre><code class="lang-csharp">code content</code></pre>
+
             </example>
 
             Paragraph2
