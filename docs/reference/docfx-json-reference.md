@@ -399,6 +399,39 @@ Disables the default filter configuration file.
 
 Disables generation of view source links.
 
+### `sourceLinkExclude`
+
+Hides **View Source** links for matching **source document paths**, without removing APIs or their documentation. Defaults to `[]` (no additional exclusions).
+
+| Input to Docfx | Path matched |
+| --- | --- |
+| Source files or projects | The source file path supplied by the compiler |
+| DLLs | The source document path recorded in the portable PDB, possibly from another build machine |
+
+**These are path-string matches, not directory searches.** Docfx does not scan `obj` or require the source files to exist locally. Patterns are **not relative to `docfx.json` or `metadata.src`**, and do not match GitHub URLs.
+
+For example, `**/ExampleGenerator/**` matches a PDB path such as `MyLibrary/obj/Release/net10.0/ExampleGenerator/Generated.g.cs`:
+
+```json
+{
+  "metadata": [
+    {
+      "src": [{ "files": ["**/bin/Release/**/MyLibrary.dll"] }],
+      "dest": "api",
+      "sourceLinkExclude": [
+        "**/ExampleGenerator/**"
+      ]
+    }
+  ]
+}
+```
+
+Use `/` in patterns; both `/` and `\` in document paths are supported. A leading `**/` matches any directory prefix. Matching uses the [file-mapping glob syntax](#glob-patterns), ignores case, and includes hidden directories.
+
+A document is excluded if **any** pattern matches; these are not ordered include/exclude rules. Another non-excluded PDB document can still provide a partial type's link. API reference links are unchanged.
+
+`metadata.src[].exclude` instead excludes **input files**, and `disableGitFeatures` disables all View Source links. This setting only applies your path rules; it does not classify generated code from attributes or comments, or verify URL availability. See the [examples](../docs/dotnet-api-docs.md#exclude-selected-view-source-links) for combining input exclusions with source-link rules.
+
 ### `codeSourceBasePath`
 
 Specify the base directory that is used to resolve code source (e.g. `<code source="Example.cs">`).
@@ -593,4 +626,3 @@ Choose the URL pattern of the generated link for `View Source` and `Improve this
 ### `_noindex`
 
 File(s) specified are not returned in search results
-

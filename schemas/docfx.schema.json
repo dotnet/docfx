@@ -641,6 +641,16 @@
             "default": false,
             "description": "Disables generation of view source links."
           },
+          "sourceLinkExclude": {
+            "type": "array",
+            "default": [],
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "description": "Hides View Source links by matching compiler source paths or paths recorded in portable PDBs. Does not scan directories, match URLs, or exclude APIs. Patterns are not relative to docfx.json or metadata.src; use **/ for any directory prefix. Defaults to no additional exclusions."
+          },
           "codeSourceBasePath": {
             "type": "string",
             "description": "Specify the base directory that is used to resolve code source."

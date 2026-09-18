@@ -195,6 +195,13 @@ internal class MetadataJsonItemConfig
     public bool DisableGitFeatures { get; set; }
 
     /// <summary>
+    /// Excludes view source links for source document paths matching these glob patterns.
+    /// </summary>
+    [JsonProperty("sourceLinkExclude")]
+    [JsonPropertyName("sourceLinkExclude")]
+    public string[] SourceLinkExclude { get; set; } = [];
+
+    /// <summary>
     /// Specify the base directory that is used to resolve code source (e.g. `&lt;code source="Example.cs"&gt;`).
     /// </summary>
     [JsonProperty("codeSourceBasePath")]

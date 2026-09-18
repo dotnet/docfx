@@ -64,6 +64,78 @@ Docfx examines the assembly and tries to load the reference assemblies from with
 
 If [source link](https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) is enabled on the assembly and the `.pdb` file exists along side the assembly, docfx shows the "View Source" link based on the source URL extract from source link.
 
+If a Source Link mapping covers files that are not available in the repository, use [`metadata.sourceLinkExclude`](../reference/docfx-json-reference.md#sourcelinkexclude) to omit their View Source links by document path. The APIs remain in the documentation. No additional links are excluded unless you configure a matching rule.
+
+### Exclude selected View Source links
+
+#### Exclude one generator, not its APIs
+
+For DLL input, `sourceLinkExclude` matches **source paths recorded in the PDB**, not files found by scanning your machine. The paths may contain `obj`, but that directory does not need to exist locally. Patterns are not relative to `docfx.json` or `metadata.src`; a leading `**/` matches any directory prefix.
+
+Suppose your repository has sibling `docs` and `MyLibrary` directories, with `docfx.json` in `docs` and a Release-built `MyLibrary.dll` with its portable PDB. This configuration selects the DLL and hides links for paths containing the `ExampleGenerator` directory:
+
+```json
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../",
+          "files": ["MyLibrary/**/Release/**/MyLibrary.dll"],
+          "exclude": ["**/obj/**"]
+        }
+      ],
+      "dest": "api",
+      "sourceLinkExclude": [
+        "**/ExampleGenerator/**"
+      ]
+    }
+  ]
+}
+```
+
+`src[].exclude` skips **input DLLs** under `obj`. `sourceLinkExclude` then checks the **PDB source paths** for the selected DLL. It does not exclude APIs or match GitHub URLs.
+
+For documents with existing Source Link mappings, the results are:
+
+| Example PDB document path | View Source |
+| --- | --- |
+| `/build/MyLibrary/Models/Widget.cs` | Existing link preserved |
+| `/build/MyLibrary/obj/ExampleGenerator/Generated.g.cs` | Link omitted |
+| `/build/MyLibrary/obj/OtherGenerator/Generated.g.cs` | Existing link preserved |
+| `/build/MyLibrary/Generated/CheckedIn.g.cs` | Existing link preserved |
+
+APIs from all four documents remain in the documentation; only the matching document's link is excluded. Windows paths using `\` match the same `/`-separated patterns.
+
+#### Exclude one document
+
+To keep links for the other documents from that generator, replace `sourceLinkExclude` in the example above with this more specific setting:
+
+```json
+{
+  "sourceLinkExclude": [
+    "**/MyLibrary.Models.Widget.g.cs"
+  ]
+}
+```
+
+This matches that filename under any directory, but not `MyLibrary.Models.OtherWidget.g.cs`. It excludes that document as a link target, not just one method's link. A type spanning other documents can still link to a non-excluded document.
+
+#### Remove the additional exclusions
+
+Remove `sourceLinkExclude` or use:
+
+```json
+{
+  "sourceLinkExclude": []
+}
+```
+
+This returns to the existing source-link behavior; it does not force links to appear when no mapping exists or another setting disables them.
+
+> [!NOTE]
+> Broader patterns such as `**/*.g.cs` or `**/obj/**` are also supported, but only use them if you want to omit links for every matching document, including checked-in files. This setting uses only your path rules: it does not classify generated code from attributes, comments, or embedded source, or verify that a remote URL exists.
+
 ## Generate from projects or solutions
 
 When the file extension is `.csproj`, `.vbproj`, `.sln`, `.slnf` or `.slnx` (.NET 9.0+), docfx uses [`MSBuildWorkspace`](https://gist.github.com/DustinCampbell/32cd69d04ea1c08a16ae5c4cd21dd3a3) to perform a design-time build of the projects before generating API docs.

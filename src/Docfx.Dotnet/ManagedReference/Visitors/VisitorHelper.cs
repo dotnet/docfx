@@ -136,7 +136,7 @@ internal static partial class VisitorHelper
         };
     }
 
-    public static SourceDetail GetSourceDetail(ISymbol symbol, Compilation compilation)
+    public static SourceDetail GetSourceDetail(ISymbol symbol, Compilation compilation, SourceLinkFilter sourceLinkFilter = null)
     {
         // For namespace, definition is meaningless
         if (symbol == null || symbol.Kind == SymbolKind.Namespace)
@@ -147,7 +147,7 @@ internal static partial class VisitorHelper
         var syntaxRef = symbol.DeclaringSyntaxReferences.LastOrDefault();
         if (symbol.IsExtern || syntaxRef == null)
         {
-            if (SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, symbol) is string url)
+            if (SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, symbol, sourceLinkFilter) is string url)
             {
                 return new() { Href = url };
             }
@@ -166,7 +166,8 @@ internal static partial class VisitorHelper
                 Name = symbol.Name
             };
 
-            source.Remote = GitUtility.TryGetFileDetail(source.Path);
+            if (sourceLinkFilter?.IsExcluded(source.Path) != true)
+                source.Remote = GitUtility.TryGetFileDetail(source.Path);
             if (source.Remote != null)
             {
                 source.Path = PathUtility.FormatPath(source.Path, UriKind.Relative, EnvironmentContext.BaseDirectory);

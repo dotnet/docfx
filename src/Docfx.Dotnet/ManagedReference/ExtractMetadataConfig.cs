@@ -29,6 +29,8 @@ internal class ExtractMetadataConfig
 
     public bool DisableGitFeatures { get; init; }
 
+    public SourceLinkFilter SourceLinkFilter { get; init; } = new(null);
+
     public bool NoRestore { get; init; }
 
     public CategoryLayout CategoryLayout { get; init; }
