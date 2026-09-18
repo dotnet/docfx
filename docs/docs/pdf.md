@@ -118,6 +118,31 @@ HTML template for the print footer, or a path to an HTML page relative to the ro
 > For the cover page to appear in PDF, it needs to be included in build.
 > For instance, if `cover.md` is outputted to `_site/cover.html`, you should set `pdfCoverPage` to `cover.html`.
 
+### `pdfHeaderFooterOnCover`
+
+Indicates whether to include the header and footer on the cover page. Defaults to `false`. Set to `true` to use the configured header and footer templates (or the default footer) on the page specified by `pdfCoverPage`.
+
+### `pdfHeaderFooterOnToc`
+
+Indicates whether to include the header and footer on all table of contents (TOC) pages. Defaults to `false`. Set to `true` to use the configured header and footer templates (or the default footer) on the pages enabled by `pdfTocPage`.
+
+These options are independent and do not add a cover or TOC by themselves. For example, to include headers and footers on both:
+
+```yaml
+pdf: true
+pdfCoverPage: cover.html
+pdfTocPage: true
+pdfHeaderFooterOnCover: true
+pdfHeaderFooterOnToc: true
+items:
+- name: Getting Started
+  href: getting-started.md
+```
+
+Cover and TOC pages count toward `pageNumber` and `totalPages` whether or not their headers and footers are shown.
+
+Headers and footers use each page's size and orientation, so a landscape cover can be combined with portrait TOC and article pages.
+
 ## Customize PDF Pages
 
 PDF rendering uses the same HTML site template. To customize PDF page styles, use the [CSS print media](https://developer.mozilla.org/en-US/docs/Web/Guide/Printing):
