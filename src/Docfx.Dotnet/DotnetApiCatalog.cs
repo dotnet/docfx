@@ -142,7 +142,7 @@ public static partial class DotnetApiCatalog
             CodeSourceBasePath = configModel?.CodeSourceBasePath,
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
             DisableGitFeatures = configModel?.DisableGitFeatures ?? false,
-            SourceLinkFilter = new(configModel?.SourceLinkExclude),
+            SourceLinkFilter = new(configModel?.SourceLinkExclude, configModel?.ExcludeGeneratedSourceLinks ?? false),
             NoRestore = configModel?.NoRestore ?? false,
             CategoryLayout = configModel?.CategoryLayout ?? default,
             NamespaceLayout = configModel?.NamespaceLayout ?? default,

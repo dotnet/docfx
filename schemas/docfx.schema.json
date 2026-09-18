@@ -651,6 +651,11 @@
             },
             "description": "Glob patterns for source document paths whose View Source links should be omitted. Matches source file paths or portable PDB document names, not URLs. Does not exclude APIs. Defaults to no additional exclusions."
           },
+          "excludeGeneratedSourceLinks": {
+            "type": "boolean",
+            "default": false,
+            "description": "Omits View Source links for code explicitly marked with GeneratedCodeAttribute or a leading auto-generated comment in C#/VB source or embedded PDB source. Unknown documents keep their links. Does not exclude APIs. Defaults to false."
+          },
           "codeSourceBasePath": {
             "type": "string",
             "description": "Specify the base directory that is used to resolve code source."
