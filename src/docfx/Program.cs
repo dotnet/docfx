@@ -13,14 +13,23 @@ internal class Program
 {
     internal static int Main(string[] args)
     {
+        return Run(args);
+    }
+
+    internal static int Run(string[] args, IAnsiConsole? console = null)
+    {
         var app = new CommandApp();
 
         app.SetDefaultCommand<DefaultCommand>();
         app.Configure(config =>
         {
             config.SetApplicationName("docfx");
+            config.SetHelpProvider(new DocfxHelpProvider(config.Settings));
             config.UseStrictParsing();
             config.SetExceptionHandler(OnException);
+
+            if (console is not null)
+                config.ConfigureConsole(console);
 
             config.AddCommand<InitCommand>("init");
             config.AddCommand<BuildCommand>("build");
