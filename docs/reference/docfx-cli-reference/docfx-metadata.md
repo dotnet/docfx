@@ -12,6 +12,7 @@ docfx metadata [config] [OPTIONS]
 
 Run `docfx metadata --help` or `docfx -h` to get a list of all available options.
 
+When processing projects or solutions, docfx runs `dotnet restore` before loading each project that has not already been loaded. If restore fails, metadata generation stops and the command returns a nonzero exit code. Restore diagnostics are printed to the console.
 
 ## Arguments
 
@@ -79,7 +80,7 @@ Run `docfx metadata --help` or `docfx -h` to get a list of all available options
 
 - **--noRestore**
 
-  Do not run `dotnet restore` before building the projects.
+  Do not run `dotnet restore` before building the projects. Use this option when the projects have already been restored.
 
 - **--namespaceLayout**
 

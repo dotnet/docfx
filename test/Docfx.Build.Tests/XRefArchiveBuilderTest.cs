@@ -11,25 +11,34 @@ public class XRefArchiveBuilderTest
     [Fact]
     public async Task TestDownload()
     {
-        const string ZipFile = "test.zip";
-        var builder = new XRefArchiveBuilder();
+        var tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        Directory.CreateDirectory(tempDirectory);
 
-        // Download following xrefmap.yml content.
-        // ```
-        // ### YamlMime:XRefMap
-        // sorted: true
-        // references: []
-        // ```
-        Assert.True(await builder.DownloadAsync(new Uri("http://dotnet.github.io/docfx/xrefmap.yml"), ZipFile));
-
-        using (var xar = XRefArchive.Open(ZipFile, XRefArchiveMode.Read))
+        try
         {
+            var xrefMapFile = Path.Combine(tempDirectory, "xrefmap.yml");
+            var archiveFile = Path.Combine(tempDirectory, "test.zip");
+            await File.WriteAllTextAsync(
+                xrefMapFile,
+                """
+                ### YamlMime:XRefMap
+                sorted: true
+                references: []
+                """);
+
+            var builder = new XRefArchiveBuilder();
+            Assert.True(await builder.DownloadAsync(new Uri(xrefMapFile), archiveFile));
+
+            using var xar = XRefArchive.Open(archiveFile, XRefArchiveMode.Read);
             var map = xar.GetMajor();
             Assert.Null(map.HrefUpdated);
             Assert.True(map.Sorted);
             Assert.NotNull(map.References);
             Assert.Null(map.Redirections);
         }
-        File.Delete(ZipFile);
+        finally
+        {
+            Directory.Delete(tempDirectory, true);
+        }
     }
 }
