@@ -32,16 +32,27 @@ class TocDocumentProcessor : DisposableDocumentProcessor
     }
 
     public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
+        => Load(file, metadata, ImmutableDictionary<string, object>.Empty);
+
+    internal FileModel Load(
+        FileAndType file,
+        ImmutableDictionary<string, object> globalMetadata,
+        ImmutableDictionary<string, object> fileMetadata)
     {
         var filePath = file.FullPath;
         var toc = TocHelper.LoadSingleToc(filePath);
 
         var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
-        // Metadata declared in the TOC takes precedence over configured defaults.
-        foreach (var (key, value) in metadata.OrderBy(item => item.Key))
+        // Inline metadata overrides global defaults, but file metadata can override both.
+        foreach (var (key, value) in globalMetadata.OrderBy(item => item.Key))
         {
             toc.Metadata.TryAdd(key, value);
+        }
+
+        foreach (var (key, value) in fileMetadata.OrderBy(item => item.Key))
+        {
+            toc.Metadata[key] = value;
         }
 
         return new FileModel(file, toc)

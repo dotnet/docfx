@@ -6,6 +6,7 @@ using System.Web;
 using Docfx.Build.Engine;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
+using Docfx.Glob;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
 using Newtonsoft.Json.Linq;
@@ -347,7 +348,7 @@ items:
     [InlineData("nested", true, false)]
     [InlineData("nested", null, true)]
     [InlineData("nested", null, false)]
-    public void ProcessYamlTocMetadataTakesPrecedence(string folder, bool? pdf, bool globalPdf)
+    public void ProcessYamlTocMetadataOverridesGlobalMetadata(string folder, bool? pdf, bool globalPdf)
     {
         var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, folder);
         var content = $@"
@@ -374,6 +375,110 @@ items:
         Assert.Equal(pdf ?? globalPdf, model.Metadata["pdf"]);
         Assert.Equal("local.pdf", model.Metadata["pdfFileName"]);
         Assert.Equal(true, model.Metadata["pdfTocPage"]);
+    }
+
+    [Theory]
+    [InlineData("", true, false, false)]
+    [InlineData("", false, true, true)]
+    [InlineData("", true, false, true)]
+    [InlineData("", false, true, false)]
+    [InlineData("", null, true, false)]
+    [InlineData("", null, false, true)]
+    [InlineData("nested", true, false, false)]
+    [InlineData("nested", false, true, true)]
+    [InlineData("nested", true, false, true)]
+    [InlineData("nested", false, true, false)]
+    [InlineData("nested", null, true, false)]
+    [InlineData("nested", null, false, true)]
+    public void ProcessTocFileMetadataOverridesInlineAndGlobalMetadata(string folder, bool? pdf, bool globalPdf, bool filePdf)
+    {
+        var toc = _fileCreator.CreateFile($@"
+{(pdf.HasValue ? $"pdf: {pdf.Value.ToString().ToLowerInvariant()}" : string.Empty)}
+pdfFileName: local.pdf
+items:
+- name: Topic
+", FileType.YamlToc, folder);
+        var files = new FileCollection(_inputFolder);
+        files.Add(DocumentType.Article, new[] { toc });
+        var metadata = new Dictionary<string, object>
+        {
+            ["pdf"] = globalPdf,
+            ["pdfFileName"] = "global.pdf",
+            ["pdfTocPage"] = true,
+        }.ToImmutableDictionary();
+        var fileMetadata = new FileMetadata(_inputFolder)
+        {
+            ["pdf"] =
+            [
+                new(new GlobMatcher("**/toc.yml"), "pdf", !filePdf),
+                new(new GlobMatcher(toc), "pdf", filePdf),
+                new(new GlobMatcher("unmatched/toc.yml"), "pdf", !filePdf),
+            ],
+            ["pdfFileName"] = [new(new GlobMatcher(toc), "pdfFileName", "file.pdf")],
+            ["pdfTocPage"] = [new(new GlobMatcher("unmatched/toc.yml"), "pdfTocPage", false)],
+        };
+
+        BuildDocument(files, metadata, fileMetadata);
+
+        var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
+        var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+        Assert.Equal(filePdf, model.Metadata["pdf"]);
+        Assert.Equal("file.pdf", model.Metadata["pdfFileName"]);
+        Assert.Equal(true, model.Metadata["pdfTocPage"]);
+    }
+
+    [Theory]
+    [InlineData("null", false, null, null)]
+    [InlineData("''", false, null, "")]
+    [InlineData("local", false, null, "local")]
+    [InlineData("null", true, "file", "file")]
+    [InlineData("local", true, null, null)]
+    [InlineData("local", true, "", "")]
+    [InlineData("null", true, null, null)]
+    [InlineData(null, false, null, "global")]
+    [InlineData(null, true, null, null)]
+    public void LoadTocMetadataPreservesExplicitValues(string inlineValue, bool matchFile, string fileValue, string expected)
+    {
+        var toc = _fileCreator.CreateFile($@"
+{(inlineValue is null ? "" : $"custom: {inlineValue}")}
+items:
+- name: Topic
+", FileType.YamlToc);
+        var metadata = ImmutableDictionary<string, object>.Empty.Add("custom", "global");
+        var fileMetadata = new FileMetadata(_inputFolder)
+        {
+            ["custom"] = [new(new GlobMatcher(matchFile ? toc : "unmatched/toc.yml"), "custom", fileValue)],
+        };
+
+        var (model, valid) = new HostServiceCreator(null).Load(
+            new TocDocumentProcessor(), metadata, fileMetadata, new FileAndType(Path.GetFullPath(_inputFolder), toc, DocumentType.Article));
+        Assert.True(valid);
+        Assert.Equal(expected, ((TocItemViewModel)model.Content).Metadata["custom"]);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void LoadTocMetadataReplacesObjectsWithoutDeepMerging(bool matchFile)
+    {
+        var toc = _fileCreator.CreateFile("""
+            custom:
+              local: value
+            items:
+            - name: Topic
+            """, FileType.YamlToc);
+        var metadata = ImmutableDictionary<string, object>.Empty.Add("custom", new { global = "value" });
+        var fileMetadata = new FileMetadata(_inputFolder)
+        {
+            ["custom"] = [new(new GlobMatcher(matchFile ? toc : "unmatched/toc.yml"), "custom", new { file = "value" })],
+        };
+
+        var (model, valid) = new HostServiceCreator(null).Load(
+            new TocDocumentProcessor(), metadata, fileMetadata, new FileAndType(Path.GetFullPath(_inputFolder), toc, DocumentType.Article));
+        Assert.True(valid);
+        var value = JObject.FromObject(((TocItemViewModel)model.Content).Metadata["custom"]);
+        Assert.Single(value.Properties());
+        Assert.Equal("value", value[matchFile ? "file" : "local"]);
     }
 
     [Fact]
@@ -960,13 +1065,14 @@ items:
         }
     }
 
-    private void BuildDocument(FileCollection files, ImmutableDictionary<string, object> metadata = null)
+    private void BuildDocument(FileCollection files, ImmutableDictionary<string, object> metadata = null, FileMetadata fileMetadata = null)
     {
         var parameters = new DocumentBuildParameters
         {
             Files = files,
             OutputBaseDir = _outputFolder,
             ApplyTemplateSettings = _applyTemplateSettings,
+            FileMetadata = fileMetadata,
             Metadata = metadata ?? new Dictionary<string, object>
             {
                 ["meta"] = "Hello world!",
