@@ -8,19 +8,8 @@ namespace Docfx.Tests;
 
 internal static class JsonSchemaUtility
 {
-    public static readonly JsonSerializerOptions DefaultSerializerOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        AllowTrailingCommas = true,
-        ReadCommentHandling = JsonCommentHandling.Skip,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true,
-    };
-
     public static readonly EvaluationOptions DefaultEvaluationOptions = new()
     {
-        ValidateAgainstMetaSchema = false,
         OutputFormat = OutputFormat.List,
     };
 
@@ -38,7 +27,7 @@ internal static class JsonSchemaUtility
         if (!File.Exists(jsonSchemaPath))
             throw new FileNotFoundException(jsonSchemaPath);
 
-        var schema = JsonSchema.FromFile(jsonSchemaPath, DefaultSerializerOptions);
+        var schema = JsonSchema.FromFile(jsonSchemaPath, new Json.Schema.BuildOptions { SchemaRegistry = new SchemaRegistry() });
 
         var result = schema.Evaluate(jsonElement, DefaultEvaluationOptions);
         return result;
