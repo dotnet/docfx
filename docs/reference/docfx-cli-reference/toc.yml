@@ -4,6 +4,7 @@
 - href: docfx-build.md
 - href: docfx-pdf.md
 - href: docfx-serve.md
+- href: docfx-clean.md
 - href: docfx-init.md
 - href: docfx-template.md
 - href: docfx-download.md
