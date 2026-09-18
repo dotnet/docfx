@@ -11,34 +11,29 @@
     <None Include="../../THIRD-PARTY-NOTICES.TXT" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
   </ItemGroup>
 
-  <!-- Custom target to merge docfx templates to TargetFramework independent folder.
-       By default, docfx templates is packed to `tools/$(TargetFramework)/any/templates/*`.
-       This target rewrite PackagePath and template files are placed at `templates/*` directory.
-  -->
+  <!-- Keep one shared template directory instead of a copy for each tool framework. -->
   <Target Name="RewriteDocfxTemplateFiles" AfterTargets="PackTool">
     <PropertyGroup>
-      <!-- Select first element of TargetFrameworks as template source (e.g. `net8.0` is selected when TargetFrameworks `net8.0;9.0`) -->
       <DocfxTemplateSourceTargetFramework>$(TargetFrameworks.Split(";")[0])</DocfxTemplateSourceTargetFramework>
     </PropertyGroup>
-    <!-- If TargetFramework is selected version. Rewrite template files PackagePath.-->
-    <ItemGroup Condition="'$(TargetFramework)' == '$(DocfxTemplateSourceTargetFramework)'">
-      <TfmSpecificPackageFile Update="@(TfmSpecificPackageFile)"
-                              Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/templates/'))"
-                              PackagePath="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').Replace('tools/$(TargetFramework)/any/',''))"/>
+    <ItemGroup>
+      <!-- Match source paths: the SDK may split the destination between PackagePath and RecursiveDir. -->
+      <_DocfxTemplateFiles Include="$(PublishDir)templates/**/*" />
+      <TfmSpecificPackageFile Remove="@(_DocfxTemplateFiles)" MatchOnMetadata="FullPath" MatchOnMetadataOptions="PathLike" />
     </ItemGroup>
-    <!-- If TargetFramework is not selected version. Remove template files from package. -->
-    <ItemGroup Condition="'$(TargetFramework)' != '$(DocfxTemplateSourceTargetFramework)'">
-      <TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)"
-                              Condition="$([System.String]::new('%(TfmSpecificPackageFile.PackagePath)').StartsWith('tools/$(TargetFramework)/any/templates/'))"/>
+    <Error Condition="'@(_DocfxTemplateFiles)' == ''" Text="No templates found to package. Run npm run build in the templates directory first." />
+    <ItemGroup Condition="'$(TargetFramework)' == '$(DocfxTemplateSourceTargetFramework)'">
+      <TfmSpecificPackageFile Include="@(_DocfxTemplateFiles)" PackagePath="templates/" />
     </ItemGroup>
   </Target>
 
-  <!-- Target to add custom configProperties to `docfx.runsettings.json`. See [.NET Runtime configuration settings](https://learn.microsoft.com/en-us/dotnet/core/runtime-config) -->
-  <Target Name="SetDocfxDotNetToolMode" BeforeTargets="PrepareForBuild" Condition="'$(_IsPacking)'=='true' AND '$(_IsPublishing)'!='true'">
-    <ItemGroup>
-      <RuntimeHostConfigurationOption Include="Docfx.DotnetToolMode" Value="true" />
-    </ItemGroup>
-  </Target>
+  <!-- Tool packing also runs Publish targets; normal publishing must keep using adjacent templates. -->
+  <ItemGroup Condition="'$(_IsPacking)' == 'true'">
+    <RuntimeHostConfigurationOption Include="Docfx.DotnetToolMode" Value="true" />
+  </ItemGroup>
+
+  <!-- Refresh this switch even without building when alternating pack and publish. -->
+  <Target Name="PrepareDocfxRuntimeConfiguration" BeforeTargets="ComputeFilesToPublish" DependsOnTargets="GenerateBuildRuntimeConfigurationFiles" />
 
   <ItemGroup>
     <InternalsVisibleTo Include="docfx.Snapshot.Tests" />
