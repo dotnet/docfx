@@ -44,13 +44,10 @@
 
   <!-- Settings for CI environment -->
   <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(PERCY_TOKEN)' == ''">
-    <!-- Disable progress reports -->
-    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --no-progress</TestingPlatformCommandLineArguments>
-
     <!-- Enable reporters (trx/html/ctrf ) -->
     <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-xunit-trx  --report-xunit-trx-filename  TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).trx</TestingPlatformCommandLineArguments>
     <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-xunit-html --report-xunit-html-filename TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).html</TestingPlatformCommandLineArguments>
-    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-ctrf       --report-ctrf-filename       TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).ctrf</TestingPlatformCommandLineArguments>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-xunit-ctrf --report-xunit-ctrf-filename TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).ctrf</TestingPlatformCommandLineArguments>
   </PropertyGroup>
 
   <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
