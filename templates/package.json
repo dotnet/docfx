@@ -50,7 +50,7 @@
     "esbuild-sass-plugin": "~3.6.0",
     "eslint": "^9.39.2",
     "neostandard": "^0.12.2",
-    "stylelint": "^16.26.1",
+    "stylelint": "^17.1.1",
     "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "^5.9.3",
     "yargs": "^18.0.0"
