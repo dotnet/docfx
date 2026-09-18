@@ -304,15 +304,16 @@ static file class XNodeExtensions
         {
             case null:
             case XElement:
+                var separator = $"\n\n{GetIndentToInsert(node, direction)}";
                 if (direction == Direction.Before)
-                    node.AddBeforeSelf(new XText("\n\n"));
+                    node.AddBeforeSelf(new XText(separator));
                 else
-                    node.AddAfterSelf(new XText("\n\n"));
+                    node.AddAfterSelf(new XText(separator));
                 return;
 
             case XText textNode:
                 int count = textNode.CountConsecutiveNewLines(direction, out var insertIndex);
-                var indent = GetIndentToInsert(node, direction, insertIndex);
+                var indent = GetIndentToInsert(node, direction);
 
                 var newLineChars = count switch
                 {
@@ -448,16 +449,19 @@ static file class XNodeExtensions
         }
     }
 
-    private static string GetIndentToInsert(XElement node, Direction direction, int insertIndex)
+    private static string GetIndentToInsert(XElement node, Direction direction)
     {
         // Check whether there is an existing indent.
         if (node.TryGetCurrentIndent(direction, out _))
             return "";
 
-        // Try to get indent from text node that is placed before.
-        var beforeTextNode = node.FindNeighbor<XText>(Direction.Before);
-        if (beforeTextNode != null)
-            return beforeTextNode.GetIndentFromLastLine();
+        // Inline children inherit the indentation of the line containing their parent.
+        for (XElement? current = node; current != null; current = current.Parent)
+        {
+            var beforeTextNode = current.FindNeighbor<XText>(Direction.Before);
+            if (beforeTextNode != null && beforeTextNode.Value.Contains('\n'))
+                return beforeTextNode.GetIndentFromLastLine();
+        }
 
         return "";
     }
