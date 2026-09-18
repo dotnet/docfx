@@ -6,12 +6,124 @@ using System.Text.RegularExpressions;
 using Docfx.Build.Engine;
 using Docfx.MarkdigEngine;
 using Docfx.Plugins;
+using Docfx.Tests.Common;
+using HtmlAgilityPack;
 using Xunit;
 
 namespace Docfx.Build.Common.Tests;
 
-public class MarkdownReaderTest
+public class MarkdownReaderTest : TestBase
 {
+    [Theory]
+    [InlineData("\n")]
+    [InlineData("\r\n")]
+    public void ReadOverwriteWithThematicBreaks(string newline)
+    {
+        var content = """
+            ---
+            uid: ToSic.Sys
+            summary: ToSic.Sys is for internal helpers and base classes which are just FYI.
+            ---
+
+            Some content
+
+            ---
+
+            ## History
+
+            1. Introduced in 2sxc 15.0 as `ToSic.Lib` (previously was part of `ToSic.Eav`)
+            1. Changed to `ToSic.Sys` in 2sxc 19.0 to better reflect that it's the core system functionality.
+
+            ---
+            """;
+        using var listener = new TestListenerScope();
+
+        var result = Assert.Single(ReadOverwrite(content.ReplaceLineEndings(newline)));
+
+        Assert.Equal("ToSic.Sys", result.Uid);
+        Assert.Equal("ToSic.Sys is for internal helpers and base classes which are just FYI.", result.Metadata["summary"]);
+        Assert.Equal(1, result.Documentation.StartLine);
+        Assert.Equal(4, result.Documentation.EndLine);
+        var html = new HtmlDocument();
+        html.LoadHtml(result.Conceptual);
+        Assert.Equal(2, html.DocumentNode.SelectNodes("//hr")?.Count ?? 0);
+        Assert.Equal("History", html.DocumentNode.SelectSingleNode("//h2")?.InnerText);
+        Assert.Equal("10", html.DocumentNode.SelectSingleNode("//h2")?.GetAttributeValue("sourcestartlinenumber", null));
+        Assert.Equal(2, html.DocumentNode.SelectNodes("//ol/li")?.Count ?? 0);
+        Assert.Equal(
+            new[] { "ToSic.Lib", "ToSic.Eav", "ToSic.Sys" },
+            html.DocumentNode.SelectNodes("//li/code").Select(node => node.InnerText));
+        Assert.Empty(listener.Items);
+    }
+
+    [Theory]
+    [InlineData("Second")]
+    [InlineData("First")]
+    public void ReadMultipleOverwritesWithThematicBreaks(string uid)
+    {
+        var header = $"uid: {uid}\nsummary: Updated";
+        var prefix = """
+            ---
+            uid: First
+            ---
+            ```yaml
+            ---
+            uid: InCode
+            ---
+            ```
+
+            First content
+
+            ---
+
+            ## History
+
+            1. First change
+
+            ---
+            """ + "\n\n";
+        using var listener = new TestListenerScope();
+
+        var results = ReadOverwrite($"{prefix}---\n{header}\n---\n\nSecond content");
+
+        Assert.Equal(2, results.Count);
+        Assert.Equal("First", results[0].Uid);
+        Assert.Equal(uid, results[1].Uid);
+        Assert.Equal("Updated", results[1].Metadata["summary"]);
+        Assert.Contains("First content", results[0].Conceptual);
+        Assert.Contains("Second content", results[1].Conceptual);
+        var startLine = prefix.Count(c => c == '\n') + 1;
+        Assert.Equal(startLine, results[1].Documentation.StartLine);
+        Assert.Equal(startLine + header.Split('\n').Length + 1, results[1].Documentation.EndLine);
+        var html = new HtmlDocument();
+        html.LoadHtml(results[0].Conceptual);
+        Assert.Contains("uid: InCode", html.DocumentNode.SelectSingleNode("//pre/code").InnerText);
+        Assert.Equal(2, html.DocumentNode.SelectNodes("//hr")?.Count ?? 0);
+        Assert.Equal("History", html.DocumentNode.SelectSingleNode("//h2")?.InnerText);
+        Assert.Empty(listener.Items);
+    }
+
+    [Fact]
+    public void RejectOverwriteMappingWithoutUid()
+    {
+        var exception = Assert.Throws<InvalidDataException>(
+            () => ReadOverwrite("---\nuid: First\n---\n\nFirst content\n\n---\nsummary: missing uid\n---"));
+
+        Assert.Contains("Required properties {{uid}} are not set", exception.Message);
+    }
+
+    private List<OverwriteDocumentModel> ReadOverwrite(string content)
+    {
+        var file = CreateFile("overwrite.md", content, GetRandomFolder());
+        var host = new HostService([])
+        {
+            MarkdownService = new MarkdigMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
+            SourceFiles = ImmutableDictionary.Create<string, FileAndType>()
+        };
+        var ft = new FileAndType(Directory.GetCurrentDirectory(), file, DocumentType.Overwrite);
+        return MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
+    }
+
     [Fact]
     public void TestReadMarkdownAsOverwrite()
     {

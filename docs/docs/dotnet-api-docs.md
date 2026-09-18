@@ -244,6 +244,12 @@ To disable the default filtering rules, set the `disableDefaultFilter` property 
 
 To show private methods, set the `includePrivateMembers` config to `true`. When enabled, internal only langauge keywords such as `private` or `internal` starts to appear in the declaration of all APIs, to accurately reflect API accessibility.
 
+### No .NET API detected
+
+This warning means no API metadata was generated; it does not by itself identify the cause. Check earlier load or compilation diagnostics and confirm that `metadata.src` matches the intended input files.
+
+If the input loaded successfully, check that it contains APIs to document. Review their visibility, the default filtering rules, `<exclude />` comments, and any custom file selected by `metadata.filter`. When a custom filter is configured, the warning includes its path. Use `includePrivateMembers` or `disableDefaultFilter` only if those settings match the APIs you intend to publish.
+
 ### The `<exclude />` documentation comment
 
 The `<exclude />` documentation comment excludes the type or member on a per API basis using C# documentation comment:

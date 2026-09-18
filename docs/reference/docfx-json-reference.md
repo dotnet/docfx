@@ -484,7 +484,9 @@ Specifies an optional set of MSBuild properties used when interpreting project f
 
 ### `noRestore`
 
-Do not run `dotnet restore` before building the projects.
+Do not run `dotnet restore` before building the projects. Use this option when the projects have already been restored.
+
+By default, docfx restores projects automatically and stops metadata generation if restore fails.
 
 ### `categoryLayout`
 
