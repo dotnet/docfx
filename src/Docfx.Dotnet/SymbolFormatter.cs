@@ -133,6 +133,8 @@ internal static partial class SymbolFormatter
 
             if (symbol is INamedTypeSymbol { IsGenericType: true } type)
                 symbol = type.ConstructedFrom;
+            else if (symbol is IMethodSymbol or IPropertySymbol or IFieldSymbol or IEventSymbol)
+                symbol = symbol.OriginalDefinition;
 
             return new()
             {

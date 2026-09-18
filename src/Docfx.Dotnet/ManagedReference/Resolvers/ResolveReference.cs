@@ -76,7 +76,7 @@ internal class ResolveReference : IResolverPipeline
                     {
                         if (item.Name is not null
                             && item.Href is not null
-                            && !item.Href.StartsWith("http", StringComparison.Ordinal)
+                            && !item.IsExternalPath
                             && !context.Members.ContainsKey(item.Name))
                         {
                             item.Href = null;

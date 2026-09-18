@@ -3864,4 +3864,65 @@ namespace Test
         Assert.Null(barPartsA.Single(p => p.DisplayName == "Foo").Href);
         Assert.NotNull(barPartsA.Single(p => p.DisplayName == "Bar").Href);
     }
+
+    [Fact]
+    public void TestGenerateMetadataWithConstructedGenericMemberHrefs()
+    {
+        var code = """
+            namespace Foo.Bar
+            {
+                public class Base<T>
+                {
+                    public void Method(T value) { }
+                    public T Value { get; set; }
+                }
+
+                public class Derived : Base<int> { }
+            }
+            """;
+
+        var output = Verify(code);
+
+        var allMembers = new Dictionary<string, MetadataItem>();
+        var allReferences = new Dictionary<string, ReferenceItem>();
+
+        void AddMemberRecursively(MetadataItem item)
+        {
+            allMembers[item.Name] = item;
+            foreach (var child in item.Items ?? [])
+            {
+                AddMemberRecursively(child);
+            }
+        }
+
+        foreach (var ns in output.Items ?? [])
+        {
+            AddMemberRecursively(ns);
+        }
+        if (output.References is not null)
+        {
+            foreach (var (key, value) in output.References)
+            {
+                allReferences[key] = value;
+            }
+        }
+
+        var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, NamespaceLayout.Flattened);
+
+        var derivedPage = model.Members.Single(m => m.Name == "Foo.Bar.Derived");
+
+        // Derived inherits Method/Value from Base<int>, so these are constructed (not top-level) UIDs.
+        var constructedMethodUid = "Foo.Bar.Base{System.Int32}.Method(System.Int32)";
+        var constructedPropertyUid = "Foo.Bar.Base{System.Int32}.Value";
+
+        Assert.Contains(constructedMethodUid, derivedPage.References.Keys);
+        Assert.Contains(constructedPropertyUid, derivedPage.References.Keys);
+
+        // Neither constructed UID is a key in context.Members; the href must still resolve via Method's/Value's original definition.
+        var methodParts = derivedPage.References[constructedMethodUid].NameParts[SyntaxLanguage.CSharp];
+        Assert.Contains(methodParts, p => p.Href != null);
+
+        var propertyParts = derivedPage.References[constructedPropertyUid].NameParts[SyntaxLanguage.CSharp];
+        Assert.Contains(propertyParts, p => p.Href != null);
+    }
 }
