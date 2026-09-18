@@ -82,6 +82,10 @@ jobs:
     - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- docs/docfx.json
     - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
 
+    # TODO: Remove this temporary workaround. (After migratedto xunit.v3, `dotnet pack` command don't complete and cause timeout)
+    - name: Shutdown dotnet build server
+      run: dotnet build-server shutdown
+
     - name: Pack tool for distribution tests
       run: dotnet pack src/docfx -c Release --no-restore /p:Version=0.0.0-packaging-test -o drop/package-test
 
