@@ -1,12 +1,10 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Concurrent;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Docfx.Common;
 using Docfx.Common.Git;
 using Microsoft.CodeAnalysis;
@@ -64,7 +62,6 @@ partial class SymbolUrlResolver
         private readonly MetadataReaderProvider _pdbReaderProvider;
         private readonly MetadataReader _dllReader;
         private readonly MetadataReader _pdbReader;
-        private readonly ConcurrentDictionary<DocumentHandle, bool> _generatedDocuments = new();
 
         public SourceLinkProvider(PEReader peReader, MetadataReaderProvider pdbReaderProvider)
         {
@@ -80,9 +77,6 @@ partial class SymbolUrlResolver
             var documentHandles = SymbolSourceDocumentFinder.FindDocumentHandles(entityHandle, _dllReader, _pdbReader);
             var sourceLinkUrls = new List<string>();
 
-            if (sourceLinkFilter?.ExcludeGenerated == true && HasGeneratedAttribute(symbol))
-                return null;
-
             foreach (var handle in documentHandles)
             {
                 if (TryGetSourceLinkUrl(handle, sourceLinkFilter) is { } sourceLinkUrl)
@@ -90,24 +84,6 @@ partial class SymbolUrlResolver
             }
 
             return sourceLinkUrls.OrderBy(_ => _).FirstOrDefault();
-        }
-
-        private bool HasGeneratedAttribute(ISymbol symbol)
-        {
-            for (var current = symbol; current is not null; current = current.ContainingType)
-            {
-                if (!GeneratedCodeDetector.HasGeneratedAttribute(current))
-                    continue;
-                if (current is not INamedTypeSymbol)
-                    return true;
-
-                // Metadata merges partial type attributes and cannot identify the marked declaration.
-                var documents = SymbolSourceDocumentFinder.FindDocumentHandles(
-                    MetadataTokens.EntityHandle(current.MetadataToken), _dllReader, _pdbReader);
-                if (documents.Count == 1)
-                    return true;
-            }
-            return false;
         }
 
         private string? TryGetSourceLinkUrl(DocumentHandle handle, SourceLinkFilter? sourceLinkFilter)
@@ -130,9 +106,6 @@ partial class SymbolUrlResolver
             if (sourceLinkFilter?.IsExcluded(documentName) == true)
                 return null;
 
-            if (sourceLinkFilter?.ExcludeGenerated == true && _generatedDocuments.GetOrAdd(handle, HasGeneratedHeader))
-                return null;
-
             foreach (var cdiHandle in _pdbReader.GetCustomDebugInformation(EntityHandle.ModuleDefinition))
             {
                 var cdi = _pdbReader.GetCustomDebugInformation(cdiHandle);
@@ -151,29 +124,6 @@ partial class SymbolUrlResolver
             }
 
             return null;
-        }
-
-        private bool HasGeneratedHeader(DocumentHandle handle)
-        {
-            try
-            {
-                var document = _pdbReader.GetDocument(handle);
-                foreach (var cdiHandle in _pdbReader.GetCustomDebugInformation(handle))
-                {
-                    var cdi = _pdbReader.GetCustomDebugInformation(cdiHandle);
-                    if (_pdbReader.GetGuid(cdi.Kind) == PortableCustomDebugInfoKinds.EmbeddedSource && !cdi.Value.IsNil)
-                    {
-                        return GeneratedCodeDetector.HasGeneratedEmbeddedHeader(
-                            _pdbReader.GetBlobBytes(cdi.Value), _pdbReader.GetGuid(document.Language));
-                    }
-                }
-            }
-            catch (Exception ex) when (ex is BadImageFormatException or InvalidDataException or DecoderFallbackException)
-            {
-                Logger.LogWarning($"Cannot inspect embedded source for automatic source-link exclusion: {ex.Message}",
-                    code: "InvalidEmbeddedSource");
-            }
-            return false;
         }
 
         public void Dispose()

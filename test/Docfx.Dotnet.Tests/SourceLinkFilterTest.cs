@@ -61,10 +61,5 @@ public class SourceLinkFilterTest
         Assert.Equal(["**/Generated/**"], Newtonsoft.Json.JsonConvert.DeserializeObject<MetadataJsonItemConfig>(json).SourceLinkExclude);
         Assert.Empty(JsonSerializer.Deserialize<MetadataJsonItemConfig>("{}").SourceLinkExclude);
         Assert.Empty(Newtonsoft.Json.JsonConvert.DeserializeObject<MetadataJsonItemConfig>("{}").SourceLinkExclude);
-        Assert.False(JsonSerializer.Deserialize<MetadataJsonItemConfig>("{}").ExcludeGeneratedSourceLinks);
-        Assert.False(Newtonsoft.Json.JsonConvert.DeserializeObject<MetadataJsonItemConfig>("{}").ExcludeGeneratedSourceLinks);
-        const string automatic = """{"excludeGeneratedSourceLinks":true}""";
-        Assert.True(JsonSerializer.Deserialize<MetadataJsonItemConfig>(automatic).ExcludeGeneratedSourceLinks);
-        Assert.True(Newtonsoft.Json.JsonConvert.DeserializeObject<MetadataJsonItemConfig>(automatic).ExcludeGeneratedSourceLinks);
     }
 }

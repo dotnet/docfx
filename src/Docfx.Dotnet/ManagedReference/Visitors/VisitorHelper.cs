@@ -155,12 +155,6 @@ internal static partial class VisitorHelper
             return null;
         }
 
-        if (sourceLinkFilter?.ExcludeGenerated == true)
-        {
-            syntaxRef = symbol.DeclaringSyntaxReferences.Reverse()
-                .FirstOrDefault(declaration => !sourceLinkFilter.IsExcluded(symbol, declaration)) ?? syntaxRef;
-        }
-
         var syntaxNode = syntaxRef.GetSyntax();
         Debug.Assert(syntaxNode != null);
         if (syntaxNode != null)
@@ -172,7 +166,7 @@ internal static partial class VisitorHelper
                 Name = symbol.Name
             };
 
-            if (sourceLinkFilter?.IsExcluded(symbol, syntaxRef) != true)
+            if (sourceLinkFilter?.IsExcluded(source.Path) != true)
                 source.Remote = GitUtility.TryGetFileDetail(source.Path);
             if (source.Remote != null)
             {

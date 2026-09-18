@@ -5,7 +5,6 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Docfx.Common;
-using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using Microsoft.CodeAnalysis;
@@ -59,10 +58,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         var comment = symbol.GetDocumentationComment(_compilation, expandIncludes: true, expandInheritdoc: true);
-        var commentSource = _config.SourceLinkFilter.ExcludeGenerated && !_config.DisableGitFeatures
-            ? VisitorHelper.GetSourceDetail(symbol, _compilation)
-            : item.Source;
-        if (XmlComment.Parse(comment.FullXmlFragment, GetXmlCommentParserContext(item, commentSource)) is { } commentModel)
+        if (XmlComment.Parse(comment.FullXmlFragment, GetXmlCommentParserContext(item)) is { } commentModel)
         {
             item.Summary = commentModel.Summary;
             item.Remarks = commentModel.Remarks;
@@ -717,13 +713,13 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
     }
 
-    private XmlCommentParserContext GetXmlCommentParserContext(MetadataItem item, SourceDetail source)
+    private XmlCommentParserContext GetXmlCommentParserContext(MetadataItem item)
     {
         return new XmlCommentParserContext
         {
             SkipMarkup = _config.ShouldSkipMarkup,
             AddReferenceDelegate = AddReferenceDelegate,
-            Source = source,
+            Source = item.Source,
             ResolveCode = ResolveCode,
         };
 
@@ -736,20 +732,20 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             item.References[id] = null;
         }
 
-        string ResolveCode(string codeSource)
+        string ResolveCode(string source)
         {
             var basePath = _config.CodeSourceBasePath ?? (
-                source?.Path is { } sourcePath
+                item.Source?.Path is { } sourcePath
                     ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
                     : null);
 
             if (basePath == null)
             {
-                Logger.LogWarning($"Source file '{codeSource}' not found.", code: "CodeNotFound");
+                Logger.LogWarning($"Source file '{source}' not found.", code: "CodeNotFound");
                 return null;
             }
 
-            var path = Path.GetFullPath(Path.Combine(basePath, codeSource));
+            var path = Path.GetFullPath(Path.Combine(basePath, source));
             if (!File.Exists(path))
             {
                 Logger.LogWarning($"Source file '{path}' not found.", code: "CodeNotFound");

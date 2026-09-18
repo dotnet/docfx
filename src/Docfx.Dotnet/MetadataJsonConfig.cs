@@ -202,13 +202,6 @@ internal class MetadataJsonItemConfig
     public string[] SourceLinkExclude { get; set; } = [];
 
     /// <summary>
-    /// Omits view source links for code explicitly marked as generated.
-    /// </summary>
-    [JsonProperty("excludeGeneratedSourceLinks")]
-    [JsonPropertyName("excludeGeneratedSourceLinks")]
-    public bool ExcludeGeneratedSourceLinks { get; set; }
-
-    /// <summary>
     /// Specify the base directory that is used to resolve code source (e.g. `&lt;code source="Example.cs"&gt;`).
     /// </summary>
     [JsonProperty("codeSourceBasePath")]
