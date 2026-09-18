@@ -4,6 +4,7 @@
 using System.Diagnostics;
 using System.Reflection.PortableExecutable;
 using Docfx.Common;
+using Docfx.Exceptions;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
@@ -154,6 +155,10 @@ partial class DotnetApiCatalog
                 {
                     using var process = Process.Start("dotnet", $"restore \"{path}\"");
                     await process.WaitForExitAsync();
+                    if (process.ExitCode != 0)
+                    {
+                        throw new DocfxException($"dotnet restore failed for '{path}' with exit code {process.ExitCode}.");
+                    }
                 }
                 project = await workspace.OpenProjectAsync(path, msbuildLogger);
 

@@ -75,7 +75,9 @@ export function breakWordLit(text?: string): TemplateResult {
  * @returns True if the url is external.
  */
 export function isExternalHref(url: URL): boolean {
-  return url.hostname !== window.location.hostname || url.protocol !== window.location.protocol
+  return url.hostname !== window.location.hostname ||
+    url.protocol !== window.location.protocol ||
+    url.port !== window.location.port
 }
 
 /**
