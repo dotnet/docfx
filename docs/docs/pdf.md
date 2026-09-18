@@ -141,6 +141,8 @@ items:
 
 Cover and TOC pages count toward `pageNumber` and `totalPages` whether or not their headers and footers are shown.
 
+Headers and footers use each page's size and orientation, so a landscape cover can be combined with portrait TOC and article pages.
+
 ## Customize PDF Pages
 
 PDF rendering uses the same HTML site template. To customize PDF page styles, use the [CSS print media](https://developer.mozilla.org/en-US/docs/Web/Guide/Printing):

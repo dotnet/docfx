@@ -115,7 +115,7 @@ static class PdfBuilder
         using var pageLimiter = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
         var pagePool = new ConcurrentBag<IPage>();
         var headerFooterTemplateCache = new ConcurrentDictionary<string, string>();
-        var headerFooterPageCache = new ConcurrentDictionary<(string, string), Task<byte[]>>();
+        var headerFooterPageCache = new ConcurrentDictionary<(string Header, string Footer, PageSize Size, double Width, double Height), Task<byte[]>>();
 
         var pdfBuildTask = AnsiConsole.Progress().StartAsync(async progress =>
         {
@@ -254,7 +254,8 @@ static class PdfBuilder
             var headerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfHeaderTemplate), pageNumber, totalPages);
             var footerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfFooterTemplate) ?? DefaultFooterTemplate, pageNumber, totalPages);
 
-            return headerFooterPageCache.GetOrAdd((headerTemplate, footerTemplate), _ => PrintHeaderFooterCore());
+            var cacheKey = (headerTemplate, footerTemplate, contentPage.Size, contentPage.Width, contentPage.Height);
+            return headerFooterPageCache.GetOrAdd(cacheKey, _ => PrintHeaderFooterCore());
 
             async Task<byte[]> PrintHeaderFooterCore()
             {
