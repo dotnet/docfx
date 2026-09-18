@@ -3,12 +3,15 @@
 
 using System.Reflection;
 using Xunit.Sdk;
+using Xunit.v3;
 
 namespace docfx.Tests;
 
 public class TestDataAttribute<T> : DataAttribute
 {
-    public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+    public override bool SupportsDiscoveryEnumeration() => true;
+
+    public override ValueTask<IReadOnlyCollection<ITheoryDataRow>> GetData(MethodInfo testMethod, DisposalTracker disposalTracker)
     {
         var key = GetTestDataKey();
         var paths = TestData.GetTestDataFilePaths(key);
@@ -28,7 +31,9 @@ public class TestDataAttribute<T> : DataAttribute
                 throw new NotSupportedException($"{className} is not supported.");
         }
 
-        return new TheoryData<string>(paths);
+        var results = paths.Select(x => new TheoryDataRow<string>(x)).ToArray();
+
+        return ValueTask.FromResult<IReadOnlyCollection<ITheoryDataRow>>(results);
     }
 
     private static string GetTestDataKey()
