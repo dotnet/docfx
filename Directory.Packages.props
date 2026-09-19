@@ -9,6 +9,8 @@
     <PackageVersion Include="Jint" Version="4.16.2" />
     <PackageVersion Include="JsonSchema.Net" Version="[8.0.5]" />
     <PackageVersion Include="Markdig" Version="1.3.2" />
+    <PackageVersion Include="Microsoft.OpenApi" Version="3.10.2" />
+    <PackageVersion Include="Microsoft.OpenApi.YamlReader" Version="3.10.2" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.62.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="OneOf" Version="3.0.271" />

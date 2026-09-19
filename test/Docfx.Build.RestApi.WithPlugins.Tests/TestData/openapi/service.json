@@ -1,0 +1,110 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SDK API",
+    "version": "1.0",
+    "description": "Use the **SDK** [guide](https://example.test/guide) and [create an item](xref:api.example.test/v1/SDK%20API/1.0/createItem)."
+  },
+  "servers": [
+    {
+      "url": "https://{host}/{basePath}",
+      "description": "The **root** server.",
+      "variables": { "host": { "default": "api.example.test" }, "basePath": { "default": "v1" } }
+    },
+    { "url": "https://fallback.example.test/v1" }
+  ],
+  "tags": [{ "name": "items", "description": "Manage **items**." }],
+  "paths": {
+    "/items/{id}": {
+      "servers": [
+        {
+          "url": "https://read.example.test/{version}",
+          "variables": { "version": { "default": "v2" } }
+        }
+      ],
+      "parameters": [
+        { "$ref": "#/components/parameters/Id" },
+        { "name": "limit", "in": "query", "schema": { "type": "integer", "format": "int32", "default": 1 } }
+      ],
+      "get": {
+        "tags": ["items"],
+        "summary": "Read **items** without an explicit operation ID.",
+        "responses": { "204": { "description": "No content." } }
+      },
+      "post": {
+        "operationId": "createItem",
+        "tags": ["items"],
+        "summary": "Create **items**.",
+        "servers": [
+          {
+            "url": "https://{region}.write.example.test/{version}",
+            "description": "Write in this **region**.",
+            "variables": { "region": { "default": "west" }, "version": { "default": "v3" } }
+          }
+        ],
+        "parameters": [
+          { "name": "limit", "in": "query", "description": "Maximum **count**.", "schema": { "type": "integer", "format": "int32", "default": 7 } }
+        ],
+        "requestBody": { "$ref": "#/components/requestBodies/Create" },
+        "responses": {
+          "201": { "$ref": "#/components/responses/Created" }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "inspectHealth",
+        "tags": ["health"],
+        "summary": "Inspect **health**.",
+        "responses": { "204": { "description": "Healthy." } }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Id": { "name": "id", "in": "path", "required": true, "description": "The item **identifier**.", "schema": { "type": "string" } }
+    },
+    "requestBodies": {
+      "Create": {
+        "description": "The **body** to create.",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "components.json#/components/schemas/Item" },
+            "examples": { "request": { "$ref": "#/components/examples/Request" } }
+          },
+          "application/xml": {
+            "schema": {
+              "type": "object",
+              "properties": { "xmlOnly": { "type": "integer", "description": "XML quantity." } }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "Created": {
+        "description": "The **created** item.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "components.json#/components/schemas/Result" },
+            "examples": {
+              "response": {
+                "value": { "receipt": "one", "$ref": "literal-response.json#/data", "description": "**literal response**" }
+              }
+            }
+          },
+          "text/plain": {
+            "schema": { "type": "string", "description": "Plain response schema." },
+            "example": "plain-response"
+          }
+        }
+      }
+    },
+    "examples": {
+      "Request": {
+        "value": { "name": "new", "$ref": "literal-request.json#/data", "description": "**literal request**" }
+      }
+    }
+  }
+}

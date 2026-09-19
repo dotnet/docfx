@@ -1,0 +1,5 @@
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
+<div class="media-schema">
+  <div class="mime-type"><i>Mime type: </i><span class="mime">{{mimeType}}</span></div>
+  {{#schemaDetails}}{{>partials/rest.schema}}{{/schemaDetails}}
+</div>

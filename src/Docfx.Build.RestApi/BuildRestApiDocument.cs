@@ -41,6 +41,7 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
 
     public static RestApiItemViewModelBase BuildItem(IHostService host, RestApiItemViewModelBase item, FileModel model, Func<string, bool> filter = null)
     {
+        var preserveLiteralData = item.Metadata.GetValueOrDefault("_preserveLiteralData") is true;
         item.Summary = Markup(host, item.Summary, model, filter);
         item.Description = Markup(host, item.Description, model, filter);
         if (model.Type != DocumentType.Overwrite)
@@ -52,22 +53,32 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
         if (item is RestApiRootItemViewModel rootModel)
         {
             // Mark up recursively for swagger root except for children and tags
-            foreach (var jToken in rootModel.Metadata.Values.OfType<JToken>())
+            foreach (var jToken in GetMarkupTokens(rootModel.Metadata, preserveLiteralData))
             {
-                MarkupRecursive(jToken, host, model, filter);
+                MarkupRecursive(jToken, host, model, filter, preserveLiteralData);
             }
         }
 
         var childModel = item as RestApiChildItemViewModel;
+        if (childModel != null && preserveLiteralData)
+        {
+            foreach (var key in new[] { "requestBody", "servers" })
+            {
+                if (childModel.Metadata.GetValueOrDefault(key) is JToken value)
+                {
+                    MarkupRecursive(value, host, model, filter, preserveLiteralData);
+                }
+            }
+        }
         if (childModel?.Parameters != null)
         {
             foreach (var param in childModel.Parameters)
             {
                 param.Description = Markup(host, param.Description, model, filter);
 
-                foreach (var jToken in param.Metadata.Values.OfType<JToken>())
+                foreach (var jToken in GetMarkupTokens(param.Metadata, preserveLiteralData))
                 {
-                    MarkupRecursive(jToken, host, model, filter);
+                    MarkupRecursive(jToken, host, model, filter, preserveLiteralData);
                 }
             }
         }
@@ -77,22 +88,26 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
             {
                 response.Description = Markup(host, response.Description, model, filter);
 
-                foreach (var jToken in response.Metadata.Values.OfType<JToken>())
+                foreach (var jToken in GetMarkupTokens(response.Metadata, preserveLiteralData))
                 {
-                    MarkupRecursive(jToken, host, model, filter);
+                    MarkupRecursive(jToken, host, model, filter, preserveLiteralData);
                 }
             }
         }
         return item;
     }
 
-    private static void MarkupRecursive(JToken jToken, IHostService host, FileModel model, Func<string, bool> filter = null)
+    private static IEnumerable<JToken> GetMarkupTokens(Dictionary<string, object> metadata, bool preserveLiteralData) =>
+        metadata.Where(pair => !preserveLiteralData || !pair.Key.StartsWith("x-", StringComparison.Ordinal))
+            .Select(pair => pair.Value).OfType<JToken>();
+
+    private static void MarkupRecursive(JToken jToken, IHostService host, FileModel model, Func<string, bool> filter = null, bool preserveLiteralData = false)
     {
         if (jToken is JArray jArray)
         {
             foreach (var item in jArray)
             {
-                MarkupRecursive(item, host, model, filter);
+                MarkupRecursive(item, host, model, filter, preserveLiteralData);
             }
         }
 
@@ -100,6 +115,11 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
         {
             foreach (var pair in jObject)
             {
+                if (preserveLiteralData && (pair.Key.StartsWith("x-", StringComparison.Ordinal) ||
+                    (jObject.ContainsKey("type") && pair.Key is "example" or "examples" or "enum" or "default" or "const")))
+                {
+                    continue;
+                }
                 if (MarkupKeys.Contains(pair.Key) && pair.Value != null)
                 {
                     if (pair.Value is JValue { Type: JTokenType.String } jValue)
@@ -107,7 +127,7 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
                         jObject[pair.Key] = Markup(host, (string)jValue, model, filter);
                     }
                 }
-                MarkupRecursive(jObject[pair.Key], host, model, filter);
+                MarkupRecursive(jObject[pair.Key], host, model, filter, preserveLiteralData);
             }
         }
     }

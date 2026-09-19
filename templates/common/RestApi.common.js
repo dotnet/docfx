@@ -3,8 +3,29 @@
 var common = require('./common.js');
 
 exports.transform = function (model) {
+    var schemas = Object.create(null);
+    Object.keys(model.schemas || {}).forEach(function (name) {
+        schemas[name] = model.schemas[name];
+    });
+    Object.keys(schemas).forEach(function (name) { collectSchemas(schemas[name]); });
+    (model.children || []).forEach(function (child) {
+        if (!(model._preserveLiteralData || child._preserveLiteralData ||
+            model.schemas || child.servers || child.requestUrl || child.requestBody ||
+            (child.parameters || []).some(function (parameter) { return parameter.content; }) ||
+            (child.responses || []).some(function (response) { return response.content; }))) return;
+        child._hasSchemaDetails = true;
+        (child.parameters || []).forEach(function (parameter) {
+            collectSchemas(parameter.schema);
+            (parameter.content || []).forEach(function (media) { collectSchemas(media.schema); });
+        });
+        (child.responses || []).forEach(function (response) {
+            collectSchemas(response.schema);
+            (response.content || []).forEach(function (media) { collectSchemas(media.schema); });
+        });
+        ((child.requestBody || {}).content || []).forEach(function (media) { collectSchemas(media.schema); });
+    });
     var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(model._path);
-    model._jsonPath = _fileNameWithoutExt + ".swagger.json";
+    model._jsonPath = _fileNameWithoutExt + ".swagger" + (model.rawExtension === ".yaml" ? ".yaml" : ".json");
     model.title = model.title || model.name;
     model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
     model.sourceurl = model.sourceurl || common.getViewSourceHref(model, null, model._gitUrlPattern);
@@ -16,7 +37,9 @@ exports.transform = function (model) {
             if (child.operation) {
                 child.operation = child.operation.toUpperCase();
             }
-            child.path = appendQueryParamsToPath(child.path, child.parameters);
+            if (!child._hasSchemaDetails) {
+                child.path = appendQueryParamsToPath(child.path, child.parameters);
+            }
             child.sourceurl = child.sourceurl || common.getViewSourceHref(child, null, model._gitUrlPattern);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.summary = child.summary || ''; // set to empty incase mustache looks up
@@ -26,8 +49,26 @@ exports.transform = function (model) {
             child.htmlId = common.getHtmlId(child.uid);
 
             formatExample(child.responses);
-            resolveAllOf(child);
-            transformReference(child);
+            if (child._hasSchemaDetails) {
+                (child.servers || []).forEach(function (server) { server.description = server.description || null; });
+                (child.parameters || []).forEach(function (parameter) {
+                    parameter.hasContent = parameter.content !== undefined && parameter.content !== null;
+                    transformContent(parameter.content);
+                    parameter.schemaDetails = schemaDetails(parameter.schema);
+                });
+                if (child.requestBody) {
+                    child.requestBody.description = child.requestBody.description || null;
+                    transformContent(child.requestBody.content);
+                }
+                (child.responses || []).forEach(function (response) {
+                    response.hasContent = response.content !== undefined && response.content !== null;
+                    transformContent(response.content);
+                    response.schemaDetails = schemaDetails(response.schema);
+                });
+            } else {
+                resolveAllOf(child);
+                transformReference(child);
+            }
         };
         if (!model.tags || model.tags.length === 0) {
             var childTags = [];
@@ -85,6 +126,7 @@ exports.transform = function (model) {
     if (model.tags) {
         model.tags.forEach(function(tag) {
             (tag.children || []).forEach(function(child) {
+                if (child._hasSchemaDetails) return;
                 (child.parameters || []).forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
                 (child.responses || []).forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
             });
@@ -92,12 +134,95 @@ exports.transform = function (model) {
     }
     if (model.children) {
         model.children.forEach(function(child) {
+            if (child._hasSchemaDetails) return;
             (child.parameters || []).forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
             (child.responses || []).forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
         });
     }
+    Object.keys(schemas).forEach(function (name) {
+        var details = schemaDetails(schemas[name]);
+        details.id = schemaId(name);
+        details.name = name;
+        if (details.referenceName === name) {
+            details.referenceName = null;
+            details.referenceId = null;
+        }
+        model.definitions.push({ schemaDetails: details });
+    });
 
     return model;
+
+    function schemaId(name) {
+        return "schema-" + name.replace(/[^a-zA-Z0-9-]/g, function (character) {
+            return "_" + character.charCodeAt(0).toString(16) + "_";
+        });
+    }
+
+    function collectSchemas(schema) {
+        if (!schema) return;
+        var name = schema['x-internal-ref-name'];
+        if (name && !schemas[name]) schemas[name] = schema;
+        Object.keys(schema.properties || {}).forEach(function (key) { collectSchemas(schema.properties[key]); });
+        collectSchemas(schema.items);
+        (schema.composition || []).forEach(function (composition) {
+            (composition.schemas || []).forEach(collectSchemas);
+        });
+    }
+
+    function schemaDetails(schema) {
+        if (!schema) return null;
+        var name = schema['x-internal-loop-ref-name'] || schema['x-internal-ref-name'];
+        // Explicit empty fields prevent recursive Mustache partials from looking up an ancestor's schema.
+        return {
+            type: schema.type || null,
+            format: schema.format || null,
+            description: schema.description || null,
+            referenceName: name || null,
+            referenceId: name && schemas[name] ? schemaId(name) : null,
+            properties: Object.keys(schema.properties || {}).map(function (key) {
+                return {
+                    key: key,
+                    required: schema.properties[key].required === true ||
+                        (Array.isArray(schema.required) && schema.required.indexOf(key) >= 0),
+                    value: schemaDetails(schema.properties[key])
+                };
+            }),
+            items: schemaDetails(schema.items),
+            composition: (schema.composition || []).map(function (composition) {
+                return { kind: composition.kind, schemas: (composition.schemas || []).map(schemaDetails) };
+            }),
+            constraints: schema.constraints || [],
+            enum: (schema.enum || []).map(function (value) { return { value: JSON.stringify(value) }; }),
+            exampleDetails: exampleDetails(schema.examples)
+        };
+    }
+
+    function exampleDetails(examples) {
+        return (examples || []).map(function (example) {
+            var externalValue = example.externalValue || null;
+            return {
+                name: example.name || null,
+                mimeType: example.mimeType || null,
+                content: typeof example.content === "string" ? example.content : null,
+                hasContent: typeof example.content === "string",
+                externalValue: externalValue,
+                externalHref: externalValue && /^https?:\/\/[^\s\\]+$/i.test(externalValue) ? externalValue : null
+            };
+        });
+    }
+
+    function transformContent(content) {
+        (content || []).forEach(function (media) {
+            media.schemaDetails = schemaDetails(media.schema);
+            media.examples = media.examples || [];
+            media.examples.forEach(function (example) {
+                example.name = example.name || null;
+                example.mimeType = example.mimeType || media.mimeType;
+            });
+        });
+        formatExample(content);
+        (content || []).forEach(function (media) { media.exampleDetails = exampleDetails(media.examples); });
+    }
 
     function getChildrenByTag(children, tag) {
         if (!children) return;

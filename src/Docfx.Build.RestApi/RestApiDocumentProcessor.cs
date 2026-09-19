@@ -34,6 +34,8 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
        ".swagger.json",
        ".swagger2.json",
        ".json",
+       ".yaml",
+       ".yml",
     ];
 
     protected static readonly string[] SystemKeys = [
@@ -64,6 +66,19 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         "security",
         "tags",
         "externalDocs"
+    ];
+
+    private static readonly string[] OpenApiSystemKeys = [
+        .. SystemKeys,
+        "openapi",
+        "servers",
+        "components",
+        "schemas",
+        "requestBody",
+        "requestUrl",
+        "rawExtension",
+        "jsonSchemaDialect",
+        "webhooks"
     ];
 
     [ImportMany(nameof(RestApiDocumentProcessor))]
@@ -122,20 +137,34 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
     protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
     {
         var filePath = Path.Combine(file.BaseDir, file.File);
-        var swagger = SwaggerJsonParser.Parse(filePath);
-        swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
-        swagger.Raw = EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
-        CheckOperationId(swagger, file.File);
+        RestApiRootItemViewModel vm;
+        var isOpenApi = !(filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase) && IsSwaggerFile(filePath)) &&
+            OpenApiDocumentReader.IsOpenApiFile(filePath);
+        if (isOpenApi)
+        {
+            vm = OpenApiDocumentReader.Read(filePath);
+        }
+        else
+        {
+            var swagger = SwaggerJsonParser.Parse(filePath);
+            swagger.Raw = EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
+            CheckOperationId(swagger, file.File);
+            vm = SwaggerModelConverter.FromSwaggerModel(swagger);
+        }
+        vm.Metadata[DocumentTypeKey] = RestApiDocumentType;
 
         var repoInfo = GitUtility.TryGetFileDetail(filePath);
         if (repoInfo != null)
         {
-            swagger.Metadata["source"] = new SourceDetail { Remote = repoInfo };
+            vm.Metadata["source"] = new SourceDetail { Remote = repoInfo };
         }
 
-        swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
-        var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
-        vm.Metadata[Constants.PropertyName.SystemKeys] = SystemKeys;
+        vm.Metadata = MergeMetadata(vm.Metadata, metadata);
+        foreach (var child in vm.Children)
+        {
+            child.Metadata[Constants.PropertyName.Source] = vm.Metadata.GetValueOrDefault(Constants.PropertyName.Source);
+        }
+        vm.Metadata[Constants.PropertyName.SystemKeys] = isOpenApi ? OpenApiSystemKeys : SystemKeys;
         var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
         return new FileModel(file, vm)
@@ -193,7 +222,9 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
 
     private static bool IsSupportedFile(string filePath)
     {
-        return SupportedFileEndings.Any(s => IsSupportedFileEnding(filePath, s)) && IsSwaggerFile(filePath);
+        return SupportedFileEndings.Any(s => IsSupportedFileEnding(filePath, s)) &&
+            ((filePath.EndsWith(".json", StringComparison.OrdinalIgnoreCase) && IsSwaggerFile(filePath)) ||
+                OpenApiDocumentReader.IsOpenApiFile(filePath));
     }
 
     private static bool IsSupportedFileEnding(string filePath, string fileEnding)
