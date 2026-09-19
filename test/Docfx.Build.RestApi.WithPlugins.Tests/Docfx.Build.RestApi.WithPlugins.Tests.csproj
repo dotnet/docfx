@@ -1,5 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="..\..\templates\common\**" Link="templates\common\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\templates\default\**" Link="templates\default\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\templates\statictoc\**" Link="templates\statictoc\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\templates\modern\**" Link="templates\modern\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.Build.OperationLevelRestApi\Docfx.Build.OperationLevelRestApi.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.TagLevelRestApi\Docfx.Build.TagLevelRestApi.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.Common\Docfx.Build.Common.csproj" />
