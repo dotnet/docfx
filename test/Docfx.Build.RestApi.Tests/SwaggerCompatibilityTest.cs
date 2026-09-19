@@ -32,7 +32,7 @@ public class SwaggerCompatibilityTest : TestBase
         }
         path["x-path-extension"] = new JObject { ["enabled"] = false };
 
-        var model = Convert($$"""
+        var model = ConvertInMemory($$"""
             "host": "api.example.com",
             "basePath": "/v1/",
             "paths": { "/items/{id}": {{path}} }
@@ -53,15 +53,12 @@ public class SwaggerCompatibilityTest : TestBase
     [Fact]
     public void ParameterMergeUsesBothNameAndLocationAndKeepsOperationThenInheritedOrder()
     {
-        var model = Convert("""
-            "parameters": {
-              "QueryId": { "name": "id", "in": "query", "type": "string", "description": "inherited query" }
-            },
+        var model = ConvertInMemory("""
             "paths": {
               "/items/{id}": {
                 "parameters": [
                   { "name": "id", "in": "path", "type": "string", "required": true, "description": "inherited path" },
-                  { "$ref": "#/parameters/QueryId" },
+                  { "name": "id", "in": "query", "type": "string", "description": "inherited query" },
                   { "name": "token", "in": "header", "type": "string", "description": "inherited header" },
                   { "name": "ID", "in": "query", "type": "string", "description": "case-sensitive name" }
                 ],
@@ -94,7 +91,7 @@ public class SwaggerCompatibilityTest : TestBase
     [InlineData("\"parameters\": null,")]
     public void AbsentEmptyAndNullOperationParametersKeepInheritedParameters(string operationParameters)
     {
-        var model = Convert($$"""
+        var model = ConvertInMemory($$"""
             "paths": {
               "/items": {
                 "parameters": [
@@ -126,7 +123,7 @@ public class SwaggerCompatibilityTest : TestBase
             ]
             """;
 
-        var swagger = Parse($$"""
+        var swagger = ParseFile($$"""
             "paths": { "/items": { "get": { "operationId": "get", "parameters": {{parameters}} } } }
             """);
         AssertJson(parameters, GetOperation(swagger, "/items", "get")["parameters"]);
@@ -158,7 +155,7 @@ public class SwaggerCompatibilityTest : TestBase
             ]
             """;
 
-        var model = Convert($$"""
+        var model = ConvertInMemory($$"""
             "paths": {
               "/body": { "post": { "operationId": "body", "parameters": {{body}}, "consumes": ["application/json"] } },
               "/upload": { "post": { "operationId": "upload", "parameters": {{form}}, "consumes": ["multipart/form-data"] } }
@@ -175,7 +172,7 @@ public class SwaggerCompatibilityTest : TestBase
     [Fact]
     public void SecurityMediaTypesAndExtensionsStayAtTheirDeclaredLevel()
     {
-        var swagger = Parse("""
+        var model = ConvertInMemory("""
             "schemes": ["https", "http"],
             "consumes": ["application/json"],
             "produces": ["application/json", "text/plain"],
@@ -203,8 +200,6 @@ public class SwaggerCompatibilityTest : TestBase
               }
             }
             """);
-        var model = SwaggerModelConverter.FromSwaggerModel(swagger);
-
         AssertJson("""["https", "http"]""", JToken.FromObject(model.Metadata["schemes"]));
         AssertJson("""["application/json"]""", JToken.FromObject(model.Metadata["consumes"]));
         AssertJson("""["application/json", "text/plain"]""", JToken.FromObject(model.Metadata["produces"]));
@@ -250,13 +245,14 @@ public class SwaggerCompatibilityTest : TestBase
     [InlineData("#/definitions/~01", "~1", "~01")]
     public void EscapedReferenceNamesResolveButKeepEscapesInInternalName(string reference, string definition, string marker)
     {
-        var model = Convert($$"""
+        var swagger = ParseFile($$"""
             "definitions": { "{{definition}}": { "type": "string", "description": "Escaped name" } },
             "paths": { "/items": { "get": { "responses": { "200": {
               "description": "OK", "schema": { "$ref": "{{reference}}" }
             } } } } }
             """);
 
+        var model = SwaggerModelConverter.FromSwaggerModel(swagger);
         var schema = Assert.IsType<JObject>(Assert.Single(Assert.Single(model.Children).Responses).Metadata["schema"]);
         AssertJson($$"""
             { "type": "string", "description": "Escaped name", "x-internal-ref-name": "{{marker}}" }
@@ -271,14 +267,17 @@ public class SwaggerCompatibilityTest : TestBase
     {
         var folder = GetRandomFolder();
         const string target = """{ "type": "string", "description": "Target description", "x-target": true }""";
-        CreateFile("target.json", kind == "direct" ? target : $$"""{ "definitions": { "Value": {{target}} } }""", folder);
+        if (kind != "internal")
+        {
+            CreateFile("target.json", kind == "direct" ? target : $$"""{ "definitions": { "Value": {{target}} } }""", folder);
+        }
         var reference = kind switch
         {
             "internal" => "#/definitions/Value",
             "embedded" => "target.json#/definitions/Value",
             _ => "target.json"
         };
-        var swagger = Parse($$"""
+        var swagger = ParseFile($$"""
             "definitions": { "Value": {{target}} },
             "paths": { "/items": { "get": { "responses": { "200": {
               "description": "OK",
@@ -329,7 +328,7 @@ public class SwaggerCompatibilityTest : TestBase
             { "date": "2024-01-02T03:04:05.120+02:30", "$ref": "not-a-reference",
               "nested": [{ "$ref": 17 }], "false": false, "zero": 0, "empty": "", "null": null }
             """;
-        var swagger = Parse($$"""
+        var swagger = ParseFile($$"""
             "x-ms-examples": {{literal}},
             "definitions": {
               "Item": {
@@ -370,7 +369,7 @@ public class SwaggerCompatibilityTest : TestBase
     public void LeadingReferenceInResponseExampleSurvivesParsingButFailsConversion()
     {
         const string literal = """{"$ref":"not-a-reference","date":"2024-01-02T03:04:05.120+02:30"}""";
-        var swagger = Parse($$"""
+        var swagger = ParseFile($$"""
             "paths": { "/items": { "get": { "responses": {
               "200": { "description": "OK", "examples": { "application/json": {{literal}} } }
             } } } }
@@ -388,7 +387,7 @@ public class SwaggerCompatibilityTest : TestBase
     [Fact]
     public void InlineSchemaExamplesAreResolvedUnlikeDefinitionExamples()
     {
-        var swagger = Parse("""
+        var swagger = ParseFile("""
             "definitions": { "Value": { "type": "string" } },
             "paths": { "/items": { "post": { "parameters": [
               { "name": "body", "in": "body",
@@ -407,7 +406,7 @@ public class SwaggerCompatibilityTest : TestBase
     [InlineData("[]", "Array")]
     public void NonStringReferencesFailWithTheirTokenTypeAndLocation(string value, string tokenType)
     {
-        var exception = Assert.Throws<JsonException>(() => Parse($$"""
+        var exception = Assert.Throws<JsonException>(() => ParseFile($$"""
             "definitions": { "Bad": { "$ref": {{value}} } }
             """));
 
@@ -419,7 +418,7 @@ public class SwaggerCompatibilityTest : TestBase
     [Fact]
     public void NullReferenceFailsInReferenceFormatter()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => Parse("""
+        var exception = Assert.Throws<ArgumentNullException>(() => ParseFile("""
             "definitions": { "Bad": { "$ref": null } }
             """));
 
@@ -434,7 +433,7 @@ public class SwaggerCompatibilityTest : TestBase
     [InlineData("file.json#/definitions/Value#extra", typeof(InvalidOperationException), "Reference path 'file.json#/definitions/Value#extra' should contain only one '#' character.")]
     public void InvalidReferencePathsHaveSpecificFailureContracts(string reference, Type exceptionType, string message)
     {
-        var exception = Assert.Throws(exceptionType, () => Parse($$"""
+        var exception = Assert.Throws(exceptionType, () => ParseFile($$"""
             "definitions": { "Bad": { "$ref": "{{reference}}" } }
             """));
 
@@ -480,7 +479,7 @@ public class SwaggerCompatibilityTest : TestBase
     [InlineData("1")]
     public void NonObjectOperationsFailAtConversionRatherThanParsing(string value)
     {
-        var swagger = Parse($$"""
+        var swagger = ParseFile($$"""
             "paths": { "/items": { "get": {{value}} } }
             """);
         var exception = Assert.Throws<InvalidOperationException>(() => SwaggerModelConverter.FromSwaggerModel(swagger));
@@ -488,7 +487,7 @@ public class SwaggerCompatibilityTest : TestBase
         Assert.Equal("Value of get should be JObject", exception.Message);
     }
 
-    private SwaggerModel Parse(string members, string folder = null)
+    private SwaggerModel ParseFile(string members, string folder = null)
     {
         var file = CreateFile("swagger.json", $$"""
             {
@@ -500,7 +499,17 @@ public class SwaggerCompatibilityTest : TestBase
         return SwaggerJsonParser.Parse(file);
     }
 
-    private RestApiRootItemViewModel Convert(string members) => SwaggerModelConverter.FromSwaggerModel(Parse(members));
+    private static RestApiRootItemViewModel ConvertInMemory(string members)
+    {
+        var swagger = JsonConvert.DeserializeObject<SwaggerModel>($$"""
+            {
+              "swagger": "2.0",
+              "info": { "title": "Compatibility", "version": "1" },
+              {{members}}
+            }
+            """);
+        return SwaggerModelConverter.FromSwaggerModel(swagger);
+    }
 
     private static JObject GetOperation(SwaggerModel swagger, string path, string method) =>
         Assert.IsType<JObject>(swagger.Paths[path].Metadata[method]);

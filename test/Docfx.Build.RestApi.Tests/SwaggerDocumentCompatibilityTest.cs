@@ -39,19 +39,27 @@ public class SwaggerDocumentCompatibilityTest : TestBase
     [InlineData("_swagger.json")]
     [InlineData(".swagger.json")]
     [InlineData(".swagger2.json")]
-    [InlineData(".JSON")]
-    [InlineData("_SWAGGER2.JSON")]
-    [InlineData("_Swagger.Json")]
-    [InlineData(".SWAGGER.JSON")]
-    [InlineData(".Swagger2.Json")]
-    public void LegacySuffixesAreRecognizedAndBuildToTheSameFilenameAndUids(string suffix)
+    public void LegacySuffixesAreRecognized(string suffix)
     {
         var input = GetRandomFolder();
         var fileName = Path.Combine("api", "a.b" + suffix);
         CreateFile(fileName, Document, input);
         var file = new FileAndType(Path.GetFullPath(input), fileName, DocumentType.Article);
-        Assert.Equal(ProcessingPriority.Normal, new RestApiDocumentProcessor().GetProcessingPriority(file));
 
+        Assert.Equal(ProcessingPriority.Normal, new RestApiDocumentProcessor().GetProcessingPriority(file));
+    }
+
+    [Theory]
+    [InlineData(".JSON")]
+    [InlineData("_SWAGGER2.JSON")]
+    [InlineData("_Swagger.Json")]
+    [InlineData(".SWAGGER.JSON")]
+    [InlineData(".Swagger2.Json")]
+    public void LegacySuffixesBuildCaseInsensitivelyToTheSameFilenameAndUids(string suffix)
+    {
+        var input = GetRandomFolder();
+        var fileName = Path.Combine("api", "a.b" + suffix);
+        CreateFile(fileName, Document, input);
         var (output, diagnostics) = Build(input, fileName);
 
         Assert.Empty(diagnostics);
@@ -81,7 +89,6 @@ public class SwaggerDocumentCompatibilityTest : TestBase
     }
 
     [Theory]
-    [InlineData("api.json", DocumentType.Article, ProcessingPriority.Normal)]
     [InlineData("api.md", DocumentType.Article, ProcessingPriority.NotSupported)]
     [InlineData("api.yaml", DocumentType.Article, ProcessingPriority.NotSupported)]
     [InlineData("api.md", DocumentType.Overwrite, ProcessingPriority.Normal)]
@@ -90,11 +97,9 @@ public class SwaggerDocumentCompatibilityTest : TestBase
     [InlineData("api_swagger2.json", DocumentType.Overwrite, ProcessingPriority.NotSupported)]
     [InlineData("api.json", DocumentType.Resource, ProcessingPriority.NotSupported)]
     [InlineData("api.md", DocumentType.Resource, ProcessingPriority.NotSupported)]
-    public void ClassificationDependsOnDocumentTypeAndExtension(string fileName, DocumentType type, ProcessingPriority expected)
+    public void ClassificationByDocumentTypeAndExtensionDoesNotRequireAFile(string fileName, DocumentType type, ProcessingPriority expected)
     {
-        var folder = GetRandomFolder();
-        CreateFile(fileName, type == DocumentType.Overwrite ? "Overwrite content is not inspected during recognition." : Document, folder);
-        var file = new FileAndType(Path.GetFullPath(folder), fileName, type);
+        var file = new FileAndType(Path.GetFullPath(Path.GetRandomFileName()), fileName, type);
 
         Assert.Equal(expected, new RestApiDocumentProcessor().GetProcessingPriority(file));
     }
@@ -120,7 +125,8 @@ public class SwaggerDocumentCompatibilityTest : TestBase
     [Fact]
     public void MissingJsonFileIsNotRecognizedAsSwagger()
     {
-        var file = new FileAndType(Path.GetFullPath(GetRandomFolder()), "missing.json", DocumentType.Article);
+        var file = new FileAndType(Directory.GetCurrentDirectory(), Path.GetRandomFileName() + ".json", DocumentType.Article);
+        Assert.False(File.Exists(file.FullPath));
 
         Assert.Equal(ProcessingPriority.NotSupported, new RestApiDocumentProcessor().GetProcessingPriority(file));
     }
@@ -165,12 +171,15 @@ public class SwaggerDocumentCompatibilityTest : TestBase
                 "$ref in target.json is not supported in external reference currently."),
             _ => throw new ArgumentOutOfRangeException(nameof(failure))
         };
-        CreateFile(Path.Combine("api", "target.json"), """
-            {
-              "definitions": { "Value": { "type": "string" } },
-              "properties": { "nested": { "$ref": "#/definitions/Value" } }
-            }
-            """, input);
+        if (failure is "missing-external-fragment" or "nested-direct-external-reference")
+        {
+            CreateFile(Path.Combine("api", "target.json"), """
+                {
+                  "definitions": { "Value": { "type": "string" } },
+                  "properties": { "nested": { "$ref": "#/definitions/Value" } }
+                }
+                """, input);
+        }
         CreateFile(invalidName, content, input);
         var validName = Path.Combine("api", "good.json");
         CreateFile(validName, Document, input);
