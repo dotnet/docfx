@@ -5,6 +5,18 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+  ignore:
+    # Verify updates are manual; overlapping NuGet update blocks are not supported.
+    - dependency-name: "Verify.*"
+    # Keep patch updates automatic; Roslyn minor/major upgrades need per-TFM review.
+    - dependency-name: "Microsoft.CodeAnalysis"
+      update-types:
+        - "version-update:semver-minor"
+        - "version-update:semver-major"
+    - dependency-name: "Microsoft.CodeAnalysis.*"
+      update-types:
+        - "version-update:semver-minor"
+        - "version-update:semver-major"
   groups:
     roslyn:
       patterns:
@@ -20,14 +32,6 @@ updates:
       - "xunit.*"
       - "xunit.v3"
       - "xunit.v3.*"
-
-  - package-ecosystem: "nuget"
-    target-branch: main
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    allow:
-      - dependency-name: "Verify.*"
 
 - package-ecosystem: npm
   target-branch: main
