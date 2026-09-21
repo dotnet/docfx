@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
+using Docfx.Build.Engine;
+using Docfx.Common;
 using Docfx.Dotnet;
 using Docfx.Tests.Common;
 using HtmlAgilityPack;
@@ -87,6 +89,8 @@ public class NamespaceLinkTest : TestBase
         Assert.Equal("Foo.Bar.Baz.Outer-1.Inner.html", inner.GetAttributeValue("href", null));
         Assert.True(File.Exists(Path.Combine(api, "Foo.Bar.Baz.Outer-1.Inner.html")));
 
+        await AssertExternalNamespaceLinks(folder, templates, nested);
+
         void AssertNamespaceLinks(string uid, string[] expected)
         {
             var page = Load(uid);
@@ -103,5 +107,56 @@ public class NamespaceLinkTest : TestBase
             document.Load(Path.Combine(api, $"{uid}.html"));
             return document;
         }
+    }
+
+    private async Task AssertExternalNamespaceLinks(string producer, string templates, bool nested)
+    {
+        var map = YamlUtility.Deserialize<XRefMap>(Path.Combine(producer, "_site", "xrefmap.yml"));
+        Assert.DoesNotContain(map.References, reference => reference.Uid is "Foo" or "Foo.Bar" or "httpTools");
+        Assert.Equal(nested, map.References.Any(reference => reference.Uid == "Branch"));
+
+        var expected = new Dictionary<string, string>
+        {
+            ["Foo.Bar.Baz"] = "api/Foo.Bar.Baz.html",
+            ["httpTools.Child"] = "api/httpTools.Child.html",
+            ["Existing"] = "api/Existing.html",
+            ["Existing.Child"] = "api/Existing.Child.html",
+            ["Branch.Left"] = "api/Branch.Left.html",
+            ["Foo.Bar.Baz.Outer`1.Inner"] = "api/Foo.Bar.Baz.Outer-1.Inner.html",
+        };
+        if (nested)
+            expected.Add("Branch", "api/Branch.html");
+
+        foreach (var (uid, href) in expected)
+        {
+            Assert.Equal(href, Assert.Single(map.References, reference => reference.Uid == uid).Href);
+            Assert.True(File.Exists(Path.Combine(producer, "_site", href)));
+        }
+
+        var consumer = GetRandomFolder();
+        // A locally consumed map needs the published site's base URL to resolve its relative hrefs.
+        map.BaseUrl = "https://example.com/library/";
+        YamlUtility.Serialize(Path.Combine(consumer, "xrefmap.yml"), map);
+        CreateFile("index.md", string.Join("\n\n", expected.Keys.Select(uid => $"[API](xref:{uid})")), consumer);
+        var config = CreateFile("docfx.json", JsonSerializer.Serialize(new
+        {
+            build = new
+            {
+                content = new[] { new { files = new[] { "index.md" } } },
+                xref = new[] { "xrefmap.yml" },
+                dest = "_site",
+                template = new[] { Path.Combine(templates, "common"), Path.Combine(templates, "default") },
+            }
+        }), consumer);
+
+        await Docset.Build(config);
+
+        var page = new HtmlDocument();
+        page.Load(Path.Combine(consumer, "_site", "index.html"));
+        var links = page.DocumentNode.SelectNodes("//article//a");
+        Assert.NotNull(links);
+        Assert.Equal(expected.Values.Select(href => map.BaseUrl + href),
+            links.Select(link => link.GetAttributeValue("href", null)));
+        Assert.False(Directory.Exists(Path.Combine(consumer, "_site", "api")));
     }
 }
