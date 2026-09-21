@@ -32,9 +32,12 @@ test('REST raw filename hints preserve JSON compatibility and identify original 
 
 test('REST preserves legacy parameter paths, allOf flattening, and definitions', () => {
   const model = rest.transform({
-    uid: 'legacy', _path: 'legacy.json',
+    uid: 'legacy',
+    _path: 'legacy.json',
     children: [{
-      uid: 'get', operation: 'get', path: '/items',
+      uid: 'get',
+      operation: 'get',
+      path: '/items',
       parameters: [
         { name: 'filter', in: 'query', required: true, schema: { type: 'string' } },
         { name: 'limit', in: 'query', schema: { type: 'integer' } }
@@ -62,9 +65,13 @@ test('REST preserves legacy parameter paths, allOf flattening, and definitions',
 
 test('REST prepares every request and response media schema and named example', () => {
   const model = rest.transform({
-    uid: 'media', _path: 'media.json', schemas: {},
+    uid: 'media',
+    _path: 'media.json',
+    schemas: {},
     children: [{
-      uid: 'post', operation: 'post', path: '/items',
+      uid: 'post',
+      operation: 'post',
+      path: '/items',
       requestUrl: 'https://api.example.test/v2/items',
       servers: [{ url: 'https://api.example.test/v2' }],
       parameters: [{ name: 'filter', in: 'query', schema: { type: 'string | null', format: 'uuid' } }],
@@ -152,14 +159,17 @@ test('REST keeps nested composition, constraints, unions, boolean schemas, and f
 
 test('REST links recursive references and aliases without colliding schema anchors', () => {
   const model = rest.transform({
-    uid: 'references', _path: 'references.json',
+    uid: 'references',
+    _path: 'references.json',
     schemas: {
       'Tree.Node': { type: 'object', properties: { next: { 'x-internal-loop-ref-name': 'Tree.Node' } } },
       Tree_Node: { type: 'any value' },
       Alias: { 'x-internal-ref-name': 'Tree.Node' }
     },
     children: [{
-      uid: 'read', path: '/tree', tags: ['Trees'],
+      uid: 'read',
+      path: '/tree',
+      tags: ['Trees'],
       requestUrl: '/tree',
       responses: [{
         content: [{
@@ -179,12 +189,16 @@ test('REST links recursive references and aliases without colliding schema ancho
 
 test('REST adds inline reference definitions and leaves unresolved references as text', () => {
   const model = rest.transform({
-    uid: 'inline', _path: 'inline.json',
+    uid: 'inline',
+    _path: 'inline.json',
     children: [{
-      uid: 'read', path: '/inline', requestUrl: '/inline',
+      uid: 'read',
+      path: '/inline',
+      requestUrl: '/inline',
       parameters: [{
         schema: {
-          type: 'object', 'x-internal-ref-name': 'Inline',
+          type: 'object',
+          'x-internal-ref-name': 'Inline',
           properties: { missing: { 'x-internal-loop-ref-name': 'Missing' } }
         }
       }]
@@ -198,16 +212,21 @@ test('REST adds inline reference definitions and leaves unresolved references as
 
 test('REST renders parameter content and keeps same-name external schema references distinct', () => {
   const model = rest.transform({
-    uid: 'parameters', _path: 'parameters.json',
+    uid: 'parameters',
+    _path: 'parameters.json',
     children: [{
-      uid: 'search', path: '/items',
+      uid: 'search',
+      path: '/items',
       parameters: [{
-        name: 'filter', in: 'query', default: '{"active":true}',
+        name: 'filter',
+        in: 'query',
+        default: '{"active":true}',
         content: [
           {
             mimeType: 'application/json',
             schema: {
-              type: 'object', 'x-internal-ref-name': 'models/first.yaml#Filter',
+              type: 'object',
+              'x-internal-ref-name': 'models/first.yaml#Filter',
               properties: { next: { 'x-internal-loop-ref-name': 'models/first.yaml#Filter' } }
             },
             examples: [{ name: 'active', content: '{"active":true}' }]
@@ -247,8 +266,12 @@ test('REST renders schema examples without inheriting names, MIME types, or ance
   const details = model.definitions[0].schemaDetails
   assert.deepEqual(schema, original)
   assert.deepEqual(details.exampleDetails[0], {
-    name: null, mimeType: null, content: '{"state":"active"}',
-    hasContent: true, externalValue: null, externalHref: null
+    name: null,
+    mimeType: null,
+    content: '{"state":"active"}',
+    hasContent: true,
+    externalValue: null,
+    externalHref: null
   })
   assert.equal(details.exampleDetails[1].hasContent, true)
   assert.equal(details.exampleDetails[1].content, '')
@@ -260,9 +283,11 @@ test('REST renders schema examples without inheriting names, MIME types, or ance
 test('REST displays external example URLs without inventing content or linking executable schemes', () => {
   const urls = ['https://example.test/sample.json', 'http://example.test/sample.json', 'samples/local.json', 'javascript:alert(1)']
   const model = rest.transform({
-    uid: 'external-examples', _path: 'external-examples.json',
+    uid: 'external-examples',
+    _path: 'external-examples.json',
     children: [{
-      uid: 'read', path: '/items',
+      uid: 'read',
+      path: '/items',
       responses: [{
         content: [{
           mimeType: 'application/json',
@@ -297,7 +322,8 @@ for (const flagLocation of ['root', 'operation']) {
     }
     const originalSchema = structuredClone(schema)
     const operation = {
-      uid: 'read', path: '/literal',
+      uid: 'read',
+      path: '/literal',
       _preserveLiteralData: flagLocation === 'operation',
       parameters: [{ name: 'filter', in: 'query', required: true, schema }],
       responses: [{
@@ -307,7 +333,8 @@ for (const flagLocation of ['root', 'operation']) {
       'x-operation': structuredClone(literal)
     }
     const model = rest.transform({
-      uid: 'literal', _path: 'literal.json',
+      uid: 'literal',
+      _path: 'literal.json',
       _preserveLiteralData: flagLocation === 'root',
       'x-root': structuredClone(literal),
       children: [operation]
