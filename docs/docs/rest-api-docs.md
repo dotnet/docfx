@@ -64,40 +64,13 @@ have dedicated rendered UI. The original input remains available in the raw mode
 
 ### Known OpenAPI.NET 3.10.2 limitations
 
-This integration pins `Microsoft.OpenApi` and `Microsoft.OpenApi.YamlReader` to
-**3.10.2**. It deliberately reports errors instead of generating misleading documentation
-for the following valid inputs:
+See [OpenAPI features not yet supported](openapi-unsupported-features.md) for the
+current input errors, features without dedicated UI, examples and SDK source references.
 
-- Boolean schemas in `components.schemas`, `properties`, `patternProperties`,
-  `$defs` or `dependentSchemas`, and boolean branches in `allOf`, `anyOf` or `oneOf`,
-  produce `UnsupportedBooleanSchema`. The SDK's
-  [`JsonNodeHelper.CreateMap/CreateList`](https://github.com/microsoft/OpenAPI.NET/blob/v3.10.2/src/Microsoft.OpenApi/Reader/JsonNodeHelper.cs)
-  only pass JSON objects to the schema reader, dropping these boolean values.
-  Docfx checks root and external sources before reading; it does not rewrite schemas.
-  Boolean example payloads and extension data are unaffected.
-- Standalone external schema/component fragments without an OpenAPI document envelope
-  are not yet supported. `UnsupportedExternalFragment` identifies this integration limit,
-  not an invalid OpenAPI specification. Keep referenced definitions in a complete
-  OpenAPI 3.0/3.1 component document for this version of the integration.
-- Dynamic schema references (`$dynamicRef`) produce `UnsupportedOpenApiSchema`;
-  they are not replaced with ordinary references.
-- The SDK's [OpenAPI 3.0 primitive-union folding](https://github.com/microsoft/OpenAPI.NET/blob/v3.10.2/src/Microsoft.OpenApi/Reader/V3/OpenApiSchemaDeserializer.cs#L423-L529)
-  can lose exclusivity for type-only `oneOf` branches with duplicate types or
-  overlapping `integer`/`number` types, and can discard branch examples.
-  These known lossy forms produce `UnsupportedOpenApiComposition`. Disjoint
-  type-only alternatives and constrained alternatives remain supported.
-
-The SDK's automatic
-[`OpenApiWorkspaceLoader`](https://github.com/microsoft/OpenAPI.NET/blob/v3.10.2/src/Microsoft.OpenApi/Reader/Services/OpenApiWorkspaceLoader.cs)
-reuses the entry document's format for external documents and loads recursively before
-joining workspaces. Docfx therefore loads local documents once, detects each file's
-format, and registers them with SDK workspaces before resolving references. This
-supports mixed-format and cyclic document graphs without adding a separate JSON
-Pointer or schema resolver.
-
-The typed SDK model is not a lossless JSON Schema representation (for example, explicit
-null defaults and some `const` forms). Use the preserved original source for exact
-schema syntax. This integration does not advertise OpenAPI 3.2 support.
+> [!WARNING]
+> Numeric and boolean `const` values can currently be displayed as strings.
+> This known fidelity issue is not fixed by preserving the original source.
+> Explicit `default: null` and `const: null` are preserved.
 
 ## Organize REST APIs using Tags
 
