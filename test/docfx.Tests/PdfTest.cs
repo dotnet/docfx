@@ -31,8 +31,8 @@ public class PdfTest : TestBase
                 _ => true,
             };
 
-            var header = string.Concat(page.Letters.Where(l => l.GlyphRectangle.Bottom > page.Height - 50).Select(l => l.Value));
-            var footer = string.Concat(page.Letters.Where(l => l.GlyphRectangle.Top < 50).Select(l => l.Value));
+            var header = string.Concat(page.Letters.Where(l => l.BoundingBox.Bottom > page.Height - 50).Select(l => l.Value));
+            var footer = string.Concat(page.Letters.Where(l => l.BoundingBox.Top < 50).Select(l => l.Value));
             if (showHeaderFooter)
             {
                 Assert.Equal($"HEADER-{page.Number}-OF-5", header);
@@ -68,8 +68,8 @@ public class PdfTest : TestBase
                 _ => true,
             };
 
-            var header = string.Concat(page.Letters.Where(l => l.GlyphRectangle.Bottom > page.Height - 50).Select(l => l.Value));
-            var footer = string.Concat(page.Letters.Where(l => l.GlyphRectangle.Top < 50).Select(l => l.Value));
+            var header = string.Concat(page.Letters.Where(l => l.BoundingBox.Bottom > page.Height - 50).Select(l => l.Value));
+            var footer = string.Concat(page.Letters.Where(l => l.BoundingBox.Top < 50).Select(l => l.Value));
             Assert.Empty(header);
             Assert.Equal(showFooter ? $"{page.Number} / 5" : "", footer);
         }
@@ -105,8 +105,8 @@ public class PdfTest : TestBase
         static void AssertMargin(Page page, string expected, bool header)
         {
             var letters = page.Letters.Where(l => header
-                ? l.GlyphRectangle.Bottom > page.Height - 50
-                : l.GlyphRectangle.Top < 50).ToArray();
+                ? l.BoundingBox.Bottom > page.Height - 50
+                : l.BoundingBox.Top < 50).ToArray();
 
             Assert.Equal(expected, string.Concat(letters.Select(l => l.Value)));
             if (expected.Length == 0)
@@ -114,12 +114,12 @@ public class PdfTest : TestBase
 
             Assert.All(letters, letter =>
             {
-                Assert.InRange(letter.GlyphRectangle.Left, 0, page.Width);
-                Assert.InRange(letter.GlyphRectangle.Right, 0, page.Width);
-                Assert.InRange(letter.GlyphRectangle.Bottom, header ? page.Height - 50 : 0, header ? page.Height : 50);
-                Assert.InRange(letter.GlyphRectangle.Top, header ? page.Height - 50 : 0, header ? page.Height : 50);
+                Assert.InRange(letter.BoundingBox.Left, 0, page.Width);
+                Assert.InRange(letter.BoundingBox.Right, 0, page.Width);
+                Assert.InRange(letter.BoundingBox.Bottom, header ? page.Height - 50 : 0, header ? page.Height : 50);
+                Assert.InRange(letter.BoundingBox.Top, header ? page.Height - 50 : 0, header ? page.Height : 50);
             });
-            Assert.InRange(letters.Max(l => l.GlyphRectangle.Right), page.Width - 50, page.Width);
+            Assert.InRange(letters.Max(l => l.BoundingBox.Right), page.Width - 50, page.Width);
         }
     }
 
