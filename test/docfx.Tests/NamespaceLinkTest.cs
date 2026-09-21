@@ -136,7 +136,7 @@ public class NamespaceLinkTest : TestBase
         var consumer = GetRandomFolder();
         // A locally consumed map needs the published site's base URL to resolve its relative hrefs.
         map.BaseUrl = "https://example.com/library/";
-        YamlUtility.Serialize(Path.Combine(consumer, "xrefmap.yml"), map);
+        YamlUtility.Serialize(Path.Combine(consumer, "xrefmap.yml"), map, YamlMime.XRefMap);
         CreateFile("index.md", string.Join("\n\n", expected.Keys.Select(uid => $"[API](xref:{uid})")), consumer);
         var config = CreateFile("docfx.json", JsonSerializer.Serialize(new
         {
