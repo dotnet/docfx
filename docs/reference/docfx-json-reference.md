@@ -452,6 +452,8 @@ Specifies how namespaces in TOC are organized:
 - `flattened` (default): Renders namespaces as a single flat list.
 - `nested`: Renders namespaces in a nested tree form.
 
+For `mref` output, local namespace references are resolved by UID during the build, using generated API pages, other build inputs, or configured xref maps. Unresolved namespaces are rendered as plain text. This applies to both source and assembly inputs; external namespace URLs are unchanged.
+
 ### `memberLayout`
 
 Specifies how member pages are organized:
