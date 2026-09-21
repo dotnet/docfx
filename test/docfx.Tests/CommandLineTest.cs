@@ -19,16 +19,26 @@ public class CommandLineTest
     [Fact]
     public static void PrintsHelp()
     {
-        Assert.Equal(0, Program.Main(["-h"]));
-        Assert.Equal(0, Program.Main(["--help"]));
-        Assert.Equal(0, Program.Main(["build", "--help"]));
-        Assert.Equal(0, Program.Main(["serve", "--help"]));
-        Assert.Equal(0, Program.Main(["metadata", "--help"]));
-        Assert.Equal(0, Program.Main(["pdf", "--help"]));
-        Assert.Equal(0, Program.Main(["init", "--help"]));
-        Assert.Equal(0, Program.Main(["download", "--help"]));
-        Assert.Equal(0, Program.Main(["merge", "--help"]));
-        Assert.Equal(0, Program.Main(["template", "--help"]));
+        // TODO: Removed temporary workaround when xUnit.net issue is resolved https://github.com/xunit/xunit/issues/3634
+        var savedValue = AnsiConsole.Profile.Capabilities.Ansi;
+        AnsiConsole.Profile.Capabilities.Ansi = false;
+        try
+        {
+            Assert.Equal(0, Program.Main(["-h"]));
+            Assert.Equal(0, Program.Main(["--help"]));
+            Assert.Equal(0, Program.Main(["build", "--help"]));
+            Assert.Equal(0, Program.Main(["serve", "--help"]));
+            Assert.Equal(0, Program.Main(["metadata", "--help"]));
+            Assert.Equal(0, Program.Main(["pdf", "--help"]));
+            Assert.Equal(0, Program.Main(["init", "--help"]));
+            Assert.Equal(0, Program.Main(["download", "--help"]));
+            Assert.Equal(0, Program.Main(["merge", "--help"]));
+            Assert.Equal(0, Program.Main(["template", "--help"]));
+        }
+        finally
+        {
+            AnsiConsole.Profile.Capabilities.Ansi = savedValue;
+        }
     }
 
     [Fact]
