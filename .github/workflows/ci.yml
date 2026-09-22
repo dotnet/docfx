@@ -59,8 +59,11 @@ jobs:
     - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
       if: matrix.os == 'ubuntu-latest'
 
-    - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- docs/docfx.json
-    - run: dotnet run -c Release --no-build -f net10.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
+    - uses: ./.github/actions/build-docs
+
+    - name: Test compatibility reporting
+      if: matrix.os == 'ubuntu-latest'
+      run: node --test test/compatibility/report.test.mjs
 
     - name: Pack tool for distribution tests
       run: dotnet pack src/docfx -c Release --no-restore /p:Version=0.0.0-packaging-test -o drop/package-test
@@ -75,10 +78,29 @@ jobs:
       shell: pwsh
       run: ./test/VerifyToolPackage.ps1 -PackagePath drop/package-test/docfx.0.0.0-packaging-test.nupkg -PublishDirectory drop/publish-test
 
-    - uses: actions/upload-pages-artifact@v5
+    - name: Packaged SDK compatibility smoke
+      if: matrix.os == 'ubuntu-latest'
+      shell: pwsh
+      run: |
+        $sdk = (dotnet --list-sdks | Where-Object { $_ -match '^10\.0\.\d+ ' } | Select-Object -Last 1).Split(' ')[0]
+        ConvertTo-Json -InputObject @(@{ sdk = $sdk; projectTfm = 'net10.0' }) | Set-Content drop/package-test/matrix.json
+        ./test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/package-test/matrix.json -OutputDirectory drop/compatibility-smoke -NightlyPackage drop/package-test/docfx.0.0.0-packaging-test.nupkg -SkipStable -FailOnIncompatible
+
+    - name: Upload compatibility smoke evidence
+      if: ${{ always() && matrix.os == 'ubuntu-latest' }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: sdk-compatibility-smoke
+        path: drop/compatibility-smoke
+        retention-days: 7
+
+    - uses: actions/upload-artifact@v7
       if: matrix.os == 'ubuntu-latest'
       with:
+        name: docs-site
         path: docs/_site
+        retention-days: 14
+        include-hidden-files: true
 
     - name: Upload Logs
       uses: actions/upload-artifact@v7
@@ -95,18 +117,3 @@ jobs:
       with:
         name: dump
         path: /tmp/coredump*
-
-  publish-docs:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [test]
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      pages: write
-      id-token: write
-    steps:
-    - id: deployment
-      uses: actions/deploy-pages@v5

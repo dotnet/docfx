@@ -1,0 +1,354 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { readFile, mkdtemp, writeFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
+import { latestReport, resolveMatrix, resolveStableRelease, trustedRun, findSiteRun, productionReportReady } from './report.mjs'
+import { validateReport, renderReport, loadReport } from '../../docs/template/public/sdk-compatibility.mjs'
+
+// Protocol fixtures are synthetic unit-test inputs, never published measurement results.
+const now = Date.parse('2026-09-22T00:00:00Z')
+const sha = 'a'.repeat(40)
+function report() {
+  const data = {
+    schemaVersion: 1, generatedAt: '2026-09-21T00:00:00Z',
+    source: { repository: 'dotnet/docfx', sha, runId: '42', runAttempt: '1', dirty: false },
+    matrix: [{ channel: '10.0', sdk: '10.0.401', projectTfm: 'net10.0' }],
+    channels: ['stable', 'nightly'], scenarios: ['basic', 'razor'],
+    stableSelection: { mode: 'latest-release', requestedVersion: '2.80.1', reason: 'Synthetic release discovery' },
+  }
+  data.results = data.channels.flatMap(channel => data.scenarios.map(scenario => ({
+    ...data.matrix[0], selectedSdk: '10.0.401', channel, scenario,
+    toolVersion: channel === 'stable' ? '2.80.1' : '2.80.2-preview.1', toolRuntimeTfm: 'net10.0',
+    packageSha256: 'b'.repeat(64), os: 'Unit-test OS', testedAt: data.generatedAt,
+    outcome: 'passed', diagnostics: 'Unit-test diagnostics', log: `logs/${channel}-${scenario}.log`,
+  })))
+  return data
+}
+function run(overrides = {}) {
+  return { id: 42, workflow_id: 7, path: '.github/workflows/nightly.yml', head_repository: { full_name: 'dotnet/docfx' }, head_branch: 'main', head_sha: sha, event: 'schedule', status: 'completed', conclusion: 'failure', run_attempt: 1, ...overrides }
+}
+function artifact(overrides = {}) {
+  return { id: 99, name: 'sdk-compatibility-v1', expired: false, size_in_bytes: 1000, workflow_run: { id: 42, head_sha: sha, head_branch: 'main' }, ...overrides }
+}
+const adapter = (runs = [run()], artifacts = [artifact()]) => async path => {
+  if (path.endsWith('/nightly.yml')) return { id: 7 }
+  if (path.includes('/artifacts?')) return { artifacts }
+  return { workflow_runs: runs }
+}
+
+test('validates complete reports, including incompatible and infrastructure rows', () => {
+  const data = report()
+  data.results[1].outcome = 'incompatible'
+  data.results[2].outcome = 'infrastructure-error'
+  assert.equal(validateReport(data, data.source, now), data)
+})
+
+test('rejects false passes, incomplete/duplicate rows, and invalid identity', () => {
+  const mutations = [
+    r => r.results.pop(), r => { r.results[1] = r.results[0] },
+    r => { r.results[0].selectedSdk = '11.0.100' }, r => { r.results[0].selectedSdk = null },
+    r => { r.results[0].packageSha256 = null }, r => { r.results[0].toolVersion = null },
+    r => { r.results[0].toolRuntimeTfm = null }, r => { r.results[0].outcome = 'supported' },
+    r => { r.results[0].log = '../evil.log' }, r => { r.results[0].toolVersion = '2.80.1-preview' },
+    r => { r.results[1].packageSha256 = 'c'.repeat(64) }, r => { r.scenarios = ['basic'] },
+    r => { r.source.dirty = true }, r => { r.schemaVersion = 2 },
+  ]
+  for (const mutate of mutations) {
+    const data = report(); mutate(data)
+    assert.throws(() => validateReport(data, undefined, now))
+  }
+})
+
+test('rejects wrong source commit, run, attempt, and missing nightly channel', () => {
+  for (const key of ['sha', 'runId', 'runAttempt', 'repository']) {
+    const data = report()
+    assert.throws(() => validateReport(data, { ...data.source, [key]: 'wrong' }, now))
+  }
+  const data = report()
+  data.channels = ['stable']; data.results = data.results.filter(r => r.channel === 'stable')
+  assert.throws(() => validateReport(data, data.source, now), /both package channels/)
+})
+
+test('rejects future and malformed timestamps, but renders stale evidence honestly', () => {
+  const data = report()
+  assert.match(renderReport(data, now + 8 * 86400000), /Stale evidence/)
+  assert.match(renderReport(data, now), /Latest recorded evidence/)
+  data.generatedAt = '2099-01-01T00:00:00Z'
+  assert.throws(() => validateReport(data, undefined, now), /timestamp/)
+  data.generatedAt = 'invalid'
+  assert.throws(() => validateReport(data, undefined, now), /timestamp/)
+})
+
+test('HTML-escapes report content and never creates artifact-controlled URLs', () => {
+  const data = report()
+  data.results[0].diagnostics = '<script>alert(1)</script>'
+  data.results[0].os = '<img src=x onerror=alert(1)>'
+  const html = renderReport(data, now)
+  assert.ok(!html.includes('<script>'))
+  assert.ok(!html.includes('<img'))
+  assert.match(html, /&lt;script&gt;/)
+  assert.match(html, /https:\/\/github.com\/dotnet\/docfx\/actions\/runs\/42\/attempts\/1/)
+})
+
+test('missing, expired, invalid and network-failed reports show no passing rows', async () => {
+  const responses = [
+    async () => ({ ok: false }),
+    async () => ({ ok: true, json: async () => ({ state: 'unavailable', reason: 'Expired artifact' }) }),
+    async () => ({ ok: true, json: async () => ({ schemaVersion: 999 }) }),
+    async () => { throw new Error('Offline') },
+  ]
+  for (const fetchReport of responses) {
+    const element = { textContent: '', innerHTML: '' }
+    await loadReport(element, fetchReport)
+    assert.match(element.textContent, /unavailable/)
+    assert.equal(element.innerHTML, '')
+  }
+})
+
+test('only completed upstream main scheduled/manual nightlies are trusted', () => {
+  assert.equal(trustedRun(run(), 7), true)
+  for (const override of [
+    { head_repository: { full_name: 'fork/docfx' } }, { head_branch: 'feature' },
+    { event: 'pull_request' }, { status: 'in_progress' }, { workflow_id: 8 }, { path: 'other.yml' },
+  ]) assert.equal(trustedRun(run(override), 7), false)
+})
+
+test('selects failed-test nightly reports instead of filtering successful runs', async () => {
+  const data = report(); data.results[1].outcome = 'incompatible'
+  const result = await latestReport(adapter(), async id => { assert.equal(id, 99); return data })
+  assert.equal(result.results[1].outcome, 'incompatible')
+})
+
+test('paginates workflow runs and artifacts', async () => {
+  const seen = []
+  const api = async path => {
+    seen.push(path)
+    if (path.endsWith('/nightly.yml')) return { id: 7 }
+    if (path.includes('/artifacts?')) return { artifacts: path.endsWith('page=1') ? Array.from({ length: 100 }, () => artifact({ name: 'unrelated' })) : [artifact()] }
+    return { workflow_runs: path.endsWith('page=1') ? Array.from({ length: 100 }, () => run({ head_branch: 'other' })) : [run()] }
+  }
+  assert.equal((await latestReport(api, async () => report())).source.runId, '42')
+  assert.equal(seen.filter(p => p.endsWith('page=2')).length, 2)
+})
+
+test('skips absent or expired artifacts without inventing a report', async () => {
+  for (const artifacts of [[], [artifact({ expired: true })]]) {
+    assert.equal((await latestReport(adapter(undefined, artifacts), async () => assert.fail('Must not download'))).state, 'unavailable')
+  }
+  assert.equal((await latestReport(adapter(), async () => { const error = new Error('Gone'); error.status = 410; throw error })).state, 'unavailable')
+})
+
+test('rejects mismatched artifact/run provenance, oversized and incomplete reports', async () => {
+  for (const value of [artifact({ workflow_run: { id: 99 } }), artifact({ size_in_bytes: 999999999 })]) {
+    await assert.rejects(latestReport(adapter(undefined, [value]), async () => report()))
+  }
+  const data = report(); data.results.pop()
+  await assert.rejects(latestReport(adapter(), async () => data), /Incomplete/)
+  await assert.rejects(latestReport(adapter(), async () => report(), [{ channel: '11.0', projectTfm: 'net10.0' }]), /reviewed SDK/)
+})
+
+test('resolves reviewed channels to exact SDKs, including previews and older project TFMs', () => {
+  const config = { channels: [{ channel: '11.0', projectTfm: 'net10.0' }] }
+  const result = resolveMatrix(config, { 'releases-index': [{ 'channel-version': '11.0', 'latest-sdk': '11.0.100-rc.1.123', 'support-phase': 'go-live' }] })
+  assert.equal(result[0].sdk, '11.0.100-rc.1.123')
+  assert.equal(result[0].projectTfm, 'net10.0')
+  assert.throws(() => resolveMatrix(config, { 'releases-index': [] }), /No exact SDK/)
+})
+
+test('discovers an exact official stable release and rejects previews or malformed versions', () => {
+  assert.equal(resolveStableRelease({ draft: false, prerelease: false, tag_name: 'v2.80.1' }).requestedVersion, '2.80.1')
+  for (const release of [
+    { draft: true, prerelease: false, tag_name: 'v2.80.1' },
+    { draft: false, prerelease: true, tag_name: 'v2.81.0-preview.1' },
+    { draft: false, prerelease: false, tag_name: 'latest' },
+  ]) assert.throws(() => resolveStableRelease(release))
+})
+
+test('distinguishes explicit local versions and rejects silent fallback from latest stable', () => {
+  const data = report()
+  data.results[0].toolVersion = '2.78.5'
+  assert.throws(() => validateReport(data, undefined, now), /requested stable release/)
+  data.source = { repository: 'local', sha, runId: null, runAttempt: null, dirty: true }
+  data.channels = ['stable']; data.results = data.results.filter(r => r.channel === 'stable')
+  data.results.forEach(r => { r.toolVersion = '2.78.5' })
+  data.stableSelection = { mode: 'explicit-version', requestedVersion: '2.78.5', reason: 'Newer release unavailable on the approved test feed.' }
+  assert.match(renderReport(data, now), /not a measurement of the latest stable release/)
+  assert.match(renderReport(data, now), /Current-main package not measured/)
+  data.source = report().source
+  assert.throws(() => validateReport(data, undefined, now), /local measurements only/)
+  const unavailable = report()
+  unavailable.results.filter(r => r.channel === 'stable').forEach(r => {
+    r.outcome = 'infrastructure-error'; r.toolVersion = null; r.toolRuntimeTfm = null; r.packageSha256 = null
+  })
+  assert.match(renderReport(unavailable, now), /Requested latest stable release at measurement time: <strong>2.80.1/)
+})
+
+test('exact installer refuses an older installed version and never retries a missing version', () => {
+  const path = fileURLToPath(new URL('Measure-Compatibility.ps1', import.meta.url)).replaceAll("'", "''")
+  const script = `
+    $ErrorActionPreference = 'Stop'
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile('${path}', [ref]$null, [ref]$null)
+    $definition = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Install-Tool' }, $false)
+    Invoke-Expression $definition.Extent.Text
+    $work = Join-Path ([IO.Path]::GetTempPath()) ([Guid]::NewGuid().ToString('N'))
+    $logs = Join-Path $work 'logs'
+    New-Item -ItemType Directory $logs | Out-Null
+    $StableVersion = '2.80.1'; $StableVersionReason = 'Unit-test explicit request'
+    $calls = [Collections.Generic.List[object]]::new()
+    function Invoke-Logged($Arguments, $Log) { $calls.Add($Arguments); return @{ code = $script:exitCode; text = 'Synthetic installer boundary' } }
+    try {
+      $script:exitCode = 1
+      $missing = Install-Tool 'stable' ''
+      if (!$missing.error -or $calls.Count -ne 1) { throw 'Missing package silently retried or passed' }
+      if (($calls[0] -join ' ') -notmatch '--version 2.80.1') { throw 'Exact version was not requested' }
+      New-Item -ItemType Directory (Join-Path $work 'stable/.store/docfx/2.78.5') -Force | Out-Null
+      $script:exitCode = 0
+      $wrong = Install-Tool 'stable' ''
+      if ($wrong.error -notmatch 'differs from the exact requested version' -or $calls.Count -ne 2) { throw 'Wrong package identity accepted or retried' }
+    } finally { Remove-Item $work -Recurse -Force }
+  `
+  execFileSync('pwsh', ['-NoProfile', '-Command', script], { stdio: 'pipe' })
+})
+
+test('reuses only current-main successful CI and distinguishes expiration from untested main', async () => {
+  const ci = { ...run(), path: '.github/workflows/ci.yml', event: 'push', conclusion: 'success' }
+  const api = (runs, artifacts) => async path => path.endsWith('/ci.yml') ? { id: 7 } : path.includes('/artifacts?') ? { artifacts } : { workflow_runs: runs }
+  assert.deepEqual(await findSiteRun(api([ci], [artifact({ name: 'docs-site' })]), sha), { ready: true, runId: 42, artifactId: 99 })
+  assert.deepEqual(await findSiteRun(api([ci], [artifact({ name: 'docs-site', expired: true })]), sha), { ready: true, runId: 42, artifactId: '' })
+  for (const change of [{ event: 'pull_request' }, { head_sha: 'b'.repeat(40) }, { conclusion: 'failure' }, { head_repository: { full_name: 'fork/docfx' } }]) {
+    assert.equal((await findSiteRun(api([{ ...ci, ...change }], []), sha)).ready, false)
+  }
+})
+
+test('validation-only reports can describe a fork without becoming trusted website evidence', () => {
+  const data = report()
+  data.source.repository = 'vicancy/docfx'
+  data.channels = ['nightly']; data.stableSelection = null
+  data.results = data.results.filter(row => row.channel === 'nightly')
+  assert.equal(validateReport(data, undefined, now), data)
+  assert.match(renderReport(data, now), /https:\/\/github.com\/vicancy\/docfx\/actions\/runs\/42/)
+  assert.throws(() => validateReport(data, { ...data.source, repository: 'dotnet/docfx' }, now), /trusted run/)
+  for (const repository of ['evil/../docfx', 'evil/docfx\" onclick=\"alert(1)', 'https://evil.example/docfx']) {
+    data.source.repository = repository
+    assert.throws(() => validateReport(data, undefined, now), /source/)
+  }
+})
+
+test('validation-only or missing reports cannot authorize a nightly Pages refresh', async () => {
+  const api = (artifacts, candidate = run()) => async path => path.endsWith('/nightly.yml') ? { id: 7 } : path.includes('/artifacts?') ? { artifacts } : candidate
+  assert.equal(await productionReportReady(api([artifact()]), '42'), true)
+  for (const artifacts of [[], [artifact({ name: 'sdk-compatibility-validation-v1' })], [artifact({ expired: true })]]) {
+    assert.equal(await productionReportReady(api(artifacts), '42'), false)
+  }
+  for (const candidate of [run({ head_branch: 'validation' }), run({ head_repository: { full_name: 'vicancy/docfx' } }), run({ event: 'pull_request' })]) {
+    assert.equal(await productionReportReady(api([artifact()], candidate), '42'), false)
+  }
+  await assert.rejects(productionReportReady(api([artifact({ workflow_run: { id: 41 } })]), '42'), /provenance/)
+  await assert.rejects(productionReportReady(api([]), '../42'), /identity/)
+  const paginated = async path => path.endsWith('/nightly.yml') ? { id: 7 } : !path.includes('/artifacts?') ? run() : {
+    artifacts: path.endsWith('page=1') ? Array.from({ length: 100 }, () => artifact({ name: 'unrelated' })) : [artifact()],
+  }
+  assert.equal(await productionReportReady(paginated, '42'), true)
+})
+
+test('imports the CLI without process.argv[1], matching node --eval consumers', () => {
+  execFileSync(process.execPath, ['--input-type=module', '--eval', `await import(${JSON.stringify(new URL('./report.mjs', import.meta.url).href)})`])
+})
+
+test('PowerShell harness and artifact reader parse without errors', () => {
+  for (const file of ['Measure-Compatibility.ps1', 'Read-ReportArchive.ps1']) {
+    const path = fileURLToPath(new URL(file, import.meta.url)).replaceAll("'", "''")
+    execFileSync('pwsh', ['-NoProfile', '-Command', `$tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile('${path}',[ref]$tokens,[ref]$errors) > $null; if ($errors.Count) { throw ($errors -join '\n') }`])
+  }
+})
+
+test('ZIP adapter reads only the bounded named JSON report without extracting other files', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-report-test-'))
+  try {
+    const archive = join(temp, 'evidence.zip')
+    const escaped = archive.replaceAll("'", "''")
+    execFileSync('pwsh', ['-NoProfile', '-Command', `$z=[IO.Compression.ZipFile]::Open('${escaped}',[IO.Compression.ZipArchiveMode]::Create); foreach($name in @('compatibility-report.json','../unexpected.ps1')) { $w=[IO.StreamWriter]::new($z.CreateEntry($name).Open()); $w.Write('{}'); $w.Dispose() }; $z.Dispose()`])
+    const script = fileURLToPath(new URL('./Read-ReportArchive.ps1', import.meta.url))
+    assert.deepEqual(JSON.parse(execFileSync('pwsh', ['-NoProfile', '-File', script, '-ArchivePath', archive], { encoding: 'utf8' })), {})
+    execFileSync('pwsh', ['-NoProfile', '-Command', `$z=[IO.Compression.ZipFile]::Open('${escaped}',[IO.Compression.ZipArchiveMode]::Update); $w=[IO.StreamWriter]::new($z.CreateEntry('compatibility-report.json').Open()); $w.Write('{}'); $w.Dispose(); $z.Dispose()`])
+    assert.throws(() => execFileSync('pwsh', ['-NoProfile', '-File', script, '-ArchivePath', archive], { stdio: 'pipe' }))
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
+test('CLI prepares real schema content and rejects malformed input before writing', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-report-cli-'))
+  try {
+    const input = join(temp, 'input.json'); const output = join(temp, 'output.json')
+    await writeFile(input, JSON.stringify(report()))
+    const cli = fileURLToPath(new URL('./report.mjs', import.meta.url))
+    execFileSync(process.execPath, [cli, 'prepare', input, output])
+    assert.equal(JSON.parse(await readFile(output, 'utf8')).source.sha, sha)
+    await writeFile(input, '{}')
+    assert.throws(() => execFileSync(process.execPath, [cli, 'prepare', input, output], { stdio: 'pipe' }))
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
+test('manual validation defaults safe and cannot reach package or Pages publication', async () => {
+  const nightly = await readFile(new URL('../../.github/workflows/nightly.yml', import.meta.url), 'utf8')
+  const docs = await readFile(new URL('../../.github/workflows/docs.yml', import.meta.url), 'utf8')
+  assert.match(nightly, /validation_only:[\s\S]*?type: boolean\s+default: true/)
+  const job = name => nightly.split(`  ${name}:`)[1].split(/\r?\n  [a-z][a-z-]*:\r?\n/)[0]
+  const enabled = (name, github, inputs) => Function('github', 'inputs', `return (${job(name).match(/^    if: (.+)/m)[1].trim()})`)(github, inputs)
+  for (const repository of ['dotnet/docfx', 'vicancy/docfx']) {
+    for (const ref of ['refs/heads/main', 'refs/heads/validation']) {
+      const github = { repository, ref, event_name: 'workflow_dispatch' }
+      const inputs = { validation_only: true }
+      for (const name of ['build-nightly-package', 'test-nightly-package', 'sdk-compatibility']) assert.equal(enabled(name, github, inputs), true)
+      assert.equal(enabled('publish-github-packages', github, inputs), false)
+    }
+  }
+  for (const event_name of ['schedule', 'workflow_dispatch']) {
+    assert.equal(enabled('publish-github-packages', { repository: 'dotnet/docfx', ref: 'refs/heads/main', event_name }, { validation_only: false }), true)
+    assert.equal(enabled('publish-github-packages', { repository: 'vicancy/docfx', ref: 'refs/heads/main', event_name }, { validation_only: false }), false)
+    assert.equal(enabled('publish-github-packages', { repository: 'dotnet/docfx', ref: 'refs/heads/validation', event_name }, { validation_only: false }), false)
+  }
+  const build = job('build-nightly-package')
+  assert.doesNotMatch(build, /packages: write|nuget push/)
+  for (const tfm of ['net8.0', 'net9.0', 'net10.0']) assert.ok(build.includes(`dotnet test -c Release -f ${tfm} --no-build`))
+  assert.match(build, /dotnet pack/)
+  assert.match(build, /name: nightly-tool-package/)
+  for (const name of ['test-nightly-package', 'sdk-compatibility']) {
+    assert.match(job(name), /needs: \[build-nightly-package\]/)
+    assert.match(job(name), /name: nightly-tool-package/)
+    assert.match(job(name), /needs.build-nightly-package.outputs.version/)
+    assert.doesNotMatch(job(name), /packages: write|pages: write/)
+  }
+  assert.match(nightly, /if \(\$env:VALIDATION_ONLY -eq 'true'\) \{ \$options.SkipStable = \$true \}/)
+  assert.match(nightly, /inputs.validation_only && 'sdk-compatibility-validation-v1' \|\| 'sdk-compatibility-v1'/)
+  assert.match(docs, /report.mjs production-ready/)
+  assert.match(docs, /if: github.event.workflow_run.name == 'ci' \|\| steps.production-report.outputs.ready == 'true'\s+id: site-run/)
+  assert.match(docs, /ready: \$\{\{ steps.site-run.outputs.ready \}\}/)
+  assert.match(docs, /if: needs.site.outputs.ready == 'true'/)
+})
+
+test('workflow contract keeps exact packages, bounded PR smoke, failure evidence and one publisher', async () => {
+  const read = path => readFile(new URL(`../../${path}`, import.meta.url), 'utf8')
+  const [ci, nightly, docs, site] = await Promise.all(['.github/workflows/ci.yml', '.github/workflows/nightly.yml', '.github/workflows/docs.yml', '.github/actions/build-docs/action.yml'].map(read))
+  assert.match(ci, /-SkipStable -FailOnIncompatible/)
+  assert.match(ci, /node --test test\/compatibility\/report.test.mjs/)
+  assert.match(ci, /name: docs-site/)
+  assert.match(nightly, /--version \$env:TOOL_VERSION/)
+  assert.doesNotMatch(nightly, /tool install.*--prerelease/)
+  assert.ok(nightly.indexOf('Upload compatibility evidence') < nightly.indexOf('Check measured outcomes'))
+  assert.match(nightly, /if: always\(\)/)
+  assert.match(nightly, /retention-days: 14/)
+  assert.match(docs, /workflows: \[ci, nightly\]/)
+  assert.match(docs, /ref: main/)
+  assert.match(docs, /cancel-in-progress: false/)
+  assert.match(docs, /report.mjs fetch docs\/_site\/reports\/sdk-compatibility.json/)
+  assert.doesNotMatch(docs, /Measure-Compatibility/)
+  assert.doesNotMatch(ci + nightly, /actions\/deploy-pages/)
+  assert.equal((docs.match(/actions\/deploy-pages/g) ?? []).length, 1)
+  assert.match(site, /samples\/seed\/docfx.json --output docs\/_site\/seed/)
+})

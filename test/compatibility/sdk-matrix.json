@@ -1,0 +1,9 @@
+{
+  "channels": [
+    { "channel": "8.0", "projectTfm": "net8.0" },
+    { "channel": "9.0", "projectTfm": "net9.0" },
+    { "channel": "10.0", "projectTfm": "net10.0" },
+    { "channel": "11.0", "projectTfm": "net10.0" }
+  ],
+  "releaseIndex": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/releases-index.json"
+}

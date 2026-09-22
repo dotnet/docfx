@@ -38,6 +38,7 @@ Docfx is planned to continue as a community-driven project. We hope to produce f
 3. Go to https://localhost:8080 to see the sample site.
 
 For more information, refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
+See [SDK compatibility observations](https://dotnet.github.io/docfx/docs/sdk-compatibility.html) for measured package/SDK combinations and their test evidence.
 
 > [!TIP]
 > Docfx publishes nightly builds to [GitHub Packages](https://github.com/orgs/dotnet/packages), this allows you to stay up-to-date with the latest developments in Docfx.

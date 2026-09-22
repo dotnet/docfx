@@ -1,0 +1,109 @@
+name: publish-docs
+on:
+  workflow_run:
+    workflows: [ci, nightly]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+# All triggers share one whole-site publication lane. Never cancel a live deployment.
+concurrency:
+  group: github-pages-site
+  cancel-in-progress: false
+
+jobs:
+  site:
+    if: >-
+      github.repository == 'dotnet/docfx' &&
+      github.event.workflow_run.head_repository.full_name == 'dotnet/docfx' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      ((github.event.workflow_run.name == 'ci' && github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success') ||
+       (github.event.workflow_run.name == 'nightly' && (github.event.workflow_run.event == 'schedule' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      ready: ${{ steps.site-run.outputs.ready }}
+      sha: ${{ steps.source.outputs.sha }}
+    steps:
+    # Only current trusted main code runs here, never code or scripts from the triggering artifact.
+    - uses: actions/checkout@v7
+      with:
+        ref: main
+        lfs: true
+    - uses: actions/setup-node@v6
+      with:
+        node-version: 24
+    # Validation-only nightlies use a different artifact and must never refresh Pages.
+    - name: Require production evidence from the triggering nightly
+      if: github.event.workflow_run.name == 'nightly'
+      id: production-report
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RUN_ID: ${{ github.event.workflow_run.id }}
+      run: node test/compatibility/report.mjs production-ready "$RUN_ID"
+    - name: Record current main
+      id: source
+      shell: bash
+      run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+    - name: Find successful CI for current main
+      if: github.event.workflow_run.name == 'ci' || steps.production-report.outputs.ready == 'true'
+      id: site-run
+      env:
+        GH_TOKEN: ${{ github.token }}
+        SOURCE_SHA: ${{ steps.source.outputs.sha }}
+      run: node test/compatibility/report.mjs site-run "$SOURCE_SHA"
+    - name: Reuse tested whole site
+      if: steps.site-run.outputs.ready == 'true' && steps.site-run.outputs.artifact-id != ''
+      uses: actions/download-artifact@v8
+      with:
+        artifact-ids: ${{ steps.site-run.outputs.artifact-id }}
+        merge-multiple: true
+        run-id: ${{ steps.site-run.outputs.run-id }}
+        github-token: ${{ github.token }}
+        path: docs/_site
+    # The site artifact is rolling storage too. Rebuild through the same path if it expired.
+    - uses: ./.github/actions/build
+      if: steps.site-run.outputs.ready == 'true' && steps.site-run.outputs.artifact-id == ''
+    - uses: ./.github/actions/build-docs
+      if: steps.site-run.outputs.ready == 'true' && steps.site-run.outputs.artifact-id == ''
+    - name: Retrieve newest complete trusted compatibility evidence
+      if: steps.site-run.outputs.ready == 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: node test/compatibility/report.mjs fetch docs/_site/reports/sdk-compatibility.json
+    - uses: actions/upload-pages-artifact@v5
+      if: steps.site-run.outputs.ready == 'true'
+      with:
+        path: docs/_site
+
+  deploy:
+    needs: site
+    if: needs.site.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    steps:
+    - name: Do not roll back a newer main revision
+      id: current
+      env:
+        GH_TOKEN: ${{ github.token }}
+        SOURCE_SHA: ${{ needs.site.outputs.sha }}
+      shell: bash
+      run: |
+        latest=$(gh api repos/dotnet/docfx/commits/main --jq .sha)
+        if [ "$latest" = "$SOURCE_SHA" ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; fi
+    - id: deployment
+      if: steps.current.outputs.ready == 'true'
+      uses: actions/deploy-pages@v5

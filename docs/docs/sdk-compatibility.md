@@ -1,0 +1,60 @@
+---
+uid: sdk-compatibility
+---
+
+# SDK compatibility
+
+These are automated observations, **not an officially supported SDK whitelist**. A passing fixture does not prove that every project, workload, source generator, or operating system works. Untested combinations have no compatibility claim.
+
+<div id="sdk-compatibility-report" aria-live="polite">Compatibility evidence unavailable until the report loads. Enable JavaScript to view recorded results.</div>
+
+## What is measured?
+
+The nightly workflow builds the checked-out main commit, packs it, and tests **that exact package artifact**, verifying its version and package hash rather than installing whichever prerelease a feed returns. A separate released-package group discovers the latest non-prerelease version from the official GitHub release metadata, then installs and verifies that exact version using the configured package feed. Discovery or installation failure is an **infrastructure-error**; there is no fallback to an older release. GitHub release metadata is used only for version discovery, not package downloads.
+
+Every row records the selected project SDK, project target framework, package version and hash, tool runtime TFM, OS, scenario, and timestamp. The report records the workflow's source commit and stable-version selection. Runtime TFM describes the packaged tool, not the project's framework or the exact installed runtime patch.
+
+- **basic** compiles a C# class and checks that its public type and method appear in API metadata.
+- **razor** compiles a Razor component with `@inherits` and a code-behind override. Metadata must contain both the public API and its generated inheritance/override relationship. An incomplete API is not a pass, even if DocFX exits successfully.
+
+The initial nightly matrix runs on Linux with the latest SDK from the explicitly configured 8.0, 9.0, 10.0, and 11.0 channels, resolved from Microsoft's official release metadata. The 11.0 SDK deliberately targets `net10.0` to measure SDK/tool interaction independently of a project's target framework. Each case pins `global.json` with roll-forward disabled and verifies `dotnet --version`. DocFX runs from the package's `net10.0` assets; other tool TFMs and operating systems are not covered by this matrix.
+
+## Understanding results
+
+- **passed**: fixture build, metadata extraction, and API assertions passed.
+- **incompatible**: compilation, extraction, generator diagnostics, or expected API checks failed. Read the log before attributing the failure to a particular dependency.
+- **unavailable**: the requested SDK could not be selected; no compatibility measurement was made.
+- **infrastructure-error**: installation, restore, or harness setup failed; no pass is inferred.
+
+DocFX bundles a tested Roslyn dependency set. Selecting a newer SDK does not replace those assemblies. SDK source generators can require a newer compiler even when a project targets an older framework. This report measures that interaction; it does not change compiler loading or prescribe a workaround.
+
+## Freshness and evidence
+
+Evidence older than seven days is labeled **stale**, including when the page is revisited without a new website deployment. Missing, expired, inaccessible, or invalid reports never produce passing rows. Recorded evidence includes a link to download its source JSON report.
+
+Open the linked workflow run and download **sdk-compatibility-v1** for the report and diagnostic logs. Artifacts are retained for **14 days**, not permanently archived. A complete nightly report can contain failed tests; publication does not select only successful runs. Website builds accept reports only from this repository's completed, main-branch scheduled or manually dispatched nightly workflow, and validate the report's commit, run ID, attempt, schema, and complete matrix.
+
+Main-branch CI publication and completed nightlies use the same whole-site publishing workflow. A nightly refresh requires successful CI for the current main revision. Normal docs publishing reuses retained evidence; it does not rerun the SDK matrix. No result commits are needed.
+
+## Validating a workflow change
+
+Manual runs of `nightly.yml` default to **validation only**. Select the branch to test and leave `validation_only` enabled. The workflow builds that checkout, runs the existing tests on all three tool target frameworks, packs it, and downloads the same versioned package for seed-site checks and the complete SDK compatibility matrix. This mode skips the released-package comparison and cannot publish NuGet packages or deploy Pages. It uploads the exact package and **sdk-compatibility-validation-v1** report/log artifact for inspection, retained for 14 days. Compatibility failures still retain evidence.
+
+Scheduled main runs keep the normal released-package comparison and publication behavior. A manual production run requires explicitly disabling `validation_only` and selecting upstream main. The website only refreshes for nightlies carrying the separate production report artifact; validation artifacts cannot authorize publication, even when validation runs on main.
+
+Validation uses the repository and runner's existing package-source configuration; it does not silently change feeds. Confirm that those sources are authorized before dispatching a remote run. A locally restricted mirror's missing dependencies do not establish whether the configured GitHub-hosted build can restore them. Manual dispatch also requires write access and an existing workflow on the repository's default branch; adding a workflow only to a branch of an otherwise unconfigured fork is insufficient.
+
+## Running locally
+
+From the repository root, resolve the matrix and install the SDKs you intend to test:
+
+```powershell
+node test/compatibility/report.mjs resolve drop/compatibility/matrix.json
+./test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/compatibility/matrix.json -OutputDirectory drop/compatibility/report -NightlyPackage path/to/exact/docfx.nupkg
+node test/compatibility/report.mjs prepare drop/compatibility/report/compatibility-report.json docs/obj/sdk-compatibility.json
+docfx docs/docfx.json
+```
+
+Omit `-NightlyPackage` for released-package-only local measurements, or use `-SkipStable` for a bounded packaged-tool smoke. A report without a nightly package does **not** validate current main. For a deliberately older local comparison, supply both `-StableVersion` and `-StableVersionReason`; this is labeled an explicit local version, never the latest stable release, and is not allowed in GitHub Actions. `-NuGetConfig` applies an explicit feed configuration to tool installation and fixture restores; reuse your organization's approved feeds. `-WorkDirectory` retains isolated package/fixture files for inspection and must name a new directory. `-FailOnIncompatible` makes any non-passing row fail the command **after** writing the report.
+
+Run fast reporting and publication-contract tests with `node --test test/compatibility/report.test.mjs`. Generated evidence belongs in ignored `drop` and `docs/obj` directories, not in commits.

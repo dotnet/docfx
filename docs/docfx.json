@@ -24,6 +24,11 @@
     ],
     "resource": [
       {
+        "src": "obj",
+        "files": [ "sdk-compatibility.json" ],
+        "dest": "reports"
+      },
+      {
         "files": [ "**/images/**", "**/media/**", "codesnippet/**" ],
         "exclude": [ "_site/**", "obj/**" ]
       },
