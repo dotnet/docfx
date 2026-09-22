@@ -958,6 +958,40 @@ test('CI cleans coverage downloads without weakening the harness source-state ch
   } finally { await rm(temp, { recursive: true, force: true }) }
 })
 
+test('dirty source diagnostics preserve exact paths without changing the source guard', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-source-diagnostics-'))
+  try {
+    const repository = join(temp, 'repository')
+    const logs = join(temp, 'logs')
+    await mkdir(repository)
+    await mkdir(logs)
+    execFileSync('git', ['init', '--quiet', repository])
+    const harness = fileURLToPath(new URL('./Measure-Compatibility.ps1', import.meta.url)).replaceAll("'", "''")
+    const diagnose = () => execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
+      $ErrorActionPreference = 'Stop'
+      $ast = [System.Management.Automation.Language.Parser]::ParseFile('${harness}', [ref]$null, [ref]$null)
+      $assignment = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq '$dirty' }, $true)
+      $diagnostic = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.IfStatementAst] -and $n.Extent.Text.StartsWith('if ($dirty)') }, $true)
+      if (-not $diagnostic) { throw 'Missing dirty source diagnostics' }
+      $logs = '${logs.replaceAll("'", "''")}'
+      Invoke-Expression $assignment.Extent.Text
+      Invoke-Expression $diagnostic.Extent.Text
+      ConvertTo-Json $dirty
+    `], { cwd: repository, encoding: 'utf8', stdio: 'pipe' })
+    assert.equal(diagnose().trim(), 'false')
+    assert.deepEqual(await readdir(logs), [])
+    await mkdir(join(repository, 'unexpected'))
+    await writeFile(join(repository, 'unexpected', 'input.cs'), '// Must remain dirty')
+    const expected = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: repository, encoding: 'utf8' }).trim()
+    const output = diagnose()
+    assert.match(output, /Source tree is dirty:/)
+    assert.ok(output.includes(expected))
+    assert.match(output, /true\s*$/)
+    assert.equal((await readFile(join(logs, 'source-state.log'), 'utf8')).trim(), expected)
+    assert.equal(execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: repository, encoding: 'utf8' }).trim(), expected)
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
 test('workflow contract keeps exact packages, bounded PR smoke, failure evidence and one publisher', async () => {
   const read = path => readFile(new URL(`../../${path}`, import.meta.url), 'utf8')
   const [ci, nightly, docs, site] = await Promise.all(['.github/workflows/ci.yml', '.github/workflows/nightly.yml', '.github/workflows/docs.yml', '.github/actions/build-docs/action.yml'].map(read))

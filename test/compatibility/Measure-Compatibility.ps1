@@ -38,6 +38,11 @@ $rows = [Collections.Generic.List[object]]::new()
 $tools = [Collections.Generic.List[object]]::new()
 $sha = (git rev-parse HEAD).Trim()
 $dirty = [bool] (git status --porcelain)
+if ($dirty) {
+    $sourceState = git status --porcelain=v1 --untracked-files=all
+    $sourceState | Set-Content (Join-Path $logs 'source-state.log') -Encoding utf8
+    Write-Warning ("Source tree is dirty:`n" + ($sourceState -join "`n"))
+}
 $measurementId = [Guid]::NewGuid().ToString('N')
 $scenarios = @('basic', 'razor')
 

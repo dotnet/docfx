@@ -32,6 +32,8 @@ Outcomes distinguish compatibility observations from cases that could not be mea
 
 Normal and validation-only nightlies use **reporting mode**: a complete report containing incompatible results is a valid observation, not a failing compatibility job. Findings remain labeled incompatible in the report, with workflow warnings and a step summary. Unavailable cases, infrastructure errors, invalid provenance, malformed or incomplete reports, and script errors still fail. The existing source build, unit tests, and seed-site checks remain required. PR packaged-tool smoke uses **strict mode**, where any non-passing case fails.
 
+For a dirty-source failure, inspect the Git status printed by the harness and saved as `logs/source-state.log` in the evidence artifact. This lists the changed and untracked paths without modifying or cleaning them; CI provenance still requires a clean source tree.
+
 ## Evidence and website publication
 
 Evidence older than seven days is labeled **stale**, including when the page is revisited without a new website deployment. Missing, expired, inaccessible, or invalid reports never produce passing rows.
