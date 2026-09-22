@@ -56,7 +56,16 @@ export async function latestReport(api, readArchive, expectedMatrix) {
         if (error.status === 404 || error.status === 410) continue // Expired between listing and download.
         throw error
       }
-      validateReport(report, { repository, sha: run.head_sha, runId: run.id, runAttempt: run.run_attempt })
+      validateReport(report)
+      const attempt = Number(report.source.runAttempt)
+      if (!Number.isSafeInteger(attempt) || attempt < 1 || attempt > run.run_attempt) throw new Error('Invalid report attempt provenance.')
+      let producingRun = run
+      if (attempt !== run.run_attempt) {
+        // A failed-job retry can retain the compatibility job's earlier artifact.
+        producingRun = await api(`/repos/${repository}/actions/runs/${run.id}/attempts/${attempt}`)
+        if (!trustedRun(producingRun, workflow.id) || producingRun.id !== run.id || producingRun.head_sha !== run.head_sha || producingRun.run_attempt !== attempt) throw new Error('Report attempt provenance does not match its trusted run.')
+      }
+      validateReport(report, { repository, sha: run.head_sha, runId: run.id, runAttempt: producingRun.run_attempt })
       if (expectedMatrix) {
         const key = t => `${t.channel}/${t.projectTfm}`
         if (JSON.stringify(report.matrix.map(key).sort()) !== JSON.stringify(expectedMatrix.map(key).sort()) || report.matrix.some(t => !t.sdk.startsWith(`${t.channel}.`))) throw new Error('Report differs from the reviewed SDK channel matrix.')

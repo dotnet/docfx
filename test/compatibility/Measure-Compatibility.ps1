@@ -38,6 +38,7 @@ $rows = [Collections.Generic.List[object]]::new()
 $tools = [Collections.Generic.List[object]]::new()
 $sha = (git rev-parse HEAD).Trim()
 $dirty = [bool] (git status --porcelain)
+$measurementId = [Guid]::NewGuid().ToString('N')
 $scenarios = @('basic', 'razor')
 
 function Invoke-Logged([string[]] $Arguments, [string] $Log) {
@@ -123,7 +124,7 @@ try {
         foreach ($tool in $tools) {
             foreach ($scenario in $scenarios) {
                 $id = "$($tool.channel)-$($target.sdk)-$($target.projectTfm)-$scenario"
-                $logName = "logs/$id.log"
+                $logName = "logs/$measurementId-$id.log"
                 $log = Join-Path $OutputDirectory $logName
                 $row = [ordered]@{
                     sdk = $target.sdk; selectedSdk = $null; projectTfm = $target.projectTfm

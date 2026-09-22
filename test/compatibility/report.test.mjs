@@ -5,6 +5,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile, mkdtemp, writeFile, rm, mkdir, readdir, symlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
+import { createServer } from 'node:http'
 import { join } from 'node:path'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -298,6 +299,39 @@ test('selects failed-test nightly reports instead of filtering successful runs',
   assert.equal(result.results[1].outcome, 'incompatible')
 })
 
+test('retained reports validate against their producing attempt after an unrelated job is retried', async () => {
+  const data = report(); const original = JSON.stringify(data); const seen = []
+  const api = async path => {
+    seen.push(path)
+    if (path === '/repos/dotnet/docfx/actions/runs/42/attempts/1') return run()
+    return adapter([run({ run_attempt: 2 })])(path)
+  }
+  assert.equal(await latestReport(api, async () => data), data)
+  assert.equal(JSON.stringify(data), original, 'Never relabel retained evidence as the newer attempt')
+  assert.equal(seen.filter(path => path.includes('/attempts/')).length, 1)
+})
+
+test('retained reports reject invalid, future, absent or mismatched producing attempts', async () => {
+  for (const value of ['0', '3', '-1', '1.5', '9007199254740992']) {
+    const data = report(); data.source.runAttempt = value
+    await assert.rejects(latestReport(async path => {
+      assert.ok(!path.includes('/attempts/'), 'Reject invalid attempts before requesting an attempt record')
+      return adapter([run({ run_attempt: 2 })])(path)
+    }, async () => data))
+  }
+  for (const overrides of [
+    { id: 43 }, { run_attempt: 2 }, { head_sha: 'c'.repeat(40) }, { workflow_id: 8 },
+    { path: '.github/workflows/ci.yml' }, { head_repository: { full_name: 'fork/docfx' } },
+    { head_branch: 'feature' }, { event: 'pull_request' }, { status: 'in_progress' },
+  ]) {
+    await assert.rejects(latestReport(async path => path.includes('/attempts/') ? run(overrides) : adapter([run({ run_attempt: 2 })])(path), async () => report()), /provenance|trusted run/)
+  }
+  await assert.rejects(latestReport(async path => {
+    if (path.includes('/attempts/')) throw Object.assign(new Error('Attempt not found'), { status: 404 })
+    return adapter([run({ run_attempt: 2 })])(path)
+  }, async () => report()), { status: 404 })
+})
+
 test('paginates workflow runs and artifacts', async () => {
   const seen = []
   const api = async path => {
@@ -411,33 +445,56 @@ test('trusted retrieval requires all five reviewed pairs while older 16-row evid
   await assert.rejects(latestReport(adapter(), async () => data, matrixConfig.channels), /reviewed SDK channel matrix/)
 })
 
-test('actual harness identifiers isolate all 20 work directories and log files by project TFM', () => {
+function harnessIdentifiers(contexts) {
   const path = fileURLToPath(new URL('Measure-Compatibility.ps1', import.meta.url)).replaceAll("'", "''")
   const matrix = JSON.stringify(resolveMatrix(matrixConfig, sdkIndex))
-  // Evaluate only the real identifier assignments, never simulate fixture execution or measurements.
-  execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
+  // Evaluate the producer's assignments, not an independently reimplemented naming algorithm.
+  return JSON.parse(execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
     $ErrorActionPreference = 'Stop'
     $ast = [System.Management.Automation.Language.Parser]::ParseFile('${path}', [ref]$null, [ref]$null)
+    $measurement = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq '$measurementId' }, $true)
     $assignments = foreach ($name in @('id', 'logName', 'directory')) {
       $node = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq ('$' + $name) }, $true)
       if (!$node) { throw "Missing harness assignment: $name" }
       $node.Extent.Text
     }
     $work = [IO.Path]::GetTempPath()
-    $directories = [Collections.Generic.HashSet[string]]::new()
-    $logs = [Collections.Generic.HashSet[string]]::new()
-    foreach ($target in ('${matrix}' | ConvertFrom-Json)) {
-      foreach ($channel in @('stable', 'nightly')) {
-        $tool = @{ channel = $channel }
-        foreach ($scenario in @('basic', 'razor')) {
-          Invoke-Expression ($assignments -join [Environment]::NewLine)
-          if (!$id.Contains($target.projectTfm) -or $logName -ne "logs/$id.log" -or $directory -ne (Join-Path $work $id)) { throw 'Incorrect case identity' }
-          if (!$directories.Add($directory) -or !$logs.Add($logName)) { throw 'SDK/TFM case collision' }
+    $runs = foreach ($context in ('${JSON.stringify(contexts)}' | ConvertFrom-Json)) {
+      $env:GITHUB_RUN_ID = $context.runId
+      $env:GITHUB_RUN_ATTEMPT = $context.runAttempt
+      if ($measurement) { Invoke-Expression $measurement.Extent.Text }
+      $cases = foreach ($target in ('${matrix}' | ConvertFrom-Json)) {
+        foreach ($channel in @('stable', 'nightly')) {
+          $tool = @{ channel = $channel }
+          foreach ($scenario in @('basic', 'razor')) {
+            Invoke-Expression ($assignments -join [Environment]::NewLine)
+            if (!$id.Contains($target.projectTfm) -or $directory -ne (Join-Path $work $id)) { throw 'Incorrect case identity' }
+            @{ id = $id; log = $logName; directory = $directory }
+          }
         }
       }
+      @{ cases = @($cases) }
     }
-    if ($directories.Count -ne 20 -or $logs.Count -ne 20) { throw 'Expected 20 isolated cases' }
-  `], { stdio: 'pipe' })
+    ConvertTo-Json -InputObject @($runs) -Depth 5 -Compress
+  `], { encoding: 'utf8', stdio: 'pipe' }))
+}
+
+test('actual harness identifiers isolate all 20 work directories and log files by project TFM', () => {
+  const [{ cases }] = harnessIdentifiers([{ runId: '42', runAttempt: '1' }])
+  assert.equal(cases.length, 20)
+  assert.equal(new Set(cases.map(row => row.directory)).size, 20)
+  assert.equal(new Set(cases.map(row => row.log)).size, 20)
+  for (const row of cases) assert.match(row.log, /^logs\/[a-zA-Z0-9.-]+\.log$/)
+})
+
+test('actual harness logs never reuse URLs across runs, retries or repeated local measurements', () => {
+  const runs = harnessIdentifiers([
+    { runId: '42', runAttempt: '1' }, { runId: '43', runAttempt: '1' },
+    { runId: '42', runAttempt: '2' }, { runId: '42', runAttempt: '2' },
+    { runId: null, runAttempt: null }, { runId: null, runAttempt: null },
+  ])
+  const urls = runs.flatMap(({ cases }) => cases.map(row => caseLogUrl(row, 'https://example.test/reports/report.json').href))
+  assert.equal(new Set(urls).size, 120, 'Different measurements must not serve different evidence at the same log URL')
 })
 
 test('discovers an exact official stable release and rejects previews or malformed versions', () => {
@@ -595,6 +652,49 @@ test('archive and prepare export only named case logs and preserve JSON/log byte
   } finally { await rm(temp, { recursive: true, force: true }) }
 })
 
+test('archive, prepare and HTTP selection cannot mix logs across website replacements', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-log-replacement-'))
+  const site = join(temp, 'site'); const selections = []
+  const server = createServer(async (request, response) => {
+    const path = new URL(request.url, 'http://localhost').pathname
+    if (path !== '/sdk-compatibility.json' && !/^\/logs\/[a-zA-Z0-9.-]+\.log$/.test(path)) { response.writeHead(404).end(); return }
+    try { response.end(await readFile(join(site, path.slice(1)))) } catch (error) { response.writeHead(error.code === 'ENOENT' ? 404 : 500).end() }
+  })
+  try {
+    await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve) })
+    const base = new URL(`http://127.0.0.1:${server.address().port}/sdk-compatibility.json`)
+    const identifiers = harnessIdentifiers([{ runId: '42', runAttempt: '1' }, { runId: '43', runAttempt: '1' }])
+    const oldStates = []; const newStates = []; let older
+    for (const [index, { cases }] of identifiers.entries()) {
+      const data = report(resolveMatrix(matrixConfig, sdkIndex)); data.source.runId = String(42 + index)
+      data.results.forEach((row, i) => { row.log = cases[i].log })
+      const original = Buffer.from(JSON.stringify(data) + '\r\n')
+      const log = Buffer.from(`Protocol fixture output from measurement ${index}\r\n`)
+      const archive = join(temp, `${index}.zip`); const evidence = join(temp, `evidence-${index}`)
+      await makeArchive(archive, [['compatibility-report.json', original], ...data.results.map(row => [row.log, log])])
+      readArchive(archive, evidence)
+      await prepareReport(join(evidence, 'compatibility-report.json'), join(site, 'sdk-compatibility.json'))
+      assert.deepEqual(Buffer.from(await (await fetch(base)).arrayBuffer()), original)
+      for (const row of data.results) assert.deepEqual(await readFile(join(site, row.log)), log)
+      const selection = createCaseSelection(data, state => (index ? newStates : oldStates).push(state), undefined, base)
+      selections.push(selection)
+      await selection.select(0)
+      assert.equal((index ? newStates : oldStates).at(-1).output, log.toString())
+      if (index === 0) older = selection
+    }
+    await older.select(1)
+    assert.equal(oldStates.at(-1).phase, 'error', 'An open old report must not display the replacement report\'s log')
+    assert.match(oldStates.at(-1).error, /404/)
+    assert.equal(oldStates.at(-1).row.outcome, 'passed')
+    assert.equal(newStates.at(-1).phase, 'ready')
+    assert.equal((await readdir(join(site, 'logs'))).length, 20)
+  } finally {
+    for (const selection of selections) selection.dispose()
+    await new Promise(resolve => server.close(resolve))
+    await rm(temp, { recursive: true, force: true })
+  }
+})
+
 test('evidence export rejects duplicate, unsafe, case-colliding and oversized ZIP entries before extraction', async () => {
   const temp = await mkdtemp(join(tmpdir(), 'docfx-zip-guards-'))
   try {
@@ -639,22 +739,29 @@ test('trusted fetch exports the selected archive while temporary-branch evidence
     const original = Buffer.from(JSON.stringify(data) + '\r\n')
     await makeArchive(archive, [['compatibility-report.json', original], ...data.results.map(row => [row.log, 'unit log'])])
     const bytes = await readFile(archive)
-    let branch = 'main'; let downloads = 0
+    let branch = 'main'; let downloads = 0; let attempt = 1; let attemptRequests = 0
     globalThis.fetch = async url => {
       const path = new URL(url).pathname + new URL(url).search
       if (path.endsWith('/zip')) {
         downloads++
         return { ok: true, headers: new Headers(), body: (async function * () { yield bytes })() }
       }
-      return { ok: true, json: async () => adapter([run({ head_branch: branch })])(path) }
+      if (path === '/repos/dotnet/docfx/actions/runs/42/attempts/1') {
+        attemptRequests++
+        return { ok: true, json: async () => run() }
+      }
+      return { ok: true, json: async () => adapter([run({ head_branch: branch, run_attempt: attempt })])(path) }
     }
-    await main(['fetch', output])
-    assert.equal(downloads, 1)
-    assert.deepEqual(await readFile(output), original)
-    assert.equal((await readdir(join(temp, 'site', 'logs'))).length, 20)
+    for (attempt of [1, 2]) {
+      await main(['fetch', output])
+      assert.equal(downloads, attempt)
+      assert.equal(attemptRequests, attempt - 1)
+      assert.deepEqual(await readFile(output), original)
+      assert.equal((await readdir(join(temp, 'site', 'logs'))).length, 20)
+    }
     branch = 'temporary-validation'
     await main(['fetch', output])
-    assert.equal(downloads, 1)
+    assert.equal(downloads, 2)
     assert.equal(JSON.parse(await readFile(output, 'utf8')).state, 'unavailable')
     await assert.rejects(readdir(join(temp, 'site', 'logs')), { code: 'ENOENT' })
   } finally { globalThis.fetch = originalFetch; await rm(temp, { recursive: true, force: true }) }
@@ -823,6 +930,32 @@ test('manual validation defaults safe and cannot reach package or Pages publicat
   assert.match(docs, /if: github.event.workflow_run.name == 'ci' \|\| steps.production-report.outputs.ready == 'true'\s+id: site-run/)
   assert.match(docs, /ready: \$\{\{ steps.site-run.outputs.ready \}\}/)
   assert.match(docs, /if: needs.site.outputs.ready == 'true'/)
+})
+
+test('CI cleans coverage downloads without weakening the harness source-state check', async () => {
+  const ci = await readFile(new URL('../../.github/workflows/ci.yml', import.meta.url), 'utf8')
+  const codecov = ci.split('- uses: codecov/codecov-action@v7')[1].split(/\r?\n    - /)[0]
+  assert.match(codecov, /\n        cleanup: true\s/)
+  assert.match(codecov, /fail_ci_if_error: false/)
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-source-state-'))
+  try {
+    execFileSync('git', ['init', '--quiet', temp])
+    const harness = fileURLToPath(new URL('./Measure-Compatibility.ps1', import.meta.url)).replaceAll("'", "''")
+    const dirty = () => execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
+      $ast = [System.Management.Automation.Language.Parser]::ParseFile('${harness}', [ref]$null, [ref]$null)
+      $assignment = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq '$dirty' }, $true)
+      Invoke-Expression $assignment.Extent.Text
+      ConvertTo-Json $dirty
+    `], { cwd: temp, encoding: 'utf8', stdio: 'pipe' }).trim()
+    assert.equal(dirty(), 'false')
+    const downloads = ['codecov', 'codecov.SHA256SUM', 'codecov.SHA256SUM.sig']
+    for (const name of downloads) await writeFile(join(temp, name), 'Inert test input; not an executable')
+    assert.equal(dirty(), 'true', 'Reproduce the coverage download/source-provenance collision')
+    for (const name of downloads) await rm(join(temp, name))
+    assert.equal(dirty(), 'false')
+    await writeFile(join(temp, 'Unexpected.cs'), '// Untracked source must still invalidate CI provenance')
+    assert.equal(dirty(), 'true')
+  } finally { await rm(temp, { recursive: true, force: true }) }
 })
 
 test('workflow contract keeps exact packages, bounded PR smoke, failure evidence and one publisher', async () => {
