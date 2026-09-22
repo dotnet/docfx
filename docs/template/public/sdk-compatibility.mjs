@@ -73,6 +73,10 @@ export function renderReport(report, now = Date.now()) {
   const runUrl = source.repository === 'local' ? null : `https://github.com/${source.repository}/actions/runs/${source.runId}/attempts/${source.runAttempt}`
   let html = `<p class="alert ${stale ? 'alert-warning' : 'alert-info'}"><strong>${stale ? 'Stale evidence' : 'Latest recorded evidence'}</strong> — measured ${escape(report.generatedAt)}. Evidence becomes stale after ${staleAfterDays} days; this is not a support guarantee.</p>`
   html += `<p>${runUrl ? `<a href="${runUrl}">Workflow run and downloadable logs</a>` : 'Local measurement (not a published nightly run)'}. <a href="../reports/sdk-compatibility.json">Download report JSON</a>. Source: <code>${escape(source.sha)}</code>${source.dirty ? ' (with local uncommitted changes)' : ''}.</p>`
+  const incompatible = report.results.filter(r => r.outcome === 'incompatible').length
+  const unmeasured = report.results.filter(r => ['unavailable', 'infrastructure-error'].includes(r.outcome)).length
+  if (incompatible) html += `<p class="alert alert-warning"><strong>Compatibility issues found: ${incompatible} incompatible result(s).</strong> Review the per-case evidence. A completed report does not mean all combinations passed.</p>`
+  if (unmeasured) html += `<p class="alert alert-danger"><strong>${unmeasured} case(s) could not be measured.</strong> SDK selection or infrastructure failed; no compatibility conclusion is available for those cases.</p>`
   if (!report.channels.includes('nightly')) html += '<p class="alert alert-warning"><strong>Current-main package not measured in this report.</strong> Released-package results do not validate current main.</p>'
   for (const channel of ['nightly', 'stable'].filter(channel => report.channels.includes(channel))) {
     html += `<h3>${channel === 'stable' ? 'Released DocFX' : 'Nightly DocFX'}</h3>`

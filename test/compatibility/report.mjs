@@ -134,7 +134,7 @@ async function archiveReport(id) {
   } finally { await rm(temp, { recursive: true, force: true }) }
 }
 
-export async function main([command, path, output]) {
+export async function main([command, path, output, ...extra]) {
   switch (command) {
     case 'stable-version': {
       console.log(JSON.stringify(resolveStableRelease(await request(`/repos/${repository}/releases/latest`))))
@@ -166,8 +166,30 @@ export async function main([command, path, output]) {
       break
     }
     case 'check': {
+      if (extra.length || (output !== undefined && output !== '--strict')) throw new Error('Usage: report.mjs check <report.json> [--strict]')
       const report = validateReport(await json(path))
-      if (report.results.some(r => r.outcome !== 'passed')) process.exitCode = 1
+      const strict = output === '--strict'
+      const count = outcome => report.results.filter(r => r.outcome === outcome).length
+      const incompatible = count('incompatible')
+      const unmeasured = count('unavailable') + count('infrastructure-error')
+      const summary = `${count('passed')} passed, ${incompatible} incompatible, ${count('unavailable')} unavailable, ${count('infrastructure-error')} infrastructure-error.`
+      const policy = strict
+        ? 'Strict mode: every case must pass.'
+        : 'Reporting mode: incompatible results are observations, not blocking failures. Unavailable cases and infrastructure errors still fail the check.'
+      console.log(`SDK compatibility: ${summary}\n${policy}`)
+      if (incompatible) {
+        const warning = `${incompatible} incompatible result(s) recorded; inspect the report and logs. ${strict ? 'Strict mode fails this check.' : 'These findings do not block nightly reporting.'}`
+        console.warn(process.env.GITHUB_ACTIONS === 'true' ? `::warning title=SDK compatibility::${warning}` : `Warning: ${warning}`)
+      }
+      if (unmeasured) {
+        const error = `${unmeasured} case(s) could not be measured; SDK selection or infrastructure failed.`
+        console.error(process.env.GITHUB_ACTIONS === 'true' ? `::error title=SDK compatibility::${error}` : `Error: ${error}`)
+      }
+      if (process.env.GITHUB_STEP_SUMMARY) {
+        const rows = report.results.map(r => `| ${r.channel} | ${r.toolVersion ?? 'Not measured'} | ${r.sdk} | ${r.projectTfm} | ${r.scenario} | ${r.outcome} |`).join('\n')
+        await writeFile(process.env.GITHUB_STEP_SUMMARY, `### SDK compatibility\n\n${summary}\n\n${policy}\n\nSource: ${report.source.sha}\n\n| DocFX channel | Package version | Project SDK | Project TFM | Scenario | Outcome |\n| --- | --- | --- | --- | --- | --- |\n${rows}\n\n`, { flag: 'a' })
+      }
+      process.exitCode = unmeasured || (strict && incompatible) ? 1 : 0
       break
     }
     case 'production-ready': {
@@ -180,7 +202,7 @@ export async function main([command, path, output]) {
       if (process.env.GITHUB_OUTPUT) await writeFile(process.env.GITHUB_OUTPUT, `ready=${site.ready}\nrun-id=${site.runId}\nartifact-id=${site.artifactId}\n`, { flag: 'a' })
       break
     }
-    default: throw new Error('Usage: report.mjs stable-version | resolve <matrix.json> | fetch <output.json> | prepare <report.json> <output.json> | check <report.json> | production-ready <run-id> | site-run <sha>')
+    default: throw new Error('Usage: report.mjs stable-version | resolve <matrix.json> | fetch <output.json> | prepare <report.json> <output.json> | check <report.json> [--strict] | production-ready <run-id> | site-run <sha>')
   }
 }
 

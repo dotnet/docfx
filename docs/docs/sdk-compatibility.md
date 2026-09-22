@@ -17,14 +17,16 @@ Every row records the selected project SDK, project target framework, package ve
 - **basic** compiles a C# class and checks that its public type and method appear in API metadata.
 - **razor** compiles a Razor component with `@inherits` and a code-behind override. Metadata must contain both the public API and its generated inheritance/override relationship. An incomplete API is not a pass, even if DocFX exits successfully.
 
-The initial nightly matrix runs on Linux with the latest SDK from the explicitly configured 8.0, 9.0, 10.0, and 11.0 channels, resolved from Microsoft's official release metadata. The 11.0 SDK deliberately targets `net10.0` to measure SDK/tool interaction independently of a project's target framework. Each case pins `global.json` with roll-forward disabled and verifies `dotnet --version`. DocFX runs from the package's `net10.0` assets; other tool TFMs and operating systems are not covered by this matrix.
+Both DocFX package groups use the same Linux matrix: the latest SDK from the explicitly configured 8.0, 9.0, 10.0, and 11.0 channels, resolved from Microsoft's official release metadata. Latest stable and current preview refer to **DocFX packages**, not SDK channels. With two scenarios, this configures 16 package/SDK/scenario combinations per run. The 11.0 SDK deliberately targets `net10.0` to measure SDK/tool interaction independently of a project's target framework. Each case pins `global.json` with roll-forward disabled and verifies `dotnet --version`. DocFX runs from the package's `net10.0` assets; other tool TFMs and operating systems are not covered by this matrix.
 
 ## Understanding results
 
 - **passed**: fixture build, metadata extraction, and API assertions passed.
-- **incompatible**: compilation, extraction, generator diagnostics, or expected API checks failed. Read the log before attributing the failure to a particular dependency.
+- **incompatible**: DocFX metadata extraction, generator diagnostics, or expected API checks failed after the fixture compiled successfully. Read the log before attributing the failure to a particular dependency.
 - **unavailable**: the requested SDK could not be selected; no compatibility measurement was made.
-- **infrastructure-error**: installation, restore, or harness setup failed; no pass is inferred.
+- **infrastructure-error**: installation, restore, fixture build, or harness setup failed; no pass is inferred.
+
+Normal and validation-only nightlies use **reporting mode**: a complete report containing incompatible results is a valid observation, not a failing compatibility job. Findings remain labeled incompatible, with workflow warnings, a step summary, and a warning on this page. Unavailable cases, infrastructure errors, invalid provenance, malformed or incomplete reports, and script errors still fail. The existing source build, unit tests, and seed-site checks remain required. PR packaged-tool smoke uses **strict mode**, where any non-passing case fails.
 
 DocFX bundles a tested Roslyn dependency set. Selecting a newer SDK does not replace those assemblies. SDK source generators can require a newer compiler even when a project targets an older framework. This report measures that interaction; it does not change compiler loading or prescribe a workaround.
 
@@ -32,13 +34,13 @@ DocFX bundles a tested Roslyn dependency set. Selecting a newer SDK does not rep
 
 Evidence older than seven days is labeled **stale**, including when the page is revisited without a new website deployment. Missing, expired, inaccessible, or invalid reports never produce passing rows. Recorded evidence includes a link to download its source JSON report.
 
-Open the linked workflow run and download **sdk-compatibility-v1** for the report and diagnostic logs. Artifacts are retained for **14 days**, not permanently archived. A complete nightly report can contain failed tests; publication does not select only successful runs. Website builds accept reports only from this repository's completed, main-branch scheduled or manually dispatched nightly workflow, and validate the report's commit, run ID, attempt, schema, and complete matrix.
+Open the linked workflow run and download **sdk-compatibility-v1** for the report and diagnostic logs. Artifacts are retained for **14 days**, not permanently archived. A complete nightly report can contain incompatible observations or infrastructure errors; publication does not select only successful workflow runs. Website builds accept reports only from this repository's completed, main-branch scheduled or manually dispatched nightly workflow, and validate the report's commit, run ID, attempt, schema, and complete matrix.
 
 Main-branch CI publication and completed nightlies use the same whole-site publishing workflow. A nightly refresh requires successful CI for the current main revision. Normal docs publishing reuses retained evidence; it does not rerun the SDK matrix. No result commits are needed.
 
 ## Validating a workflow change
 
-Manual runs of `nightly.yml` default to **validation only**. Select the branch to test and leave `validation_only` enabled. The workflow builds that checkout, runs the existing tests on all three tool target frameworks, packs it, and downloads the same versioned package for seed-site checks and the complete SDK compatibility matrix. This mode skips the released-package comparison and cannot publish NuGet packages or deploy Pages. It uploads the exact package and **sdk-compatibility-validation-v1** report/log artifact for inspection, retained for 14 days. Compatibility failures still retain evidence.
+Manual runs of `nightly.yml` default to **validation only**. Select the branch to test and leave `validation_only` enabled. The workflow builds that checkout, runs the existing tests on all three tool target frameworks, packs it, and downloads the same versioned package for seed-site checks and the complete SDK compatibility matrix. Both this exact branch package and the latest stable release are tested against the same SDK matrix. This mode only restricts publication: it cannot publish NuGet packages or deploy Pages. It uploads the exact package and **sdk-compatibility-validation-v1** report/log artifact for inspection, retained for 14 days. Incompatible observations do not block the run; infrastructure failures still fail and retain available evidence.
 
 Scheduled main runs keep the normal released-package comparison and publication behavior. A manual production run requires explicitly disabling `validation_only` and selecting upstream main. The website only refreshes for nightlies carrying the separate production report artifact; validation artifacts cannot authorize publication, even when validation runs on main.
 
@@ -55,6 +57,8 @@ node test/compatibility/report.mjs prepare drop/compatibility/report/compatibili
 docfx docs/docfx.json
 ```
 
-Omit `-NightlyPackage` for released-package-only local measurements, or use `-SkipStable` for a bounded packaged-tool smoke. A report without a nightly package does **not** validate current main. For a deliberately older local comparison, supply both `-StableVersion` and `-StableVersionReason`; this is labeled an explicit local version, never the latest stable release, and is not allowed in GitHub Actions. `-NuGetConfig` applies an explicit feed configuration to tool installation and fixture restores; reuse your organization's approved feeds. `-WorkDirectory` retains isolated package/fixture files for inspection and must name a new directory. `-FailOnIncompatible` makes any non-passing row fail the command **after** writing the report.
+Omit `-NightlyPackage` for released-package-only local measurements, or use `-SkipStable` for a bounded packaged-tool smoke. A report without a nightly package does **not** validate current main. For a deliberately older local comparison, supply both `-StableVersion` and `-StableVersionReason`; this is labeled an explicit local version, never the latest stable release, and is not allowed in GitHub Actions. `-NuGetConfig` applies an explicit feed configuration to tool installation and fixture restores; reuse your organization's approved feeds. `-WorkDirectory` retains isolated package/fixture files for inspection and must name a new directory. The harness validates the completed report and explicitly returns its check result, rather than inheriting the last fixture's native exit code. By default, incompatible observations produce warnings without failing; unavailable cases, infrastructure errors, and invalid or incomplete reports always fail **after** writing available evidence. `-FailOnIncompatible` selects strict mode for PR smoke or local gates.
+
+To recheck a saved report without rerunning measurements, use `node test/compatibility/report.mjs check path/to/compatibility-report.json`. Add `--strict` to require every row to pass. Neither mode rewrites observations or package provenance.
 
 Run fast reporting and publication-contract tests with `node --test test/compatibility/report.test.mjs`. Generated evidence belongs in ignored `drop` and `docs/obj` directories, not in commits.

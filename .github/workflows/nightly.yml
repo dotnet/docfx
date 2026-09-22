@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       validation_only:
-        description: 'Validate this ref without released-package comparison, package publication, or Pages deployment'
+        description: 'Compare latest stable and this ref without package publication or Pages deployment'
         type: boolean
         default: true
   schedule:
@@ -143,23 +143,18 @@ jobs:
         dotnet-version: ${{ steps.matrix.outputs.sdks }}
     - name: Test compatibility reporting
       run: node --test test/compatibility/report.test.mjs
-    - name: Measure exact nightly package and optional released comparison
+    - name: Measure and check latest stable and exact nightly packages
       shell: pwsh
       env:
         GH_TOKEN: ${{ github.token }}
         TOOL_VERSION: ${{ needs.build-nightly-package.outputs.version }}
-        VALIDATION_ONLY: ${{ inputs.validation_only }}
       run: |
-        $options = @{}
-        if ($env:VALIDATION_ONLY -eq 'true') { $options.SkipStable = $true }
-        ./test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/compatibility-matrix.json -OutputDirectory drop/compatibility-report -NightlyPackage "drop/nightly/docfx.$env:TOOL_VERSION.nupkg" @options
+        ./test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/compatibility-matrix.json -OutputDirectory drop/compatibility-report -NightlyPackage "drop/nightly/docfx.$env:TOOL_VERSION.nupkg"
     - name: Upload compatibility evidence, including failed cases
       if: always()
       uses: actions/upload-artifact@v7
       with:
         name: ${{ inputs.validation_only && 'sdk-compatibility-validation-v1' || 'sdk-compatibility-v1' }}
         path: drop/compatibility-report
-        if-no-files-found: warn
+        if-no-files-found: error
         retention-days: 14
-    - name: Check measured outcomes
-      run: node test/compatibility/report.mjs check drop/compatibility-report/compatibility-report.json

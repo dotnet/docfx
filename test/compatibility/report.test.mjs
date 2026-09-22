@@ -6,7 +6,7 @@ import assert from 'node:assert/strict'
 import { readFile, mkdtemp, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { latestReport, resolveMatrix, resolveStableRelease, trustedRun, findSiteRun, productionReportReady } from './report.mjs'
 import { validateReport, renderReport, loadReport } from '../../docs/template/public/sdk-compatibility.mjs'
@@ -47,6 +47,20 @@ test('validates complete reports, including incompatible and infrastructure rows
   data.results[1].outcome = 'incompatible'
   data.results[2].outcome = 'infrastructure-error'
   assert.equal(validateReport(data, data.source, now), data)
+})
+
+test('renders incompatible findings and unmeasured cases as warnings, never passing evidence', () => {
+  const data = report()
+  assert.doesNotMatch(renderReport(data, now), /Compatibility issues found|could not be measured/)
+  data.results[1].outcome = 'incompatible'
+  data.results[2].outcome = 'infrastructure-error'
+  data.results[3].outcome = 'unavailable'
+  const html = renderReport(data, now)
+  assert.match(html, /alert-warning.*Compatibility issues found: 1 incompatible result/)
+  assert.match(html, /A completed report does not mean all combinations passed/)
+  assert.match(html, /alert-danger.*2 case\(s\) could not be measured/)
+  assert.equal((html.match(/<strong>passed<\/strong>/g) ?? []).length, 1)
+  assert.equal((html.match(/<strong>incompatible<\/strong>/g) ?? []).length, 1)
 })
 
 test('rejects false passes, incomplete/duplicate rows, and invalid identity', () => {
@@ -229,8 +243,7 @@ test('reuses only current-main successful CI and distinguishes expiration from u
 test('validation-only reports can describe a fork without becoming trusted website evidence', () => {
   const data = report()
   data.source.repository = 'vicancy/docfx'
-  data.channels = ['nightly']; data.stableSelection = null
-  data.results = data.results.filter(row => row.channel === 'nightly')
+  assert.deepEqual(data.channels, ['stable', 'nightly'])
   assert.equal(validateReport(data, undefined, now), data)
   assert.match(renderReport(data, now), /https:\/\/github.com\/vicancy\/docfx\/actions\/runs\/42/)
   assert.throws(() => validateReport(data, { ...data.source, repository: 'dotnet/docfx' }, now), /trusted run/)
@@ -294,6 +307,115 @@ test('CLI prepares real schema content and rejects malformed input before writin
   } finally { await rm(temp, { recursive: true, force: true }) }
 })
 
+function checkCli(path, flags = [], env = {}) {
+  return spawnSync(process.execPath, [fileURLToPath(new URL('./report.mjs', import.meta.url)), 'check', path, ...flags], {
+    encoding: 'utf8', env: { ...process.env, GITHUB_ACTIONS: '', GITHUB_STEP_SUMMARY: '', ...env },
+  })
+}
+
+test('reporting check warns without failing incompatible observations; strict check fails', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-check-policy-'))
+  try {
+    const input = join(temp, 'report.json')
+    for (const outcome of ['passed', 'incompatible']) {
+      const data = report(); data.results.at(-1).outcome = outcome
+      const original = JSON.stringify(data)
+      await writeFile(input, original)
+      for (const strict of [false, true]) {
+        const summary = join(temp, `${outcome}-${strict}.md`)
+        const result = checkCli(input, strict ? ['--strict'] : [], { GITHUB_ACTIONS: 'true', GITHUB_STEP_SUMMARY: summary })
+        assert.equal(result.status, strict && outcome === 'incompatible' ? 1 : 0, result.stderr)
+        const markdown = await readFile(summary, 'utf8')
+        assert.match(markdown, strict ? /Strict mode/ : /Reporting mode/)
+        assert.ok(markdown.includes(`| nightly | 2.80.2-preview.1 | 10.0.401 | net10.0 | razor | ${outcome} |`))
+        if (outcome === 'incompatible') {
+          assert.match(result.stderr, /::warning title=SDK compatibility::1 incompatible result/)
+          assert.match(result.stdout, /3 passed, 1 incompatible, 0 unavailable, 0 infrastructure-error/)
+        } else {
+          assert.doesNotMatch(result.stderr, /::warning/)
+        }
+        assert.equal(await readFile(input, 'utf8'), original)
+      }
+    }
+    for (const flags of [['--strcit'], ['--strict', '--unknown']]) assert.equal(checkCli(input, flags).status, 1)
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
+test('reporting and strict checks both fail unmeasured, invalid, missing or incomplete evidence', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-check-failure-'))
+  try {
+    const input = join(temp, 'report.json')
+    for (const outcome of ['infrastructure-error', 'unavailable']) {
+      const data = report(); data.results[0].outcome = outcome
+      await writeFile(input, JSON.stringify(data))
+      for (const flags of [[], ['--strict']]) {
+        const result = checkCli(input, flags, { GITHUB_ACTIONS: 'true' })
+        assert.equal(result.status, 1)
+        assert.match(result.stderr, /::error title=SDK compatibility::1 case\(s\) could not be measured/)
+      }
+    }
+    for (const mutate of [r => r.results.pop(), r => { r.source.sha = 'wrong' }, r => { r.source.dirty = true }]) {
+      const data = report(); mutate(data)
+      await writeFile(input, JSON.stringify(data))
+      for (const flags of [[], ['--strict']]) assert.equal(checkCli(input, flags).status, 1)
+    }
+    for (const malformed of ['{', '{}', JSON.stringify({ state: 'unavailable', reason: 'No report' })]) {
+      await writeFile(input, malformed)
+      for (const flags of [[], ['--strict']]) assert.equal(checkCli(input, flags).status, 1)
+    }
+    for (const flags of [[], ['--strict']]) assert.equal(checkCli(join(temp, 'missing.json'), flags).status, 1)
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
+test('actual pwsh Actions wrapper uses report policy, not the last native child exit', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-pwsh-exit-'))
+  const literal = value => `'${value.replaceAll("'", "''")}'`
+  try {
+    const harness = fileURLToPath(new URL('./Measure-Compatibility.ps1', import.meta.url))
+    // Execute the real post-finally statements, with protocol data only; no package measurements are simulated.
+    const tail = execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
+      $ast = [System.Management.Automation.Language.Parser]::ParseFile(${literal(harness)}, [ref]$null, [ref]$null)
+      $measurement = $ast.EndBlock.Statements | Where-Object { $_ -is [System.Management.Automation.Language.TryStatementAst] } | Select-Object -Last 1
+      ($ast.EndBlock.Statements | Where-Object { $_.Extent.StartOffset -ge $measurement.Extent.EndOffset } | ForEach-Object { $_.Extent.Text }) -join [Environment]::NewLine
+    `], { encoding: 'utf8' })
+    assert.match(tail, /exit \$LASTEXITCODE/)
+    const script = join(temp, 'finalize.ps1')
+    const input = join(temp, 'compatibility-report.json')
+    const prefix = nativeExit => `
+      param([switch] $FailOnIncompatible)
+      $ErrorActionPreference = 'Stop'
+      $PSNativeCommandUseErrorActionPreference = $false
+      $PSScriptRoot = ${literal(fileURLToPath(new URL('.', import.meta.url)))}
+      $OutputDirectory = ${literal(temp)}
+      & ${literal(process.execPath)} -e 'process.exit(${nativeExit})'
+      if ($LASTEXITCODE -ne ${nativeExit}) { throw 'Native exit canary failed' }
+    `
+    const wrapper = strict => spawnSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
+      $ErrorActionPreference = 'Stop'
+      & ${literal(script)} ${strict ? '-FailOnIncompatible' : ''}
+      if (Test-Path -LiteralPath variable:\\LASTEXITCODE) { exit $LASTEXITCODE }
+    `], { encoding: 'utf8', env: { ...process.env, GITHUB_ACTIONS: '', GITHUB_STEP_SUMMARY: '' } })
+    await writeFile(script, prefix(23))
+    assert.equal(wrapper(false).status, 23, 'Canary must reproduce the Actions native-exit leak')
+    const data = report(); data.results.at(-1).outcome = 'incompatible'
+    await writeFile(input, JSON.stringify(data))
+    await writeFile(script, prefix(23) + tail)
+    const reporting = wrapper(false)
+    assert.equal(reporting.status, 0, reporting.stderr)
+    assert.match(reporting.stderr, /1 incompatible result/)
+    assert.equal(wrapper(true).status, 1)
+    data.results[0].outcome = 'infrastructure-error'
+    await writeFile(input, JSON.stringify(data))
+    await writeFile(script, prefix(0) + tail)
+    assert.equal(wrapper(false).status, 1, 'A final native success must not hide an earlier infrastructure error')
+    data.results.pop()
+    await writeFile(input, JSON.stringify(data))
+    assert.equal(wrapper(false).status, 1, 'Incomplete reports must still fail the wrapper')
+    await writeFile(script, prefix(0) + "throw 'Unit-test harness error'\n" + tail)
+    assert.equal(wrapper(false).status, 1, 'A script error must not reach successful finalization')
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
 test('manual validation defaults safe and cannot reach package or Pages publication', async () => {
   const nightly = await readFile(new URL('../../.github/workflows/nightly.yml', import.meta.url), 'utf8')
   const docs = await readFile(new URL('../../.github/workflows/docs.yml', import.meta.url), 'utf8')
@@ -324,7 +446,12 @@ test('manual validation defaults safe and cannot reach package or Pages publicat
     assert.match(job(name), /needs.build-nightly-package.outputs.version/)
     assert.doesNotMatch(job(name), /packages: write|pages: write/)
   }
-  assert.match(nightly, /if \(\$env:VALIDATION_ONLY -eq 'true'\) \{ \$options.SkipStable = \$true \}/)
+  assert.doesNotMatch(job('sdk-compatibility'), /SkipStable|FailOnIncompatible|VALIDATION_ONLY|@options/)
+  assert.match(job('sdk-compatibility'), /Measure-Compatibility.ps1 -MatrixPath drop\/compatibility-matrix.json/)
+  assert.match(job('test-nightly-package'), /docfx metadata\s+docfx build\s+docfx pdf/)
+  const matrix = JSON.parse(await readFile(new URL('./sdk-matrix.json', import.meta.url), 'utf8'))
+  assert.deepEqual(matrix.channels.map(t => t.channel), ['8.0', '9.0', '10.0', '11.0'])
+  assert.equal(matrix.channels.length * report().channels.length * report().scenarios.length, 16)
   assert.match(nightly, /inputs.validation_only && 'sdk-compatibility-validation-v1' \|\| 'sdk-compatibility-v1'/)
   assert.match(docs, /report.mjs production-ready/)
   assert.match(docs, /if: github.event.workflow_run.name == 'ci' \|\| steps.production-report.outputs.ready == 'true'\s+id: site-run/)
@@ -340,8 +467,16 @@ test('workflow contract keeps exact packages, bounded PR smoke, failure evidence
   assert.match(ci, /name: docs-site/)
   assert.match(nightly, /--version \$env:TOOL_VERSION/)
   assert.doesNotMatch(nightly, /tool install.*--prerelease/)
-  assert.ok(nightly.indexOf('Upload compatibility evidence') < nightly.indexOf('Check measured outcomes'))
-  assert.match(nightly, /if: always\(\)/)
+  assert.ok(nightly.indexOf('Measure and check latest stable') < nightly.indexOf('Upload compatibility evidence'))
+  assert.doesNotMatch(nightly, /report.mjs check/)
+  assert.match(nightly, /name: Upload compatibility evidence[^\r\n]*\s+if: always\(\)/)
+  assert.match(nightly, /path: drop\/compatibility-report\s+if-no-files-found: error/)
+  assert.equal((nightly.match(/continue-on-error:/g) ?? []).length, 1)
+  assert.match(nightly, /uses: actions\/setup-dotnet@v5\s+continue-on-error: true/)
+  const harness = await readFile(new URL('./Measure-Compatibility.ps1', import.meta.url), 'utf8')
+  assert.match(harness, /& node \(Join-Path \$PSScriptRoot 'report.mjs'\) @checkArguments\s+exit \$LASTEXITCODE/)
+  assert.match(harness, /if \(\$FailOnIncompatible\) \{ \$checkArguments \+= '--strict' \}/)
+  assert.match(harness, /'build', '--no-restore'[^\r\n]*\s+if \(\$result.code -ne 0\) \{ throw 'Fixture build failed; compatibility was not measured.' \}/)
   assert.match(nightly, /retention-days: 14/)
   assert.match(docs, /workflows: \[ci, nightly\]/)
   assert.match(docs, /ref: main/)

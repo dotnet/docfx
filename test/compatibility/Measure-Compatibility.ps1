@@ -15,6 +15,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$PSNativeCommandUseErrorActionPreference = $false
 if ($StableVersion -and ($StableVersion -notmatch '^\d+\.\d+\.\d+$' -or -not $StableVersionReason -or $SkipStable -or $env:GITHUB_ACTIONS -eq 'true')) { throw 'An explicit stable version requires a reason and is allowed only for local released-package measurements.' }
 $matrix = @(Get-Content -LiteralPath $MatrixPath -Raw | ConvertFrom-Json)
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
@@ -152,10 +153,7 @@ try {
                     $result = Invoke-Logged @('restore', '--nologo') $log
                     if ($result.code -ne 0) { throw 'Fixture restore failed; compatibility was not measured.' }
                     $result = Invoke-Logged @('build', '--no-restore', '--nologo', '-warnaserror') $log
-                    if ($result.code -ne 0) {
-                        $row.outcome = 'incompatible'; $row.diagnostics = 'Fixture failed to compile with this SDK; see log.'
-                        continue
-                    }
+                    if ($result.code -ne 0) { throw 'Fixture build failed; compatibility was not measured.' }
                     # Remove compiled output: metadata must run generators itself, not consume a prebuilt fixture DLL.
                     Remove-Item 'bin' -Recurse -Force
                     $project = @(Get-ChildItem -Filter '*.csproj')[0].Name
@@ -205,4 +203,8 @@ try {
     $env:MSBuildSDKsPath = $previousMSBuildSDKsPath
     if (-not $WorkDirectory) { Remove-Item -LiteralPath $work -Recurse -Force }
 }
-if ($FailOnIncompatible -and @($rows | Where-Object outcome -ne 'passed').Count -gt 0) { exit 1 }
+# Use the report policy, not the last fixture's native exit code (also consumed by the Actions pwsh wrapper).
+$checkArguments = @('check', (Join-Path $OutputDirectory 'compatibility-report.json'))
+if ($FailOnIncompatible) { $checkArguments += '--strict' }
+& node (Join-Path $PSScriptRoot 'report.mjs') @checkArguments
+exit $LASTEXITCODE
