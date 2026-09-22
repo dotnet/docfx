@@ -65,46 +65,208 @@ export function validateReport(report, expected, now = Date.now()) {
 }
 
 const escape = value => String(value ?? 'Not measured').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
+const reportUrl = new URL('../reports/sdk-compatibility.json', import.meta.url)
+const label = value => value[0].toUpperCase() + value.slice(1)
+const statusLabels = { passed: '✓ Passed', incompatible: '⚠ Incompatible', unavailable: '— Unavailable', 'infrastructure-error': '! Infrastructure error' }
+const columnKey = row => JSON.stringify([row.channel, row.toolVersion, row.toolRuntimeTfm, row.scenario])
+const caseTitle = row => `${label(row.channel)} & ${label(row.scenario)}`
+const caseIdentity = row => `${caseTitle(row)}; SDK ${row.sdk}; project ${row.projectTfm}; DocFX ${row.toolVersion ?? 'not measured'}; tool target ${row.toolRuntimeTfm ?? 'not measured'}`
+const runLink = source => source.repository === 'local' ? null : `https://github.com/${source.repository}/actions/runs/${source.runId}/attempts/${source.runAttempt}`
 
 export function renderReport(report, now = Date.now()) {
   validateReport(report, undefined, now)
   const stale = now - Date.parse(report.generatedAt) > staleAfterDays * 86400000
-  const source = report.source
-  const runUrl = source.repository === 'local' ? null : `https://github.com/${source.repository}/actions/runs/${source.runId}/attempts/${source.runAttempt}`
-  let html = `<p class="alert ${stale ? 'alert-warning' : 'alert-info'}"><strong>${stale ? 'Stale evidence' : 'Latest recorded evidence'}</strong> — measured ${escape(report.generatedAt)}. Evidence becomes stale after ${staleAfterDays} days; this is not a support guarantee.</p>`
-  html += `<p>${runUrl ? `<a href="${runUrl}">Workflow run and downloadable logs</a>` : 'Local measurement (not a published nightly run)'}. <a href="../reports/sdk-compatibility.json">Download report JSON</a>. Source: <code>${escape(source.sha)}</code>${source.dirty ? ' (with local uncommitted changes)' : ''}.</p>`
-  const incompatible = report.results.filter(r => r.outcome === 'incompatible').length
-  const unmeasured = report.results.filter(r => ['unavailable', 'infrastructure-error'].includes(r.outcome)).length
-  if (incompatible) html += `<p class="alert alert-warning"><strong>Compatibility issues found: ${incompatible} incompatible result(s).</strong> Review the per-case evidence. A completed report does not mean all combinations passed.</p>`
-  if (unmeasured) html += `<p class="alert alert-danger"><strong>${unmeasured} case(s) could not be measured.</strong> SDK selection or infrastructure failed; no compatibility conclusion is available for those cases.</p>`
-  if (!report.channels.includes('nightly')) html += '<p class="alert alert-warning"><strong>Current-main package not measured in this report.</strong> Released-package results do not validate current main.</p>'
-  for (const channel of ['nightly', 'stable'].filter(channel => report.channels.includes(channel))) {
-    html += `<h3>${channel === 'stable' ? 'Released DocFX' : 'Nightly DocFX'}</h3>`
-    if (channel === 'stable') {
-      const selection = report.stableSelection
-      html += selection.mode === 'explicit-version'
-        ? `<p class="alert alert-warning"><strong>Explicit local version: ${escape(selection.requestedVersion)}</strong> — not a measurement of the latest stable release. ${escape(selection.reason)}</p>`
-        : `<p>Requested latest stable release at measurement time: <strong>${escape(selection.requestedVersion)}</strong>. An unavailable exact version is an infrastructure error, never an older-version fallback.</p>`
+  const runUrl = runLink(report.source)
+  const count = outcome => report.results.filter(r => r.outcome === outcome).length
+  const testedDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(report.generatedAt))
+  const summary = [`<strong>${count('passed')} passed</strong>`, `${count('incompatible')} incompatible`]
+  if (count('unavailable')) summary.push(`${count('unavailable')} unavailable`)
+  if (count('infrastructure-error')) summary.push(`${count('infrastructure-error')} infrastructure error(s)`)
+  const columns = [...new Map(report.results.map(row => [columnKey(row), row])).values()].sort((a, b) =>
+    ['stable', 'nightly'].indexOf(a.channel) - ['stable', 'nightly'].indexOf(b.channel) ||
+    String(a.toolVersion ?? '~').localeCompare(String(b.toolVersion ?? '~'), 'en', { numeric: true }) ||
+    String(a.toolRuntimeTfm ?? '~').localeCompare(String(b.toolRuntimeTfm ?? '~'), 'en', { numeric: true }) ||
+    report.scenarios.indexOf(a.scenario) - report.scenarios.indexOf(b.scenario))
+  const cells = new Map(report.results.map((row, index) => [`${row.sdk}/${row.projectTfm}/${columnKey(row)}`, index]))
+  let html = `<p>Last tested <time datetime="${escape(report.generatedAt)}">${escape(testedDate)}</time></p>`
+  html += `<p class="compatibility-counts">${summary.join(' · ')}</p>`
+  if (stale) html += `<p class="alert alert-warning"><strong>Stale evidence</strong> — older than ${staleAfterDays} days.</p>`
+  if (!report.channels.includes('nightly')) html += '<p class="alert alert-warning"><strong>Current-main package not measured in this report.</strong></p>'
+  if (report.stableSelection?.mode === 'explicit-version') html += `<p class="alert alert-warning"><strong>Explicit local version: ${escape(report.stableSelection.requestedVersion)}</strong> — not a measurement of the latest stable release. ${escape(report.stableSelection.reason)}</p>`
+  html += '<div class="compatibility-table" role="region" aria-label="SDK compatibility matrix" tabindex="0"><table class="table"><caption class="visually-hidden">SDK and project target by DocFX package and scenario. Each column shows DocFX version and tool target framework. Select a result for details.</caption><thead><tr><th scope="col"><strong>SDK version</strong><span>Project target</span></th>'
+  for (const column of columns) html += `<th scope="col"><strong>${escape(caseTitle(column))}</strong><span class="compatibility-tool">${escape(column.toolVersion)} &amp; ${escape(column.toolRuntimeTfm)}</span></th>`
+  html += '</tr></thead><tbody>'
+  for (const target of report.matrix) {
+    html += `<tr><th scope="row"><code>${escape(target.sdk)}</code><span>${escape(target.projectTfm)}</span></th>`
+    for (const column of columns) {
+      const index = cells.get(`${target.sdk}/${target.projectTfm}/${columnKey(column)}`)
+      const row = report.results[index]
+      html += row
+        ? `<td><button type="button" class="compatibility-result" data-case-index="${index}" data-outcome="${row.outcome}" aria-label="${escape(caseIdentity(row))}; ${escape(statusLabels[row.outcome])}" aria-pressed="false" aria-expanded="false" aria-controls="compatibility-case">${statusLabels[row.outcome]}</button></td>`
+        : '<td><span class="compatibility-unmeasured">Not measured</span></td>'
     }
-    html += '<div class="table-responsive"><table class="table"><thead><tr><th>Project SDK / TFM</th><th>DocFX / runtime TFM</th><th>Scenario</th><th>Result</th></tr></thead><tbody>'
-    for (const row of report.results.filter(r => r.channel === channel)) {
-      html += `<tr><td><code>${escape(row.sdk)}</code><br>${escape(row.projectTfm)}</td><td>${escape(row.toolVersion)}<br>${escape(row.toolRuntimeTfm)}</td><td>${escape(row.scenario)}</td><td><strong>${escape(row.outcome)}</strong><details><summary>Evidence</summary><p>${escape(row.diagnostics)}</p><p>Selected SDK: ${escape(row.selectedSdk)}<br>OS: ${escape(row.os)}<br>Tested: ${escape(row.testedAt)}<br>Log in artifact: <code>${escape(row.log)}</code><br>Package SHA-256: <code>${escape(row.packageSha256)}</code></p></details></td></tr>`
-    }
-    html += '</tbody></table></div>'
+    html += '</tr>'
   }
-  return html
+  html += `</tbody></table></div>
+    <section id="compatibility-case" class="compatibility-case" aria-labelledby="compatibility-case-title" hidden>
+      <div class="compatibility-case-heading"><h3 id="compatibility-case-title" tabindex="-1">Case details</h3><button type="button" class="btn btn-sm btn-outline-secondary" data-close>Close details</button></div>
+      <p data-case-outcome></p><dl class="compatibility-identity" data-case-identity></dl>
+      <h4>Recorded diagnostics</h4><p class="compatibility-diagnostics" data-case-diagnostics></p>
+      <p role="status" aria-live="polite" aria-atomic="true" data-log-status></p>
+      <button type="button" class="btn btn-sm btn-outline-secondary" data-retry hidden>Retry log</button>
+      <div data-excerpt hidden><h4>Diagnostic lines from this log</h4><pre tabindex="0" aria-label="Diagnostic excerpt" data-excerpt-text></pre></div>
+      <details data-raw hidden><summary>Raw output</summary><pre tabindex="0" aria-label="Raw case output" data-raw-text></pre></details>
+      <div class="compatibility-actions"><button type="button" class="btn btn-sm btn-outline-secondary" data-back>Back to selected result</button><a data-download>Download log</a>${runUrl ? `<a href="${runUrl}" data-run>View CI run</a>` : ''}</div>
+    </section>
+    <details class="compatibility-provenance"><summary>Report source &amp; downloads</summary>
+      <p>${runUrl ? `<a href="${runUrl}">View CI run</a>` : 'Local measurement'}. <a href="${reportUrl.href}" download="sdk-compatibility.json">Download report JSON</a>.</p>
+      <p>Measured: ${escape(report.generatedAt)}<br>Source: <code>${escape(report.source.sha)}</code>${report.source.dirty ? ' (with local uncommitted changes)' : ''}${runUrl ? `<br>Run: ${escape(report.source.runId)} · Attempt: ${escape(report.source.runAttempt)}` : ''}.</p>`
+  if (report.stableSelection?.mode === 'latest-release') html += `<p>Requested latest stable release: <strong>${escape(report.stableSelection.requestedVersion)}</strong>.</p>`
+  return html + '</details>'
 }
 
-export async function loadReport(element, fetchReport = fetch) {
+// Only a validated case's sibling log may be read, never an artifact-supplied URL.
+export function caseLogUrl(row, baseUrl = reportUrl) {
+  assert(/^logs\/[a-zA-Z0-9.-]+\.log$/.test(row.log), 'Invalid case log path.')
+  const url = new URL(row.log, baseUrl)
+  assert(['http:', 'https:'].includes(url.protocol) && url.origin === new URL(baseUrl).origin, 'Invalid case log origin.')
+  return url
+}
+
+export function createCaseSelection(report, onChange, fetchLog = (...args) => fetch(...args), baseUrl = reportUrl) {
+  validateReport(report)
+  let sequence = 0
+  let activeRequest
+  let disposed = false
+  const cancel = () => { sequence++; activeRequest?.abort() }
+  return {
+    async select(index) {
+      if (disposed) return
+      assert(Number.isInteger(index) && report.results[index], 'Unknown compatibility case.')
+      cancel()
+      const current = sequence
+      const row = report.results[index]
+      const url = caseLogUrl(row, baseUrl)
+      const state = { index, row, logUrl: url.href }
+      const request = activeRequest = new AbortController()
+      const timeout = setTimeout(() => request.abort(), 30000)
+      onChange({ ...state, phase: 'loading' })
+      try {
+        const response = await fetchLog(url, { signal: request.signal, redirect: 'error', credentials: 'same-origin' })
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        if (response.redirected || (response.url && response.url !== url.href)) throw new Error('Unexpected log location.')
+        if (Number(response.headers?.get('content-length')) > 10 * 1024 * 1024) throw new Error('Log exceeds the display limit.')
+        const original = await response.text()
+        if (original.length > 10 * 1024 * 1024) throw new Error('Log exceeds the display limit.')
+        if (disposed || current !== sequence) return
+        const output = original.replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, '')
+        const excerpt = row.outcome === 'passed' ? '' : [...new Set(output.split(/\r?\n/).filter(line =>
+          /ReferencesNewerCompiler|ReferencedCompilerVersion|\b(?:error|warning)\s+[A-Z]{2,}\d+\b/i.test(line)))].slice(0, 4).join('\n')
+        onChange({ ...state, phase: 'ready', output, excerpt })
+      } catch (error) {
+        if (!disposed && current === sequence) onChange({ ...state, phase: 'error', error: error.name === 'AbortError' ? 'The log request timed out.' : error.message })
+      } finally { clearTimeout(timeout) }
+    },
+    close() { if (!disposed) { cancel(); onChange({ phase: 'closed' }) } },
+    dispose() { disposed = true; cancel() },
+  }
+}
+
+function bindDetails(element, report, fetchLog) {
+  const find = selector => element.querySelector(selector)
+  const panel = find('#compatibility-case')
+  const heading = find('#compatibility-case-title')
+  const buttons = [...element.querySelectorAll('[data-case-index]')]
+  let selectedButton
+  const returnToResult = () => selectedButton?.focus()
+  const selection = createCaseSelection(report, state => {
+    if (state.phase === 'closed') {
+      panel.hidden = true
+      panel.setAttribute('aria-busy', 'false')
+      selectedButton?.setAttribute('aria-pressed', 'false')
+      selectedButton?.setAttribute('aria-expanded', 'false')
+      returnToResult()
+      return
+    }
+    const row = state.row
+    if (state.phase === 'loading') {
+      for (const button of buttons) {
+        const selected = Number(button.dataset.caseIndex) === state.index
+        button.setAttribute('aria-pressed', String(selected))
+        button.setAttribute('aria-expanded', String(selected))
+        if (selected) selectedButton = button
+      }
+      panel.hidden = false
+      panel.dataset.caseIndex = String(state.index)
+      panel.dataset.outcome = row.outcome
+      heading.textContent = `${caseTitle(row)} — ${row.projectTfm}`
+      find('[data-case-outcome]').textContent = statusLabels[row.outcome]
+      const identity = find('[data-case-identity]')
+      identity.replaceChildren()
+      for (const [name, value] of [
+        ['Requested SDK', row.sdk], ['Selected SDK', row.selectedSdk], ['Project target', row.projectTfm],
+        ['DocFX version', row.toolVersion], ['Tool target framework', row.toolRuntimeTfm], ['OS', row.os],
+        ['Tested', row.testedAt], ['Package SHA-256', row.packageSha256],
+      ]) {
+        const term = element.ownerDocument.createElement('dt')
+        const definition = element.ownerDocument.createElement('dd')
+        term.textContent = name
+        definition.textContent = value ?? 'Not measured'
+        identity.append(term, definition)
+      }
+      find('[data-case-diagnostics]').textContent = row.diagnostics
+      find('[data-download]').href = state.logUrl
+      find('[data-download]').download = row.log.slice('logs/'.length)
+      find('[data-raw]').open = false
+      find('[data-raw-text]').textContent = ''
+      find('[data-excerpt-text]').textContent = ''
+      heading.focus({ preventScroll: true })
+      panel.scrollIntoView({ block: 'start' })
+    }
+    panel.setAttribute('aria-busy', String(state.phase === 'loading'))
+    find('[data-log-status]').textContent = state.phase === 'loading' ? 'Loading log…'
+      : state.phase === 'error' ? `Log unavailable: ${state.error} The recorded result is unchanged. Retry the log or view the available run evidence.`
+        : 'Log loaded.'
+    find('[data-retry]').hidden = state.phase !== 'error'
+    find('[data-raw]').hidden = state.phase !== 'ready'
+    find('[data-excerpt]').hidden = !state.excerpt
+    if (state.phase === 'ready') {
+      find('[data-raw-text]').textContent = state.output
+      find('[data-excerpt-text]').textContent = state.excerpt
+    }
+  }, fetchLog)
+  const onClick = event => {
+    const button = event.target.closest('button')
+    if (!button || !element.contains(button)) return
+    if (button.hasAttribute('data-case-index')) void selection.select(Number(button.dataset.caseIndex))
+    else if (button.hasAttribute('data-close')) selection.close()
+    else if (button.hasAttribute('data-back')) returnToResult()
+    else if (button.hasAttribute('data-retry')) void selection.select(Number(selectedButton.dataset.caseIndex))
+  }
+  element.addEventListener('click', onClick)
+  return () => { selection.dispose(); element.removeEventListener('click', onClick) }
+}
+
+const loads = new WeakMap()
+export async function loadReport(element, fetchReport = (...args) => fetch(...args)) {
+  loads.get(element)?.dispose()
+  const request = new AbortController()
+  let unbind = () => {}
+  const current = { dispose() { request.abort(); unbind(); if (loads.get(element) === current) loads.delete(element) } }
+  loads.set(element, current)
+  element.textContent = 'Loading compatibility evidence…'
   try {
-    const response = await fetchReport(new URL('../reports/sdk-compatibility.json', import.meta.url))
+    const response = await fetchReport(reportUrl, { signal: request.signal, redirect: 'error', credentials: 'same-origin' })
     if (!response.ok) throw new Error('No compatibility report is available in this site build.')
     const data = await response.json()
+    if (loads.get(element) !== current) return current.dispose
     if (data.state === 'unavailable') throw new Error(text(data.reason) ? data.reason : 'Compatibility evidence is unavailable.')
     element.innerHTML = renderReport(data)
+    unbind = bindDetails(element, data, fetchReport)
   } catch (error) {
-    element.textContent = `Compatibility evidence unavailable. ${error.message}`
+    if (loads.get(element) === current) element.textContent = `Compatibility evidence unavailable. ${error.message}`
   }
+  return current.dispose
 }
 
 if (typeof document !== 'undefined') {

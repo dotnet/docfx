@@ -3,13 +3,13 @@
 
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFile, mkdtemp, writeFile, rm } from 'node:fs/promises'
+import { readFile, mkdtemp, writeFile, rm, mkdir, readdir, symlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { latestReport, resolveMatrix, resolveStableRelease, trustedRun, findSiteRun, productionReportReady } from './report.mjs'
-import { validateReport, renderReport, loadReport } from '../../docs/template/public/sdk-compatibility.mjs'
+import { latestReport, resolveMatrix, resolveStableRelease, trustedRun, findSiteRun, productionReportReady, prepareReport, main } from './report.mjs'
+import { validateReport, renderReport, loadReport, createCaseSelection, caseLogUrl } from '../../docs/template/public/sdk-compatibility.mjs'
 
 // Protocol fixtures are synthetic unit-test inputs, never published measurement results.
 const now = Date.parse('2026-09-22T00:00:00Z')
@@ -54,18 +54,18 @@ test('validates complete reports, including incompatible and infrastructure rows
   assert.equal(validateReport(data, data.source, now), data)
 })
 
-test('renders incompatible findings and unmeasured cases as warnings, never passing evidence', () => {
+test('renders concise counts for every observed outcome without duplicate warnings', () => {
   const data = report()
-  assert.doesNotMatch(renderReport(data, now), /Compatibility issues found|could not be measured/)
+  const passed = renderReport(data, now)
+  assert.match(passed, /<strong>4 passed<\/strong> · 0 incompatible<\/p>/)
+  assert.doesNotMatch(passed, /alert-warning|alert-danger|infrastructure error\(s\)|\d+ unavailable/)
   data.results[1].outcome = 'incompatible'
   data.results[2].outcome = 'infrastructure-error'
   data.results[3].outcome = 'unavailable'
   const html = renderReport(data, now)
-  assert.match(html, /alert-warning.*Compatibility issues found: 1 incompatible result/)
-  assert.match(html, /A completed report does not mean all combinations passed/)
-  assert.match(html, /alert-danger.*2 case\(s\) could not be measured/)
-  assert.equal((html.match(/<strong>passed<\/strong>/g) ?? []).length, 1)
-  assert.equal((html.match(/<strong>incompatible<\/strong>/g) ?? []).length, 1)
+  assert.match(html, /<strong>1 passed<\/strong> · 1 incompatible · 1 unavailable · 1 infrastructure error\(s\)<\/p>/)
+  for (const outcome of ['passed', 'incompatible', 'unavailable', 'infrastructure-error']) assert.equal((html.match(new RegExp(`data-outcome="${outcome}"`, 'g')) ?? []).length, 1)
+  assert.doesNotMatch(html, /Compatibility issues found|A completed report does not mean|support guarantee/)
 })
 
 test('rejects false passes, incomplete/duplicate rows, and invalid identity', () => {
@@ -97,11 +97,36 @@ test('rejects wrong source commit, run, attempt, and missing nightly channel', (
 test('rejects future and malformed timestamps, but renders stale evidence honestly', () => {
   const data = report()
   assert.match(renderReport(data, now + 8 * 86400000), /Stale evidence/)
-  assert.match(renderReport(data, now), /Latest recorded evidence/)
+  const html = renderReport(data, now)
+  assert.doesNotMatch(html, /Stale evidence|alert-info/)
+  assert.match(html, /Last tested <time datetime="2026-09-21T00:00:00Z">Sep 21, 2026<\/time>/)
+  assert.match(html, /<details class="compatibility-provenance"><summary>Report source &amp; downloads<\/summary>/)
+  assert.match(html, /Measured: 2026-09-21T00:00:00Z/)
+  assert.match(html, /id="compatibility-case"[^>]* hidden>/)
   data.generatedAt = '2099-01-01T00:00:00Z'
   assert.throws(() => validateReport(data, undefined, now), /timestamp/)
   data.generatedAt = 'invalid'
   assert.throws(() => validateReport(data, undefined, now), /timestamp/)
+})
+
+test('report page keeps check scope collapsed and links to complete maintenance instructions', async () => {
+  const page = await readFile(new URL('../../docs/docs/sdk-compatibility.md', import.meta.url), 'utf8')
+  const maintenance = await readFile(new URL('../../docs/docs/sdk-compatibility-maintenance.md', import.meta.url), 'utf8')
+  assert.match(page, /# SDK compatibility\s+<div id="sdk-compatibility-report">/)
+  assert.match(page, /<details>\s*<summary>About these checks<\/summary>/)
+  assert.doesNotMatch(page, /<details[^>]*\bopen\b|^## |```/m)
+  for (const scope of ['**Basic**', '**Razor**', '**not a support guarantee**', 'Untested combinations', '**project target**', '**tool target framework**']) assert.ok(page.includes(scope))
+  assert.match(page, /\(xref:sdk-compatibility-maintenance\)/)
+  assert.match(maintenance, /^uid: sdk-compatibility-maintenance$/m)
+  assert.match(maintenance, /\(xref:sdk-compatibility\)/)
+  for (const instruction of [
+    'node test/compatibility/report.mjs resolve drop/compatibility/matrix.json',
+    './test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/compatibility/matrix.json -OutputDirectory drop/compatibility/report -NightlyPackage path/to/exact/docfx.nupkg',
+    'node test/compatibility/report.mjs prepare drop/compatibility/report/compatibility-report.json docs/obj/sdk-compatibility.json',
+    'docfx docs/docfx.json', 'node test/compatibility/report.mjs check path/to/compatibility-report.json',
+    'node --test test/compatibility/report.test.mjs', '-NuGetConfig', '-FailOnIncompatible', '--strict',
+    'validation_only', '**14 days**', 'roll-forward disabled', 'does not select only successful workflow runs',
+  ]) assert.ok(maintenance.includes(instruction), `Missing maintenance instruction: ${instruction}`)
 })
 
 test('HTML-escapes report content and never creates artifact-controlled URLs', () => {
@@ -111,7 +136,8 @@ test('HTML-escapes report content and never creates artifact-controlled URLs', (
   const html = renderReport(data, now)
   assert.ok(!html.includes('<script>'))
   assert.ok(!html.includes('<img'))
-  assert.match(html, /&lt;script&gt;/)
+  assert.ok(!html.includes(data.results[0].diagnostics)) // Diagnostics are inserted as text only after selection.
+  assert.ok(!html.includes(data.results[0].os))
   assert.match(html, /https:\/\/github.com\/dotnet\/docfx\/actions\/runs\/42\/attempts\/1/)
 })
 
@@ -128,6 +154,134 @@ test('missing, expired, invalid and network-failed reports show no passing rows'
     assert.match(element.textContent, /unavailable/)
     assert.equal(element.innerHTML, '')
   }
+})
+
+test('matrix headers preserve distinct tool targets, incomplete package identities, and older channels', () => {
+  const data = report()
+  for (const row of data.results.filter(r => r.channel === 'stable')) row.toolRuntimeTfm = 'net8.0'
+  let html = renderReport(data, now)
+  assert.equal((html.match(/2.80.1 &amp; net8.0<\/span>/g) ?? []).length, 2)
+  assert.equal((html.match(/2.80.2-preview.1 &amp; net10.0<\/span>/g) ?? []).length, 2)
+  const failure = data.results[3]
+  failure.outcome = 'infrastructure-error'; failure.toolRuntimeTfm = 'net9.0'; failure.packageSha256 = null
+  html = renderReport(data, now)
+  assert.match(html, /Nightly &amp; Razor<\/strong><span class="compatibility-tool">2.80.2-preview.1 &amp; net9.0/)
+  data.channels = ['nightly']; data.stableSelection = null
+  data.results = data.results.filter(r => r.channel === 'nightly')
+  html = renderReport(data, now)
+  assert.doesNotMatch(html, /Stable &amp;/)
+  assert.equal((html.match(/data-case-index=/g) ?? []).length, 2)
+  for (const row of data.results) { row.toolVersion = null; row.toolRuntimeTfm = null; row.packageSha256 = null; row.outcome = 'unavailable' }
+  html = renderReport(data, now)
+  assert.equal((html.match(/Not measured &amp; Not measured/g) ?? []).length, 2)
+  assert.match(html, /<strong>0 passed<\/strong> · 0 incompatible · 2 unavailable<\/p>/)
+})
+
+const logBase = new URL('https://example.test/docfx/reports/sdk-compatibility.json')
+const deferred = () => { let resolve; const promise = new Promise(done => { resolve = done }); return { promise, resolve } }
+
+test('case logs stay under the report directory and reject URLs, traversal and encoded paths', () => {
+  assert.equal(caseLogUrl(report().results[0], logBase).href, 'https://example.test/docfx/reports/' + report().results[0].log)
+  for (const log of ['../secret', 'logs/../secret.log', '/logs/a.log', 'https://evil.test/a.log', '//evil.test/a.log', 'logs/a.log?x=1', 'logs/%2e%2e.log', 'logs\\\\escape.log']) assert.throws(() => caseLogUrl({ log }, logBase))
+  assert.throws(() => caseLogUrl(report().results[0], 'file:///tmp/report.json'))
+})
+
+test('details read only a selected log and preserve diagnostics, raw text and original download identity', async () => {
+  const data = report()
+  data.results[1].outcome = 'incompatible'
+  data.results[1].diagnostics = '<script>unit diagnostic</script>'
+  const output = '\u001b[31mwarning XX123: <img src=x onerror=alert(1)>\u001b[0m\r\nordinary unit output'
+  const states = []; const requests = []
+  const selection = createCaseSelection(data, state => states.push(state), async (url, options) => {
+    requests.push([url.href, options])
+    return { ok: true, url: url.href, text: async () => output }
+  }, logBase)
+  assert.equal(requests.length, 0)
+  await selection.select(1)
+  assert.equal(requests.length, 1)
+  assert.equal(requests[0][1].redirect, 'error')
+  assert.equal(requests[0][1].credentials, 'same-origin')
+  assert.deepEqual(states.map(s => s.phase), ['loading', 'ready'])
+  assert.equal(states[1].row.diagnostics, data.results[1].diagnostics)
+  assert.equal(states[1].output, output.replace(/\u001b\[[0-9;]*m/g, ''))
+  assert.equal(states[1].excerpt, 'warning XX123: <img src=x onerror=alert(1)>')
+  assert.equal(states[1].logUrl, logBase.href.replace('sdk-compatibility.json', data.results[1].log))
+  await selection.select(0)
+  assert.equal(states.at(-1).excerpt, '')
+  assert.equal(states.at(-1).row.outcome, 'passed')
+  await assert.rejects(selection.select(99), /Unknown compatibility case/)
+  selection.dispose()
+})
+
+test('late log responses cannot overwrite selection, close or disposal', async () => {
+  const states = []; const delayed = deferred(); const started = deferred(); const signals = []
+  const selection = createCaseSelection(report(), state => states.push(state), async (url, options) => {
+    signals.push(options.signal)
+    return { ok: true, text: () => signals.length === 1 ? (started.resolve(), delayed.promise) : Promise.resolve('current unit output') }
+  }, logBase)
+  const first = selection.select(0)
+  await started.promise
+  await selection.select(1)
+  assert.equal(signals[0].aborted, true)
+  delayed.resolve('late unit output')
+  await first
+  assert.equal(states.at(-1).index, 1)
+  assert.equal(states.at(-1).output, 'current unit output')
+  selection.close()
+  assert.equal(states.at(-1).phase, 'closed')
+  assert.equal(signals[1].aborted, true)
+  selection.dispose()
+  const count = states.length
+  await selection.select(0)
+  assert.equal(states.length, count)
+  for (const action of ['close', 'dispose']) {
+    const delayed = deferred(); const started = deferred(); const changes = []
+    const active = createCaseSelection(report(), state => changes.push(state), async () => ({ ok: true, text: () => (started.resolve(), delayed.promise) }), logBase)
+    const loading = active.select(0)
+    await started.promise
+    active[action]()
+    const count = changes.length
+    delayed.resolve('late unit output')
+    await loading
+    assert.equal(changes.length, count)
+    active.dispose()
+  }
+})
+
+test('log failures and retry leave the recorded outcome unchanged and reject redirects or oversized output', async () => {
+  const data = report(); const states = []
+  let response = { ok: false, status: 404 }
+  const selection = createCaseSelection(data, state => states.push(state), async () => response, logBase)
+  await selection.select(0)
+  assert.equal(states.at(-1).phase, 'error')
+  assert.match(states.at(-1).error, /404/)
+  assert.equal(states.at(-1).row.outcome, 'passed')
+  for (const failure of [
+    { ok: true, redirected: true }, { ok: true, url: 'https://evil.test/log' },
+    { ok: true, headers: new Headers({ 'content-length': 10 * 1024 * 1024 + 1 }) },
+  ]) {
+    response = failure
+    await selection.select(0)
+    assert.equal(states.at(-1).phase, 'error')
+    assert.equal(data.results[0].outcome, 'passed')
+  }
+  response = { ok: true, text: async () => 'recovered unit output' }
+  await selection.select(0)
+  assert.equal(states.at(-1).phase, 'ready')
+  assert.equal(states.at(-1).output, 'recovered unit output')
+  selection.dispose()
+})
+
+test('a replaced or disposed report load cannot restore an old report or error', async () => {
+  const element = { textContent: '', innerHTML: '' }; const delayed = deferred(); let signal
+  const older = loadReport(element, async (url, options) => { signal = options.signal; return delayed.promise })
+  const dispose = await loadReport(element, async () => ({ ok: true, json: async () => ({ state: 'unavailable', reason: 'Newest report unavailable' }) }))
+  assert.equal(signal.aborted, true)
+  delayed.resolve({ ok: false })
+  await older
+  assert.match(element.textContent, /Newest report unavailable/)
+  dispose()
+  assert.equal(element.innerHTML, '')
 })
 
 test('only completed upstream main scheduled/manual nightlies are trusted', () => {
@@ -210,18 +364,22 @@ test('validates and renders 20 distinct cases in matrix order with net10.0 tool 
   const data = report(resolveMatrix(matrixConfig, sdkIndex))
   assert.equal(data.results.length, 20)
   assert.equal(validateReport(data, data.source, now), data)
-  const tables = [...renderReport(data, now).matchAll(/<tbody>(.*?)<\/tbody>/gs)]
-  assert.equal(tables.length, 2)
-  for (const [index, channel] of ['nightly', 'stable'].entries()) {
-    const rows = [...tables[index][1].matchAll(/<tr>(.*?)<\/tr>/gs)].map(match => match[1])
-    const expected = data.results.filter(r => r.channel === channel)
-    assert.equal(rows.length, 10)
-    expected.forEach((row, i) => {
-      assert.ok(rows[i].includes(`<code>${row.sdk}</code><br>${row.projectTfm}`))
-      assert.ok(rows[i].includes(`<td>${row.toolVersion}<br>net10.0</td><td>${row.scenario}</td>`))
-      assert.ok(rows[i].includes(`<code>${row.log}</code>`))
-    })
-  }
+  const html = renderReport(data, now)
+  const tables = [...html.matchAll(/<tbody>(.*?)<\/tbody>/gs)]
+  assert.equal(tables.length, 1)
+  const rows = [...tables[0][1].matchAll(/<tr>(.*?)<\/tr>/gs)].map(match => match[1])
+  assert.equal(rows.length, 5)
+  data.matrix.forEach((target, i) => {
+    assert.ok(rows[i].includes(`<code>${target.sdk}</code><span>${target.projectTfm}</span>`))
+    const indices = [...rows[i].matchAll(/data-case-index="(\d+)"/g)].map(match => Number(match[1]))
+    assert.equal(indices.length, 4)
+    assert.deepEqual(indices.map(index => [data.results[index].sdk, data.results[index].projectTfm]), Array(4).fill([target.sdk, target.projectTfm]))
+    assert.doesNotMatch(rows[i], /href=/)
+  })
+  for (const name of ['Stable &amp; Basic', 'Stable &amp; Razor', 'Nightly &amp; Basic', 'Nightly &amp; Razor']) assert.match(html, new RegExp(`<strong>${name}</strong><span class="compatibility-tool">`))
+  assert.equal((html.match(/2.80.1 &amp; net10.0<\/span>/g) ?? []).length, 2)
+  assert.equal((html.match(/2.80.2-preview.1 &amp; net10.0<\/span>/g) ?? []).length, 2)
+  assert.match(html, /<strong>20 passed<\/strong> · 0 incompatible<\/p>/)
 })
 
 test('each net11.0 observation is required and cannot be replaced with the SDK 11 net10.0 row', async () => {
@@ -249,7 +407,7 @@ test('trusted retrieval requires all five reviewed pairs while older 16-row evid
   data.results = data.results.filter(r => r.projectTfm !== 'net11.0')
   assert.equal(data.results.length, 16)
   assert.equal(validateReport(data, undefined, now), data)
-  assert.equal([...renderReport(data, now).matchAll(/<strong>passed<\/strong>/g)].length, 16)
+  assert.equal([...renderReport(data, now).matchAll(/data-outcome="passed"/g)].length, 16)
   await assert.rejects(latestReport(adapter(), async () => data, matrixConfig.channels), /reviewed SDK channel matrix/)
 })
 
@@ -307,7 +465,7 @@ test('distinguishes explicit local versions and rejects silent fallback from lat
   unavailable.results.filter(r => r.channel === 'stable').forEach(r => {
     r.outcome = 'infrastructure-error'; r.toolVersion = null; r.toolRuntimeTfm = null; r.packageSha256 = null
   })
-  assert.match(renderReport(unavailable, now), /Requested latest stable release at measurement time: <strong>2.80.1/)
+  assert.match(renderReport(unavailable, now), /Requested latest stable release: <strong>2.80.1/)
 })
 
 test('exact installer refuses an older installed version and never retries a missing version', () => {
@@ -401,10 +559,111 @@ test('ZIP adapter reads only the bounded named JSON report without extracting ot
   } finally { await rm(temp, { recursive: true, force: true }) }
 })
 
+async function makeArchive(path, entries) {
+  const manifest = path + '.entries.json'
+  await writeFile(manifest, JSON.stringify(entries.map(([name, bytes]) => ({ name, bytes: Buffer.from(bytes).toString('base64') }))))
+  execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
+    $z = [IO.Compression.ZipFile]::Open('${path.replaceAll("'", "''")}', [IO.Compression.ZipArchiveMode]::Create)
+    try {
+      foreach ($entry in (Get-Content -Raw '${manifest.replaceAll("'", "''")}' | ConvertFrom-Json)) {
+        $stream = $z.CreateEntry($entry.name).Open()
+        try { $bytes = [Convert]::FromBase64String($entry.bytes); $stream.Write($bytes, 0, $bytes.Length) } finally { $stream.Dispose() }
+      }
+    } finally { $z.Dispose() }
+  `], { stdio: 'pipe' })
+}
+const readArchive = (archive, evidence) => execFileSync('pwsh', ['-NoProfile', '-File', fileURLToPath(new URL('./Read-ReportArchive.ps1', import.meta.url)), '-ArchivePath', archive, ...(evidence ? ['-EvidenceDirectory', evidence] : [])], { encoding: 'utf8', stdio: 'pipe' })
+
+test('archive and prepare export only named case logs and preserve JSON/log bytes', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-evidence-test-'))
+  try {
+    const data = report()
+    const original = Buffer.from('\ufeff' + JSON.stringify(data, null, 2).replaceAll('\n', '\r\n') + '\r\n')
+    const bytes = Buffer.from('\ufeffunit log\r\n\u001b[31mwarning XX123: unit text\u001b[0m\r\n')
+    const archive = join(temp, 'evidence.zip'); const evidence = join(temp, 'evidence'); const output = join(temp, 'site', 'sdk-compatibility.json')
+    await makeArchive(archive, [['compatibility-report.json', original], ...data.results.map(row => [row.log, bytes]), ['logs/install.log', 'not public'], ['logs/environment.log', 'not public'], ['../unexpected.ps1', 'not executed']])
+    validateReport(JSON.parse(readArchive(archive)), data.source, now)
+    readArchive(archive, evidence)
+    await prepareReport(join(evidence, 'compatibility-report.json'), output)
+    assert.deepEqual(await readFile(output), original)
+    assert.deepEqual((await readdir(join(temp, 'site', 'logs'))).sort(), data.results.map(r => r.log.slice(5)).sort())
+    for (const row of data.results) assert.deepEqual(await readFile(join(temp, 'site', row.log)), bytes)
+    await assert.rejects(readFile(join(temp, 'unexpected.ps1')), { code: 'ENOENT' })
+    await assert.rejects(prepareReport(join(evidence, 'compatibility-report.json'), join(evidence, 'copy.json')), /separate output directory/)
+    const docs = JSON.parse((await readFile(new URL('../../docs/docfx.json', import.meta.url), 'utf8')).replace(/^\uFEFF/, ''))
+    assert.ok(docs.build.resource.some(r => r.src === 'obj' && r.dest === 'reports' && r.files.includes('logs/*.log')))
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
+test('evidence export rejects duplicate, unsafe, case-colliding and oversized ZIP entries before extraction', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-zip-guards-'))
+  try {
+    for (const [index, mutate] of [
+      (data, entries) => entries.push([data.results[0].log, 'duplicate']),
+      data => { data.results[0].log = '../outside.log' },
+      data => { data.results[0].log = 'logs/Case.log'; data.results[1].log = 'logs/case.log' },
+      (data, entries) => { entries[0][1] = Buffer.alloc(10 * 1024 * 1024 + 1) },
+    ].entries()) {
+      const data = report(); const entries = data.results.map(row => [row.log, 'unit log'])
+      mutate(data, entries)
+      const archive = join(temp, `${index}.zip`); const evidence = join(temp, `evidence-${index}`)
+      await makeArchive(archive, [['compatibility-report.json', JSON.stringify(data)], ...entries])
+      assert.throws(() => readArchive(archive, evidence))
+      await assert.rejects(readdir(evidence), { code: 'ENOENT' })
+    }
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
+test('missing logs stay absent instead of exposing old evidence; local directory links are rejected', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-missing-log-'))
+  try {
+    const data = report(); const archive = join(temp, 'evidence.zip'); const evidence = join(temp, 'evidence'); const output = join(temp, 'site', 'sdk-compatibility.json')
+    await makeArchive(archive, [['compatibility-report.json', JSON.stringify(data)], ...data.results.slice(1).map(row => [row.log, 'unit output'])])
+    readArchive(archive, evidence)
+    await mkdir(join(temp, 'site', 'logs'), { recursive: true })
+    await writeFile(join(temp, 'site', data.results[0].log), 'older run output')
+    await prepareReport(join(evidence, 'compatibility-report.json'), output)
+    assert.deepEqual(JSON.parse(await readFile(output, 'utf8')), data)
+    await assert.rejects(readFile(join(temp, 'site', data.results[0].log)), { code: 'ENOENT' })
+    await rm(join(evidence, 'logs'), { recursive: true })
+    await symlink(join(temp, 'site', 'logs'), join(evidence, 'logs'), process.platform === 'win32' ? 'junction' : 'dir')
+    await assert.rejects(prepareReport(join(evidence, 'compatibility-report.json'), output), /regular directory/)
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
+test('trusted fetch exports the selected archive while temporary-branch evidence is never exported', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-fetch-logs-'))
+  const originalFetch = globalThis.fetch
+  try {
+    const data = report(resolveMatrix(matrixConfig, sdkIndex)); const archive = join(temp, 'evidence.zip'); const output = join(temp, 'site', 'sdk-compatibility.json')
+    const original = Buffer.from(JSON.stringify(data) + '\r\n')
+    await makeArchive(archive, [['compatibility-report.json', original], ...data.results.map(row => [row.log, 'unit log'])])
+    const bytes = await readFile(archive)
+    let branch = 'main'; let downloads = 0
+    globalThis.fetch = async url => {
+      const path = new URL(url).pathname + new URL(url).search
+      if (path.endsWith('/zip')) {
+        downloads++
+        return { ok: true, headers: new Headers(), body: (async function * () { yield bytes })() }
+      }
+      return { ok: true, json: async () => adapter([run({ head_branch: branch })])(path) }
+    }
+    await main(['fetch', output])
+    assert.equal(downloads, 1)
+    assert.deepEqual(await readFile(output), original)
+    assert.equal((await readdir(join(temp, 'site', 'logs'))).length, 20)
+    branch = 'temporary-validation'
+    await main(['fetch', output])
+    assert.equal(downloads, 1)
+    assert.equal(JSON.parse(await readFile(output, 'utf8')).state, 'unavailable')
+    await assert.rejects(readdir(join(temp, 'site', 'logs')), { code: 'ENOENT' })
+  } finally { globalThis.fetch = originalFetch; await rm(temp, { recursive: true, force: true }) }
+})
+
 test('CLI prepares real schema content and rejects malformed input before writing', async () => {
   const temp = await mkdtemp(join(tmpdir(), 'docfx-report-cli-'))
   try {
-    const input = join(temp, 'input.json'); const output = join(temp, 'output.json')
+    const input = join(temp, 'input.json'); const output = join(temp, 'site', 'output.json')
     await writeFile(input, JSON.stringify(report()))
     const cli = fileURLToPath(new URL('./report.mjs', import.meta.url))
     execFileSync(process.execPath, [cli, 'prepare', input, output])

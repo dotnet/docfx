@@ -25,7 +25,7 @@
     "resource": [
       {
         "src": "obj",
-        "files": [ "sdk-compatibility.json" ],
+        "files": [ "sdk-compatibility.json", "logs/*.log" ],
         "dest": "reports"
       },
       {

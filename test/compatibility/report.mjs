@@ -1,8 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-import { readFile, writeFile, mkdir, mkdtemp, rm } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { readFile, writeFile, mkdir, mkdtemp, rm, lstat } from 'node:fs/promises'
+import { dirname, join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { execFileSync } from 'node:child_process'
@@ -125,13 +125,38 @@ async function request(path, binary = false) {
   return Buffer.concat(chunks)
 }
 
-async function archiveReport(id) {
-  const temp = await mkdtemp(join(tmpdir(), 'docfx-report-'))
-  try {
-    const path = join(temp, 'report.zip')
-    await writeFile(path, await request(`/repos/${repository}/actions/artifacts/${id}/zip`, true))
-    return JSON.parse(execFileSync('pwsh', ['-NoProfile', '-File', join(here, 'Read-ReportArchive.ps1'), '-ArchivePath', path], { encoding: 'utf8', maxBuffer: 1024 * 1024 }).replace(/^\uFEFF/, ''))
-  } finally { await rm(temp, { recursive: true, force: true }) }
+async function archiveReport(id, path) {
+  await writeFile(path, await request(`/repos/${repository}/actions/artifacts/${id}/zip`, true))
+  return JSON.parse(execFileSync('pwsh', ['-NoProfile', '-File', join(here, 'Read-ReportArchive.ps1'), '-ArchivePath', path], { encoding: 'utf8', maxBuffer: 1024 * 1024 }).replace(/^\uFEFF/, ''))
+}
+
+export async function prepareReport(input, output) {
+  if (resolve(dirname(input)) === resolve(dirname(output))) throw new Error('Prepare evidence in a separate output directory to preserve the source files.')
+  const original = await readFile(input)
+  if (original.length > 1024 * 1024) throw new Error('Report exceeds 1 MiB.')
+  const report = validateReport(JSON.parse(original.toString('utf8').replace(/^\uFEFF/, '')))
+  const directory = join(dirname(input), 'logs')
+  const directoryInfo = await lstat(directory).catch(error => { if (error.code !== 'ENOENT') throw error })
+  if (directoryInfo && (!directoryInfo.isDirectory() || directoryInfo.isSymbolicLink())) throw new Error('Case logs must be in a regular directory.')
+  const files = new Map()
+  let size = 0
+  for (const name of new Set(report.results.map(r => r.log))) {
+    const path = join(dirname(input), name)
+    const info = await lstat(path).catch(error => { if (error.code !== 'ENOENT') throw error })
+    if (!info) { console.warn(`Case log unavailable: ${name}. The recorded compatibility result is unchanged.`); continue }
+    if (!info.isFile() || info.isSymbolicLink() || info.size > 10 * 1024 * 1024) throw new Error('Invalid or oversized case log.')
+    if ([...files.keys()].some(key => key.toLowerCase() === name.toLowerCase())) throw new Error('Case log names collide on a case-insensitive filesystem.')
+    const bytes = await readFile(path)
+    size += bytes.length
+    if (bytes.length > 10 * 1024 * 1024 || size > 50 * 1024 * 1024) throw new Error('Case logs exceed the size limit.')
+    files.set(name, bytes)
+  }
+  // Replace this report's log directory, so an absent new log cannot expose an older run's bytes.
+  const destination = join(dirname(output), 'logs')
+  await rm(destination, { recursive: true, force: true })
+  await mkdir(destination, { recursive: true })
+  for (const [name, bytes] of files) await writeFile(join(dirname(output), name), bytes)
+  await writeFile(output, original)
 }
 
 export async function main([command, path, output, ...extra]) {
@@ -150,19 +175,31 @@ export async function main([command, path, output, ...extra]) {
       break
     }
     case 'prepare': {
-      await save(output, validateReport(await json(path)))
+      await prepareReport(path, output)
       break
     }
     case 'fetch': {
-      let report
-      try { report = await latestReport(request, archiveReport, (await json(join(here, 'sdk-matrix.json'))).channels) } catch (error) {
-        // Transport/permission failures are absence of evidence, not compatibility failures.
-        // Malformed data or provenance mismatches fail the build instead of publishing it.
-        if (error.status || error.name === 'TimeoutError' || error.transport) {
-          report = { state: 'unavailable', reason: `Compatibility evidence could not be retrieved: ${error.message}` }
-        } else { throw error }
-      }
-      await save(path, report)
+      const temp = await mkdtemp(join(tmpdir(), 'docfx-report-'))
+      try {
+        const archive = join(temp, 'report.zip')
+        let report
+        try { report = await latestReport(request, id => archiveReport(id, archive), (await json(join(here, 'sdk-matrix.json'))).channels) } catch (error) {
+          // Transport/permission failures are absence of evidence, not compatibility failures.
+          // Malformed data or provenance mismatches fail the build instead of publishing it.
+          if (error.status || error.name === 'TimeoutError' || error.transport) {
+            report = { state: 'unavailable', reason: `Compatibility evidence could not be retrieved: ${error.message}` }
+          } else { throw error }
+        }
+        if (report.state === 'unavailable') {
+          await rm(join(dirname(path), 'logs'), { recursive: true, force: true })
+          await save(path, report)
+        } else {
+          // Export only after latestReport has checked the selected archive against its trusted run.
+          const evidence = join(temp, 'evidence')
+          execFileSync('pwsh', ['-NoProfile', '-File', join(here, 'Read-ReportArchive.ps1'), '-ArchivePath', archive, '-EvidenceDirectory', evidence], { maxBuffer: 1024 * 1024 })
+          await prepareReport(join(evidence, 'compatibility-report.json'), path)
+        }
+      } finally { await rm(temp, { recursive: true, force: true }) }
       break
     }
     case 'check': {
