@@ -17,7 +17,9 @@ Every row records the selected project SDK, project target framework, package ve
 - **basic** compiles a C# class and checks that its public type and method appear in API metadata.
 - **razor** compiles a Razor component with `@inherits` and a code-behind override. Metadata must contain both the public API and its generated inheritance/override relationship. An incomplete API is not a pass, even if DocFX exits successfully.
 
-Both DocFX package groups use the same Linux matrix: the latest SDK from the explicitly configured 8.0, 9.0, 10.0, and 11.0 channels, resolved from Microsoft's official release metadata. Latest stable and current preview refer to **DocFX packages**, not SDK channels. With two scenarios, this configures 16 package/SDK/scenario combinations per run. The 11.0 SDK deliberately targets `net10.0` to measure SDK/tool interaction independently of a project's target framework. Each case pins `global.json` with roll-forward disabled and verifies `dotnet --version`. DocFX runs from the package's `net10.0` assets; other tool TFMs and operating systems are not covered by this matrix.
+Both DocFX package groups use the same Linux matrix: the latest SDK from the explicitly configured 8.0, 9.0, 10.0, and 11.0 channels, resolved from Microsoft's official release metadata. Latest stable and current preview refer to **DocFX packages**, not SDK channels. The five SDK/project-TFM pairs are 8.0/`net8.0`, 9.0/`net9.0`, 10.0/`net10.0`, 11.0/`net10.0`, and 11.0/`net11.0`. With two packages and two scenarios, this configures **20 cases per run**. The same exact 11.0 SDK tests both `net10.0` for older-project regression coverage and `net11.0` for new-target coverage; their results and logs remain separate. This is configured coverage, not evidence that unmeasured combinations passed.
+
+Each SDK is installed once, even when it tests multiple project TFMs. Each case pins `global.json` with roll-forward disabled and verifies `dotnet --version`. DocFX still runs from the package's `net10.0` assets regardless of project TFM; other tool TFMs and operating systems are not covered by this matrix.
 
 ## Understanding results
 

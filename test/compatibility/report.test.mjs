@@ -14,20 +14,25 @@ import { validateReport, renderReport, loadReport } from '../../docs/template/pu
 // Protocol fixtures are synthetic unit-test inputs, never published measurement results.
 const now = Date.parse('2026-09-22T00:00:00Z')
 const sha = 'a'.repeat(40)
-function report() {
+const matrixConfig = JSON.parse(await readFile(new URL('./sdk-matrix.json', import.meta.url), 'utf8'))
+const sdkIndex = { 'releases-index': ['8.0', '9.0', '10.0', '11.0'].map(channel => ({
+  'channel-version': channel, 'latest-sdk': `${channel}.100${channel === '11.0' ? '-rc.1.123' : ''}`,
+  'support-phase': channel === '11.0' ? 'go-live' : 'active',
+})) }
+function report(matrix = [{ channel: '10.0', sdk: '10.0.401', projectTfm: 'net10.0' }]) {
   const data = {
     schemaVersion: 1, generatedAt: '2026-09-21T00:00:00Z',
     source: { repository: 'dotnet/docfx', sha, runId: '42', runAttempt: '1', dirty: false },
-    matrix: [{ channel: '10.0', sdk: '10.0.401', projectTfm: 'net10.0' }],
+    matrix,
     channels: ['stable', 'nightly'], scenarios: ['basic', 'razor'],
     stableSelection: { mode: 'latest-release', requestedVersion: '2.80.1', reason: 'Synthetic release discovery' },
   }
-  data.results = data.channels.flatMap(channel => data.scenarios.map(scenario => ({
-    ...data.matrix[0], selectedSdk: '10.0.401', channel, scenario,
+  data.results = data.matrix.flatMap(target => data.channels.flatMap(channel => data.scenarios.map(scenario => ({
+    ...target, selectedSdk: target.sdk, channel, scenario,
     toolVersion: channel === 'stable' ? '2.80.1' : '2.80.2-preview.1', toolRuntimeTfm: 'net10.0',
     packageSha256: 'b'.repeat(64), os: 'Unit-test OS', testedAt: data.generatedAt,
-    outcome: 'passed', diagnostics: 'Unit-test diagnostics', log: `logs/${channel}-${scenario}.log`,
-  })))
+    outcome: 'passed', diagnostics: 'Unit-test diagnostics', log: `logs/${channel}-${target.sdk}-${target.projectTfm}-${scenario}.log`,
+  }))))
   return data
 }
 function run(overrides = {}) {
@@ -173,6 +178,108 @@ test('resolves reviewed channels to exact SDKs, including previews and older pro
   assert.equal(result[0].sdk, '11.0.100-rc.1.123')
   assert.equal(result[0].projectTfm, 'net10.0')
   assert.throws(() => resolveMatrix(config, { 'releases-index': [] }), /No exact SDK/)
+})
+
+test('resolve CLI retains both SDK 11 project TFMs but installs the exact SDK only once', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'docfx-matrix-'))
+  try {
+    const output = join(temp, 'matrix.json'); const githubOutput = join(temp, 'github-output')
+    execFileSync(process.execPath, ['--input-type=module', '--eval', `
+      import assert from 'node:assert/strict'
+      import { main } from ${JSON.stringify(new URL('./report.mjs', import.meta.url).href)}
+      let requests = 0
+      globalThis.fetch = async url => {
+        assert.equal(url, ${JSON.stringify(matrixConfig.releaseIndex)})
+        requests++
+        return { ok: true, json: async () => (${JSON.stringify(sdkIndex)}) }
+      }
+      await main(['resolve', ${JSON.stringify(output)}])
+      assert.equal(requests, 1)
+    `], { env: { ...process.env, GITHUB_OUTPUT: githubOutput } })
+    const matrix = JSON.parse(await readFile(output, 'utf8'))
+    assert.equal(matrix.length, 5)
+    assert.deepEqual(matrix, resolveMatrix(matrixConfig, sdkIndex))
+    const sdk11 = matrix.filter(t => t.channel === '11.0')
+    assert.deepEqual(sdk11.map(t => t.projectTfm), ['net10.0', 'net11.0'])
+    assert.ok(sdk11.every(t => t.sdk === '11.0.100-rc.1.123'))
+    assert.equal(await readFile(githubOutput, 'utf8'), 'sdks<<SDK_LIST\n8.0.100\n9.0.100\n10.0.100\n11.0.100-rc.1.123\nSDK_LIST\n')
+  } finally { await rm(temp, { recursive: true, force: true }) }
+})
+
+test('validates and renders 20 distinct cases in matrix order with net10.0 tool runtimes', () => {
+  const data = report(resolveMatrix(matrixConfig, sdkIndex))
+  assert.equal(data.results.length, 20)
+  assert.equal(validateReport(data, data.source, now), data)
+  const tables = [...renderReport(data, now).matchAll(/<tbody>(.*?)<\/tbody>/gs)]
+  assert.equal(tables.length, 2)
+  for (const [index, channel] of ['nightly', 'stable'].entries()) {
+    const rows = [...tables[index][1].matchAll(/<tr>(.*?)<\/tr>/gs)].map(match => match[1])
+    const expected = data.results.filter(r => r.channel === channel)
+    assert.equal(rows.length, 10)
+    expected.forEach((row, i) => {
+      assert.ok(rows[i].includes(`<code>${row.sdk}</code><br>${row.projectTfm}`))
+      assert.ok(rows[i].includes(`<td>${row.toolVersion}<br>net10.0</td><td>${row.scenario}</td>`))
+      assert.ok(rows[i].includes(`<code>${row.log}</code>`))
+    })
+  }
+})
+
+test('each net11.0 observation is required and cannot be replaced with the SDK 11 net10.0 row', async () => {
+  const complete = report(resolveMatrix(matrixConfig, sdkIndex))
+  const indices = complete.results.flatMap((r, i) => r.projectTfm === 'net11.0' ? [i] : [])
+  assert.equal(indices.length, 4)
+  for (const index of indices) {
+    const missing = structuredClone(complete)
+    missing.results.splice(index, 1)
+    assert.throws(() => validateReport(missing, missing.source, now), /Incomplete report/)
+    await assert.rejects(latestReport(adapter(), async () => missing, matrixConfig.channels), /Incomplete report/)
+    const replaced = structuredClone(complete)
+    const row = replaced.results[index]
+    replaced.results[index] = replaced.results.find(r => r.sdk === row.sdk && r.projectTfm === 'net10.0' && r.channel === row.channel && r.scenario === row.scenario)
+    assert.equal(replaced.results.length, 20)
+    assert.throws(() => validateReport(replaced, replaced.source, now), /Unexpected or duplicate result/)
+    await assert.rejects(latestReport(adapter(), async () => replaced, matrixConfig.channels), /Unexpected or duplicate result/)
+  }
+})
+
+test('trusted retrieval requires all five reviewed pairs while older 16-row evidence remains renderable', async () => {
+  const data = report(resolveMatrix(matrixConfig, sdkIndex))
+  assert.equal(await latestReport(adapter(), async () => data, matrixConfig.channels), data)
+  data.matrix = data.matrix.filter(t => t.projectTfm !== 'net11.0')
+  data.results = data.results.filter(r => r.projectTfm !== 'net11.0')
+  assert.equal(data.results.length, 16)
+  assert.equal(validateReport(data, undefined, now), data)
+  assert.equal([...renderReport(data, now).matchAll(/<strong>passed<\/strong>/g)].length, 16)
+  await assert.rejects(latestReport(adapter(), async () => data, matrixConfig.channels), /reviewed SDK channel matrix/)
+})
+
+test('actual harness identifiers isolate all 20 work directories and log files by project TFM', () => {
+  const path = fileURLToPath(new URL('Measure-Compatibility.ps1', import.meta.url)).replaceAll("'", "''")
+  const matrix = JSON.stringify(resolveMatrix(matrixConfig, sdkIndex))
+  // Evaluate only the real identifier assignments, never simulate fixture execution or measurements.
+  execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
+    $ErrorActionPreference = 'Stop'
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile('${path}', [ref]$null, [ref]$null)
+    $assignments = foreach ($name in @('id', 'logName', 'directory')) {
+      $node = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq ('$' + $name) }, $true)
+      if (!$node) { throw "Missing harness assignment: $name" }
+      $node.Extent.Text
+    }
+    $work = [IO.Path]::GetTempPath()
+    $directories = [Collections.Generic.HashSet[string]]::new()
+    $logs = [Collections.Generic.HashSet[string]]::new()
+    foreach ($target in ('${matrix}' | ConvertFrom-Json)) {
+      foreach ($channel in @('stable', 'nightly')) {
+        $tool = @{ channel = $channel }
+        foreach ($scenario in @('basic', 'razor')) {
+          Invoke-Expression ($assignments -join [Environment]::NewLine)
+          if (!$id.Contains($target.projectTfm) -or $logName -ne "logs/$id.log" -or $directory -ne (Join-Path $work $id)) { throw 'Incorrect case identity' }
+          if (!$directories.Add($directory) -or !$logs.Add($logName)) { throw 'SDK/TFM case collision' }
+        }
+      }
+    }
+    if ($directories.Count -ne 20 -or $logs.Count -ne 20) { throw 'Expected 20 isolated cases' }
+  `], { stdio: 'pipe' })
 })
 
 test('discovers an exact official stable release and rejects previews or malformed versions', () => {
@@ -449,9 +556,9 @@ test('manual validation defaults safe and cannot reach package or Pages publicat
   assert.doesNotMatch(job('sdk-compatibility'), /SkipStable|FailOnIncompatible|VALIDATION_ONLY|@options/)
   assert.match(job('sdk-compatibility'), /Measure-Compatibility.ps1 -MatrixPath drop\/compatibility-matrix.json/)
   assert.match(job('test-nightly-package'), /docfx metadata\s+docfx build\s+docfx pdf/)
-  const matrix = JSON.parse(await readFile(new URL('./sdk-matrix.json', import.meta.url), 'utf8'))
-  assert.deepEqual(matrix.channels.map(t => t.channel), ['8.0', '9.0', '10.0', '11.0'])
-  assert.equal(matrix.channels.length * report().channels.length * report().scenarios.length, 16)
+  assert.deepEqual(matrixConfig.channels.map(t => `${t.channel}/${t.projectTfm}`), ['8.0/net8.0', '9.0/net9.0', '10.0/net10.0', '11.0/net10.0', '11.0/net11.0'])
+  assert.equal(matrixConfig.channels.length * report().channels.length * report().scenarios.length, 20)
+  assert.match(job('sdk-compatibility'), /dotnet-version: \$\{\{ steps.matrix.outputs.sdks \}\}/)
   assert.match(nightly, /inputs.validation_only && 'sdk-compatibility-validation-v1' \|\| 'sdk-compatibility-v1'/)
   assert.match(docs, /report.mjs production-ready/)
   assert.match(docs, /if: github.event.workflow_run.name == 'ci' \|\| steps.production-report.outputs.ready == 'true'\s+id: site-run/)
