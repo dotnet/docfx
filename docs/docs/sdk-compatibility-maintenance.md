@@ -32,6 +32,8 @@ Outcomes distinguish compatibility observations from cases that could not be mea
 
 Normal and validation-only nightlies use **reporting mode**: a complete report containing incompatible results is a valid observation, not a failing compatibility job. Findings remain labeled incompatible in the report, with workflow warnings and a step summary. Unavailable cases, infrastructure errors, invalid provenance, malformed or incomplete reports, and script errors still fail. The existing source build, unit tests, and seed-site checks remain required. PR packaged-tool smoke uses **strict mode**, where any non-passing case fails.
 
+PR packaging and smoke checks run after the source build and before the existing snapshot tests, which can update tracked baselines. Packaging uses a separate `BaseOutputPath` so the test version and tool runtime configuration do not overwrite the normal build used by documentation. All source tests, coverage, Percy checks, and full-site builds still run; the smoke validates the exact repacked tool without accepting a dirty checkout.
+
 For a dirty-source failure, inspect the Git status printed by the harness and saved as `logs/source-state.log` in the evidence artifact. This lists the changed and untracked paths without modifying or cleaning them; CI provenance still requires a clean source tree.
 
 ## Evidence and website publication

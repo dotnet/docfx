@@ -932,6 +932,38 @@ test('manual validation defaults safe and cannot reach package or Pages publicat
   assert.match(docs, /if: needs.site.outputs.ready == 'true'/)
 })
 
+test('CI measures the exact distribution package before snapshot tests change the source tree', async () => {
+  const ci = await readFile(new URL('../../.github/workflows/ci.yml', import.meta.url), 'utf8')
+  const stages = [
+    'uses: ./.github/actions/build\n',
+    'name: Test compatibility reporting',
+    'name: Pack tool for distribution tests',
+    'name: Publish tool for distribution tests',
+    'name: Repack tool without rebuilding',
+    'name: Verify distributed templates',
+    'name: Packaged SDK compatibility smoke',
+    'name: Upload compatibility smoke evidence',
+    'run: dotnet test -c Release -f net10.0',
+    'run: dotnet test -c Release -f net9.0',
+    'run: dotnet test -c Release -f net8.0',
+    'run: percy exec -- dotnet test',
+    'uses: codecov/codecov-action@v7',
+    'uses: ./.github/actions/build-docs',
+    'name: docs-site',
+  ]
+  let previous = -1
+  for (const stage of stages) {
+    const index = ci.replaceAll('\r\n', '\n').indexOf(stage)
+    assert.ok(index > previous, `Missing or misplaced CI stage: ${stage}`)
+    previous = index
+  }
+  assert.equal((ci.match(/--collect:"XPlat Code Coverage"/g) ?? []).length, 4)
+  const packaging = ci.match(/run: dotnet (?:pack|publish) src\/docfx[^\r\n]*/g) ?? []
+  assert.equal(packaging.length, 3)
+  for (const command of packaging) assert.match(command, /\/p:BaseOutputPath=bin\/package-test\//)
+  assert.doesNotMatch(ci, /git (?:clean|reset|restore)|BUILD_SERVER:/)
+})
+
 test('CI cleans coverage downloads without weakening the harness source-state check', async () => {
   const ci = await readFile(new URL('../../.github/workflows/ci.yml', import.meta.url), 'utf8')
   const codecov = ci.split('- uses: codecov/codecov-action@v7')[1].split(/\r?\n    - /)[0]
