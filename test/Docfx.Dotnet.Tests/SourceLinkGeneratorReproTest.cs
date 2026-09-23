@@ -27,6 +27,26 @@ public class SourceLinkGeneratorReproTest(ITestOutputHelper output) : TestBase
     private const string RawUrl = "https://raw.githubusercontent.com/dotnet/docfx/0123456789abcdef0123456789abcdef01234567/";
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void PartialTypeSourceLinkFallsBackFromGeneratorOutput(bool underObj)
+    {
+        var (compilation, generatedTree) = RunGenerator(HandwrittenPath);
+        if (underObj)
+        {
+            compilation = compilation.ReplaceSyntaxTree(generatedTree,
+                generatedTree.WithFilePath("/repo/obj/" + generatedTree.FilePath));
+        }
+
+        var type = compilation.GetTypeByMetadataName("NetCord.Rest.MessageProperties");
+        Assert.Equal(2, type.DeclaringSyntaxReferences.Length);
+        var filter = new SourceLinkFilter(underObj ? [] : ["**/*WithContentGenerator/**"]);
+        Assert.Equal(HandwrittenPath, VisitorHelper.GetSourceDetail(type, compilation, filter).Path);
+        if (underObj)
+            Assert.Equal(HandwrittenPath, VisitorHelper.GetSourceDetail(type, compilation).Path);
+    }
+
+    [Theory]
     [InlineData("none", false)]
     [InlineData("none", true)]
     [InlineData("wildcard", false)]

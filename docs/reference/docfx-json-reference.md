@@ -430,6 +430,8 @@ Use `/` in patterns; both `/` and `\` in document paths are supported. A leading
 
 A document is excluded if **any** pattern matches; these are not ordered include/exclude rules. Another non-excluded PDB document can still provide a partial type's link. API reference links are unchanged.
 
+For source or project input, a partial type uses the last declaration remaining after applying these rules and the existing `obj` directory exclusion. This lets a type extended by a source generator link to its handwritten declaration. If every declaration is excluded, the source information is retained without a link. Relative `<code source="...">` includes continue to use their original source directory.
+
 `metadata.src[].exclude` instead excludes **input files**, and `disableGitFeatures` disables all View Source links. This setting only applies your path rules; it does not classify generated code from attributes or comments, or verify URL availability. See the [examples](../docs/dotnet-api-docs.md#exclude-selected-view-source-links) for combining input exclusions with source-link rules.
 
 ### `codeSourceBasePath`

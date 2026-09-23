@@ -144,7 +144,12 @@ internal static partial class VisitorHelper
             return null;
         }
 
-        var syntaxRef = symbol.DeclaringSyntaxReferences.LastOrDefault();
+        // Prefer a declaration that can supply a source link, retaining source information
+        // for code includes and diagnostics even when every declaration is excluded.
+        var syntaxRef = symbol.DeclaringSyntaxReferences.LastOrDefault(s =>
+            !GitUtility.IsUnderObjDirectory(s.SyntaxTree.FilePath)
+            && sourceLinkFilter?.IsExcluded(s.SyntaxTree.FilePath) != true)
+            ?? symbol.DeclaringSyntaxReferences.LastOrDefault();
         if (symbol.IsExtern || syntaxRef == null)
         {
             if (SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, symbol, sourceLinkFilter) is string url)

@@ -58,7 +58,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         var comment = symbol.GetDocumentationComment(_compilation, expandIncludes: true, expandInheritdoc: true);
-        if (XmlComment.Parse(comment.FullXmlFragment, GetXmlCommentParserContext(item)) is { } commentModel)
+        if (XmlComment.Parse(comment.FullXmlFragment, GetXmlCommentParserContext(item, symbol)) is { } commentModel)
         {
             item.Summary = commentModel.Summary;
             item.Remarks = commentModel.Remarks;
@@ -713,7 +713,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
     }
 
-    private XmlCommentParserContext GetXmlCommentParserContext(MetadataItem item)
+    private XmlCommentParserContext GetXmlCommentParserContext(MetadataItem item, ISymbol symbol)
     {
         return new XmlCommentParserContext
         {
@@ -734,8 +734,11 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
         string ResolveCode(string source)
         {
+            // Source-link exclusions must not change the base directory of code includes.
+            var sourcePath = item.Source is null ? null
+                : symbol.DeclaringSyntaxReferences.LastOrDefault()?.SyntaxTree.FilePath ?? item.Source.Path;
             var basePath = _config.CodeSourceBasePath ?? (
-                item.Source?.Path is { } sourcePath
+                sourcePath is not null
                     ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
                     : null);
 

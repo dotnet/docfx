@@ -753,8 +753,10 @@ partial class DotnetApiCatalog
 
                 string? ResolveCode(string source)
                 {
+                    // Source-link exclusions must not change the base directory of code includes.
+                    var sourcePath = symbol.DeclaringSyntaxReferences.LastOrDefault()?.SyntaxTree.FilePath ?? src?.Path;
                     var basePath = config.CodeSourceBasePath ?? (
-                        src?.Path is { } sourcePath
+                        sourcePath is not null
                             ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
                             : null);
 

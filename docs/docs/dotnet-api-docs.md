@@ -121,6 +121,8 @@ To keep links for the other documents from that generator, replace `sourceLinkEx
 
 This matches that filename under any directory, but not `MyLibrary.Models.OtherWidget.g.cs`. It excludes that document as a link target, not just one method's link. A type spanning other documents can still link to a non-excluded document.
 
+For source or project input, Docfx selects the last non-excluded declaration of a partial type. The existing exclusion of source paths under `obj` also applies when selecting the declaration, so types extended by generators under `obj` can link to their handwritten files without additional configuration. If all declarations are excluded, their source information and relative code includes are preserved, but no source link is emitted.
+
 #### Remove the additional exclusions
 
 Remove `sourceLinkExclude` or use:
