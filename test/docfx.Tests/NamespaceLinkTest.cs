@@ -109,6 +109,76 @@ public class NamespaceLinkTest : TestBase
         }
     }
 
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public async Task ResolveNamespaceReferencesFromXrefMap(bool fromAssembly, bool includeParentNamespace)
+    {
+        var folder = GetRandomFolder();
+        var code = """
+            namespace Existing { public class Parent { } }
+            namespace Existing.Child { public class Client : Existing.Parent { } }
+            """;
+        var input = fromAssembly ? "Library.dll" : "Library.cs";
+        if (fromAssembly)
+        {
+            var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, new Dictionary<string, string>(), "Library");
+            var result = compilation.Emit(Path.Combine(folder, input));
+            Assert.True(result.Success, string.Join(Environment.NewLine, result.Diagnostics));
+        }
+        else
+        {
+            CreateFile(input, code, folder);
+        }
+
+        CreateFile("xrefmap.yml", """
+            ### YamlMime:XRefMap
+            references:
+            - uid: Existing
+              name: Existing
+              href: https://example.com/api/Existing.html
+            - uid: Existing.Child
+              name: Existing.Child
+              href: https://example.com/api/Existing.Child.html
+            """, folder);
+        var templates = Path.GetFullPath("../../../../../templates");
+        var config = CreateFile("docfx.json", JsonSerializer.Serialize(new
+        {
+            metadata = new[]
+            {
+                new
+                {
+                    src = new[] { new { files = new[] { input } } },
+                    dest = "api",
+                    outputFormat = "mref",
+                    disableGitFeatures = true,
+                }
+            },
+            build = new
+            {
+                content = new[] { new { files = new[] { includeParentNamespace ? "api/Existing*.yml" : "api/Existing.Child*.yml" } } },
+                xref = new[] { "xrefmap.yml" },
+                dest = "_site",
+                template = new[] { Path.Combine(templates, "common"), Path.Combine(templates, "default") },
+            }
+        }), folder);
+
+        await DotnetApiCatalog.GenerateManagedReferenceYamlFiles(config);
+        await Docset.Build(config);
+
+        var api = Path.Combine(folder, "_site", "api");
+        Assert.Equal(includeParentNamespace, File.Exists(Path.Combine(api, "Existing.html")));
+        var page = new HtmlDocument();
+        page.Load(Path.Combine(api, "Existing.Child.Client.html"));
+        var ns = page.DocumentNode.SelectSingleNode("//h6[strong='Namespace']");
+        Assert.NotNull(ns);
+        // Local pages take precedence over the map; omitted namespace pages resolve externally.
+        Assert.Equal(new[] { includeParentNamespace ? "Existing.html" : "https://example.com/api/Existing.html", "Existing.Child.html" },
+            ns.Descendants("a").Select(link => link.GetAttributeValue("href", null)));
+    }
+
     private async Task AssertExternalNamespaceLinks(string producer, string templates, bool nested)
     {
         var map = YamlUtility.Deserialize<XRefMap>(Path.Combine(producer, "_site", "xrefmap.yml"));

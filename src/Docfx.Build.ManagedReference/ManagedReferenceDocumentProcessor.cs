@@ -252,7 +252,8 @@ public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
             Name = item.Name,
             Href = item.Href,
             CommentId = item.CommentId,
-            IsSpec = item.IsExternal != true,
+            // Namespace definitions can resolve from xref maps when their pages are not in this build.
+            IsSpec = item.IsExternal != true && item.CommentId?.StartsWith("N:", StringComparison.Ordinal) != true,
         };
         foreach (var pair in item.NameInDevLangs)
         {
