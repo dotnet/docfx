@@ -26,6 +26,14 @@
       "environmentVariables": {
       }
     },
+    // Run `docfx clean` command.
+    "docfx clean": {
+      "commandName": "Project",
+      "commandLineArgs": "clean ../../samples/seed/docfx.json",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
     // Run `docfx serve` command and launch browser.
     "docfx serve": {
       "commandName": "Project",
