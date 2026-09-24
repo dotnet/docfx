@@ -4,7 +4,7 @@ updates:
   target-branch: main
   directory: "/"
   schedule:
-    interval: daily
+    interval: monthly
   ignore:
     # Verify updates are manual; overlapping NuGet update blocks are not supported.
     - dependency-name: "Verify.*"
@@ -18,32 +18,23 @@ updates:
         - "version-update:semver-minor"
         - "version-update:semver-major"
   groups:
-    roslyn:
+    nuget-dependencies:
+      applies-to: version-updates
       patterns:
-      - "Microsoft.CodeAnalysis"
-      - "Microsoft.CodeAnalysis.*"
-    spectre:
-      patterns:
-      - "Spectre.Console"
-      - "Spectre.Console.*"
-    xunit:
-      patterns:
-      - "xunit"
-      - "xunit.*"
-      - "xunit.v3"
-      - "xunit.v3.*"
+      - "*"
 
 - package-ecosystem: npm
   target-branch: main
   directory: "/templates"
   schedule:
-    interval: daily
+    interval: monthly
   cooldown:
     default-days: 14
   groups:
-    typescript-eslint:
+    npm-dependencies:
+      applies-to: version-updates
       patterns:
-      - "@typescript-eslint/*"
+      - "*"
   ignore:
      # Ignore default template dependency update due to missing tests
   - dependency-name: '@default/*'
@@ -52,5 +43,10 @@ updates:
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule: 
-    interval: daily
+    interval: monthly
   target-branch: main
+  groups:
+    github-actions:
+      applies-to: version-updates
+      patterns:
+      - "*"
