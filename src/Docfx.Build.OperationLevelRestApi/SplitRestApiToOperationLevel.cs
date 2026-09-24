@@ -124,11 +124,9 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
                 Remarks = child.Remarks,
                 Documentation = child.Documentation,
                 Children = [child],
-                Servers = child.Servers,
                 Tags = [],
                 Metadata = MergeChildMetadata(root, child)
             };
-            root.CopyDocumentContextTo(model);
 
             // Reset child's uid to "originalUid/operation", that is to say, overwrite of original Uid will show in operation page.
             child.Uid = string.Join('/', child.Uid, "operation");

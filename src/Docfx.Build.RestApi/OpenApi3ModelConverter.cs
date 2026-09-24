@@ -4,22 +4,21 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using Docfx.DataContracts.RestApi;
 using Docfx.Exceptions;
 using Microsoft.OpenApi;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using static Docfx.Build.RestApi.RestApiModelUtility;
-
 namespace Docfx.Build.RestApi;
 
-internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionary<string, string> constants)
+internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string, string> constants)
 {
     internal RestApiRootItemViewModel Convert(OpenApiDocument document, string raw, string version)
     {
         var servers = Servers(document.Servers);
-        var server = servers[0].Url;
+        var server = (string)servers[0]["url"];
         var absolute = Uri.TryCreate(server, UriKind.Absolute, out var uri) && !uri.IsFile;
         var uid = GenerateUid(absolute ? uri.Authority : null, (absolute ? uri.AbsolutePath : server).Trim('/'),
             document.Info.Title, document.Info.Version);
@@ -35,19 +34,19 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
             Children = [],
             Tags = []
         };
-        model.SpecificationVersion = version;
-        model.Servers = servers;
-        model.Info = Serialize(document.Info).ToObject<RestApiInfoViewModel>();
+        model.Metadata["specificationVersion"] = version;
+        model.Metadata["servers"] = servers;
+        model.Metadata["info"] = Serialize(document.Info);
         if (document.ExternalDocs != null)
         {
-            model.ExternalDocs = Serialize(document.ExternalDocs).ToObject<RestApiExternalDocumentationViewModel>();
+            model.Metadata["externalDocs"] = Serialize(document.ExternalDocs);
         }
-        var schemas = new Dictionary<string, RestApiSchemaViewModel>();
+        var schemas = new JObject();
         foreach (var (name, schema) in document.Components?.Schemas?.AsEnumerable() ?? [])
         {
             schemas[name] = Schema(schema);
         }
-        model.Schemas = schemas;
+        model.Metadata["schemas"] = schemas;
         foreach (var tag in document.Tags?.AsEnumerable() ?? [])
         {
             AddTag(tag.Name, tag.Description, Extensions(tag.Extensions));
@@ -69,8 +68,7 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
                 var operationUid = GenerateUid(uid, id);
                 var effectiveServers = Servers(operation.Servers is { Count: > 0 } ? operation.Servers :
                     pathItem.Servers is { Count: > 0 } ? pathItem.Servers : document.Servers);
-                var parameters = MergeParameters(operation.Parameters, pathItem.Parameters,
-                    (left, right) => left.Name == right.Name && left.In == right.In);
+                var parameters = MergeParameters(operation.Parameters, pathItem.Parameters);
                 var child = new RestApiChildItemViewModel
                 {
                     Uid = operationUid,
@@ -85,15 +83,15 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
                     Responses = operation.Responses?.Select(pair => Response(pair.Key, pair.Value)).ToList() ?? [],
                     Metadata = Extensions(operation.Extensions)
                 };
-                child.Servers = effectiveServers;
-                child.RequestUrl = effectiveServers[0].Url.TrimEnd('/') + "/" + path.TrimStart('/');
+                child.Metadata["servers"] = effectiveServers;
+                child.Metadata["requestUrl"] = ((string)effectiveServers[0]["url"]).TrimEnd('/') + "/" + path.TrimStart('/');
                 if (operation.RequestBody is { } body)
                 {
-                    child.RequestBody = new RestApiRequestBodyViewModel
+                    child.Metadata["requestBody"] = new JObject
                     {
-                        Description = body.Description,
-                        Required = body.Required,
-                        Content = Content(body.Content)
+                        ["description"] = body.Description,
+                        ["required"] = body.Required,
+                        ["content"] = Content(body.Content)
                     };
                 }
                 foreach (var name in child.Tags)
@@ -126,13 +124,13 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
         }
     }
 
-    private static List<RestApiServerViewModel> Servers(IList<OpenApiServer> servers)
+    private static JArray Servers(IList<OpenApiServer> servers)
     {
         if (servers == null || servers.Count == 0)
         {
-            return [new() { Url = "/" }];
+            return new JArray(new JObject { ["url"] = "/" });
         }
-        return servers.Select(server =>
+        return new JArray(servers.Select(server =>
         {
             var url = server.Url;
             foreach (var (name, variable) in server.Variables?.AsEnumerable() ?? [])
@@ -147,8 +145,8 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
             {
                 throw new DocfxException($"OpenAPI server URL '{server.Url}' contains a variable without a default.");
             }
-            return new RestApiServerViewModel { Url = url, Description = server.Description };
-        }).ToList();
+            return new JObject { ["url"] = url, ["description"] = server.Description };
+        }));
     }
 
     private RestApiParameterViewModel Parameter(IOpenApiParameter parameter)
@@ -159,6 +157,11 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
         metadata["required"] = parameter.Required;
         metadata["style"] = parameter.Style?.ToString();
         metadata["explode"] = parameter.Explode;
+        metadata["schema"] = schema;
+        if (parameter.Content is { Count: > 0 })
+        {
+            metadata["content"] = Content(parameter.Content);
+        }
         if (parameter.Schema?.Default != null)
         {
             metadata["default"] = Literal(parameter.Schema.Default);
@@ -167,47 +170,46 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
         {
             Name = parameter.Name,
             Description = parameter.Description,
-            Schema = schema,
-            Content = parameter.Content is { Count: > 0 } ? Content(parameter.Content) : null,
             Metadata = metadata
         };
     }
 
     private RestApiResponseViewModel Response(string status, IOpenApiResponse response)
     {
+        var metadata = Extensions(response.Extensions);
+        metadata["content"] = Content(response.Content);
         return new RestApiResponseViewModel
         {
             HttpStatusCode = status,
             Description = response.Description,
-            Metadata = Extensions(response.Extensions),
-            Content = Content(response.Content)
+            Metadata = metadata
         };
     }
 
-    private List<RestApiMediaTypeViewModel> Content(IDictionary<string, IOpenApiMediaType> content) =>
-        content?.Select(pair => new RestApiMediaTypeViewModel
+    private JArray Content(IDictionary<string, IOpenApiMediaType> content) =>
+        new(content?.Select(pair => new JObject
         {
-            MimeType = pair.Key,
-            Schema = Schema(pair.Value.Schema),
-            ItemSchema = Schema(pair.Value.ItemSchema),
-            Examples = Examples(pair.Key, pair.Value)
-        }).ToList() ?? [];
+            ["mimeType"] = pair.Key,
+            ["schema"] = Schema(pair.Value.Schema),
+            ["itemSchema"] = Schema(pair.Value.ItemSchema),
+            ["examples"] = Examples(pair.Key, pair.Value)
+        }) ?? []);
 
-    private static List<RestApiResponseExampleViewModel> Examples(string mimeType, IOpenApiMediaType media)
+    private static JArray Examples(string mimeType, IOpenApiMediaType media)
     {
-        var result = new List<RestApiResponseExampleViewModel>();
+        var result = new JArray();
         if (media.Example != null)
         {
-            result.Add(new() { MimeType = mimeType, Content = Literal(media.Example) });
+            result.Add(new JObject { ["mimeType"] = mimeType, ["content"] = Literal(media.Example) });
         }
         foreach (var (name, example) in media.Examples?.AsEnumerable() ?? [])
         {
-            result.Add(new()
+            result.Add(new JObject
             {
-                Name = name,
-                MimeType = mimeType,
-                Content = example.SerializedValue ?? Literal(example.DataValue ?? example.Value),
-                ExternalValue = example.ExternalValue
+                ["name"] = name,
+                ["mimeType"] = mimeType,
+                ["content"] = example.SerializedValue ?? Literal(example.DataValue ?? example.Value),
+                ["externalValue"] = example.ExternalValue
             });
         }
         return result;
@@ -246,7 +248,7 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
         return result;
     }
 
-    private RestApiSchemaViewModel Schema(IOpenApiSchema schema, HashSet<IOpenApiSchema> ancestors = null)
+    private JObject Schema(IOpenApiSchema schema, HashSet<IOpenApiSchema> ancestors = null)
     {
         if (schema == null)
         {
@@ -262,7 +264,7 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
                 {
                     throw new DocfxException($"Cyclic OpenAPI schema alias '{reference.Reference?.Id}' has no concrete schema.");
                 }
-                return new() { Type = "recursive reference", LoopReferenceName = ReferenceName(reference) };
+                return new JObject { ["type"] = "recursive reference", ["x-internal-loop-ref-name"] = ReferenceName(reference) };
             }
             try
             {
@@ -270,13 +272,13 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
                 var siblings = GetReferenceSiblings(reference);
                 using var siblingText = new StringWriter();
                 siblings.SerializeAsV32(new OpenApiJsonWriter(siblingText));
-                var result = JObject.Parse(siblingText.ToString()).Count == 0 ? targetModel : new RestApiSchemaViewModel
+                var result = JObject.Parse(siblingText.ToString()).Count == 0 ? targetModel : new JObject
                 {
-                    Type = "all of",
-                    Description = reference.Reference.Description ?? target.Description,
-                    AllOf = [targetModel, Schema(siblings, ancestors)]
+                    ["type"] = "all of",
+                    ["description"] = reference.Reference.Description ?? target.Description,
+                    ["allOf"] = new JArray(targetModel, Schema(siblings, ancestors))
                 };
-                result.ReferenceName ??= ReferenceName(reference);
+                result["x-internal-ref-name"] ??= ReferenceName(reference);
                 return result;
             }
             finally
@@ -286,7 +288,7 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
         }
         if (!ancestors.Add(schema))
         {
-            return new() { Type = "recursive reference", LoopReferenceName = schema.Title ?? "schema" };
+            return new JObject { ["type"] = "recursive reference", ["x-internal-loop-ref-name"] = schema.Title ?? "schema" };
         }
 
         try
@@ -297,29 +299,29 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
             RestoreConstants(serialized);
             if (serialized is JObject { Count: 1 } && serialized["not"] is JObject { Count: 0 })
             {
-                return new() { Type = "no value" };
+                return new JObject { ["type"] = "no value" };
             }
 
-            var result = new RestApiSchemaViewModel
+            var result = JObject.FromObject(Extensions(schema.Extensions));
+            result["type"] = schema.Type?.ToString().ToLowerInvariant().Replace(", ", " | ") ??
+                (serialized is JObject { Count: 0 } ? "any value" : "any type");
+            if (schema.Format != null) result["format"] = schema.Format;
+            if (schema.Description != null) result["description"] = schema.Description;
+            if (schema.Properties != null)
             {
-                Metadata = Extensions(schema.Extensions),
-                Type = schema.Type?.ToString().ToLowerInvariant().Replace(", ", " | ") ??
-                    (serialized is JObject { Count: 0 } ? "any value" : "any type"),
-                Format = schema.Format,
-                Description = schema.Description,
-                Properties = schema.Properties?.ToDictionary(pair => pair.Key, pair =>
+                result["properties"] = new JObject(schema.Properties.Select(pair =>
                 {
                     var property = Schema(pair.Value, ancestors);
                     if (schema.Required?.Contains(pair.Key) == true)
                     {
-                        property.Required = true;
+                        property["required"] = true;
                     }
-                    return property;
-                }),
-                Items = Schema(schema.Items, ancestors)
-            };
-            var composition = new List<RestApiSchemaCompositionViewModel>();
-            result.AllOf = schema.AllOf is { Count: > 0 } ? schema.AllOf.Select(s => Schema(s, ancestors)).ToList() : null;
+                    return new JProperty(pair.Key, property);
+                }));
+            }
+            if (schema.Items != null) result["items"] = Schema(schema.Items, ancestors);
+            var composition = new JArray();
+            if (schema.AllOf is { Count: > 0 }) result["allOf"] = new JArray(schema.AllOf.Select(s => Schema(s, ancestors)));
             AddComposition("One of", schema.OneOf);
             AddComposition("Any of", schema.AnyOf);
             if (schema.Not != null)
@@ -328,43 +330,43 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
             }
             if (composition.Count > 0)
             {
-                result.Composition = composition;
+                result["composition"] = composition;
             }
-            var constraints = new List<RestApiSchemaConstraintViewModel>();
+            var constraints = new JArray();
             foreach (var property in ((JObject)serialized).Properties())
             {
                 if (!property.Name.StartsWith("x-", StringComparison.Ordinal) && property.Name is not
                     ("type" or "format" or "description" or "properties" or "items" or "allOf" or "oneOf" or "anyOf" or "not" or
                     "additionalProperties" or "enum" or "example" or "examples"))
                 {
-                    constraints.Add(new() { Name = property.Name, Value = property.Value.ToString(Formatting.None) });
+                    constraints.Add(new JObject { ["name"] = property.Name, ["value"] = property.Value.ToString(Formatting.None) });
                 }
             }
             if (schema.AdditionalProperties != null)
             {
-                composition.Add(new() { Kind = "Additional properties", Schemas = [Schema(schema.AdditionalProperties, ancestors)] });
-                result.Composition = composition;
+                composition.Add(new JObject { ["kind"] = "Additional properties", ["schemas"] = new JArray(Schema(schema.AdditionalProperties, ancestors)) });
+                result["composition"] = composition;
             }
             else if (!schema.AdditionalPropertiesAllowed)
             {
-                constraints.Add(new() { Name = "additionalProperties", Value = "false" });
+                constraints.Add(new JObject { ["name"] = "additionalProperties", ["value"] = "false" });
             }
             if (constraints.Count > 0)
             {
-                result.Constraints = constraints;
+                result["constraints"] = constraints;
             }
             if (schema.Enum is { Count: > 0 })
             {
-                result.Enum = schema.Enum.Select(value => value == null ? null : (object)JToken.Parse(Literal(value))).ToList();
+                result["enum"] = new JArray(schema.Enum.Select(value => value == null ? null : JToken.Parse(Literal(value))));
             }
             if (schema.Examples is { Count: > 0 })
             {
-                result.Examples = schema.Examples.Select(example => new RestApiResponseExampleViewModel { Content = Literal(example) }).ToList();
+                result["examples"] = new JArray(schema.Examples.Select(example => new JObject { ["content"] = Literal(example) }));
             }
 #pragma warning disable CS0618 // OpenAPI 3.0's singular schema example is still read into this SDK property.
             else if (schema.Example != null)
             {
-                result.Examples = [new() { Content = Literal(schema.Example) }];
+                result["examples"] = new JArray(new JObject { ["content"] = Literal(schema.Example) });
             }
 #pragma warning restore CS0618
             return result;
@@ -373,7 +375,7 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
             {
                 if (schemas is { Count: > 0 })
                 {
-                    composition.Add(new() { Kind = kind, Schemas = schemas.Select(s => Schema(s, ancestors)).ToList() });
+                    composition.Add(new JObject { ["kind"] = kind, ["schemas"] = new JArray(schemas.Select(s => Schema(s, ancestors))) });
                 }
             }
         }
@@ -407,11 +409,19 @@ internal sealed class OpenApi3ModelConverter(Uri documentUri, IReadOnlyDictionar
         return siblings;
     }
 
-    private string ReferenceName(OpenApiSchemaReference reference)
+    private static string ReferenceName(OpenApiSchemaReference reference) => reference.Reference.Id;
+
+    [GeneratedRegex(@"\W")]
+    private static partial Regex HtmlEncodeRegex();
+
+    private static string GetHtmlId(string id) => string.IsNullOrEmpty(id) ? null : HtmlEncodeRegex().Replace(id, "_");
+
+    private static string GenerateUid(params string[] segments) =>
+        string.Join('/', segments.Where(s => !string.IsNullOrEmpty(s)).Select(s => s.Trim('/')));
+
+    private static IEnumerable<IOpenApiParameter> MergeParameters(IList<IOpenApiParameter> operationParameters, IList<IOpenApiParameter> pathParameters)
     {
-        var host = reference.Reference.HostDocument?.BaseUri ?? documentUri;
-        var target = reference.Reference.ExternalResource is { } external ? new Uri(host, external) : host;
-        return target == documentUri ? reference.Reference.Id :
-            documentUri.MakeRelativeUri(target) + "#" + reference.Reference.Id;
+        return (operationParameters ?? []).Concat((pathParameters ?? []).Where(parameter =>
+            operationParameters?.Any(overridden => overridden.Name == parameter.Name && overridden.In == parameter.In) != true));
     }
 }

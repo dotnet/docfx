@@ -18,48 +18,10 @@ The affected document is not generated.
 
 | Feature | Current behavior | Reason or alternative |
 | --- | --- | --- |
-| Standalone external schema/component fragments | `UnsupportedExternalFragment` | This integration loads complete OpenAPI documents, not standalone fragments. Put shared components in a complete local document and reference its component path. |
-| References without a fragment identifier | `UnsupportedExternalFragment` | Use a supported component reference such as `components.yaml#/components/schemas/Pet`. |
-| HTTP/HTTPS or network-share references | Rejected; no network fetching | Use local referenced documents. Server URLs and ordinary documentation links are not restricted by this rule. |
+| Cross-file and network `$ref` targets | `UnsupportedExternalReference` | Put components in the current document and use references such as `#/components/schemas/Pet`. |
 | Future specification versions | Version error | Only OpenAPI 3.0, 3.1 and 3.2 are enabled. |
 | Dynamic schema references (`$dynamicRef`) | `UnsupportedOpenApiSchema` | Dynamic scope is not implemented. Ordinary `$ref`, including recursive references, is supported. |
 | Certain OpenAPI 3.0 primitive compositions | `UnsupportedOpenApiComposition` | The pinned SDK can lose exclusive alternatives or branch examples. See [primitive compositions](#primitive-compositions). |
-
-### Standalone external fragments
-
-A file containing only a schema is a valid OpenAPI reference target, but is not
-supported by this integration:
-
-```yaml
-# schemas/Pet.yaml
-type: object
-properties:
-  name:
-    type: string
-```
-
-For the supported form, put the schema in a complete component document:
-
-```yaml
-# components.yaml
-openapi: 3.1.0
-info:
-  title: Shared components
-  version: '1.0'
-paths: {}
-components:
-  schemas:
-    Pet:
-      type: object
-      properties:
-        name:
-          type: string
-```
-
-Then use `$ref: './components.yaml#/components/schemas/Pet'`.
-Local component documents can mix JSON and YAML, and references between them can
-form cycles. This limitation is in the current Docfx integration; it does not mean
-standalone fragments are invalid OpenAPI.
 
 ### Primitive compositions
 

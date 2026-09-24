@@ -43,7 +43,7 @@ internal static class RestApiDocumentReader
         {
             var swagger = SwaggerJsonParser.Parse(path);
             swagger.Raw = raw;
-            // Preserve legacy diagnostics, including extension objects under a path.
+            // Preserve Swagger 2.0 diagnostics, including extension objects under a path.
             foreach (var (route, item) in swagger.Paths ?? [])
             {
                 foreach (var (method, operation) in item.Metadata)
@@ -54,7 +54,7 @@ internal static class RestApiDocumentReader
                     }
                 }
             }
-            return SwaggerModelConverter.Convert(swagger);
+            return SwaggerModelConverter.FromSwaggerModel(swagger);
         }
         return OpenApiDocumentReader.Parse(raw, format, new Uri(Path.GetFullPath(path)), header?.Version);
     }
@@ -66,7 +66,7 @@ internal static class RestApiDocumentReader
         _ => null
     };
 
-    // Read only root markers, without allocating an object tree. The legacy JSON probe
+    // Read only root markers, without allocating an object tree. The Swagger 2.0 JSON probe
     // also validates the complete JSON syntax to retain its existing ownership behavior.
     internal static Header ReadHeader(TextReader source, string format)
     {

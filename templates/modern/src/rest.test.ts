@@ -18,27 +18,26 @@ const rest = runInThisContext(`(function(require) {
 })`)(() => common)
 
 test('REST raw filename hints preserve JSON compatibility and identify original YAML', () => {
-  const legacy = rest.transform({ uid: 'legacy', _path: 'legacy.html' })
-  assert.equal(legacy._jsonPath, 'legacy.swagger.json')
+  const swagger2 = rest.transform({ uid: 'swagger2', _path: 'swagger2.html' })
+  assert.equal(swagger2._jsonPath, 'swagger2.swagger.json')
 
-  const json = rest.transform({ uid: 'json', _path: 'openapi.html', rawExtension: '.json', _raw: '{"openapi":"3.1.0"}' })
+  const json = rest.transform({ specificationVersion: '3.2.0', uid: 'json', _path: 'openapi.html', rawExtension: '.json', _raw: '{"openapi":"3.1.0"}' })
   assert.equal(json._jsonPath, 'openapi.swagger.json')
   assert.equal(json._raw, '{"openapi":"3.1.0"}')
 
-  const yaml = rest.transform({ uid: 'yaml', _path: 'openapi.html', rawExtension: '.yaml', _raw: 'openapi: 3.1.0\n' })
+  const yaml = rest.transform({ specificationVersion: '3.2.0', uid: 'yaml', _path: 'openapi.html', rawExtension: '.yaml', _raw: 'openapi: 3.1.0\n' })
   assert.equal(yaml._jsonPath, 'openapi.swagger.yaml')
   assert.equal(yaml._raw, 'openapi: 3.1.0\n')
 })
 
-test('REST uses adapter display paths and renders allOf through the shared schema partial', () => {
+test('Swagger 2.0 preserves query paths and flattened allOf definitions', () => {
   const model = rest.transform({
-    uid: 'legacy',
-    _path: 'legacy.json',
+    uid: 'swagger2',
+    _path: 'swagger2.json',
     children: [{
       uid: 'get',
       operation: 'get',
       path: '/items',
-      displayPath: '/items?filter[&limit]',
       parameters: [
         { name: 'filter', in: 'query', required: true, schema: { type: 'string' } },
         { name: 'limit', in: 'query', schema: { type: 'integer' } }
@@ -57,16 +56,17 @@ test('REST uses adapter display paths and renders allOf through the shared schem
   assert.equal(child.operation, 'GET')
   assert.equal(child.path, '/items?filter[&limit]')
   assert.equal(child.responses[0].examples[0].content, '{\n  "id": 1\n}')
-  const details = child.responses[0].schemaDetails
-  assert.equal(details.referenceId, 'Item')
-  assert.deepEqual(details.composition[0].schemas.flatMap(schema => schema.properties.map(property => property.key)), ['id', 'name'])
-  assert.equal(child.responses[0].schema.allOf.length, 2)
+  const schema = child.responses[0].schema
+  assert.equal(schema.cTypeId, 'Item')
+  assert.deepEqual(schema.properties.map(property => property.key), ['id', 'name'])
+  assert.equal(schema.allOf, undefined)
   assert.equal(model.definitions.length, 1)
-  assert.equal(model.definitions[0].schemaDetails.id, 'Item')
+  assert.equal(model.definitions[0].cTypeId, 'Item')
 })
 
 test('REST prepares every request and response media schema and named example', () => {
   const model = rest.transform({
+    specificationVersion: '3.2.0',
     uid: 'media',
     _path: 'media.json',
     schemas: {},
@@ -142,7 +142,7 @@ test('REST keeps nested composition, constraints, unions, boolean schemas, and f
     }
   }
   const original = structuredClone(schema)
-  const model = rest.transform({ uid: 'nested', _path: 'nested.json', schemas: { Nested: schema } })
+  const model = rest.transform({ specificationVersion: '3.2.0', uid: 'nested', _path: 'nested.json', schemas: { Nested: schema } })
   const details = model.definitions[0].schemaDetails
   assert.deepEqual(schema, original)
   assert.equal(details.properties[0].required, true)
@@ -161,6 +161,7 @@ test('REST keeps nested composition, constraints, unions, boolean schemas, and f
 
 test('REST links recursive references and aliases without colliding schema anchors', () => {
   const model = rest.transform({
+    specificationVersion: '3.2.0',
     uid: 'references',
     _path: 'references.json',
     schemas: {
@@ -191,6 +192,7 @@ test('REST links recursive references and aliases without colliding schema ancho
 
 test('REST adds inline reference definitions and leaves unresolved references as text', () => {
   const model = rest.transform({
+    specificationVersion: '3.2.0',
     uid: 'inline',
     _path: 'inline.json',
     children: [{
@@ -212,8 +214,9 @@ test('REST adds inline reference definitions and leaves unresolved references as
   assert.equal(details.properties[0].value.referenceId, '')
 })
 
-test('REST renders parameter content and keeps same-name external schema references distinct', () => {
+test('REST renders parameter content and keeps schema references distinct', () => {
   const model = rest.transform({
+    specificationVersion: '3.2.0',
     uid: 'parameters',
     _path: 'parameters.json',
     children: [{
@@ -228,14 +231,14 @@ test('REST renders parameter content and keeps same-name external schema referen
             mimeType: 'application/json',
             schema: {
               type: 'object',
-              'x-internal-ref-name': 'models/first.yaml#Filter',
-              properties: { next: { 'x-internal-loop-ref-name': 'models/first.yaml#Filter' } }
+              'x-internal-ref-name': 'FirstFilter',
+              properties: { next: { 'x-internal-loop-ref-name': 'FirstFilter' } }
             },
             examples: [{ name: 'active', content: '{"active":true}' }]
           },
           {
             mimeType: 'text/plain',
-            schema: { type: 'string', 'x-internal-ref-name': 'models/second.yaml#Filter' },
+            schema: { type: 'string', 'x-internal-ref-name': 'SecondFilter' },
             examples: [{ content: 'active' }]
           }
         ]
@@ -264,7 +267,7 @@ test('REST renders schema examples without inheriting names, MIME types, or ance
     items: { type: 'string' }
   }
   const original = structuredClone(schema)
-  const model = rest.transform({ uid: 'examples', _path: 'examples.json', schemas: { Example: schema } })
+  const model = rest.transform({ specificationVersion: '3.2.0', uid: 'examples', _path: 'examples.json', schemas: { Example: schema } })
   const details = model.definitions[0].schemaDetails
   assert.deepEqual(schema, original)
   assert.deepEqual(details.exampleDetails[0], {
@@ -285,6 +288,7 @@ test('REST renders schema examples without inheriting names, MIME types, or ance
 test('REST displays external example URLs without inventing content or linking executable schemes', () => {
   const urls = ['https://example.test/sample.json', 'http://example.test/sample.json', 'samples/local.json', 'javascript:alert(1)']
   const model = rest.transform({
+    specificationVersion: '3.2.0',
     uid: 'external-examples',
     _path: 'external-examples.json',
     children: [{
@@ -304,7 +308,7 @@ test('REST displays external example URLs without inventing content or linking e
   assert.ok(examples.every(example => example.name === 'external' && example.content === '' && !example.hasContent))
 })
 
-for (const specificationVersion of ['2.0', '3.0.3', '3.1.0', '3.2.0']) {
+for (const specificationVersion of ['3.0.3', '3.1.0', '3.2.0']) {
   test(`REST preserves literal enum, examples, and extensions for specification ${specificationVersion}`, () => {
     const literal = {
       description: 'literal **description**, not markup',
@@ -353,15 +357,16 @@ for (const specificationVersion of ['2.0', '3.0.3', '3.1.0', '3.2.0']) {
   })
 }
 
-test('REST registers an external alias and its recursive target during projection', () => {
+test('REST registers an alias and its recursive target during projection', () => {
   const model = rest.transform({
+    specificationVersion: '3.2.0',
     uid: 'alias',
     _path: 'alias.json',
     schemas: {
       Alias: {
         type: 'object',
-        'x-internal-ref-name': 'external.yaml#Node',
-        properties: { next: { 'x-internal-loop-ref-name': 'external.yaml#Node' } }
+        'x-internal-ref-name': 'Node',
+        properties: { next: { 'x-internal-loop-ref-name': 'Node' } }
       }
     }
   })
@@ -374,6 +379,7 @@ test('REST registers an external alias and its recursive target during projectio
 
 test('REST uses declared definitions when an earlier alias supplies reference siblings', () => {
   const model = rest.transform({
+    specificationVersion: '3.2.0',
     uid: 'siblings',
     _path: 'siblings.json',
     schemas: {

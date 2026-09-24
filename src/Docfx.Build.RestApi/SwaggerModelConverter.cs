@@ -1,14 +1,14 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.RegularExpressions;
+
 using Docfx.Build.RestApi.Swagger;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.RestApi;
 
 using Newtonsoft.Json.Linq;
-
-using static Docfx.Build.RestApi.RestApiModelUtility;
 
 namespace Docfx.Build.RestApi;
 
@@ -104,57 +104,24 @@ public static partial class SwaggerModelConverter
         return vm;
     }
 
-    internal static RestApiRootItemViewModel Convert(SwaggerModel swagger)
-    {
-        var model = FromSwaggerModel(swagger);
-        model.SpecificationVersion = "2.0";
-        model.SecurityDefinitions = Take<Dictionary<string, RestApiSecuritySchemeViewModel>>(model.Metadata, "securityDefinitions");
-        model.Info = JObject.FromObject(swagger.Info).ToObject<RestApiInfoViewModel>();
-        model.ExternalDocs = Take<RestApiExternalDocumentationViewModel>(model.Metadata, "externalDocs");
-        foreach (var child in model.Children)
-        {
-            // Preserve the established Swagger URL display convention at the adapter boundary.
-            var query = child.Parameters?.Where(p => (string)p.Metadata.GetValueOrDefault("in") == "query").ToList() ?? [];
-            var required = query.Where(p => p.Metadata.GetValueOrDefault("required") is true).Select(p => p.Name).ToList();
-            var optional = query.Where(p => p.Metadata.GetValueOrDefault("required") is not true).Select(p => p.Name).ToList();
-            child.DisplayPath = child.Path + (required.Count > 0 ? "?" + string.Join('&', required) : "") +
-                (optional.Count > 0 ? "[" + (required.Count > 0 ? "&" : "?") + string.Join('&', optional) + "]" : "");
-            foreach (var parameter in child.Parameters ?? [])
-            {
-                parameter.Schema = Take<RestApiSchemaViewModel>(parameter.Metadata, "schema");
-                if (parameter.Schema == null)
-                {
-                    parameter.Schema = JObject.FromObject(parameter.Metadata).ToObject<RestApiSchemaViewModel>();
-                }
-                SetReferenceIds(parameter.Schema);
-            }
-            foreach (var response in child.Responses ?? [])
-            {
-                response.Schema = Take<RestApiSchemaViewModel>(response.Metadata, "schema");
-                response.Headers = Take<Dictionary<string, RestApiSchemaViewModel>>(response.Metadata, "headers");
-                SetReferenceIds(response.Schema);
-            }
-        }
-        return model;
-    }
-
-    private static T Take<T>(Dictionary<string, object> metadata, string name) where T : class =>
-        metadata.Remove(name, out var value) && value != null ? JToken.FromObject(value).ToObject<T>() : null;
-
-    private static void SetReferenceIds(RestApiSchemaViewModel schema)
-    {
-        if (schema == null) return;
-        var name = schema.ReferenceName ?? schema.LoopReferenceName;
-        schema.ReferenceId = name?.Replace('.', '_');
-        foreach (var property in schema.Properties?.Values.AsEnumerable() ?? []) SetReferenceIds(property);
-        foreach (var branch in schema.AllOf ?? []) SetReferenceIds(branch);
-        SetReferenceIds(schema.Items);
-    }
-
     #region Private methods
+
+    [GeneratedRegex(@"\W")]
+    private static partial Regex HtmlEncodeRegex();
 
     private const string TagText = "tag";
     private static readonly string[] OperationNames = ["get", "put", "post", "delete", "options", "head", "patch"];
+
+    /// <summary>
+    /// TODO: merge with the one in XrefDetails
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    private static string GetHtmlId(string id)
+    {
+        if (string.IsNullOrEmpty(id)) return null;
+        return HtmlEncodeRegex().Replace(id, "_");
+    }
 
     private static string GetUid(SwaggerModel swagger)
     {
@@ -172,6 +139,16 @@ public static partial class SwaggerModelConverter
     }
 
     /// <summary>
+    /// UID is joined by '/', if segment ends with '/', use that one instead
+    /// </summary>
+    /// <param name="segments">The segments to generate UID</param>
+    /// <returns></returns>
+    private static string GenerateUid(params string[] segments)
+    {
+        return string.Join('/', segments.Where(s => !string.IsNullOrEmpty(s)).Select(s => s.Trim('/')));
+    }
+
+    /// <summary>
     /// Merge operation's parameters with path's parameters.
     /// </summary>
     /// <param name="operationParameters">Operation's parameters</param>
@@ -179,7 +156,20 @@ public static partial class SwaggerModelConverter
     /// <returns></returns>
     private static IEnumerable<ParameterObject> GetParametersForOperation(List<ParameterObject> operationParameters, List<ParameterObject> pathParameters)
     {
-        return MergeParameters(operationParameters, pathParameters, IsParameterEquals);
+        if (pathParameters == null || pathParameters.Count == 0)
+        {
+            return operationParameters;
+        }
+        if (operationParameters == null || operationParameters.Count == 0)
+        {
+            return pathParameters;
+        }
+
+        // Path parameters can be overridden at the operation level.
+        var uniquePathParams = pathParameters.Where(
+            p => !operationParameters.Any(o => IsParameterEquals(p, o))).ToList();
+
+        return operationParameters.Union(uniquePathParams).ToList();
     }
 
     /// <summary>

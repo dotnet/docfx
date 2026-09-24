@@ -515,7 +515,7 @@ public class OpenApiOutputTest : TestBase
     }
 
     [Fact]
-    public void RejectsUnsupportedExternalFragmentsWithoutPublishing()
+    public void RejectsUnsupportedExternalReferencesWithoutPublishing()
     {
         var input = GetRandomFolder();
         CreateFile("schema.yaml", "type: object\nproperties:\n  value:\n    type: string\n", input);
@@ -530,7 +530,7 @@ public class OpenApiOutputTest : TestBase
         var files = new FileCollection(Directory.GetCurrentDirectory());
         files.Add(DocumentType.Article, [file], input);
 
-        var output = Build(input, files, "default", false, false, "UnsupportedExternalFragment");
+        var output = Build(input, files, "default", false, false, "UnsupportedExternalReference");
 
         Assert.Empty(Directory.GetFiles(output, "*.raw.json", SearchOption.AllDirectories));
         Assert.Empty(Directory.GetFiles(output, "*.html", SearchOption.AllDirectories));
@@ -540,20 +540,12 @@ public class OpenApiOutputTest : TestBase
     {
         var input = GetRandomFolder();
         var document = ReadModel(Path.Combine("TestData", "openapi"), "service.json");
-        var components = ReadModel(Path.Combine("TestData", "openapi"), "components.json");
-        document["openapi"] = components["openapi"] = version;
-        var externalExtension = extension == ".json" ? ".yaml" : ".json";
-        foreach (var reference in document.Descendants().OfType<JProperty>().Where(property => property.Name == "$ref"))
-        {
-            reference.Value = ((string)reference.Value).Replace("components.json", "components" + externalExtension, StringComparison.Ordinal);
-        }
+        document["openapi"] = version;
         if (version != "3.0.3")
         {
-            var properties = components["components"]["schemas"]["Item"]["properties"];
+            var properties = document["components"]["schemas"]["Item"]["properties"];
             properties["label"] = new JObject { ["type"] = new JArray("string", "null"), ["const"] = "42", ["default"] = null };
             properties["nullValue"] = new JObject { ["const"] = null, ["default"] = null };
-            // SDK 3.10.2 drops booleans in schema maps and composition lists; the reader rejects those forms.
-            // Exercise supported inline media schemas, using full OpenAPI documents for external references.
             document["paths"]["/health"]["get"]["responses"] = new JObject
             {
                 ["200"] = new JObject
@@ -567,7 +559,6 @@ public class OpenApiOutputTest : TestBase
                 }
             };
         }
-        CreateFile("components" + externalExtension, Serialize(components, externalExtension), input);
         var original = Serialize(document, extension);
         var service = CreateFile("service" + extension, original, input);
         var toc = CreateFile("toc.yml", $"- name: SDK API\n  href: service{extension}\n", input);

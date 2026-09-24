@@ -61,6 +61,31 @@
     }
   },
   "components": {
+    "schemas": {
+      "Item": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "description": "The **display name**." },
+          "state": { "type": "string", "enum": ["active", "archived"] },
+          "label": { "type": "string", "nullable": true },
+          "choice": { "oneOf": [{ "type": "string" }, { "type": "integer" }] },
+          "combined": {
+            "allOf": [
+              { "type": "object", "properties": { "leftField": { "type": "boolean" } } },
+              { "type": "object", "properties": { "rightField": { "type": "number" } } }
+            ]
+          },
+          "either": { "anyOf": [{ "type": "boolean" }, { "type": "number" }] },
+          "excluded": { "not": { "type": "integer" } }
+        },
+        "example": { "name": "schema", "$ref": "literal-schema.json#/data", "description": "**literal schema**" }
+      },
+      "Result": {
+        "type": "object",
+        "properties": { "receipt": { "type": "string", "description": "The **receipt**." } }
+      }
+    },
     "parameters": {
       "Id": { "name": "id", "in": "path", "required": true, "description": "The item **identifier**.", "schema": { "type": "string" } }
     },
@@ -70,7 +95,7 @@
         "required": true,
         "content": {
           "application/json": {
-            "schema": { "$ref": "components.json#/components/schemas/Item" },
+            "schema": { "$ref": "#/components/schemas/Item" },
             "examples": { "request": { "$ref": "#/components/examples/Request" } }
           },
           "application/xml": {
@@ -87,7 +112,7 @@
         "description": "The **created** item.",
         "content": {
           "application/json": {
-            "schema": { "$ref": "components.json#/components/schemas/Result" },
+            "schema": { "$ref": "#/components/schemas/Result" },
             "examples": {
               "response": {
                 "value": { "receipt": "one", "$ref": "literal-response.json#/data", "description": "**literal response**" }

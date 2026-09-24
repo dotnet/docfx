@@ -1,8 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Docfx.DataContracts.RestApi;
-using Docfx.Common.EntityMergers;
+using Newtonsoft.Json.Linq;
 using Docfx.Tests.Common;
 using Xunit;
 
@@ -37,7 +36,7 @@ public class RestApiDocumentReaderTest : TestBase
     [InlineData("3.0.3")]
     [InlineData("3.1.0")]
     [InlineData("3.2.0")]
-    public void ReadersProduceTheSameSchemaContract(string version)
+    public void ReadersKeepSchemaDataInMetadata(string version)
     {
         var source = version == "2.0" ? """
             {"swagger":"2.0","info":{"title":"Common","version":"service-version"},
@@ -55,62 +54,15 @@ public class RestApiDocumentReaderTest : TestBase
         var file = CreateFile("api.json", source, GetRandomFolder());
         Assert.True(RestApiDocumentReader.IsSupportedFile(file));
         var model = RestApiDocumentReader.Read(file, "api.json");
-        Assert.Equal(version, model.SpecificationVersion);
-        Assert.Equal("service-version", model.Info.Version);
+        Assert.Equal(version == "2.0" ? null : version, model.Metadata.GetValueOrDefault("specificationVersion"));
+        Assert.Equal("Common/service-version", model.Uid);
         var operation = Assert.Single(model.Children);
         var parameter = Assert.Single(operation.Parameters);
-        Assert.Equal("string", parameter.Schema.Type);
-        Assert.DoesNotContain("schema", parameter.Metadata.Keys);
+        Assert.Equal("string", version == "2.0" ? parameter.Metadata["type"]
+            : (string)Assert.IsType<JObject>(parameter.Metadata["schema"])["type"]);
         var response = Assert.Single(operation.Responses);
-        var schema = response.Schema ?? Assert.Single(response.Content).Schema;
-        Assert.Equal("string", Assert.Single(schema.AllOf).Properties["name"].Type);
-        Assert.DoesNotContain("content", response.Metadata.Keys);
-    }
-
-    [Fact]
-    public void RequestBodyOverwritePreservesUnchangedMediaAndAcceptsFalse()
-    {
-        var body = new RestApiRequestBodyViewModel
-        {
-            Required = true,
-            Content = [
-                new() { MimeType = "application/json", Schema = new() { Description = "JSON" } },
-                new() { MimeType = "text/plain", Schema = new() { Description = "Text" } }]
-        };
-        var merger = new MergerFacade(new KeyedListMerger(new ReflectionEntityMerger()));
-        merger.Merge(ref body, new RestApiRequestBodyViewModel { Description = "Body" });
-        Assert.True(body.Required);
-        merger.Merge(ref body, new RestApiRequestBodyViewModel
-        {
-            Required = false,
-            Content = [null, new() { Schema = new() { Description = "Updated text" } }]
-        });
-        Assert.False(body.Required);
-        Assert.Equal("JSON", body.Content[0].Schema.Description);
-        Assert.Equal("Updated text", body.Content[1].Schema.Description);
-        Assert.Equal("text/plain", body.Content[1].MimeType);
-    }
-
-    [Fact]
-    public void SplitDocumentContextIsIndependentAndPreservesOverrides()
-    {
-        var root = new RestApiRootItemViewModel
-        {
-            SpecificationVersion = "3.2.0",
-            Schemas = new() { ["Item"] = new() { Description = "**Item**" } },
-            Servers = [new() { Url = "/root" }],
-            ExternalDocs = new() { Url = "https://example.test/root" }
-        };
-        var split = new RestApiRootItemViewModel
-        {
-            Servers = [new() { Url = "/operation" }],
-            Metadata = new() { ["externalDocs"] = new { url = "https://example.test/tag" } }
-        };
-        root.CopyDocumentContextTo(split);
-        Assert.Equal("3.2.0", split.SpecificationVersion);
-        Assert.Equal("/operation", Assert.Single(split.Servers).Url);
-        Assert.Equal("https://example.test/tag", split.ExternalDocs.Url);
-        split.Schemas["Item"].Description = "<p><strong>Item</strong></p>";
-        Assert.Equal("**Item**", root.Schemas["Item"].Description);
+        var schema = version == "2.0" ? Assert.IsType<JObject>(response.Metadata["schema"])
+            : Assert.IsType<JArray>(response.Metadata["content"])[0]["schema"];
+        Assert.Equal("string", (string)Assert.Single(schema["allOf"])["properties"]["name"]["type"]);
     }
 }

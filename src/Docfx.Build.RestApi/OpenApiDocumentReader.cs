@@ -30,8 +30,8 @@ internal static class OpenApiDocumentReader
         {
             version ??= RestApiDocumentReader.ReadHeader(new StringReader(raw), format)?.Version;
             var constants = new Dictionary<string, string>();
-            var document = LoadDocuments(raw, format, baseUrl ?? new Uri(Path.GetFullPath("openapi.json")), version, constants);
-            var model = new OpenApi3ModelConverter(document.BaseUri, constants).Convert(document, raw, version);
+            var document = LoadDocument(raw, format, baseUrl ?? new Uri(Path.GetFullPath("openapi.json")), version, constants);
+            var model = new OpenApi3ModelConverter(constants).Convert(document, raw, version);
             model.Metadata["rawExtension"] = format == "json" ? ".json" : ".yaml";
             return model;
         }
@@ -41,117 +41,64 @@ internal static class OpenApiDocumentReader
         }
     }
 
-    private static OpenApiDocument LoadDocuments(string raw, string format, Uri root, string rootVersion, Dictionary<string, string> constants)
+    private static OpenApiDocument LoadDocument(string raw, string format, Uri root, string rootVersion, Dictionary<string, string> constants)
     {
-        var loader = new LocalStreamLoader();
-        var documents = new Dictionary<Uri, OpenApiDocument>();
-        var references = new Dictionary<Uri, List<(IOpenApiReferenceHolder Holder, BaseOpenApiReference Reference)>>();
-        var pending = new Queue<Uri>();
-        var scheduled = new HashSet<Uri> { root };
-        pending.Enqueue(root);
-        while (pending.TryDequeue(out var location))
+        if (!System.Version.TryParse(rootVersion, out var parsed) || parsed.Major != 3 || parsed.Minor is not (0 or 1 or 2))
         {
-            var source = raw;
-            var sourceFormat = format;
-            if (location != root)
+            throw new DocfxException($"OpenAPI version '{rootVersion}' is not supported. Use OpenAPI 3.0, 3.1 or 3.2.");
+        }
+        if (format == "json")
+        {
+            // Replacing a const value must not make malformed JSON appear valid.
+            using var json = System.Text.Json.JsonDocument.Parse(raw);
+        }
+        raw = PrepareSchemas(raw, root, parsed.Minor == 0, constants);
+        var settings = new OpenApiReaderSettings
+        {
+            BaseUrl = root,
+            LoadExternalRefs = false
+        };
+        settings.AddYamlReader();
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(raw));
+        var result = Task.Run(() => OpenApiDocument.LoadAsync(stream, format, settings)).GetAwaiter().GetResult();
+        if (result.Diagnostic.Errors.Count > 0)
+        {
+            throw new DocfxException($"Invalid OpenAPI document '{root.LocalPath}': " +
+                string.Join("; ", result.Diagnostic.Errors.Select(e => e.ToString())));
+        }
+        foreach (var warning in result.Diagnostic.Warnings)
+        {
+            Logger.LogWarning($"OpenAPI '{root.LocalPath}': {warning}");
+        }
+        var document = result.Document ?? throw new DocfxException($"The OpenAPI reader did not produce a document for '{root.LocalPath}'.");
+        if (document.Webhooks is { Count: > 0 } || document.Security is { Count: > 0 } ||
+            document.Components?.SecuritySchemes is { Count: > 0 } ||
+            document.Paths?.Values.Any(path => path.Operations?.Values.Any(operation =>
+                operation.Callbacks is { Count: > 0 } || operation.Security is { Count: > 0 } ||
+                operation.Responses?.Values.Any(response => response.Links is { Count: > 0 }) == true) == true) == true)
+        {
+            Logger.LogWarning($"OpenAPI '{root.LocalPath}': callbacks, webhooks, security configuration and response links do not have dedicated documentation UI.");
+        }
+        var collector = new ReferenceCollector();
+        new OpenApiWalker(collector).Walk(document);
+        if (collector.HasEncoding || document.Tags?.Any(tag => tag.Parent != null || tag.Kind != null || tag.Summary != null) == true)
+        {
+            Logger.LogWarning($"OpenAPI '{root.LocalPath}': media-type encoding and tag summary, hierarchy and kind do not have dedicated documentation UI.");
+        }
+        document.Workspace = new OpenApiWorkspace();
+        document.Workspace.RegisterComponents(document);
+        foreach (var (holder, reference) in collector.References)
+        {
+            if (reference.ExternalResource != null)
             {
-                using var input = loader.LoadAsync(root, location).GetAwaiter().GetResult();
-                using var reader = new StreamReader(input);
-                source = reader.ReadToEnd();
-                sourceFormat = Path.GetExtension(location.LocalPath).Equals(".json", StringComparison.OrdinalIgnoreCase) ? "json" : "yaml";
+                throw new DocfxException($"UnsupportedExternalReference: '{reference.ReferenceV3}'. References must target the current OpenAPI document.");
             }
-            var version = location == root ? rootVersion : RestApiDocumentReader.ReadHeader(new StringReader(source), sourceFormat)?.Version;
-            if (!System.Version.TryParse(version, out var parsed) || parsed.Major != 3 || parsed.Minor is not (0 or 1 or 2))
+            if (holder.UnresolvedReference)
             {
-                if (location == root)
-                {
-                    throw new DocfxException($"OpenAPI version '{version}' is not supported. Use OpenAPI 3.0, 3.1 or 3.2.");
-                }
-                throw new DocfxException($"UnsupportedExternalFragment: '{location.LocalPath}' is not a complete OpenAPI 3.0, 3.1 or 3.2 document. " +
-                    "Standalone schema/component fragments are valid OpenAPI references, but are not supported by this reader integration.");
-            }
-            if (sourceFormat == "json")
-            {
-                // Replacing a const value must not make malformed JSON appear valid.
-                using var json = System.Text.Json.JsonDocument.Parse(source);
-            }
-            source = PrepareSchemas(source, location, parsed.Minor == 0, constants);
-            var settings = new OpenApiReaderSettings
-            {
-                BaseUrl = location,
-                LoadExternalRefs = false,
-                CustomExternalLoader = loader
-            };
-            settings.AddYamlReader();
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(source));
-            var result = Task.Run(() => OpenApiDocument.LoadAsync(stream, sourceFormat, settings)).GetAwaiter().GetResult();
-            if (result.Diagnostic.Errors.Count > 0)
-            {
-                throw new DocfxException($"Invalid OpenAPI document '{location.LocalPath}': " +
-                    string.Join("; ", result.Diagnostic.Errors.Select(e => e.ToString())));
-            }
-            foreach (var warning in result.Diagnostic.Warnings)
-            {
-                Logger.LogWarning($"OpenAPI '{location.LocalPath}': {warning}");
-            }
-            var document = result.Document ?? throw new DocfxException($"The OpenAPI reader did not produce a document for '{location.LocalPath}'.");
-            documents.Add(location, document);
-            if (document.Webhooks is { Count: > 0 } || document.Security is { Count: > 0 } ||
-                document.Components?.SecuritySchemes is { Count: > 0 } ||
-                document.Paths?.Values.Any(path => path.Operations?.Values.Any(operation =>
-                    operation.Callbacks is { Count: > 0 } || operation.Security is { Count: > 0 } ||
-                    operation.Responses?.Values.Any(response => response.Links is { Count: > 0 }) == true) == true) == true)
-            {
-                Logger.LogWarning($"OpenAPI '{location.LocalPath}': callbacks, webhooks, security configuration and response links do not have dedicated documentation UI.");
-            }
-            var collector = new ReferenceCollector();
-            new OpenApiWalker(collector).Walk(document);
-            if (collector.HasEncoding || document.Tags?.Any(tag => tag.Parent != null || tag.Kind != null || tag.Summary != null) == true)
-            {
-                Logger.LogWarning($"OpenAPI '{location.LocalPath}': media-type encoding and tag summary, hierarchy and kind do not have dedicated documentation UI.");
-            }
-            references.Add(location, collector.References);
-            foreach (var (_, reference) in collector.References)
-            {
-                if (reference.ExternalResource is { } external)
-                {
-                    var target = LocalStreamLoader.Resolve(location, new Uri(external, UriKind.RelativeOrAbsolute));
-                    if (scheduled.Add(target))
-                    {
-                        pending.Enqueue(target);
-                    }
-                }
+                throw new DocfxException($"Could not resolve OpenAPI reference '{reference.ReferenceV3}' in '{root.LocalPath}'.");
             }
         }
-
-        // The SDK aliases external names globally within a workspace. Each host needs its own
-        // aliases so two documents can both refer to "common.yaml" in different directories.
-        foreach (var (location, document) in documents)
-        {
-            document.Workspace = new OpenApiWorkspace();
-            foreach (var other in documents.Values)
-            {
-                document.Workspace.RegisterComponents(other);
-            }
-            foreach (var (_, reference) in references[location])
-            {
-                if (reference.ExternalResource is { } external)
-                {
-                    document.Workspace.AddDocumentId(external, new Uri(location, external));
-                }
-            }
-        }
-        foreach (var (location, holders) in references)
-        {
-            foreach (var (holder, reference) in holders)
-            {
-                if (holder.UnresolvedReference)
-                {
-                    throw new DocfxException($"Could not resolve OpenAPI reference '{reference.ReferenceV3}' in '{location.LocalPath}'.");
-                }
-            }
-        }
-        return documents[root];
+        return document;
     }
 
     private static string PrepareSchemas(string source, Uri location, bool openApi30, Dictionary<string, string> constants)
@@ -393,10 +340,10 @@ internal static class OpenApiDocumentReader
 
         void CheckReference(YamlNode node, string path)
         {
-            if (node is YamlScalarNode { Value: { } value } && !value.Contains('#'))
+            if (node is YamlScalarNode { Value: { } value } && !value.StartsWith('#'))
             {
-                throw new DocfxException($"UnsupportedExternalFragment: reference '{value}' at '{path}' in '{location.LocalPath}' " +
-                    "requires a complete OpenAPI component document and a fragment identifier.");
+                throw new DocfxException($"UnsupportedExternalReference: reference '{value}' at '{path}' in '{location.LocalPath}' " +
+                    "must target the current OpenAPI document.");
             }
         }
 
@@ -499,22 +446,4 @@ internal static class OpenApiDocumentReader
         });
     }
 
-    private sealed class LocalStreamLoader : IStreamLoader
-    {
-        public Task<Stream> LoadAsync(Uri baseUrl, Uri uri, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            return Task.FromResult(EnvironmentContext.FileAbstractLayer.OpenRead(Resolve(baseUrl, uri).LocalPath));
-        }
-
-        internal static Uri Resolve(Uri baseUrl, Uri uri)
-        {
-            uri = uri.IsAbsoluteUri ? uri : new Uri(baseUrl, uri);
-            if (!uri.IsAbsoluteUri || !uri.IsFile || uri.IsUnc || !string.IsNullOrEmpty(uri.Host))
-            {
-                throw new DocfxException($"Only local file references are supported in OpenAPI documents: '{uri}'.");
-            }
-            return new Uri(Path.GetFullPath(uri.LocalPath));
-        }
-    }
 }

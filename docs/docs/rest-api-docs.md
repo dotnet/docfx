@@ -38,9 +38,8 @@ Include the entry documents in `build.content`, for example:
 }
 ```
 
-Both `.yaml` and `.yml` are supported. Referenced OpenAPI documents can mix JSON and YAML and
-do not need to be listed as separate entry documents. References are loaded through
-Docfx's file abstraction; HTTP/HTTPS and network-share references are not fetched.
+Both `.yaml` and `.yml` are supported. References must target the current document,
+for example `#/components/schemas/Pet`. Cross-file and network references are not supported.
 An invalid document or unresolved reference produces an input error, not a fallback
 to the Swagger reader. OpenAPI 3.0, 3.1 and 3.2 are supported.
 

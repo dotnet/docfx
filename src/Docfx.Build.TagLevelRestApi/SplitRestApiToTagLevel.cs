@@ -109,7 +109,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
             var tagChildren = GetChildrenByTag(root, tag.Name).ToList();
             if (tagChildren.Count > 0)
             {
-                var model = new RestApiRootItemViewModel
+                yield return new RestApiRootItemViewModel
                 {
                     Uid = tag.Uid,
                     HtmlId = tag.HtmlId,
@@ -121,8 +121,6 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
                     Tags = [],
                     Metadata = MergeTagMetadata(root, tag)
                 };
-                root.CopyDocumentContextTo(model);
-                yield return model;
             }
         }
     }

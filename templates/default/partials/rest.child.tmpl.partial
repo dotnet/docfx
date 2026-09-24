@@ -53,6 +53,18 @@
           {{#content}}{{>partials/rest.media-schema}}{{/content}}
           {{^hasContent}}
           {{#schemaDetails}}{{>partials/rest.schema}}{{/schemaDetails}}
+          {{^schemaDetails}}
+          {{^schema.cType}}
+            {{schema.type}}
+            {{#schema.format}}
+              ({{schema.format}})
+            {{/schema.format}}
+          {{/schema.cType}}
+
+          {{#schema.cType}}
+            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
+          {{/schema.cType}}
+          {{/schemaDetails}}
           {{/hasContent}}
       </td>
       <td>{{default}}</td>
@@ -95,13 +107,30 @@
           {{#content}}{{>partials/rest.media-schema}}{{/content}}
           {{^hasContent}}
           {{#schemaDetails}}{{>partials/rest.schema}}{{/schemaDetails}}
+          {{^schemaDetails}}
+          {{^schema.cType}}
+            {{schema.type}}
+          {{/schema.cType}}
+
+          {{#schema.cType}}
+            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
+          {{/schema.cType}}
+          {{/schemaDetails}}
           {{/hasContent}}
       </td>
       <td>{{{description}}}</td>
       <td class="sample-response">
         {{#content}}{{>partials/rest.examples}}{{/content}}
         {{^hasContent}}
-        {{>partials/rest.examples}}
+        {{#exampleDetails.0}}{{>partials/rest.examples}}{{/exampleDetails.0}}
+        {{^exampleDetails.0}}
+        {{#examples}}
+        <div class="mime-type">
+          <i>Mime type: </i><span class="mime">{{mimeType}}</span>
+        </div>
+        <pre class="response-content"><code class="lang-js json hljs">{{content}}</code></pre>
+        {{/examples}}
+        {{/exampleDetails.0}}
         {{/hasContent}}
       </td>
     </tr>

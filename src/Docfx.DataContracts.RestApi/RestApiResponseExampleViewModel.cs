@@ -9,16 +9,6 @@ namespace Docfx.DataContracts.RestApi;
 
 public class RestApiResponseExampleViewModel
 {
-    [YamlMember(Alias = "name")]
-    [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-
-    [YamlMember(Alias = "externalValue")]
-    [JsonProperty("externalValue", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonPropertyName("externalValue")]
-    public string ExternalValue { get; set; }
-
     [YamlMember(Alias = "mimeType")]
     [JsonProperty("mimeType")]
     [JsonPropertyName("mimeType")]

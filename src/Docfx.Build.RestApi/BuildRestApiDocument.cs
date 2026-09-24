@@ -8,11 +8,15 @@ using Docfx.Build.Common;
 using Docfx.DataContracts.RestApi;
 using Docfx.Plugins;
 
+using Newtonsoft.Json.Linq;
+
 namespace Docfx.Build.RestApi;
 
 [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
 public class BuildRestApiDocument : BuildReferenceDocumentBase
 {
+    private static readonly HashSet<string> MarkupKeys = ["description"];
+
     public override string Name => nameof(BuildRestApiDocument);
 
     protected override void BuildArticle(IHostService host, FileModel model)
@@ -37,6 +41,9 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
 
     public static RestApiItemViewModelBase BuildItem(IHostService host, RestApiItemViewModelBase item, FileModel model, Func<string, bool> filter = null)
     {
+        var documents = model.Type == DocumentType.Overwrite ? host.LookupByUid(item.Uid) : [model];
+        var openApi3 = documents?.Any(document => document.Content is RestApiRootItemViewModel root &&
+            root.Metadata.GetValueOrDefault("specificationVersion") is string version && version.StartsWith("3.", StringComparison.Ordinal)) == true;
         item.Summary = Markup(host, item.Summary, model, filter);
         item.Description = Markup(host, item.Description, model, filter);
         if (model.Type != DocumentType.Overwrite)
@@ -45,71 +52,142 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
             item.Remarks = Markup(host, item.Remarks, model, filter);
         }
 
-        if (item is RestApiRootItemViewModel rootModel)
+        if (openApi3)
         {
-            if (rootModel.Info != null) rootModel.Info.Description = Markup(host, rootModel.Info.Description, model, filter);
-            if (rootModel.ExternalDocs != null) rootModel.ExternalDocs.Description = Markup(host, rootModel.ExternalDocs.Description, model, filter);
-            foreach (var security in rootModel.SecurityDefinitions?.Values.AsEnumerable() ?? [])
+            MarkupOpenApiMetadata(item.Metadata);
+        }
+        else if (item is RestApiRootItemViewModel rootModel)
+        {
+            // Mark up recursively for swagger root except for children and tags
+            foreach (var jToken in rootModel.Metadata.Values.OfType<JToken>())
             {
-                if (security != null) security.Description = Markup(host, security.Description, model, filter);
+                MarkupRecursive(jToken, host, model, filter);
             }
-            MarkupServers(rootModel.Servers);
-            foreach (var schema in rootModel.Schemas?.Values.AsEnumerable() ?? []) MarkupSchema(schema);
         }
 
-        if (item is RestApiChildItemViewModel childModel)
+        var childModel = item as RestApiChildItemViewModel;
+        if (childModel?.Parameters != null)
         {
-            MarkupServers(childModel.Servers);
-            if (childModel.RequestBody is { } body)
-            {
-                body.Description = Markup(host, body.Description, model, filter);
-                MarkupContent(body.Content);
-            }
-            foreach (var param in childModel.Parameters ?? [])
+            foreach (var param in childModel.Parameters)
             {
                 param.Description = Markup(host, param.Description, model, filter);
-                MarkupSchema(param.Schema);
-                MarkupContent(param.Content);
+
+                if (openApi3)
+                {
+                    MarkupOpenApiMetadata(param.Metadata);
+                }
+                else
+                {
+                    foreach (var jToken in param.Metadata.Values.OfType<JToken>())
+                    {
+                        MarkupRecursive(jToken, host, model, filter);
+                    }
+                }
             }
-            foreach (var response in childModel.Responses ?? [])
+        }
+        if (childModel?.Responses != null)
+        {
+            foreach (var response in childModel.Responses)
             {
                 response.Description = Markup(host, response.Description, model, filter);
-                MarkupSchema(response.Schema);
-                MarkupContent(response.Content);
-                foreach (var header in response.Headers?.Values.AsEnumerable() ?? []) MarkupSchema(header);
+
+                if (openApi3)
+                {
+                    MarkupOpenApiMetadata(response.Metadata);
+                }
+                else
+                {
+                    foreach (var jToken in response.Metadata.Values.OfType<JToken>())
+                    {
+                        MarkupRecursive(jToken, host, model, filter);
+                    }
+                }
             }
         }
         return item;
 
-        void MarkupServers(List<RestApiServerViewModel> servers)
+        void MarkupOpenApiMetadata(Dictionary<string, object> metadata)
         {
-            foreach (var server in servers ?? [])
+            MarkupDescription(metadata.GetValueOrDefault("info"));
+            MarkupDescription(metadata.GetValueOrDefault("externalDocs"));
+            foreach (var server in GetChildren(metadata.GetValueOrDefault("servers"))) MarkupDescription(server);
+            foreach (var schema in GetChildren(metadata.GetValueOrDefault("schemas"))) MarkupSchema(schema);
+            var body = metadata.GetValueOrDefault("requestBody");
+            MarkupDescription(body);
+            MarkupContent(GetProperty(body, "content"));
+            MarkupSchema(metadata.GetValueOrDefault("schema"));
+            MarkupContent(metadata.GetValueOrDefault("content"));
+        }
+
+        void MarkupDescription(object node)
+        {
+            var value = GetProperty(node, "description");
+            if (value is JValue { Type: JTokenType.String } token) value = (string)token;
+            if (value is not string description) return;
+            var html = Markup(host, description, model, filter);
+            if (node is JObject obj) obj["description"] = html;
+            else if (node is Dictionary<object, object> dictionary) dictionary["description"] = html;
+        }
+
+        void MarkupContent(object content)
+        {
+            foreach (var media in GetChildren(content))
             {
-                if (server != null) server.Description = Markup(host, server.Description, model, filter);
+                MarkupSchema(GetProperty(media, "schema"));
+                MarkupSchema(GetProperty(media, "itemSchema"));
             }
         }
 
-        void MarkupContent(List<RestApiMediaTypeViewModel> content)
+        void MarkupSchema(object schema)
         {
-            foreach (var media in content ?? [])
+            MarkupDescription(schema);
+            foreach (var property in GetChildren(GetProperty(schema, "properties"))) MarkupSchema(property);
+            var items = GetProperty(schema, "items");
+            if (items != null) MarkupSchema(items);
+            foreach (var branch in GetChildren(GetProperty(schema, "allOf"))) MarkupSchema(branch);
+            foreach (var composition in GetChildren(GetProperty(schema, "composition")))
+                foreach (var branch in GetChildren(GetProperty(composition, "schemas"))) MarkupSchema(branch);
+        }
+
+        // Keep overwrite dictionaries/lists intact: JObjectMerger/JArrayMerger consume those types.
+        static object GetProperty(object node, string name) => node switch
+        {
+            JObject obj => obj[name],
+            Dictionary<object, object> dictionary => dictionary.GetValueOrDefault(name),
+            _ => null
+        };
+
+        static IEnumerable<object> GetChildren(object node) => node switch
+        {
+            JObject obj => obj.PropertyValues(),
+            Dictionary<object, object> dictionary => dictionary.Values,
+            IEnumerable<object> array => array,
+            _ => []
+        };
+    }
+
+    private static void MarkupRecursive(JToken jToken, IHostService host, FileModel model, Func<string, bool> filter = null)
+    {
+        if (jToken is JArray jArray)
+        {
+            foreach (var item in jArray)
             {
-                if (media == null) continue; // Positional overwrite placeholder.
-                MarkupSchema(media.Schema);
-                MarkupSchema(media.ItemSchema);
+                MarkupRecursive(item, host, model, filter);
             }
         }
 
-        void MarkupSchema(RestApiSchemaViewModel schema)
+        if (jToken is JObject jObject)
         {
-            if (schema == null) return;
-            schema.Description = Markup(host, schema.Description, model, filter);
-            foreach (var property in schema.Properties?.Values.AsEnumerable() ?? []) MarkupSchema(property);
-            MarkupSchema(schema.Items);
-            foreach (var branch in schema.AllOf ?? []) MarkupSchema(branch);
-            foreach (var composition in schema.Composition ?? [])
+            foreach (var pair in jObject)
             {
-                if (composition == null) continue;
-                foreach (var branch in composition.Schemas ?? []) MarkupSchema(branch);
+                if (MarkupKeys.Contains(pair.Key) && pair.Value != null)
+                {
+                    if (pair.Value is JValue { Type: JTokenType.String } jValue)
+                    {
+                        jObject[pair.Key] = Markup(host, (string)jValue, model, filter);
+                    }
+                }
+                MarkupRecursive(jObject[pair.Key], host, model, filter);
             }
         }
     }

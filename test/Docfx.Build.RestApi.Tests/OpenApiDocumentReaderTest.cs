@@ -35,9 +35,9 @@ public class OpenApiDocumentReaderTest : TestBase
                "schemas":{"Event":{"type":"object","properties":{"id":{"const":42},"anything":true,"never":false}}}
              }}
             """, format);
-        Assert.Equal("3.2.0", model.SpecificationVersion);
+        Assert.Equal("3.2.0", model.Metadata["specificationVersion"]);
         Assert.Equal(new[] { "query", "copy" }, model.Children.Select(child => child.OperationName));
-        var content = JArray.FromObject(Assert.Single(model.Children[0].Responses).Content);
+        var content = JArray.FromObject(Assert.Single(model.Children[0].Responses).Metadata["content"]);
         var item = content[0]["itemSchema"];
         Assert.Equal("Event", item["x-internal-ref-name"]);
         Assert.Equal("42", item["properties"]["id"]["constraints"][0]["value"]);
@@ -80,7 +80,7 @@ public class OpenApiDocumentReaderTest : TestBase
         Assert.Equal(raw, model.Raw);
         Assert.Equal(42, ((JObject)model.Metadata["x-literal"])["schema"]["const"]);
         Assert.Equal(false, model.Metadata["x-boolean"]);
-        var schemas = JObject.FromObject(model.Schemas);
+        var schemas = JObject.FromObject(model.Metadata["schemas"]);
         Assert.Equal("After the constant", schemas["Object"]["description"]);
         Assert.Equal("{\"schema\":{\"const\":42},\"flag\":false}", schemas["Object"]["constraints"][0]["value"]);
         Assert.Equal("[42,null,\"false\"]", schemas["Array"]["constraints"][0]["value"]);
@@ -89,37 +89,6 @@ public class OpenApiDocumentReaderTest : TestBase
         Assert.Equal("no value", schemas["Boolean"]["type"]);
         Assert.Equal("1e100", schemas["Number"]["constraints"][0]["value"]);
         Assert.Equal("\"42\"", schemas["String"]["constraints"][0]["value"]);
-    }
-
-    [Fact]
-    public void OpenApi32ResolvesExternalMediaTypesAndStreamItemSchemas()
-    {
-        var folder = GetRandomFolder();
-        var entry = CreateFile("entry.json", """
-            {"openapi":"3.2.0","info":{"title":"External streams","version":"1"},
-             "paths":{"/events":{"query":{"responses":{"200":{"description":"OK","content":{
-               "application/jsonl":{"$ref":"media.yaml#/components/mediaTypes/Events"}
-             }}}}}}}
-            """, folder);
-        CreateFile("media.yaml", """
-            openapi: 3.2.0
-            info: {title: Media, version: '1'}
-            paths: {}
-            components:
-              mediaTypes:
-                Events:
-                  itemSchema: {$ref: 'schemas.json#/components/schemas/Event', const: {id: 42}}
-            """, folder);
-        CreateFile("schemas.json", """
-            {"openapi":"3.1.0","info":{"title":"Schemas","version":"1"},"paths":{},
-             "components":{"schemas":{"Event":{"type":"object","properties":{"id":{"const":42},"never":false}}}}}
-            """, folder);
-        var model = OpenApiDocumentReader.Read(entry);
-        var content = JArray.FromObject(Assert.Single(Assert.Single(model.Children).Responses).Content);
-        var branches = content[0]["itemSchema"]["allOf"];
-        Assert.Equal("42", branches[0]["properties"]["id"]["constraints"][0]["value"]);
-        Assert.Equal("no value", branches[0]["properties"]["never"]["type"]);
-        Assert.Equal("{\"id\":42}", branches[1]["constraints"][0]["value"]);
     }
 
     [Fact]
@@ -188,24 +157,24 @@ public class OpenApiDocumentReaderTest : TestBase
         var child = Assert.Single(model.Children);
         Assert.Equal(model.Uid + "/createItem", child.Uid);
         Assert.Equal("docs", child.Metadata["x-owner"]?.ToString());
-        Assert.Equal("https://api.example.test/v1/items/{id}", child.RequestUrl);
+        Assert.Equal("https://api.example.test/v1/items/{id}", child.Metadata["requestUrl"]);
         Assert.Equal(["limit", "id"], child.Parameters.Select(p => p.Name));
-        Assert.Equal("integer", (JObject.FromObject(child.Parameters[0].Schema))["type"]);
+        Assert.Equal("integer", (JObject.FromObject(child.Parameters[0].Metadata["schema"]))["type"]);
         Assert.Equal("0", child.Parameters[0].Metadata["default"]?.ToString());
         Assert.Equal(model.Uid + "/tag/items", Assert.Single(model.Tags).Uid);
-        var body = JObject.FromObject(child.RequestBody);
+        var body = JObject.FromObject(child.Metadata["requestBody"]);
         Assert.True((bool)body["required"]);
         Assert.Equal("application/json", body["content"][0]["mimeType"]);
         var schema = body["content"][0]["schema"];
         Assert.Equal("string", schema["properties"]["name"]["type"]);
         Assert.NotNull(schema["properties"]["next"]["x-internal-loop-ref-name"]);
         var response = Assert.Single(child.Responses);
-        var content = JArray.FromObject(response.Content);
+        var content = JArray.FromObject(response.Metadata["content"]);
         Assert.Equal(["application/json", "text/plain"], content.Select(c => (string)c["mimeType"]));
         var example = JObject.Parse((string)content[0]["examples"][0]["content"]);
         Assert.Equal("this-is-payload.json", example["$ref"]);
         Assert.Equal("**literal**", example["description"]);
-        Assert.Equal(2, response.Content.Sum(media => media.Examples.Count));
+        Assert.Equal(2, content.Sum(media => media["examples"].Count()));
     }
 
     [Theory]
@@ -229,7 +198,7 @@ public class OpenApiDocumentReaderTest : TestBase
         Assert.Equal("YAML API/1", model.Uid);
         var operation = Assert.Single(model.Children);
         Assert.StartsWith("get_", operation.OperationId);
-        Assert.Equal("/health", operation.RequestUrl);
+        Assert.Equal("/health", operation.Metadata["requestUrl"]);
         Assert.Equal("204", Assert.Single(operation.Responses).HttpStatusCode);
     }
 
@@ -254,7 +223,7 @@ public class OpenApiDocumentReaderTest : TestBase
         var first = Read(paths);
         var second = Read("\"/unrelated\": {\"get\":{\"responses\":{\"200\":{\"description\":\"OK\"}}}}," + paths);
         Assert.Equal(["/path-base/path", "https://override.example.test/v2/path", "https://root.example.test/root/root"],
-            first.Children.Select(child => child.RequestUrl));
+            first.Children.Select(child => child.Metadata["requestUrl"]));
         Assert.Equal(first.Children.Select(child => child.OperationId), second.Children.Skip(1).Select(child => child.OperationId));
         Assert.All(first.Children, child => Assert.DoesNotContain("/", child.OperationId));
     }
@@ -278,8 +247,8 @@ public class OpenApiDocumentReaderTest : TestBase
               }}
             }
             """, "json");
-        var schemas = JObject.FromObject(model.Schemas);
-        var content = JArray.FromObject(Assert.Single(Assert.Single(model.Children).Responses).Content);
+        var schemas = JObject.FromObject(model.Metadata["schemas"]);
+        var content = JArray.FromObject(Assert.Single(Assert.Single(model.Children).Responses).Metadata["content"]);
         Assert.Equal("any value", content[0]["schema"]["type"]);
         Assert.Equal("no value", content[1]["schema"]["type"]);
         Assert.Contains("string", (string)schemas["Nullable"]["type"]);
@@ -313,7 +282,7 @@ public class OpenApiDocumentReaderTest : TestBase
             var model = OpenApiDocumentReader.Parse(
                 """{"openapi":"3.1.0","info":{"title":"Boolean","version":"1"},"paths":{},"components":{"schemas":{"Value":SCHEMA}}}"""
                     .Replace("SCHEMA", schema), "json");
-            var value = (JObject.FromObject(model.Schemas))["Value"];
+            var value = (JObject.FromObject(model.Metadata["schemas"]))["Value"];
             if (schema == boolean)
                 Assert.Equal(boolean == "true" ? "any value" : "no value", value["type"]);
             else if (schema.Contains("properties"))
@@ -323,45 +292,6 @@ public class OpenApiDocumentReaderTest : TestBase
             else
                 Assert.Contains(boolean == "true" ? "{}" : "\"not\":{}", (string)value["constraints"][0]["value"]);
         }
-    }
-
-    [Theory]
-    [InlineData("true", "component")]
-    [InlineData("false", "component")]
-    [InlineData("true", "properties")]
-    [InlineData("false", "properties")]
-    [InlineData("true", "composition")]
-    [InlineData("false", "composition")]
-    public void PreservesBooleanSchemasInExternalDocuments(string boolean, string position)
-    {
-        var folder = GetRandomFolder();
-        var entry = CreateFile("entry.json", """
-            {"openapi":"3.1.0","info":{"title":"External","version":"1"},"paths":{},
-            "components":{"schemas":{"Value":{"$ref":"external.yaml#/components/schemas/Value"}}}}
-            """, folder);
-        var schema = position switch
-        {
-            "component" => boolean,
-            "properties" => "{ properties: { value: " + boolean + " } }",
-            _ => "{ allOf: [" + boolean + "] }"
-        };
-        CreateFile("external.yaml", $$"""
-            openapi: 3.1.0
-            info: { title: External, version: '1' }
-            paths: {}
-            components:
-              schemas:
-                Value: {{schema}}
-            """, folder);
-        var model = OpenApiDocumentReader.Read(entry);
-        var value = (JObject.FromObject(model.Schemas))["Value"];
-        var actual = position switch
-        {
-            "component" => value,
-            "properties" => value["properties"]["value"],
-            _ => value["allOf"][0]
-        };
-        Assert.Equal(boolean == "true" ? "any value" : "no value", actual["type"]);
     }
 
     [Fact]
@@ -378,10 +308,11 @@ public class OpenApiDocumentReaderTest : TestBase
             }
             """, "json");
         Assert.NotNull(model.Metadata["x-data"]);
-        var example = Assert.Single(Assert.Single(Assert.Single(Assert.Single(model.Children).Responses).Content).Examples);
-        Assert.Contains("false", example.Content);
-        Assert.Contains("true", example.Content);
-        Assert.Equal(42, (int)JObject.Parse(example.Content)["schema"]["const"]);
+        var content = Assert.IsType<JArray>(Assert.Single(Assert.Single(model.Children).Responses).Metadata["content"]);
+        var example = Assert.Single(Assert.Single(content)["examples"]);
+        Assert.Contains("false", (string)example["content"]);
+        Assert.Contains("true", (string)example["content"]);
+        Assert.Equal(42, (int)JObject.Parse((string)example["content"])["schema"]["const"]);
     }
 
     [Fact]
@@ -393,7 +324,7 @@ public class OpenApiDocumentReaderTest : TestBase
               "components":{"schemas":{"Value":{"type":"object","example":{"description":"**literal**","$ref":"payload"}}}}
             }
             """, "json");
-        var schema = (JObject.FromObject(model.Schemas))["Value"];
+        var schema = (JObject.FromObject(model.Metadata["schemas"]))["Value"];
         var example = JObject.Parse((string)schema["examples"][0]["content"]);
         Assert.Equal("**literal**", example["description"]);
         Assert.Equal("payload", example["$ref"]);
@@ -410,7 +341,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 {"openapi":"3.1.0","info":{"title":"Constants","version":"1"},"paths":{},
                  "components":{"schemas":{"Value":{"const":VALUE,"enum":[1,2]}}}}
                 """.Replace("VALUE", value), format);
-            var schema = (JObject.FromObject(model.Schemas))["Value"];
+            var schema = (JObject.FromObject(model.Metadata["schemas"]))["Value"];
             Assert.Equal(value, (string)Assert.Single(schema["constraints"])["value"]);
             Assert.Equal(new[] { 1, 2 }, schema["enum"].Values<int>());
         }
@@ -450,7 +381,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 {"openapi":"3.1.0","info":{"title":"Constants","version":"1"},"paths":{},
                  "components":{"schemas":{"Value":{"const":VALUE,"default":null}}}}
                 """.Replace("VALUE", value), format);
-            var constraints = (JObject.FromObject(model.Schemas))["Value"]["constraints"];
+            var constraints = (JObject.FromObject(model.Metadata["schemas"]))["Value"]["constraints"];
             Assert.Equal(value, (string)Assert.Single(constraints, item => (string)item["name"] == "const")["value"]);
             Assert.Equal("null", (string)Assert.Single(constraints, item => (string)item["name"] == "default")["value"]);
         }
@@ -477,7 +408,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 Value:
                   const: {{value}}
             """, "yaml");
-        var constraints = (JObject.FromObject(model.Schemas))["Value"]["constraints"];
+        var constraints = (JObject.FromObject(model.Metadata["schemas"]))["Value"]["constraints"];
         Assert.Equal(expected, (string)Assert.Single(constraints)["value"]);
     }
 
@@ -496,7 +427,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 Value:
                   {{keyword}}:
             """, "yaml");
-        var schema = (JObject.FromObject(model.Schemas))["Value"];
+        var schema = (JObject.FromObject(model.Metadata["schemas"]))["Value"];
         Assert.Equal("null", (string)Assert.Single(schema["constraints"])["value"]);
     }
 
@@ -512,34 +443,8 @@ public class OpenApiDocumentReaderTest : TestBase
              "paths":{"/items":{"get":{"parameters":[{"$ref":"#/components/parameters/NAME"}],"responses":{"200":{"description":"OK"}}}}},
              "components":{"parameters":{"NAME":{"name":"q","in":"query","schema":{"const":42}}}}}
             """.Replace("NAME", name), "json");
-        var schema = JObject.FromObject(Assert.Single(Assert.Single(model.Children).Parameters).Schema);
+        var schema = JObject.FromObject(Assert.Single(Assert.Single(model.Children).Parameters).Metadata["schema"]);
         Assert.Equal("42", (string)Assert.Single(schema["constraints"])["value"]);
-    }
-
-    [Theory]
-    [InlineData("{properties: {value: {const: 42}}}", "42")]
-    [InlineData("{oneOf: [{const: true}]}", "true")]
-    [InlineData("{$ref: '#/components/schemas/Base', const: false}", "false")]
-    public void PreservesConstInExternalSchemas(string schema, string expected)
-    {
-        var folder = GetRandomFolder();
-        var entry = CreateFile("entry.json", """
-            {"openapi":"3.1.0","info":{"title":"Constants","version":"1"},"paths":{},
-             "components":{"schemas":{"Value":{"$ref":"external.yaml#/components/schemas/Value"}}}}
-            """, folder);
-        CreateFile("external.yaml", $$"""
-            openapi: 3.1.0
-            info: {title: Constants, version: '1'}
-            paths: {}
-            components:
-              schemas:
-                Base: {type: boolean}
-                Value: {{schema}}
-            """, folder);
-        var model = OpenApiDocumentReader.Read(entry);
-        var value = (JObject.FromObject(model.Schemas))["Value"];
-        var constraint = Assert.Single(value.SelectTokens("$..constraints[*]"), item => (string)item["name"] == "const");
-        Assert.Equal(expected, constraint["value"]);
     }
 
     [Theory]
@@ -552,7 +457,7 @@ public class OpenApiDocumentReaderTest : TestBase
              "paths":{"/items":{"get":{"responses":{"STATUS":{"description":"OK",
                "content":{"application/json":{"schema":{"const":42}}}}}}}}}
             """.Replace("STATUS", status), "json");
-        var content = JArray.FromObject(Assert.Single(Assert.Single(model.Children).Responses).Content);
+        var content = JArray.FromObject(Assert.Single(Assert.Single(model.Children).Responses).Metadata["content"]);
         Assert.Equal("42", (string)Assert.Single(content[0]["schema"]["constraints"])["value"]);
     }
 
@@ -580,7 +485,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 continue;
             }
             var model = OpenApiDocumentReader.Parse(raw, "json");
-            var value = (JObject.FromObject(model.Schemas))["Value"];
+            var value = (JObject.FromObject(model.Metadata["schemas"]))["Value"];
             Assert.Equal("One of", value["composition"][0]["kind"]);
             Assert.Equal(2, value["composition"][0]["schemas"].Count());
         }
@@ -613,111 +518,11 @@ public class OpenApiDocumentReaderTest : TestBase
         Assert.NotEmpty(error.Message);
     }
 
-    [Fact]
-    public void ResolvesLocalMixedFormatDocumentsAndNestedReferences()
-    {
-        var folder = GetRandomFolder();
-        var entry = CreateFile("entry.yaml", """
-            openapi: 3.1.0
-            info: { title: References, version: '1' }
-            paths:
-              /items:
-                get:
-                  operationId: list
-                  responses:
-                    '200':
-                      description: OK
-                      content:
-                        application/json:
-                          schema:
-                            $ref: models/first.json#/components/schemas/Item
-            """, folder);
-        CreateFile("models/first.json", """
-            {
-              "openapi":"3.1.0","info":{"title":"Models","version":"1"},"paths":{},
-              "components":{"schemas":{"Item":{"type":"object","properties":{
-                "name":{"$ref":"second.yaml#/components/schemas/Name"}
-              }}}}
-            }
-            """, folder);
-        CreateFile("models/second.yaml", """
-            openapi: 3.1.0
-            info: { title: Types, version: '1' }
-            paths: {}
-            components:
-              schemas:
-                Name: { type: string, description: From YAML }
-            """, folder);
-        var model = OpenApiDocumentReader.Read(entry);
-        var response = Assert.Single(Assert.Single(model.Children).Responses);
-        var schema = (JArray.FromObject(response.Content))[0]["schema"];
-        Assert.Equal("string", schema["properties"]["name"]["type"]);
-        Assert.Equal("From YAML", schema["properties"]["name"]["description"]);
-    }
-
-    [Fact]
-    public void LoadsMixedFormatBidirectionalReferencesOnceWithoutExpandingCycles()
-    {
-        var folder = GetRandomFolder();
-        var entry = CreateFile("a.json", """
-            {"openapi":"3.1.0","info":{"title":"Cycle","version":"1"},"paths":{},
-             "components":{"schemas":{"A":{"type":"object","properties":{"b":{"$ref":"b.yaml#/components/schemas/B"}}}}}}
-            """, folder);
-        CreateFile("b.yaml", """
-            openapi: 3.1.0
-            info: { title: Other, version: '1' }
-            paths: {}
-            components:
-              schemas:
-                B:
-                  type: object
-                  properties:
-                    a: { $ref: 'a.json#/components/schemas/A' }
-            """, folder);
-        var model = OpenApiDocumentReader.Read(entry);
-        var schemas = JObject.FromObject(model.Schemas);
-        Assert.Equal("object", schemas["A"]["properties"]["b"]["type"]);
-        Assert.Equal("A", schemas["A"]["properties"]["b"]["properties"]["a"]["x-internal-loop-ref-name"]);
-    }
-
-    [Fact]
-    public void SameRelativeFilenameInDifferentDirectoriesHasDistinctSdkIdentity()
-    {
-        var folder = GetRandomFolder();
-        var entry = CreateFile("entry.json", """
-            {"openapi":"3.1.0","info":{"title":"Identity","version":"1"},"paths":{},
-             "components":{"schemas":{
-               "A":{"$ref":"a/document.yaml#/components/schemas/Value"},
-               "B":{"$ref":"b/document.yaml#/components/schemas/Value"}
-             }}}
-            """, folder);
-        foreach (var (directory, type) in new[] { ("a", "string"), ("b", "integer") })
-        {
-            CreateFile($"{directory}/document.yaml", """
-                openapi: 3.1.0
-                info: { title: Reference, version: '1' }
-                paths: {}
-                components:
-                  schemas:
-                    Value: { $ref: 'common.json#/components/schemas/Value' }
-                """, folder);
-            CreateFile($"{directory}/common.json", """
-                {"openapi":"3.1.0","info":{"title":"Common","version":"1"},"paths":{},
-                "components":{"schemas":{"Value":{"type":"TYPE"}}}}
-                """.Replace("TYPE", type), folder);
-        }
-        var model = OpenApiDocumentReader.Read(entry);
-        var schemas = JObject.FromObject(model.Schemas);
-        Assert.Equal("string", schemas["A"]["type"]);
-        Assert.Equal("integer", schemas["B"]["type"]);
-        Assert.NotEqual((string)schemas["A"]["x-internal-ref-name"], (string)schemas["B"]["x-internal-ref-name"]);
-    }
-
     [Theory]
     [InlineData("missing.yaml#/components/schemas/Value", false, "missing.yaml")]
-    [InlineData("external.yaml#/components/schemas/Missing", true, "Could not resolve")]
-    [InlineData("fragment.yaml", true, "UnsupportedExternalFragment")]
-    [InlineData("fragment.yaml#/components/schemas/Value", true, "UnsupportedExternalFragment")]
+    [InlineData("external.yaml#/components/schemas/Missing", true, "UnsupportedExternalReference")]
+    [InlineData("fragment.yaml", true, "UnsupportedExternalReference")]
+    [InlineData("fragment.yaml#/components/schemas/Value", true, "UnsupportedExternalReference")]
     public void MissingTargetsAndStandaloneFragmentsNeverSucceed(string reference, bool createExternal, string diagnostic)
     {
         var folder = GetRandomFolder();
