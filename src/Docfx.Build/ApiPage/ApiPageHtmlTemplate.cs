@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Net;
-using OneOf;
 using static Docfx.Build.HtmlTemplate;
 
 #nullable enable
@@ -69,7 +68,7 @@ static class ApiPageHtmlTemplate
                 """);
         }
 
-        HtmlTemplate? Badge(OneOf<bool, string>? value, string text, string cssClass, string fontSize)
+        HtmlTemplate? Badge(BoolOrString? value, string text, string cssClass, string fontSize)
         {
             var isDeprecated = value?.Value switch
             {
@@ -81,7 +80,7 @@ static class ApiPageHtmlTemplate
             return isDeprecated ? Html($" <span class='badge rounded-pill {cssClass}' style='font-size: {fontSize}; vertical-align: middle'>{text}</span>") : null;
         }
 
-        HtmlTemplate Alert(OneOf<bool, string>? value, string cssClass)
+        HtmlTemplate Alert(BoolOrString? value, string cssClass)
         {
             return value?.Value is string ds && !string.IsNullOrEmpty(ds)
                 ? Html($"\n<div class='alert {cssClass}' role='alert'>{UnsafeHtml(markup(ds))}</div>")

@@ -10,7 +10,6 @@ using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using HtmlAgilityPack;
 using Microsoft.CodeAnalysis;
-using OneOf;
 
 #nullable enable
 
@@ -98,7 +97,7 @@ partial class DotnetApiCatalog
                     throw new NotSupportedException($"Unknown symbol type kind {symbols[0].symbol}");
             }
 
-            var metadata = new Dictionary<string, OneOf<string, string[]>>();
+            var metadata = new Dictionary<string, StringOrArrayOfString>();
             if (!string.IsNullOrEmpty(comment?.Summary))
                 metadata["description"] = HtmlInnerText(comment.Summary);
 
@@ -144,14 +143,14 @@ partial class DotnetApiCatalog
                 });
             }
 
-            OneOf<bool, string>? Deprecated(ISymbol symbol)
+            BoolOrString? Deprecated(ISymbol symbol)
             {
                 if (symbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ObsoleteAttribute") is { } obsoleteAttribute)
-                    return obsoleteAttribute.ConstructorArguments.FirstOrDefault().Value is string reason && !string.IsNullOrEmpty(reason) ? (OneOf<bool, string>?)reason : true;
+                    return obsoleteAttribute.ConstructorArguments.FirstOrDefault().Value is string reason && !string.IsNullOrEmpty(reason) ? (BoolOrString?)reason : true;
                 return null;
             }
 
-            OneOf<bool, string>? Preview(ISymbol symbol, ISymbol? originalSymbol = null)
+            BoolOrString? Preview(ISymbol symbol, ISymbol? originalSymbol = null)
             {
                 if (symbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ExperimentalAttribute") is { } experimentalAttribute)
                 {
