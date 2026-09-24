@@ -17,7 +17,7 @@ namespace Docfx.Build.RestApi.Tests;
 public class SwaggerCompatibilityTest : TestBase
 {
     [Fact]
-    public void PreservesLegacyInfoShapes()
+    public void PreservesSwagger2InfoMetadataValues()
     {
         var file = CreateFile("swagger.json", """
             {
@@ -35,7 +35,7 @@ public class SwaggerCompatibilityTest : TestBase
             }
             """, GetRandomFolder());
 
-        // These values are accepted by the legacy parser, even outside the Swagger specification.
+        // These values are accepted by the Swagger 2.0 parser, even outside the specification.
         var swagger = SwaggerJsonParser.Parse(file);
         AssertJson("""
             {
