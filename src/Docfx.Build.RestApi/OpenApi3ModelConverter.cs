@@ -36,10 +36,10 @@ internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string,
         };
         model.Metadata["specificationVersion"] = version;
         model.Metadata["servers"] = servers;
-        model.Metadata["info"] = JToken.Parse(Serialize(document.Info));
+        model.Metadata["info"] = Serialize(document.Info);
         if (document.ExternalDocs != null)
         {
-            model.Metadata["externalDocs"] = JToken.Parse(Serialize(document.ExternalDocs));
+            model.Metadata["externalDocs"] = Serialize(document.ExternalDocs);
         }
         var schemas = new JObject();
         foreach (var (name, schema) in document.Components?.Schemas?.AsEnumerable() ?? [])
@@ -215,7 +215,7 @@ internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string,
         return result;
     }
 
-    private static string Literal(JsonNode value, bool terse = false)
+    private static string Literal(JsonNode value)
     {
         if (value == null)
         {
@@ -224,22 +224,20 @@ internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string,
         // The YAML reader uses a sentinel for nulls, including nested values.
         // The SDK writer restores them; JsonNode.ToJsonString exposes the sentinel.
         using var text = new StringWriter();
-        new OpenApiJsonWriter(text, new OpenApiJsonWriterSettings { Terse = terse }).WriteAny(value);
+        new OpenApiJsonWriter(text).WriteAny(value);
         return text.ToString();
     }
 
-    private string Serialize(IOpenApiSerializable value)
+    private JToken Serialize(IOpenApiSerializable value)
     {
         using var text = new StringWriter();
-        value.SerializeAsV32(new OpenApiJsonWriter(text, new OpenApiJsonWriterSettings { Terse = true }));
-        if (value is IOpenApiSchema && constants.Count > 0)
+        value.SerializeAsV32(new OpenApiJsonWriter(text));
+        var token = JToken.Parse(text.ToString());
+        if (value is IOpenApiSchema)
         {
-            // Schema-valued constraints are displayed as JSON, including preserved const values.
-            var token = JToken.Parse(text.ToString());
             RestoreConstants(token);
-            return token.ToString(Formatting.None);
         }
-        return text.ToString();
+        return token;
     }
 
     private static Dictionary<string, object> Extensions(IDictionary<string, IOpenApiExtension> extensions)
@@ -255,7 +253,7 @@ internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string,
         return result;
     }
 
-    private JObject Schema(IOpenApiSchema schema, HashSet<IOpenApiSchema> ancestors = null)
+    private JObject Schema(IOpenApiSchema schema, HashSet<IOpenApiSchema> ancestors = null, JObject serialized = null)
     {
         if (schema == null)
         {
@@ -277,7 +275,7 @@ internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string,
             {
                 var targetModel = Schema(target, ancestors);
                 var siblings = Schema(GetReferenceSiblings(reference), ancestors);
-                var result = IsEmptySchema(siblings) ? targetModel : new JObject
+                var result = siblings.Count == 1 && (string)siblings["type"] == "any value" ? targetModel : new JObject
                 {
                     ["type"] = "all of",
                     ["description"] = reference.Reference.Description ?? target.Description,
@@ -298,14 +296,23 @@ internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string,
 
         try
         {
-            var result = JObject.FromObject(Extensions(schema.Extensions));
+            // Reuse the SDK's serialized subtree when descending into inline schemas.
+            serialized ??= (JObject)Serialize(schema);
+            if (serialized.Count == 1 && serialized["not"] is JObject { Count: 0 })
+            {
+                return new JObject { ["type"] = "no value" };
+            }
+
+            var result = new JObject(serialized.Properties().Where(p => p.Name.StartsWith("x-", StringComparison.Ordinal)));
+            result["type"] = schema.Type?.ToString().ToLowerInvariant().Replace(", ", " | ") ??
+                (serialized.Count == 0 ? "any value" : "any type");
             if (!string.IsNullOrEmpty(schema.Format)) result["format"] = schema.Format;
             if (!string.IsNullOrEmpty(schema.Description)) result["description"] = schema.Description;
             if (schema.Properties is { Count: > 0 })
             {
                 result["properties"] = new JObject(schema.Properties.Select(pair =>
                 {
-                    var property = Schema(pair.Value, ancestors);
+                    var property = Schema(pair.Value, ancestors, serialized["properties"]?[pair.Key] as JObject);
                     if (schema.Required?.Contains(pair.Key) == true)
                     {
                         property["required"] = true;
@@ -313,23 +320,32 @@ internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string,
                     return new JProperty(pair.Key, property);
                 }));
             }
-            if (schema.Items != null) result["items"] = Schema(schema.Items, ancestors);
+            if (schema.Items != null) result["items"] = Schema(schema.Items, ancestors, serialized["items"] as JObject);
             var composition = new JArray();
-            if (schema.AllOf is { Count: > 0 }) result["allOf"] = new JArray(schema.AllOf.Select(s => Schema(s, ancestors)));
-            AddComposition("One of", schema.OneOf);
-            AddComposition("Any of", schema.AnyOf);
+            if (schema.AllOf is { Count: > 0 }) result["allOf"] = Schemas(schema.AllOf, serialized["allOf"] as JArray);
+            AddComposition("One of", schema.OneOf, serialized["oneOf"] as JArray);
+            AddComposition("Any of", schema.AnyOf, serialized["anyOf"] as JArray);
             if (schema.Not != null)
             {
-                AddComposition("Not", [schema.Not]);
+                composition.Add(new JObject { ["kind"] = "Not", ["schemas"] = new JArray(Schema(schema.Not, ancestors, serialized["not"] as JObject)) });
             }
             if (composition.Count > 0)
             {
                 result["composition"] = composition;
             }
-            var constraints = Constraints(schema);
+            var constraints = new JArray();
+            foreach (var property in serialized.Properties())
+            {
+                if (!property.Name.StartsWith("x-", StringComparison.Ordinal) && property.Name is not
+                    ("type" or "format" or "description" or "properties" or "items" or "allOf" or "oneOf" or "anyOf" or "not" or
+                    "additionalProperties" or "enum" or "example" or "examples"))
+                {
+                    constraints.Add(new JObject { ["name"] = property.Name, ["value"] = property.Value.ToString(Formatting.None) });
+                }
+            }
             if (schema.AdditionalProperties != null)
             {
-                composition.Add(new JObject { ["kind"] = "Additional properties", ["schemas"] = new JArray(Schema(schema.AdditionalProperties, ancestors)) });
+                composition.Add(new JObject { ["kind"] = "Additional properties", ["schemas"] = new JArray(Schema(schema.AdditionalProperties, ancestors, serialized["additionalProperties"] as JObject)) });
                 result["composition"] = composition;
             }
             else if (!schema.AdditionalPropertiesAllowed)
@@ -342,7 +358,7 @@ internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string,
             }
             if (schema.Enum is { Count: > 0 })
             {
-                result["enum"] = new JArray(schema.Enum.Select(value => value == null ? null : JToken.Parse(Literal(value))));
+                result["enum"] = serialized["enum"];
             }
             if (schema.Examples is { Count: > 0 })
             {
@@ -354,113 +370,22 @@ internal sealed partial class OpenApi3ModelConverter(IReadOnlyDictionary<string,
                 result["examples"] = new JArray(new JObject { ["content"] = Literal(schema.Example) });
             }
 #pragma warning restore CS0618
-            // The SDK represents true as an empty schema and false as { "not": {} }.
-            if (schema.Type == null && result.Count == 1 && schema.Not != null && composition.Count == 1 &&
-                IsEmptySchema((JObject)composition[0]["schemas"][0]))
-            {
-                return new JObject { ["type"] = "no value" };
-            }
-            result["type"] = schema.Type?.ToString().ToLowerInvariant().Replace(", ", " | ") ??
-                (result.Count == 0 ? "any value" : "any type");
             return result;
 
-            void AddComposition(string kind, IList<IOpenApiSchema> schemas)
+            JArray Schemas(IList<IOpenApiSchema> schemas, JArray values) =>
+                new(schemas.Select((schema, index) => Schema(schema, ancestors, values?[index] as JObject)));
+
+            void AddComposition(string kind, IList<IOpenApiSchema> schemas, JArray values)
             {
                 if (schemas is { Count: > 0 })
                 {
-                    composition.Add(new JObject { ["kind"] = kind, ["schemas"] = new JArray(schemas.Select(s => Schema(s, ancestors))) });
+                    composition.Add(new JObject { ["kind"] = kind, ["schemas"] = Schemas(schemas, values) });
                 }
             }
         }
         finally
         {
             ancestors.Remove(schema);
-        }
-    }
-
-    private static bool IsEmptySchema(JObject schema) => schema.Count == 1 && (string)schema["type"] == "any value";
-
-    private JArray Constraints(IOpenApiSchema schema)
-    {
-        var result = new JArray();
-        Add("$id", schema.Id);
-        Add("$schema", schema.Schema?.ToString());
-        Add("$comment", schema.Comment);
-        if (schema.Const != null)
-            Add("const", constants.TryGetValue(schema.Const, out var constant) ? constant : JsonConvert.SerializeObject(schema.Const), literal: true);
-        Add("$vocabulary", schema.Vocabulary);
-        AddSchemas("$defs", schema.Definitions);
-        Add("$dynamicRef", schema.DynamicRef);
-        Add("$dynamicAnchor", schema.DynamicAnchor);
-        if (!schema.Type.HasValue || schema.Type.Value.HasFlag(JsonSchemaType.Object))
-        {
-            if (schema is IOpenApiSchemaMissingProperties { UnevaluatedPropertiesSchema: { } unevaluated })
-                Add("unevaluatedProperties", unevaluated);
-            else if (!schema.UnevaluatedProperties)
-                Add("unevaluatedProperties", false);
-        }
-        AddSchemas("patternProperties", schema.PatternProperties);
-        Add("dependentRequired", schema.DependentRequired);
-        if (schema is IOpenApiSchemaMissingProperties extra)
-        {
-            Add("$anchor", extra.Anchor);
-            Add("contains", extra.Contains);
-            Add("maxContains", extra.MaxContains);
-            Add("minContains", extra.MinContains);
-            Add("contentEncoding", extra.ContentEncoding);
-            Add("contentMediaType", extra.ContentMediaType);
-            Add("contentSchema", extra.ContentSchema);
-            Add("propertyNames", extra.PropertyNames);
-            AddSchemas("dependentSchemas", extra.DependentSchemas);
-            Add("if", extra.If);
-            Add("then", extra.Then);
-            Add("else", extra.Else);
-        }
-        Add("title", schema.Title);
-        Add("multipleOf", schema.MultipleOf);
-        Add(schema.ExclusiveMaximum != null ? "exclusiveMaximum" : "maximum", schema.ExclusiveMaximum ?? schema.Maximum, literal: true);
-        Add(schema.ExclusiveMinimum != null ? "exclusiveMinimum" : "minimum", schema.ExclusiveMinimum ?? schema.Minimum, literal: true);
-        Add("maxLength", schema.MaxLength);
-        Add("minLength", schema.MinLength);
-        Add("pattern", schema.Pattern);
-        Add("maxItems", schema.MaxItems);
-        Add("minItems", schema.MinItems);
-        Add("uniqueItems", schema.UniqueItems);
-        Add("maxProperties", schema.MaxProperties);
-        Add("minProperties", schema.MinProperties);
-        if (schema.Required is { Count: > 0 }) Add("required", schema.Required);
-        Add("default", schema.Default);
-        Add("discriminator", schema.Discriminator);
-        if (schema.ReadOnly) Add("readOnly", true);
-        if (schema.WriteOnly) Add("writeOnly", true);
-        Add("xml", schema.Xml);
-        Add("externalDocs", schema.ExternalDocs);
-        if (schema.Deprecated) Add("deprecated", true);
-        Add("unrecognizedKeywords", schema.UnrecognizedKeywords?.ToDictionary(pair => pair.Key, pair => new JRaw(Literal(pair.Value, terse: true) ?? "null")));
-        return result;
-
-        void Add(string name, object value, bool literal = false)
-        {
-            if (value is null or "" || value is System.Collections.ICollection { Count: 0 })
-            {
-                return;
-            }
-            var content = literal ? (string)value : value switch
-            {
-                JsonNode node => Literal(node, terse: true),
-                IOpenApiSerializable model => Serialize(model),
-                _ => JsonConvert.SerializeObject(value)
-            };
-            result.Add(new JObject { ["name"] = name, ["value"] = content });
-        }
-
-        void AddSchemas(string name, IDictionary<string, IOpenApiSchema> schemas)
-        {
-            if (schemas is { Count: > 0 })
-            {
-                // These constraints are displayed as JSON; only serialize their values.
-                Add(name, schemas.ToDictionary(pair => pair.Key, pair => new JRaw(Serialize(pair.Value))));
-            }
         }
     }
 
