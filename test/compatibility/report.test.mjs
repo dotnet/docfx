@@ -1013,8 +1013,12 @@ test('manual validation defaults safe and cannot reach package or Pages publicat
   assert.match(docs, /if: needs.site.outputs.ready == 'true'/)
 })
 
-test('CI measures the exact distribution package before snapshot tests change the source tree', async () => {
+test('CI measures the exact distribution package in a job isolated from snapshot tests', async () => {
   const ci = await readFile(new URL('../../.github/workflows/ci.yml', import.meta.url), 'utf8')
+  const packageJob = ci.replaceAll('\r\n', '\n').split('\n  package:\n')[1]?.split(/\n  [\w-]+:\n/)[0]
+  assert.ok(packageJob, 'Distribution measurements need an isolated job')
+  assert.match(packageJob, /uses: actions\/checkout@v7/)
+  assert.doesNotMatch(packageJob, /dotnet test|percy exec|build-docs|download-artifact/)
   const stages = [
     'uses: ./.github/actions/build\n',
     'name: Test compatibility reporting',
@@ -1024,22 +1028,14 @@ test('CI measures the exact distribution package before snapshot tests change th
     'name: Verify distributed templates',
     'name: Packaged SDK compatibility smoke',
     'name: Upload compatibility smoke evidence',
-    'run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net10.0',
-    'run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net9.0',
-    'run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net8.0',
-    'run: dotnet coverage connect docfx_coverage "percy exec -- dotnet test',
-    'uses: codecov/codecov-action@v7',
-    'uses: ./.github/actions/build-docs',
-    'name: docs-site',
   ]
   let previous = -1
   for (const stage of stages) {
-    const index = ci.replaceAll('\r\n', '\n').indexOf(stage)
+    const index = packageJob.indexOf(stage)
     assert.ok(index > previous, `Missing or misplaced CI stage: ${stage}`)
     previous = index
   }
-  assert.equal((ci.match(/dotnet coverage connect docfx_coverage/g) ?? []).length, 4)
-  const packaging = ci.match(/run: dotnet (?:pack|publish) src\/docfx[^\r\n]*/g) ?? []
+  const packaging = packageJob.match(/run: dotnet (?:pack|publish) src\/docfx[^\r\n]*/g) ?? []
   assert.equal(packaging.length, 3)
   for (const command of packaging) assert.match(command, /\/p:BaseOutputPath=bin\/package-test\//)
   assert.doesNotMatch(ci, /git (?:clean|reset|restore)|BUILD_SERVER:/)
