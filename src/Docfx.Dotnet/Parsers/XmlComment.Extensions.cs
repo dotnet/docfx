@@ -25,7 +25,7 @@ internal partial class XmlComment
         foreach (var node in nodes)
         {
             if (node.NeedEmptyLineBefore())
-                node.EnsureEmptyLineBefore();
+                node.EnsureEmptyLineBefore(node.Parent != elem);
 
             if (node.NeedEmptyLineAfter())
                 node.EnsureEmptyLineAfter();
@@ -262,8 +262,8 @@ static file class XNodeExtensions
     public static bool NeedEmptyLineBefore(this XElement node)
         => NeedEmptyLine(node, Direction.Before);
 
-    public static void EnsureEmptyLineBefore(this XElement node)
-        => EnsureEmptyLine(node, Direction.Before);
+    public static void EnsureEmptyLineBefore(this XElement node, bool nested)
+        => EnsureEmptyLine(node, Direction.Before, nested);
 
     public static bool NeedEmptyLineAfter(this XElement node)
         => NeedEmptyLine(node, Direction.After);
@@ -296,7 +296,7 @@ static file class XNodeExtensions
         return NeedEmptyLineRules.TryGetValue((leftKind, rightKind), out var result) && result;
     }
 
-    private static void EnsureEmptyLine(this XElement node, Direction direction)
+    private static void EnsureEmptyLine(this XElement node, Direction direction, bool nested = false)
     {
         var adjacentNode = node.GetAdjacentNode(direction);
 
@@ -329,7 +329,12 @@ static file class XNodeExtensions
                     return;
                 }
 
-                textNode.Value = textNode.Value.Insert(insertIndex, $"{newLineChars}{indent}");
+                // A new blank line ends the containing HTML block. Align the nested
+                // tag with its container so its XML indentation cannot become code.
+                if (nested && direction == Direction.Before && !textNode.IsWhitespaceNode())
+                    textNode.Value = textNode.Value[..insertIndex] + newLineChars + GetLineIndent(node.Parent!);
+                else
+                    textNode.Value = textNode.Value.Insert(insertIndex, $"{newLineChars}{indent}");
                 return;
 
             default:
@@ -455,6 +460,11 @@ static file class XNodeExtensions
         if (node.TryGetCurrentIndent(direction, out _))
             return "";
 
+        return GetLineIndent(node);
+    }
+
+    private static string GetLineIndent(XElement node)
+    {
         // Inline children inherit the indentation of the line containing their parent.
         for (XElement? current = node; current != null; current = current.Parent)
         {
