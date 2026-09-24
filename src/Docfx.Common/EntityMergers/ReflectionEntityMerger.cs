@@ -144,7 +144,7 @@ public class ReflectionEntityMerger : IMerger
                                 }
 
                                 var type = o.GetType();
-                                if (type.IsValueType)
+                                if (type.IsValueType && Nullable.GetUnderlyingType(prop.Prop.PropertyType) == null)
                                 {
                                     var defaultValue = Activator.CreateInstance(type);
                                     if (object.Equals(defaultValue, o))
@@ -184,7 +184,7 @@ public class ReflectionEntityMerger : IMerger
                                 }
 
                                 var type = o.GetType();
-                                if (type.IsValueType)
+                                if (type.IsValueType && Nullable.GetUnderlyingType(prop.Prop.PropertyType) == null)
                                 {
                                     var defaultValue = Activator.CreateInstance(type);
                                     if (object.Equals(defaultValue, o))
