@@ -71,7 +71,7 @@ public class DocumentBuilderTest : TestBase
         }
 
         using var builder = new DocumentBuilder(LoadAssemblies(), []);
-        builder.Build(parameters, Path.GetFullPath(_outputFolder));
+        builder.Build(parameters, Path.GetFullPath(_outputFolder), TestContext.Current.CancellationToken);
 
         var version = typeof(DocumentBuilder).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
         Assert.False(string.IsNullOrEmpty(version));

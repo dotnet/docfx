@@ -1024,10 +1024,10 @@ test('CI measures the exact distribution package before snapshot tests change th
     'name: Verify distributed templates',
     'name: Packaged SDK compatibility smoke',
     'name: Upload compatibility smoke evidence',
-    'run: dotnet test -c Release -f net10.0',
-    'run: dotnet test -c Release -f net9.0',
-    'run: dotnet test -c Release -f net8.0',
-    'run: percy exec -- dotnet test',
+    'run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net10.0',
+    'run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net9.0',
+    'run: dotnet coverage connect docfx_coverage "dotnet test -c Release -f net8.0',
+    'run: dotnet coverage connect docfx_coverage "percy exec -- dotnet test',
     'uses: codecov/codecov-action@v7',
     'uses: ./.github/actions/build-docs',
     'name: docs-site',
@@ -1038,7 +1038,7 @@ test('CI measures the exact distribution package before snapshot tests change th
     assert.ok(index > previous, `Missing or misplaced CI stage: ${stage}`)
     previous = index
   }
-  assert.equal((ci.match(/--collect:"XPlat Code Coverage"/g) ?? []).length, 4)
+  assert.equal((ci.match(/dotnet coverage connect docfx_coverage/g) ?? []).length, 4)
   const packaging = ci.match(/run: dotnet (?:pack|publish) src\/docfx[^\r\n]*/g) ?? []
   assert.equal(packaging.length, 3)
   for (const command of packaging) assert.match(command, /\/p:BaseOutputPath=bin\/package-test\//)

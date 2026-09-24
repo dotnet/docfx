@@ -39,7 +39,7 @@ public class NamespaceLinkTest : TestBase
         if (fromAssembly)
         {
             var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, new Dictionary<string, string>(), "Library");
-            var result = compilation.Emit(Path.Combine(folder, input));
+            var result = compilation.Emit(Path.Combine(folder, input), cancellationToken: TestContext.Current.CancellationToken);
             Assert.True(result.Success, string.Join(Environment.NewLine, result.Diagnostics));
         }
         else
@@ -125,7 +125,7 @@ public class NamespaceLinkTest : TestBase
         if (fromAssembly)
         {
             var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, new Dictionary<string, string>(), "Library");
-            var result = compilation.Emit(Path.Combine(folder, input));
+            var result = compilation.Emit(Path.Combine(folder, input), cancellationToken: TestContext.Current.CancellationToken);
             Assert.True(result.Success, string.Join(Environment.NewLine, result.Diagnostics));
         }
         else
