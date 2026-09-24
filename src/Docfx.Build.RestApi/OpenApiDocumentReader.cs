@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Globalization;
 using System.Text;
 using Docfx.Common;
 using Docfx.DataContracts.RestApi;
@@ -209,6 +210,23 @@ internal static class OpenApiDocumentReader
                 {
                     CheckReference(value, path);
                 }
+                else if (value is YamlMappingNode entries && name is
+                    ("paths" or "webhooks" or "responses" or "content" or "headers" or
+                    "parameters" or "requestBodies" or "pathItems" or "callbacks"))
+                {
+                    // Map keys are names, not object fields: a "default" response or
+                    // a parameter named "schema" still contains a schema. Only Paths
+                    // and Responses Objects allow extensions alongside these entries.
+                    foreach (var (entryKey, entryValue) in entries.Children)
+                    {
+                        if (path != "#/components" && name is ("paths" or "responses") &&
+                            ((YamlScalarNode)entryKey).Value.StartsWith("x-", StringComparison.Ordinal))
+                        {
+                            continue;
+                        }
+                        VisitDocument(entryValue, path + "/" + name + "/" + entryKey);
+                    }
+                }
                 else
                 {
                     VisitDocument(value, path + "/" + name);
@@ -239,6 +257,12 @@ internal static class OpenApiDocumentReader
                 var name = ((YamlScalarNode)key).Value;
                 switch (name)
                 {
+                    case "const" or "default" when value is YamlScalarNode { Style: ScalarStyle.Plain, Value: null or "" }:
+                        throw new DocfxException($"UnsupportedOpenApiNullValue: OpenAPI.NET 3.10.2 reads the implicit YAML null at '{path}/{name}' in '{location.LocalPath}' as an empty string. " +
+                            $"Write '{name}: null' explicitly to preserve its meaning.");
+                    case "const" when !openApi30:
+                        RejectLossyConst(value, path + "/const");
+                        break;
                     case "$ref":
                         CheckReference(value, path);
                         break;
@@ -262,6 +286,21 @@ internal static class OpenApiDocumentReader
                         CheckSchema(value, path + "/" + name);
                         break;
                 }
+            }
+        }
+
+        void RejectLossyConst(YamlNode node, string path)
+        {
+            // OpenAPI.NET 3.10.2 reads const with GetScalarValue, turning numbers and
+            // booleans into strings and rejecting objects/arrays. Quoted scalars and
+            // explicit null remain supported; never infer a constant's type from type.
+            if (node is YamlMappingNode or YamlSequenceNode ||
+                node is YamlScalarNode { Style: ScalarStyle.Plain, Value: { } value } &&
+                (bool.TryParse(value, out _) ||
+                    (value.Any(char.IsAsciiDigit) && double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _))))
+            {
+                throw new DocfxException($"UnsupportedOpenApiConst: OpenAPI.NET 3.10.2 cannot preserve the const value at '{path}' in '{location.LocalPath}'. " +
+                    "Only string and null const values are supported.");
             }
         }
 

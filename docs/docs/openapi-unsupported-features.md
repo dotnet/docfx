@@ -24,7 +24,8 @@ The affected document is not generated.
 | Dynamic schema references (`$dynamicRef`) | `UnsupportedOpenApiSchema` | Dynamic scope is not implemented. Ordinary `$ref`, including recursive references, is supported. |
 | Boolean schemas in schema maps or composition arrays | `UnsupportedBooleanSchema` | The pinned SDK drops these values in certain positions. See [boolean schemas](#boolean-schemas). |
 | Certain OpenAPI 3.0 primitive compositions | `UnsupportedOpenApiComposition` | The pinned SDK can lose exclusive alternatives or branch examples. See [primitive compositions](#primitive-compositions). |
-| Object or array values of `const` | SDK reader error: `Expected scalar value` | These valid OpenAPI 3.1 schema values are not supported by the pinned SDK's scalar-based `const` reader. |
+| Numeric, boolean, object or array values of `const` | `UnsupportedOpenApiConst` | The pinned SDK changes the types of numbers/booleans and rejects objects/arrays. Docfx rejects these values before conversion; string and null constants are supported. |
+| Implicit YAML null in `const` or `default` | `UnsupportedOpenApiNullValue` | The pinned SDK reads an empty value as an empty string. Write `const: null` or `default: null` explicitly. |
 | OpenAPI 3.2 and other unsupported specification versions | Version error | Only OpenAPI 3.0 and 3.1 are enabled, even if the SDK can read newer versions. |
 
 ### Standalone external fragments
@@ -126,12 +127,13 @@ Response Link Objects are not ordinary Markdown links or Docfx cross-references;
 those continue to work. Missing security documentation does not disable or change
 authentication in the API itself.
 
-## Known schema fidelity issues
+## Const values and null defaults
 
-> [!WARNING]
-> Numeric and boolean `const` values are not yet rejected or preserved correctly.
-> They can be displayed as strings, changing the meaning of the constraint.
-> Keeping the original input does not make that rendered constraint correct.
+Docfx rejects `const` values that the pinned SDK cannot preserve, with a diagnostic
+that identifies the source file and schema location. This applies to inline schemas,
+component schemas, reference siblings and schemas in referenced local documents.
+Values inside examples, defaults, enums and extension data are not schema constraints
+and are not rejected by this check.
 
 The following behavior has been verified with the pinned SDK and Docfx model
 conversion:
@@ -139,15 +141,18 @@ conversion:
 | Input | Current result |
 | --- | --- |
 | `{"const": "ok"}` | Preserves the string `"ok"`. |
-| `{"const": 42}` | Converts the number to the string `"42"`. |
-| `{"const": true}` | Converts the boolean to the string `"True"`. |
-| `{"const": {"status": "ok"}}` or `{"const": [1, 2]}` | Produces a reader error. |
+| `{"const": 42}` | Produces `UnsupportedOpenApiConst`; no page is generated. |
+| `{"const": true}` | Produces `UnsupportedOpenApiConst`; no page is generated. |
+| `{"const": {"status": "ok"}}` or `{"const": [1, 2]}` | Produces `UnsupportedOpenApiConst`; no page is generated. |
 | `{"const": null}` | Preserves the null constraint. |
 | `{"type": ["string", "null"], "default": null}` | Preserves the explicit null default. |
 
 `default` is an annotation, whereas `const` requires an exact value. They are not
 interchangeable. Do not change a numeric or boolean `const` to a string merely to
-make it render; that would change the API contract.
+make it render; that would change the API contract. Quoted YAML strings such as
+`const: '42'` retain their string type, and `const: null` retains the null constraint.
+An empty YAML value such as `const:` or `default:` produces
+`UnsupportedOpenApiNullValue`; spell out `null` to preserve the intended value.
 
 The entry document's original text is retained in the raw model for reference.
 It does not repair lost types or constraints in the generated HTML, and does not

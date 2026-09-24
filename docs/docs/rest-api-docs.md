@@ -67,10 +67,10 @@ have dedicated rendered UI. The original input remains available in the raw mode
 See [OpenAPI features not yet supported](openapi-unsupported-features.md) for the
 current input errors, features without dedicated UI, examples and SDK source references.
 
-> [!WARNING]
-> Numeric and boolean `const` values can currently be displayed as strings.
-> This known fidelity issue is not fixed by preserving the original source.
-> Explicit `default: null` and `const: null` are preserved.
+Numeric, boolean, object and array `const` values produce `UnsupportedOpenApiConst`
+because the pinned SDK cannot preserve them. The diagnostic identifies the source
+file and schema location, and the affected document is not generated. String
+constants, explicit `default: null` and `const: null` are preserved.
 
 ## Organize REST APIs using Tags
 

@@ -213,6 +213,21 @@ public class OpenApiOutputTest : TestBase
             .Select(node => HtmlEntity.DeEntitize(node.InnerText)));
         Assert.Equal(new[] { "null", "string" },
             ((string)schema["properties"]["label"]["type"]).Split(" | ").Order(StringComparer.Ordinal));
+        if (version == "3.1.0")
+        {
+            foreach (var (property, expected) in new[] { ("label", "\"42\""), ("nullValue", "null") })
+            {
+                var constraints = schema["properties"][property]["constraints"];
+                Assert.Equal(expected, (string)Assert.Single(constraints, item => (string)item["name"] == "const")["value"]);
+                Assert.Equal("null", (string)Assert.Single(constraints, item => (string)item["name"] == "default")["value"]);
+                var propertyHtml = requestHtml["application/json"]
+                    .SelectSingleNode($".//tr[td/span[text()='{property}']]/td[2]/div[@class='rest-schema']");
+                Assert.Equal(expected, HtmlEntity.DeEntitize(propertyHtml
+                    .SelectSingleNode("./dl/dt[text()='const']/following-sibling::dd[1]").InnerText));
+                Assert.Equal("null", propertyHtml
+                    .SelectSingleNode("./dl/dt[text()='default']/following-sibling::dd[1]").InnerText);
+            }
+        }
         var viewMedia = viewOperations["createItem"]["requestBody"]["content"]
             .Single(media => (string)media["mimeType"] == "application/json");
         Assert.True(JToken.DeepEquals(schema, viewMedia["schema"]));
@@ -339,17 +354,24 @@ public class OpenApiOutputTest : TestBase
     [Theory]
     [InlineData("UnsupportedBooleanSchema")]
     [InlineData("UnsupportedExternalFragment")]
+    [InlineData("UnsupportedOpenApiConst")]
+    [InlineData("UnsupportedOpenApiNullValue")]
     public void RejectsUnsupportedOpenApiWithoutPublishing(string diagnostic)
     {
         var input = GetRandomFolder();
-        var schema = diagnostic == "UnsupportedBooleanSchema"
-            ? """{"type": "object", "properties": {"value": false}}"""
-            : """{"$ref": "schema.yaml"}""";
+        var schema = diagnostic switch
+        {
+            "UnsupportedBooleanSchema" => """{"type": "object", "properties": {"value": false}}""",
+            "UnsupportedOpenApiConst" => """{"const": 42}""",
+            "UnsupportedOpenApiNullValue" => "{const: }",
+            _ => """{"$ref": "schema.yaml"}"""
+        };
         if (diagnostic == "UnsupportedExternalFragment")
         {
             CreateFile("schema.yaml", "type: object\nproperties:\n  value:\n    type: string\n", input);
         }
-        var file = CreateFile("unsupported.json", $$"""
+        var fileName = diagnostic == "UnsupportedOpenApiNullValue" ? "unsupported.yaml" : "unsupported.json";
+        var file = CreateFile(fileName, $$"""
             {
               "openapi": "3.1.0",
               "info": { "title": "Unsupported API", "version": "1.0" },
@@ -380,7 +402,8 @@ public class OpenApiOutputTest : TestBase
         if (version == "3.1.0")
         {
             var properties = components["components"]["schemas"]["Item"]["properties"];
-            properties["label"] = new JObject { ["type"] = new JArray("string", "null") };
+            properties["label"] = new JObject { ["type"] = new JArray("string", "null"), ["const"] = "42", ["default"] = null };
+            properties["nullValue"] = new JObject { ["const"] = null, ["default"] = null };
             // SDK 3.10.2 drops booleans in schema maps and composition lists; the reader rejects those forms.
             // Exercise supported inline media schemas, using full OpenAPI documents for external references.
             document["paths"]["/health"]["get"]["responses"] = new JObject
@@ -535,6 +558,7 @@ public class OpenApiOutputTest : TestBase
     {
         JObject obj => obj.Properties().ToDictionary(property => property.Name, property => ToYamlValue(property.Value)),
         JArray array => array.Select(ToYamlValue).ToArray(),
+        JValue { Type: JTokenType.Null } => new YamlDotNet.RepresentationModel.YamlScalarNode("null") { Style = YamlDotNet.Core.ScalarStyle.Plain },
         JValue value => value.Value,
         _ => throw new InvalidOperationException($"Unexpected fixture value: {token.Type}")
     };
