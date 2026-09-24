@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Docfx.Build.RestApi;
 
-internal static partial class RestApiModelConverter
+internal static partial class RestApiModelUtility
 {
     [GeneratedRegex(@"\W")]
     private static partial Regex HtmlEncodeRegex();

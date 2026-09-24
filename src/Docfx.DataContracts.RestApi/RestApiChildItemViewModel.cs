@@ -10,6 +10,27 @@ namespace Docfx.DataContracts.RestApi;
 
 public class RestApiChildItemViewModel : RestApiItemViewModelBase
 {
+    [YamlMember(Alias = "servers")]
+    [JsonProperty("servers", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("servers")]
+    [Docfx.Common.EntityMergers.MergeOption(typeof(RestApiArrayMergeHandler))]
+    public List<RestApiServerViewModel> Servers { get; set; }
+
+    [YamlMember(Alias = "requestUrl")]
+    [JsonProperty("requestUrl", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("requestUrl")]
+    public string RequestUrl { get; set; }
+
+    [YamlMember(Alias = "displayPath")]
+    [JsonProperty("displayPath", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("displayPath")]
+    public string DisplayPath { get; set; }
+
+    [YamlMember(Alias = "requestBody")]
+    [JsonProperty("requestBody", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("requestBody")]
+    public RestApiRequestBodyViewModel RequestBody { get; set; }
+
     [YamlMember(Alias = Constants.PropertyName.Path)]
     [JsonProperty(Constants.PropertyName.Path)]
     [JsonPropertyName(Constants.PropertyName.Path)]

@@ -35,9 +35,9 @@ public class OpenApiDocumentReaderTest : TestBase
                "schemas":{"Event":{"type":"object","properties":{"id":{"const":42},"anything":true,"never":false}}}
              }}
             """, format);
-        Assert.Equal("3.2.0", model.Metadata["openapi"]);
+        Assert.Equal("3.2.0", model.SpecificationVersion);
         Assert.Equal(new[] { "query", "copy" }, model.Children.Select(child => child.OperationName));
-        var content = (JArray)Assert.Single(model.Children[0].Responses).Metadata["content"];
+        var content = JArray.FromObject(Assert.Single(model.Children[0].Responses).Content);
         var item = content[0]["itemSchema"];
         Assert.Equal("Event", item["x-internal-ref-name"]);
         Assert.Equal("42", item["properties"]["id"]["constraints"][0]["value"]);
@@ -80,7 +80,7 @@ public class OpenApiDocumentReaderTest : TestBase
         Assert.Equal(raw, model.Raw);
         Assert.Equal(42, ((JObject)model.Metadata["x-literal"])["schema"]["const"]);
         Assert.Equal(false, model.Metadata["x-boolean"]);
-        var schemas = (JObject)model.Metadata["schemas"];
+        var schemas = JObject.FromObject(model.Schemas);
         Assert.Equal("After the constant", schemas["Object"]["description"]);
         Assert.Equal("{\"schema\":{\"const\":42},\"flag\":false}", schemas["Object"]["constraints"][0]["value"]);
         Assert.Equal("[42,null,\"false\"]", schemas["Array"]["constraints"][0]["value"]);
@@ -115,8 +115,8 @@ public class OpenApiDocumentReaderTest : TestBase
              "components":{"schemas":{"Event":{"type":"object","properties":{"id":{"const":42},"never":false}}}}}
             """, folder);
         var model = OpenApiDocumentReader.Read(entry);
-        var content = (JArray)Assert.Single(Assert.Single(model.Children).Responses).Metadata["content"];
-        var branches = content[0]["itemSchema"]["composition"][0]["schemas"];
+        var content = JArray.FromObject(Assert.Single(Assert.Single(model.Children).Responses).Content);
+        var branches = content[0]["itemSchema"]["allOf"];
         Assert.Equal("42", branches[0]["properties"]["id"]["constraints"][0]["value"]);
         Assert.Equal("no value", branches[0]["properties"]["never"]["type"]);
         Assert.Equal("{\"id\":42}", branches[1]["constraints"][0]["value"]);
@@ -188,24 +188,24 @@ public class OpenApiDocumentReaderTest : TestBase
         var child = Assert.Single(model.Children);
         Assert.Equal(model.Uid + "/createItem", child.Uid);
         Assert.Equal("docs", child.Metadata["x-owner"]?.ToString());
-        Assert.Equal("https://api.example.test/v1/items/{id}", child.Metadata["requestUrl"]);
+        Assert.Equal("https://api.example.test/v1/items/{id}", child.RequestUrl);
         Assert.Equal(["limit", "id"], child.Parameters.Select(p => p.Name));
-        Assert.Equal("integer", ((JObject)child.Parameters[0].Metadata["schema"])["type"]);
+        Assert.Equal("integer", (JObject.FromObject(child.Parameters[0].Schema))["type"]);
         Assert.Equal("0", child.Parameters[0].Metadata["default"]?.ToString());
         Assert.Equal(model.Uid + "/tag/items", Assert.Single(model.Tags).Uid);
-        var body = (JObject)child.Metadata["requestBody"];
+        var body = JObject.FromObject(child.RequestBody);
         Assert.True((bool)body["required"]);
         Assert.Equal("application/json", body["content"][0]["mimeType"]);
         var schema = body["content"][0]["schema"];
         Assert.Equal("string", schema["properties"]["name"]["type"]);
         Assert.NotNull(schema["properties"]["next"]["x-internal-loop-ref-name"]);
         var response = Assert.Single(child.Responses);
-        var content = (JArray)response.Metadata["content"];
+        var content = JArray.FromObject(response.Content);
         Assert.Equal(["application/json", "text/plain"], content.Select(c => (string)c["mimeType"]));
         var example = JObject.Parse((string)content[0]["examples"][0]["content"]);
         Assert.Equal("this-is-payload.json", example["$ref"]);
         Assert.Equal("**literal**", example["description"]);
-        Assert.Equal(2, response.Examples.Count);
+        Assert.Equal(2, response.Content.Sum(media => media.Examples.Count));
     }
 
     [Theory]
@@ -229,7 +229,7 @@ public class OpenApiDocumentReaderTest : TestBase
         Assert.Equal("YAML API/1", model.Uid);
         var operation = Assert.Single(model.Children);
         Assert.StartsWith("get_", operation.OperationId);
-        Assert.Equal("/health", operation.Metadata["requestUrl"]);
+        Assert.Equal("/health", operation.RequestUrl);
         Assert.Equal("204", Assert.Single(operation.Responses).HttpStatusCode);
     }
 
@@ -254,7 +254,7 @@ public class OpenApiDocumentReaderTest : TestBase
         var first = Read(paths);
         var second = Read("\"/unrelated\": {\"get\":{\"responses\":{\"200\":{\"description\":\"OK\"}}}}," + paths);
         Assert.Equal(["/path-base/path", "https://override.example.test/v2/path", "https://root.example.test/root/root"],
-            first.Children.Select(child => child.Metadata["requestUrl"]));
+            first.Children.Select(child => child.RequestUrl));
         Assert.Equal(first.Children.Select(child => child.OperationId), second.Children.Skip(1).Select(child => child.OperationId));
         Assert.All(first.Children, child => Assert.DoesNotContain("/", child.OperationId));
     }
@@ -278,18 +278,17 @@ public class OpenApiDocumentReaderTest : TestBase
               }}
             }
             """, "json");
-        var schemas = (JObject)model.Metadata["schemas"];
-        var content = (JArray)Assert.Single(Assert.Single(model.Children).Responses).Metadata["content"];
+        var schemas = JObject.FromObject(model.Schemas);
+        var content = JArray.FromObject(Assert.Single(Assert.Single(model.Children).Responses).Content);
         Assert.Equal("any value", content[0]["schema"]["type"]);
         Assert.Equal("no value", content[1]["schema"]["type"]);
         Assert.Contains("string", (string)schemas["Nullable"]["type"]);
         Assert.Contains("null", (string)schemas["Nullable"]["type"]);
         Assert.Equal("sibling", schemas["Sibling"]["description"]);
-        var siblings = schemas["Sibling"]["composition"][0]["schemas"];
+        var siblings = schemas["Sibling"]["allOf"];
         Assert.Equal("10", siblings[0]["constraints"][0]["value"]);
         Assert.Equal("5", siblings[1]["constraints"][0]["value"]);
-        Assert.Equal("All of", schemas["Intersection"]["composition"][0]["kind"]);
-        Assert.Equal(["string", "integer"], schemas["Intersection"]["composition"][0]["schemas"].Select(s => (string)s["type"]));
+        Assert.Equal(["string", "integer"], schemas["Intersection"]["allOf"].Select(s => (string)s["type"]));
         Assert.Equal("One of", schemas["Choice"]["composition"][0]["kind"]);
         Assert.Null(schemas["Intersection"]["properties"]);
     }
@@ -314,13 +313,13 @@ public class OpenApiDocumentReaderTest : TestBase
             var model = OpenApiDocumentReader.Parse(
                 """{"openapi":"3.1.0","info":{"title":"Boolean","version":"1"},"paths":{},"components":{"schemas":{"Value":SCHEMA}}}"""
                     .Replace("SCHEMA", schema), "json");
-            var value = ((JObject)model.Metadata["schemas"])["Value"];
+            var value = (JObject.FromObject(model.Schemas))["Value"];
             if (schema == boolean)
                 Assert.Equal(boolean == "true" ? "any value" : "no value", value["type"]);
             else if (schema.Contains("properties"))
                 Assert.Equal(boolean == "true" ? "any value" : "no value", value["properties"]["value"]["type"]);
             else if (schema.Contains("Of"))
-                Assert.Equal(boolean == "true" ? "any value" : "no value", value["composition"][0]["schemas"][0]["type"]);
+                Assert.Equal(boolean == "true" ? "any value" : "no value", (value["allOf"] ?? value["composition"][0]["schemas"])[0]["type"]);
             else
                 Assert.Contains(boolean == "true" ? "{}" : "\"not\":{}", (string)value["constraints"][0]["value"]);
         }
@@ -355,12 +354,12 @@ public class OpenApiDocumentReaderTest : TestBase
                 Value: {{schema}}
             """, folder);
         var model = OpenApiDocumentReader.Read(entry);
-        var value = ((JObject)model.Metadata["schemas"])["Value"];
+        var value = (JObject.FromObject(model.Schemas))["Value"];
         var actual = position switch
         {
             "component" => value,
             "properties" => value["properties"]["value"],
-            _ => value["composition"][0]["schemas"][0]
+            _ => value["allOf"][0]
         };
         Assert.Equal(boolean == "true" ? "any value" : "no value", actual["type"]);
     }
@@ -379,7 +378,7 @@ public class OpenApiDocumentReaderTest : TestBase
             }
             """, "json");
         Assert.NotNull(model.Metadata["x-data"]);
-        var example = Assert.Single(Assert.Single(Assert.Single(model.Children).Responses).Examples);
+        var example = Assert.Single(Assert.Single(Assert.Single(Assert.Single(model.Children).Responses).Content).Examples);
         Assert.Contains("false", example.Content);
         Assert.Contains("true", example.Content);
         Assert.Equal(42, (int)JObject.Parse(example.Content)["schema"]["const"]);
@@ -394,7 +393,7 @@ public class OpenApiDocumentReaderTest : TestBase
               "components":{"schemas":{"Value":{"type":"object","example":{"description":"**literal**","$ref":"payload"}}}}
             }
             """, "json");
-        var schema = ((JObject)model.Metadata["schemas"])["Value"];
+        var schema = (JObject.FromObject(model.Schemas))["Value"];
         var example = JObject.Parse((string)schema["examples"][0]["content"]);
         Assert.Equal("**literal**", example["description"]);
         Assert.Equal("payload", example["$ref"]);
@@ -411,7 +410,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 {"openapi":"3.1.0","info":{"title":"Constants","version":"1"},"paths":{},
                  "components":{"schemas":{"Value":{"const":VALUE,"enum":[1,2]}}}}
                 """.Replace("VALUE", value), format);
-            var schema = ((JObject)model.Metadata["schemas"])["Value"];
+            var schema = (JObject.FromObject(model.Schemas))["Value"];
             Assert.Equal(value, (string)Assert.Single(schema["constraints"])["value"]);
             Assert.Equal(new[] { 1, 2 }, schema["enum"].Values<int>());
         }
@@ -451,7 +450,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 {"openapi":"3.1.0","info":{"title":"Constants","version":"1"},"paths":{},
                  "components":{"schemas":{"Value":{"const":VALUE,"default":null}}}}
                 """.Replace("VALUE", value), format);
-            var constraints = ((JObject)model.Metadata["schemas"])["Value"]["constraints"];
+            var constraints = (JObject.FromObject(model.Schemas))["Value"]["constraints"];
             Assert.Equal(value, (string)Assert.Single(constraints, item => (string)item["name"] == "const")["value"]);
             Assert.Equal("null", (string)Assert.Single(constraints, item => (string)item["name"] == "default")["value"]);
         }
@@ -478,7 +477,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 Value:
                   const: {{value}}
             """, "yaml");
-        var constraints = ((JObject)model.Metadata["schemas"])["Value"]["constraints"];
+        var constraints = (JObject.FromObject(model.Schemas))["Value"]["constraints"];
         Assert.Equal(expected, (string)Assert.Single(constraints)["value"]);
     }
 
@@ -497,7 +496,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 Value:
                   {{keyword}}:
             """, "yaml");
-        var schema = ((JObject)model.Metadata["schemas"])["Value"];
+        var schema = (JObject.FromObject(model.Schemas))["Value"];
         Assert.Equal("null", (string)Assert.Single(schema["constraints"])["value"]);
     }
 
@@ -513,7 +512,7 @@ public class OpenApiDocumentReaderTest : TestBase
              "paths":{"/items":{"get":{"parameters":[{"$ref":"#/components/parameters/NAME"}],"responses":{"200":{"description":"OK"}}}}},
              "components":{"parameters":{"NAME":{"name":"q","in":"query","schema":{"const":42}}}}}
             """.Replace("NAME", name), "json");
-        var schema = (JObject)Assert.Single(Assert.Single(model.Children).Parameters).Metadata["schema"];
+        var schema = JObject.FromObject(Assert.Single(Assert.Single(model.Children).Parameters).Schema);
         Assert.Equal("42", (string)Assert.Single(schema["constraints"])["value"]);
     }
 
@@ -538,7 +537,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 Value: {{schema}}
             """, folder);
         var model = OpenApiDocumentReader.Read(entry);
-        var value = ((JObject)model.Metadata["schemas"])["Value"];
+        var value = (JObject.FromObject(model.Schemas))["Value"];
         var constraint = Assert.Single(value.SelectTokens("$..constraints[*]"), item => (string)item["name"] == "const");
         Assert.Equal(expected, constraint["value"]);
     }
@@ -553,7 +552,7 @@ public class OpenApiDocumentReaderTest : TestBase
              "paths":{"/items":{"get":{"responses":{"STATUS":{"description":"OK",
                "content":{"application/json":{"schema":{"const":42}}}}}}}}}
             """.Replace("STATUS", status), "json");
-        var content = (JArray)Assert.Single(Assert.Single(model.Children).Responses).Metadata["content"];
+        var content = JArray.FromObject(Assert.Single(Assert.Single(model.Children).Responses).Content);
         Assert.Equal("42", (string)Assert.Single(content[0]["schema"]["constraints"])["value"]);
     }
 
@@ -581,7 +580,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 continue;
             }
             var model = OpenApiDocumentReader.Parse(raw, "json");
-            var value = ((JObject)model.Metadata["schemas"])["Value"];
+            var value = (JObject.FromObject(model.Schemas))["Value"];
             Assert.Equal("One of", value["composition"][0]["kind"]);
             Assert.Equal(2, value["composition"][0]["schemas"].Count());
         }
@@ -651,7 +650,7 @@ public class OpenApiDocumentReaderTest : TestBase
             """, folder);
         var model = OpenApiDocumentReader.Read(entry);
         var response = Assert.Single(Assert.Single(model.Children).Responses);
-        var schema = ((JArray)response.Metadata["content"])[0]["schema"];
+        var schema = (JArray.FromObject(response.Content))[0]["schema"];
         Assert.Equal("string", schema["properties"]["name"]["type"]);
         Assert.Equal("From YAML", schema["properties"]["name"]["description"]);
     }
@@ -676,7 +675,7 @@ public class OpenApiDocumentReaderTest : TestBase
                     a: { $ref: 'a.json#/components/schemas/A' }
             """, folder);
         var model = OpenApiDocumentReader.Read(entry);
-        var schemas = (JObject)model.Metadata["schemas"];
+        var schemas = JObject.FromObject(model.Schemas);
         Assert.Equal("object", schemas["A"]["properties"]["b"]["type"]);
         Assert.Equal("A", schemas["A"]["properties"]["b"]["properties"]["a"]["x-internal-loop-ref-name"]);
     }
@@ -708,7 +707,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 """.Replace("TYPE", type), folder);
         }
         var model = OpenApiDocumentReader.Read(entry);
-        var schemas = (JObject)model.Metadata["schemas"];
+        var schemas = JObject.FromObject(model.Schemas);
         Assert.Equal("string", schemas["A"]["type"]);
         Assert.Equal("integer", schemas["B"]["type"]);
         Assert.NotEqual((string)schemas["A"]["x-internal-ref-name"], (string)schemas["B"]["x-internal-ref-name"]);

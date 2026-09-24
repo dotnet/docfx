@@ -8,15 +8,11 @@ using Docfx.Build.Common;
 using Docfx.DataContracts.RestApi;
 using Docfx.Plugins;
 
-using Newtonsoft.Json.Linq;
-
 namespace Docfx.Build.RestApi;
 
 [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
 public class BuildRestApiDocument : BuildReferenceDocumentBase
 {
-    private static readonly HashSet<string> MarkupKeys = ["description"];
-
     public override string Name => nameof(BuildRestApiDocument);
 
     protected override void BuildArticle(IHostService host, FileModel model)
@@ -41,7 +37,6 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
 
     public static RestApiItemViewModelBase BuildItem(IHostService host, RestApiItemViewModelBase item, FileModel model, Func<string, bool> filter = null)
     {
-        var preserveLiteralData = item.Metadata.GetValueOrDefault("_preserveLiteralData") is true;
         item.Summary = Markup(host, item.Summary, model, filter);
         item.Description = Markup(host, item.Description, model, filter);
         if (model.Type != DocumentType.Overwrite)
@@ -50,84 +45,70 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
             item.Remarks = Markup(host, item.Remarks, model, filter);
         }
 
-        if (item is RestApiRootItemViewModel rootModel)
+        if (item is RestApiRootItemViewModel root)
         {
-            // Mark up recursively for swagger root except for children and tags
-            foreach (var jToken in GetMarkupTokens(rootModel.Metadata, preserveLiteralData))
+            if (root.Info != null) root.Info.Description = Markup(host, root.Info.Description, model, filter);
+            if (root.ExternalDocs != null) root.ExternalDocs.Description = Markup(host, root.ExternalDocs.Description, model, filter);
+            foreach (var security in root.SecurityDefinitions?.Values.AsEnumerable() ?? [])
             {
-                MarkupRecursive(jToken, host, model, filter, preserveLiteralData);
+                if (security != null) security.Description = Markup(host, security.Description, model, filter);
             }
+            MarkupServers(root.Servers);
+            foreach (var schema in root.Schemas?.Values.AsEnumerable() ?? []) MarkupSchema(schema);
         }
-
-        var childModel = item as RestApiChildItemViewModel;
-        if (childModel != null && preserveLiteralData)
+        if (item is RestApiChildItemViewModel child)
         {
-            foreach (var key in new[] { "requestBody", "servers" })
+            MarkupServers(child.Servers);
+            if (child.RequestBody is { } body)
             {
-                if (childModel.Metadata.GetValueOrDefault(key) is JToken value)
-                {
-                    MarkupRecursive(value, host, model, filter, preserveLiteralData);
-                }
+                body.Description = Markup(host, body.Description, model, filter);
+                MarkupContent(body.Content);
             }
-        }
-        if (childModel?.Parameters != null)
-        {
-            foreach (var param in childModel.Parameters)
+            foreach (var parameter in child.Parameters ?? [])
             {
-                param.Description = Markup(host, param.Description, model, filter);
-
-                foreach (var jToken in GetMarkupTokens(param.Metadata, preserveLiteralData))
-                {
-                    MarkupRecursive(jToken, host, model, filter, preserveLiteralData);
-                }
+                parameter.Description = Markup(host, parameter.Description, model, filter);
+                MarkupSchema(parameter.Schema);
+                MarkupContent(parameter.Content);
             }
-        }
-        if (childModel?.Responses != null)
-        {
-            foreach (var response in childModel.Responses)
+            foreach (var response in child.Responses ?? [])
             {
                 response.Description = Markup(host, response.Description, model, filter);
-
-                foreach (var jToken in GetMarkupTokens(response.Metadata, preserveLiteralData))
-                {
-                    MarkupRecursive(jToken, host, model, filter, preserveLiteralData);
-                }
+                MarkupSchema(response.Schema);
+                MarkupContent(response.Content);
+                foreach (var header in response.Headers?.Values.AsEnumerable() ?? []) MarkupSchema(header);
             }
         }
         return item;
-    }
 
-    private static IEnumerable<JToken> GetMarkupTokens(Dictionary<string, object> metadata, bool preserveLiteralData) =>
-        metadata.Where(pair => !preserveLiteralData || !pair.Key.StartsWith("x-", StringComparison.Ordinal))
-            .Select(pair => pair.Value).OfType<JToken>();
-
-    private static void MarkupRecursive(JToken jToken, IHostService host, FileModel model, Func<string, bool> filter = null, bool preserveLiteralData = false)
-    {
-        if (jToken is JArray jArray)
+        void MarkupServers(List<RestApiServerViewModel> servers)
         {
-            foreach (var item in jArray)
+            foreach (var server in servers ?? [])
             {
-                MarkupRecursive(item, host, model, filter, preserveLiteralData);
+                if (server != null) server.Description = Markup(host, server.Description, model, filter);
             }
         }
 
-        if (jToken is JObject jObject)
+        void MarkupContent(List<RestApiMediaTypeViewModel> content)
         {
-            foreach (var pair in jObject)
+            foreach (var media in content ?? [])
             {
-                if (preserveLiteralData && (pair.Key.StartsWith("x-", StringComparison.Ordinal) ||
-                    (jObject.ContainsKey("type") && pair.Key is "example" or "examples" or "enum" or "default" or "const")))
-                {
-                    continue;
-                }
-                if (MarkupKeys.Contains(pair.Key) && pair.Value != null)
-                {
-                    if (pair.Value is JValue { Type: JTokenType.String } jValue)
-                    {
-                        jObject[pair.Key] = Markup(host, (string)jValue, model, filter);
-                    }
-                }
-                MarkupRecursive(jObject[pair.Key], host, model, filter, preserveLiteralData);
+                if (media == null) continue; // Positional overwrite placeholder.
+                MarkupSchema(media.Schema);
+                MarkupSchema(media.ItemSchema);
+            }
+        }
+
+        void MarkupSchema(RestApiSchemaViewModel schema)
+        {
+            if (schema == null) return;
+            schema.Description = Markup(host, schema.Description, model, filter);
+            foreach (var property in schema.Properties?.Values.AsEnumerable() ?? []) MarkupSchema(property);
+            MarkupSchema(schema.Items);
+            foreach (var branch in schema.AllOf ?? []) MarkupSchema(branch);
+            foreach (var composition in schema.Composition ?? [])
+            {
+                if (composition == null) continue;
+                foreach (var branch in composition.Schemas ?? []) MarkupSchema(branch);
             }
         }
     }

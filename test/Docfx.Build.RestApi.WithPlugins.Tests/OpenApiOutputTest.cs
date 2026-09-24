@@ -21,6 +21,52 @@ public class OpenApiOutputTest : TestBase
     private const string RootUid = "api.example.test/v1/SDK API/1.0";
     private const string RootHtmlId = "api_example_test_v1_SDK_API_1_0";
 
+    [Fact]
+    public void BuildsRequestBodyOverwriteWithNullMediaPlaceholderAndFalseRequired()
+    {
+        var input = GetRandomFolder();
+        var service = CreateFile("overwrite.yaml", """
+            openapi: 3.2.0
+            info: {title: Overwrite, version: '1'}
+            paths:
+              /items:
+                post:
+                  operationId: write
+                  requestBody:
+                    required: true
+                    content:
+                      application/json:
+                        schema: {type: string, description: '**JSON**'}
+                      text/plain:
+                        schema: {type: string, description: '**Text**'}
+                  responses:
+                    '204': {description: OK}
+            """, input);
+        var overwrite = CreateFile("body.md", """
+            ---
+            uid: Overwrite/1/write
+            requestBody:
+              required: false
+              content:
+                - null
+                - schema:
+                    description: '**Updated** text'
+            ---
+            """, input);
+        var files = new FileCollection(Directory.GetCurrentDirectory());
+        files.Add(DocumentType.Article, [service], input);
+        files.Add(DocumentType.Overwrite, [overwrite], input);
+        var output = Build(input, files, "default", false, false);
+        var body = Assert.Single(ReadModel(output, "overwrite.raw.json")["children"])["requestBody"];
+        Assert.False((bool)body["required"]);
+        Assert.Equal("application/json", (string)body["content"][0]["mimeType"]);
+        Assert.Equal("text/plain", (string)body["content"][1]["mimeType"]);
+        var html = ReadHtml(output, "overwrite.html").SelectSingleNode("//div[@class='request-body']");
+        Assert.Contains("Optional", html.InnerText);
+        Assert.NotNull(html.SelectSingleNode(".//strong[text()='JSON']"));
+        Assert.NotNull(html.SelectSingleNode(".//strong[text()='Updated']"));
+    }
+
     [Theory]
     [InlineData("default")]
     [InlineData("statictoc")]
@@ -335,7 +381,9 @@ public class OpenApiOutputTest : TestBase
             }
             else
             {
-                var composition = Assert.Single(propertySchema["composition"]);
+                var composition = propertySchema["allOf"] is { } allOf
+                    ? new JObject { ["kind"] = "All of", ["schemas"] = allOf.DeepClone() }
+                    : Assert.Single(propertySchema["composition"]);
                 Assert.Equal(kind, (string)composition["kind"]);
                 Assert.Equal(property == "excluded" ? 1 : 2, composition["schemas"].Count());
                 Assert.Equal(kind, (string)Assert.Single(details["composition"])["kind"]);

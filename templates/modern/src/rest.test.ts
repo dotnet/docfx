@@ -30,7 +30,7 @@ test('REST raw filename hints preserve JSON compatibility and identify original 
   assert.equal(yaml._raw, 'openapi: 3.1.0\n')
 })
 
-test('REST preserves legacy parameter paths, allOf flattening, and definitions', () => {
+test('REST uses adapter display paths and renders allOf through the shared schema partial', () => {
   const model = rest.transform({
     uid: 'legacy',
     _path: 'legacy.json',
@@ -38,6 +38,7 @@ test('REST preserves legacy parameter paths, allOf flattening, and definitions',
       uid: 'get',
       operation: 'get',
       path: '/items',
+      displayPath: '/items?filter[&limit]',
       parameters: [
         { name: 'filter', in: 'query', required: true, schema: { type: 'string' } },
         { name: 'limit', in: 'query', schema: { type: 'integer' } }
@@ -45,6 +46,7 @@ test('REST preserves legacy parameter paths, allOf flattening, and definitions',
       responses: [{
         schema: {
           'x-internal-ref-name': 'Item',
+          referenceId: 'Item',
           allOf: [{ properties: { id: { type: 'integer' } } }, { properties: { name: { type: 'string' } } }]
         },
         examples: [{ mimeType: 'application/json', content: '{"id":1}' }]
@@ -54,13 +56,13 @@ test('REST preserves legacy parameter paths, allOf flattening, and definitions',
   const child = model.children[0]
   assert.equal(child.operation, 'GET')
   assert.equal(child.path, '/items?filter[&limit]')
-  assert.equal(child._hasSchemaDetails, undefined)
   assert.equal(child.responses[0].examples[0].content, '{\n  "id": 1\n}')
-  assert.equal(child.responses[0].schema.cTypeId, 'Item')
-  assert.deepEqual(child.responses[0].schema.properties.map(property => property.key), ['id', 'name'])
-  assert.equal(child.responses[0].schema.allOf, undefined)
+  const details = child.responses[0].schemaDetails
+  assert.equal(details.referenceId, 'Item')
+  assert.deepEqual(details.composition[0].schemas.flatMap(schema => schema.properties.map(property => property.key)), ['id', 'name'])
+  assert.equal(child.responses[0].schema.allOf.length, 2)
   assert.equal(model.definitions.length, 1)
-  assert.equal(model.definitions[0].schemaDetails, undefined)
+  assert.equal(model.definitions[0].schemaDetails.id, 'Item')
 })
 
 test('REST prepares every request and response media schema and named example', () => {
@@ -302,8 +304,8 @@ test('REST displays external example URLs without inventing content or linking e
   assert.ok(examples.every(example => example.name === 'external' && example.content === '' && !example.hasContent))
 })
 
-for (const flagLocation of ['root', 'operation']) {
-  test(`REST preserves literal enum, examples, and extensions with the ${flagLocation} feature flag`, () => {
+for (const specificationVersion of ['2.0', '3.0.3', '3.1.0', '3.2.0']) {
+  test(`REST preserves literal enum, examples, and extensions for specification ${specificationVersion}`, () => {
     const literal = {
       description: 'literal **description**, not markup',
       allOf: [{ type: 'string' }, { properties: { literal: { type: 'integer' } } }],
@@ -324,7 +326,6 @@ for (const flagLocation of ['root', 'operation']) {
     const operation = {
       uid: 'read',
       path: '/literal',
-      _preserveLiteralData: flagLocation === 'operation',
       parameters: [{ name: 'filter', in: 'query', required: true, schema }],
       responses: [{
         schema: { type: 'object', enum: [structuredClone(literal)] },
@@ -335,11 +336,10 @@ for (const flagLocation of ['root', 'operation']) {
     const model = rest.transform({
       uid: 'literal',
       _path: 'literal.json',
-      _preserveLiteralData: flagLocation === 'root',
+      specificationVersion,
       'x-root': structuredClone(literal),
       children: [operation]
     })
-    assert.equal(operation._hasSchemaDetails, true)
     assert.equal(operation.path, '/literal')
     assert.deepEqual(schema, originalSchema)
     assert.deepEqual(model['x-root'], original)
@@ -352,3 +352,39 @@ for (const flagLocation of ['root', 'operation']) {
     assert.deepEqual(model.definitions, [])
   })
 }
+
+test('REST registers an external alias and its recursive target during projection', () => {
+  const model = rest.transform({
+    uid: 'alias',
+    _path: 'alias.json',
+    schemas: {
+      Alias: {
+        type: 'object',
+        'x-internal-ref-name': 'external.yaml#Node',
+        properties: { next: { 'x-internal-loop-ref-name': 'external.yaml#Node' } }
+      }
+    }
+  })
+  const [alias, target] = model.definitions.map(definition => definition.schemaDetails)
+  assert.notEqual(alias.id, target.id)
+  assert.equal(alias.referenceId, target.id)
+  assert.equal(target.properties[0].value.referenceId, target.id)
+  assert.equal(target.referenceName, '')
+})
+
+test('REST uses declared definitions when an earlier alias supplies reference siblings', () => {
+  const model = rest.transform({
+    uid: 'siblings',
+    _path: 'siblings.json',
+    schemas: {
+      Alias: { 'x-internal-ref-name': 'Target', constraints: [{ name: 'maxLength', value: '5' }] },
+      Target: { type: 'string', constraints: [{ name: 'maxLength', value: '10' }] }
+    }
+  })
+  const definitions = model.definitions.map(definition => definition.schemaDetails)
+  const alias = definitions.find(definition => definition.name === 'Alias')
+  const target = definitions.find(definition => definition.name === 'Target')
+  assert.equal(alias.referenceId, target.id)
+  assert.equal(alias.constraints[0].value, '5')
+  assert.equal(target.constraints[0].value, '10')
+})

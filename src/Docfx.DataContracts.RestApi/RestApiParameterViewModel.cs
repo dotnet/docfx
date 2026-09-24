@@ -11,6 +11,17 @@ namespace Docfx.DataContracts.RestApi;
 
 public class RestApiParameterViewModel
 {
+    [YamlMember(Alias = "schema")]
+    [JsonProperty("schema", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("schema")]
+    public RestApiSchemaViewModel Schema { get; set; }
+
+    [YamlMember(Alias = "content")]
+    [JsonProperty("content", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("content")]
+    [Docfx.Common.EntityMergers.MergeOption(typeof(RestApiArrayMergeHandler))]
+    public List<RestApiMediaTypeViewModel> Content { get; set; }
+
     [YamlMember(Alias = "description")]
     [JsonProperty("description")]
     [JsonPropertyName("description")]

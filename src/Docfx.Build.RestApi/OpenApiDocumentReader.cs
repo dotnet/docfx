@@ -17,27 +17,6 @@ namespace Docfx.Build.RestApi;
 
 internal static class OpenApiDocumentReader
 {
-    internal static bool IsOpenApiFile(string path)
-    {
-        try
-        {
-            return GetVersion(EnvironmentContext.FileAbstractLayer.ReadAllText(path)) != null;
-        }
-        catch (FileNotFoundException ex)
-        {
-            Logger.LogVerbose($"Could not find OpenAPI file '{path}': {ex.Message}");
-        }
-        catch (DirectoryNotFoundException ex)
-        {
-            Logger.LogVerbose($"Could not find OpenAPI file '{path}': {ex.Message}");
-        }
-        catch (YamlException ex)
-        {
-            Logger.LogVerbose($"Could not read OpenAPI version in '{path}': {ex.Message}");
-        }
-        return false;
-    }
-
     internal static RestApiRootItemViewModel Read(string path)
     {
         var format = Path.GetExtension(path).Equals(".json", StringComparison.OrdinalIgnoreCase) ? "json" : "yaml";
@@ -45,28 +24,24 @@ internal static class OpenApiDocumentReader
         return model;
     }
 
-    internal static RestApiRootItemViewModel Parse(string raw, string format, Uri baseUrl = null)
+    internal static RestApiRootItemViewModel Parse(string raw, string format, Uri baseUrl = null, string version = null)
     {
         try
         {
-            var version = GetVersion(raw);
-            if (!System.Version.TryParse(version, out var parsed) || parsed.Major != 3 || parsed.Minor is not (0 or 1 or 2))
-            {
-                throw new DocfxException($"OpenAPI version '{version}' is not supported. Use OpenAPI 3.0, 3.1 or 3.2.");
-            }
+            version ??= RestApiDocumentReader.ReadHeader(new StringReader(raw), format)?.Version;
             var constants = new Dictionary<string, string>();
-            var document = LoadDocuments(raw, format, baseUrl ?? new Uri(Path.GetFullPath("openapi.json")), constants);
-            var model = new OpenApiModelConverter(document.BaseUri, constants).Convert(document, raw, version);
+            var document = LoadDocuments(raw, format, baseUrl ?? new Uri(Path.GetFullPath("openapi.json")), version, constants);
+            var model = new OpenApi3ModelConverter(document.BaseUri, constants).Convert(document, raw, version);
             model.Metadata["rawExtension"] = format == "json" ? ".json" : ".yaml";
             return model;
         }
-        catch (Exception ex) when (ex is IOException or YamlException or System.Text.Json.JsonException or OpenApiException or InvalidOperationException)
+        catch (Exception ex) when (ex is IOException or YamlException or JsonException or System.Text.Json.JsonException or OpenApiException or InvalidOperationException)
         {
             throw new DocfxException($"Unable to read OpenAPI document: {ex.Message}", ex);
         }
     }
 
-    private static OpenApiDocument LoadDocuments(string raw, string format, Uri root, Dictionary<string, string> constants)
+    private static OpenApiDocument LoadDocuments(string raw, string format, Uri root, string rootVersion, Dictionary<string, string> constants)
     {
         var loader = new LocalStreamLoader();
         var documents = new Dictionary<Uri, OpenApiDocument>();
@@ -85,9 +60,13 @@ internal static class OpenApiDocumentReader
                 source = reader.ReadToEnd();
                 sourceFormat = Path.GetExtension(location.LocalPath).Equals(".json", StringComparison.OrdinalIgnoreCase) ? "json" : "yaml";
             }
-            var version = GetVersion(source);
+            var version = location == root ? rootVersion : RestApiDocumentReader.ReadHeader(new StringReader(source), sourceFormat)?.Version;
             if (!System.Version.TryParse(version, out var parsed) || parsed.Major != 3 || parsed.Minor is not (0 or 1 or 2))
             {
+                if (location == root)
+                {
+                    throw new DocfxException($"OpenAPI version '{version}' is not supported. Use OpenAPI 3.0, 3.1 or 3.2.");
+                }
                 throw new DocfxException($"UnsupportedExternalFragment: '{location.LocalPath}' is not a complete OpenAPI 3.0, 3.1 or 3.2 document. " +
                     "Standalone schema/component fragments are valid OpenAPI references, but are not supported by this reader integration.");
             }
@@ -489,7 +468,7 @@ internal static class OpenApiDocumentReader
             References.Add((holder, reference));
             if (holder is OpenApiSchemaReference schemaReference)
             {
-                WalkSchema(OpenApiModelConverter.GetReferenceSiblings(schemaReference));
+                WalkSchema(OpenApi3ModelConverter.GetReferenceSiblings(schemaReference));
             }
         }
 
@@ -518,16 +497,6 @@ internal static class OpenApiDocumentReader
         {
             Components = new OpenApiComponents { Schemas = new Dictionary<string, IOpenApiSchema> { ["schema"] = schema } }
         });
-    }
-
-    private static string GetVersion(string raw)
-    {
-        var yaml = new YamlStream();
-        yaml.Load(new StringReader(raw));
-        return yaml.Documents.Count == 1 &&
-            yaml.Documents[0].RootNode is YamlMappingNode root &&
-            root.Children.TryGetValue(new YamlScalarNode("openapi"), out var node) &&
-            node is YamlScalarNode version ? version.Value : null;
     }
 
     private sealed class LocalStreamLoader : IStreamLoader
