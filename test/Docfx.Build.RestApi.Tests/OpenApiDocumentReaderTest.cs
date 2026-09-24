@@ -294,6 +294,60 @@ public class OpenApiDocumentReaderTest : TestBase
         }
     }
 
+    [Theory]
+    [InlineData("3.0.3", "\"minimum\":0,\"exclusiveMinimum\":true")]
+    [InlineData("3.1.0", "\"exclusiveMinimum\":0")]
+    [InlineData("3.2.0", "\"exclusiveMinimum\":0")]
+    public void PreservesNumericBoundsAndFalseConstraints(string version, string minimum)
+    {
+        var model = OpenApiDocumentReader.Parse($$"""
+            {"openapi":"{{version}}","info":{"title":"Constraints","version":"1"},"paths":{},
+             "components":{"schemas":{
+               "Number":{"type":"number",{{minimum}},"maximum":9007199254740993,"multipleOf":0.5},
+               "Array":{"type":"array","items":{"type":"string","minLength":0},"minItems":0,"uniqueItems":false,"default":[]}
+             } } }
+            """, "json");
+        var schemas = (JObject)model.Metadata["schemas"];
+        var number = schemas["Number"]["constraints"].ToDictionary(item => (string)item["name"], item => (string)item["value"]);
+        Assert.Equal("0", number["exclusiveMinimum"]);
+        Assert.False(number.ContainsKey("minimum"));
+        Assert.Equal("9007199254740993", number["maximum"]);
+        Assert.Equal("0.5", number["multipleOf"]);
+        var array = schemas["Array"]["constraints"].ToDictionary(item => (string)item["name"], item => (string)item["value"]);
+        Assert.Equal("0", array["minItems"]);
+        Assert.Equal("false", array["uniqueItems"]);
+        Assert.Empty(JArray.Parse(array["default"]));
+        Assert.Equal("0", Assert.Single(schemas["Array"]["items"]["constraints"])["value"]);
+    }
+
+    [Fact]
+    public void PreservesConstantsInsideSchemaValuedConstraintsAndReferenceSiblings()
+    {
+        var model = OpenApiDocumentReader.Parse("""
+            {"openapi":"3.1.0","info":{"title":"Constraints","version":"1"},"paths":{},
+             "components":{"schemas":{
+               "Base":{},
+               "Alias":{"$ref":"#/components/schemas/Base"},
+               "Constrained":{"$ref":"#/components/schemas/Base",
+                 "patternProperties":{"^flag$":{"const":false}},
+                 "dependentSchemas":{"flag":{"properties":{"value":{"const":42,"default":null}}}},
+                 "unevaluatedProperties":false},
+               "Annotated":{"not":{},"description":"No value is accepted"}
+             }}}
+            """, "json");
+        var schemas = (JObject)model.Metadata["schemas"];
+        Assert.Equal("any value", schemas["Alias"]["type"]);
+        Assert.Null(schemas["Alias"]["allOf"]);
+        var constraints = schemas["Constrained"]["allOf"][1]["constraints"]
+            .ToDictionary(item => (string)item["name"], item => JToken.Parse((string)item["value"]));
+        Assert.Equal(false, constraints["patternProperties"]["^flag$"]["const"]);
+        Assert.Equal(42, constraints["dependentSchemas"]["flag"]["properties"]["value"]["const"]);
+        Assert.Equal(JTokenType.Null, constraints["dependentSchemas"]["flag"]["properties"]["value"]["default"].Type);
+        Assert.Empty(constraints["unevaluatedProperties"]["not"]);
+        Assert.Equal("No value is accepted", schemas["Annotated"]["description"]);
+        Assert.Equal("Not", schemas["Annotated"]["composition"][0]["kind"]);
+    }
+
     [Fact]
     public void SchemaShapedLiteralExamplesAndExtensionsAreNotPreflighted()
     {
