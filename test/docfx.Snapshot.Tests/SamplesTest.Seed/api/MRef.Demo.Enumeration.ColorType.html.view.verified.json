@@ -6,7 +6,6 @@
     "uid": "MRef.Demo.Enumeration",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "MRef.html",
     "name": [
       {
         "lang": "csharp",
@@ -40,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
+        "value": "<xref uid=\"MRef\" text=\"MRef\"/>.<xref uid=\"MRef.Demo\" text=\"Demo\"/>.<xref uid=\"MRef.Demo.Enumeration\" text=\"Enumeration\"/>"
       },
       {
         "lang": "vb",
-        "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
+        "value": "<xref uid=\"MRef\" text=\"MRef\"/>.<xref uid=\"MRef.Demo\" text=\"Demo\"/>.<xref uid=\"MRef.Demo.Enumeration\" text=\"Enumeration\"/>"
       }
     ],
     "level": 0
@@ -516,7 +515,6 @@
     "uid": "MRef.Demo.Enumeration",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "MRef.html",
     "name": [
       {
         "lang": "csharp",
@@ -550,11 +548,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
+        "value": "<xref uid=\"MRef\" text=\"MRef\"/>.<xref uid=\"MRef.Demo\" text=\"Demo\"/>.<xref uid=\"MRef.Demo.Enumeration\" text=\"Enumeration\"/>"
       },
       {
         "lang": "vb",
-        "value": "<a class=\"xref\" href=\"MRef.html\">MRef</a>.<a class=\"xref\" href=\"MRef.Demo.html\">Demo</a>.<a class=\"xref\" href=\"MRef.Demo.Enumeration.html\">Enumeration</a>"
+        "value": "<xref uid=\"MRef\" text=\"MRef\"/>.<xref uid=\"MRef.Demo\" text=\"Demo\"/>.<xref uid=\"MRef.Demo.Enumeration\" text=\"Enumeration\"/>"
       }
     ],
     "level": 0

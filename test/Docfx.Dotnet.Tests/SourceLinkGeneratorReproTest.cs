@@ -16,7 +16,6 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.SourceLink.Tools;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Docfx.Dotnet.Tests;
 
@@ -170,7 +169,7 @@ public class SourceLinkGeneratorReproTest(ITestOutputHelper output) : TestBase
                 new { src = new[] { new { files = new[] { "GeneratorSourceLinkTest.dll" } } }, dest = "excluded", sourceLinkExclude = new[] { "**/*WithContentGenerator/**" } },
                 new { src = new[] { new { files = new[] { "GeneratorSourceLinkTest.dll" } } }, dest = "empty", sourceLinkExclude = Array.Empty<string>() },
             },
-        }));
+        }), TestContext.Current.CancellationToken);
 
         await DotnetApiCatalog.GenerateManagedReferenceYamlFiles(configPath);
 
@@ -189,8 +188,8 @@ public class SourceLinkGeneratorReproTest(ITestOutputHelper output) : TestBase
     public void GeneratorOutputAndEquivalentInputSourceHaveIdenticalPortablePdbs()
     {
         var (compilation, generatedTree) = RunGenerator(HandwrittenPath);
-        var inputTree = CSharpSyntaxTree.ParseText(generatedTree.GetText(),
-            (CSharpParseOptions)generatedTree.Options, generatedTree.FilePath);
+        var inputTree = CSharpSyntaxTree.ParseText(generatedTree.GetText(TestContext.Current.CancellationToken),
+            (CSharpParseOptions)generatedTree.Options, generatedTree.FilePath, cancellationToken: TestContext.Current.CancellationToken);
         var inputCompilation = compilation.ReplaceSyntaxTree(generatedTree, inputTree);
         var documents = new Dictionary<string, string> { ["*"] = RawUrl + "*" };
 

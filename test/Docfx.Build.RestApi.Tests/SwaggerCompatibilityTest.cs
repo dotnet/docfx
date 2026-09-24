@@ -17,6 +17,43 @@ namespace Docfx.Build.RestApi.Tests;
 public class SwaggerCompatibilityTest : TestBase
 {
     [Fact]
+    public void PreservesSwagger2InfoMetadataValues()
+    {
+        var file = CreateFile("swagger.json", """
+            {
+              "swagger": "2.0",
+              "info": {
+                "title": "Compatibility", "version": "1",
+                "description": { "en": "Hello" },
+                "contact": "custom contact",
+                "custom": { "enabled": false, "values": [0, "", null] }
+              },
+              "tags": [{ "name": "items", "info": "tag metadata" }],
+              "paths": { "/items": { "get": {
+                "operationId": "getItems", "info": ["operation metadata", false]
+              } } }
+            }
+            """, GetRandomFolder());
+
+        // These values are accepted by the Swagger 2.0 parser, even outside the specification.
+        var swagger = SwaggerJsonParser.Parse(file);
+        AssertJson("""
+            {
+              "description": { "en": "Hello" },
+              "contact": "custom contact",
+              "custom": { "enabled": false, "values": [0, "", null] }
+            }
+            """, JToken.FromObject(swagger.Info.PatternedObjects));
+
+        var model = SwaggerModelConverter.FromSwaggerModel(swagger);
+        Assert.Equal("Compatibility", model.Name);
+        Assert.Equal("Compatibility/1", model.Uid);
+        Assert.Equal("tag metadata", Assert.Single(model.Tags).Metadata["info"]);
+        AssertJson("""["operation metadata", false]""",
+            Assert.IsType<JArray>(Assert.Single(model.Children).Metadata["info"]));
+    }
+
+    [Fact]
     public void AllSevenSwaggerMethodsPreserveDocumentOrderAndOperationIdentity()
     {
         string[] methods = ["head", "patch", "options", "delete", "post", "put", "get"];

@@ -18,9 +18,9 @@ public class SourceLinkDeclarationTest
         var compilation = CompilationHelper.CreateCompilationFromCSharpCode("", new Dictionary<string, string>())
             .RemoveAllSyntaxTrees()
             .AddSyntaxTrees(
-                CSharpSyntaxTree.ParseText("public partial class Widget { }", path: "/repo/First.cs"),
-                CSharpSyntaxTree.ParseText("\npublic partial class Widget { }", path: "/repo/Second.cs"),
-                CSharpSyntaxTree.ParseText("\n\npublic partial class Widget { }", path: "/repo/Generated/Third.cs"));
+                CSharpSyntaxTree.ParseText("public partial class Widget { }", path: "/repo/First.cs", cancellationToken: TestContext.Current.CancellationToken),
+                CSharpSyntaxTree.ParseText("\npublic partial class Widget { }", path: "/repo/Second.cs", cancellationToken: TestContext.Current.CancellationToken),
+                CSharpSyntaxTree.ParseText("\n\npublic partial class Widget { }", path: "/repo/Generated/Third.cs", cancellationToken: TestContext.Current.CancellationToken));
         var type = compilation.GetTypeByMetadataName("Widget");
         var filter = new SourceLinkFilter(pattern is null ? [] : [pattern]);
 

@@ -69,7 +69,7 @@ public class SourceLinkConfigurationTest : TestBase
                         },
                     },
                 },
-            }));
+            }), TestContext.Current.CancellationToken);
             var sourcePaths = new List<string>();
             await DotnetApiCatalog.GenerateManagedReferenceYamlFiles(configPath, new()
             {
@@ -81,7 +81,7 @@ public class SourceLinkConfigurationTest : TestBase
             });
 
             var path = Path.Combine(folder, dest, "Example.Widget" + (outputFormat == "markdown" ? ".md" : ".yml"));
-            var content = await File.ReadAllTextAsync(path);
+            var content = await File.ReadAllTextAsync(path, TestContext.Current.CancellationToken);
             Assert.Contains("Generated()", content);
             Assert.Contains("Keep()", content);
             Assert.Contains("return 42;", content);

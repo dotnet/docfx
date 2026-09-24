@@ -30,25 +30,26 @@
     <PackageVersion Include="Microsoft.Build" Version="18.9.6"     Condition="'$(TargetFramework)' != 'net8.0' AND '$(TargetFramework)' != 'net9.0'" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0'">
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="[5.6.0]" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="[5.6.0]" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="[5.6.0]" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="[5.6.0]" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="[5.6.0]" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="[5.6.0]" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="[5.6.0]" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="[5.6.0]" />
-  </ItemGroup>
+  <PropertyGroup>
+    <RoslynVersion Condition="'$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0'">[5.6.0]</RoslynVersion>
+    <RoslynVersion Condition="'$(TargetFramework)' == 'net10.0'">5.9.0</RoslynVersion>
+    <!-- Match the compiler required by the .NET 11 RC1 Razor source generator. -->
+    <RoslynVersion Condition="'$(TargetFramework)' == 'net11.0'">5.11.0-1.26425.128</RoslynVersion>
+  </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'net8.0' AND '$(TargetFramework)' != 'net9.0'">
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="5.9.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.9.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="5.9.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="5.9.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.9.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.9.0" />
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
+    <!-- Only the .NET 11 preview needs the compiler packages from this feed. -->
+    <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(RoslynVersion)' != ''">
+    <PackageVersion Include="Microsoft.CodeAnalysis" Version="$(RoslynVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="$(RoslynVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(RoslynVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="$(RoslynVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(RoslynVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="$(RoslynVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(RoslynVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(RoslynVersion)" />
   </ItemGroup>
 </Project>

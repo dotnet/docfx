@@ -32,7 +32,8 @@ try {
     if ($EvidenceDirectory) {
         if (Test-Path $EvidenceDirectory) { throw 'Evidence directory must be new.' }
         $report = $json | ConvertFrom-Json
-        if (!$report.results -or $report.results.Count -gt 48) { throw 'Invalid case log manifest.' }
+        # At most 12 SDK/project pairs, 8 package/tool targets, and 2 scenarios.
+        if (!$report.results -or $report.results.Count -gt 192) { throw 'Invalid case log manifest.' }
         $names = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
         $destinations = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
         $logs = @()

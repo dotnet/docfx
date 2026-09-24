@@ -1,11 +1,23 @@
 name: build
 description: build the project
+inputs:
+  project:
+    description: Project or solution to build
+    default: docfx.slnx
+  framework:
+    description: Build only this target framework when specified
+    default: ''
+  cache:
+    description: Cache npm and NuGet downloads
+    default: 'false'
 runs:
   using: "composite"
   steps:
   - uses: actions/setup-node@v6
     with:
       node-version: 24
+      cache: ${{ inputs.cache == 'true' && 'npm' || '' }}
+      cache-dependency-path: templates/package-lock.json
 
   - uses: actions/setup-dotnet@v5
     with:
@@ -13,6 +25,19 @@ runs:
         10.x
         9.x
         8.x
+
+  - uses: actions/setup-dotnet@v5
+    if: env.DOCFX_PREVIEW_BUILD == 'true'
+    with:
+      dotnet-version: 11.0.100-rc.1.26425.128
+
+  - uses: actions/cache@v6
+    if: inputs.cache == 'true'
+    with:
+      path: ~/.nuget/packages
+      key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props', 'global.json') }}
+      restore-keys: |
+        nuget-${{ runner.os }}-${{ runner.arch }}-
 
   - name: Install fonts-noto-color-emoji package (Linux only)
     if: runner.os == 'Linux'
@@ -29,5 +54,14 @@ runs:
     shell: bash
     working-directory: templates
 
-  - run: dotnet build -c Release --warnAsError --maxcpucount --binaryLogger
+  - name: Build .NET projects
     shell: bash
+    env:
+      BUILD_PROJECT: ${{ inputs.project }}
+      BUILD_FRAMEWORK: ${{ inputs.framework }}
+    run: |
+      args=("$BUILD_PROJECT")
+      if [[ -n "$BUILD_FRAMEWORK" ]]; then
+        args+=(--framework "$BUILD_FRAMEWORK")
+      fi
+      dotnet build "${args[@]}" -c Release --warnAsError --maxcpucount --binaryLogger
