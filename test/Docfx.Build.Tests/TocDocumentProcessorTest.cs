@@ -914,6 +914,21 @@ items:
         Assert.StartsWith("toc.yml is not a valid TOC File: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): ", ex.Message);
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("# comment only\n")]
+    [InlineData("null\n")]
+    [InlineData("~\n")]
+    public void LoadTocYamlWithNullRootShouldFail(string content)
+    {
+        var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
+
+        var ex = Assert.Throws<DocumentException>(() => TocHelper.LoadSingleToc(toc));
+
+        var inner = Assert.IsType<NotSupportedException>(ex.InnerException);
+        Assert.Equal($"{toc} is not a valid TOC file.", inner.Message);
+    }
+
     [Fact]
     public void LoadTocYamlWithEmptyNodeShouldSucceed()
     {

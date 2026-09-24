@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text;
+using AwesomeAssertions;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
-using FluentAssertions;
 using Xunit;
 
 namespace Docfx.Build.TableOfContents.Tests;

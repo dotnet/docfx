@@ -64,7 +64,8 @@ public static class TocHelper
                 case TocFileType.Yaml:
                     {
                         var yaml = EnvironmentContext.FileAbstractLayer.ReadAllText(file);
-                        return DeserializeYamlToc(yaml);
+                        return DeserializeYamlToc(yaml)
+                            ?? throw new NotSupportedException($"{file} is not a valid TOC file.");
                     }
                 default:
                     throw new NotSupportedException($"{file} is not a valid TOC file, supported TOC files should be either \"{Constants.TableOfContents.MarkdownTocFileName}\" or \"{Constants.TableOfContents.YamlTocFileName}\".");
