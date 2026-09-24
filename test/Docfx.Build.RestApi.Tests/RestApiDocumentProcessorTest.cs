@@ -109,7 +109,7 @@ public class RestApiDocumentProcessorTest : TestBase
 
         // When 'definitions' has direct child with $ref defined, should resolve it
         var item5 = model.Children[6];
-        var parameter2 = JObject.FromObject(item5.Parameters[2].Schema);
+        var parameter2 = (JObject)item5.Parameters[2].Metadata["schema"];
         Assert.Equal("string", parameter2["type"]);
         Assert.Equal("uri", parameter2["format"]);
         // Verify markup result of parameters
@@ -121,7 +121,7 @@ public class RestApiDocumentProcessorTest : TestBase
             item5.Responses[0].Description);
 
         // Verify for markup result of securityDefinitions
-        var securityDefinitions = JObject.FromObject(model.SecurityDefinitions);
+        var securityDefinitions = (JObject)model.Metadata.Single(m => m.Key == "securityDefinitions").Value;
         var auth = (JObject)securityDefinitions["auth"];
         Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\">securityDefinitions <em sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\">description</em>.</p>\n",
             auth["description"].ToString());
@@ -138,7 +138,7 @@ public class RestApiDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
 
         var operation = model.Children.Single(c => c.OperationId == "get contact direct reports links");
-        var externalSchema = JObject.FromObject(operation.Parameters[2].Schema);
+        var externalSchema = operation.Parameters[2].Metadata["schema"];
         var externalParameters = ((JObject)externalSchema)["parameters"];
         Assert.Equal("cache1", externalParameters["name"]);
         var scheduleEntries = externalParameters["parameters"]["properties"]["scheduleEntries"];
@@ -162,7 +162,7 @@ public class RestApiDocumentProcessorTest : TestBase
         var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
 
         var operation = model.Children.Single(c => c.OperationId == "update_contact_manager");
-        var externalSchema = JObject.FromObject(operation.Parameters[2].Schema);
+        var externalSchema = (JObject)operation.Parameters[2].Metadata["schema"];
         Assert.Equal("<p sourcefile=\"TestData/swagger/contactsForExternalRef.json\" sourcestartlinenumber=\"1\"><strong sourcefile=\"TestData/swagger/contactsForExternalRef.json\" sourcestartlinenumber=\"1\">uri</strong> description.</p>\n", externalSchema["description"].ToString());
         Assert.Equal("string", externalSchema["type"]);
         Assert.Equal("uri", externalSchema["format"]);
@@ -335,7 +335,7 @@ public class RestApiDocumentProcessorTest : TestBase
         var bodyparam = parametersForUpdate.Single(p => p.Name == "bodyparam");
         Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.parameters.md\" sourcestartlinenumber=\"1\">The new bodyparam description</p>\n",
             bodyparam.Description);
-        var properties = (JObject)(JObject.FromObject(bodyparam.Schema))["properties"];
+        var properties = (JObject)((JObject)bodyparam.Metadata["schema"])["properties"];
         var objectType = properties["objectType"];
         Assert.Equal("string", objectType["type"]);
         Assert.Equal("this is overwrite objectType description", objectType["description"]);
@@ -345,7 +345,7 @@ public class RestApiDocumentProcessorTest : TestBase
         Assert.Equal("this is overwrite errorDetail description", errorDetail["description"]);
 
         var paramForUpdateManager = model.Children.Single(c => c.OperationId == "get contact memberOf links").Parameters.Single(p => p.Name == "bodyparam");
-        var paramForAllOf = (JObject.FromObject(paramForUpdateManager.Schema))["allOf"];
+        var paramForAllOf = ((JObject)paramForUpdateManager.Metadata["schema"])["allOf"];
         // First allOf item is not overwritten
         Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\">original first allOf description</p>\n", paramForAllOf[0]["description"]);
         // Second allOf item is overwritten
@@ -445,51 +445,6 @@ public class RestApiDocumentProcessorTest : TestBase
         {
             Assert.Contains(key, systemKeys);
         }
-    }
-
-    [Fact]
-    public void ProcessSwaggerMarksUpSchemaDescriptionsWithoutChangingLiteralData()
-    {
-        var input = GetRandomFolder();
-        var file = CreateFile("literal.json", """
-            {
-              "swagger": "2.0",
-              "info": { "title": "Literal", "version": "1.0", "description": "**API**" },
-              "x-payload": { "description": "**literal root**" },
-              "paths": { "/items": { "get": {
-                "operationId": "getItems",
-                "responses": { "200": {
-                  "description": "**Response**",
-                  "headers": { "X-Count": { "type": "integer", "description": "**Count**" } },
-                  "schema": {
-                    "type": "object",
-                    "description": "**Schema**",
-                    "example": { "description": "**literal example**" },
-                    "enum": [{ "description": "**literal enum**" }],
-                    "x-payload": { "description": "**literal extension**" },
-                    "allOf": [{ "properties": {
-                      "name": { "type": "string", "description": "**Name**" }
-                    } }]
-                  }
-                } }
-              } } }
-            }
-            """, input);
-        var files = new FileCollection(Directory.GetCurrentDirectory());
-        files.Add(DocumentType.Article, [file], input);
-        BuildDocument(files);
-
-        var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(Path.Combine(_outputFolder, "literal.raw.json"));
-        var response = Assert.Single(Assert.Single(model.Children).Responses);
-        Assert.Contains(">API</strong>", model.Info.Description);
-        Assert.Contains(">Response</strong>", response.Description);
-        Assert.Contains(">Count</strong>", response.Headers["X-Count"].Description);
-        Assert.Contains(">Schema</strong>", response.Schema.Description);
-        Assert.Contains(">Name</strong>", Assert.Single(response.Schema.AllOf).Properties["name"].Description);
-        Assert.Equal("**literal root**", ((JObject)model.Metadata["x-payload"])["description"]);
-        Assert.Equal("**literal example**", ((JObject)response.Schema.Example)["description"]);
-        Assert.Equal("**literal enum**", ((JObject)Assert.Single(response.Schema.Enum))["description"]);
-        Assert.Equal("**literal extension**", ((JObject)response.Schema.Metadata["x-payload"])["description"]);
     }
 
     private void BuildDocument(FileCollection files)

@@ -9,7 +9,6 @@ using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.RestApi;
 using Docfx.Plugins;
-using Newtonsoft.Json.Linq;
 
 namespace Docfx.Build.TagLevelRestApi;
 
@@ -110,7 +109,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
             var tagChildren = GetChildrenByTag(root, tag.Name).ToList();
             if (tagChildren.Count > 0)
             {
-                var model = new RestApiRootItemViewModel
+                yield return new RestApiRootItemViewModel
                 {
                     Uid = tag.Uid,
                     HtmlId = tag.HtmlId,
@@ -119,10 +118,9 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
                     Description = tag.Description,
                     Documentation = tag.Documentation,
                     Children = tagChildren,
-                    Tags = []
+                    Tags = [],
+                    Metadata = MergeTagMetadata(root, tag)
                 };
-                MergeTagMetadata(root, tag, model);
-                yield return model;
             }
         }
     }
@@ -187,7 +185,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         };
     }
 
-    private static void MergeTagMetadata(RestApiRootItemViewModel root, RestApiTagViewModel tag, RestApiRootItemViewModel model)
+    private static Dictionary<string, object> MergeTagMetadata(RestApiRootItemViewModel root, RestApiTagViewModel tag)
     {
         var result = new Dictionary<string, object>(tag.Metadata);
         foreach (var pair in root.Metadata)
@@ -195,16 +193,6 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
             // Tag metadata wins for the same key
             result.TryAdd(pair.Key, pair.Value);
         }
-        model.Metadata = result;
-        model.Info = Inherit("info", root.Info);
-        model.ExternalDocs = Inherit("externalDocs", root.ExternalDocs);
-        model.SecurityDefinitions = Inherit("securityDefinitions", root.SecurityDefinitions);
-
-        T Inherit<T>(string name, T fallback) where T : class
-        {
-            var value = result.Remove(name, out var overridden) ? overridden : fallback;
-            // Each split page marks up its own descriptions.
-            return value == null ? null : JToken.FromObject(value).ToObject<T>();
-        }
+        return result;
     }
 }

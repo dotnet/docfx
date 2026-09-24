@@ -10,21 +10,6 @@ namespace Docfx.DataContracts.RestApi;
 
 public class RestApiRootItemViewModel : RestApiItemViewModelBase
 {
-    [YamlMember(Alias = "securityDefinitions")]
-    [JsonProperty("securityDefinitions", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonPropertyName("securityDefinitions")]
-    public Dictionary<string, RestApiSecuritySchemeViewModel> SecurityDefinitions { get; set; }
-
-    [YamlMember(Alias = "info")]
-    [JsonProperty("info", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonPropertyName("info")]
-    public RestApiInfoViewModel Info { get; set; }
-
-    [YamlMember(Alias = "externalDocs")]
-    [JsonProperty("externalDocs", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonPropertyName("externalDocs")]
-    public RestApiExternalDocumentationViewModel ExternalDocs { get; set; }
-
     /// <summary>
     /// The original swagger.json content
     /// `_` prefix indicates that this metadata is generated

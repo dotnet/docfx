@@ -11,16 +11,6 @@ namespace Docfx.DataContracts.RestApi;
 
 public class RestApiResponseViewModel
 {
-    [YamlMember(Alias = "schema")]
-    [JsonProperty("schema", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonPropertyName("schema")]
-    public RestApiSchemaViewModel Schema { get; set; }
-
-    [YamlMember(Alias = "headers")]
-    [JsonProperty("headers", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonPropertyName("headers")]
-    public Dictionary<string, RestApiSchemaViewModel> Headers { get; set; }
-
     [YamlMember(Alias = "statusCode")]
     [JsonProperty("statusCode")]
     [JsonPropertyName("statusCode")]

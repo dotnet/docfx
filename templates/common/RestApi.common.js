@@ -3,8 +3,6 @@
 var common = require('./common.js');
 
 exports.transform = function (model) {
-    var definitions = Object.create(null);
-    var references = [];
     var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(model._path);
     model._jsonPath = _fileNameWithoutExt + ".swagger.json";
     model.title = model.title || model.name;
@@ -28,8 +26,8 @@ exports.transform = function (model) {
             child.htmlId = common.getHtmlId(child.uid);
 
             formatExample(child.responses);
-            (child.parameters || []).forEach(transformPayload);
-            (child.responses || []).forEach(transformPayload);
+            resolveAllOf(child);
+            transformReference(child);
         };
         if (!model.tags || model.tags.length === 0) {
             var childTags = [];
@@ -83,69 +81,23 @@ exports.transform = function (model) {
             model.children = model.children.filter(function (o) { return o; });
         }
     }
-    references.forEach(function (reference) {
-        reference.details.referenceId = definitions[reference.name] ? definitions[reference.name].id : '';
-    });
-    model.definitions = Object.keys(definitions).map(function (name) {
-        var entry = definitions[name];
-        var details = Object.assign({}, entry.details, { id: entry.id, name: name });
-        if (details.referenceName === name) {
-            details.referenceName = '';
-            details.referenceId = '';
-        }
-        return { schemaDetails: details };
-    });
+    model.definitions = [];
+    if (model.tags) {
+        model.tags.forEach(function(tag) {
+            (tag.children || []).forEach(function(child) {
+                (child.parameters || []).forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
+                (child.responses || []).forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
+            });
+        });
+    }
+    if (model.children) {
+        model.children.forEach(function(child) {
+            (child.parameters || []).forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
+            (child.responses || []).forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
+        });
+    }
 
     return model;
-
-    function transformPayload(payload) {
-        payload.schemaDetails = schemaDetails(payload.schema);
-        payload.exampleDetails = exampleDetails(payload.examples);
-    }
-
-    function schemaDetails(schema) {
-        if (!schema) return false;
-        var name = schema['x-internal-loop-ref-name'] || schema['x-internal-ref-name'];
-        // Null fields fall through to ancestor scopes in Docfx's Mustache renderer.
-        // Empty strings and false keep missing fields local to this schema.
-        var details = {};
-        var registeredName = schema['x-internal-ref-name'];
-        if (registeredName && !definitions[registeredName]) {
-            definitions[registeredName] = { id: registeredName.replace(/\./g, '_'), details: details };
-        }
-        if (name) references.push({ details: details, name: name });
-        return Object.assign(details, {
-            type: schema.type || '',
-            format: schema.format || '',
-            description: schema.description || '',
-            referenceName: name || '',
-            referenceId: '',
-            properties: Object.keys(schema.properties || {}).map(function (key) {
-                return {
-                    key: key,
-                    required: schema.properties[key].required === true ||
-                        (Array.isArray(schema.required) && schema.required.indexOf(key) >= 0),
-                    value: schemaDetails(schema.properties[key])
-                };
-            }),
-            items: schemaDetails(schema.items),
-            composition: (schema.allOf ? [{ kind: 'All of', schemas: schema.allOf }] : []).map(function (composition) {
-                return { kind: composition.kind, schemas: (composition.schemas || []).map(function (branch) { return schemaDetails(branch); }) };
-            }),
-            enum: (schema.enum || []).map(function (value) { return { value: JSON.stringify(value) }; }),
-            exampleDetails: exampleDetails(schema.example !== undefined ? [{ content: JSON.stringify(schema.example) }] : [])
-        });
-    }
-
-    function exampleDetails(examples) {
-        return (examples || []).map(function (example) {
-            return {
-                mimeType: example.mimeType || '',
-                content: typeof example.content === "string" ? example.content : '',
-                hasContent: typeof example.content === "string"
-            };
-        });
-    }
 
     function getChildrenByTag(children, tag) {
         if (!children) return;
@@ -178,6 +130,120 @@ exports.transform = function (model) {
         }
     }
 
+    function resolveAllOf(obj) {
+        if (Array.isArray(obj)) {
+            for (var i = 0; i < obj.length; i++) {
+                resolveAllOf(obj[i]);
+            }
+        }
+        else if (typeof obj === "object") {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    if (key === "allOf" && Array.isArray(obj[key])) {
+                        // find 'allOf' array and process
+                        processAllOfArray(obj[key], obj);
+                        // delete 'allOf' value
+                        delete obj[key];
+                    } else {
+                        resolveAllOf(obj[key]);
+                    }
+                }
+            }
+        }
+    }
+
+    function processAllOfArray(allOfArray, originalObj) {
+        // for each object in 'allOf' array, merge the values to those in the same level with 'allOf'
+        for (var i = 0; i < allOfArray.length; i++) {
+            var item = allOfArray[i];
+            for (var key in item) {
+                if (originalObj.hasOwnProperty(key)) {
+                    mergeObjByKey(originalObj[key], item[key]);
+                } else {
+                    originalObj[key] = item[key];
+                }
+            }
+        }
+    }
+
+    function mergeObjByKey(targetObj, sourceObj) {
+        for (var key in sourceObj) {
+            // merge only when target object doesn't define the key
+            if (!targetObj.hasOwnProperty(key)) {
+                targetObj[key] = sourceObj[key];
+            }
+        }
+    }
+
+    function transformReference(obj) {
+        if (Array.isArray(obj)) {
+            for (var i = 0; i < obj.length; i++) {
+                transformReference(obj[i]);
+            }
+        }
+        else if (typeof obj === "object") {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    if (key === "schema") {
+                        // transform schema.properties from obj to key value pair
+                        transformProperties(obj[key]);
+                    } else {
+                        transformReference(obj[key]);
+                    }
+                }
+            }
+        }
+    }
+
+    function transformProperties(obj) {
+        if (obj.properties) {
+            if (obj.required && Array.isArray(obj.required)) {
+                for (var i = 0; i < obj.required.length; i++) {
+                    var field = obj.required[i];
+                    if (obj.properties[field]) {
+                        // add required field as property
+                        obj.properties[field].required = true;
+                    }
+                }
+                delete obj.required;
+            }
+            var array = [];
+            for (var key in obj.properties) {
+                if (obj.properties.hasOwnProperty(key)) {
+                    var value = obj.properties[key];
+                    // set description to null incase mustache looks up
+                    value.description = value.description || null;
+
+                    transformPropertiesValue(value);
+                    array.push({ key: key, value: value });
+                }
+            }
+            obj.properties = array;
+        }
+    }
+
+    function transformPropertiesValue(obj) {
+        if (obj.type === "array" && obj.items) {
+            // expand array to transformProperties
+            obj.items.properties = obj.items.properties || null;
+            obj.items['x-internal-ref-name'] = obj.items['x-internal-ref-name'] || null;
+            obj.items['x-internal-loop-ref-name'] = obj.items['x-internal-loop-ref-name'] || null;
+            transformProperties(obj.items);
+        } else if (obj.properties && !obj.items) {
+            // fill obj.properties into obj.items.properties, to be rendered in the same way with array
+            obj.items = {};
+            obj.items.properties = obj.properties || null;
+            delete obj.properties;
+            if (obj.required) {
+                obj.items.required = obj.required;
+                delete obj.required;
+            }
+            obj.items['x-internal-ref-name'] = obj['x-internal-ref-name'] || null;
+            obj.items['x-internal-loop-ref-name'] = obj['x-internal-loop-ref-name'] || null;
+            transformProperties(obj.items);
+        }
+    }
+
     function appendQueryParamsToPath(path, parameters) {
         if (!path || !parameters) return path;
 
@@ -207,7 +273,71 @@ exports.transform = function (model) {
         return path;
     }
 
+    function addDefinition(definition, definitions) {
 
+        if (!definition) {
+            return;
+        }
+
+        var xRefName = definition.items && definition.items['x-internal-ref-name']
+            ? definition.items['x-internal-ref-name']
+            : definition['x-internal-ref-name'];
+
+        // Not complex type.
+        if (!xRefName) {
+            return;
+        }
+
+        // Definition already exists return.
+        if (definitions.some(function(d) { return d['x-internal-ref-name'] == xRefName; })) {
+            return;
+        }
+
+        // Create clone to not affect object structure used in original location
+        definition = JSON.parse(JSON.stringify(definition));
+
+        // Unify different object structure to be the same
+
+        // Sometimes properties is under items sometimes not
+        if (definition.items && definition.items.properties) {
+            definition.properties = definition.items.properties;
+        }
+
+        // Sometimes ref-name is under items sometimes not
+        definition['x-internal-ref-name'] = xRefName;
+
+        // Sometimes properties are key/value pairs sometimes not
+        if (definition.properties && !Array.isArray(definition.properties)) {
+            definition.properties = Object.keys(definition.properties).map(function(key) {
+                return {
+                    key: key,
+                    value: definition.properties[key]
+                }
+            });
+        }
+
+        // Add definition to definitions list.
+        definitions.push(definition);
+
+        // Loop through properties that refer to other definitions.
+        (definition.properties || []).forEach(function(property) {
+            addComplexTypeMetadata(property.value, definitions);
+        });
+    }
+
+    function addComplexTypeMetadata(child, definitions) {
+        // Add variations of x-internal-ref-name to support
+        if (child && child['x-internal-ref-name']) {
+            child.cTypeId = child['x-internal-ref-name'].replace(/\./g, '_');
+            child.cType = child['x-internal-ref-name'].replace(/([A-Z])/g, '<wbr>$1');
+        }
+        if (child && child.items && child.items['x-internal-ref-name']) {
+            child.cTypeId = child.items['x-internal-ref-name'].replace(/\./g, '_');
+            child.cType = child.items['x-internal-ref-name'].replace(/([A-Z])/g, '<wbr>$1');
+            child.cTypeIsArray = true;
+        }
+        addDefinition(child, definitions);
+    }
 }
 
 exports.getBookmarks = function (model) {

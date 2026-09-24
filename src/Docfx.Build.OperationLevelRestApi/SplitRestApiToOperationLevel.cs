@@ -9,7 +9,6 @@ using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.RestApi;
 using Docfx.Plugins;
-using Newtonsoft.Json.Linq;
 
 namespace Docfx.Build.OperationLevelRestApi;
 
@@ -125,9 +124,9 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
                 Remarks = child.Remarks,
                 Documentation = child.Documentation,
                 Children = [child],
-                Tags = []
+                Tags = [],
+                Metadata = MergeChildMetadata(root, child)
             };
-            MergeChildMetadata(root, child, model);
 
             // Reset child's uid to "originalUid/operation", that is to say, overwrite of original Uid will show in operation page.
             child.Uid = string.Join('/', child.Uid, "operation");
@@ -180,7 +179,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         };
     }
 
-    private static void MergeChildMetadata(RestApiRootItemViewModel root, RestApiChildItemViewModel child, RestApiRootItemViewModel model)
+    private static Dictionary<string, object> MergeChildMetadata(RestApiRootItemViewModel root, RestApiChildItemViewModel child)
     {
         var result = new Dictionary<string, object>(child.Metadata);
         foreach (var pair in root.Metadata)
@@ -188,16 +187,6 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
             // Child metadata wins for the same key
             result.TryAdd(pair.Key, pair.Value);
         }
-        model.Metadata = result;
-        model.Info = Inherit("info", root.Info);
-        model.ExternalDocs = Inherit("externalDocs", root.ExternalDocs);
-        model.SecurityDefinitions = Inherit("securityDefinitions", root.SecurityDefinitions);
-
-        T Inherit<T>(string name, T fallback) where T : class
-        {
-            var value = result.Remove(name, out var overridden) ? overridden : fallback;
-            // Each split page marks up its own descriptions.
-            return value == null ? null : JToken.FromObject(value).ToObject<T>();
-        }
+        return result;
     }
 }

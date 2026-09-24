@@ -24,6 +24,122 @@ public class SwaggerOutputCompatibilityTest : TestBase
     private const string RootHtmlId = "api_example_test_v1_Compatibility_API_1_0";
 
     [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(true, false, false)]
+    [InlineData(false, true, false)]
+    [InlineData(true, true, false)]
+    [InlineData(false, false, true)]
+    [InlineData(true, false, true)]
+    [InlineData(false, true, true)]
+    [InlineData(true, true, true)]
+    public void PreservesFreeMetadataThroughSplittingAndOverwrite(bool splitTags, bool splitOperations, bool overwrite)
+    {
+        var input = GetRandomFolder();
+        var output = GetRandomFolder();
+        var file = CreateFile("service.json", """
+            {
+              "swagger": "2.0",
+              "info": { "title": "Metadata", "version": "1.0", "description": { "en": "Hello" } },
+              "custom": { "owner": "root", "keep": false },
+              "inherited": { "values": [0, "", null] },
+              "tags": [{
+                "name": "items", "info": "tag metadata",
+                "custom": { "owner": "tag", "keep": false },
+                "tagOnly": { "enabled": false }
+              }],
+              "paths": { "/items": { "get": {
+                "operationId": "getItems", "tags": ["items"],
+                "info": ["operation metadata", false],
+                "custom": { "owner": "operation", "keep": false },
+                "responses": { "200": { "description": "OK" } }
+              } } }
+            }
+            """, input);
+        var files = new FileCollection(Directory.GetCurrentDirectory());
+        files.Add(DocumentType.Article, [file], input);
+        if (overwrite)
+        {
+            var overwriteFile = CreateFile("overwrite.md", """
+                ---
+                uid: Metadata/1.0
+                info: root overwrite
+                custom:
+                  owner: root overwrite
+                ---
+
+                ---
+                uid: Metadata/1.0/tag/items
+                info: tag overwrite
+                custom:
+                  owner: tag overwrite
+                ---
+
+                ---
+                uid: Metadata/1.0/getItems
+                info: operation overwrite
+                custom:
+                  owner: operation overwrite
+                ---
+                """, input);
+            files.Add(DocumentType.Overwrite, [overwriteFile], input);
+        }
+
+        using var builder = new DocumentBuilder(GetAssemblies(splitTags, splitOperations), []);
+        builder.Build(new DocumentBuildParameters
+        {
+            Files = files,
+            OutputBaseDir = output,
+            ApplyTemplateSettings = new ApplyTemplateSettings(input, output)
+            {
+                TransformDocument = false,
+                RawModelExportSettings = { Export = true }
+            }
+        });
+
+        var root = ReadModel(output, "service.raw.json");
+        Assert.Equal(overwrite ? "root overwrite" : null, (string)root["info"]);
+        Assert.Equal(overwrite ? "root overwrite" : "root", (string)root["custom"]["owner"]);
+        Assert.False((bool)root["custom"]["keep"]);
+        Assert.True(JToken.DeepEquals(JObject.Parse("""{"values":[0,"",null]}"""), root["inherited"]));
+
+        var tag = splitTags ? ReadModel(output, "service/items.raw.json")
+            : splitOperations ? null : Assert.Single(root["tags"]);
+        if (tag != null)
+        {
+            Assert.Equal(overwrite ? "tag overwrite" : "tag metadata", (string)tag["info"]);
+            Assert.Equal(overwrite ? "tag overwrite" : "tag", (string)tag["custom"]["owner"]);
+            Assert.False((bool)tag["custom"]["keep"]);
+            Assert.False((bool)tag["tagOnly"]["enabled"]);
+            if (splitTags)
+            {
+                Assert.True(JToken.DeepEquals(root["inherited"], tag["inherited"]));
+            }
+        }
+
+        var operation = splitOperations
+            ? ReadModel(output, splitTags ? "service/items/getItems.raw.json" : "service/getItems.raw.json")
+            : Assert.Single((splitTags ? tag : root)["children"]);
+        if (overwrite)
+        {
+            Assert.Equal("operation overwrite", (string)operation["info"]);
+        }
+        else
+        {
+            Assert.True(JToken.DeepEquals(JArray.Parse("""["operation metadata", false]"""), operation["info"]));
+        }
+        Assert.Equal(overwrite ? "operation overwrite" : "operation", (string)operation["custom"]["owner"]);
+        Assert.False((bool)operation["custom"]["keep"]);
+        if (splitOperations)
+        {
+            Assert.True(JToken.DeepEquals(root["inherited"], operation["inherited"]));
+            if (splitTags)
+            {
+                Assert.True(JToken.DeepEquals(tag["tagOnly"], operation["tagOnly"]));
+            }
+        }
+    }
+
+    [Theory]
     [InlineData("trace")]
     [InlineData("custom")]
     public void PreservesUnsupportedSwaggerOperationBehavior(string method)
@@ -336,17 +452,12 @@ public class SwaggerOutputCompatibilityTest : TestBase
         Assert.Equal("201", (string)Assert.Single(create["responses"])["statusCode"]);
         Assert.Equal("Item", (string)create["responses"][0]["schema"]["x-internal-ref-name"]);
 
-        var viewBody = viewOperations["createItem"]["parameters"][0]["schemaDetails"];
-        Assert.Equal("Item", (string)viewBody["referenceId"]);
-        Assert.Equal("literal-schema-example", (string)JObject.Parse((string)Assert.Single(viewBody["exampleDetails"])["content"])["$ref"]);
-        var viewProperties = viewBody["composition"][0]["schemas"].SelectMany(branch => branch["properties"]).ToArray();
-        Assert.Equal(["id", "name", "state"], viewProperties.Select(property => (string)property["key"]));
-        var viewName = viewProperties[1]["value"];
-        Assert.True((bool)viewProperties[1]["required"]);
-        Assert.NotNull(articles[splitOperations ? (splitTags ? "service/items/createItem" : "service/createItem") : splitTags ? "service/items" : "service"]
-            .SelectSingleNode(".//h3[@id='Item']"));
-        Assert.NotNull(articles[splitOperations ? (splitTags ? "service/items/createItem" : "service/createItem") : splitTags ? "service/items" : "service"]
-            .SelectSingleNode(".//div[@class='schema-composition']/strong[text()='All of']"));
+        var viewBody = viewOperations["createItem"]["parameters"][0]["schema"];
+        Assert.Equal("Item", (string)viewBody["cTypeId"]);
+        Assert.Equal("literal-schema-example", (string)viewBody["example"]["$ref"]);
+        Assert.Equal(["id", "name", "state"], viewBody["properties"].Select(property => (string)property["key"]));
+        var viewName = viewBody["properties"][1]["value"];
+        Assert.True((bool)viewName["required"]);
         var listPage = splitTags ? "service/items" : "service";
         if (splitOperations)
         {
@@ -360,8 +471,8 @@ public class SwaggerOutputCompatibilityTest : TestBase
 
         if (overwrite)
         {
-            Assert.Equal("Updated name description.", HtmlNode.CreateNode((string)schema["allOf"][1]["properties"]["name"]["description"]).InnerText.Trim());
-            Assert.Equal("Updated name description.", HtmlNode.CreateNode((string)viewName["description"]).InnerText.Trim());
+            Assert.Equal("Updated name description.", (string)schema["allOf"][1]["properties"]["name"]["description"]);
+            Assert.Equal("Updated name description.", (string)viewName["description"]);
             foreach (var level in new[] { "Document", "Tag", "Operation" })
             {
                 Assert.NotNull(articles["service"].SelectSingleNode($".//p[text()='{level}-level conceptual content.']"));
@@ -374,67 +485,6 @@ public class SwaggerOutputCompatibilityTest : TestBase
         {
             Assert.NotNull(HtmlNode.CreateNode((string)viewName["description"]).SelectSingleNode("strong[text()='display name']"));
         }
-    }
-
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void SplitPageMetadataOverridesDoNotChangeTheRoot(bool splitTags)
-    {
-        var input = GetRandomFolder();
-        var output = GetRandomFolder();
-        var file = CreateFile("service.json", """
-            {
-              "swagger": "2.0",
-              "info": { "title": "Isolation", "version": "1.0", "description": "**API**" },
-              "externalDocs": { "url": "https://example.test/root" },
-              "securityDefinitions": {
-                "key": { "type": "apiKey", "name": "X-Key", "in": "header", "description": "**Key**" }
-              },
-              "tags": [{ "name": "items", "externalDocs": { "url": "https://example.test/tag" } }],
-              "paths": { "/items": { "get": {
-                "operationId": "getItems",
-                "tags": ["items"],
-                "externalDocs": { "url": "https://example.test/operation" },
-                "responses": { "200": { "description": "OK" } }
-              } } }
-            }
-            """, input);
-        var uid = splitTags ? "Isolation/1.0/tag/items" : "Isolation/1.0/getItems";
-        var overwrite = CreateFile("overwrite.md", $$"""
-            ---
-            uid: {{uid}}
-            info:
-              description: Changed info
-            securityDefinitions:
-              key:
-                description: Changed key
-            ---
-            """, input);
-        var files = new FileCollection(Directory.GetCurrentDirectory());
-        files.Add(DocumentType.Article, [file], input);
-        files.Add(DocumentType.Overwrite, [overwrite], input);
-        using var builder = new DocumentBuilder(GetAssemblies(splitTags, !splitTags), []);
-        builder.Build(new DocumentBuildParameters
-        {
-            Files = files,
-            OutputBaseDir = output,
-            ApplyTemplateSettings = new ApplyTemplateSettings(input, output)
-            {
-                TransformDocument = false,
-                RawModelExportSettings = { Export = true }
-            }
-        });
-
-        var root = ReadModel(output, "service.raw.json");
-        var split = ReadModel(output, splitTags ? "service/items.raw.json" : "service/getItems.raw.json");
-        Assert.Equal("https://example.test/root", (string)root["externalDocs"]["url"]);
-        Assert.Equal(splitTags ? "https://example.test/tag" : "https://example.test/operation", (string)split["externalDocs"]["url"]);
-        Assert.Contains(">API</strong>", (string)root["info"]["description"]);
-        Assert.Contains(">Key</strong>", (string)root["securityDefinitions"]["key"]["description"]);
-        Assert.Equal("Isolation", (string)split["info"]["title"]);
-        Assert.Contains("Changed info", (string)split["info"]["description"]);
-        Assert.Contains("Changed key", (string)split["securityDefinitions"]["key"]["description"]);
     }
 
     private static IEnumerable<Assembly> GetAssemblies(bool splitTags, bool splitOperations)
