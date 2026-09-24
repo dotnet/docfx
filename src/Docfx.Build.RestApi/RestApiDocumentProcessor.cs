@@ -198,8 +198,10 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         }
     }
 
-    private static bool IsSupportedFileEnding(string filePath, string fileEnding) =>
-        filePath.EndsWith(fileEnding, StringComparison.OrdinalIgnoreCase);
+    private static bool IsSupportedFileEnding(string filePath, string fileEnding)
+    {
+        return filePath.EndsWith(fileEnding, StringComparison.OrdinalIgnoreCase);
+    }
 
     private static string ChangeFileExtension(string file)
     {

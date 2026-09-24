@@ -45,32 +45,33 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
             item.Remarks = Markup(host, item.Remarks, model, filter);
         }
 
-        if (item is RestApiRootItemViewModel root)
+        if (item is RestApiRootItemViewModel rootModel)
         {
-            if (root.Info != null) root.Info.Description = Markup(host, root.Info.Description, model, filter);
-            if (root.ExternalDocs != null) root.ExternalDocs.Description = Markup(host, root.ExternalDocs.Description, model, filter);
-            foreach (var security in root.SecurityDefinitions?.Values.AsEnumerable() ?? [])
+            if (rootModel.Info != null) rootModel.Info.Description = Markup(host, rootModel.Info.Description, model, filter);
+            if (rootModel.ExternalDocs != null) rootModel.ExternalDocs.Description = Markup(host, rootModel.ExternalDocs.Description, model, filter);
+            foreach (var security in rootModel.SecurityDefinitions?.Values.AsEnumerable() ?? [])
             {
                 if (security != null) security.Description = Markup(host, security.Description, model, filter);
             }
-            MarkupServers(root.Servers);
-            foreach (var schema in root.Schemas?.Values.AsEnumerable() ?? []) MarkupSchema(schema);
+            MarkupServers(rootModel.Servers);
+            foreach (var schema in rootModel.Schemas?.Values.AsEnumerable() ?? []) MarkupSchema(schema);
         }
-        if (item is RestApiChildItemViewModel child)
+
+        if (item is RestApiChildItemViewModel childModel)
         {
-            MarkupServers(child.Servers);
-            if (child.RequestBody is { } body)
+            MarkupServers(childModel.Servers);
+            if (childModel.RequestBody is { } body)
             {
                 body.Description = Markup(host, body.Description, model, filter);
                 MarkupContent(body.Content);
             }
-            foreach (var parameter in child.Parameters ?? [])
+            foreach (var param in childModel.Parameters ?? [])
             {
-                parameter.Description = Markup(host, parameter.Description, model, filter);
-                MarkupSchema(parameter.Schema);
-                MarkupContent(parameter.Content);
+                param.Description = Markup(host, param.Description, model, filter);
+                MarkupSchema(param.Schema);
+                MarkupContent(param.Content);
             }
-            foreach (var response in child.Responses ?? [])
+            foreach (var response in childModel.Responses ?? [])
             {
                 response.Description = Markup(host, response.Description, model, filter);
                 MarkupSchema(response.Schema);
