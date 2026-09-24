@@ -158,6 +158,7 @@ public sealed class DocumentBuilder : IDisposable
             .Create();
 
         generatedManifest.Files.Sort((a, b) => (a.SourceRelativePath ?? "").CompareTo(b.SourceRelativePath ?? ""));
+        generatedManifest.DocfxVersion = typeof(DocumentBuilder).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
         JsonUtility.Serialize("manifest.json", generatedManifest, indented: true);
 
         EnvironmentContext.FileAbstractLayerImpl = null;

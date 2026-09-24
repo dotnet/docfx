@@ -5,6 +5,7 @@
 
 @use "mixins";
 @use "bootstrap/scss/bootstrap" with (
+  $enable-important-utilities: false,
   $container-max-widths: (
     xxl: 1768px
   )

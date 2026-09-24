@@ -2,8 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text;
+using AwesomeAssertions;
 using Docfx.Common;
-using FluentAssertions;
 using Xunit;
 
 namespace Docfx.Build.Engine.Tests;

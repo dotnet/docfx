@@ -1,0 +1,61 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path="src/Directory.Build.props" />
+    <Project Path="src/docfx/docfx.csproj" DefaultStartup="true" />
+    <Project Path="src/Docfx.App/Docfx.App.csproj" />
+    <Project Path="src/Docfx.Build/Docfx.Build.csproj" />
+    <Project Path="src/Docfx.Dotnet/Docfx.Dotnet.csproj" />
+  </Folder>
+  <Folder Name="/src/Common/">
+    <Project Path="src/Docfx.Build.Common/Docfx.Build.Common.csproj" />
+    <Project Path="src/Docfx.Common/Docfx.Common.csproj" />
+    <Project Path="src/Docfx.Glob/Docfx.Glob.csproj" />
+    <Project Path="src/Docfx.Plugins/Docfx.Plugins.csproj" />
+    <Project Path="src/Docfx.YamlSerialization/Docfx.YamlSerialization.csproj" />
+  </Folder>
+  <Folder Name="/src/DataContracts/">
+    <Project Path="src/Docfx.DataContracts.Common/Docfx.DataContracts.Common.csproj" />
+    <Project Path="src/Docfx.DataContracts.RestApi/Docfx.DataContracts.RestApi.csproj" />
+    <Project Path="src/Docfx.DataContracts.UniversalReference/Docfx.DataContracts.UniversalReference.csproj" />
+  </Folder>
+  <Folder Name="/src/Extensions/">
+    <Project Path="src/Docfx.Build.ManagedReference/Docfx.Build.ManagedReference.csproj" />
+    <Project Path="src/Docfx.Build.OperationLevelRestApi/Docfx.Build.OperationLevelRestApi.csproj" />
+    <Project Path="src/Docfx.Build.OverwriteDocuments/Docfx.Build.OverwriteDocuments.csproj" />
+    <Project Path="src/Docfx.Build.RestApi/Docfx.Build.RestApi.csproj" />
+    <Project Path="src/Docfx.Build.SchemaDriven/Docfx.Build.SchemaDriven.csproj" />
+    <Project Path="src/Docfx.Build.TagLevelRestApi/Docfx.Build.TagLevelRestApi.csproj" />
+    <Project Path="src/Docfx.Build.UniversalReference/Docfx.Build.UniversalReference.csproj" />
+  </Folder>
+  <Folder Name="/src/Markdown/">
+    <Project Path="src/Docfx.MarkdigEngine.Extensions/Docfx.MarkdigEngine.Extensions.csproj" />
+    <Project Path="src/Docfx.MarkdigEngine/Docfx.MarkdigEngine.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <File Path="test/Directory.Build.props" />
+    <File Path="test/Directory.Packages.props" />
+    <Project Path="test/Docfx.Build.Common.Tests/Docfx.Build.Common.Tests.csproj" />
+    <Project Path="test/Docfx.Build.Tests/Docfx.Build.Tests.csproj" />
+    <Project Path="test/Docfx.Common.Tests/Docfx.Common.Tests.csproj" />
+    <Project Path="test/Docfx.Dotnet.Tests/Docfx.Dotnet.Tests.csproj" />
+    <Project Path="test/Docfx.Glob.Tests/Docfx.Glob.Tests.csproj" />
+    <Project Path="test/Docfx.MarkdigEngine.Extensions.Tests/Docfx.MarkdigEngine.Extensions.Tests.csproj" />
+    <Project Path="test/Docfx.MarkdigEngine.Tests/Docfx.MarkdigEngine.Tests.csproj" />
+    <Project Path="test/docfx.Snapshot.Tests/docfx.Snapshot.Tests.csproj" />
+    <Project Path="test/Docfx.Tests.Common/Docfx.Tests.Common.csproj" />
+    <Project Path="test/docfx.Tests/docfx.Tests.csproj" />
+  </Folder>
+  <Folder Name="/test/Extensions/">
+    <Project Path="test/Docfx.Build.ManagedReference.Tests/Docfx.Build.ManagedReference.Tests.csproj" />
+    <Project Path="test/Docfx.Build.OverwriteDocuments.Tests/Docfx.Build.OverwriteDocuments.Tests.csproj" />
+    <Project Path="test/Docfx.Build.RestApi.Tests/Docfx.Build.RestApi.Tests.csproj" />
+    <Project Path="test/Docfx.Build.RestApi.WithPlugins.Tests/Docfx.Build.RestApi.WithPlugins.Tests.csproj" />
+    <Project Path="test/Docfx.Build.SchemaDriven.Tests/Docfx.Build.SchemaDriven.Tests.csproj" />
+    <Project Path="test/Docfx.Build.UniversalReference.Tests/Docfx.Build.UniversalReference.Tests.csproj" />
+  </Folder>
+</Solution>

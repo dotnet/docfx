@@ -82,6 +82,10 @@ partial class SymbolFormatter
 
         public bool IsExtern => false;
 
+#if NET11_0_OR_GREATER
+        public bool RequiresUnsafeContext => false;
+#endif
+
         public bool IsImplicitlyDeclared => false;
 
         public bool CanBeReferencedByName => false;
@@ -186,6 +190,12 @@ partial class SymbolFormatter
 
         public bool IsExtern => Inner.IsExtern;
 
+#if NET11_0_OR_GREATER
+#pragma warning disable RSEXPERIMENTAL006 // Required by Roslyn 5.11's ISymbol interface.
+        public bool RequiresUnsafeContext => Inner.RequiresUnsafeContext;
+#pragma warning restore RSEXPERIMENTAL006
+#endif
+
         public bool IsImplicitlyDeclared => Inner.IsImplicitlyDeclared;
 
         public bool CanBeReferencedByName => Inner.CanBeReferencedByName;
@@ -217,6 +227,8 @@ partial class SymbolFormatter
         public IPropertySymbol PartialDefinitionPart => Inner.PartialDefinitionPart;
         public IPropertySymbol PartialImplementationPart => Inner.PartialImplementationPart;
         public bool IsPartialDefinition => Inner.IsPartialDefinition;
+        public IPropertySymbol ReduceExtensionMember(ITypeSymbol receiverType) => Inner.ReduceExtensionMember(receiverType);
+
     }
 
     public class MethodSymbol : IMethodSymbol
@@ -333,6 +345,12 @@ partial class SymbolFormatter
 
         public bool IsExtern => Inner.IsExtern;
 
+#if NET11_0_OR_GREATER
+#pragma warning disable RSEXPERIMENTAL006 // Required by Roslyn 5.11's ISymbol interface.
+        public bool RequiresUnsafeContext => Inner.RequiresUnsafeContext;
+#pragma warning restore RSEXPERIMENTAL006
+#endif
+
         public bool IsImplicitlyDeclared => Inner.IsImplicitlyDeclared;
 
         public bool CanBeReferencedByName => Inner.CanBeReferencedByName;
@@ -344,6 +362,10 @@ partial class SymbolFormatter
         public Accessibility DeclaredAccessibility { get; init; }
 
         public bool HasUnsupportedMetadata => Inner.HasUnsupportedMetadata;
+
+        public bool IsIterator => Inner.IsIterator;
+
+        public IMethodSymbol AssociatedExtensionImplementation => Inner.AssociatedExtensionImplementation;
 
         ISymbol ISymbol.OriginalDefinition => ((ISymbol)Inner).OriginalDefinition;
 
@@ -363,6 +385,7 @@ partial class SymbolFormatter
         public ImmutableArray<AttributeData> GetReturnTypeAttributes() => Inner.GetReturnTypeAttributes();
         public ITypeSymbol GetTypeInferredDuringReduction(ITypeParameterSymbol reducedFromTypeParameter) => Inner.GetTypeInferredDuringReduction(reducedFromTypeParameter);
         public IMethodSymbol ReduceExtensionMethod(ITypeSymbol receiverType) => Inner.ReduceExtensionMethod(receiverType);
+        public IMethodSymbol ReduceExtensionMember(ITypeSymbol receiverType) => Inner.ReduceExtensionMember(receiverType);
         public ImmutableArray<SymbolDisplayPart> ToDisplayParts(SymbolDisplayFormat format = null) => Inner.ToDisplayParts(format);
         public string ToDisplayString(SymbolDisplayFormat format = null) => Inner.ToDisplayString(format);
         public ImmutableArray<SymbolDisplayPart> ToMinimalDisplayParts(SemanticModel semanticModel, int position, SymbolDisplayFormat format = null) => Inner.ToMinimalDisplayParts(semanticModel, position, format);

@@ -26,6 +26,7 @@ partial class DotnetApiCatalog
         Method,
         Event,
         Operator,
+        Extension,
     }
 
     class TocNode
@@ -135,6 +136,12 @@ partial class DotnetApiCatalog
             {
                 var idExists = true;
                 var id = VisitorHelper.PathFriendlyId(VisitorHelper.GetId(symbol));
+
+                // TODO: Handle C# 14 Extension Members. It'll be shown on `static class` and target type of extension.
+                // Currently Extension symbol is skipped.
+                if (type.TypeKind == TypeKind.Extension)
+                    yield break;
+
                 if (!tocNodes.TryGetValue(id, out var node))
                 {
                     idExists = false;

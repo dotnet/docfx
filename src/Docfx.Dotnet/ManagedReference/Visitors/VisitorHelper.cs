@@ -136,7 +136,7 @@ internal static partial class VisitorHelper
         };
     }
 
-    public static SourceDetail GetSourceDetail(ISymbol symbol, Compilation compilation)
+    public static SourceDetail GetSourceDetail(ISymbol symbol, Compilation compilation, SourceLinkFilter sourceLinkFilter = null)
     {
         // For namespace, definition is meaningless
         if (symbol == null || symbol.Kind == SymbolKind.Namespace)
@@ -144,10 +144,15 @@ internal static partial class VisitorHelper
             return null;
         }
 
-        var syntaxRef = symbol.DeclaringSyntaxReferences.LastOrDefault();
+        // Prefer a declaration that can supply a source link, retaining source information
+        // for code includes and diagnostics even when every declaration is excluded.
+        var syntaxRef = symbol.DeclaringSyntaxReferences.LastOrDefault(s =>
+            !GitUtility.IsUnderObjDirectory(s.SyntaxTree.FilePath)
+            && sourceLinkFilter?.IsExcluded(s.SyntaxTree.FilePath) != true)
+            ?? symbol.DeclaringSyntaxReferences.LastOrDefault();
         if (symbol.IsExtern || syntaxRef == null)
         {
-            if (SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, symbol) is string url)
+            if (SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, symbol, sourceLinkFilter) is string url)
             {
                 return new() { Href = url };
             }
@@ -166,7 +171,8 @@ internal static partial class VisitorHelper
                 Name = symbol.Name
             };
 
-            source.Remote = GitUtility.TryGetFileDetail(source.Path);
+            if (sourceLinkFilter?.IsExcluded(source.Path) != true)
+                source.Remote = GitUtility.TryGetFileDetail(source.Path);
             if (source.Remote != null)
             {
                 source.Path = PathUtility.FormatPath(source.Path, UriKind.Relative, EnvironmentContext.BaseDirectory);
@@ -192,6 +198,8 @@ internal static partial class VisitorHelper
                 return MemberType.Struct;
             case TypeKind.Delegate:
                 return MemberType.Delegate;
+            case TypeKind.Extension:
+                return MemberType.Extension;
             default:
                 return MemberType.Default;
         }

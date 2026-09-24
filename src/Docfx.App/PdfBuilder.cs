@@ -5,6 +5,7 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using Docfx.Build;
@@ -26,6 +27,7 @@ using UglyToad.PdfPig.Outline.Destinations;
 using UglyToad.PdfPig.Writer;
 
 using static Docfx.Build.HtmlTemplate;
+using static UglyToad.PdfPig.Writer.PdfDocumentBuilder;
 
 #nullable enable
 
@@ -49,6 +51,8 @@ static class PdfBuilder
 
         public string? pdfHeaderTemplate { get; init; }
         public string? pdfFooterTemplate { get; init; }
+        public bool pdfHeaderFooterOnCover { get; init; }
+        public bool pdfHeaderFooterOnToc { get; init; }
     }
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null, CancellationToken cancellationToken = default)
@@ -71,6 +75,19 @@ static class PdfBuilder
         PlaywrightHelper.EnsurePlaywrightNodeJsPath();
 
         Program.Main(["install", "chromium", "--only-shell"]);
+
+        // Create linked CancellationToken with PosixSignalRegistration handler.
+        // It's required because default `Ctrl+C` interruption is canceled when using WebApplication inside Spectre.Console command.
+        using var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        void onSignal(PosixSignalContext context)
+        {
+            context.Cancel = true;
+            cancellationTokenSource.Cancel();
+        }
+        using var sigInt = PosixSignalRegistration.Create(PosixSignal.SIGINT, onSignal);
+        using var sigQuit = PosixSignalRegistration.Create(PosixSignal.SIGQUIT, onSignal);
+        using var sigTerm = PosixSignalRegistration.Create(PosixSignal.SIGTERM, onSignal);
+        cancellationToken = cancellationTokenSource.Token;
 
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
@@ -98,7 +115,7 @@ static class PdfBuilder
         using var pageLimiter = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
         var pagePool = new ConcurrentBag<IPage>();
         var headerFooterTemplateCache = new ConcurrentDictionary<string, string>();
-        var headerFooterPageCache = new ConcurrentDictionary<(string, string), Task<byte[]>>();
+        var headerFooterPageCache = new ConcurrentDictionary<(string Header, string Footer, PageSize Size, double Width, double Height), Task<byte[]>>();
 
         var pdfBuildTask = AnsiConsole.Progress().StartAsync(async progress =>
         {
@@ -181,22 +198,42 @@ static class PdfBuilder
 
             try
             {
+                Uri beforeUri = new(page.Url);
                 var response = await page.GotoAsync(url.ToString(), new() { WaitUntil = WaitUntilState.DOMContentLoaded });
                 if (response?.Status is 404)
                     return null;
 
-                if (response is null || !response.Ok)
-                    throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
+                bool isSameUrlNavigation = response == null && beforeUri == url;
+                bool isHashFragmentNavigation = response == null
+                    && beforeUri.GetLeftPart(UriPartial.Path) == url.GetLeftPart(UriPartial.Path)
+                    && beforeUri.Fragment != url.Fragment;
 
-                try
+                if (isSameUrlNavigation)
                 {
-                    await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
-                    await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
-                    await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                    // Specified page content is already loaded.
                 }
-                catch (TimeoutException)
+                else if (isHashFragmentNavigation)
                 {
-                    Logger.LogWarning($"Timeout waiting for page to load, generated PDF page may be incomplete: {url}");
+                    // Hash fragment navigation inside page. network request is not executed.
+                    await page.WaitForURLAsync(url.ToString());
+                }
+                else if (response is null || !response.Ok)
+                {
+                    // Goto navigation failed.
+                    throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
+                }
+                else
+                {
+                    try
+                    {
+                        await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
+                        await page.WaitForFunctionAsync("!window.docfx || window.docfx.ready");
+                        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                    }
+                    catch (TimeoutException)
+                    {
+                        Logger.LogWarning($"Timeout waiting for page to load, generated PDF page may be incomplete: {url}");
+                    }
                 }
 
                 return await page.PdfAsync(new PagePdfOptions
@@ -217,7 +254,8 @@ static class PdfBuilder
             var headerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfHeaderTemplate), pageNumber, totalPages);
             var footerTemplate = ExpandTemplate(GetHeaderFooter(toc.pdfFooterTemplate) ?? DefaultFooterTemplate, pageNumber, totalPages);
 
-            return headerFooterPageCache.GetOrAdd((headerTemplate, footerTemplate), _ => PrintHeaderFooterCore());
+            var cacheKey = (headerTemplate, footerTemplate, contentPage.Size, contentPage.Width, contentPage.Height);
+            return headerFooterPageCache.GetOrAdd(cacheKey, _ => PrintHeaderFooterCore());
 
             async Task<byte[]> PrintHeaderFooterCore()
             {
@@ -422,12 +460,15 @@ static class PdfBuilder
 
                     pageNumber++;
 
-                    var pageBuilder = builder.AddPage(document, i, x => CopyLink(node, x));
+                    var pageBuilder = builder.AddPage(document, i, new AddPageOptions
+                    {
+                        CopyLinkFunc = x => CopyLink(node, x),
+                    });
 
-                    if (isCoverPage)
+                    if (isCoverPage && !outline.pdfHeaderFooterOnCover)
                         continue;
 
-                    if (isTocPage)
+                    if (isTocPage && !outline.pdfHeaderFooterOnToc)
                         continue;
 
                     var headerFooter = await printHeaderFooter(outline, pageNumber, numberOfPages, document.GetPage(i));

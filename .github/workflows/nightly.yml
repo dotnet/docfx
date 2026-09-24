@@ -1,6 +1,11 @@
 name: nightly
 on:
   workflow_dispatch:
+    inputs:
+      validation_only:
+        description: 'Compare latest stable and this ref without package publication or Pages deployment'
+        type: boolean
+        default: true
   schedule:
   - cron: '0 0 * * *'
 
@@ -8,24 +13,22 @@ env:
   DOCFX_PREVIEW_BUILD: true
 
 jobs:
-  publish-github-packages:
-    if: github.ref == 'refs/heads/main'
+  build-nightly-package:
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && inputs.validation_only)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
-      packages: write
+      contents: read
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
-    - uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: |
-          10.x
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
  
     - id: version
-      uses: paulhatch/semantic-version@v5.4.0
+      uses: paulhatch/semantic-version@v6.0.3
       with:
         version_format: ${major}.${minor}.${patch}-preview.${increment}
 
@@ -35,49 +38,80 @@ jobs:
       run: dotnet test -c Release -f net8.0 --no-build
 
     - name: dotnet test
+      run: dotnet test -c Release -f net9.0 --no-build
+
+    - name: dotnet test
       run: dotnet test -c Release -f net10.0 --no-build
+
+    - name: dotnet test
+      run: dotnet test -c Release -f net11.0 --no-build
     
     - name: dotnet pack
       run: dotnet pack -c Release /p:Version=${{ steps.version.outputs.version }} /p:ApiCompatGenerateSuppressionFile=true -o drop/nuget
 
+    - name: Preserve exact nightly tool package
+      uses: actions/upload-artifact@v7
+      with:
+        name: nightly-tool-package
+        path: drop/nuget/docfx.${{ steps.version.outputs.version }}.nupkg
+        if-no-files-found: error
+        retention-days: 14
+
+    - name: Preserve packages for production publication
+      if: github.repository == 'dotnet/docfx' && github.ref == 'refs/heads/main' && !inputs.validation_only
+      uses: actions/upload-artifact@v7
+      with:
+        name: nightly-publication-packages
+        path: drop/nuget/*.nupkg
+        if-no-files-found: error
+        retention-days: 14
+
+  publish-github-packages:
+    if: github.repository == 'dotnet/docfx' && github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.validation_only))
+    needs: [build-nightly-package]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: 10.x
+    - uses: actions/download-artifact@v8
+      with:
+        name: nightly-publication-packages
+        path: drop/nuget
     - name: dotnet nuget push
-      if: github.repository == 'dotnet/docfx'
-      run: |
-        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate --source https://nuget.pkg.github.com/dotnet/index.json
+      run: dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate --source https://nuget.pkg.github.com/dotnet/index.json
 
   test-nightly-package:
-    if: github.repository == 'dotnet/docfx'
+    if: github.repository == 'dotnet/docfx' || (github.event_name == 'workflow_dispatch' && inputs.validation_only)
     runs-on: ubuntu-latest
-    needs: [publish-github-packages]
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    needs: [build-nightly-package]
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
     steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: 10.x
+    - uses: actions/download-artifact@v8
+      with:
+        name: nightly-tool-package
+        path: drop/nightly
 
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Create NuGet.config
+    - name: Install exact nightly package
       shell: pwsh
+      env:
+        TOOL_VERSION: ${{ needs.build-nightly-package.outputs.version }}
       run: |
-        @'
-        <?xml version="1.0" encoding="utf-8"?>
-        <configuration>
-          <packageSources>
-            <clear />
-            <add key="github" value="https://nuget.pkg.github.com/dotnet/index.json" />
-          </packageSources>
-          <packageSourceCredentials>
-            <github>
-              <add key="Username" value="%USER%" />
-              <add key="ClearTextPassword" value="%GITHUB_TOKEN%" />
-            </github>
-          </packageSourceCredentials>
-        </configuration>
-        '@ | Out-File NuGet.config -Encoding UTF8
-
-    - name: Install nightly build package
-      run: |
-        dotnet tool install docfx -g --prerelease
+        $feed = [Security.SecurityElement]::Escape((Resolve-Path drop/nightly).Path)
+        "<configuration><packageSources><clear/><add key=`"nightly`" value=`"$feed`"/></packageSources></configuration>" | Set-Content drop/nightly/NuGet.Config
+        dotnet tool install docfx -g --version $env:TOOL_VERSION --framework net10.0 --configfile drop/nightly/NuGet.Config
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
     - name: Run docfx commands for test
       working-directory: samples/seed
@@ -85,4 +119,45 @@ jobs:
         docfx metadata
         docfx build
         docfx pdf
-   
+
+  sdk-compatibility:
+    if: github.repository == 'dotnet/docfx' || (github.event_name == 'workflow_dispatch' && inputs.validation_only)
+    needs: [build-nightly-package]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-node@v6
+      with:
+        node-version: 24
+    - uses: actions/download-artifact@v8
+      with:
+        name: nightly-tool-package
+        path: drop/nightly
+    - name: Resolve exact SDK candidates from official metadata
+      id: matrix
+      run: node test/compatibility/report.mjs resolve drop/compatibility-matrix.json
+    - uses: actions/setup-dotnet@v5
+      continue-on-error: true
+      with:
+        dotnet-version: ${{ steps.matrix.outputs.sdks }}
+    - name: Test compatibility reporting
+      run: node --test test/compatibility/report.test.mjs
+    - name: Measure and check latest stable and exact nightly packages
+      shell: pwsh
+      env:
+        GH_TOKEN: ${{ github.token }}
+        TOOL_VERSION: ${{ needs.build-nightly-package.outputs.version }}
+      run: |
+        ./test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/compatibility-matrix.json -OutputDirectory drop/compatibility-report -NightlyPackage "drop/nightly/docfx.$env:TOOL_VERSION.nupkg" -NightlyFrameworks net8.0,net9.0,net10.0,net11.0
+    - name: Upload compatibility evidence, including failed cases
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.validation_only && 'sdk-compatibility-validation-v1' || 'sdk-compatibility-v1' }}
+        path: drop/compatibility-report
+        if-no-files-found: error
+        retention-days: 14

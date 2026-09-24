@@ -42,6 +42,8 @@ A nice class
 
  [Inheritdoc.Issue9736.JsonApiOptions](BuildFromProject.Inheritdoc.Issue9736.JsonApiOptions.md)
 
+ [SourceGenerator](BuildFromProject.SourceGenerator.md)
+
  [Class1.Test<T\>](BuildFromProject.Class1.Test\-1.md)
 
 ### Structs

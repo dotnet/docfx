@@ -2,21 +2,11 @@
   "conceptual": "\n<h3 id=\"classes\" sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"3\">Classes</h3>\n<p sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"5\"><a href=\"~/obj/md/BuildFromAssembly.Class1.md\" sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"5\">Class1</a></p>\n<p sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"7\">This is a test class.</p>\n<h3 id=\"structs\" sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"9\">Structs</h3>\n<p sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"11\"><a href=\"~/obj/md/BuildFromAssembly.Issue5432.md\" sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"11\">Issue5432</a></p>\n",
   "type": "Conceptual",
   "source": {
-    "remote": {
-      "path": "samples/seed/obj/md/BuildFromAssembly.md",
-      "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
-    },
     "startLine": 0,
     "endLine": 0
   },
   "path": "obj/md/BuildFromAssembly.md",
   "documentation": {
-    "remote": {
-      "path": "samples/seed/obj/md/BuildFromAssembly.md",
-      "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
-    },
     "startLine": 0,
     "endLine": 0
   },
@@ -38,5 +28,5 @@
   "_tocPath": "md/toc.html",
   "_tocRel": "toc.html",
   "_disableToc": false,
-  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromAssembly.md/#L1"
+  "docurl": ""
 }

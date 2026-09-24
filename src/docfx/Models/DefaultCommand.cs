@@ -10,7 +10,7 @@ using Spectre.Console.Cli;
 
 namespace Docfx;
 
-class DefaultCommand : CancellableCommandBase<DefaultCommand.Options>
+class DefaultCommand : Command<DefaultCommand.Options>
 {
     [Description("Runs metadata, build and pdf commands")]
     internal class Options : BuildCommandOptions
@@ -20,7 +20,7 @@ class DefaultCommand : CancellableCommandBase<DefaultCommand.Options>
         public bool Version { get; set; }
     }
 
-    public override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
     {
         if (options.Version)
         {

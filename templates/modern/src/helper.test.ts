@@ -3,7 +3,7 @@
 
 import test from 'node:test'
 import assert from 'node:assert'
-import { breakWord, isSameURL } from './helper'
+import { breakWord, isExternalHref, isSameURL } from './helper'
 
 test('break text', () => {
   assert.deepStrictEqual(breakWord('Other APIs'), ['Other APIs'])
@@ -24,4 +24,25 @@ test('is same URL', () => {
   assert.ok(isSameURL({ pathname: '/a/index.html' }, { pathname: '/A/Index.html' }))
 
   assert.ok(!isSameURL({ pathname: '/a/foo/index.html' }, { pathname: '/a/bar' }))
+})
+
+test('is external URL', () => {
+  const originalWindow = Object.getOwnPropertyDescriptor(globalThis, 'window')
+  Object.defineProperty(globalThis, 'window', {
+    configurable: true,
+    value: { location: new URL('https://localhost:8080/') }
+  })
+
+  try {
+    assert.ok(!isExternalHref(new URL('https://localhost:8080/docs')))
+    assert.ok(isExternalHref(new URL('https://localhost:1234/docs')))
+    assert.ok(isExternalHref(new URL('http://localhost:8080/docs')))
+    assert.ok(isExternalHref(new URL('https://example.com:8080/docs')))
+  } finally {
+    if (originalWindow) {
+      Object.defineProperty(globalThis, 'window', originalWindow)
+    } else {
+      Reflect.deleteProperty(globalThis, 'window')
+    }
+  }
 })

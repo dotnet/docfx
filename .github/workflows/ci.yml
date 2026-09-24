@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{ github.event.pull_request.head.repo.full_name }}
@@ -31,40 +31,81 @@ jobs:
       shell: bash
       working-directory: templates
 
-    - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
-      id: test-net80
+    - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
+      if: matrix.os == 'ubuntu-latest'
+
+    # Snapshot tests may update tracked baselines; measure the package first.
+    - name: Test compatibility reporting
+      if: matrix.os == 'ubuntu-latest'
+      run: node --test test/compatibility/report.test.mjs
+
+    - name: Pack tool for distribution tests
+      run: dotnet pack src/docfx -c Release --no-restore /p:Version=0.0.0-packaging-test /p:BaseOutputPath=bin/package-test/ -o drop/package-test
+
+    - name: Publish tool for distribution tests
+      run: dotnet publish src/docfx -c Release -f net10.0 --no-build --no-restore --no-self-contained /p:Version=0.0.0-packaging-test /p:BaseOutputPath=bin/package-test/ -o drop/publish-test
+
+    - name: Repack tool without rebuilding
+      run: dotnet pack src/docfx -c Release --no-build --no-restore /p:Version=0.0.0-packaging-test /p:BaseOutputPath=bin/package-test/ -o drop/package-test
+
+    - name: Verify distributed templates
+      shell: pwsh
+      run: ./test/VerifyToolPackage.ps1 -PackagePath drop/package-test/docfx.0.0.0-packaging-test.nupkg -PublishDirectory drop/publish-test
+
+    - name: Packaged SDK compatibility smoke
+      if: matrix.os == 'ubuntu-latest'
+      shell: pwsh
+      run: |
+        $sdk = (dotnet --list-sdks | Where-Object { $_ -match '^10\.0\.\d+ ' } | Select-Object -Last 1).Split(' ')[0]
+        ConvertTo-Json -InputObject @(@{ sdk = $sdk; projectTfm = 'net10.0' }) | Set-Content drop/package-test/matrix.json
+        ./test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/package-test/matrix.json -OutputDirectory drop/compatibility-smoke -NightlyPackage drop/package-test/docfx.0.0.0-packaging-test.nupkg -SkipStable -FailOnIncompatible
+
+    - name: Upload compatibility smoke evidence
+      if: ${{ always() && matrix.os == 'ubuntu-latest' }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: sdk-compatibility-smoke
+        path: drop/compatibility-smoke
+        retention-days: 7
+
+    - run: dotnet test -c Release -f net10.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
+      id: test-net100
 
     - run: dotnet test -c Release -f net9.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
       if: matrix.os == 'ubuntu-latest'
       id: test-net90
 
+    - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage" --consoleLoggerParameters:"Summary;Verbosity=Minimal"
+      if: matrix.os == 'ubuntu-latest'
+      id: test-net80
+
     - run: npm i -g @percy/cli
       if: matrix.os == 'ubuntu-latest'
 
-    - run: percy exec -- dotnet test -c Release -f net8.0 --filter Stage=Percy --no-build --collect:"XPlat Code Coverage"
+    - run: percy exec -- dotnet test -c Release -f net10.0 --filter Stage=Percy --no-build --collect:"XPlat Code Coverage"
       if: matrix.os == 'ubuntu-latest'
       env:
         PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
 
-    - uses: codecov/codecov-action@v5
+    - uses: codecov/codecov-action@v7
       if: matrix.os == 'ubuntu-latest'
       with:
+        cleanup: true
         fail_ci_if_error: false
         token: ${{ secrets.CODECOV_TOKEN }}
 
-    - run: echo "DOTNET_DbgEnableMiniDump=1" >> $GITHUB_ENV
-      if: matrix.os == 'ubuntu-latest'
+    - uses: ./.github/actions/build-docs
 
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- docs/docfx.json
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
-
-    - uses: actions/upload-pages-artifact@v3
+    - uses: actions/upload-artifact@v7
       if: matrix.os == 'ubuntu-latest'
       with:
+        name: docs-site
         path: docs/_site
+        retention-days: 14
+        include-hidden-files: true
 
     - name: Upload Logs
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: ${{ !cancelled() }}
       with:
         name: logs-${{ matrix.os }}
@@ -73,23 +114,8 @@ jobs:
           test/**/TestResults/*.trx
           test/**/TestResults/*.html
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: ${{ failure() && matrix.os == 'ubuntu-latest' }}
       with:
         name: dump
         path: /tmp/coredump*
-
-  publish-docs:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [test]
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      pages: write
-      id-token: write
-    steps:
-    - id: deployment
-      uses: actions/deploy-pages@v4

@@ -71,6 +71,20 @@ Specifies an array of resource files to include in the project. Supports [File M
 
 Contains all the conceptual files that contain yaml headers with `uid` values and is intended to override the existing metadata `yml` files. Supports [File Mappings](#file-mappings).
 
+### `xref`
+
+Specifies the urls of xrefmap used by content files. Currently, it supports following scheme: http, https, file.
+
+### `dest`
+
+Specifies the output folder of the generated metadata files relative to `docfx.json` directory.
+Command line --output argument prepends this value.
+
+### `output`
+
+Defines the output folder of the generated build files.
+Command line --output argument override this value.
+
 ### `globalMetadata`
 
 Contains metadata that will be applied to every file, in key-value pair format. For example, you can define `"_appTitle": "This is the title"` in this section, and when applying template `default`, it will be part of the page title as defined in the template.
@@ -88,6 +102,17 @@ Contains metadata that will be applied to every file, in key-value pair format. 
 
 See [Predefined Metadata](#predefined-metadata) section for a list of predefined metadata.
 
+### `globalMetadataFiles`
+
+Set [`globalMetadata`](#globalmetadata) from external files.
+
+```json
+{
+  "build": {
+    "globalMetadataFiles":  ["global1.json", "global2.json"]
+  }
+}
+```
 ### `fileMetadata`
 
 Specifies metadata associated with a particular file in order of metadata name, file [glob patterns](#glob-patterns) and metadata value:
@@ -114,17 +139,6 @@ Specifies metadata associated with a particular file in order of metadata name, 
 
 See [Predefined Metadata](#predefined-metadata) section for a list of predefined metadata.
 
-### `globalMetadataFiles`
-
-Set [`globalMetadata`](#globalmetadata) from external files.
-
-```json
-{
-  "build": {
-    "globalMetadataFiles":  ["global1.json", "global2.json"]
-  }
-}
-```
 
 ### `fileMetadataFiles`
 
@@ -170,9 +184,19 @@ The themes applied to the documentation. Theme is used to customize the styles g
 
 Theme is to provide general styles for all the generated pages. Files inside a theme will be generally copied to the output folder. A typical usage is, after YAML files are transformed to HTML pages, well-designed CSS style files in a Theme can then overwrite the default styles defined in template, e.g. `main.css`.
 
-### `xref`
+### `postProcessors`
 
-Specifies the urls of xrefmap used by content files. Currently, it supports following scheme: http, https, file.
+Specify PostProcessor array.
+Built-in HtmlProcessor is automatically added by default.
+
+### `debug`
+
+Run in debug mode. With debug mode, raw model and view model will be exported
+automatically when it encounters error when applying templates.
+
+### `debugOutput`
+
+The output folder for files generated for debugging purpose when in debug mode.
 
 ### `exportRawModel`
 
@@ -360,7 +384,7 @@ If set to true, DocFX would not render triple-slash-comments in source code as m
 ### `references`
 
 Specify additinal assembly reference files.
-This settings is used when generating metadata from DLLs or source files.
+This setting is used when generating metadata from DLLs or source files.
 Solution or project file-based metadata generation does not use this property.
 
 ### `filter`
@@ -374,6 +398,41 @@ Disables the default filter configuration file.
 ### `disableGitFeatures`
 
 Disables generation of view source links.
+
+### `sourceLinkExclude`
+
+Hides **View Source** links for matching **source document paths**, without removing APIs or their documentation. Defaults to `[]` (no additional exclusions).
+
+| Input to Docfx | Path matched |
+| --- | --- |
+| Source files or projects | The source file path supplied by the compiler |
+| DLLs | The source document path recorded in the portable PDB, possibly from another build machine |
+
+**These are path-string matches, not directory searches.** Docfx does not scan `obj` or require the source files to exist locally. Patterns are **not relative to `docfx.json` or `metadata.src`**, and do not match GitHub URLs.
+
+For example, `**/ExampleGenerator/**` matches a PDB path such as `MyLibrary/obj/Release/net10.0/ExampleGenerator/Generated.g.cs`:
+
+```json
+{
+  "metadata": [
+    {
+      "src": [{ "files": ["**/bin/Release/**/MyLibrary.dll"] }],
+      "dest": "api",
+      "sourceLinkExclude": [
+        "**/ExampleGenerator/**"
+      ]
+    }
+  ]
+}
+```
+
+Use `/` in patterns; both `/` and `\` in document paths are supported. A leading `**/` matches any directory prefix. Matching uses the [file-mapping glob syntax](#glob-patterns), ignores case, and includes hidden directories.
+
+A document is excluded if **any** pattern matches; these are not ordered include/exclude rules. Another non-excluded PDB document can still provide a partial type's link. API reference links are unchanged.
+
+For source or project input, a partial type uses the last declaration remaining after applying these rules and the existing `obj` directory exclusion. This lets a type extended by a source generator link to its handwritten declaration. If every declaration is excluded, the source information is retained without a link. Relative `<code source="...">` includes continue to use their original source directory.
+
+`metadata.src[].exclude` instead excludes **input files**, and `disableGitFeatures` disables all View Source links. This setting only applies your path rules; it does not classify generated code from attributes or comments, or verify URL availability. See the [examples](../docs/dotnet-api-docs.md#exclude-selected-view-source-links) for combining input exclusions with source-link rules.
 
 ### `codeSourceBasePath`
 
@@ -406,7 +465,9 @@ Specifies an optional set of MSBuild properties used when interpreting project f
 
 ### `noRestore`
 
-Do not run `dotnet restore` before building the projects.
+Do not run `dotnet restore` before building the projects. Use this option when the projects have already been restored.
+
+By default, docfx restores projects automatically and stops metadata generation if restore fails.
 
 ### `categoryLayout`
 
@@ -414,7 +475,7 @@ Specifies how categories in TOC are organized:
 
 - `flattened` (default): Renders the namespaces as a plain label.
 - `nested`: Renders the categories in a nested tree form.
-- `none`: Don't render categoriy labels.
+- `none`: Don't render category labels.
 
 > [!NOTE]
 > This setting is valid when using `apiPage` or `markdown` output format. `mref` format don't support categories.
@@ -425,6 +486,8 @@ Specifies how namespaces in TOC are organized:
 
 - `flattened` (default): Renders namespaces as a single flat list.
 - `nested`: Renders namespaces in a nested tree form.
+
+For `mref` output, local namespace references are resolved by UID during the build, using generated API pages, other build inputs, or configured xref maps. Unresolved namespaces are rendered as plain text. This applies to both source and assembly inputs; external namespace URLs are unchanged.
 
 ### `memberLayout`
 
@@ -499,8 +562,8 @@ The folder name for the generated files.
 
 ### Glob Patterns
 
-- `*`: Matches 0 or more charactors in a single path portion.
-- `?`: Matches 1 character in a signle path portion.
+- `*`: Matches 0 or more characters in a single path portion.
+- `?`: Matches 1 character in a sigle path portion.
 - `**`: Matches 0 or more directories and subdirectories.
 - `{}`: Expands the comma-delimited sections within the braces into a set.
 
@@ -567,4 +630,3 @@ Choose the URL pattern of the generated link for `View Source` and `Improve this
 ### `_noindex`
 
 File(s) specified are not returned in search results
-

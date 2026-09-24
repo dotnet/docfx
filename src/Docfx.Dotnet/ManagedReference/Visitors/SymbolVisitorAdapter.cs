@@ -47,7 +47,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             DisplayNames = [],
             DisplayNamesWithType = [],
             DisplayQualifiedNames = [],
-            Source = _config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, _compilation),
+            Source = _config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, _compilation, _config.SourceLinkFilter),
         };
         var assemblyName = symbol.ContainingAssembly?.Name;
         item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) || assemblyName is "?" ? null : [assemblyName];
@@ -58,7 +58,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         var comment = symbol.GetDocumentationComment(_compilation, expandIncludes: true, expandInheritdoc: true);
-        if (XmlComment.Parse(comment.FullXmlFragment, GetXmlCommentParserContext(item)) is { } commentModel)
+        if (XmlComment.Parse(comment.FullXmlFragment, GetXmlCommentParserContext(item, symbol)) is { } commentModel)
         {
             item.Summary = commentModel.Summary;
             item.Remarks = commentModel.Remarks;
@@ -197,7 +197,15 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             }
         }
 
-        AddReference(symbol);
+        if (symbol.IsExtension)
+        {
+            // Currently extension symbol is skipped and reference is not added.
+            // TODO: Handle C# 14 Extension Member definition.
+        }
+        else
+        {
+            AddReference(symbol);
+        }
 
         item.Attributes = GetAttributeInfo(symbol.GetAttributes());
 
@@ -705,7 +713,7 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
     }
 
-    private XmlCommentParserContext GetXmlCommentParserContext(MetadataItem item)
+    private XmlCommentParserContext GetXmlCommentParserContext(MetadataItem item, ISymbol symbol)
     {
         return new XmlCommentParserContext
         {
@@ -726,10 +734,19 @@ internal partial class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
         string ResolveCode(string source)
         {
+            // Source-link exclusions must not change the base directory of code includes.
+            var sourcePath = item.Source is null ? null
+                : symbol.DeclaringSyntaxReferences.LastOrDefault()?.SyntaxTree.FilePath ?? item.Source.Path;
             var basePath = _config.CodeSourceBasePath ?? (
-                item.Source?.Path is { } sourcePath
+                sourcePath is not null
                     ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
                     : null);
+
+            if (basePath == null)
+            {
+                Logger.LogWarning($"Source file '{source}' not found.", code: "CodeNotFound");
+                return null;
+            }
 
             var path = Path.GetFullPath(Path.Combine(basePath, source));
             if (!File.Exists(path))

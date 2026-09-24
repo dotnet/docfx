@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
+using AwesomeAssertions;
 using Docfx.Build.ApiPage;
 using Docfx.Common;
 using Docfx.Tests;
-using FluentAssertions;
 using YamlDotNet.Serialization;
 
 namespace docfx.Tests;

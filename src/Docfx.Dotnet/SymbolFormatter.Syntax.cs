@@ -354,7 +354,7 @@ partial class SymbolFormatter
                     var value = Language is SyntaxLanguage.VB
                         ? VB.SymbolDisplay.FormatPrimitive(typedConstant.Value, quoteStrings: true, useHexadecimalNumbers: false)
                         : CS.SymbolDisplay.FormatPrimitive(typedConstant.Value, quoteStrings: true, useHexadecimalNumbers: false);
-                    _parts.Add(new(typedConstant.Value is string ? SymbolDisplayPartKind.StringLiteral : SymbolDisplayPartKind.NumericLiteral, null, value));
+                    _parts.Add(new(typedConstant.Value is string ? SymbolDisplayPartKind.StringLiteral : SymbolDisplayPartKind.NumericLiteral, null, value!));
                     break;
 
                 case TypedConstantKind.Enum:

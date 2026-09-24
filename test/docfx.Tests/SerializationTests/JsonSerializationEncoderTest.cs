@@ -1,8 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using AwesomeAssertions;
 using Docfx.Common;
-using FluentAssertions;
 
 namespace docfx.Tests;
 
@@ -30,7 +30,7 @@ public partial class JsonSerializationEncoderTest
         // Compare serialized result text with `StringComparer.OrdinalIgnoreCase`
         //  - SystemTextJson escape chars with capital case(`\u001B`)
         //  - NewtonsoftJson escape chars with lower case  (`\u001b`)
-        ((object)systemTextJsonResult).Should().Be(newtonsoftJsonResult, StringComparer.OrdinalIgnoreCase); // Currently StringAssertions don't expose overload that accepts StringComparer. (See: https://github.com/fluentassertions/fluentassertions/issues/2720)
+        systemTextJsonResult.Should().BeEquivalentTo(newtonsoftJsonResult, options => options.IgnoringCase());
     }
 
     [Theory]

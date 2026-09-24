@@ -1,0 +1,10 @@
+{
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string", "description": "Error **details**." }
+      }
+    }
+  }
+}

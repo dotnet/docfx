@@ -2,6 +2,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Docfx.App" />
     <InternalsVisibleTo Include="Docfx.Build.Common.Tests" />
+    <InternalsVisibleTo Include="Docfx.Build.Tests" />
   </ItemGroup>
 
   <ItemGroup>

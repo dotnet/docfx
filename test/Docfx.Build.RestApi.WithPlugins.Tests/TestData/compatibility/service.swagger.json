@@ -1,0 +1,139 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Compatibility API",
+    "version": "1.0",
+    "description": "API information."
+  },
+  "host": "api.example.test",
+  "basePath": "/v1",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json", "text/plain"],
+  "summary": "A **stable** API.",
+  "description": "Use the [API guide](https://example.test/guide).",
+  "x-owner": { "team": "documentation" },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "name": "X-Api-Key",
+      "in": "header",
+      "description": "Your **API key**."
+    }
+  },
+  "security": [{ "apiKey": [] }],
+  "tags": [
+    { "name": "items", "description": "Manage **items**.", "x-bookmark-id": "items-tag" }
+  ],
+  "paths": {
+    "/items": {
+      "parameters": [{ "$ref": "#/parameters/Version" }],
+      "get": {
+        "operationId": "listItems",
+        "tags": ["items"],
+        "summary": "List **items**.",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "default": "2.0",
+            "description": "An optional version."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "default": 0,
+            "minimum": 0,
+            "description": "Maximum number of items."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The **items**.",
+            "schema": { "type": "array", "items": { "$ref": "#/definitions/Item" } },
+            "headers": { "X-Count": { "type": "integer", "description": "Total count." } },
+            "examples": {
+              "application/json": [{ "id": "one", "name": "First", "$ref": "literal-example" }],
+              "text/plain": "one"
+            }
+          },
+          "default": { "$ref": "#/responses/Error" }
+        }
+      },
+      "post": {
+        "operationId": "createItem",
+        "tags": ["items"],
+        "summary": "Create an item.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "The **new** item.",
+            "schema": { "$ref": "#/definitions/Item" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created.",
+            "schema": { "$ref": "#/definitions/Item" },
+            "examples": { "application/json": { "id": "one", "name": "First" } }
+          }
+        }
+      }
+    },
+    "/items/{id}": {
+      "delete": {
+        "operationId": "deleteItem",
+        "summary": "Delete an item.",
+        "deprecated": true,
+        "security": [],
+        "parameters": [
+          { "name": "id", "in": "path", "type": "string", "required": true, "description": "Item ID." }
+        ],
+        "responses": { "204": { "description": "No content." } }
+      }
+    }
+  },
+  "parameters": {
+    "Version": {
+      "name": "api-version",
+      "in": "query",
+      "type": "string",
+      "required": true,
+      "default": "1.0",
+      "description": "The **API version**."
+    }
+  },
+  "responses": {
+    "Error": {
+      "description": "A request error.",
+      "schema": { "$ref": "components.json#/definitions/Error" }
+    }
+  },
+  "definitions": {
+    "Base": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The item **identifier**.", "readOnly": true }
+      }
+    },
+    "Item": {
+      "allOf": [
+        { "$ref": "#/definitions/Base" },
+        {
+          "type": "object",
+          "required": ["name"],
+          "properties": {
+            "name": { "type": "string", "description": "The **display name**." },
+            "state": { "type": "string", "enum": ["active", "archived"], "default": "active" }
+          }
+        }
+      ],
+      "example": { "id": "one", "name": "First", "$ref": "literal-schema-example" }
+    }
+  }
+}

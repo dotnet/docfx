@@ -37,8 +37,16 @@ partial class DotnetApiCatalog
 
         if (allMembers.Count == 0)
         {
-            var value = StringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
-            Logger.Log(LogLevel.Warning, $"No .NET API detected for {value}.");
+            if (assemblies.Count == 0)
+            {
+                Logger.LogWarning("No .NET API detected. Check the input files and earlier load or compilation diagnostics.");
+            }
+            else
+            {
+                var value = StringExtension.ToDelimitedString(assemblies.Select(a => a.symbol.Name));
+                var filterConfig = config.FilterConfigFile is null ? "" : $" in '{config.FilterConfigFile}'";
+                Logger.LogWarning($"No .NET API detected for {value}. Check that the input contains APIs to document, and review their visibility and the API filtering rules{filterConfig}.");
+            }
             return;
         }
 
@@ -172,7 +180,7 @@ partial class DotnetApiCatalog
                 return false;
             }
 
-            Logger.Log(LogLevel.Warning, $"Ignore duplicated member {node.Type}:{node.Name} from {node.Source?.Path} as it already exist in {existingNode.Source?.Path}.");
+            Logger.Log(LogLevel.Warning, $"Ignore duplicated member {node.Type}:{node.Name} from {node.Source?.Path} as it already exists in {existingNode.Source?.Path}.");
             return false;
         }
     }

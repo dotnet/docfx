@@ -6,7 +6,6 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -246,7 +245,6 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -303,6 +301,24 @@
       }
     ]
   },
+  "derivedClasses": [
+    {
+      "isEii": false,
+      "isExtensionMethod": false,
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CatLibrary.Cat`2\" displayProperty=\"name\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CatLibrary.Cat`2\" displayProperty=\"name\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 1
+    }
+  ],
   "level": 0,
   "inheritedMembers": [
     {

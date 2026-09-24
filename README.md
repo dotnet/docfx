@@ -4,6 +4,7 @@
 [![ci](https://github.com/dotnet/docfx/actions/workflows/ci.yml/badge.svg)](https://github.com/dotnet/docfx/actions/workflows/ci.yml)
 [![nightly](https://github.com/dotnet/docfx/actions/workflows/nightly.yml/badge.svg)](https://github.com/dotnet/docfx/actions/workflows/nightly.yml)
 [![Help Wanted](https://img.shields.io/github/issues/dotnet/docfx/help-wanted?label=help-wanted)](https://github.com/dotnet/docfx/labels/help-wanted)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/dotnet/docfx)
 
 * [Getting Started](#getting-started)
 * [Contributing](#contributing)
@@ -37,6 +38,7 @@ Docfx is planned to continue as a community-driven project. We hope to produce f
 3. Go to https://localhost:8080 to see the sample site.
 
 For more information, refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
+See [SDK compatibility observations](https://dotnet.github.io/docfx/docs/sdk-compatibility.html) for measured package/SDK combinations and their test evidence.
 
 > [!TIP]
 > Docfx publishes nightly builds to [GitHub Packages](https://github.com/orgs/dotnet/packages), this allows you to stay up-to-date with the latest developments in Docfx.
@@ -51,8 +53,8 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 ### Prerequisites
 
 - Install [Visual Studio 2022 (Community or higher)](https://www.visualstudio.com/) and make sure you have the latest updates.
-- Install [.NET SDK](https://dotnet.microsoft.com/download/dotnet) 8.x and 9.x.
-- Install NodeJS (22.x.x).
+- Install [.NET SDK](https://dotnet.microsoft.com/download/dotnet) 8.x, 9.x, and 10.x.
+- Install NodeJS (24.x.x).
 
 ### Build and Test
 

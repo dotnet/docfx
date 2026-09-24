@@ -141,7 +141,7 @@ internal class MetadataJsonItemConfig
 
     /// <summary>
     /// Specify additinal assembly reference files.
-    /// This settings is used when generating metadata from DLLs or source files.
+    /// This setting is used when generating metadata from DLLs or source files.
     /// Solution or project file-based metadata generation does not use this property.
     /// </summary>
     [JsonProperty("references")]
@@ -193,6 +193,13 @@ internal class MetadataJsonItemConfig
     [JsonProperty("disableGitFeatures")]
     [JsonPropertyName("disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }
+
+    /// <summary>
+    /// Excludes view source links for source document paths matching these glob patterns.
+    /// </summary>
+    [JsonProperty("sourceLinkExclude")]
+    [JsonPropertyName("sourceLinkExclude")]
+    public string[] SourceLinkExclude { get; set; } = [];
 
     /// <summary>
     /// Specify the base directory that is used to resolve code source (e.g. `&lt;code source="Example.cs"&gt;`).

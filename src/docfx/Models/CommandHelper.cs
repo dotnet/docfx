@@ -20,37 +20,28 @@ internal class CommandHelper
 
         Logger.Flush();
         Logger.UnregisterAllListeners();
+        // Logger.PrintSummary() method is not called when Run without LogOptions.(DownloadCommand/ServeCommand/TemplateCommand)
 
         return 0;
     }
 
     public static int Run(LogOptions options, Action run)
     {
-        var consoleLogListener = new ConsoleLogListener();
-        Logger.RegisterListener(consoleLogListener);
-
-        if (!string.IsNullOrWhiteSpace(options.LogFilePath))
-        {
-            Logger.RegisterListener(new ReportLogListener(options.LogFilePath));
-        }
-
-        if (options.LogLevel.HasValue)
-        {
-            Logger.LogLevelThreshold = options.LogLevel.Value;
-        }
-        else if (options.Verbose)
-        {
-            Logger.LogLevelThreshold = LogLevel.Verbose;
-        }
-
-        Logger.WarningsAsErrors = options.WarningsAsErrors;
+        SetupLogger(options);
 
         run();
 
-        Logger.Flush();
-        Logger.UnregisterAllListeners();
-        Logger.PrintSummary();
+        CleanupLogger();
+        return Logger.HasError ? -1 : 0;
+    }
 
+    public static async Task<int> RunAsync(LogOptions options, Func<Task> run)
+    {
+        SetupLogger(options);
+
+        await run();
+
+        CleanupLogger();
         return Logger.HasError ? -1 : 0;
     }
 
@@ -81,5 +72,34 @@ internal class CommandHelper
                     return true;
                 }
         }
+    }
+
+    private static void SetupLogger(LogOptions options)
+    {
+        var consoleLogListener = new ConsoleLogListener();
+        Logger.RegisterListener(consoleLogListener);
+
+        if (!string.IsNullOrWhiteSpace(options.LogFilePath))
+        {
+            Logger.RegisterListener(new ReportLogListener(options.LogFilePath));
+        }
+
+        if (options.LogLevel.HasValue)
+        {
+            Logger.LogLevelThreshold = options.LogLevel.Value;
+        }
+        else if (options.Verbose)
+        {
+            Logger.LogLevelThreshold = LogLevel.Verbose;
+        }
+
+        Logger.WarningsAsErrors = options.WarningsAsErrors;
+    }
+
+    private static void CleanupLogger()
+    {
+        Logger.Flush();
+        Logger.UnregisterAllListeners();
+        Logger.PrintSummary();
     }
 }

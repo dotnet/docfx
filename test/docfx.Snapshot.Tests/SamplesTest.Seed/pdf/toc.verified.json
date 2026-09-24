@@ -278,6 +278,13 @@
               "topicHref": "../api/BuildFromProject.Issue8725.html",
               "topicUid": "BuildFromProject.Issue8725",
               "type": "Class"
+            },
+            {
+              "name": "SourceGenerator",
+              "href": "../api/BuildFromProject.SourceGenerator.html",
+              "topicHref": "../api/BuildFromProject.SourceGenerator.html",
+              "topicUid": "BuildFromProject.SourceGenerator",
+              "type": "Class"
             }
           ]
         },

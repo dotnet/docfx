@@ -1,10 +1,13 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Docfx.Common;
+using Spectre.Console;
+
 namespace Docfx.Tests;
 
 [Collection("docfx STA")]
-public static class CommandLineTest
+public class CommandLineTest
 {
     [Fact]
     public static void PrintsVersion()
@@ -29,9 +32,34 @@ public static class CommandLineTest
     }
 
     [Fact]
+    public static void PrintsRootUsageInCommandFirstOrder()
+    {
+        using var writer = new StringWriter();
+        var console = AnsiConsole.Create(new()
+        {
+            Ansi = AnsiSupport.No,
+            ColorSystem = ColorSystemSupport.NoColors,
+            Out = new AnsiConsoleOutput(writer),
+        });
+
+        Assert.Equal(0, Program.Run(["-?"], console));
+
+        var output = writer.ToString();
+        Assert.Contains("docfx [COMMAND] [config] [OPTIONS]", output);
+        Assert.DoesNotContain("docfx [config] [OPTIONS] [COMMAND]", output);
+    }
+
+    [Fact]
     public static void FailForUnknownArgs()
     {
-        Assert.Equal(-1, Program.Main(["--unknown"]));
+        try
+        {
+            Assert.Equal(-1, Program.Main(["--unknown"]));
+        }
+        finally
+        {
+            Logger.ResetCount();
+        }
     }
 
     [Fact]

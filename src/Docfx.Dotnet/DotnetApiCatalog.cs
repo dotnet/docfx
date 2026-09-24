@@ -55,7 +55,7 @@ public static partial class DotnetApiCatalog
         }
     }
 
-    internal static async Task Exec(MetadataJsonConfig config, DotnetApiOptions options, string configDirectory, string outputDirectory = null)
+    internal static async Task Exec(MetadataJsonConfig config, DotnetApiOptions options, string configDirectory, string outputDirectory = null, CancellationToken cancellationToken = default)
     {
         var stopwatch = Stopwatch.StartNew();
 
@@ -142,6 +142,7 @@ public static partial class DotnetApiCatalog
             CodeSourceBasePath = configModel?.CodeSourceBasePath,
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
             DisableGitFeatures = configModel?.DisableGitFeatures ?? false,
+            SourceLinkFilter = new(configModel?.SourceLinkExclude),
             NoRestore = configModel?.NoRestore ?? false,
             CategoryLayout = configModel?.CategoryLayout ?? default,
             NamespaceLayout = configModel?.NamespaceLayout ?? default,

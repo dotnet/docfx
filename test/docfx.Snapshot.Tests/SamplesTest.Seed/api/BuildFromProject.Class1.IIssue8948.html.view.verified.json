@@ -6,7 +6,6 @@
     "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "BuildFromProject.html",
     "name": [
       {
         "lang": "csharp",
@@ -250,7 +249,6 @@
     "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
-    "href": "BuildFromProject.html",
     "name": [
       {
         "lang": "csharp",
@@ -305,6 +303,24 @@
       }
     ]
   },
+  "derivedClasses": [
+    {
+      "isEii": false,
+      "isExtensionMethod": false,
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"BuildFromProject.Class1.Issue8948\" displayProperty=\"name\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"BuildFromProject.Class1.Issue8948\" displayProperty=\"name\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 1
+    }
+  ],
   "level": 0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",

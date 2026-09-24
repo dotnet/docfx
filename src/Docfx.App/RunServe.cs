@@ -89,6 +89,17 @@ internal static class RunServe
 
         // Fix the issue that .JSON file is 404 when running docfx serve
         fileServerOptions.StaticFileOptions.ServeUnknownFileTypes = true;
+
+        // Set `Cache-Control` response header. (To avoid browser's default heuristic cache)
+        fileServerOptions.StaticFileOptions.OnPrepareResponse = ctx =>
+        {
+            var headers = ctx.Context.Response.GetTypedHeaders();
+            headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
+            {
+                MaxAge = TimeSpan.FromSeconds(60),
+            };
+        };
+
         return app.UseFileServer(fileServerOptions);
     }
 

@@ -2,21 +2,11 @@
   "conceptual": "\n<p sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/BuildFromProject.md\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"3\">BuildFromProject</a><br>\nAssembly: BuildFromProject.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"6\">public interface Inheritdoc.Issue9736.IJsonApiOptions\n</code></pre>\n<h2 id=\"properties\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"10\">Properties</h2>\n<h3 id=\"BuildFromProject_Inheritdoc_Issue9736_IJsonApiOptions_UseRelativeLinks\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"12\"> UseRelativeLinks</h3>\n<p sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"14\">Whether to use relative links for all resources. <code>false</code> by default.</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"16\">bool UseRelativeLinks { get; }\n</code></pre>\n<h4 id=\"property-value\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"20\">Property Value</h4>\n<p sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"22\"><a href=\"https://learn.microsoft.com/dotnet/api/system.boolean\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"22\">bool</a></p>\n<h4 id=\"examples\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md\" sourcestartlinenumber=\"24\">Examples</h4>\n<pre><code class=\"lang-csharp\">options.UseRelativeLinks = true;</code></pre>\n<pre><code class=\"lang-csharp\">{\n  \"type\": \"articles\",\n  \"id\": \"4309\",\n  \"relationships\": {\n     \"author\": {\n       \"links\": {\n         \"self\": \"/api/shopping/articles/4309/relationships/author\",\n         \"related\": \"/api/shopping/articles/4309/author\"\n       }\n     }\n  }\n}</code></pre>\n",
   "type": "Conceptual",
   "source": {
-    "remote": {
-      "path": "samples/seed/obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md",
-      "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
-    },
     "startLine": 0,
     "endLine": 0
   },
   "path": "obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md",
   "documentation": {
-    "remote": {
-      "path": "samples/seed/obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md",
-      "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
-    },
     "startLine": 0,
     "endLine": 0
   },
@@ -38,5 +28,5 @@
   "_tocPath": "md/toc.html",
   "_tocRel": "toc.html",
   "_disableToc": false,
-  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md/#L1"
+  "docurl": ""
 }
