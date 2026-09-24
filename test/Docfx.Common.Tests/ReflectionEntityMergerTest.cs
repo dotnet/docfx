@@ -46,6 +46,26 @@ public class ReflectionEntityMergerTest
         Assert.Same(overrides.Nested.Nested, sample.Nested.Nested);
     }
 
+    [Fact]
+    public void NullableDefaultsAreExplicitOverwriteValues()
+    {
+        var sample = new NullableDefaults { Required = true, Count = 1 };
+        var merger = new MergerFacade(new ReflectionEntityMerger());
+        merger.Merge(ref sample, new NullableDefaults());
+        Assert.True(sample.Required);
+        Assert.Equal(1, sample.Count);
+        merger.Merge(ref sample, new NullableDefaults { Required = false, Count = 0 });
+        Assert.False(sample.Required);
+        Assert.Equal(0, sample.Count);
+    }
+
+    public class NullableDefaults
+    {
+        public bool? Required { get; set; }
+        [MergeOption(MergeOption.Replace)]
+        public int? Count { get; set; }
+    }
+
     public class BasicSample
     {
         public int IntValue { get; set; }
