@@ -19,17 +19,13 @@ runs:
       cache: ${{ inputs.cache == 'true' && 'npm' || '' }}
       cache-dependency-path: templates/package-lock.json
 
-  - uses: actions/setup-dotnet@v5
+  - uses: actions/setup-dotnet@v6
     with:
       dotnet-version: |
+        11.x
         10.x
         9.x
         8.x
-
-  - uses: actions/setup-dotnet@v5
-    if: env.DOCFX_PREVIEW_BUILD == 'true'
-    with:
-      dotnet-version: 11.0.100-rc.1.26425.128
 
   - uses: actions/cache@v6
     if: inputs.cache == 'true'

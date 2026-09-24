@@ -20,6 +20,8 @@ jobs:
         framework: [net10.0]
         include:
         - os: ubuntu-latest
+          framework: net11.0
+        - os: ubuntu-latest
           framework: net9.0
         - os: ubuntu-latest
           framework: net8.0
