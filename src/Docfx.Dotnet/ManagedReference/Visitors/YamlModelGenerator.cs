@@ -39,9 +39,9 @@ internal class YamlModelGenerator
         if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.CSharp))
             reference.QualifiedNameParts.Add(SyntaxLanguage.CSharp, []);
 
-        reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
-        reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
-        reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
+        reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter, useNamespaceXrefs: true);
+        reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter, useNamespaceXrefs: true);
+        reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter, useNamespaceXrefs: true);
 
         if (!reference.NameParts.ContainsKey(SyntaxLanguage.VB))
             reference.NameParts.Add(SyntaxLanguage.VB, []);
@@ -50,9 +50,9 @@ internal class YamlModelGenerator
         if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.VB))
             reference.QualifiedNameParts.Add(SyntaxLanguage.VB, []);
 
-        reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
-        reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
-        reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter);
+        reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter, useNamespaceXrefs: true);
+        reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter, useNamespaceXrefs: true);
+        reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload, filter, useNamespaceXrefs: true);
     }
 
     public void GenerateSyntax(ISymbol symbol, SyntaxDetail syntax, SymbolFilter filter)
