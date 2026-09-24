@@ -50,14 +50,14 @@ exports.transform = function (model) {
 
             formatExample(child.responses);
             if (child._hasSchemaDetails) {
-                (child.servers || []).forEach(function (server) { server.description = server.description || null; });
+                (child.servers || []).forEach(function (server) { server.description = server.description || ''; });
                 (child.parameters || []).forEach(function (parameter) {
                     parameter.hasContent = parameter.content !== undefined && parameter.content !== null;
                     transformContent(parameter.content);
                     parameter.schemaDetails = schemaDetails(parameter.schema);
                 });
                 if (child.requestBody) {
-                    child.requestBody.description = child.requestBody.description || null;
+                    child.requestBody.description = child.requestBody.description || '';
                     transformContent(child.requestBody.content);
                 }
                 (child.responses || []).forEach(function (response) {
@@ -144,8 +144,8 @@ exports.transform = function (model) {
         details.id = schemaId(name);
         details.name = name;
         if (details.referenceName === name) {
-            details.referenceName = null;
-            details.referenceId = null;
+            details.referenceName = '';
+            details.referenceId = '';
         }
         model.definitions.push({ schemaDetails: details });
     });
@@ -170,15 +170,16 @@ exports.transform = function (model) {
     }
 
     function schemaDetails(schema) {
-        if (!schema) return null;
+        if (!schema) return false;
         var name = schema['x-internal-loop-ref-name'] || schema['x-internal-ref-name'];
-        // Explicit empty fields prevent recursive Mustache partials from looking up an ancestor's schema.
+        // Null fields fall through to ancestor scopes in Docfx's Mustache renderer.
+        // Empty strings and false keep missing fields local to this schema.
         return {
-            type: schema.type || null,
-            format: schema.format || null,
-            description: schema.description || null,
-            referenceName: name || null,
-            referenceId: name && schemas[name] ? schemaId(name) : null,
+            type: schema.type || '',
+            format: schema.format || '',
+            description: schema.description || '',
+            referenceName: name || '',
+            referenceId: name && schemas[name] ? schemaId(name) : '',
             properties: Object.keys(schema.properties || {}).map(function (key) {
                 return {
                     key: key,
@@ -199,14 +200,14 @@ exports.transform = function (model) {
 
     function exampleDetails(examples) {
         return (examples || []).map(function (example) {
-            var externalValue = example.externalValue || null;
+            var externalValue = example.externalValue || '';
             return {
-                name: example.name || null,
-                mimeType: example.mimeType || null,
-                content: typeof example.content === "string" ? example.content : null,
+                name: example.name || '',
+                mimeType: example.mimeType || '',
+                content: typeof example.content === "string" ? example.content : '',
                 hasContent: typeof example.content === "string",
                 externalValue: externalValue,
-                externalHref: externalValue && /^https?:\/\/[^\s\\]+$/i.test(externalValue) ? externalValue : null
+                externalHref: externalValue && /^https?:\/\/[^\s\\]+$/i.test(externalValue) ? externalValue : ''
             };
         });
     }
@@ -216,7 +217,7 @@ exports.transform = function (model) {
             media.schemaDetails = schemaDetails(media.schema);
             media.examples = media.examples || [];
             media.examples.forEach(function (example) {
-                example.name = example.name || null;
+                example.name = example.name || '';
                 example.mimeType = example.mimeType || media.mimeType;
             });
         });

@@ -21,6 +21,9 @@ Each swagger file produces one output HTML file.
 
 ## OpenAPI 3 documents
 
+See the [OpenAPI 3.0 example](openapi-3-example.yml) for a generated API page with
+parameters, a request body, response examples and reusable schemas.
+
 Include the entry documents in `build.content`, for example:
 
 ```json

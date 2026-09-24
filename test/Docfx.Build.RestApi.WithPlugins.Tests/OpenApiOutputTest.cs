@@ -352,6 +352,46 @@ public class OpenApiOutputTest : TestBase
     }
 
     [Theory]
+    [InlineData("default")]
+    [InlineData("statictoc")]
+    [InlineData("modern")]
+    public void MissingSchemaAndExampleFieldsDoNotInheritParentValues(string template)
+    {
+        var input = GetRandomFolder();
+        var file = CreateFile("nested.json", """
+            {
+              "openapi":"3.0.3","info":{"title":"Parent API","version":"1","description":"API description."},
+              "paths":{"/items":{"get":{"operationId":"read","tags":["Parent tag"],
+                "responses":{"200":{"description":"Response description.","content":{"application/json":{
+                  "schema":{"$ref":"#/components/schemas/Container"},"example":{"child":"value"}
+                }}}}}}},
+              "components":{"schemas":{"Container":{
+                "type":"object","format":"parent-format","description":"Parent schema description.",
+                "properties":{"child":{"type":"string"}}
+              }}}
+            }
+            """, input);
+        var files = new FileCollection(Directory.GetCurrentDirectory());
+        files.Add(DocumentType.Article, [file], input);
+
+        var output = Build(input, files, template, false, false);
+        var article = ReadHtml(output, "nested.html").SelectSingleNode("//article");
+        var childSchemas = article.SelectNodes(".//tr[td/span[text()='child']]/td[2]/div[@class='rest-schema']");
+        Assert.NotEmpty(childSchemas);
+        foreach (var child in childSchemas)
+        {
+            Assert.Equal("string", child.SelectSingleNode("./span[@class='schema-type']").InnerText);
+            Assert.Null(child.SelectSingleNode("./a[@class='typelink']"));
+            Assert.Null(child.SelectSingleNode("./span[@class='schema-format']"));
+            Assert.Null(child.SelectSingleNode("./div[@class='markdown description']"));
+        }
+        Assert.Null(article.SelectSingleNode(".//div[@class='example-name']"));
+        Assert.Contains("Parent schema description.", article.InnerText);
+        Assert.Contains("Response description.", article.InnerText);
+        Assert.Contains("value", Assert.Single(article.SelectNodes(".//pre/code"), code => code.InnerText.Contains("child")).InnerText);
+    }
+
+    [Theory]
     [InlineData("UnsupportedBooleanSchema")]
     [InlineData("UnsupportedExternalFragment")]
     [InlineData("UnsupportedOpenApiConst")]

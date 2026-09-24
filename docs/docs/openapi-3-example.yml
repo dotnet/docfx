@@ -1,0 +1,123 @@
+openapi: 3.0.3
+info:
+  title: Catalog API (OpenAPI 3.0)
+  version: '1.0'
+  description: |
+    This page is generated directly from an **OpenAPI 3.0.3** document.
+    Explore path and query parameters, a JSON request body, response examples,
+    and reusable schemas below. The server address is illustrative.
+
+    See the [REST API guide](rest-api-docs.md#openapi-3-documents) to document your own API.
+servers:
+  - url: https://api.example.com/v1
+    description: Example catalog server.
+tags:
+  - name: Products
+    description: Read and create products in a catalog.
+paths:
+  /products/{id}:
+    get:
+      operationId: getProduct
+      tags: [Products]
+      summary: Get a product
+      description: Returns a product by its identifier.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The product identifier.
+          schema:
+            type: string
+        - name: includeArchived
+          in: query
+          description: Include products that are no longer available.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: The requested product.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              example:
+                id: notebook
+                name: Paper notebook
+                price: 12.5
+                status: available
+        '404':
+          description: No product has this identifier.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: product_not_found
+                message: The product does not exist.
+  /products:
+    post:
+      operationId: createProduct
+      tags: [Products]
+      summary: Create a product
+      description: Creates a product from a JSON request body.
+      requestBody:
+        required: true
+        description: The name and price of the new product.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProduct'
+            example:
+              name: Paper notebook
+              price: 12.5
+      responses:
+        '201':
+          description: The product was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              example:
+                id: notebook
+                name: Paper notebook
+                price: 12.5
+                status: available
+components:
+  schemas:
+    NewProduct:
+      type: object
+      required: [name, price]
+      properties:
+        name:
+          type: string
+          description: The **display name** of the product.
+          minLength: 1
+        price:
+          type: number
+          format: double
+          description: Unit price in the catalog currency.
+          minimum: 0
+    Product:
+      allOf:
+        - $ref: '#/components/schemas/NewProduct'
+        - type: object
+          required: [id, status]
+          properties:
+            id:
+              type: string
+              description: The product identifier.
+            status:
+              type: string
+              description: Current availability.
+              enum: [available, archived]
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: A machine-readable error code.
+        message:
+          type: string
+          description: A description of the error.

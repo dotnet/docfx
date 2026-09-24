@@ -96,19 +96,19 @@ test('REST prepares every request and response media schema and named example', 
   const child = model.children[0]
   assert.equal(child.path, '/items')
   assert.equal(child.requestUrl, 'https://api.example.test/v2/items')
-  assert.equal(child.servers[0].description, null)
+  assert.equal(child.servers[0].description, '')
   assert.equal(child.parameters[0].schemaDetails.type, 'string | null')
   assert.equal(child.parameters[0].schemaDetails.format, 'uuid')
-  assert.equal(child.requestBody.description, null)
+  assert.equal(child.requestBody.description, '')
   assert.deepEqual(child.requestBody.content.map(media => media.schemaDetails.type), ['object', 'string'])
   assert.deepEqual(child.requestBody.content[0].examples[0], {
     name: 'created', mimeType: 'application/json', content: '{\n  "id": 1\n}'
   })
   assert.equal(child.responses[0].content[0].schemaDetails.items.type, 'integer')
   assert.equal(child.responses[0].content[0].examples[0].content, '[\n  1,\n  2\n]')
-  assert.equal(child.responses[0].content[1].examples[0].name, null)
+  assert.equal(child.responses[0].content[1].examples[0].name, '')
   assert.deepEqual(child.responses[0].content[2].examples, [])
-  assert.equal(child.responses[0].content[2].schemaDetails, null)
+  assert.equal(child.responses[0].content[2].schemaDetails, false)
   assert.equal(child.responses[0].hasContent, true)
   assert.equal(child.responses[1].hasContent, true)
   assert.equal(child.responses[0].examples[0].content, 'flattened response')
@@ -153,7 +153,7 @@ test('REST keeps nested composition, constraints, unions, boolean schemas, and f
   assert.equal(composition[0].schemas[0].properties[0].value.type, 'any value')
   assert.equal(composition[3].schemas[0].type, 'no value')
   assert.deepEqual(composition[3].schemas[0].properties, [])
-  assert.equal(composition[3].schemas[0].items, null)
+  assert.equal(composition[3].schemas[0].items, false)
   assert.deepEqual(composition[3].schemas[0].composition, [])
 })
 
@@ -207,7 +207,7 @@ test('REST adds inline reference definitions and leaves unresolved references as
   const details = model.children[0].parameters[0].schemaDetails
   assert.equal(details.referenceId, model.definitions[0].schemaDetails.id)
   assert.equal(details.properties[0].value.referenceName, 'Missing')
-  assert.equal(details.properties[0].value.referenceId, null)
+  assert.equal(details.properties[0].value.referenceId, '')
 })
 
 test('REST renders parameter content and keeps same-name external schema references distinct', () => {
@@ -242,7 +242,7 @@ test('REST renders parameter content and keeps same-name external schema referen
   })
   const parameter = model.children[0].parameters[0]
   assert.equal(parameter.hasContent, true)
-  assert.equal(parameter.schemaDetails, null)
+  assert.equal(parameter.schemaDetails, false)
   assert.equal(parameter.default, '{"active":true}')
   assert.equal(parameter.content[0].exampleDetails[0].content, '{\n  "active": true\n}')
   assert.equal(parameter.content[0].exampleDetails[0].name, 'active')
@@ -266,12 +266,12 @@ test('REST renders schema examples without inheriting names, MIME types, or ance
   const details = model.definitions[0].schemaDetails
   assert.deepEqual(schema, original)
   assert.deepEqual(details.exampleDetails[0], {
-    name: null,
-    mimeType: null,
+    name: '',
+    mimeType: '',
     content: '{"state":"active"}',
     hasContent: true,
-    externalValue: null,
-    externalHref: null
+    externalValue: '',
+    externalHref: ''
   })
   assert.equal(details.exampleDetails[1].hasContent, true)
   assert.equal(details.exampleDetails[1].content, '')
@@ -298,8 +298,8 @@ test('REST displays external example URLs without inventing content or linking e
   })
   const examples = model.children[0].responses[0].content[0].exampleDetails
   assert.deepEqual(examples.map(example => example.externalValue), urls)
-  assert.deepEqual(examples.map(example => example.externalHref), [...urls.slice(0, 2), null, null])
-  assert.ok(examples.every(example => example.name === 'external' && example.content === null && !example.hasContent))
+  assert.deepEqual(examples.map(example => example.externalHref), [...urls.slice(0, 2), '', ''])
+  assert.ok(examples.every(example => example.name === 'external' && example.content === '' && !example.hasContent))
 })
 
 for (const flagLocation of ['root', 'operation']) {

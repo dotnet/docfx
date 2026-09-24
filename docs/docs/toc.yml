@@ -10,6 +10,8 @@
 - href: dotnet-api-docs.md
 - href: sdk-compatibility.md
 - href: rest-api-docs.md
+- name: OpenAPI 3.0 example
+  href: openapi-3-example.yml
 - href: openapi-unsupported-features.md
 - href: links-and-cross-references.md
 - href: pdf.md
