@@ -54,7 +54,7 @@ internal static class RestApiDocumentReader
                     }
                 }
             }
-            return OpenApi2ModelConverter.Convert(swagger);
+            return SwaggerModelConverter.Convert(swagger);
         }
         return OpenApiDocumentReader.Parse(raw, format, new Uri(Path.GetFullPath(path)), header?.Version);
     }
