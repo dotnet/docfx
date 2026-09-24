@@ -55,16 +55,16 @@ public class GenerateMetadataFromAssemblyTest
             Assert.Equal("XmlTasks.ToNamespace(string, string)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("TupleLibrary.XmlTasks.ToNamespace(string, string)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
 
-            Assert.Equal("public (string, string) ToNamespace(string prefix, string uri)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public (string prefix, string uri) ToNamespace(string prefix, string uri)", method.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         {
             var method = @class.Items.Single(i => i.Name == "TupleLibrary.XmlTasks.XmlPeek(System.String,System.ValueTuple{System.String,System.String}[])");
-            Assert.Equal("XmlPeek(string, params (string, string)[])", method.DisplayNames[SyntaxLanguage.CSharp]);
-            Assert.Equal("XmlTasks.XmlPeek(string, params (string, string)[])", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-            Assert.Equal("TupleLibrary.XmlTasks.XmlPeek(string, params (string, string)[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("XmlPeek(string, params (string prefix, string uri)[])", method.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("XmlTasks.XmlPeek(string, params (string prefix, string uri)[])", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+            Assert.Equal("TupleLibrary.XmlTasks.XmlPeek(string, params (string prefix, string uri)[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
 
-            Assert.Equal("public string XmlPeek(string xpath, params (string, string)[] namespaces)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal("public string XmlPeek(string xpath, params (string prefix, string uri)[] namespaces)", method.Syntax.Content[SyntaxLanguage.CSharp]);
         }
     }
 }
