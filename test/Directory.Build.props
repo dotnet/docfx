@@ -43,7 +43,8 @@
   </PropertyGroup>
 
   <!-- Settings for CI environment -->
-  <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(PERCY_TOKEN)' == ''">
+  <!-- Percy is a separate run and must not overwrite the normal test reports. -->
+  <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true' AND '$(PERCY_TOKEN)' == '' AND '$(PERCY_TESTS)' != 'true'">
     <!-- Enable reporters (trx/html/ctrf ) -->
     <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-xunit-trx  --report-xunit-trx-filename  TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).trx</TestingPlatformCommandLineArguments>
     <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --report-xunit-html --report-xunit-html-filename TestResults-$(MSBuildProjectName)-$(TargetFramework)-$(RUNNER_OS).html</TestingPlatformCommandLineArguments>
