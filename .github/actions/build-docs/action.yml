@@ -1,0 +1,14 @@
+name: Build documentation site
+description: Build the complete documentation site, including the seed sample
+runs:
+  using: composite
+  steps:
+  - shell: pwsh
+    run: |
+      # A fresh site rebuild has no assembly output from the snapshot tests.
+      dotnet build samples/seed/dotnet/assembly/BuildFromAssembly.csproj
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      dotnet run -c Release --no-build -f net10.0 --project src/docfx -- docs/docfx.json
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      dotnet run -c Release --no-build -f net10.0 --project src/docfx -- samples/seed/docfx.json --output docs/_site/seed
+      if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

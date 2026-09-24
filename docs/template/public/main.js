@@ -4,6 +4,12 @@
  */
 
 export default {
+  start: () => {
+    const element = document.getElementById('sdk-compatibility-report')
+    if (element) import('./sdk-compatibility.mjs').catch(() => {
+      element.textContent = 'Compatibility evidence unavailable. The report viewer could not be loaded.'
+    })
+  },
   iconLinks: [
     {
       icon: 'github',
