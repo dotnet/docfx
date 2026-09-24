@@ -16,8 +16,6 @@ To add REST API docs, include the swagger JSON file to the `build` config in `do
 
 Each swagger file produces one output HTML file.
 
-Parameter, response, and definition schemas display nested properties, array items, allowed values, and examples. Schemas using `allOf` display each member under **All of**, preserving the individual schemas and their descriptions.
-
 
 ## Organize REST APIs using Tags
 
