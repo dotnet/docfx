@@ -42,6 +42,9 @@ jobs:
 
     - name: dotnet test
       run: dotnet test -c Release -f net10.0 --no-build
+
+    - name: dotnet test
+      run: dotnet test -c Release -f net11.0 --no-build
     
     - name: dotnet pack
       run: dotnet pack -c Release /p:Version=${{ steps.version.outputs.version }} /p:ApiCompatGenerateSuppressionFile=true -o drop/nuget
@@ -149,7 +152,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         TOOL_VERSION: ${{ needs.build-nightly-package.outputs.version }}
       run: |
-        ./test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/compatibility-matrix.json -OutputDirectory drop/compatibility-report -NightlyPackage "drop/nightly/docfx.$env:TOOL_VERSION.nupkg"
+        ./test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/compatibility-matrix.json -OutputDirectory drop/compatibility-report -NightlyPackage "drop/nightly/docfx.$env:TOOL_VERSION.nupkg" -NightlyFrameworks net8.0,net9.0,net10.0,net11.0
     - name: Upload compatibility evidence, including failed cases
       if: always()
       uses: actions/upload-artifact@v7

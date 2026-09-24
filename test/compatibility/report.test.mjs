@@ -36,6 +36,19 @@ function report(matrix = [{ channel: '10.0', sdk: '10.0.401', projectTfm: 'net10
   }))))
   return data
 }
+function multiToolReport(matrix = resolveMatrix(matrixConfig, sdkIndex)) {
+  const data = report(matrix)
+  data.schemaVersion = 2
+  data.toolTargets = [
+    { channel: 'stable', framework: 'net10.0' },
+    ...['net8.0', 'net9.0', 'net10.0', 'net11.0'].map(framework => ({ channel: 'nightly', framework })),
+  ]
+  data.results = data.results.flatMap(row => data.toolTargets.filter(t => t.channel === row.channel).map(({ framework }) => ({
+    ...row, toolFramework: framework, toolRuntimeTfm: framework,
+    log: row.log.replace(`${row.channel}-`, `${row.channel}-${framework}-`),
+  })))
+  return data
+}
 function run(overrides = {}) {
   return { id: 42, workflow_id: 7, path: '.github/workflows/nightly.yml', head_repository: { full_name: 'dotnet/docfx' }, head_branch: 'main', head_sha: sha, event: 'schedule', status: 'completed', conclusion: 'failure', run_attempt: 1, ...overrides }
 }
@@ -416,6 +429,70 @@ test('validates and renders 20 distinct cases in matrix order with net10.0 tool 
   assert.match(html, /<strong>20 passed<\/strong> · 0 incompatible<\/p>/)
 })
 
+test('validates and renders all 50 cases across four nightly tool targets', async () => {
+  const data = multiToolReport()
+  assert.equal(data.results.length, 50)
+  assert.equal(validateReport(data, data.source, now), data)
+  assert.equal(await latestReport(adapter(), async () => data, matrixConfig.channels), data)
+  const html = renderReport(data, now)
+  const rows = [...html.matchAll(/<tbody>(.*?)<\/tbody>/gs)][0][1].matchAll(/<tr>(.*?)<\/tr>/gs)
+  for (const [i, row] of [...rows].entries()) {
+    const indices = [...row[1].matchAll(/data-case-index="(\d+)"/g)].map(match => Number(match[1]))
+    assert.equal(indices.length, 10)
+    assert.ok(indices.every(index => data.results[index].sdk === data.matrix[i].sdk && data.results[index].projectTfm === data.matrix[i].projectTfm))
+    assert.equal(new Set(indices.map(index => `${data.results[index].channel}/${data.results[index].toolFramework}/${data.results[index].scenario}`)).size, 10)
+  }
+  for (const { channel, framework } of data.toolTargets) {
+    const version = channel === 'stable' ? '2.80.1' : '2.80.2-preview.1'
+    assert.equal(html.split(`${version} &amp; ${framework}</span>`).length - 1, 2)
+  }
+  assert.equal((html.match(/data-case-index=/g) ?? []).length, 50)
+})
+
+test('requires each requested tool target and rejects fallback runtimes and mixed package bytes', () => {
+  for (const framework of ['net8.0', 'net9.0', 'net10.0', 'net11.0']) {
+    const complete = multiToolReport()
+    const index = complete.results.findIndex(r => r.channel === 'nightly' && r.toolFramework === framework)
+    for (const mutate of [
+      r => r.results.splice(index, 1),
+      r => { r.results[index] = r.results.find(row => row.channel === 'nightly' && row.toolFramework !== framework) },
+      r => { r.results[index].toolRuntimeTfm = framework === 'net8.0' ? 'net10.0' : 'net8.0' },
+      r => { r.results[index].packageSha256 = 'c'.repeat(64) },
+      r => { r.results[index].toolVersion = '2.80.3-preview.1' },
+    ]) {
+      const data = structuredClone(complete); mutate(data)
+      assert.throws(() => validateReport(data, undefined, now))
+    }
+  }
+  for (const mutate of [
+    r => { delete r.toolTargets }, r => r.toolTargets.push(r.toolTargets[0]),
+    r => { r.toolTargets[0].channel = 'unknown' }, r => { r.toolTargets[0].framework = 'invalid' },
+  ]) {
+    const data = multiToolReport(); mutate(data)
+    assert.throws(() => validateReport(data, undefined, now))
+  }
+})
+
+test('trusted retrieval rejects an omitted nightly target while bounded local reports remain valid', async () => {
+  const data = multiToolReport()
+  data.toolTargets = data.toolTargets.filter(t => t.framework !== 'net9.0')
+  data.results = data.results.filter(r => r.toolFramework !== 'net9.0')
+  assert.equal(validateReport(data, undefined, now), data)
+  await assert.rejects(latestReport(adapter(), async () => data, matrixConfig.channels), /reviewed tool framework matrix/)
+})
+
+test('failed tool installations retain their requested framework in the report and headers', () => {
+  const data = multiToolReport()
+  for (const row of data.results.filter(r => r.channel === 'nightly' && ['net8.0', 'net9.0'].includes(r.toolFramework))) {
+    row.toolRuntimeTfm = null; row.toolVersion = null; row.packageSha256 = null; row.outcome = 'infrastructure-error'
+  }
+  assert.equal(validateReport(data, data.source, now), data)
+  const html = renderReport(data, now)
+  for (const framework of ['net8.0', 'net9.0']) assert.equal(html.split(`Not measured &amp; ${framework}</span>`).length - 1, 2)
+  assert.equal((html.match(/data-case-index=/g) ?? []).length, 50)
+  assert.equal((html.match(/data-outcome="infrastructure-error"/g) ?? []).length, 20)
+})
+
 test('each net11.0 observation is required and cannot be replaced with the SDK 11 net10.0 row', async () => {
   const complete = report(resolveMatrix(matrixConfig, sdkIndex))
   const indices = complete.results.flatMap((r, i) => r.projectTfm === 'net11.0' ? [i] : [])
@@ -465,11 +542,15 @@ function harnessIdentifiers(contexts) {
       if ($measurement) { Invoke-Expression $measurement.Extent.Text }
       $cases = foreach ($target in ('${matrix}' | ConvertFrom-Json)) {
         foreach ($channel in @('stable', 'nightly')) {
-          $tool = @{ channel = $channel }
-          foreach ($scenario in @('basic', 'razor')) {
-            Invoke-Expression ($assignments -join [Environment]::NewLine)
-            if (!$id.Contains($target.projectTfm) -or $directory -ne (Join-Path $work $id)) { throw 'Incorrect case identity' }
-            @{ id = $id; log = $logName; directory = $directory }
+          $frameworks = if ($channel -eq 'nightly') { @('net8.0', 'net9.0', 'net10.0', 'net11.0') } else { @('net10.0') }
+          foreach ($framework in $frameworks) {
+            $tool = @{ channel = $channel; framework = $framework }
+            foreach ($scenario in @('basic', 'razor')) {
+              Invoke-Expression ($assignments -join [Environment]::NewLine)
+              if (!$id.Contains($target.projectTfm) -or $directory -ne (Join-Path $work $id)) { throw 'Incorrect case identity' }
+              if (!$id.Contains($framework)) { throw 'Missing tool framework in case identity' }
+              @{ id = $id; log = $logName; directory = $directory }
+            }
           }
         }
       }
@@ -479,11 +560,11 @@ function harnessIdentifiers(contexts) {
   `], { encoding: 'utf8', stdio: 'pipe' }))
 }
 
-test('actual harness identifiers isolate all 20 work directories and log files by project TFM', () => {
+test('actual harness identifiers isolate all 50 work directories and logs by tool and project TFM', () => {
   const [{ cases }] = harnessIdentifiers([{ runId: '42', runAttempt: '1' }])
-  assert.equal(cases.length, 20)
-  assert.equal(new Set(cases.map(row => row.directory)).size, 20)
-  assert.equal(new Set(cases.map(row => row.log)).size, 20)
+  assert.equal(cases.length, 50)
+  assert.equal(new Set(cases.map(row => row.directory)).size, 50)
+  assert.equal(new Set(cases.map(row => row.log)).size, 50)
   for (const row of cases) assert.match(row.log, /^logs\/[a-zA-Z0-9.-]+\.log$/)
 })
 
@@ -494,7 +575,7 @@ test('actual harness logs never reuse URLs across runs, retries or repeated loca
     { runId: null, runAttempt: null }, { runId: null, runAttempt: null },
   ])
   const urls = runs.flatMap(({ cases }) => cases.map(row => caseLogUrl(row, 'https://example.test/reports/report.json').href))
-  assert.equal(new Set(urls).size, 120, 'Different measurements must not serve different evidence at the same log URL')
+  assert.equal(new Set(urls).size, 300, 'Different measurements must not serve different evidence at the same log URL')
 })
 
 test('discovers an exact official stable release and rejects previews or malformed versions', () => {
@@ -540,12 +621,12 @@ test('exact installer refuses an older installed version and never retries a mis
     function Invoke-Logged($Arguments, $Log) { $calls.Add($Arguments); return @{ code = $script:exitCode; text = 'Synthetic installer boundary' } }
     try {
       $script:exitCode = 1
-      $missing = Install-Tool 'stable' ''
+      $missing = Install-Tool 'stable' '' 'net10.0'
       if (!$missing.error -or $calls.Count -ne 1) { throw 'Missing package silently retried or passed' }
       if (($calls[0] -join ' ') -notmatch '--version 2.80.1') { throw 'Exact version was not requested' }
-      New-Item -ItemType Directory (Join-Path $work 'stable/.store/docfx/2.78.5') -Force | Out-Null
+      New-Item -ItemType Directory (Join-Path $work 'stable-net10.0/.store/docfx/2.78.5') -Force | Out-Null
       $script:exitCode = 0
-      $wrong = Install-Tool 'stable' ''
+      $wrong = Install-Tool 'stable' '' 'net10.0'
       if ($wrong.error -notmatch 'differs from the exact requested version' -or $calls.Count -ne 2) { throw 'Wrong package identity accepted or retried' }
     } finally { Remove-Item $work -Recurse -Force }
   `
@@ -634,7 +715,7 @@ const readArchive = (archive, evidence) => execFileSync('pwsh', ['-NoProfile', '
 test('archive and prepare export only named case logs and preserve JSON/log bytes', async () => {
   const temp = await mkdtemp(join(tmpdir(), 'docfx-evidence-test-'))
   try {
-    const data = report()
+    const data = multiToolReport()
     const original = Buffer.from('\ufeff' + JSON.stringify(data, null, 2).replaceAll('\n', '\r\n') + '\r\n')
     const bytes = Buffer.from('\ufeffunit log\r\n\u001b[31mwarning XX123: unit text\u001b[0m\r\n')
     const archive = join(temp, 'evidence.zip'); const evidence = join(temp, 'evidence'); const output = join(temp, 'site', 'sdk-compatibility.json')
@@ -800,7 +881,7 @@ test('reporting check warns without failing incompatible observations; strict ch
         assert.equal(result.status, strict && outcome === 'incompatible' ? 1 : 0, result.stderr)
         const markdown = await readFile(summary, 'utf8')
         assert.match(markdown, strict ? /Strict mode/ : /Reporting mode/)
-        assert.ok(markdown.includes(`| nightly | 2.80.2-preview.1 | 10.0.401 | net10.0 | razor | ${outcome} |`))
+        assert.ok(markdown.includes(`| nightly | 2.80.2-preview.1 | net10.0 | 10.0.401 | net10.0 | razor | ${outcome} |`))
         if (outcome === 'incompatible') {
           assert.match(result.stderr, /::warning title=SDK compatibility::1 incompatible result/)
           assert.match(result.stdout, /3 passed, 1 incompatible, 0 unavailable, 0 infrastructure-error/)
