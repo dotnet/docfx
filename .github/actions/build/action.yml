@@ -14,6 +14,11 @@ runs:
         9.x
         8.x
 
+  - uses: actions/setup-dotnet@v5
+    if: env.DOCFX_PREVIEW_BUILD == 'true'
+    with:
+      dotnet-version: 11.0.100-rc.1.26425.128
+
   - name: Install fonts-noto-color-emoji package (Linux only)
     if: runner.os == 'Linux'
     shell: bash

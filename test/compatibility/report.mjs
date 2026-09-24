@@ -70,6 +70,11 @@ export async function latestReport(api, readArchive, expectedMatrix) {
         const key = t => `${t.channel}/${t.projectTfm}`
         if (JSON.stringify(report.matrix.map(key).sort()) !== JSON.stringify(expectedMatrix.map(key).sort()) || report.matrix.some(t => !t.sdk.startsWith(`${t.channel}.`))) throw new Error('Report differs from the reviewed SDK channel matrix.')
       }
+      if (expectedMatrix && report.schemaVersion === 2) {
+        const expectedTools = ['stable/net10.0', ...['net8.0', 'net9.0', 'net10.0', 'net11.0'].map(tfm => `nightly/${tfm}`)]
+        const actualTools = report.toolTargets.map(t => `${t.channel}/${t.framework}`)
+        if (JSON.stringify(actualTools.sort()) !== JSON.stringify(expectedTools.sort())) throw new Error('Report differs from the reviewed tool framework matrix.')
+      }
       return report
     }
     if (runs.length < 100) break
@@ -232,8 +237,8 @@ export async function main([command, path, output, ...extra]) {
         console.error(process.env.GITHUB_ACTIONS === 'true' ? `::error title=SDK compatibility::${error}` : `Error: ${error}`)
       }
       if (process.env.GITHUB_STEP_SUMMARY) {
-        const rows = report.results.map(r => `| ${r.channel} | ${r.toolVersion ?? 'Not measured'} | ${r.sdk} | ${r.projectTfm} | ${r.scenario} | ${r.outcome} |`).join('\n')
-        await writeFile(process.env.GITHUB_STEP_SUMMARY, `### SDK compatibility\n\n${summary}\n\n${policy}\n\nSource: ${report.source.sha}\n\n| DocFX channel | Package version | Project SDK | Project TFM | Scenario | Outcome |\n| --- | --- | --- | --- | --- | --- |\n${rows}\n\n`, { flag: 'a' })
+        const rows = report.results.map(r => `| ${r.channel} | ${r.toolVersion ?? 'Not measured'} | ${r.toolFramework ?? r.toolRuntimeTfm ?? 'Not measured'} | ${r.sdk} | ${r.projectTfm} | ${r.scenario} | ${r.outcome} |`).join('\n')
+        await writeFile(process.env.GITHUB_STEP_SUMMARY, `### SDK compatibility\n\n${summary}\n\n${policy}\n\nSource: ${report.source.sha}\n\n| DocFX channel | Package version | Tool TFM | Project SDK | Project TFM | Scenario | Outcome |\n| --- | --- | --- | --- | --- | --- | --- |\n${rows}\n\n`, { flag: 'a' })
       }
       process.exitCode = unmeasured || (strict && incompatible) ? 1 : 0
       break

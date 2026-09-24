@@ -6,6 +6,7 @@ param(
     [Parameter(Mandatory)][string] $MatrixPath,
     [Parameter(Mandatory)][string] $OutputDirectory,
     [string] $NightlyPackage,
+    [ValidateSet('net8.0', 'net9.0', 'net10.0', 'net11.0')][string[]] $NightlyFrameworks = @('net10.0'),
     [string] $NuGetConfig,
     [string] $StableVersion,
     [string] $StableVersionReason,
@@ -17,6 +18,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 if ($StableVersion -and ($StableVersion -notmatch '^\d+\.\d+\.\d+$' -or -not $StableVersionReason -or $SkipStable -or $env:GITHUB_ACTIONS -eq 'true')) { throw 'An explicit stable version requires a reason and is allowed only for local released-package measurements.' }
+if (@($NightlyFrameworks | Select-Object -Unique).Count -ne $NightlyFrameworks.Count) { throw 'Duplicate nightly tool frameworks.' }
 $matrix = @(Get-Content -LiteralPath $MatrixPath -Raw | ConvertFrom-Json)
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
 if ((Test-Path -LiteralPath $OutputDirectory) -and @(Get-ChildItem -LiteralPath $OutputDirectory -Force).Count -gt 0) { throw 'Output directory must be empty to prevent mixing evidence from different runs.' }
@@ -53,12 +55,13 @@ function Invoke-Logged([string[]] $Arguments, [string] $Log) {
     return @{ code = $code; text = $output }
 }
 
-function Install-Tool([string] $Channel, [string] $Package) {
-    $tool = @{ channel = $Channel; version = $null; runtimeTfm = $null; packageSha256 = $null; dll = $null; error = $null; selection = $null }
-    $log = Join-Path $logs "$Channel-install.log"
+function Install-Tool([string] $Channel, [string] $Package, [string] $Framework) {
+    $tool = @{ channel = $Channel; framework = $Framework; version = $null; runtimeTfm = $null; packageSha256 = $null; dll = $null; error = $null; selection = $null }
+    $identity = "$Channel-$Framework"
+    $log = Join-Path $logs "$identity-install.log"
     try {
         $expectedVersion = $null
-        $install = @('tool', 'install', 'docfx', '--framework', 'net10.0', '--tool-path', (Join-Path $work $Channel))
+        $install = @('tool', 'install', 'docfx', '--framework', $Framework, '--tool-path', (Join-Path $work $identity))
         if ($Channel -eq 'stable') {
             $tool.selection = @{ mode = 'latest-release'; requestedVersion = $null; reason = 'Latest stable GitHub release; no older-version fallback.' }
             if ($StableVersion) {
@@ -83,7 +86,7 @@ function Install-Tool([string] $Channel, [string] $Package) {
                 if ($manifest.package.metadata.id -ne 'docfx') { throw 'Not a DocFX tool package.' }
                 $expectedVersion = [string] $manifest.package.metadata.version
             } finally { $archive.Dispose() }
-            $config = Join-Path $work "$Channel.config"
+            $config = Join-Path $work "$identity.config"
             $feed = [Security.SecurityElement]::Escape([IO.Path]::GetDirectoryName($Package))
             "<configuration><packageSources><clear/><add key=`"exact-package`" value=`"$feed`"/></packageSources></configuration>" | Set-Content $config
             $install += @('--version', $expectedVersion, '--configfile', $config)
@@ -92,15 +95,17 @@ function Install-Tool([string] $Channel, [string] $Package) {
         }
         $result = Invoke-Logged $install $log
         if ($result.code -ne 0) { throw 'Tool installation failed; see installation log.' }
-        $store = Join-Path $work "$Channel/.store/docfx"
+        $store = Join-Path $work "$identity/.store/docfx"
         $versions = @(Get-ChildItem -LiteralPath $store -Directory)
         if ($versions.Count -ne 1) { throw 'Expected exactly one installed package version.' }
         if ($expectedVersion -ne $versions[0].Name) { throw 'Installed package version differs from the exact requested version.' }
         $tool.version = $versions[0].Name
         if ($Channel -eq 'stable' -and $tool.version.Contains('-')) { throw 'Stable installation selected a prerelease.' }
-        $configs = @(Get-ChildItem -LiteralPath $store -Filter docfx.runtimeconfig.json -Recurse | Where-Object { $_.FullName -match '[\\/]tools[\\/]net10\.0[\\/]any[\\/]' })
-        if ($configs.Count -ne 1) { throw 'Expected one installed net10.0 tool runtime configuration.' }
+        $frameworkPath = '[\\/]tools[\\/]' + [Regex]::Escape($Framework) + '[\\/]any[\\/]'
+        $configs = @(Get-ChildItem -LiteralPath $store -Filter docfx.runtimeconfig.json -Recurse | Where-Object { $_.FullName -match $frameworkPath })
+        if ($configs.Count -ne 1) { throw "Expected one installed $Framework tool runtime configuration." }
         $tool.runtimeTfm = (Get-Content $configs[0].FullName -Raw | ConvertFrom-Json).runtimeOptions.tfm
+        if ($tool.runtimeTfm -ne $Framework) { throw 'Installed tool target framework differs from the requested framework.' }
         $tool.dll = Join-Path $configs[0].DirectoryName 'docfx.dll'
         $nupkg = Join-Path $store "$($tool.version)/docfx/$($tool.version)/docfx.$($tool.version).nupkg"
         if (-not (Test-Path -LiteralPath $nupkg)) { throw 'Installed package archive is missing from the isolated tool store.' }
@@ -119,8 +124,10 @@ try {
     Push-Location $work
     try {
         Invoke-Logged @('--info') (Join-Path $logs 'environment.log') | Out-Null
-        if (-not $SkipStable) { $tools.Add((Install-Tool 'stable' '')) }
-        if ($NightlyPackage) { $tools.Add((Install-Tool 'nightly' $NightlyPackage)) }
+        if (-not $SkipStable) { $tools.Add((Install-Tool 'stable' '' 'net10.0')) }
+        if ($NightlyPackage) {
+            foreach ($framework in $NightlyFrameworks) { $tools.Add((Install-Tool 'nightly' $NightlyPackage $framework)) }
+        }
         if ($tools.Count -eq 0) { throw 'Select at least one tool package.' }
     } finally { Pop-Location }
 
@@ -128,12 +135,12 @@ try {
         if ($target.sdk -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$' -or $target.projectTfm -notmatch '^net\d+\.0$') { throw 'Invalid SDK matrix entry.' }
         foreach ($tool in $tools) {
             foreach ($scenario in $scenarios) {
-                $id = "$($tool.channel)-$($target.sdk)-$($target.projectTfm)-$scenario"
+                $id = "$($tool.channel)-$($tool.framework)-$($target.sdk)-$($target.projectTfm)-$scenario"
                 $logName = "logs/$measurementId-$id.log"
                 $log = Join-Path $OutputDirectory $logName
                 $row = [ordered]@{
                     sdk = $target.sdk; selectedSdk = $null; projectTfm = $target.projectTfm
-                    channel = $tool.channel; toolVersion = $tool.version; toolRuntimeTfm = $tool.runtimeTfm
+                    channel = $tool.channel; toolFramework = $tool.framework; toolVersion = $tool.version; toolRuntimeTfm = $tool.runtimeTfm
                     packageSha256 = $tool.packageSha256; os = [Runtime.InteropServices.RuntimeInformation]::OSDescription
                     scenario = $scenario; testedAt = [DateTime]::UtcNow.ToString('o'); outcome = 'infrastructure-error'
                     diagnostics = ''; log = $logName
@@ -155,7 +162,7 @@ try {
                     }
                     $row.selectedSdk = $selection.text.Trim()
                     if ($row.selectedSdk -ne $target.sdk) { throw 'Actual selected SDK does not match requested SDK.' }
-                    if ($tool.error) { throw "$($tool.error) See logs/$($tool.channel)-install.log." }
+                    if ($tool.error) { throw "$($tool.error) See logs/$($tool.channel)-$($tool.framework)-install.log." }
                     $result = Invoke-Logged @('restore', '--nologo') $log
                     if ($result.code -ne 0) { throw 'Fixture restore failed; compatibility was not measured.' }
                     $result = Invoke-Logged @('build', '--no-restore', '--nologo', '-warnaserror') $log
@@ -196,12 +203,13 @@ try {
     }
 } finally {
     $report = [ordered]@{
-        schemaVersion = 1; generatedAt = [DateTime]::UtcNow.ToString('o')
+        schemaVersion = 2; generatedAt = [DateTime]::UtcNow.ToString('o')
         source = @{ repository = $(if ($env:GITHUB_REPOSITORY) { $env:GITHUB_REPOSITORY } else { 'local' }); sha = $sha
             dirty = $dirty
             runId = $(if ($env:GITHUB_RUN_ID) { $env:GITHUB_RUN_ID } else { $null }); runAttempt = $(if ($env:GITHUB_RUN_ATTEMPT) { $env:GITHUB_RUN_ATTEMPT } else { $null }) }
         stableSelection = $(if ($SkipStable) { $null } else { ($tools | Where-Object { $_.channel -eq 'stable' } | Select-Object -First 1).selection })
-        matrix = $matrix; channels = @($tools | ForEach-Object { $_.channel }); scenarios = $scenarios; results = @($rows.ToArray())
+        toolTargets = @($tools | ForEach-Object { @{ channel = $_.channel; framework = $_.framework } })
+        matrix = $matrix; channels = @($tools | ForEach-Object { $_.channel } | Select-Object -Unique); scenarios = $scenarios; results = @($rows.ToArray())
     }
     $report | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $OutputDirectory 'compatibility-report.json') -Encoding utf8
     $env:DOTNET_ROLL_FORWARD = $previousRollForward

@@ -10,7 +10,7 @@ const text = (value, max = 2000) => typeof value === 'string' && value.length > 
 const date = value => typeof value === 'string' && /^\d{4}-\d\d-\d\dT/.test(value) && Number.isFinite(Date.parse(value))
 
 export function validateReport(report, expected, now = Date.now()) {
-  assert(report?.schemaVersion === 1, 'Unsupported report schema.')
+  assert([1, 2].includes(report?.schemaVersion), 'Unsupported report schema.')
   assert(date(report.generatedAt) && Date.parse(report.generatedAt) <= now + 300000, 'Invalid report timestamp.')
   const source = report.source
   assert(source && (source.repository === 'local' || /^[a-zA-Z0-9][a-zA-Z0-9-]{0,38}\/[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$/.test(source.repository)) && /^[a-f0-9]{40}$/.test(source.sha), 'Invalid report source.')
@@ -37,11 +37,20 @@ export function validateReport(report, expected, now = Date.now()) {
     if (expected) assert(selection.mode === 'latest-release', 'Nightly must resolve the latest stable release.')
   } else { assert(report.stableSelection === null, 'Unexpected stable release selection.') }
   assert(JSON.stringify(report.scenarios) === '["basic","razor"]', 'Missing fixture scenarios.')
-  const wanted = new Set(targets.flatMap(t => report.channels.flatMap(c => report.scenarios.map(s => `${t}/${c}/${s}`))))
+  const multipleTools = report.schemaVersion === 2
+  const toolTargets = multipleTools ? report.toolTargets : report.channels.map(channel => ({ channel, framework: null }))
+  assert(Array.isArray(toolTargets) && toolTargets.length > 0 && toolTargets.length <= 8, 'Invalid tool targets.')
+  const toolKeys = toolTargets.map(target => {
+    assert(target && report.channels.includes(target.channel) && (!multipleTools || tfmPattern.test(target.framework)), 'Invalid tool target.')
+    return multipleTools ? `${target.channel}/${target.framework}` : target.channel
+  })
+  assert(new Set(toolKeys).size === toolKeys.length && report.channels.every(channel => toolTargets.some(t => t.channel === channel)), 'Duplicate or missing tool target.')
+  const wanted = new Set(targets.flatMap(t => toolKeys.flatMap(tool => report.scenarios.map(s => `${t}/${tool}/${s}`))))
   assert(Array.isArray(report.results) && report.results.length === wanted.size, 'Incomplete report.')
   const packageIdentities = new Map()
   for (const row of report.results) {
-    const key = `${row.sdk}/${row.projectTfm}/${row.channel}/${row.scenario}`
+    const toolKey = multipleTools ? `${row.channel}/${row.toolFramework}` : row.channel
+    const key = `${row.sdk}/${row.projectTfm}/${toolKey}/${row.scenario}`
     assert(wanted.delete(key), 'Unexpected or duplicate result.')
     assert(outcomes.includes(row.outcome), 'Unknown outcome.')
     assert(text(row.os, 300) && text(row.diagnostics) && /^logs\/[a-zA-Z0-9.-]+\.log$/.test(row.log), 'Invalid diagnostic evidence.')
@@ -52,11 +61,12 @@ export function validateReport(report, expected, now = Date.now()) {
     assert(row.packageSha256 === null || /^[a-f0-9]{64}$/.test(row.packageSha256), 'Invalid package hash.')
     if (['passed', 'incompatible'].includes(row.outcome)) {
       assert(row.selectedSdk === row.sdk && row.toolVersion && row.toolRuntimeTfm && row.packageSha256, 'Measured result is missing SDK/package identity.')
+      if (multipleTools) assert(row.toolRuntimeTfm === row.toolFramework, 'Measured tool runtime differs from the requested framework.')
       if (row.channel === 'stable') assert(row.toolVersion === report.stableSelection.requestedVersion, 'Measured package differs from the requested stable release.')
     }
     if (row.channel === 'stable' && row.toolVersion) assert(!row.toolVersion.includes('-'), 'Stable channel contains a prerelease.')
     if (row.packageSha256) {
-      const identity = `${row.toolVersion}/${row.toolRuntimeTfm}/${row.packageSha256}`
+      const identity = multipleTools ? `${row.toolVersion}/${row.packageSha256}` : `${row.toolVersion}/${row.toolRuntimeTfm}/${row.packageSha256}`
       assert(!packageIdentities.has(row.channel) || packageIdentities.get(row.channel) === identity, 'Package identity changes within a channel.')
       packageIdentities.set(row.channel, identity)
     }
@@ -68,9 +78,10 @@ const escape = value => String(value ?? 'Not measured').replace(/[&<>"']/g, c =>
 const reportUrl = new URL('../reports/sdk-compatibility.json', import.meta.url)
 const label = value => value[0].toUpperCase() + value.slice(1)
 const statusLabels = { passed: '✓ Passed', incompatible: '⚠ Incompatible', unavailable: '— Unavailable', 'infrastructure-error': '! Infrastructure error' }
-const columnKey = row => JSON.stringify([row.channel, row.toolVersion, row.toolRuntimeTfm, row.scenario])
+const toolFramework = row => row.toolFramework ?? row.toolRuntimeTfm
+const columnKey = row => JSON.stringify([row.channel, row.toolVersion, toolFramework(row), row.scenario])
 const caseTitle = row => `${label(row.channel)} & ${label(row.scenario)}`
-const caseIdentity = row => `${caseTitle(row)}; SDK ${row.sdk}; project ${row.projectTfm}; DocFX ${row.toolVersion ?? 'not measured'}; tool target ${row.toolRuntimeTfm ?? 'not measured'}`
+const caseIdentity = row => `${caseTitle(row)}; SDK ${row.sdk}; project ${row.projectTfm}; DocFX ${row.toolVersion ?? 'not measured'}; tool target ${toolFramework(row) ?? 'not measured'}`
 const runLink = source => source.repository === 'local' ? null : `https://github.com/${source.repository}/actions/runs/${source.runId}/attempts/${source.runAttempt}`
 
 export function renderReport(report, now = Date.now()) {
@@ -85,7 +96,7 @@ export function renderReport(report, now = Date.now()) {
   const columns = [...new Map(report.results.map(row => [columnKey(row), row])).values()].sort((a, b) =>
     ['stable', 'nightly'].indexOf(a.channel) - ['stable', 'nightly'].indexOf(b.channel) ||
     String(a.toolVersion ?? '~').localeCompare(String(b.toolVersion ?? '~'), 'en', { numeric: true }) ||
-    String(a.toolRuntimeTfm ?? '~').localeCompare(String(b.toolRuntimeTfm ?? '~'), 'en', { numeric: true }) ||
+    String(toolFramework(a) ?? '~').localeCompare(String(toolFramework(b) ?? '~'), 'en', { numeric: true }) ||
     report.scenarios.indexOf(a.scenario) - report.scenarios.indexOf(b.scenario))
   const cells = new Map(report.results.map((row, index) => [`${row.sdk}/${row.projectTfm}/${columnKey(row)}`, index]))
   let html = `<p>Last tested <time datetime="${escape(report.generatedAt)}">${escape(testedDate)}</time></p>`
@@ -94,7 +105,7 @@ export function renderReport(report, now = Date.now()) {
   if (!report.channels.includes('nightly')) html += '<p class="alert alert-warning"><strong>Current-main package not measured in this report.</strong></p>'
   if (report.stableSelection?.mode === 'explicit-version') html += `<p class="alert alert-warning"><strong>Explicit local version: ${escape(report.stableSelection.requestedVersion)}</strong> — not a measurement of the latest stable release. ${escape(report.stableSelection.reason)}</p>`
   html += '<div class="compatibility-table" role="region" aria-label="SDK compatibility matrix" tabindex="0"><table class="table"><caption class="visually-hidden">SDK and project target by DocFX package and scenario. Each column shows DocFX version and tool target framework. Select a result for details.</caption><thead><tr><th scope="col"><strong>SDK version</strong><span>Project target</span></th>'
-  for (const column of columns) html += `<th scope="col"><strong>${escape(caseTitle(column))}</strong><span class="compatibility-tool">${escape(column.toolVersion)} &amp; ${escape(column.toolRuntimeTfm)}</span></th>`
+  for (const column of columns) html += `<th scope="col"><strong>${escape(caseTitle(column))}</strong><span class="compatibility-tool">${escape(column.toolVersion)} &amp; ${escape(toolFramework(column))}</span></th>`
   html += '</tr></thead><tbody>'
   for (const target of report.matrix) {
     html += `<tr><th scope="row"><code>${escape(target.sdk)}</code><span>${escape(target.projectTfm)}</span></th>`
@@ -205,7 +216,9 @@ function bindDetails(element, report, fetchLog) {
       identity.replaceChildren()
       for (const [name, value] of [
         ['Requested SDK', row.sdk], ['Selected SDK', row.selectedSdk], ['Project target', row.projectTfm],
-        ['DocFX version', row.toolVersion], ['Tool target framework', row.toolRuntimeTfm], ['OS', row.os],
+        ['DocFX version', row.toolVersion],
+        ...(row.toolFramework ? [['Requested tool target', row.toolFramework]] : []),
+        ['Tool target framework', row.toolRuntimeTfm], ['OS', row.os],
         ['Tested', row.testedAt], ['Package SHA-256', row.packageSha256],
       ]) {
         const term = element.ownerDocument.createElement('dt')
