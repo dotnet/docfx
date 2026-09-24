@@ -39,6 +39,67 @@ public class DocumentBuilderTest : TestBase
         base.Dispose();
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void TestBuildRecordsDocfxVersionInManifest(int documentCount)
+    {
+        CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
+
+        var parameters = new List<DocumentBuildParameters>();
+        for (var i = 0; i < Math.Max(1, documentCount); i++)
+        {
+            FileCollection files = new(Directory.GetCurrentDirectory());
+            if (documentCount > 0)
+            {
+                var file = CreateFile($"test{i}.md", "Hello world.", _inputFolder);
+                files.Add(DocumentType.Article, new[] { file }, _inputFolder, ".");
+            }
+
+            var settings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
+            settings.RawModelExportSettings.Export = true;
+            parameters.Add(new DocumentBuildParameters
+            {
+                Files = files,
+                OutputBaseDir = Path.GetFullPath(_outputFolder),
+                MaxParallelism = 2,
+                ApplyTemplateSettings = settings,
+                TemplateManager = new TemplateManager([_templateFolder], null, null),
+                GroupInfo = documentCount > 1 ? new GroupInfo { Name = $"group{i}" } : null,
+            });
+        }
+
+        using var builder = new DocumentBuilder(LoadAssemblies(), []);
+        builder.Build(parameters, Path.GetFullPath(_outputFolder));
+
+        var version = typeof(DocumentBuilder).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+        Assert.False(string.IsNullOrEmpty(version));
+        var manifestPath = Path.Combine(_outputFolder, "manifest.json");
+        var manifest = JsonUtility.Deserialize<Manifest>(manifestPath);
+        Assert.Equal(version, manifest.DocfxVersion);
+        Assert.Equal(version, (string)JObject.Parse(File.ReadAllText(manifestPath))["docfx_version"]);
+
+        var json = System.Text.Json.JsonSerializer.Serialize(manifest);
+        Assert.Equal(version, (string)JObject.Parse(json)["docfx_version"]);
+        Assert.Equal(version, System.Text.Json.JsonSerializer.Deserialize<Manifest>(json).DocfxVersion);
+
+        for (var i = 0; i < documentCount; i++)
+        {
+            Assert.Equal("<p>Hello world.</p>\n", File.ReadAllText(Path.Combine(_outputFolder, $"test{i}.html")));
+            var model = JObject.Parse(File.ReadAllText(Path.Combine(_outputFolder, $"test{i}.raw.json")));
+            Assert.Null(model["docfx_version"]);
+            Assert.Null(model["_docfxVersion"]);
+        }
+    }
+
+    [Fact]
+    public void TestDeserializeManifestWithoutDocfxVersion()
+    {
+        Assert.Null(Newtonsoft.Json.JsonConvert.DeserializeObject<Manifest>("{}").DocfxVersion);
+        Assert.Null(System.Text.Json.JsonSerializer.Deserialize<Manifest>("{}").DocfxVersion);
+    }
+
     [Fact]
     public void TestBuild()
     {
