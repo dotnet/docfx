@@ -1,6 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Globalization;
+
 using Docfx.Common;
 using Newtonsoft.Json.Linq;
 
@@ -73,7 +75,62 @@ public class Template
             return null;
         }
 
-        return JObject.FromObject(obj).ToObject<TransformModelOptions>();
+        return ReadOptions(obj);
+    }
+
+    /// <summary>
+    /// Reads the two fields <see cref="TransformModelOptions"/> declares straight off the value the
+    /// preprocessor returned. A script preprocessor hands back a property bag, so serializing it to JSON
+    /// and deserializing it into the options type - once per document, per template - is pure overhead.
+    /// </summary>
+    private static TransformModelOptions ReadOptions(object obj)
+    {
+        if (obj is not IDictionary<string, object> properties)
+        {
+            // A preprocessor that is not script based can return anything; keep converting those.
+            return JObject.FromObject(obj).ToObject<TransformModelOptions>();
+        }
+
+        var result = new TransformModelOptions();
+
+        if (TryGetValue(properties, "isShared", out var isShared) && isShared != null)
+        {
+            result.IsShared = isShared as bool? ?? Convert.ToBoolean(isShared, CultureInfo.InvariantCulture);
+        }
+
+        if (TryGetValue(properties, "bookmarks", out var bookmarks) && bookmarks is IDictionary<string, object> bookmarkProperties)
+        {
+            var map = new Dictionary<string, string>(bookmarkProperties.Count);
+            foreach (var pair in bookmarkProperties)
+            {
+                map[pair.Key] = Convert.ToString(pair.Value, CultureInfo.InvariantCulture);
+            }
+
+            result.Bookmarks = map;
+        }
+
+        return result;
+    }
+
+    private static bool TryGetValue(IDictionary<string, object> properties, string name, out object value)
+    {
+        if (properties.TryGetValue(name, out value))
+        {
+            return true;
+        }
+
+        // The JSON conversion this replaced matched property names case-insensitively.
+        foreach (var pair in properties)
+        {
+            if (string.Equals(pair.Key, name, StringComparison.OrdinalIgnoreCase))
+            {
+                value = pair.Value;
+                return true;
+            }
+        }
+
+        value = null;
+        return false;
     }
 
     /// <summary>

@@ -35,7 +35,7 @@ public static partial class GitUtility
             return null;
 
         // Return null when file path `/obj/` to avoid generating invalid link.
-        if (filePath.Contains("/obj/") || filePath.Contains("\\obj\\"))
+        if (IsUnderObjDirectory(filePath))
             return null;
 
         var repo = GetRepoInfo(Path.GetDirectoryName(filePath));
@@ -51,6 +51,8 @@ public static partial class GitUtility
             Path = Path.GetRelativePath(repo.path, filePath).Replace('\\', '/'),
         };
     }
+
+    internal static bool IsUnderObjDirectory(string filePath) => filePath.Contains("/obj/") || filePath.Contains("\\obj\\");
 
     public static string RawContentUrlToContentUrl(string rawUrl)
     {

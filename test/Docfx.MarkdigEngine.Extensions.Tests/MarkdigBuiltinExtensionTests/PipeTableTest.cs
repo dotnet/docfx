@@ -49,6 +49,65 @@ public class PipeTableTest
         TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["PipeTables"]);
     }
 
+    [Theory]
+    [InlineData("||---|---|")]
+    [InlineData("|---||---|")]
+    [InlineData("|---|---||")]
+    [InlineData("| --- | | --- |")]
+    [InlineData("| | --- | |")]
+    public void PipeTableTest_PartiallyEmptySeparator(string separator)
+    {
+        var content =
+            $"""
+            | a | b | c |
+            {separator}
+            | 0 | 1 | 2 |
+            """;
+
+        var expected =
+            """
+            <table>
+            <thead>
+            <tr>
+            <th>a</th>
+            <th>b</th>
+            <th>c</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>0</td>
+            <td>1</td>
+            <td>2</td>
+            </tr>
+            </tbody>
+            </table>
+            """;
+
+        TestUtility.VerifyMarkup(content, expected);
+        TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["PipeTables"]);
+        TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["gfm-pipetables"]);
+    }
+
+    [Theory]
+    [InlineData("||||")]
+    [InlineData("| | | |")]
+    public void PipeTableTest_EmptySeparatorIsNotTable(string separator)
+    {
+        var content =
+            $"""
+            | a | b | c |
+            {separator}
+            | 0 | 1 | 2 |
+            """;
+
+        var expected = $"<p>{content}</p>";
+
+        TestUtility.VerifyMarkup(content, expected);
+        TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["PipeTables"]);
+        TestUtility.VerifyMarkup(content, expected, optionalExtensions: ["gfm-pipetables"]);
+    }
+
     [Fact]
     public void PipeTableTest_Custom()
     {

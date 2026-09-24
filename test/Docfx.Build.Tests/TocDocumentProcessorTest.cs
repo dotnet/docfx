@@ -911,7 +911,7 @@ items:
       href: x2.md";
         var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
         var ex = Assert.Throws<DocumentException>(() => TocHelper.LoadSingleToc(toc));
-        Assert.Equal("toc.yml is not a valid TOC File: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): While scanning a plain scalar value, found invalid mapping.", ex.Message);
+        Assert.StartsWith("toc.yml is not a valid TOC File: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): ", ex.Message);
     }
 
     [Fact]

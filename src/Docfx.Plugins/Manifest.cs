@@ -12,6 +12,13 @@ public class Manifest
 
     public Manifest(IEnumerable<ManifestItem> files) => Files.AddRange(files);
 
+    /// <summary>
+    /// The informational version of the DocFX build engine that produced this manifest.
+    /// </summary>
+    [JsonProperty("docfx_version")]
+    [JsonPropertyName("docfx_version")]
+    public string DocfxVersion { get; set; }
+
     [JsonProperty("sitemap")]
     [JsonPropertyName("sitemap")]
     public SitemapOptions Sitemap { get; set; }
