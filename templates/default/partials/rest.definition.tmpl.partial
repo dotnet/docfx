@@ -1,5 +1,11 @@
 {{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
 
+{{#schemaDetails}}
+<h3 id="{{id}}" class="text-capitalize">{{name}}</h3>
+{{>partials/rest.schema}}
+{{/schemaDetails}}
+
+{{^schemaDetails}}
 <h3 id="{{cTypeId}}" class="text-capitalize">{{{cType}}}</h3>
 {{#description}}
 <div class="markdown level1 description">{{{description}}}</div>
@@ -43,3 +49,4 @@
 {{.}}<br>
 {{/enum}}
 {{/enum.0}}
+{{/schemaDetails}}

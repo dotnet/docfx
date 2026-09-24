@@ -3,8 +3,12 @@
 var common = require('./common.js');
 
 exports.transform = function (model) {
+    var openApi3 = typeof model.specificationVersion === "string" && model.specificationVersion.indexOf("3.") === 0;
+    var definitions = Object.create(null);
+    var references = [];
+    if (openApi3) Object.keys(model.schemas || {}).forEach(function (name) { schemaDetails(model.schemas[name], name); });
     var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(model._path);
-    model._jsonPath = _fileNameWithoutExt + ".swagger.json";
+    model._jsonPath = _fileNameWithoutExt + ".swagger" + (model.rawExtension === ".yaml" ? ".yaml" : ".json");
     model.title = model.title || model.name;
     model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
     model.sourceurl = model.sourceurl || common.getViewSourceHref(model, null, model._gitUrlPattern);
@@ -16,7 +20,7 @@ exports.transform = function (model) {
             if (child.operation) {
                 child.operation = child.operation.toUpperCase();
             }
-            child.path = appendQueryParamsToPath(child.path, child.parameters);
+            child.path = openApi3 ? child.path : appendQueryParamsToPath(child.path, child.parameters);
             child.sourceurl = child.sourceurl || common.getViewSourceHref(child, null, model._gitUrlPattern);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.summary = child.summary || ''; // set to empty incase mustache looks up
@@ -26,8 +30,18 @@ exports.transform = function (model) {
             child.htmlId = common.getHtmlId(child.uid);
 
             formatExample(child.responses);
-            resolveAllOf(child);
-            transformReference(child);
+            if (openApi3) {
+                (child.servers || []).forEach(function (server) { server.description = server.description || ''; });
+                (child.parameters || []).forEach(transformPayload);
+                if (child.requestBody) {
+                    child.requestBody.description = child.requestBody.description || '';
+                    transformContent(child.requestBody.content);
+                }
+                (child.responses || []).forEach(transformPayload);
+            } else {
+                resolveAllOf(child);
+                transformReference(child);
+            }
         };
         if (!model.tags || model.tags.length === 0) {
             var childTags = [];
@@ -81,23 +95,115 @@ exports.transform = function (model) {
             model.children = model.children.filter(function (o) { return o; });
         }
     }
-    model.definitions = [];
-    if (model.tags) {
-        model.tags.forEach(function(tag) {
-            (tag.children || []).forEach(function(child) {
+    if (openApi3) {
+        references.forEach(function (reference) {
+            reference.details.referenceId = definitions[reference.name] ? definitions[reference.name].id : '';
+        });
+        model.definitions = Object.keys(definitions).map(function (name) {
+            var entry = definitions[name];
+            var details = Object.assign({}, entry.details, { id: entry.id, name: name });
+            if (details.referenceName === name) {
+                details.referenceName = '';
+                details.referenceId = '';
+            }
+            return { schemaDetails: details };
+        });
+    } else {
+        model.definitions = [];
+        if (model.tags) {
+            model.tags.forEach(function(tag) {
+                (tag.children || []).forEach(function(child) {
+                    (child.parameters || []).forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
+                    (child.responses || []).forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
+                });
+            });
+        }
+        if (model.children) {
+            model.children.forEach(function(child) {
                 (child.parameters || []).forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
                 (child.responses || []).forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
             });
-        });
-    }
-    if (model.children) {
-        model.children.forEach(function(child) {
-            (child.parameters || []).forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
-            (child.responses || []).forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
-        });
+        }
     }
 
     return model;
+
+    function schemaId(name) {
+        return "schema-" + name.replace(/[^a-zA-Z0-9-]/g, function (character) {
+            return "_" + character.charCodeAt(0).toString(16) + "_";
+        });
+    }
+
+    function transformPayload(payload) {
+        payload.hasContent = payload.content !== undefined && payload.content !== null;
+        transformContent(payload.content);
+        payload.schemaDetails = schemaDetails(payload.schema);
+        payload.exampleDetails = exampleDetails(payload.examples);
+    }
+
+    function schemaDetails(schema, definitionName) {
+        if (!schema) return false;
+        var name = schema['x-internal-loop-ref-name'] || schema['x-internal-ref-name'];
+        // Null fields fall through to ancestor scopes in Docfx's Mustache renderer.
+        // Empty strings and false keep missing fields local to this schema.
+        var details = {};
+        [definitionName, schema['x-internal-ref-name']].forEach(function (registeredName) {
+            if (registeredName && (registeredName === definitionName || !definitions[registeredName])) {
+                definitions[registeredName] = { id: schema.referenceId || schemaId(registeredName), details: details };
+            }
+        });
+        if (name) references.push({ details: details, name: name });
+        return Object.assign(details, {
+            type: schema.type || '',
+            format: schema.format || '',
+            description: schema.description || '',
+            referenceName: name || '',
+            referenceId: '',
+            properties: Object.keys(schema.properties || {}).map(function (key) {
+                return {
+                    key: key,
+                    required: schema.properties[key].required === true ||
+                        (Array.isArray(schema.required) && schema.required.indexOf(key) >= 0),
+                    value: schemaDetails(schema.properties[key])
+                };
+            }),
+            items: schemaDetails(schema.items),
+            composition: (schema.allOf ? [{ kind: 'All of', schemas: schema.allOf }] : []).concat(schema.composition || []).map(function (composition) {
+                return { kind: composition.kind, schemas: (composition.schemas || []).map(function (branch) { return schemaDetails(branch); }) };
+            }),
+            constraints: schema.constraints || [],
+            enum: (schema.enum || []).map(function (value) { return { value: JSON.stringify(value) }; }),
+            exampleDetails: exampleDetails(schema.examples || (schema.example !== undefined ? [{ content: JSON.stringify(schema.example) }] : []))
+        });
+    }
+
+    function exampleDetails(examples) {
+        return (examples || []).map(function (example) {
+            var externalValue = example.externalValue || '';
+            return {
+                name: example.name || '',
+                mimeType: example.mimeType || '',
+                content: typeof example.content === "string" ? example.content : '',
+                hasContent: typeof example.content === "string",
+                externalValue: externalValue,
+                externalHref: externalValue && /^https?:\/\/[^\s\\]+$/i.test(externalValue) ? externalValue : ''
+            };
+        });
+    }
+
+    function transformContent(content) {
+        (content || []).forEach(function (media) {
+            media.schemaDetails = schemaDetails(media.schema);
+            media.itemSchemaDetails = schemaDetails(media.itemSchema);
+            media.examples = media.examples || [];
+            media.examples.forEach(function (example) {
+                example.name = example.name || '';
+                example.mimeType = example.mimeType || media.mimeType;
+            });
+        });
+        formatExample(content);
+        (content || []).forEach(function (media) { media.exampleDetails = exampleDetails(media.examples); });
+    }
 
     function getChildrenByTag(children, tag) {
         if (!children) return;

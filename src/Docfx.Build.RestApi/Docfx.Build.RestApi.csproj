@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Microsoft.OpenApi" />
+    <PackageReference Include="Microsoft.OpenApi.YamlReader" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
     <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
     <ProjectReference Include="..\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />

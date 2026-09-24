@@ -5,16 +5,11 @@ using System.Collections.Immutable;
 using System.Composition;
 
 using Docfx.Build.Common;
-using Docfx.Build.RestApi.Swagger;
 using Docfx.Common;
 using Docfx.Common.Git;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.RestApi;
-using Docfx.Exceptions;
 using Docfx.Plugins;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Docfx.Build.RestApi;
 
@@ -23,7 +18,6 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
 {
     private const string RestApiDocumentType = "RestApi";
     private const string DocumentTypeKey = "documentType";
-    private const string OperationIdKey = "operationId";
 
     // To keep backward compatibility, still support and change previous file endings by first mapping sequence.
     // Take 'a.b_swagger2.json' for an example, the json file name would be changed to 'a.b', then the html file name would be 'a.b.html'.
@@ -34,6 +28,8 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
        ".swagger.json",
        ".swagger2.json",
        ".json",
+       ".yaml",
+       ".yml",
     ];
 
     protected static readonly string[] SystemKeys = [
@@ -63,7 +59,17 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         "securityDefinitions",
         "security",
         "tags",
-        "externalDocs"
+        "externalDocs",
+        "openapi",
+        "servers",
+        "components",
+        "schemas",
+        "requestBody",
+        "requestUrl",
+        "rawExtension",
+        "jsonSchemaDialect",
+        "webhooks",
+        "specificationVersion"
     ];
 
     [ImportMany(nameof(RestApiDocumentProcessor))]
@@ -76,7 +82,7 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         switch (file.Type)
         {
             case DocumentType.Article:
-                if (IsSupportedFile(file.FullPath))
+                if (RestApiDocumentReader.IsSupportedFile(file.FullPath))
                 {
                     return ProcessingPriority.Normal;
                 }
@@ -122,19 +128,20 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
     protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
     {
         var filePath = Path.Combine(file.BaseDir, file.File);
-        var swagger = SwaggerJsonParser.Parse(filePath);
-        swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
-        swagger.Raw = EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
-        CheckOperationId(swagger, file.File);
+        var vm = RestApiDocumentReader.Read(filePath, file.File);
+        vm.Metadata[DocumentTypeKey] = RestApiDocumentType;
 
         var repoInfo = GitUtility.TryGetFileDetail(filePath);
         if (repoInfo != null)
         {
-            swagger.Metadata["source"] = new SourceDetail { Remote = repoInfo };
+            vm.Metadata["source"] = new SourceDetail { Remote = repoInfo };
         }
 
-        swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
-        var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
+        vm.Metadata = MergeMetadata(vm.Metadata, metadata);
+        foreach (var child in vm.Children)
+        {
+            child.Metadata[Constants.PropertyName.Source] = vm.Metadata.GetValueOrDefault(Constants.PropertyName.Source);
+        }
         vm.Metadata[Constants.PropertyName.SystemKeys] = SystemKeys;
         var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
@@ -191,59 +198,9 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         }
     }
 
-    private static bool IsSupportedFile(string filePath)
-    {
-        return SupportedFileEndings.Any(s => IsSupportedFileEnding(filePath, s)) && IsSwaggerFile(filePath);
-    }
-
     private static bool IsSupportedFileEnding(string filePath, string fileEnding)
     {
         return filePath.EndsWith(fileEnding, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool IsSwaggerFile(string filePath)
-    {
-        try
-        {
-            using var streamReader = EnvironmentContext.FileAbstractLayer.OpenReadText(filePath);
-            using JsonReader reader = new JsonTextReader(streamReader);
-            var jObject = JObject.Load(reader);
-            if (jObject.TryGetValue("swagger", out JToken swaggerValue))
-            {
-                var swaggerString = (string)swaggerValue;
-                if (swaggerString is "2.0")
-                {
-                    return true;
-                }
-            }
-        }
-        catch (FileNotFoundException ex)
-        {
-            Logger.LogVerbose($"In {nameof(RestApiDocumentProcessor)}, could not find {filePath}, exception details: {ex.Message}.");
-        }
-        catch (JsonException ex)
-        {
-            Logger.LogVerbose($"In {nameof(RestApiDocumentProcessor)}, could not deserialize {filePath} to JObject, exception details: {ex.Message}.");
-        }
-
-        return false;
-    }
-
-    private static void CheckOperationId(SwaggerModel swagger, string fileName)
-    {
-        if (swagger.Paths != null)
-        {
-            foreach (var path in swagger.Paths)
-            {
-                foreach (var operation in path.Value.Metadata)
-                {
-                    if (operation.Value is JObject jObject && !jObject.TryGetValue(OperationIdKey, out JToken operationId))
-                    {
-                        throw new DocfxException($"{OperationIdKey} should exist in operation '{operation.Key}' of path '{path.Key}' for swagger file '{fileName}'");
-                    }
-                }
-            }
-        }
     }
 
     private static string ChangeFileExtension(string file)

@@ -23,8 +23,16 @@
 {{/conceptual}}
 <h5>Request</h5>
 <div class="codewrapper">
-  <pre><code class="lang-restApi hljs">{{operation}} {{path}}</code></pre>
+  <pre><code class="lang-restApi hljs">{{operation}} {{#requestUrl}}{{requestUrl}}{{/requestUrl}}{{^requestUrl}}{{path}}{{/requestUrl}}</code></pre>
 </div>
+{{#servers.0}}
+<h5>Servers</h5>
+<ul class="servers">
+  {{#servers}}
+  <li><code>{{url}}</code>{{#description}}<div class="markdown description">{{{description}}}</div>{{/description}}</li>
+  {{/servers}}
+</ul>
+{{/servers.0}}
 {{#parameters.0}}
 <h5>Parameters</h5>
 <table class="table table-bordered table-condensed">
@@ -42,6 +50,10 @@
     <tr>
       <td><span class="parametername">{{#required}}*{{/required}}{{name}}</span></td>
       <td>
+          {{#content}}{{>partials/rest.media-schema}}{{/content}}
+          {{^hasContent}}
+          {{#schemaDetails}}{{>partials/rest.schema}}{{/schemaDetails}}
+          {{^schemaDetails}}
           {{^schema.cType}}
             {{schema.type}}
             {{#schema.format}}
@@ -52,15 +64,28 @@
           {{#schema.cType}}
             <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
           {{/schema.cType}}
+          {{/schemaDetails}}
+          {{/hasContent}}
       </td>
       <td>{{default}}</td>
-      <td>{{{description}}}</td>
+      <td>{{{description}}}{{#content}}{{>partials/rest.examples}}{{/content}}</td>
     </tr>
   {{/parameters}}
   {{#parameters.0}}
   </tbody>
 </table>
 {{/parameters.0}}
+{{#requestBody}}
+<h5>Request Body</h5>
+<div class="request-body">
+  <p>{{#required}}Required{{/required}}{{^required}}Optional{{/required}}</p>
+  {{#description}}<div class="markdown description">{{{description}}}</div>{{/description}}
+  {{#content}}
+  {{>partials/rest.media-schema}}
+  {{>partials/rest.examples}}
+  {{/content}}
+</div>
+{{/requestBody}}
 {{#responses.0}}
 <div class="responses">
   <h5>Responses</h5>
@@ -79,6 +104,10 @@
     <tr>
       <td><span class="status">{{statusCode}}</span></td>
       <td>
+          {{#content}}{{>partials/rest.media-schema}}{{/content}}
+          {{^hasContent}}
+          {{#schemaDetails}}{{>partials/rest.schema}}{{/schemaDetails}}
+          {{^schemaDetails}}
           {{^schema.cType}}
             {{schema.type}}
           {{/schema.cType}}
@@ -86,15 +115,23 @@
           {{#schema.cType}}
             <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
           {{/schema.cType}}
+          {{/schemaDetails}}
+          {{/hasContent}}
       </td>
       <td>{{{description}}}</td>
       <td class="sample-response">
+        {{#content}}{{>partials/rest.examples}}{{/content}}
+        {{^hasContent}}
+        {{#exampleDetails.0}}{{>partials/rest.examples}}{{/exampleDetails.0}}
+        {{^exampleDetails.0}}
         {{#examples}}
         <div class="mime-type">
           <i>Mime type: </i><span class="mime">{{mimeType}}</span>
         </div>
         <pre class="response-content"><code class="lang-js json hljs">{{content}}</code></pre>
         {{/examples}}
+        {{/exampleDetails.0}}
+        {{/hasContent}}
       </td>
     </tr>
   {{/responses}}

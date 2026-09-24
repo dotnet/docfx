@@ -1,0 +1,18 @@
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
+{{#exampleDetails}}
+{{#mimeType}}
+<div class="mime-type">
+  <i>Mime type: </i><span class="mime">{{mimeType}}</span>
+</div>
+{{/mimeType}}
+{{#name}}<div class="example-name">{{name}}</div>{{/name}}
+{{#hasContent}}
+<pre class="response-content"><code>{{content}}</code></pre>
+{{/hasContent}}
+{{#externalValue}}
+<p class="external-example">External example:
+  {{#externalHref}}<a href="{{externalHref}}">{{externalValue}}</a>{{/externalHref}}
+  {{^externalHref}}<code>{{externalValue}}</code>{{/externalHref}}
+</p>
+{{/externalValue}}
+{{/exampleDetails}}
