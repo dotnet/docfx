@@ -42,9 +42,9 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: node --test test/compatibility/report.test.mjs
 
-    # TODO: Remove this temporary workaround. (After migratedto xunit.v3, `dotnet pack` command don't complete and cause timeout)
-    - name: Shutdown dotnet build server
-      run: dotnet build-server shutdown
+    # Work around MSBuild hanging in ResolveProjectReferences during dotnet pack.
+    - name: Shutdown MSBuild server
+      run: dotnet build-server shutdown --msbuild
 
     - name: Pack tool for distribution tests
       run: dotnet pack src/docfx -c Release --no-restore /p:Version=0.0.0-packaging-test /p:BaseOutputPath=bin/package-test/ -o drop/package-test

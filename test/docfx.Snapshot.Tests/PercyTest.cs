@@ -10,6 +10,7 @@ using Microsoft.Playwright;
 
 namespace Docfx.Tests;
 
+[Collection("docfx STA")]
 [Trait("Stage", "Percy")]
 public class PercyTest
 {
