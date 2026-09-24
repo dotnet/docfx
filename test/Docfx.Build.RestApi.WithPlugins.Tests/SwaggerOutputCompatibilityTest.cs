@@ -376,6 +376,67 @@ public class SwaggerOutputCompatibilityTest : TestBase
         }
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void SplitPageMetadataOverridesDoNotChangeTheRoot(bool splitTags)
+    {
+        var input = GetRandomFolder();
+        var output = GetRandomFolder();
+        var file = CreateFile("service.json", """
+            {
+              "swagger": "2.0",
+              "info": { "title": "Isolation", "version": "1.0", "description": "**API**" },
+              "externalDocs": { "url": "https://example.test/root" },
+              "securityDefinitions": {
+                "key": { "type": "apiKey", "name": "X-Key", "in": "header", "description": "**Key**" }
+              },
+              "tags": [{ "name": "items", "externalDocs": { "url": "https://example.test/tag" } }],
+              "paths": { "/items": { "get": {
+                "operationId": "getItems",
+                "tags": ["items"],
+                "externalDocs": { "url": "https://example.test/operation" },
+                "responses": { "200": { "description": "OK" } }
+              } } }
+            }
+            """, input);
+        var uid = splitTags ? "Isolation/1.0/tag/items" : "Isolation/1.0/getItems";
+        var overwrite = CreateFile("overwrite.md", $$"""
+            ---
+            uid: {{uid}}
+            info:
+              description: Changed info
+            securityDefinitions:
+              key:
+                description: Changed key
+            ---
+            """, input);
+        var files = new FileCollection(Directory.GetCurrentDirectory());
+        files.Add(DocumentType.Article, [file], input);
+        files.Add(DocumentType.Overwrite, [overwrite], input);
+        using var builder = new DocumentBuilder(GetAssemblies(splitTags, !splitTags), []);
+        builder.Build(new DocumentBuildParameters
+        {
+            Files = files,
+            OutputBaseDir = output,
+            ApplyTemplateSettings = new ApplyTemplateSettings(input, output)
+            {
+                TransformDocument = false,
+                RawModelExportSettings = { Export = true }
+            }
+        });
+
+        var root = ReadModel(output, "service.raw.json");
+        var split = ReadModel(output, splitTags ? "service/items.raw.json" : "service/getItems.raw.json");
+        Assert.Equal("https://example.test/root", (string)root["externalDocs"]["url"]);
+        Assert.Equal(splitTags ? "https://example.test/tag" : "https://example.test/operation", (string)split["externalDocs"]["url"]);
+        Assert.Contains(">API</strong>", (string)root["info"]["description"]);
+        Assert.Contains(">Key</strong>", (string)root["securityDefinitions"]["key"]["description"]);
+        Assert.Equal("Isolation", (string)split["info"]["title"]);
+        Assert.Contains("Changed info", (string)split["info"]["description"]);
+        Assert.Contains("Changed key", (string)split["securityDefinitions"]["key"]["description"]);
+    }
+
     private static IEnumerable<Assembly> GetAssemblies(bool splitTags, bool splitOperations)
     {
         yield return typeof(RestApiDocumentProcessor).Assembly;

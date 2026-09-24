@@ -29,27 +29,4 @@ public class RestApiViewModelTest
         Assert.Equal("object", schema.AllOf[1].Type);
         Assert.Throws<DocfxException>(() => merger.Merge(ref schema, new RestApiSchemaViewModel { AllOf = [] }));
     }
-
-    [Fact]
-    public void SplitDocumentContextIsIndependentAndPreservesOverrides()
-    {
-        var root = new RestApiRootItemViewModel
-        {
-            Info = new() { Title = "API", Description = "**API**" },
-            SecurityDefinitions = new() { ["key"] = new() { Description = "**Key**" } },
-            ExternalDocs = new() { Url = "https://example.test/root" }
-        };
-        var split = new RestApiRootItemViewModel
-        {
-            Metadata = new() { ["externalDocs"] = new { url = "https://example.test/tag" } }
-        };
-        root.CopyDocumentContextTo(split);
-        Assert.Equal("https://example.test/tag", split.ExternalDocs.Url);
-        Assert.Equal("https://example.test/root", root.ExternalDocs.Url);
-        Assert.DoesNotContain("externalDocs", split.Metadata.Keys);
-        split.Info.Description = "<p><strong>API</strong></p>";
-        split.SecurityDefinitions["key"].Description = "<p><strong>Key</strong></p>";
-        Assert.Equal("**API**", root.Info.Description);
-        Assert.Equal("**Key**", root.SecurityDefinitions["key"].Description);
-    }
 }
