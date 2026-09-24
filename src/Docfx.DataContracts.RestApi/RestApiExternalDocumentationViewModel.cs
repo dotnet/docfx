@@ -2,32 +2,24 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json.Serialization;
-using Docfx.Common.EntityMergers;
-using Docfx.YamlSerialization;
 using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.RestApi;
 
-public class RestApiParameterViewModel
+public class RestApiExternalDocumentationViewModel
 {
-    [YamlMember(Alias = "schema")]
-    [JsonProperty("schema", NullValueHandling = NullValueHandling.Ignore)]
-    [JsonPropertyName("schema")]
-    public RestApiSchemaViewModel Schema { get; set; }
+    [YamlMember(Alias = "url")]
+    [JsonProperty("url", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("url")]
+    public string Url { get; set; }
 
     [YamlMember(Alias = "description")]
-    [JsonProperty("description")]
+    [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
     [JsonPropertyName("description")]
     public string Description { get; set; }
 
-    [YamlMember(Alias = "name")]
-    [JsonProperty("name")]
-    [JsonPropertyName("name")]
-    [MergeOption(MergeOption.MergeKey)]
-    public string Name { get; set; }
-
-    [ExtensibleMember]
+    [Docfx.YamlSerialization.ExtensibleMember]
     [Newtonsoft.Json.JsonExtensionData]
     [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = [];

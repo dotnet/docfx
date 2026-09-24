@@ -1,0 +1,38 @@
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
+<div class="rest-schema">
+  {{#referenceName}}
+  {{#referenceId}}<a href="#{{referenceId}}" class="typelink">{{referenceName}}</a>{{/referenceId}}
+  {{^referenceId}}<span class="typename">{{referenceName}}</span>{{/referenceId}}
+  {{/referenceName}}
+  {{#type}}<span class="schema-type">{{type}}</span>{{/type}}
+  {{#format}}<span class="schema-format">({{format}})</span>{{/format}}
+  {{#description}}<div class="markdown description">{{{description}}}</div>{{/description}}
+  {{#enum.0}}
+  <div class="schema-enum"><strong>Allowed values:</strong> {{#enum}}<code>{{value}}</code> {{/enum}}</div>
+  {{/enum.0}}
+  {{#exampleDetails.0}}
+  <div class="schema-examples"><strong>Examples</strong>{{>partials/rest.examples}}</div>
+  {{/exampleDetails.0}}
+  {{#items}}
+  <div class="schema-items"><strong>Items</strong>{{>partials/rest.schema}}</div>
+  {{/items}}
+  {{#properties.0}}
+  <table class="table table-bordered table-condensed schema-properties">
+    <thead><tr><th>Name</th><th>Schema</th></tr></thead>
+    <tbody>
+      {{#properties}}
+      <tr>
+        <td><span class="parametername">{{key}}</span>{{#required}} (Required){{/required}}</td>
+        <td>{{#value}}{{>partials/rest.schema}}{{/value}}</td>
+      </tr>
+      {{/properties}}
+    </tbody>
+  </table>
+  {{/properties.0}}
+  {{#composition}}
+  <div class="schema-composition">
+    <strong>{{kind}}</strong>
+    <ul>{{#schemas}}<li>{{>partials/rest.schema}}</li>{{/schemas}}</ul>
+  </div>
+  {{/composition}}
+</div>

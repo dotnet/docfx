@@ -55,7 +55,7 @@ public class SplitRestApiToOperationLevelTest : TestBase
             Assert.Empty(model.Children);
             Assert.True((bool)model.Metadata["_isSplittedByOperation"]);
             Assert.Empty(model.Tags);
-            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about Swagger</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
+            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about Swagger</p>\n", model.ExternalDocs.Description);
         }
         {
             // Verify splitted operation page
@@ -70,13 +70,13 @@ public class SplitRestApiToOperationLevelTest : TestBase
             Assert.Empty(model.Tags);
             Assert.Equal("swagger/petstore/addPet.html", model.Metadata["_path"]);
             Assert.Equal("TestData/swagger/petstore/addPet.json", model.Metadata["_key"]);
-            Assert.True(model.Metadata.ContainsKey("externalDocs"));
+            Assert.NotNull(model.ExternalDocs);
             Assert.True((bool)model.Metadata["_isSplittedToOperation"]);
             Assert.Single(model.Children);
             Assert.Empty(model.Tags);
 
             // Test overwritten metadata
-            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about addPet</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
+            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about addPet</p>\n", model.ExternalDocs.Description);
 
             var child = model.Children[0];
             Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet/operation", child.Uid);
@@ -117,7 +117,7 @@ public class SplitRestApiToOperationLevelTest : TestBase
             Assert.Equal("swagger/petstore/addPet.html", model.Metadata["_path"]);
             Assert.Equal("TestData/swagger/petstore/addPet.json", model.Metadata["_key"]);
             Assert.Equal("../toc.yml", model.Metadata["_tocRel"]);
-            Assert.True(model.Metadata.ContainsKey("externalDocs"));
+            Assert.NotNull(model.ExternalDocs);
             Assert.Single(model.Children);
             Assert.Empty(model.Tags);
 
@@ -175,7 +175,7 @@ public class SplitRestApiToOperationLevelTest : TestBase
             Assert.Empty(model.Tags);
             Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
             Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
-            Assert.True(model.Metadata.ContainsKey("externalDocs"));
+            Assert.NotNull(model.ExternalDocs);
             Assert.True((bool)model.Metadata["_isSplittedToTag"]);
             Assert.True((bool)model.Metadata["_isSplittedByOperation"]);
         }
@@ -193,7 +193,7 @@ public class SplitRestApiToOperationLevelTest : TestBase
             Assert.Equal("swagger/petstore/pet/addPet.html", model.Metadata["_path"]);
             Assert.Equal("TestData/swagger/petstore/pet/addPet.json", model.Metadata["_key"]);
             Assert.Equal("../../toc.yml", model.Metadata["_tocRel"]);
-            Assert.True(model.Metadata.ContainsKey("externalDocs"));
+            Assert.NotNull(model.ExternalDocs);
             Assert.Single(model.Children);
             Assert.True((bool)model.Metadata["_isSplittedToOperation"]);
 

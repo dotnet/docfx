@@ -8,15 +8,11 @@ using Docfx.Build.Common;
 using Docfx.DataContracts.RestApi;
 using Docfx.Plugins;
 
-using Newtonsoft.Json.Linq;
-
 namespace Docfx.Build.RestApi;
 
 [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
 public class BuildRestApiDocument : BuildReferenceDocumentBase
 {
-    private static readonly HashSet<string> MarkupKeys = ["description"];
-
     public override string Name => nameof(BuildRestApiDocument);
 
     protected override void BuildArticle(IHostService host, FileModel model)
@@ -51,10 +47,11 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
 
         if (item is RestApiRootItemViewModel rootModel)
         {
-            // Mark up recursively for swagger root except for children and tags
-            foreach (var jToken in rootModel.Metadata.Values.OfType<JToken>())
+            if (rootModel.Info != null) rootModel.Info.Description = Markup(host, rootModel.Info.Description, model, filter);
+            if (rootModel.ExternalDocs != null) rootModel.ExternalDocs.Description = Markup(host, rootModel.ExternalDocs.Description, model, filter);
+            foreach (var security in rootModel.SecurityDefinitions?.Values.AsEnumerable() ?? [])
             {
-                MarkupRecursive(jToken, host, model, filter);
+                if (security != null) security.Description = Markup(host, security.Description, model, filter);
             }
         }
 
@@ -64,11 +61,7 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
             foreach (var param in childModel.Parameters)
             {
                 param.Description = Markup(host, param.Description, model, filter);
-
-                foreach (var jToken in param.Metadata.Values.OfType<JToken>())
-                {
-                    MarkupRecursive(jToken, host, model, filter);
-                }
+                MarkupSchema(param.Schema);
             }
         }
         if (childModel?.Responses != null)
@@ -76,39 +69,19 @@ public class BuildRestApiDocument : BuildReferenceDocumentBase
             foreach (var response in childModel.Responses)
             {
                 response.Description = Markup(host, response.Description, model, filter);
-
-                foreach (var jToken in response.Metadata.Values.OfType<JToken>())
-                {
-                    MarkupRecursive(jToken, host, model, filter);
-                }
+                MarkupSchema(response.Schema);
+                foreach (var header in response.Headers?.Values.AsEnumerable() ?? []) MarkupSchema(header);
             }
         }
         return item;
-    }
 
-    private static void MarkupRecursive(JToken jToken, IHostService host, FileModel model, Func<string, bool> filter = null)
-    {
-        if (jToken is JArray jArray)
+        void MarkupSchema(RestApiSchemaViewModel schema)
         {
-            foreach (var item in jArray)
-            {
-                MarkupRecursive(item, host, model, filter);
-            }
-        }
-
-        if (jToken is JObject jObject)
-        {
-            foreach (var pair in jObject)
-            {
-                if (MarkupKeys.Contains(pair.Key) && pair.Value != null)
-                {
-                    if (pair.Value is JValue { Type: JTokenType.String } jValue)
-                    {
-                        jObject[pair.Key] = Markup(host, (string)jValue, model, filter);
-                    }
-                }
-                MarkupRecursive(jObject[pair.Key], host, model, filter);
-            }
+            if (schema == null) return;
+            schema.Description = Markup(host, schema.Description, model, filter);
+            foreach (var property in schema.Properties?.Values.AsEnumerable() ?? []) MarkupSchema(property);
+            MarkupSchema(schema.Items);
+            foreach (var branch in schema.AllOf ?? []) MarkupSchema(branch);
         }
     }
 

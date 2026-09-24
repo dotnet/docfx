@@ -56,7 +56,7 @@ public class SplitRestApiToTagLevelTest : TestBase
             Assert.Empty(model.Children);
             Assert.Empty(model.Tags);
             Assert.True((bool)model.Metadata["_isSplittedByTag"]);
-            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about Swagger</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
+            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about Swagger</p>\n", model.ExternalDocs.Description);
         }
         {
             // Verify splitted tag page
@@ -72,11 +72,11 @@ public class SplitRestApiToTagLevelTest : TestBase
             Assert.Empty(model.Children[0].Tags);
             Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
             Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
-            Assert.True(model.Metadata.ContainsKey("externalDocs"));
+            Assert.NotNull(model.ExternalDocs);
             Assert.True((bool)model.Metadata["_isSplittedToTag"]);
 
             // Test overwritten metadata
-            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about pets</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
+            Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about pets</p>\n", model.ExternalDocs.Description);
         }
     }
 
@@ -111,7 +111,7 @@ public class SplitRestApiToTagLevelTest : TestBase
             Assert.Empty(model.Children[0].Tags);
             Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
             Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
-            Assert.True(model.Metadata.ContainsKey("externalDocs"));
+            Assert.NotNull(model.ExternalDocs);
         }
         {
             // Verify toc page

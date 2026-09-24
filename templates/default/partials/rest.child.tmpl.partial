@@ -42,16 +42,7 @@
     <tr>
       <td><span class="parametername">{{#required}}*{{/required}}{{name}}</span></td>
       <td>
-          {{^schema.cType}}
-            {{schema.type}}
-            {{#schema.format}}
-              ({{schema.format}})
-            {{/schema.format}}
-          {{/schema.cType}}
-
-          {{#schema.cType}}
-            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
-          {{/schema.cType}}
+          {{#schemaDetails}}{{>partials/rest.schema}}{{/schemaDetails}}
       </td>
       <td>{{default}}</td>
       <td>{{{description}}}</td>
@@ -79,22 +70,11 @@
     <tr>
       <td><span class="status">{{statusCode}}</span></td>
       <td>
-          {{^schema.cType}}
-            {{schema.type}}
-          {{/schema.cType}}
-
-          {{#schema.cType}}
-            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
-          {{/schema.cType}}
+          {{#schemaDetails}}{{>partials/rest.schema}}{{/schemaDetails}}
       </td>
       <td>{{{description}}}</td>
       <td class="sample-response">
-        {{#examples}}
-        <div class="mime-type">
-          <i>Mime type: </i><span class="mime">{{mimeType}}</span>
-        </div>
-        <pre class="response-content"><code class="lang-js json hljs">{{content}}</code></pre>
-        {{/examples}}
+        {{>partials/rest.examples}}
       </td>
     </tr>
   {{/responses}}

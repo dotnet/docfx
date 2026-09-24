@@ -4,12 +4,28 @@
 using System.Text.Json.Serialization;
 using Docfx.Common.EntityMergers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.RestApi;
 
 public class RestApiRootItemViewModel : RestApiItemViewModelBase
 {
+    [YamlMember(Alias = "securityDefinitions")]
+    [JsonProperty("securityDefinitions", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("securityDefinitions")]
+    public Dictionary<string, RestApiSecuritySchemeViewModel> SecurityDefinitions { get; set; }
+
+    [YamlMember(Alias = "info")]
+    [JsonProperty("info", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("info")]
+    public RestApiInfoViewModel Info { get; set; }
+
+    [YamlMember(Alias = "externalDocs")]
+    [JsonProperty("externalDocs", NullValueHandling = NullValueHandling.Ignore)]
+    [JsonPropertyName("externalDocs")]
+    public RestApiExternalDocumentationViewModel ExternalDocs { get; set; }
+
     /// <summary>
     /// The original swagger.json content
     /// `_` prefix indicates that this metadata is generated
@@ -29,4 +45,20 @@ public class RestApiRootItemViewModel : RestApiItemViewModelBase
     [JsonProperty("children")]
     [JsonPropertyName("children")]
     public List<RestApiChildItemViewModel> Children { get; set; }
+
+    /// <summary>Copy document context to a split page before its independent Markdown build.</summary>
+    public void CopyDocumentContextTo(RestApiRootItemViewModel target)
+    {
+        target.Info = Inherit("info", Info);
+        target.ExternalDocs = Inherit("externalDocs", ExternalDocs);
+        target.SecurityDefinitions = Inherit("securityDefinitions", SecurityDefinitions);
+
+        // Legacy tag/operation metadata may override document fields. Promote it to the
+        // same typed contract, then clone so split pages never mark up shared instances.
+        T Inherit<T>(string name, T fallback) where T : class
+        {
+            var value = target.Metadata.Remove(name, out var overridden) ? overridden : fallback;
+            return value == null ? null : JToken.FromObject(value).ToObject<T>();
+        }
+    }
 }

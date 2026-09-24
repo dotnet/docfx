@@ -336,12 +336,17 @@ public class SwaggerOutputCompatibilityTest : TestBase
         Assert.Equal("201", (string)Assert.Single(create["responses"])["statusCode"]);
         Assert.Equal("Item", (string)create["responses"][0]["schema"]["x-internal-ref-name"]);
 
-        var viewBody = viewOperations["createItem"]["parameters"][0]["schema"];
-        Assert.Equal("Item", (string)viewBody["cTypeId"]);
-        Assert.Equal("literal-schema-example", (string)viewBody["example"]["$ref"]);
-        Assert.Equal(["id", "name", "state"], viewBody["properties"].Select(property => (string)property["key"]));
-        var viewName = viewBody["properties"][1]["value"];
-        Assert.True((bool)viewName["required"]);
+        var viewBody = viewOperations["createItem"]["parameters"][0]["schemaDetails"];
+        Assert.Equal("Item", (string)viewBody["referenceId"]);
+        Assert.Equal("literal-schema-example", (string)JObject.Parse((string)Assert.Single(viewBody["exampleDetails"])["content"])["$ref"]);
+        var viewProperties = viewBody["composition"][0]["schemas"].SelectMany(branch => branch["properties"]).ToArray();
+        Assert.Equal(["id", "name", "state"], viewProperties.Select(property => (string)property["key"]));
+        var viewName = viewProperties[1]["value"];
+        Assert.True((bool)viewProperties[1]["required"]);
+        Assert.NotNull(articles[splitOperations ? (splitTags ? "service/items/createItem" : "service/createItem") : splitTags ? "service/items" : "service"]
+            .SelectSingleNode(".//h3[@id='Item']"));
+        Assert.NotNull(articles[splitOperations ? (splitTags ? "service/items/createItem" : "service/createItem") : splitTags ? "service/items" : "service"]
+            .SelectSingleNode(".//div[@class='schema-composition']/strong[text()='All of']"));
         var listPage = splitTags ? "service/items" : "service";
         if (splitOperations)
         {
@@ -355,8 +360,8 @@ public class SwaggerOutputCompatibilityTest : TestBase
 
         if (overwrite)
         {
-            Assert.Equal("Updated name description.", (string)schema["allOf"][1]["properties"]["name"]["description"]);
-            Assert.Equal("Updated name description.", (string)viewName["description"]);
+            Assert.Equal("Updated name description.", HtmlNode.CreateNode((string)schema["allOf"][1]["properties"]["name"]["description"]).InnerText.Trim());
+            Assert.Equal("Updated name description.", HtmlNode.CreateNode((string)viewName["description"]).InnerText.Trim());
             foreach (var level in new[] { "Document", "Tag", "Operation" })
             {
                 Assert.NotNull(articles["service"].SelectSingleNode($".//p[text()='{level}-level conceptual content.']"));

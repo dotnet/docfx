@@ -134,7 +134,7 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         }
 
         swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
-        var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
+        var vm = SwaggerModelConverter.Convert(swagger);
         vm.Metadata[Constants.PropertyName.SystemKeys] = SystemKeys;
         var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 

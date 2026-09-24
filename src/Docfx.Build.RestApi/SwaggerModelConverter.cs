@@ -104,6 +104,34 @@ public static partial class SwaggerModelConverter
         return vm;
     }
 
+    internal static RestApiRootItemViewModel Convert(SwaggerModel swagger)
+    {
+        var model = FromSwaggerModel(swagger);
+        model.SecurityDefinitions = Take<Dictionary<string, RestApiSecuritySchemeViewModel>>(model.Metadata, "securityDefinitions");
+        model.Info = JObject.FromObject(swagger.Info).ToObject<RestApiInfoViewModel>();
+        model.ExternalDocs = Take<RestApiExternalDocumentationViewModel>(model.Metadata, "externalDocs");
+        foreach (var child in model.Children)
+        {
+            foreach (var parameter in child.Parameters ?? [])
+            {
+                parameter.Schema = Take<RestApiSchemaViewModel>(parameter.Metadata, "schema");
+                if (parameter.Schema == null)
+                {
+                    parameter.Schema = JObject.FromObject(parameter.Metadata).ToObject<RestApiSchemaViewModel>();
+                }
+            }
+            foreach (var response in child.Responses ?? [])
+            {
+                response.Schema = Take<RestApiSchemaViewModel>(response.Metadata, "schema");
+                response.Headers = Take<Dictionary<string, RestApiSchemaViewModel>>(response.Metadata, "headers");
+            }
+        }
+        return model;
+    }
+
+    private static T Take<T>(Dictionary<string, object> metadata, string name) where T : class =>
+        metadata.Remove(name, out var value) && value != null ? JToken.FromObject(value).ToObject<T>() : null;
+
     #region Private methods
 
     [GeneratedRegex(@"\W")]

@@ -1,0 +1,11 @@
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
+{{#exampleDetails}}
+{{#mimeType}}
+<div class="mime-type">
+  <i>Mime type: </i><span class="mime">{{mimeType}}</span>
+</div>
+{{/mimeType}}
+{{#hasContent}}
+<pre class="response-content"><code class="lang-js json hljs">{{content}}</code></pre>
+{{/hasContent}}
+{{/exampleDetails}}
