@@ -2,4 +2,7 @@
 <div class="media-schema">
   <div class="mime-type"><i>Mime type: </i><span class="mime">{{mimeType}}</span></div>
   {{#schemaDetails}}{{>partials/rest.schema}}{{/schemaDetails}}
+  {{#itemSchemaDetails}}
+  <div class="stream-item-schema"><h5>Stream item</h5>{{>partials/rest.schema}}</div>
+  {{/itemSchemaDetails}}
 </div>

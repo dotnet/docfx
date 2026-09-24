@@ -9,6 +9,7 @@ using Docfx.Exceptions;
 using Docfx.Plugins;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Reader;
+using Newtonsoft.Json;
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 
@@ -49,12 +50,13 @@ internal static class OpenApiDocumentReader
         try
         {
             var version = GetVersion(raw);
-            if (!System.Version.TryParse(version, out var parsed) || parsed.Major != 3 || parsed.Minor is not (0 or 1))
+            if (!System.Version.TryParse(version, out var parsed) || parsed.Major != 3 || parsed.Minor is not (0 or 1 or 2))
             {
-                throw new DocfxException($"OpenAPI version '{version}' is not supported. Use OpenAPI 3.0 or 3.1.");
+                throw new DocfxException($"OpenAPI version '{version}' is not supported. Use OpenAPI 3.0, 3.1 or 3.2.");
             }
-            var document = LoadDocuments(raw, format, baseUrl ?? new Uri(Path.GetFullPath("openapi.json")));
-            var model = new OpenApiModelConverter(document.BaseUri).Convert(document, raw, version);
+            var constants = new Dictionary<string, string>();
+            var document = LoadDocuments(raw, format, baseUrl ?? new Uri(Path.GetFullPath("openapi.json")), constants);
+            var model = new OpenApiModelConverter(document.BaseUri, constants).Convert(document, raw, version);
             model.Metadata["rawExtension"] = format == "json" ? ".json" : ".yaml";
             return model;
         }
@@ -64,7 +66,7 @@ internal static class OpenApiDocumentReader
         }
     }
 
-    private static OpenApiDocument LoadDocuments(string raw, string format, Uri root)
+    private static OpenApiDocument LoadDocuments(string raw, string format, Uri root, Dictionary<string, string> constants)
     {
         var loader = new LocalStreamLoader();
         var documents = new Dictionary<Uri, OpenApiDocument>();
@@ -84,12 +86,17 @@ internal static class OpenApiDocumentReader
                 sourceFormat = Path.GetExtension(location.LocalPath).Equals(".json", StringComparison.OrdinalIgnoreCase) ? "json" : "yaml";
             }
             var version = GetVersion(source);
-            if (!System.Version.TryParse(version, out var parsed) || parsed.Major != 3 || parsed.Minor is not (0 or 1))
+            if (!System.Version.TryParse(version, out var parsed) || parsed.Major != 3 || parsed.Minor is not (0 or 1 or 2))
             {
-                throw new DocfxException($"UnsupportedExternalFragment: '{location.LocalPath}' is not a complete OpenAPI 3.0 or 3.1 document. " +
+                throw new DocfxException($"UnsupportedExternalFragment: '{location.LocalPath}' is not a complete OpenAPI 3.0, 3.1 or 3.2 document. " +
                     "Standalone schema/component fragments are valid OpenAPI references, but are not supported by this reader integration.");
             }
-            CheckSchemaReaderLimitations(source, location, parsed.Minor == 0);
+            if (sourceFormat == "json")
+            {
+                // Replacing a const value must not make malformed JSON appear valid.
+                using var json = System.Text.Json.JsonDocument.Parse(source);
+            }
+            source = PrepareSchemas(source, location, parsed.Minor == 0, constants);
             var settings = new OpenApiReaderSettings
             {
                 BaseUrl = location,
@@ -109,10 +116,6 @@ internal static class OpenApiDocumentReader
                 Logger.LogWarning($"OpenAPI '{location.LocalPath}': {warning}");
             }
             var document = result.Document ?? throw new DocfxException($"The OpenAPI reader did not produce a document for '{location.LocalPath}'.");
-            if (document.Components?.Schemas?.Any(pair => pair.Value == null) == true)
-            {
-                throw new DocfxException($"UnsupportedBooleanSchema: OpenAPI.NET could not read a component schema in '{location.LocalPath}'.");
-            }
             documents.Add(location, document);
             if (document.Webhooks is { Count: > 0 } || document.Security is { Count: > 0 } ||
                 document.Components?.SecuritySchemes is { Count: > 0 } ||
@@ -124,6 +127,10 @@ internal static class OpenApiDocumentReader
             }
             var collector = new ReferenceCollector();
             new OpenApiWalker(collector).Walk(document);
+            if (collector.HasEncoding || document.Tags?.Any(tag => tag.Parent != null || tag.Kind != null || tag.Summary != null) == true)
+            {
+                Logger.LogWarning($"OpenAPI '{location.LocalPath}': media-type encoding and tag summary, hierarchy and kind do not have dedicated documentation UI.");
+            }
             references.Add(location, collector.References);
             foreach (var (_, reference) in collector.References)
             {
@@ -168,10 +175,46 @@ internal static class OpenApiDocumentReader
         return documents[root];
     }
 
-    private static void CheckSchemaReaderLimitations(string source, Uri location, bool openApi30)
+    private static string PrepareSchemas(string source, Uri location, bool openApi30, Dictionary<string, string> constants)
     {
+        var replacements = new Dictionary<int, (int End, string Value)>();
         var yaml = new YamlStream();
         yaml.Load(new StringReader(source));
+        // Resolve YAML aliases before editing source spans: an alias shares its
+        // node's original span, which may belong to an example rather than a schema.
+        if (yaml.Documents[0].AllNodes.Any(node => !node.Anchor.IsEmpty))
+        {
+            foreach (var node in yaml.Documents[0].AllNodes)
+            {
+                node.Anchor = AnchorName.Empty;
+            }
+            using var expanded = new StringWriter();
+            yaml.Save(expanded, assignAnchors: false);
+            source = expanded.ToString();
+            yaml = new YamlStream();
+            yaml.Load(new StringReader(source));
+        }
+        // Representation-model collection End marks describe the opening token.
+        // Use parsing events to locate the end of a complete const object/array.
+        var collectionEnds = new Dictionary<int, int>();
+        var starts = new Stack<int>();
+        var parser = new Parser(new StringReader(source));
+        while (parser.MoveNext())
+        {
+            if (parser.Current is YamlDotNet.Core.Events.MappingStart or YamlDotNet.Core.Events.SequenceStart)
+            {
+                starts.Push((int)parser.Current.Start.Index);
+            }
+            else if (parser.Current is YamlDotNet.Core.Events.MappingEnd or YamlDotNet.Core.Events.SequenceEnd)
+            {
+                var end = (int)parser.Current.End.Index;
+                if (parser.Current.Start.Index == end && end < source.Length && source[end] is '}' or ']')
+                {
+                    end++;
+                }
+                collectionEnds.Add(starts.Pop(), end);
+            }
+        }
         var root = yaml.Documents[0].RootNode;
         if (root is YamlMappingNode document &&
             document.Children.TryGetValue(new YamlScalarNode("components"), out var components) &&
@@ -181,6 +224,25 @@ internal static class OpenApiDocumentReader
             CheckMap(schemas, "#/components/schemas");
         }
         VisitDocument(root, "#");
+        var prepared = new StringBuilder(source);
+        foreach (var (start, replacement) in replacements.OrderByDescending(pair => pair.Key))
+        {
+            prepared.Remove(start, replacement.End - start).Insert(start, replacement.Value);
+        }
+        return prepared.ToString();
+
+        void Replace(YamlNode node, string value)
+        {
+            var start = (int)node.Start.Index;
+            var end = collectionEnds.GetValueOrDefault(start, (int)node.End.Index);
+            // Block collections/scalars can include the newline before the next field.
+            var trimmedEnd = end;
+            while (trimmedEnd > start && char.IsWhiteSpace(source[trimmedEnd - 1]))
+            {
+                trimmedEnd--;
+            }
+            replacements[start] = (end, value + source[trimmedEnd..end]);
+        }
 
         void VisitDocument(YamlNode node, string path)
         {
@@ -198,13 +260,13 @@ internal static class OpenApiDocumentReader
             foreach (var (key, value) in mapping.Children)
             {
                 var name = ((YamlScalarNode)key).Value;
-                if (name.StartsWith("x-", StringComparison.Ordinal) || name is "example" or "examples" or "default" or "enum" or "const" or "value" or "schemas")
+                if (name.StartsWith("x-", StringComparison.Ordinal) || name is "example" or "examples" or "default" or "enum" or "const" or "value" or "dataValue" or "serializedValue" or "schemas")
                 {
                     continue;
                 }
-                if (name == "schema")
+                if (name is "schema" or "itemSchema")
                 {
-                    CheckSchema(value, path + "/schema");
+                    CheckSchema(value, path + "/" + name);
                 }
                 else if (name == "$ref")
                 {
@@ -212,7 +274,7 @@ internal static class OpenApiDocumentReader
                 }
                 else if (value is YamlMappingNode entries && name is
                     ("paths" or "webhooks" or "responses" or "content" or "headers" or
-                    "parameters" or "requestBodies" or "pathItems" or "callbacks"))
+                    "parameters" or "requestBodies" or "pathItems" or "callbacks" or "additionalOperations" or "mediaTypes"))
                 {
                     // Map keys are names, not object fields: a "default" response or
                     // a parameter named "schema" still contains a schema. Only Paths
@@ -240,7 +302,6 @@ internal static class OpenApiDocumentReader
             {
                 foreach (var (key, value) in map.Children)
                 {
-                    RejectBoolean(value, path + "/" + key);
                     CheckSchema(value, path + "/" + key);
                 }
             }
@@ -248,6 +309,17 @@ internal static class OpenApiDocumentReader
 
         void CheckSchema(YamlNode node, string path)
         {
+            // The SDK supports boolean schemas but its map/list readers drop scalars.
+            if (node is YamlScalarNode { Style: ScalarStyle.Plain, Value: { } boolean } &&
+                bool.TryParse(boolean, out var allowed))
+            {
+                if (openApi30)
+                {
+                    throw new DocfxException($"InvalidOpenApiSchema: boolean schema at '{path}' in '{location.LocalPath}' requires OpenAPI 3.1 or 3.2.");
+                }
+                Replace(node, allowed ? "{}" : "{\"not\":{}}");
+                return;
+            }
             if (node is not YamlMappingNode schema)
             {
                 return;
@@ -257,11 +329,18 @@ internal static class OpenApiDocumentReader
                 var name = ((YamlScalarNode)key).Value;
                 switch (name)
                 {
-                    case "const" or "default" when value is YamlScalarNode { Style: ScalarStyle.Plain, Value: null or "" }:
-                        throw new DocfxException($"UnsupportedOpenApiNullValue: OpenAPI.NET 3.10.2 reads the implicit YAML null at '{path}/{name}' in '{location.LocalPath}' as an empty string. " +
-                            $"Write '{name}: null' explicitly to preserve its meaning.");
+                    case "const" or "default" when value is YamlScalarNode { Style: ScalarStyle.Plain, Value: null or "" } scalar && scalar.Tag != "tag:yaml.org,2002:str":
+                        if (name == "const" && !openApi30)
+                        {
+                            PreserveConst(value);
+                        }
+                        else
+                        {
+                            Replace(value, " null");
+                        }
+                        break;
                     case "const" when !openApi30:
-                        RejectLossyConst(value, path + "/const");
+                        PreserveConst(value);
                         break;
                     case "$ref":
                         CheckReference(value, path);
@@ -277,7 +356,6 @@ internal static class OpenApiDocumentReader
                             CheckPrimitiveUnion(schema, sequence, name, path);
                             for (var i = 0; i < sequence.Children.Count; i++)
                             {
-                                RejectBoolean(sequence.Children[i], path + "/" + name + "/" + i);
                                 CheckSchema(sequence.Children[i], path + "/" + name + "/" + i);
                             }
                         }
@@ -289,30 +367,49 @@ internal static class OpenApiDocumentReader
             }
         }
 
-        void RejectLossyConst(YamlNode node, string path)
+        void PreserveConst(YamlNode node)
         {
-            // OpenAPI.NET 3.10.2 reads const with GetScalarValue, turning numbers and
-            // booleans into strings and rejecting objects/arrays. Quoted scalars and
-            // explicit null remain supported; never infer a constant's type from type.
-            if (node is YamlMappingNode or YamlSequenceNode ||
-                node is YamlScalarNode { Style: ScalarStyle.Plain, Value: { } value } &&
-                (bool.TryParse(value, out _) ||
-                    (value.Any(char.IsAsciiDigit) && double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _))))
-            {
-                throw new DocfxException($"UnsupportedOpenApiConst: OpenAPI.NET 3.10.2 cannot preserve the const value at '{path}' in '{location.LocalPath}'. " +
-                    "Only string and null const values are supported.");
-            }
+            // OpenAPI.NET 3.10.2 models Const as string. Carry an opaque token through
+            // its reference resolution and restore the JSON value during conversion.
+            var token = Guid.NewGuid().ToString("N");
+            constants.Add(token, JsonLiteral(node));
+            Replace(node, " " + JsonConvert.SerializeObject(token));
         }
 
-        void RejectBoolean(YamlNode node, string path)
+        static string JsonLiteral(YamlNode node)
         {
-            // OpenAPI.NET 3.10.2 JsonNodeHelper.CreateMap/CreateList drop non-object schemas.
-            // Do not rewrite them: fail before the SDK can silently change their meaning.
-            if (node is YamlScalarNode { Style: ScalarStyle.Plain, Value: { } value } &&
-                (value.Equals("true", StringComparison.OrdinalIgnoreCase) || value.Equals("false", StringComparison.OrdinalIgnoreCase)))
+            if (node is YamlMappingNode map)
             {
-                throw new DocfxException($"UnsupportedBooleanSchema: OpenAPI.NET 3.10.2 cannot preserve the boolean schema at '{path}' in '{location.LocalPath}'.");
+                return "{" + string.Join(",", map.Children.Select(pair =>
+                    JsonConvert.SerializeObject(((YamlScalarNode)pair.Key).Value) + ":" + JsonLiteral(pair.Value))) + "}";
             }
+            if (node is YamlSequenceNode sequence)
+            {
+                return "[" + string.Join(",", sequence.Children.Select(JsonLiteral)) + "]";
+            }
+            var scalar = (YamlScalarNode)node;
+            var value = scalar.Value;
+            if (scalar.Style == ScalarStyle.Plain && scalar.Tag != "tag:yaml.org,2002:str")
+            {
+                if (string.IsNullOrEmpty(value) || value == "~" || value.Equals("null", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "null";
+                }
+                if (bool.TryParse(value, out var boolean))
+                {
+                    return boolean ? "true" : "false";
+                }
+                // Preserve JSON numbers lexically, including large integers/exponents.
+                if (System.Text.RegularExpressions.Regex.IsMatch(value, @"^-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?$"))
+                {
+                    return value;
+                }
+                if (decimal.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var number))
+                {
+                    return number.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+            return JsonConvert.SerializeObject(value ?? "");
         }
 
         void CheckReference(YamlNode node, string path)
@@ -355,13 +452,24 @@ internal static class OpenApiDocumentReader
 
     private sealed class ReferenceCollector : OpenApiVisitorBase
     {
+        internal bool HasEncoding { get; private set; }
         internal List<(IOpenApiReferenceHolder Holder, BaseOpenApiReference Reference)> References { get; } = [];
         private readonly HashSet<IOpenApiReferenceHolder> _visitedReferences = new(ReferenceEqualityComparer.Instance);
         private readonly HashSet<IOpenApiSchema> _visitedSchemas = new(ReferenceEqualityComparer.Instance);
 
+        public override void Visit(IOpenApiMediaType media)
+        {
+            HasEncoding |= media.Encoding is { Count: > 0 } || media.ItemEncoding != null || media.PrefixEncoding is { Count: > 0 };
+            // OpenAPI.NET 3.10.2's walker visits Schema but omits ItemSchema.
+            if (media.ItemSchema != null)
+            {
+                WalkSchema(media.ItemSchema);
+            }
+        }
+
         public override void Visit(IOpenApiReferenceHolder holder)
         {
-            // Operation tags in OpenAPI 3.0/3.1 are names, not required references to root tags.
+            // Operation tags are names, not required references to root tags.
             if (holder is OpenApiTagReference)
             {
                 return;

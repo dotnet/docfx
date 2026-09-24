@@ -14,7 +14,7 @@ using static Docfx.Build.RestApi.RestApiModelConverter;
 
 namespace Docfx.Build.RestApi;
 
-internal sealed class OpenApiModelConverter(Uri documentUri)
+internal sealed class OpenApiModelConverter(Uri documentUri, IReadOnlyDictionary<string, string> constants)
 {
     internal RestApiRootItemViewModel Convert(OpenApiDocument document, string raw, string version)
     {
@@ -201,6 +201,7 @@ internal sealed class OpenApiModelConverter(Uri documentUri)
         {
             ["mimeType"] = pair.Key,
             ["schema"] = Schema(pair.Value.Schema),
+            ["itemSchema"] = Schema(pair.Value.ItemSchema),
             ["examples"] = Examples(pair.Key, pair.Value)
         }) ?? []);
 
@@ -217,19 +218,30 @@ internal sealed class OpenApiModelConverter(Uri documentUri)
             {
                 ["name"] = name,
                 ["mimeType"] = mimeType,
-                ["content"] = example.Value == null ? null : Literal(example.Value),
+                ["content"] = example.SerializedValue ?? Literal(example.DataValue ?? example.Value),
                 ["externalValue"] = example.ExternalValue
             });
         }
         return result;
     }
 
-    private static string Literal(JsonNode value) => value?.ToJsonString(new() { WriteIndented = true });
+    private static string Literal(JsonNode value)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+        // The YAML reader uses a sentinel for nulls, including nested values.
+        // The SDK writer restores them; JsonNode.ToJsonString exposes the sentinel.
+        using var text = new StringWriter();
+        new OpenApiJsonWriter(text).WriteAny(value);
+        return text.ToString();
+    }
 
     private static JToken Serialize(IOpenApiSerializable value)
     {
         using var text = new StringWriter();
-        value.SerializeAsV31(new OpenApiJsonWriter(text));
+        value.SerializeAsV32(new OpenApiJsonWriter(text));
         return JToken.Parse(text.ToString());
     }
 
@@ -239,7 +251,7 @@ internal sealed class OpenApiModelConverter(Uri documentUri)
         foreach (var (name, extension) in extensions?.AsEnumerable() ?? [])
         {
             using var text = new StringWriter();
-            extension.Write(new OpenApiJsonWriter(text), OpenApiSpecVersion.OpenApi3_1);
+            extension.Write(new OpenApiJsonWriter(text), OpenApiSpecVersion.OpenApi3_2);
             var token = JToken.Parse(text.ToString());
             result[name] = token is JValue value ? value.Value : token;
         }
@@ -269,7 +281,7 @@ internal sealed class OpenApiModelConverter(Uri documentUri)
                 var targetModel = Schema(target, ancestors);
                 var siblings = GetReferenceSiblings(reference);
                 using var siblingText = new StringWriter();
-                siblings.SerializeAsV31(new OpenApiJsonWriter(siblingText));
+                siblings.SerializeAsV32(new OpenApiJsonWriter(siblingText));
                 var result = JObject.Parse(siblingText.ToString()).Count == 0 ? targetModel : new JObject
                 {
                     ["type"] = "all of",
@@ -300,8 +312,9 @@ internal sealed class OpenApiModelConverter(Uri documentUri)
         try
         {
             using var text = new StringWriter();
-            schema.SerializeAsV31(new OpenApiJsonWriter(text));
+            schema.SerializeAsV32(new OpenApiJsonWriter(text));
             var serialized = JToken.Parse(text.ToString());
+            RestoreConstants(serialized);
             if (serialized is JObject { Count: 1 } && serialized["not"] is JObject { Count: 0 })
             {
                 return new JObject { ["type"] = "no value" };
@@ -365,7 +378,7 @@ internal sealed class OpenApiModelConverter(Uri documentUri)
             }
             if (schema.Enum is { Count: > 0 })
             {
-                result["enum"] = new JArray(schema.Enum.Select(value => value == null ? JValue.CreateNull() : JToken.Parse(value.ToJsonString())));
+                result["enum"] = new JArray(schema.Enum.Select(value => value == null ? JValue.CreateNull() : JToken.Parse(Literal(value))));
             }
             if (schema.Examples is { Count: > 0 })
             {
@@ -390,6 +403,19 @@ internal sealed class OpenApiModelConverter(Uri documentUri)
         finally
         {
             ancestors.Remove(schema);
+        }
+    }
+
+    private void RestoreConstants(JToken node)
+    {
+        if (node is JObject obj && obj["const"] is JValue { Type: JTokenType.String } value &&
+            constants.TryGetValue((string)value, out var literal))
+        {
+            obj["const"] = new JRaw(literal);
+        }
+        foreach (var child in node.Children())
+        {
+            RestoreConstants(child);
         }
     }
 

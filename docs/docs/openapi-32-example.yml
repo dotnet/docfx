@@ -1,0 +1,63 @@
+openapi: 3.2.0
+info:
+  title: Event Stream API
+  version: '1.0'
+  description: |
+    This OpenAPI 3.2 example demonstrates **streaming responses**, the `QUERY`
+    method and an additional HTTP method. The Event schema includes typed
+    constants, a null default and boolean schemas.
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /events:
+    query:
+      operationId: queryEvents
+      summary: Query the event stream
+      description: Each line in the response is one Event, described under **Stream item**.
+      responses:
+        '200':
+          description: A stream of matching events.
+          content:
+            application/jsonl:
+              itemSchema:
+                $ref: '#/components/schemas/Event'
+              examples:
+                structured:
+                  dataValue:
+                    version: 1
+                    active: true
+                    context: {source: catalog}
+                    codes: [1, 2]
+                    cursor: null
+                wire:
+                  serializedValue: |
+                    {"version":1,"active":true,"context":{"source":"catalog"},"codes":[1,2],"cursor":null}
+    additionalOperations:
+      COPY:
+        operationId: copyEvents
+        summary: Copy the current events
+        responses:
+          '204':
+            description: The events were copied.
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        version:
+          type: integer
+          const: 1
+          description: The event format version, preserved as a number.
+        active:
+          type: boolean
+          const: true
+        context:
+          const: {source: catalog}
+        codes:
+          const: [1, 2]
+        cursor:
+          type: [string, 'null']
+          default:
+          description: An omitted YAML default value means null.
+        metadata: true
+        forbidden: false

@@ -16,13 +16,13 @@ exports.transform = function (model) {
         child._hasSchemaDetails = true;
         (child.parameters || []).forEach(function (parameter) {
             collectSchemas(parameter.schema);
-            (parameter.content || []).forEach(function (media) { collectSchemas(media.schema); });
+            (parameter.content || []).forEach(collectMediaSchemas);
         });
         (child.responses || []).forEach(function (response) {
             collectSchemas(response.schema);
-            (response.content || []).forEach(function (media) { collectSchemas(media.schema); });
+            (response.content || []).forEach(collectMediaSchemas);
         });
-        ((child.requestBody || {}).content || []).forEach(function (media) { collectSchemas(media.schema); });
+        ((child.requestBody || {}).content || []).forEach(collectMediaSchemas);
     });
     var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(model._path);
     model._jsonPath = _fileNameWithoutExt + ".swagger" + (model.rawExtension === ".yaml" ? ".yaml" : ".json");
@@ -169,6 +169,11 @@ exports.transform = function (model) {
         });
     }
 
+    function collectMediaSchemas(media) {
+        collectSchemas(media.schema);
+        collectSchemas(media.itemSchema);
+    }
+
     function schemaDetails(schema) {
         if (!schema) return false;
         var name = schema['x-internal-loop-ref-name'] || schema['x-internal-ref-name'];
@@ -215,6 +220,7 @@ exports.transform = function (model) {
     function transformContent(content) {
         (content || []).forEach(function (media) {
             media.schemaDetails = schemaDetails(media.schema);
+            media.itemSchemaDetails = schemaDetails(media.itemSchema);
             media.examples = media.examples || [];
             media.examples.forEach(function (example) {
                 example.name = example.name || '';

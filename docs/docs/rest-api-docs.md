@@ -1,7 +1,7 @@
 # REST API docs
 
-Docfx generates REST API documentation from Swagger 2.0 JSON and OpenAPI 3.0 JSON or YAML files,
-with **OpenAPI 3.1 core support and documented SDK limitations**.
+Docfx generates REST API documentation from Swagger 2.0 JSON and OpenAPI 3.0, 3.1 and 3.2
+JSON or YAML files, with documented feature limitations.
 OpenAPI documents are read using [OpenAPI.NET](https://github.com/microsoft/OpenAPI.NET).
 Swagger 2.0 continues to use the existing compatibility reader.
 
@@ -23,6 +23,8 @@ Each swagger file produces one output HTML file.
 
 See the [OpenAPI 3.0 example](openapi-3-example.yml) for a generated API page with
 parameters, a request body, response examples and reusable schemas.
+The [OpenAPI 3.2 example](openapi-32-example.yml) demonstrates streaming responses,
+additional HTTP methods, typed constants, null defaults and boolean schemas.
 
 Include the entry documents in `build.content`, for example:
 
@@ -40,8 +42,7 @@ Both `.yaml` and `.yml` are supported. Referenced OpenAPI documents can mix JSON
 do not need to be listed as separate entry documents. References are loaded through
 Docfx's file abstraction; HTTP/HTTPS and network-share references are not fetched.
 An invalid document or unresolved reference produces an input error, not a fallback
-to the Swagger reader. Only OpenAPI 3.0 and 3.1 are supported, even if the installed
-library can read newer versions.
+to the Swagger reader. OpenAPI 3.0, 3.1 and 3.2 are supported.
 
 Operations reuse the existing Markdown, overwrite, cross-reference, tag and
 operation splitting pipeline. Parameters, request bodies and response content
@@ -57,7 +58,7 @@ and path. Explicit IDs must be unique. Tags used by operations need not be decla
 at document level.
 
 Schema documentation preserves alternatives and intersections rather than merging
-`allOf`/`anyOf`/`oneOf` properties into a single object. OpenAPI 3.1 inline boolean schemas,
+`allOf`/`anyOf`/`oneOf` properties into a single object. OpenAPI 3.1/3.2 boolean schemas,
 type unions and recursive references are displayed without expanding cycles. Schema
 reference siblings are shown as an intersection with the target, not an override.
 The SDK can normalize disjoint primitive alternatives into equivalent type unions.
@@ -65,15 +66,19 @@ This is documentation generation, not full JSON Schema validation or full OpenAP
 conformance. Callbacks, webhooks, security configuration and response links do not
 have dedicated rendered UI. The original input remains available in the raw model.
 
+OpenAPI 3.1/3.2 `const` values retain their JSON types, including numbers, booleans,
+objects, arrays and null. Explicit and empty YAML null defaults are supported.
+Boolean schemas work inline, in components and properties, and in composition arrays:
+`true` accepts any value, while `false` accepts no value.
+
+OpenAPI 3.2 `QUERY` and additional HTTP methods are rendered as operations. Streaming
+media types display `itemSchema` under **Stream item**. Examples support structured
+`dataValue` and literal `serializedValue`, as well as `value` and `externalValue`.
+
 ### Known OpenAPI.NET 3.10.2 limitations
 
 See [OpenAPI features not yet supported](openapi-unsupported-features.md) for the
 current input errors, features without dedicated UI, examples and SDK source references.
-
-Numeric, boolean, object and array `const` values produce `UnsupportedOpenApiConst`
-because the pinned SDK cannot preserve them. The diagnostic identifies the source
-file and schema location, and the affected document is not generated. String
-constants, explicit `default: null` and `const: null` are preserved.
 
 ## Organize REST APIs using Tags
 

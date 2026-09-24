@@ -22,6 +22,78 @@ public class OpenApiOutputTest : TestBase
     private const string RootHtmlId = "api_example_test_v1_SDK_API_1_0";
 
     [Theory]
+    [InlineData("default")]
+    [InlineData("statictoc")]
+    [InlineData("modern")]
+    public void RendersOpenApi32StreamsAndTypedConstraints(string template)
+    {
+        var input = GetRandomFolder();
+        var service = CreateFile("stream.yaml", """
+            openapi: 3.2.0
+            info: {title: Stream API, version: '1'}
+            paths:
+              /events:
+                query:
+                  operationId: queryEvents
+                  responses:
+                    '200':
+                      description: Events
+                      content:
+                        application/jsonl:
+                          itemSchema: {$ref: '#/components/schemas/Event'}
+                          examples:
+                            data: {dataValue: {id: 42, active: false, items: [null]}}
+                            wire:
+                              serializedValue: |
+                                {"id":42}
+                                {"id":43}
+                additionalOperations:
+                  COPY:
+                    operationId: copyEvents
+                    responses:
+                      '204': {description: Copied}
+            components:
+              schemas:
+                Event:
+                  type: object
+                  properties:
+                    id: {type: integer, const: 42}
+                    active: {const: false}
+                    payload: {const: {status: ok, values: [1, null]}}
+                    missing:
+                      const:
+                      default:
+                    anything: true
+                    never: false
+                    intersection: {allOf: [false, {type: string}]}
+            """, input);
+        var files = new FileCollection(Directory.GetCurrentDirectory());
+        files.Add(DocumentType.Article, [service], input);
+        var output = Build(input, files, template, false, false);
+        var article = ReadHtml(output, "stream.html").SelectSingleNode("//article");
+        var text = HtmlEntity.DeEntitize(article.InnerText);
+        Assert.Contains("QUERY", text);
+        Assert.Contains("COPY", text);
+        var stream = Assert.Single(article.SelectNodes(".//div[@class='stream-item-schema']"));
+        var streamText = HtmlEntity.DeEntitize(stream.InnerText);
+        Assert.Contains("Stream item", streamText);
+        Assert.Contains("any value", streamText);
+        Assert.Contains("no value", streamText);
+        var codes = stream.SelectNodes(".//dl[@class='schema-constraints']/dd").Select(code => HtmlEntity.DeEntitize(code.InnerText)).ToArray();
+        Assert.Contains("42", codes);
+        Assert.DoesNotContain("\"42\"", codes);
+        Assert.Contains("false", codes);
+        Assert.Contains("null", codes);
+        Assert.Contains("{\"status\":\"ok\",\"values\":[1,null]}", codes);
+        var examples = article.SelectNodes(".//pre/code").Select(code => HtmlEntity.DeEntitize(code.InnerText)).ToArray();
+        Assert.Contains(examples, example => example.Contains("\"active\": false"));
+        var data = JObject.Parse(Assert.Single(examples, example => example.Contains("\"active\"")));
+        Assert.Equal(JTokenType.Null, data["items"][0].Type);
+        Assert.Contains("{\"id\":42}\n{\"id\":43}\n", examples);
+        Assert.NotNull(article.SelectSingleNode(".//a[@href='#schema-Event']"));
+    }
+
+    [Theory]
     [InlineData("default", "3.0.3", ".json", false, false, false)]
     [InlineData("default", "3.0.3", ".yml", true, false, false)]
     [InlineData("default", "3.1.0", ".yaml", false, true, false)]
@@ -30,6 +102,9 @@ public class OpenApiOutputTest : TestBase
     [InlineData("statictoc", "3.1.0", ".yml", false, false, false)]
     [InlineData("modern", "3.1.0", ".yaml", true, true, false)]
     [InlineData("modern", "3.0.3", ".json", false, false, false)]
+    [InlineData("default", "3.2.0", ".json", false, false, false)]
+    [InlineData("statictoc", "3.2.0", ".yaml", true, true, false)]
+    [InlineData("modern", "3.2.0", ".json", true, true, true)]
     public void BuildsOpenApiDocumentation(string template, string version, string extension,
         bool splitTags, bool splitOperations, bool overwrite)
     {
@@ -213,7 +288,7 @@ public class OpenApiOutputTest : TestBase
             .Select(node => HtmlEntity.DeEntitize(node.InnerText)));
         Assert.Equal(new[] { "null", "string" },
             ((string)schema["properties"]["label"]["type"]).Split(" | ").Order(StringComparer.Ordinal));
-        if (version == "3.1.0")
+        if (version != "3.0.3")
         {
             foreach (var (property, expected) in new[] { ("label", "\"42\""), ("nullValue", "null") })
             {
@@ -278,7 +353,7 @@ public class OpenApiOutputTest : TestBase
         }
         Assert.Contains("leftField", createText);
         Assert.Contains("rightField", createText);
-        if (version == "3.1.0")
+        if (version != "3.0.3")
         {
             var booleanResponse = Assert.Single(operations["inspectHealth"]["responses"]);
             Assert.Equal("200", (string)booleanResponse["statusCode"]);
@@ -391,38 +466,23 @@ public class OpenApiOutputTest : TestBase
         Assert.Contains("value", Assert.Single(article.SelectNodes(".//pre/code"), code => code.InnerText.Contains("child")).InnerText);
     }
 
-    [Theory]
-    [InlineData("UnsupportedBooleanSchema")]
-    [InlineData("UnsupportedExternalFragment")]
-    [InlineData("UnsupportedOpenApiConst")]
-    [InlineData("UnsupportedOpenApiNullValue")]
-    public void RejectsUnsupportedOpenApiWithoutPublishing(string diagnostic)
+    [Fact]
+    public void RejectsUnsupportedExternalFragmentsWithoutPublishing()
     {
         var input = GetRandomFolder();
-        var schema = diagnostic switch
-        {
-            "UnsupportedBooleanSchema" => """{"type": "object", "properties": {"value": false}}""",
-            "UnsupportedOpenApiConst" => """{"const": 42}""",
-            "UnsupportedOpenApiNullValue" => "{const: }",
-            _ => """{"$ref": "schema.yaml"}"""
-        };
-        if (diagnostic == "UnsupportedExternalFragment")
-        {
-            CreateFile("schema.yaml", "type: object\nproperties:\n  value:\n    type: string\n", input);
-        }
-        var fileName = diagnostic == "UnsupportedOpenApiNullValue" ? "unsupported.yaml" : "unsupported.json";
-        var file = CreateFile(fileName, $$"""
+        CreateFile("schema.yaml", "type: object\nproperties:\n  value:\n    type: string\n", input);
+        var file = CreateFile("unsupported.json", """
             {
               "openapi": "3.1.0",
               "info": { "title": "Unsupported API", "version": "1.0" },
               "paths": {},
-              "components": { "schemas": { "Value": {{schema}} } }
+              "components": { "schemas": { "Value": {"$ref": "schema.yaml"} } }
             }
             """, input);
         var files = new FileCollection(Directory.GetCurrentDirectory());
         files.Add(DocumentType.Article, [file], input);
 
-        var output = Build(input, files, "default", false, false, diagnostic);
+        var output = Build(input, files, "default", false, false, "UnsupportedExternalFragment");
 
         Assert.Empty(Directory.GetFiles(output, "*.raw.json", SearchOption.AllDirectories));
         Assert.Empty(Directory.GetFiles(output, "*.html", SearchOption.AllDirectories));
@@ -439,7 +499,7 @@ public class OpenApiOutputTest : TestBase
         {
             reference.Value = ((string)reference.Value).Replace("components.json", "components" + externalExtension, StringComparison.Ordinal);
         }
-        if (version == "3.1.0")
+        if (version != "3.0.3")
         {
             var properties = components["components"]["schemas"]["Item"]["properties"];
             properties["label"] = new JObject { ["type"] = new JArray("string", "null"), ["const"] = "42", ["default"] = null };
