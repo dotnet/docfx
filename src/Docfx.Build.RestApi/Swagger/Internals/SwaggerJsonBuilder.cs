@@ -25,9 +25,10 @@ internal class SwaggerJsonBuilder
         _resolvedObjectCache = new Dictionary<JsonLocationInfo, SwaggerObjectBase>();
     }
 
-    public SwaggerObjectBase Read(string swaggerPath)
+    public SwaggerObjectBase Read(string swaggerPath, TextReader source = null)
     {
-        var swagger = Load(swaggerPath);
+        using var reader = source == null ? null : new JsonTextReader(source) { DateParseHandling = DateParseHandling.None, CloseInput = false };
+        var swagger = reader == null ? Load(swaggerPath) : LoadCore(JToken.ReadFrom(reader), swaggerPath);
         return ResolveReferences(swagger, swaggerPath, new Stack<JsonLocationInfo>());
     }
 

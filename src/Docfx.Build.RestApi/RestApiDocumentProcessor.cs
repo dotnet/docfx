@@ -82,7 +82,10 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
         switch (file.Type)
         {
             case DocumentType.Article:
-                if (RestApiDocumentReader.IsSupportedFile(file.FullPath))
+                if (Path.GetExtension(file.File).ToLowerInvariant() is not (".json" or ".yaml" or ".yml")) break;
+                var input = DocumentInput.Get(file);
+                if (input.Header is { Kind: "openapi" } ||
+                    (input.Format == "json" && input.Header is { Kind: "swagger", Version: "2.0" }))
                 {
                     return ProcessingPriority.Normal;
                 }
@@ -127,11 +130,11 @@ public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
 
     protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
     {
-        var filePath = Path.Combine(file.BaseDir, file.File);
-        var vm = RestApiDocumentReader.Read(filePath, file.File);
+        var input = DocumentInput.Get(file);
+        var vm = RestApiDocumentReader.Read(input, file.File);
         vm.Metadata[DocumentTypeKey] = RestApiDocumentType;
 
-        var repoInfo = GitUtility.TryGetFileDetail(filePath);
+        var repoInfo = GitUtility.TryGetFileDetail(input.Path);
         if (repoInfo != null)
         {
             vm.Metadata["source"] = new SourceDetail { Remote = repoInfo };

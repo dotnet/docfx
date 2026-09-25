@@ -22,11 +22,13 @@ public class SwaggerJsonParser
             return jsonSerializer;
         });
 
-    public static SwaggerModel Parse(string swaggerFilePath)
+    public static SwaggerModel Parse(string swaggerFilePath) => Parse(swaggerFilePath, null);
+
+    internal static SwaggerModel Parse(string swaggerFilePath, TextReader source)
     {
         // Deserialize to internal swagger model
         var builder = new SwaggerJsonBuilder();
-        var swagger = builder.Read(swaggerFilePath);
+        var swagger = builder.Read(swaggerFilePath, source);
 
         // Serialize to JToken
         var token = JToken.FromObject(swagger, Serializer.Value);

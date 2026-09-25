@@ -1,7 +1,9 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Docfx.Build.Common;
 using Docfx.DataContracts.RestApi;
+using Docfx.Plugins;
 using Docfx.Exceptions;
 using Docfx.Tests.Common;
 using Newtonsoft.Json.Linq;
@@ -17,7 +19,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("yaml")]
     public void OpenApi32MapsAdditionalMethodsStreamingAndExamples(string format)
     {
-        var model = OpenApiDocumentReader.Parse("""
+        var model = RestApiDocumentReader.Parse("""
             {"openapi":"3.2.0","info":{"title":"Streams","version":"1"},
              "paths":{"/events":{
                "query":{"responses":{"200":{"description":"Events","content":{
@@ -76,7 +78,7 @@ public class OpenApiDocumentReaderTest : TestBase
                 Number: {const: 1e100}
                 String: {const: !!str 42}
             """;
-        var model = OpenApiDocumentReader.Parse(raw, "yaml");
+        var model = RestApiDocumentReader.Parse(raw, "yaml");
         Assert.Equal(raw, model.Raw);
         Assert.Equal(42, ((JObject)model.Metadata["x-literal"])["schema"]["const"]);
         Assert.Equal(false, model.Metadata["x-boolean"]);
@@ -95,7 +97,7 @@ public class OpenApiDocumentReaderTest : TestBase
     public void ReportsOpenApi32FeaturesWithoutDocumentationUi()
     {
         using var listener = new TestListenerScope();
-        OpenApiDocumentReader.Parse("""
+        RestApiDocumentReader.Parse("""
             {"openapi":"3.2.0","info":{"title":"Warnings","version":"1"},
              "tags":[{"name":"events","summary":"Events","kind":"nav"}],
              "paths":{"/events":{"post":{"requestBody":{"content":{"multipart/mixed":{
@@ -150,7 +152,7 @@ public class OpenApiDocumentReaderTest : TestBase
               } } }
             }
             """;
-        var model = OpenApiDocumentReader.Parse(raw, "json");
+        var model = RestApiDocumentReader.Parse(raw, "json");
         Assert.Equal(raw, model.Raw);
         Assert.Equal("api.example.test/v1/Typed API/1", model.Uid);
         Assert.Equal("**API**", model.Description);
@@ -183,7 +185,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("3.2.0")]
     public void YamlUsesTheSameModelsAndDefaults(string version)
     {
-        var model = OpenApiDocumentReader.Parse($$"""
+        var model = RestApiDocumentReader.Parse($$"""
             openapi: {{version}}
             info:
               title: YAML API
@@ -205,7 +207,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [Fact]
     public void ServerPrecedenceAndGeneratedIdsAreStable()
     {
-        static RestApiRootItemViewModel Read(string paths) => OpenApiDocumentReader.Parse($$"""
+        static RestApiRootItemViewModel Read(string paths) => RestApiDocumentReader.Parse($$"""
             {
               "openapi":"3.1.0", "info":{"title":"Servers","version":"1"},
               "servers":[{"url":"https://root.example.test/root"}],
@@ -231,7 +233,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [Fact]
     public void BooleanUnionCompositionAndRefSiblingsAreNotFlattened()
     {
-        var model = OpenApiDocumentReader.Parse("""
+        var model = RestApiDocumentReader.Parse("""
             {
               "openapi":"3.1.0", "info":{"title":"Schemas","version":"1"},
               "paths":{"/boolean":{"get":{"responses":{"200":{"description":"OK","content":{
@@ -279,7 +281,7 @@ public class OpenApiDocumentReaderTest : TestBase
             $$"""{ "oneOf": [{{boolean}}] }"""
         })
         {
-            var model = OpenApiDocumentReader.Parse(
+            var model = RestApiDocumentReader.Parse(
                 """{"openapi":"3.1.0","info":{"title":"Boolean","version":"1"},"paths":{},"components":{"schemas":{"Value":SCHEMA}}}"""
                     .Replace("SCHEMA", schema), "json");
             var value = (JObject.FromObject(model.Metadata["schemas"]))["Value"];
@@ -300,7 +302,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("3.2.0", "\"exclusiveMinimum\":0")]
     public void PreservesNumericBoundsAndFalseConstraints(string version, string minimum)
     {
-        var model = OpenApiDocumentReader.Parse($$"""
+        var model = RestApiDocumentReader.Parse($$"""
             {"openapi":"{{version}}","info":{"title":"Constraints","version":"1"},"paths":{},
              "components":{"schemas":{
                "Number":{"type":"number",{{minimum}},"maximum":9007199254740993,"multipleOf":0.5},
@@ -323,7 +325,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [Fact]
     public void PreservesConstantsInsideSchemaValuedConstraintsAndReferenceSiblings()
     {
-        var model = OpenApiDocumentReader.Parse("""
+        var model = RestApiDocumentReader.Parse("""
             {"openapi":"3.1.0","info":{"title":"Constraints","version":"1"},"paths":{},
              "components":{"schemas":{
                "Base":{},
@@ -351,7 +353,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [Fact]
     public void SchemaShapedLiteralExamplesAndExtensionsAreNotPreflighted()
     {
-        var model = OpenApiDocumentReader.Parse("""
+        var model = RestApiDocumentReader.Parse("""
             {
               "openapi":"3.1.0","info":{"title":"Data","version":"1"},
               "x-data":{"schema":{"allOf":[false],"const":42},"components":{"schemas":{"Value":true}}},
@@ -372,7 +374,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [Fact]
     public void PreservesSingularSchemaExamplesFromOpenApi30()
     {
-        var model = OpenApiDocumentReader.Parse("""
+        var model = RestApiDocumentReader.Parse("""
             {
               "openapi":"3.0.3","info":{"title":"Examples","version":"1"},"paths":{},
               "components":{"schemas":{"Value":{"type":"object","example":{"description":"**literal**","$ref":"payload"}}}}
@@ -391,7 +393,7 @@ public class OpenApiDocumentReaderTest : TestBase
     {
         foreach (var value in new[] { "42", "-1", "1.5", "1e20", "1e100", "true", "false", "{}", "[]", "123456789012345678901234567890", "{\"n\":42,\"flag\":false,\"items\":[null,\"42\"]}" })
         {
-            var model = OpenApiDocumentReader.Parse("""
+            var model = RestApiDocumentReader.Parse("""
                 {"openapi":"3.1.0","info":{"title":"Constants","version":"1"},"paths":{},
                  "components":{"schemas":{"Value":{"const":VALUE,"enum":[1,2]}}}}
                 """.Replace("VALUE", value), format);
@@ -406,7 +408,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("false")]
     public void BooleanSchemasRequireOpenApi31OrLater(string boolean)
     {
-        var error = Assert.Throws<DocfxException>(() => OpenApiDocumentReader.Parse("""
+        var error = Assert.Throws<DocfxException>(() => RestApiDocumentReader.Parse("""
             {"openapi":"3.0.3","info":{"title":"Boolean","version":"1"},"paths":{},
              "components":{"schemas":{"Value":{"properties":{"value":BOOLEAN}}}}}
             """.Replace("BOOLEAN", boolean), "json"));
@@ -418,7 +420,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("'quoted'")]
     public void NormalizationDoesNotAcceptMalformedJsonConstants(string value)
     {
-        Assert.Throws<DocfxException>(() => OpenApiDocumentReader.Parse("""
+        Assert.Throws<DocfxException>(() => RestApiDocumentReader.Parse("""
             {"openapi":"3.2.0","info":{"title":"Invalid JSON","version":"1"},"paths":{},
              "components":{"schemas":{"Value":{"const":VALUE}}}}
             """.Replace("VALUE", value), "json"));
@@ -431,7 +433,7 @@ public class OpenApiDocumentReaderTest : TestBase
     {
         foreach (var value in new[] { "\"ok\"", "\"😀\"", "\"42\"", "\"true\"", "\"null\"", "\"\"", "null" })
         {
-            var model = OpenApiDocumentReader.Parse("""
+            var model = RestApiDocumentReader.Parse("""
                 {"openapi":"3.1.0","info":{"title":"Constants","version":"1"},"paths":{},
                  "components":{"schemas":{"Value":{"const":VALUE,"default":null}}}}
                 """.Replace("VALUE", value), format);
@@ -453,7 +455,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("!!str", "\"\"")]
     public void PreservesYamlStringAndNullConstants(string value, string expected)
     {
-        var model = OpenApiDocumentReader.Parse($$"""
+        var model = RestApiDocumentReader.Parse($$"""
             openapi: 3.1.0
             info: {title: Constants, version: '1'}
             paths: {}
@@ -472,7 +474,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("3.0.3", "default")]
     public void PreservesImplicitYamlNullValues(string version, string keyword)
     {
-        var model = OpenApiDocumentReader.Parse($$"""
+        var model = RestApiDocumentReader.Parse($$"""
             openapi: {{version}}
             info: {title: Null values, version: '1'}
             paths: {}
@@ -492,7 +494,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("x-parameter")]
     public void ChecksSchemasInNamedParameters(string name)
     {
-        var model = OpenApiDocumentReader.Parse("""
+        var model = RestApiDocumentReader.Parse("""
             {"openapi":"3.1.0","info":{"title":"Constants","version":"1"},
              "paths":{"/items":{"get":{"parameters":[{"$ref":"#/components/parameters/NAME"}],"responses":{"200":{"description":"OK"}}}}},
              "components":{"parameters":{"NAME":{"name":"q","in":"query","schema":{"const":42}}}}}
@@ -506,7 +508,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("default")]
     public void PreservesConstInInlineResponseSchemas(string status)
     {
-        var model = OpenApiDocumentReader.Parse("""
+        var model = RestApiDocumentReader.Parse("""
             {"openapi":"3.1.0","info":{"title":"Constants","version":"1"},
              "paths":{"/items":{"get":{"responses":{"STATUS":{"description":"OK",
                "content":{"application/json":{"schema":{"const":42}}}}}}}}}
@@ -534,11 +536,11 @@ public class OpenApiDocumentReaderTest : TestBase
                 """.Replace("VERSION", version).Replace("SCHEMA", schema);
             if (version == "3.0.3" && lossy)
             {
-                var error = Assert.Throws<DocfxException>(() => OpenApiDocumentReader.Parse(raw, "json"));
+                var error = Assert.Throws<DocfxException>(() => RestApiDocumentReader.Parse(raw, "json"));
                 Assert.Contains("UnsupportedOpenApiComposition", error.Message);
                 continue;
             }
-            var model = OpenApiDocumentReader.Parse(raw, "json");
+            var model = RestApiDocumentReader.Parse(raw, "json");
             var value = (JObject.FromObject(model.Metadata["schemas"]))["Value"];
             Assert.Equal("One of", value["composition"][0]["kind"]);
             Assert.Equal(2, value["composition"][0]["schemas"].Count());
@@ -551,7 +553,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("3.10.0")]
     public void DoesNotAdvertiseUntestedVersions(string version)
     {
-        var error = Assert.Throws<DocfxException>(() => OpenApiDocumentReader.Parse(
+        var error = Assert.Throws<DocfxException>(() => RestApiDocumentReader.Parse(
             """{"openapi":"VERSION","info":{"title":"Future","version":"1"},"paths":{}}""".Replace("VERSION", version), "json"));
         Assert.Contains("3.0", error.Message);
         Assert.Contains("3.1", error.Message);
@@ -563,7 +565,7 @@ public class OpenApiDocumentReaderTest : TestBase
     [InlineData("file://server/share/schema.json")]
     public void InvalidAndNetworkReferencesAreErrors(string reference)
     {
-        var error = Assert.Throws<DocfxException>(() => OpenApiDocumentReader.Parse("""
+        var error = Assert.Throws<DocfxException>(() => RestApiDocumentReader.Parse("""
             {
               "openapi":"3.1.0","info":{"title":"References","version":"1"},
               "paths":{},"components":{"schemas":{"Item":{"$ref":"REFERENCE"}}}
@@ -580,7 +582,7 @@ public class OpenApiDocumentReaderTest : TestBase
     public void MissingTargetsAndStandaloneFragmentsNeverSucceed(string reference, bool createExternal, string diagnostic)
     {
         var folder = GetRandomFolder();
-        var entry = CreateFile("entry.json", """
+        CreateFile("entry.json", """
             {"openapi":"3.1.0","info":{"title":"Missing","version":"1"},"paths":{},
              "components":{"schemas":{"Value":{"$ref":"REFERENCE"}}}}
             """.Replace("REFERENCE", reference), folder);
@@ -589,7 +591,7 @@ public class OpenApiDocumentReaderTest : TestBase
             CreateFile("external.yaml", "openapi: 3.1.0\ninfo: { title: External, version: '1' }\npaths: {}\ncomponents: { schemas: {} }", folder);
             CreateFile("fragment.yaml", "type: string", folder);
         }
-        var error = Assert.Throws<DocfxException>(() => OpenApiDocumentReader.Read(entry));
+        var error = Assert.Throws<DocfxException>(() => RestApiDocumentReader.Read(DocumentInput.Get(new FileAndType(Path.GetFullPath(folder), "entry.json", DocumentType.Article))));
         Assert.Contains(diagnostic, error.Message);
     }
 }

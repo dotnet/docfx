@@ -17,20 +17,12 @@ namespace Docfx.Build.RestApi;
 
 internal static class OpenApiDocumentReader
 {
-    internal static RestApiRootItemViewModel Read(string path)
-    {
-        var format = Path.GetExtension(path).Equals(".json", StringComparison.OrdinalIgnoreCase) ? "json" : "yaml";
-        var model = Parse(EnvironmentContext.FileAbstractLayer.ReadAllText(path), format, new Uri(Path.GetFullPath(path)));
-        return model;
-    }
-
-    internal static RestApiRootItemViewModel Parse(string raw, string format, Uri baseUrl = null, string version = null)
+    internal static RestApiRootItemViewModel Parse(string raw, string format, Uri baseUrl, string version)
     {
         try
         {
-            version ??= RestApiDocumentReader.ReadHeader(new StringReader(raw), format)?.Version;
             var constants = new Dictionary<string, string>();
-            var document = LoadDocument(raw, format, baseUrl ?? new Uri(Path.GetFullPath("openapi.json")), version, constants);
+            var document = LoadDocument(raw, format, baseUrl, version, constants);
             var model = new OpenApi3ModelConverter(constants).Convert(document, raw, version);
             model.Metadata["rawExtension"] = format == "json" ? ".json" : ".yaml";
             return model;

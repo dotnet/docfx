@@ -69,7 +69,7 @@ public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
 
     protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
     {
-        if (YamlMime.ReadMime(file.File) == null)
+        if (DocumentInput.Get(file).Header?.Kind.StartsWith(YamlMime.YamlMimePrefix, StringComparison.Ordinal) != true)
         {
             Logger.LogWarning(
                 "Please add `YamlMime` as the first line of file, e.g.: `### YamlMime:ManagedReference`, otherwise the file will be not treated as ManagedReference source file in near future.",
@@ -77,7 +77,8 @@ public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
                 code: WarningCodes.Yaml.MissingYamlMime);
         }
 
-        var page = YamlUtility.Deserialize<PageViewModel>(file.File);
+        using var reader = DocumentInput.Get(file).OpenRead();
+        var page = YamlUtility.Deserialize<PageViewModel>(reader);
         if (page?.Items == null || page.Items.Count == 0)
         {
             return null;
@@ -123,7 +124,7 @@ public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
                 if (".yml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
                     ".yaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
                 {
-                    var mime = YamlMime.ReadMime(file.File);
+                    var mime = DocumentInput.Get(file).Header?.Kind;
                     switch (mime)
                     {
                         case YamlMime.ManagedReference:

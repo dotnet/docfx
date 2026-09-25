@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Newtonsoft.Json.Linq;
+using Docfx.Build.Common;
+using Docfx.Plugins;
 using Docfx.Tests.Common;
 using Xunit;
 
@@ -17,18 +19,18 @@ public class RestApiDocumentReaderTest : TestBase
     [InlineData("yaml", "info: {version: '2.0'}\nopenapi: '3.1.0'", "3.1.0", false)]
     [InlineData("json", "{\"swagger\":\"2.0\"}", "2.0", true)]
     [InlineData("json", "{\"openapi\":\"2.0\"}", "2.0", false)]
-    [InlineData("yaml", "swagger: '2.0'", null, false)]
+    [InlineData("yaml", "swagger: '2.0'", "2.0", true)]
     public void IdentifiesOnlyRootSpecificationMarkers(string format, string source, string version, bool swagger)
     {
-        var header = RestApiDocumentReader.ReadHeader(new StringReader(source), format);
+        var header = DocumentInput.ReadHeader(new StringReader(source), format);
         Assert.Equal(version, header?.Version);
-        Assert.Equal(swagger, header?.IsSwagger ?? false);
+        Assert.Equal(swagger, header?.Kind == "swagger");
     }
 
     [Fact]
     public void MalformedHeaderUsesTheReaderDiagnostic()
     {
-        Assert.Throws<Docfx.Exceptions.DocfxException>(() => OpenApiDocumentReader.Parse("{\"info\":]", "json"));
+        Assert.Throws<Docfx.Exceptions.DocfxException>(() => RestApiDocumentReader.Parse("{\"info\":]", "json"));
     }
 
     [Theory]
@@ -51,9 +53,11 @@ public class RestApiDocumentReaderTest : TestBase
                "responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"allOf":[
                  {"type":"object","properties":{"name":{"type":"string"}}}]}}}}}}}}}
             """.Replace("VERSION", version);
-        var file = CreateFile("api.json", source, GetRandomFolder());
-        Assert.True(RestApiDocumentReader.IsSupportedFile(file));
-        var model = RestApiDocumentReader.Read(file, "api.json");
+        var folder = GetRandomFolder();
+        CreateFile("api.json", source, folder);
+        var input = DocumentInput.Get(new FileAndType(Path.GetFullPath(folder), "api.json", DocumentType.Article));
+        Assert.Equal(version == "2.0" ? "swagger" : "openapi", input.Header.Kind);
+        var model = RestApiDocumentReader.Read(input, "api.json");
         Assert.Equal(version == "2.0" ? null : version, model.Metadata.GetValueOrDefault("specificationVersion"));
         Assert.Equal("Common/service-version", model.Uid);
         var operation = Assert.Single(model.Children);

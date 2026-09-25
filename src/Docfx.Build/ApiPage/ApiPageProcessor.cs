@@ -3,6 +3,7 @@
 
 using System.Collections.Immutable;
 using System.Text.Json;
+using Docfx.Build.Common;
 using Docfx.Common;
 using Docfx.Plugins;
 using YamlDotNet.Serialization;
@@ -29,7 +30,7 @@ class ApiPageDocumentProcessor(IMarkdownService markdownService) : IDocumentProc
         if (".yml".Equals(extension, StringComparison.OrdinalIgnoreCase) ||
             ".yaml".Equals(extension, StringComparison.OrdinalIgnoreCase))
         {
-            return YamlMime.ReadMime(file.File) == "YamlMime:ApiPage" ? ProcessingPriority.High : ProcessingPriority.NotSupported;
+            return DocumentInput.Get(file).Header?.Kind == "YamlMime:ApiPage" ? ProcessingPriority.High : ProcessingPriority.NotSupported;
         }
 
         return ProcessingPriority.NotSupported;
@@ -37,7 +38,7 @@ class ApiPageDocumentProcessor(IMarkdownService markdownService) : IDocumentProc
 
     public FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
     {
-        var yml = EnvironmentContext.FileAbstractLayer.ReadAllText(file.File);
+        var yml = DocumentInput.Get(file).ReadAllText();
         var json = JsonSerializer.Serialize(deserializer.Deserialize<object>(yml));
         var data = JsonSerializer.Deserialize<ApiPage>(json, ApiPage.JsonSerializerOptions);
         var content = new Dictionary<string, object>(metadata.OrderBy(item => item.Key));

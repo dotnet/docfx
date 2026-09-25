@@ -21,7 +21,8 @@ public class UniversalReferenceDocumentProcessor : ReferenceDocumentProcessorBas
 
     protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
     {
-        var page = YamlUtility.Deserialize<PageViewModel>(file.File);
+        using var reader = DocumentInput.Get(file).OpenRead();
+        var page = YamlUtility.Deserialize<PageViewModel>(reader);
         if (page.Items == null || page.Items.Count == 0)
         {
             Logger.LogWarning("No items found from YAML file. No output is generated");
@@ -73,7 +74,7 @@ public class UniversalReferenceDocumentProcessor : ReferenceDocumentProcessorBas
                 if (".yml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
                     ".yaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
                 {
-                    var mime = YamlMime.ReadMime(file.File);
+                    var mime = DocumentInput.Get(file).Header?.Kind;
                     switch (mime)
                     {
                         case UniversalReferenceConstants.UniversalReferenceYamlMime:

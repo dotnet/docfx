@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
+using Docfx.Build.Common;
 using Docfx.Common;
 using Docfx.Plugins;
 
@@ -21,6 +22,7 @@ class SingleDocumentBuilder : IDisposable
         DocumentBuildParameters parameters,
         IMarkdownService markdownService)
     {
+        using var inputs = DocumentInput.BeginRead(parameters.Files.EnumerateFiles());
         var hostServiceCreator = new HostServiceCreator(null);
         var hostService = hostServiceCreator.CreateHostService(
             parameters,
@@ -55,6 +57,7 @@ class SingleDocumentBuilder : IDisposable
 
         Directory.CreateDirectory(parameters.OutputBaseDir);
 
+        using var inputs = DocumentInput.BeginRead(parameters.Files.EnumerateFiles());
         var context = new DocumentBuildContext(parameters, cancellationToken);
 
         // Start building document...

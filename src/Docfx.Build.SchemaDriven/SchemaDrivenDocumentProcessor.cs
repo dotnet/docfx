@@ -68,7 +68,7 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
                 if (".yml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
                     ".yaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
                 {
-                    var mime = YamlMime.ReadMime(file.File);
+                    var mime = DocumentInput.Get(file).Header?.Kind;
                     if (string.Equals(mime, YamlMime.YamlMimePrefix + _schemaName))
                     {
                         return ProcessingPriority.Normal;
@@ -99,7 +99,8 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
                 try
                 {
                     // MUST be a dictionary
-                    var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
+                    using var reader = DocumentInput.Get(file).OpenRead();
+                    var obj = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
 
                     // load overwrite fragments
                     string markdownFragmentsContent = null;
