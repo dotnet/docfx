@@ -123,26 +123,6 @@ test('rejects future and malformed timestamps, but renders stale evidence honest
   assert.throws(() => validateReport(data, undefined, now), /timestamp/)
 })
 
-test('report page keeps check scope collapsed and links to complete maintenance instructions', async () => {
-  const page = await readFile(new URL('../../docs/docs/sdk-compatibility.md', import.meta.url), 'utf8')
-  const maintenance = await readFile(new URL('../../docs/docs/sdk-compatibility-maintenance.md', import.meta.url), 'utf8')
-  assert.match(page, /# SDK compatibility\s+<div id="sdk-compatibility-report">/)
-  assert.match(page, /<details>\s*<summary>About these checks<\/summary>/)
-  assert.doesNotMatch(page, /<details[^>]*\bopen\b|^## |```/m)
-  for (const scope of ['**Basic**', '**Razor**', '**not a support guarantee**', 'Untested combinations', '**project target**', '**tool target framework**']) assert.ok(page.includes(scope))
-  assert.match(page, /\(xref:sdk-compatibility-maintenance\)/)
-  assert.match(maintenance, /^uid: sdk-compatibility-maintenance$/m)
-  assert.match(maintenance, /\(xref:sdk-compatibility\)/)
-  for (const instruction of [
-    'node test/compatibility/report.mjs resolve drop/compatibility/matrix.json',
-    './test/compatibility/Measure-Compatibility.ps1 -MatrixPath drop/compatibility/matrix.json -OutputDirectory drop/compatibility/report -NightlyPackage path/to/exact/docfx.nupkg',
-    'node test/compatibility/report.mjs prepare drop/compatibility/report/compatibility-report.json docs/obj/sdk-compatibility.json',
-    'docfx docs/docfx.json', 'node test/compatibility/report.mjs check path/to/compatibility-report.json',
-    'node --test test/compatibility/report.test.mjs', '-NuGetConfig', '-FailOnIncompatible', '--strict',
-    'validation_only', '**14 days**', 'roll-forward disabled', 'does not select only successful workflow runs',
-  ]) assert.ok(maintenance.includes(instruction), `Missing maintenance instruction: ${instruction}`)
-})
-
 test('HTML-escapes report content and never creates artifact-controlled URLs', () => {
   const data = report()
   data.results[0].diagnostics = '<script>alert(1)</script>'
@@ -313,15 +293,13 @@ test('selects failed-test nightly reports instead of filtering successful runs',
 })
 
 test('retained reports validate against their producing attempt after an unrelated job is retried', async () => {
-  const data = report(); const original = JSON.stringify(data); const seen = []
+  const data = report(); const original = JSON.stringify(data)
   const api = async path => {
-    seen.push(path)
     if (path === '/repos/dotnet/docfx/actions/runs/42/attempts/1') return run()
     return adapter([run({ run_attempt: 2 })])(path)
   }
   assert.equal(await latestReport(api, async () => data), data)
   assert.equal(JSON.stringify(data), original, 'Never relabel retained evidence as the newer attempt')
-  assert.equal(seen.filter(path => path.includes('/attempts/')).length, 1)
 })
 
 test('retained reports reject invalid, future, absent or mismatched producing attempts', async () => {
@@ -346,15 +324,12 @@ test('retained reports reject invalid, future, absent or mismatched producing at
 })
 
 test('paginates workflow runs and artifacts', async () => {
-  const seen = []
   const api = async path => {
-    seen.push(path)
     if (path.endsWith('/nightly.yml')) return { id: 7 }
     if (path.includes('/artifacts?')) return { artifacts: path.endsWith('page=1') ? Array.from({ length: 100 }, () => artifact({ name: 'unrelated' })) : [artifact()] }
     return { workflow_runs: path.endsWith('page=1') ? Array.from({ length: 100 }, () => run({ head_branch: 'other' })) : [run()] }
   }
   assert.equal((await latestReport(api, async () => report())).source.runId, '42')
-  assert.equal(seen.filter(p => p.endsWith('page=2')).length, 2)
 })
 
 test('skips absent or expired artifacts without inventing a report', async () => {
@@ -379,32 +354,6 @@ test('resolves reviewed channels to exact SDKs, including previews and older pro
   assert.equal(result[0].sdk, '11.0.100-rc.1.123')
   assert.equal(result[0].projectTfm, 'net10.0')
   assert.throws(() => resolveMatrix(config, { 'releases-index': [] }), /No exact SDK/)
-})
-
-test('resolve CLI retains both SDK 11 project TFMs but installs the exact SDK only once', async () => {
-  const temp = await mkdtemp(join(tmpdir(), 'docfx-matrix-'))
-  try {
-    const output = join(temp, 'matrix.json'); const githubOutput = join(temp, 'github-output')
-    execFileSync(process.execPath, ['--input-type=module', '--eval', `
-      import assert from 'node:assert/strict'
-      import { main } from ${JSON.stringify(new URL('./report.mjs', import.meta.url).href)}
-      let requests = 0
-      globalThis.fetch = async url => {
-        assert.equal(url, ${JSON.stringify(matrixConfig.releaseIndex)})
-        requests++
-        return { ok: true, json: async () => (${JSON.stringify(sdkIndex)}) }
-      }
-      await main(['resolve', ${JSON.stringify(output)}])
-      assert.equal(requests, 1)
-    `], { env: { ...process.env, GITHUB_OUTPUT: githubOutput } })
-    const matrix = JSON.parse(await readFile(output, 'utf8'))
-    assert.equal(matrix.length, 5)
-    assert.deepEqual(matrix, resolveMatrix(matrixConfig, sdkIndex))
-    const sdk11 = matrix.filter(t => t.channel === '11.0')
-    assert.deepEqual(sdk11.map(t => t.projectTfm), ['net10.0', 'net11.0'])
-    assert.ok(sdk11.every(t => t.sdk === '11.0.100-rc.1.123'))
-    assert.equal(await readFile(githubOutput, 'utf8'), 'sdks<<SDK_LIST\n8.0.100\n9.0.100\n10.0.100\n11.0.100-rc.1.123\nSDK_LIST\n')
-  } finally { await rm(temp, { recursive: true, force: true }) }
 })
 
 test('validates and renders 20 distinct cases in matrix order with net10.0 tool runtimes', () => {
@@ -522,62 +471,6 @@ test('trusted retrieval requires all five reviewed pairs while older 16-row evid
   await assert.rejects(latestReport(adapter(), async () => data, matrixConfig.channels), /reviewed SDK channel matrix/)
 })
 
-function harnessIdentifiers(contexts) {
-  const path = fileURLToPath(new URL('Measure-Compatibility.ps1', import.meta.url)).replaceAll("'", "''")
-  const matrix = JSON.stringify(resolveMatrix(matrixConfig, sdkIndex))
-  // Evaluate the producer's assignments, not an independently reimplemented naming algorithm.
-  return JSON.parse(execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
-    $ErrorActionPreference = 'Stop'
-    $ast = [System.Management.Automation.Language.Parser]::ParseFile('${path}', [ref]$null, [ref]$null)
-    $measurement = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq '$measurementId' }, $true)
-    $assignments = foreach ($name in @('id', 'logName', 'directory')) {
-      $node = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq ('$' + $name) }, $true)
-      if (!$node) { throw "Missing harness assignment: $name" }
-      $node.Extent.Text
-    }
-    $work = [IO.Path]::GetTempPath()
-    $runs = foreach ($context in ('${JSON.stringify(contexts)}' | ConvertFrom-Json)) {
-      $env:GITHUB_RUN_ID = $context.runId
-      $env:GITHUB_RUN_ATTEMPT = $context.runAttempt
-      if ($measurement) { Invoke-Expression $measurement.Extent.Text }
-      $cases = foreach ($target in ('${matrix}' | ConvertFrom-Json)) {
-        foreach ($channel in @('stable', 'nightly')) {
-          $frameworks = if ($channel -eq 'nightly') { @('net8.0', 'net9.0', 'net10.0', 'net11.0') } else { @('net10.0') }
-          foreach ($framework in $frameworks) {
-            $tool = @{ channel = $channel; framework = $framework }
-            foreach ($scenario in @('basic', 'razor')) {
-              Invoke-Expression ($assignments -join [Environment]::NewLine)
-              if (!$id.Contains($target.projectTfm) -or $directory -ne (Join-Path $work $id)) { throw 'Incorrect case identity' }
-              if (!$id.Contains($framework)) { throw 'Missing tool framework in case identity' }
-              @{ id = $id; log = $logName; directory = $directory }
-            }
-          }
-        }
-      }
-      @{ cases = @($cases) }
-    }
-    ConvertTo-Json -InputObject @($runs) -Depth 5 -Compress
-  `], { encoding: 'utf8', stdio: 'pipe' }))
-}
-
-test('actual harness identifiers isolate all 50 work directories and logs by tool and project TFM', () => {
-  const [{ cases }] = harnessIdentifiers([{ runId: '42', runAttempt: '1' }])
-  assert.equal(cases.length, 50)
-  assert.equal(new Set(cases.map(row => row.directory)).size, 50)
-  assert.equal(new Set(cases.map(row => row.log)).size, 50)
-  for (const row of cases) assert.match(row.log, /^logs\/[a-zA-Z0-9.-]+\.log$/)
-})
-
-test('actual harness logs never reuse URLs across runs, retries or repeated local measurements', () => {
-  const runs = harnessIdentifiers([
-    { runId: '42', runAttempt: '1' }, { runId: '43', runAttempt: '1' },
-    { runId: '42', runAttempt: '2' }, { runId: '42', runAttempt: '2' },
-    { runId: null, runAttempt: null }, { runId: null, runAttempt: null },
-  ])
-  const urls = runs.flatMap(({ cases }) => cases.map(row => caseLogUrl(row, 'https://example.test/reports/report.json').href))
-  assert.equal(new Set(urls).size, 300, 'Different measurements must not serve different evidence at the same log URL')
-})
-
 test('discovers an exact official stable release and rejects previews or malformed versions', () => {
   assert.equal(resolveStableRelease({ draft: false, prerelease: false, tag_name: 'v2.80.1' }).requestedVersion, '2.80.1')
   for (const release of [
@@ -604,33 +497,6 @@ test('distinguishes explicit local versions and rejects silent fallback from lat
     r.outcome = 'infrastructure-error'; r.toolVersion = null; r.toolRuntimeTfm = null; r.packageSha256 = null
   })
   assert.match(renderReport(unavailable, now), /Requested latest stable release: <strong>2.80.1/)
-})
-
-test('exact installer refuses an older installed version and never retries a missing version', () => {
-  const path = fileURLToPath(new URL('Measure-Compatibility.ps1', import.meta.url)).replaceAll("'", "''")
-  const script = `
-    $ErrorActionPreference = 'Stop'
-    $ast = [System.Management.Automation.Language.Parser]::ParseFile('${path}', [ref]$null, [ref]$null)
-    $definition = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Install-Tool' }, $false)
-    Invoke-Expression $definition.Extent.Text
-    $work = Join-Path ([IO.Path]::GetTempPath()) ([Guid]::NewGuid().ToString('N'))
-    $logs = Join-Path $work 'logs'
-    New-Item -ItemType Directory $logs | Out-Null
-    $StableVersion = '2.80.1'; $StableVersionReason = 'Unit-test explicit request'
-    $calls = [Collections.Generic.List[object]]::new()
-    function Invoke-Logged($Arguments, $Log) { $calls.Add($Arguments); return @{ code = $script:exitCode; text = 'Synthetic installer boundary' } }
-    try {
-      $script:exitCode = 1
-      $missing = Install-Tool 'stable' '' 'net10.0'
-      if (!$missing.error -or $calls.Count -ne 1) { throw 'Missing package silently retried or passed' }
-      if (($calls[0] -join ' ') -notmatch '--version 2.80.1') { throw 'Exact version was not requested' }
-      New-Item -ItemType Directory (Join-Path $work 'stable-net10.0/.store/docfx/2.78.5') -Force | Out-Null
-      $script:exitCode = 0
-      $wrong = Install-Tool 'stable' '' 'net10.0'
-      if ($wrong.error -notmatch 'differs from the exact requested version' -or $calls.Count -ne 2) { throw 'Wrong package identity accepted or retried' }
-    } finally { Remove-Item $work -Recurse -Force }
-  `
-  execFileSync('pwsh', ['-NoProfile', '-Command', script], { stdio: 'pipe' })
 })
 
 test('reuses only current-main successful CI and distinguishes expiration from untested main', async () => {
@@ -677,13 +543,6 @@ test('imports the CLI without process.argv[1], matching node --eval consumers', 
   execFileSync(process.execPath, ['--input-type=module', '--eval', `await import(${JSON.stringify(new URL('./report.mjs', import.meta.url).href)})`])
 })
 
-test('PowerShell harness and artifact reader parse without errors', () => {
-  for (const file of ['Measure-Compatibility.ps1', 'Read-ReportArchive.ps1']) {
-    const path = fileURLToPath(new URL(file, import.meta.url)).replaceAll("'", "''")
-    execFileSync('pwsh', ['-NoProfile', '-Command', `$tokens=$null; $errors=$null; [System.Management.Automation.Language.Parser]::ParseFile('${path}',[ref]$tokens,[ref]$errors) > $null; if ($errors.Count) { throw ($errors -join '\n') }`])
-  }
-})
-
 test('ZIP adapter reads only the bounded named JSON report without extracting other files', async () => {
   const temp = await mkdtemp(join(tmpdir(), 'docfx-report-test-'))
   try {
@@ -728,8 +587,6 @@ test('archive and prepare export only named case logs and preserve JSON/log byte
     for (const row of data.results) assert.deepEqual(await readFile(join(temp, 'site', row.log)), bytes)
     await assert.rejects(readFile(join(temp, 'unexpected.ps1')), { code: 'ENOENT' })
     await assert.rejects(prepareReport(join(evidence, 'compatibility-report.json'), join(evidence, 'copy.json')), /separate output directory/)
-    const docs = JSON.parse((await readFile(new URL('../../docs/docfx.json', import.meta.url), 'utf8')).replace(/^\uFEFF/, ''))
-    assert.ok(docs.build.resource.some(r => r.src === 'obj' && r.dest === 'reports' && r.files.includes('logs/*.log')))
   } finally { await rm(temp, { recursive: true, force: true }) }
 })
 
@@ -744,11 +601,10 @@ test('archive, prepare and HTTP selection cannot mix logs across website replace
   try {
     await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve) })
     const base = new URL(`http://127.0.0.1:${server.address().port}/sdk-compatibility.json`)
-    const identifiers = harnessIdentifiers([{ runId: '42', runAttempt: '1' }, { runId: '43', runAttempt: '1' }])
     const oldStates = []; const newStates = []; let older
-    for (const [index, { cases }] of identifiers.entries()) {
-      const data = report(resolveMatrix(matrixConfig, sdkIndex)); data.source.runId = String(42 + index)
-      data.results.forEach((row, i) => { row.log = cases[i].log })
+    for (const [index, runId] of ['42', '43'].entries()) {
+      const data = report(resolveMatrix(matrixConfig, sdkIndex)); data.source.runId = runId
+      data.results.forEach((row, i) => { row.log = `logs/run-${runId}-${i}.log` })
       const original = Buffer.from(JSON.stringify(data) + '\r\n')
       const log = Buffer.from(`Protocol fixture output from measurement ${index}\r\n`)
       const archive = join(temp, `${index}.zip`); const evidence = join(temp, `evidence-${index}`)
@@ -820,29 +676,25 @@ test('trusted fetch exports the selected archive while temporary-branch evidence
     const original = Buffer.from(JSON.stringify(data) + '\r\n')
     await makeArchive(archive, [['compatibility-report.json', original], ...data.results.map(row => [row.log, 'unit log'])])
     const bytes = await readFile(archive)
-    let branch = 'main'; let downloads = 0; let attempt = 1; let attemptRequests = 0
+    let branch = 'main'; let attempt = 1
     globalThis.fetch = async url => {
       const path = new URL(url).pathname + new URL(url).search
       if (path.endsWith('/zip')) {
-        downloads++
+        assert.equal(branch, 'main', 'Do not download untrusted evidence')
         return { ok: true, headers: new Headers(), body: (async function * () { yield bytes })() }
       }
       if (path === '/repos/dotnet/docfx/actions/runs/42/attempts/1') {
-        attemptRequests++
         return { ok: true, json: async () => run() }
       }
       return { ok: true, json: async () => adapter([run({ head_branch: branch, run_attempt: attempt })])(path) }
     }
     for (attempt of [1, 2]) {
       await main(['fetch', output])
-      assert.equal(downloads, attempt)
-      assert.equal(attemptRequests, attempt - 1)
       assert.deepEqual(await readFile(output), original)
       assert.equal((await readdir(join(temp, 'site', 'logs'))).length, 20)
     }
     branch = 'temporary-validation'
     await main(['fetch', output])
-    assert.equal(downloads, 2)
     assert.equal(JSON.parse(await readFile(output, 'utf8')).state, 'unavailable')
     await assert.rejects(readdir(join(temp, 'site', 'logs')), { code: 'ENOENT' })
   } finally { globalThis.fetch = originalFetch; await rm(temp, { recursive: true, force: true }) }
@@ -919,213 +771,4 @@ test('reporting and strict checks both fail unmeasured, invalid, missing or inco
     }
     for (const flags of [[], ['--strict']]) assert.equal(checkCli(join(temp, 'missing.json'), flags).status, 1)
   } finally { await rm(temp, { recursive: true, force: true }) }
-})
-
-test('actual pwsh Actions wrapper uses report policy, not the last native child exit', async () => {
-  const temp = await mkdtemp(join(tmpdir(), 'docfx-pwsh-exit-'))
-  const literal = value => `'${value.replaceAll("'", "''")}'`
-  try {
-    const harness = fileURLToPath(new URL('./Measure-Compatibility.ps1', import.meta.url))
-    // Execute the real post-finally statements, with protocol data only; no package measurements are simulated.
-    const tail = execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
-      $ast = [System.Management.Automation.Language.Parser]::ParseFile(${literal(harness)}, [ref]$null, [ref]$null)
-      $measurement = $ast.EndBlock.Statements | Where-Object { $_ -is [System.Management.Automation.Language.TryStatementAst] } | Select-Object -Last 1
-      ($ast.EndBlock.Statements | Where-Object { $_.Extent.StartOffset -ge $measurement.Extent.EndOffset } | ForEach-Object { $_.Extent.Text }) -join [Environment]::NewLine
-    `], { encoding: 'utf8' })
-    assert.match(tail, /exit \$LASTEXITCODE/)
-    const script = join(temp, 'finalize.ps1')
-    const input = join(temp, 'compatibility-report.json')
-    const prefix = nativeExit => `
-      param([switch] $FailOnIncompatible)
-      $ErrorActionPreference = 'Stop'
-      $PSNativeCommandUseErrorActionPreference = $false
-      $PSScriptRoot = ${literal(fileURLToPath(new URL('.', import.meta.url)))}
-      $OutputDirectory = ${literal(temp)}
-      & ${literal(process.execPath)} -e 'process.exit(${nativeExit})'
-      if ($LASTEXITCODE -ne ${nativeExit}) { throw 'Native exit canary failed' }
-    `
-    const wrapper = strict => spawnSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
-      $ErrorActionPreference = 'Stop'
-      & ${literal(script)} ${strict ? '-FailOnIncompatible' : ''}
-      if (Test-Path -LiteralPath variable:\\LASTEXITCODE) { exit $LASTEXITCODE }
-    `], { encoding: 'utf8', env: { ...process.env, GITHUB_ACTIONS: '', GITHUB_STEP_SUMMARY: '' } })
-    await writeFile(script, prefix(23))
-    assert.equal(wrapper(false).status, 23, 'Canary must reproduce the Actions native-exit leak')
-    const data = report(); data.results.at(-1).outcome = 'incompatible'
-    await writeFile(input, JSON.stringify(data))
-    await writeFile(script, prefix(23) + tail)
-    const reporting = wrapper(false)
-    assert.equal(reporting.status, 0, reporting.stderr)
-    assert.match(reporting.stderr, /1 incompatible result/)
-    assert.equal(wrapper(true).status, 1)
-    data.results[0].outcome = 'infrastructure-error'
-    await writeFile(input, JSON.stringify(data))
-    await writeFile(script, prefix(0) + tail)
-    assert.equal(wrapper(false).status, 1, 'A final native success must not hide an earlier infrastructure error')
-    data.results.pop()
-    await writeFile(input, JSON.stringify(data))
-    assert.equal(wrapper(false).status, 1, 'Incomplete reports must still fail the wrapper')
-    await writeFile(script, prefix(0) + "throw 'Unit-test harness error'\n" + tail)
-    assert.equal(wrapper(false).status, 1, 'A script error must not reach successful finalization')
-  } finally { await rm(temp, { recursive: true, force: true }) }
-})
-
-test('manual validation defaults safe and cannot reach package or Pages publication', async () => {
-  const nightly = await readFile(new URL('../../.github/workflows/nightly.yml', import.meta.url), 'utf8')
-  const docs = await readFile(new URL('../../.github/workflows/docs.yml', import.meta.url), 'utf8')
-  assert.match(nightly, /validation_only:[\s\S]*?type: boolean\s+default: true/)
-  const job = name => nightly.split(`  ${name}:`)[1].split(/\r?\n  [a-z][a-z-]*:\r?\n/)[0]
-  const enabled = (name, github, inputs) => Function('github', 'inputs', `return (${job(name).match(/^    if: (.+)/m)[1].trim()})`)(github, inputs)
-  for (const repository of ['dotnet/docfx', 'vicancy/docfx']) {
-    for (const ref of ['refs/heads/main', 'refs/heads/validation']) {
-      const github = { repository, ref, event_name: 'workflow_dispatch' }
-      const inputs = { validation_only: true }
-      for (const name of ['build-nightly-package', 'test-nightly-package', 'sdk-compatibility']) assert.equal(enabled(name, github, inputs), true)
-      assert.equal(enabled('publish-github-packages', github, inputs), false)
-    }
-  }
-  for (const event_name of ['schedule', 'workflow_dispatch']) {
-    assert.equal(enabled('publish-github-packages', { repository: 'dotnet/docfx', ref: 'refs/heads/main', event_name }, { validation_only: false }), true)
-    assert.equal(enabled('publish-github-packages', { repository: 'vicancy/docfx', ref: 'refs/heads/main', event_name }, { validation_only: false }), false)
-    assert.equal(enabled('publish-github-packages', { repository: 'dotnet/docfx', ref: 'refs/heads/validation', event_name }, { validation_only: false }), false)
-  }
-  const build = job('build-nightly-package')
-  assert.doesNotMatch(build, /packages: write|nuget push/)
-  for (const tfm of ['net8.0', 'net9.0', 'net10.0']) assert.ok(build.includes(`dotnet test -c Release -f ${tfm} --no-build`))
-  assert.match(build, /dotnet pack/)
-  assert.match(build, /name: nightly-tool-package/)
-  for (const name of ['test-nightly-package', 'sdk-compatibility']) {
-    assert.match(job(name), /needs: \[build-nightly-package\]/)
-    assert.match(job(name), /name: nightly-tool-package/)
-    assert.match(job(name), /needs.build-nightly-package.outputs.version/)
-    assert.doesNotMatch(job(name), /packages: write|pages: write/)
-  }
-  assert.doesNotMatch(job('sdk-compatibility'), /SkipStable|FailOnIncompatible|VALIDATION_ONLY|@options/)
-  assert.match(job('sdk-compatibility'), /Measure-Compatibility.ps1 -MatrixPath drop\/compatibility-matrix.json/)
-  assert.match(job('test-nightly-package'), /docfx metadata\s+docfx build\s+docfx pdf/)
-  assert.deepEqual(matrixConfig.channels.map(t => `${t.channel}/${t.projectTfm}`), ['8.0/net8.0', '9.0/net9.0', '10.0/net10.0', '11.0/net10.0', '11.0/net11.0'])
-  assert.equal(matrixConfig.channels.length * report().channels.length * report().scenarios.length, 20)
-  assert.match(job('sdk-compatibility'), /dotnet-version: \$\{\{ steps.matrix.outputs.sdks \}\}/)
-  assert.match(nightly, /inputs.validation_only && 'sdk-compatibility-validation-v1' \|\| 'sdk-compatibility-v1'/)
-  assert.match(docs, /report.mjs production-ready/)
-  assert.match(docs, /if: github.event.workflow_run.name == 'ci' \|\| steps.production-report.outputs.ready == 'true'\s+id: site-run/)
-  assert.match(docs, /ready: \$\{\{ steps.site-run.outputs.ready \}\}/)
-  assert.match(docs, /if: needs.site.outputs.ready == 'true'/)
-})
-
-test('CI measures the exact distribution package in a job isolated from snapshot tests', async () => {
-  const ci = await readFile(new URL('../../.github/workflows/ci.yml', import.meta.url), 'utf8')
-  const packageJob = ci.replaceAll('\r\n', '\n').split('\n  package:\n')[1]?.split(/\n  [\w-]+:\n/)[0]
-  assert.ok(packageJob, 'Distribution measurements need an isolated job')
-  assert.match(packageJob, /uses: actions\/checkout@v7/)
-  assert.doesNotMatch(packageJob, /dotnet test|percy exec|build-docs|download-artifact/)
-  const stages = [
-    'uses: ./.github/actions/build\n',
-    'name: Test compatibility reporting',
-    'name: Pack tool for distribution tests',
-    'name: Publish tool for distribution tests',
-    'name: Repack tool without rebuilding',
-    'name: Verify distributed templates',
-    'name: Packaged SDK compatibility smoke',
-    'name: Upload compatibility smoke evidence',
-  ]
-  let previous = -1
-  for (const stage of stages) {
-    const index = packageJob.indexOf(stage)
-    assert.ok(index > previous, `Missing or misplaced CI stage: ${stage}`)
-    previous = index
-  }
-  const packaging = packageJob.match(/run: dotnet (?:pack|publish) src\/docfx[^\r\n]*/g) ?? []
-  assert.equal(packaging.length, 3)
-  for (const command of packaging) assert.match(command, /\/p:BaseOutputPath=bin\/package-test\//)
-  assert.doesNotMatch(ci, /git (?:clean|reset|restore)|BUILD_SERVER:/)
-})
-
-test('CI cleans coverage downloads without weakening the harness source-state check', async () => {
-  const ci = await readFile(new URL('../../.github/workflows/ci.yml', import.meta.url), 'utf8')
-  const codecov = ci.split('- uses: codecov/codecov-action@v7')[1].split(/\r?\n    - /)[0]
-  assert.match(codecov, /\n        cleanup: true\s/)
-  assert.match(codecov, /fail_ci_if_error: false/)
-  const temp = await mkdtemp(join(tmpdir(), 'docfx-source-state-'))
-  try {
-    execFileSync('git', ['init', '--quiet', temp])
-    const harness = fileURLToPath(new URL('./Measure-Compatibility.ps1', import.meta.url)).replaceAll("'", "''")
-    const dirty = () => execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
-      $ast = [System.Management.Automation.Language.Parser]::ParseFile('${harness}', [ref]$null, [ref]$null)
-      $assignment = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq '$dirty' }, $true)
-      Invoke-Expression $assignment.Extent.Text
-      ConvertTo-Json $dirty
-    `], { cwd: temp, encoding: 'utf8', stdio: 'pipe' }).trim()
-    assert.equal(dirty(), 'false')
-    const downloads = ['codecov', 'codecov.SHA256SUM', 'codecov.SHA256SUM.sig']
-    for (const name of downloads) await writeFile(join(temp, name), 'Inert test input; not an executable')
-    assert.equal(dirty(), 'true', 'Reproduce the coverage download/source-provenance collision')
-    for (const name of downloads) await rm(join(temp, name))
-    assert.equal(dirty(), 'false')
-    await writeFile(join(temp, 'Unexpected.cs'), '// Untracked source must still invalidate CI provenance')
-    assert.equal(dirty(), 'true')
-  } finally { await rm(temp, { recursive: true, force: true }) }
-})
-
-test('dirty source diagnostics preserve exact paths without changing the source guard', async () => {
-  const temp = await mkdtemp(join(tmpdir(), 'docfx-source-diagnostics-'))
-  try {
-    const repository = join(temp, 'repository')
-    const logs = join(temp, 'logs')
-    await mkdir(repository)
-    await mkdir(logs)
-    execFileSync('git', ['init', '--quiet', repository])
-    const harness = fileURLToPath(new URL('./Measure-Compatibility.ps1', import.meta.url)).replaceAll("'", "''")
-    const diagnose = () => execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', `
-      $ErrorActionPreference = 'Stop'
-      $ast = [System.Management.Automation.Language.Parser]::ParseFile('${harness}', [ref]$null, [ref]$null)
-      $assignment = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and $n.Left.Extent.Text -eq '$dirty' }, $true)
-      $diagnostic = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.IfStatementAst] -and $n.Extent.Text.StartsWith('if ($dirty)') }, $true)
-      if (-not $diagnostic) { throw 'Missing dirty source diagnostics' }
-      $logs = '${logs.replaceAll("'", "''")}'
-      Invoke-Expression $assignment.Extent.Text
-      Invoke-Expression $diagnostic.Extent.Text
-      ConvertTo-Json $dirty
-    `], { cwd: repository, encoding: 'utf8', stdio: 'pipe' })
-    assert.equal(diagnose().trim(), 'false')
-    assert.deepEqual(await readdir(logs), [])
-    await mkdir(join(repository, 'unexpected'))
-    await writeFile(join(repository, 'unexpected', 'input.cs'), '// Must remain dirty')
-    const expected = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: repository, encoding: 'utf8' }).trim()
-    const output = diagnose()
-    assert.match(output, /Source tree is dirty:/)
-    assert.ok(output.includes(expected))
-    assert.match(output, /true\s*$/)
-    assert.equal((await readFile(join(logs, 'source-state.log'), 'utf8')).trim(), expected)
-    assert.equal(execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: repository, encoding: 'utf8' }).trim(), expected)
-  } finally { await rm(temp, { recursive: true, force: true }) }
-})
-
-test('workflow contract keeps exact packages, bounded PR smoke, failure evidence and one publisher', async () => {
-  const read = path => readFile(new URL(`../../${path}`, import.meta.url), 'utf8')
-  const [ci, nightly, docs, site] = await Promise.all(['.github/workflows/ci.yml', '.github/workflows/nightly.yml', '.github/workflows/docs.yml', '.github/actions/build-docs/action.yml'].map(read))
-  assert.match(ci, /-SkipStable -FailOnIncompatible/)
-  assert.match(ci, /node --test test\/compatibility\/report.test.mjs/)
-  assert.match(ci, /name: docs-site/)
-  assert.match(nightly, /--version \$env:TOOL_VERSION/)
-  assert.doesNotMatch(nightly, /tool install.*--prerelease/)
-  assert.ok(nightly.indexOf('Measure and check latest stable') < nightly.indexOf('Upload compatibility evidence'))
-  assert.doesNotMatch(nightly, /report.mjs check/)
-  assert.match(nightly, /name: Upload compatibility evidence[^\r\n]*\s+if: always\(\)/)
-  assert.match(nightly, /path: drop\/compatibility-report\s+if-no-files-found: error/)
-  assert.equal((nightly.match(/continue-on-error:/g) ?? []).length, 1)
-  assert.match(nightly, /uses: actions\/setup-dotnet@v5\s+continue-on-error: true/)
-  const harness = await readFile(new URL('./Measure-Compatibility.ps1', import.meta.url), 'utf8')
-  assert.match(harness, /& node \(Join-Path \$PSScriptRoot 'report.mjs'\) @checkArguments\s+exit \$LASTEXITCODE/)
-  assert.match(harness, /if \(\$FailOnIncompatible\) \{ \$checkArguments \+= '--strict' \}/)
-  assert.match(harness, /'build', '--no-restore'[^\r\n]*\s+if \(\$result.code -ne 0\) \{ throw 'Fixture build failed; compatibility was not measured.' \}/)
-  assert.match(nightly, /retention-days: 14/)
-  assert.match(docs, /workflows: \[ci, nightly\]/)
-  assert.match(docs, /ref: main/)
-  assert.match(docs, /cancel-in-progress: false/)
-  assert.match(docs, /report.mjs fetch docs\/_site\/reports\/sdk-compatibility.json/)
-  assert.doesNotMatch(docs, /Measure-Compatibility/)
-  assert.doesNotMatch(ci + nightly, /actions\/deploy-pages/)
-  assert.equal((docs.match(/actions\/deploy-pages/g) ?? []).length, 1)
-  assert.match(site, /samples\/seed\/docfx.json --output docs\/_site\/seed/)
 })

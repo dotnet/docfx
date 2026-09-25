@@ -74,16 +74,6 @@ jobs:
       if: matrix.os != 'ubuntu-latest'
       run: dotnet test -c Release -f ${{ matrix.framework }} --no-build
 
-    - run: npm i -g @percy/cli
-      if: matrix.os == 'ubuntu-latest' && matrix.framework == 'net10.0'
-
-    - name: Percy snapshots
-      if: matrix.os == 'ubuntu-latest' && matrix.framework == 'net10.0'
-      run: dotnet coverage connect docfx_coverage "percy exec -- dotnet test --project test/docfx.Snapshot.Tests/docfx.Snapshot.Tests.csproj -c Release -f net10.0 --no-build -- --filter-trait Stage=Percy"
-      env:
-        PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-        PERCY_TESTS: 'true'
-
     - name: Stop coverage collection
       if: always() && steps.coverage.outcome == 'success'
       run: dotnet coverage shutdown docfx_coverage --timeout 60000
@@ -96,6 +86,16 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: test/TestResults/coverage.cobertura.xml
         disable_search: true
+
+    - run: npm i -g @percy/cli
+      if: matrix.os == 'ubuntu-latest' && matrix.framework == 'net10.0'
+
+    - name: Percy snapshots
+      if: matrix.os == 'ubuntu-latest' && matrix.framework == 'net10.0'
+      run: percy exec -- dotnet run --project test/docfx.Snapshot.Tests/docfx.Snapshot.Tests.csproj -c Release -f net10.0 --no-build -- --filter-trait Stage=Percy
+      env:
+        PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+        PERCY_TESTS: 'true'
 
     - name: Upload Logs
       uses: actions/upload-artifact@v7

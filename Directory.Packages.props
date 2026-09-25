@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="HtmlAgilityPack" Version="1.13.0" />
-    <PackageVersion Include="ICSharpCode.Decompiler" Version="9.1.0.7988" />
+    <PackageVersion Include="ICSharpCode.Decompiler" Version="11.1.0.9782" />
     <PackageVersion Include="Jint" Version="4.16.3" />
     <PackageVersion Include="JsonSchema.Net" Version="[8.0.5]" />
     <PackageVersion Include="Markdig" Version="1.4.0" />
