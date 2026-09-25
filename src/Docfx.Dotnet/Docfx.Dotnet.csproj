@@ -6,6 +6,7 @@
   <ItemGroup>
     <Compile Include="../Docfx.Build/ApiPage/ApiPage.cs" />
     <Compile Include="../Docfx.Build/ApiPage/ApiPageMarkdownTemplate.cs" />
+    <Compile Include="../Docfx.Build/ApiPage/CustomClassifiers.cs" />
     <Compile Include="../Docfx.Build/OneOfJsonConverterFactory.cs" />
   </ItemGroup>
 
@@ -27,8 +28,6 @@
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="ICSharpCode.Decompiler" />
-    <PackageReference Include="OneOf" />
-    <PackageReference Include="OneOf.SourceGenerator" PrivateAssets="All" />
     <PackageReference Include="Markdig" />
     <PackageReference Include="Microsoft.Build" />
     <PackageReference Include="Microsoft.CodeAnalysis" />
@@ -39,6 +38,16 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'
+                      OR $([MSBuild]::VersionLessThan('$(TargetFrameworkVersion)', '11.0'))">
+    <PackageReference Include="OneOf" />
+    <PackageReference Include="OneOf.SourceGenerator" PrivateAssets="All" />
+
+    <Using Include="OneOf" />
+    <Using Include="OneOf.OneOf&lt;bool, string&gt;" Alias="BoolOrString" />
+    <Using Include="OneOf.OneOf&lt;string, string[]&gt;" Alias="StringOrArrayOfString" />
   </ItemGroup>
 
 </Project>

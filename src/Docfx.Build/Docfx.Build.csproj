@@ -18,8 +18,17 @@
   <ItemGroup>
     <PackageReference Include="Jint" />
     <PackageReference Include="Stubble.Core" />
+
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETCoreApp'
+                      OR $([MSBuild]::VersionLessThan('$(TargetFrameworkVersion)', '11.0'))">
     <PackageReference Include="OneOf" />
     <PackageReference Include="OneOf.SourceGenerator" PrivateAssets="All" />
+
+    <Using Include="OneOf" />
+    <Using Include="OneOf.OneOf&lt;bool, string&gt;" Alias="BoolOrString" />
+    <Using Include="OneOf.OneOf&lt;string, string[]&gt;" Alias="StringOrArrayOfString" />
   </ItemGroup>
 
 </Project>

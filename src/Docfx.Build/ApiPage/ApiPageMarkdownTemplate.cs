@@ -52,10 +52,10 @@ static class ApiPageMarkdownTemplate
             $"{string.Concat(facts.facts.Select(fact => $"{Escape(fact.name)}: {Inline(fact.value)}  \n"))}\n";
 
         FormattableString List(List list) =>
-            $"{string.Join(", \n", list.list.Select(Inline))}\n\n";
+            $"{string.Join(", \n", list.list.Select(x => Inline(x)))}\n\n";
 
         FormattableString Inheritance(Inheritance inheritance) =>
-            $"{string.Join(" \u2190 \n", inheritance.inheritance.Select(Inline))}\n\n";
+            $"{string.Join(" \u2190 \n", inheritance.inheritance.Select(x => Inline(x)))}\n\n";
 
         FormattableString Code(Code code) =>
             $"""

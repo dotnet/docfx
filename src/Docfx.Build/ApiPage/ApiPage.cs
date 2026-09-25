@@ -3,23 +3,49 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using OneOf;
 
 #nullable enable
 
 namespace Docfx.Build.ApiPage;
+
+#if NET11_0_OR_GREATER
+readonly union BoolOrString(bool, string);
+readonly union StringOrArrayOfString(string, string[]);
+readonly union Span(string, LinkSpan);
+
+[JsonUnion(TypeClassifier = typeof(InlineClassifier))]
+readonly union Inline(Span, Span[]);
+
+[JsonUnion(TypeClassifier = typeof(JsonUnionTypeStructuralClassifier))]
+readonly union Heading(H1, H2, H3, H4, H5, H6);
+
+[JsonUnion(TypeClassifier = typeof(JsonUnionTypeStructuralClassifier))]
+readonly union Api(Api1, Api2, Api3, Api4);
+
+[JsonUnion(TypeClassifier = typeof(BlockClassifier))]
+readonly union Block(Heading, Api, Markdown, Facts, Parameters, List, Inheritance, Code);
+#else
+[GenerateOneOf]
+partial class Span : OneOfBase<string, LinkSpan> { }
+
+[GenerateOneOf]
+partial class Inline : OneOfBase<Span, Span[]> { }
+
+[GenerateOneOf]
+partial class Heading : OneOfBase<H1, H2, H3, H4, H5, H6> { }
+
+[GenerateOneOf]
+partial class Api : OneOfBase<Api1, Api2, Api3, Api4> { }
+
+[GenerateOneOf]
+partial class Block : OneOfBase<Heading, Api, Markdown, Facts, Parameters, List, Inheritance, Code> { }
+#endif
 
 struct LinkSpan
 {
     public required string text { get; init; }
     public string? url { get; init; }
 }
-
-[GenerateOneOf]
-partial class Span : OneOfBase<string, LinkSpan> { }
-
-[GenerateOneOf]
-partial class Inline : OneOfBase<Span, Span[]> { }
 
 struct Markdown
 {
@@ -62,14 +88,11 @@ struct H6
     public string? id { get; init; }
 }
 
-[GenerateOneOf]
-partial class Heading : OneOfBase<H1, H2, H3, H4, H5, H6> { }
-
 abstract class ApiBase
 {
     public string? id { get; init; }
-    public OneOf<bool, string>? deprecated { get; init; }
-    public OneOf<bool, string>? preview { get; init; }
+    public BoolOrString? deprecated { get; init; }
+    public BoolOrString? preview { get; init; }
     public string? src { get; init; }
     public Dictionary<string, string>? metadata { get; init; }
 }
@@ -93,10 +116,6 @@ class Api4 : ApiBase
 {
     public required string api4 { get; init; }
 }
-
-
-[GenerateOneOf]
-partial class Api : OneOfBase<Api1, Api2, Api3, Api4> { }
 
 record struct Fact(string name, Inline value);
 
@@ -127,8 +146,8 @@ class Parameter
     public Inline? type { get; init; }
     public string? @default { get; init; }
     public string? description { get; init; }
-    public OneOf<bool, string>? deprecated { get; init; }
-    public OneOf<bool, string>? preview { get; init; }
+    public BoolOrString? deprecated { get; init; }
+    public BoolOrString? preview { get; init; }
     public bool? optional { get; init; }
 }
 
@@ -137,9 +156,6 @@ struct Parameters
     public required Parameter[] parameters { get; init; }
 }
 
-[GenerateOneOf]
-partial class Block : OneOfBase<Heading, Api, Markdown, Facts, Parameters, List, Inheritance, Code> { }
-
 record ApiPage
 {
     public static JsonSerializerOptions JsonSerializerOptions { get; } = new()
@@ -147,14 +163,16 @@ record ApiPage
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull | JsonIgnoreCondition.WhenWritingDefault,
     };
 
+#if !NET11_0_OR_GREATER
     static ApiPage()
     {
         JsonSerializerOptions.Converters.Add(new OneOfJsonConverterFactory());
     }
+#endif
 
     public required string title { get; init; }
     public required Block[] body { get; init; }
 
     public string? languageId { get; init; }
-    public Dictionary<string, OneOf<string, string[]>>? metadata { get; init; }
+    public Dictionary<string, StringOrArrayOfString>? metadata { get; init; }
 }

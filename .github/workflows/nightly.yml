@@ -75,9 +75,9 @@ jobs:
       contents: read
       packages: write
     steps:
-    - uses: actions/setup-dotnet@v5
+    - uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 10.x
+        dotnet-version: 11.x
     - uses: actions/download-artifact@v8
       with:
         name: nightly-publication-packages
@@ -95,9 +95,9 @@ jobs:
       actions: read
     steps:
     - uses: actions/checkout@v7
-    - uses: actions/setup-dotnet@v5
+    - uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 10.x
+        dotnet-version: 11.x
     - uses: actions/download-artifact@v8
       with:
         name: nightly-tool-package
@@ -140,7 +140,7 @@ jobs:
     - name: Resolve exact SDK candidates from official metadata
       id: matrix
       run: node test/compatibility/report.mjs resolve drop/compatibility-matrix.json
-    - uses: actions/setup-dotnet@v5
+    - uses: actions/setup-dotnet@v6
       continue-on-error: true
       with:
         dotnet-version: ${{ steps.matrix.outputs.sdks }}
