@@ -292,12 +292,9 @@ static class PdfBuilder
                     if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(text))
                         continue;
 
-                    // Clean up text (remove source link icons, etc.)
-                    var cleanText = text.Split('\n')[0].Trim();
-
                     headings.Add(new HeadingInfo
                     {
-                        Text = cleanText,
+                        Text = text.ReplaceLineEndings(" "),
                         Id = id,
                         Level = level,
                         PageUrl = pageUrl
@@ -502,10 +499,12 @@ static class PdfBuilder
             var cleanUrl = CleanUrl(heading.PageUrl);
             if (pagesByUrl.TryGetValue(cleanUrl, out var dests))
             {
+                // Chromium stores named destinations URL-encoded, same as link fragments in HandleUriAction.
+                var destName = new UriBuilder(heading.PageUrl) { Fragment = heading.Id }.Uri.Fragment[1..];
                 var resolved = false;
                 foreach (var (node, namedDests) in dests)
                 {
-                    if (namedDests.TryGet(heading.Id, out var dest) && dest is not null)
+                    if (namedDests.TryGet(destName, out var dest) && dest is not null)
                     {
                         heading.PageNumber = pageNumbers[node] - 1 + dest.PageNumber;
                         resolved = true;
@@ -807,7 +806,7 @@ static class PdfBuilder
             // Use data-level attribute for CSS styling of indentation
             var item = Html($"""
                 <li data-level='{heading.Level}'>
-                  <a href='{href}'>{System.Web.HttpUtility.HtmlEncode(heading.Text)}
+                  <a href='{href}'>{heading.Text}
                   {pageNumberHtml}
                   </a>
                 </li>
