@@ -1,0 +1,6 @@
+pdfFileName: headings.pdf
+pdfTocSource: headings
+pdfTocHeadingDepth: 2
+items:
+- href: chapter-1.md
+- href: chapter-2.md
