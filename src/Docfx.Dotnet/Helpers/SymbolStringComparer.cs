@@ -6,12 +6,13 @@
 namespace Docfx.Dotnet;
 
 /// <summary>
-/// StringComparer that simulate <see cref="StringComparer.InvariantCulture"> behavior for ASCII chars.
+/// StringComparer that simulate <see cref="StringComparer.InvariantCulture"> behavior for ASCII chars with custom order logic for method overloads.
+/// Non-ASCII characters are compared with ordinal order.
 /// </summary>
 /// <remarks>
 /// .NET StringComparer ignores non-printable chars on string comparison
 /// (e.g. StringComparer.InvariantCulture.Compare("\x0000 ZZZ \x0000"," ZZZ ")) returns 0).
-/// This feature is not implement by this comparer.
+/// This feature is not implemented by this comparer.
 /// </remarks>
 internal sealed class SymbolStringComparer : IComparer<string>
 {
@@ -41,17 +42,30 @@ internal sealed class SymbolStringComparer : IComparer<string>
 
             if (char.IsAscii(xChar) && char.IsAscii(yChar))
             {
+                // Custom order logic for method overloads:
+                // A trailing ')' (end of parameter list) sorts before ',' and '.' when it terminates the shorter symbol.
+                // e.g. "M(A)" < "M(A,B)", "M(A)" < "M(A.B)".
+                if (IsSpecialCharPair(xChar, yChar))
+                {
+                    bool xEnds = i == xSpan.Length - 1;
+                    bool yEnds = i == ySpan.Length - 1;
+                    if (xEnds && !yEnds)
+                        return -1; // x terminates with ')', shorter overload first.
+
+                    if (yEnds && !xEnds)
+                        return 1; // y terminates with ')', shorter overload first.
+
+                    // Fallthrough when condition is not matched.
+                }
+
                 // Gets custom char order
                 var xOrder = AsciiCharSortOrders[xChar];
                 var yOrder = AsciiCharSortOrders[yChar];
 
+                // Compare sort orders
                 var result = xOrder.CompareTo(yOrder);
                 if (result == 0)
                     continue;
-
-                // Custom order logics for method parameters.
-                if ((xChar == ',' && yChar == ')') || (xChar == ')' && yChar == ','))
-                    return -result; // Returns result with inverse sign.
 
                 // Save first char case comparison result. (To simulate `StringComparer.InvariantCulture` behavior).
                 if (char.ToUpper(xChar) == char.ToUpper(yChar))
@@ -78,6 +92,17 @@ internal sealed class SymbolStringComparer : IComparer<string>
 
         // Otherwise compare text length.
         return x.Length.CompareTo(y.Length);
+    }
+
+    private static bool IsSpecialCharPair(char xChar, char yChar)
+    {
+        if (xChar == ')' && (yChar == ',' || yChar == '.'))
+            return true;
+
+        if (yChar == ')' && (xChar == ',' || xChar == '.'))
+            return true;
+
+        return false;
     }
 
     // ASCII character order lookup table.
@@ -211,6 +236,6 @@ internal sealed class SymbolStringComparer : IComparer<string>
         63,   // |
         49,   // }
         64,   // ~
-        0,    // ESC
+        0,    // DEL
     ];
 }
