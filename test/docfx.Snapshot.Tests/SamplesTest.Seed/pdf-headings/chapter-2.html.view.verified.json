@@ -1,0 +1,42 @@
+{
+  "conceptual": "\n<h2 id=\"section-21\" sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"3\">Section 2.1</h2>\n<p sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"5\">This section is on the first page of the chapter.</p>\n<div style=\"break-before: page\"></div>\n<h2 id=\"section-22\" sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"9\">Section 2.2</h2>\n<p sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"11\">This section starts on a new page.</p>\n<h2 id=\"café\" sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"13\">Café</h2>\n<p sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"15\">This heading has a non-ASCII id.</p>\n<div style=\"break-before: page\"></div>\n<h2 id=\"中文\" sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"19\">中文</h2>\n<p sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"21\">This heading has a non-ASCII id.</p>\n<h2 id=\"rd-t\" sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"23\">R&amp;D &lt;T&gt;</h2>\n<p sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"25\">This heading has characters that must be HTML-escaped.</p>\n<h2 id=\"first-linesecond-line\" sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"27\">First line<br>Second line</h2>\n<p sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"29\">This heading contains a line break.</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/pdf-headings/chapter-2.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "pdf-headings/chapter-2.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/pdf-headings/chapter-2.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"chapter-two\" sourcefile=\"pdf-headings/chapter-2.md\" sourcestartlinenumber=\"1\">Chapter Two</h1>",
+  "title": "Chapter Two",
+  "wordCount": 54,
+  "_key": "pdf-headings/chapter-2.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "pdf-headings/chapter-2.html",
+  "_rel": "../",
+  "_tocKey": "~/pdf-headings/toc.yml",
+  "_tocPath": "pdf-headings/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/pdf-headings/chapter-2.md/#L1"
+}

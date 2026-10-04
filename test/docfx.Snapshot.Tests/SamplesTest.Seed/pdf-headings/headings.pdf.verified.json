@@ -1,0 +1,150 @@
+﻿{
+  "NumberOfPages": 6,
+  "Pages": [
+    {
+      "Number": 1,
+      "Text": "Table of Contents\nChapter One 2\nSection 1.1 2\nSection 1.2 3\nChapter Two 4\nSection 2.1 4\nSection 2.2 5\nCafé 5\n中文 6\nR&D <T> 6\nFirst line Second line 6",
+      "Links": [
+        {
+          "Goto": {
+            "PageNumber": 2,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 792
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 2,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 726.75
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 3,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 792
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 4,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 792
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 4,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 756.75
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 5,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 792
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 5,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 731.25
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 6,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 792
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 6,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 731.25
+            }
+          }
+        },
+        {
+          "Goto": {
+            "PageNumber": 6,
+            "Coordinates": {
+              "Left": 0,
+              "Top": 670.5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Number": 2,
+      "Text": "2 / 6\nChapter One\nThis folder tests pdfTocSource: headings.\nSection 1.1\nThis section is on the first page of the chapter.\nSection 1.1.1\nThis heading is below the configured depth.",
+      "Links": []
+    },
+    {
+      "Number": 3,
+      "Text": "3 / 6\nSection 1.2\nThis section starts on a new page.",
+      "Links": []
+    },
+    {
+      "Number": 4,
+      "Text": "4 / 6\nChapter Two\nSection 2.1\nThis section is on the first page of the chapter.",
+      "Links": []
+    },
+    {
+      "Number": 5,
+      "Text": "5 / 6\nSection 2.2\nThis section starts on a new page.\nCafé\nThis heading has a non-ASCII id.",
+      "Links": []
+    },
+    {
+      "Number": 6,
+      "Text": "6 / 6\n中文\nThis heading has a non-ASCII id.\nR&D <T>\nThis heading has characters that must be HTML-escaped.\nFirst line\nSecond line\nThis heading contains a line break.",
+      "Links": []
+    }
+  ],
+  "Bookmarks": [
+    {
+      "Title": "Chapter One",
+      "Children": [],
+      "Destination": {
+        "PageNumber": 2,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    },
+    {
+      "Title": "Chapter Two",
+      "Children": [],
+      "Destination": {
+        "PageNumber": 4,
+        "Type": 2,
+        "Coordinates": {
+          "Top": 0
+        }
+      }
+    }
+  ]
+}

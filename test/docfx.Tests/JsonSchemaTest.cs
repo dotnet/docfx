@@ -76,6 +76,7 @@ public class JsonSchemaTest : TestBase
     [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/articles/toc.json.view.verified.json")]
     [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/md/toc.json.view.verified.json")]
     [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/pdf/toc.json.view.verified.json")]
+    [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/pdf-headings/toc.json.view.verified.json")]
     [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/restapi/toc.json.view.verified.json")]
     [InlineData("test/docfx.Snapshot.Tests/SamplesTest.Seed/toc.json.view.verified.json")]
     public void JsonSchemaTest_Toc_Json(string path)
