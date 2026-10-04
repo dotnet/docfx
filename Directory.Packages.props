@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageVersion Include="HtmlAgilityPack" Version="1.13.0" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="11.1.0.9782" />
-    <PackageVersion Include="Jint" Version="4.16.3" />
+    <PackageVersion Include="Jint" Version="4.16.4" />
     <PackageVersion Include="JsonSchema.Net" Version="[8.0.5]" />
     <PackageVersion Include="Markdig" Version="1.4.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.63.0" />
@@ -16,7 +16,7 @@
     <PackageVersion Include="PdfPig" Version="0.1.16" />
     <PackageVersion Include="PlantUml.Net" Version="1.4.80" />
     <PackageVersion Include="Spectre.Console" Version="0.57.2" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.57.2" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
     <PackageVersion Include="System.Composition" Version="10.0.12" />
     <PackageVersion Include="YamlDotNet" Version="18.1.0" />
