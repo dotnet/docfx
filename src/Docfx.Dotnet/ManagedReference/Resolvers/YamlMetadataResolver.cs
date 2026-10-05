@@ -78,61 +78,39 @@ internal static class YamlMetadataResolver
             Items = []
         };
         Dictionary<string, MetadataItem> namespacedItems = [];
+        Dictionary<string, MetadataItem> assemblyRoots = [];
 
-        var dotsPerNamespace = namespaces.ToDictionary(x => x.Key, x => x.Value.Name.Where(y => y == '.').Count());
+        // Nesting follows the namespace, so only the dots of the namespace count. A UID that carries an
+        // assembly component contributes the dots of that component as well, and they are not levels.
+        var dotsPerNamespace = namespaces.ToDictionary(x => x.Key, x => VisitorHelper.TrimAssemblyUid(x.Value.Name).Count(y => y == '.'));
         foreach (var member in namespaces
             .OrderBy(x => dotsPerNamespace[x.Key])
             .Select(x => x.Value)
         )
         {
-            if (member.Name.Contains('.'))
+            foreach (var partialParentNamespace in GetParentNamespaces(member.Name))
             {
-                var parents = GetParentNamespaces(member.Name);
-                foreach (var partialParentNamespace in parents)
+                if (!namespacedItems.ContainsKey(partialParentNamespace))
                 {
-                    if (!namespacedItems.ContainsKey(partialParentNamespace))
+                    var missingNamespace = new MetadataItem()
                     {
-                        var missingNamespace = new MetadataItem()
-                        {
-                            Type = MemberType.Namespace,
-                            Name = partialParentNamespace,
-                            Items = [],
-                            DisplayNames = [],
-                            DisplayNamesWithType = [],
-                            DisplayQualifiedNames = []
-                        };
-                        missingNamespace.DisplayNames.Add(SyntaxLanguage.Default, partialParentNamespace);
-                        namespacedItems[partialParentNamespace] = missingNamespace;
-                        allReferences.TryAdd(partialParentNamespace, new());
+                        Type = MemberType.Namespace,
+                        Name = partialParentNamespace,
+                        AssemblyUid = member.AssemblyUid,
+                        Items = [],
+                        DisplayNames = [],
+                        DisplayNamesWithType = [],
+                        DisplayQualifiedNames = []
+                    };
+                    missingNamespace.DisplayNames.Add(SyntaxLanguage.Default, VisitorHelper.TrimAssemblyUid(partialParentNamespace));
+                    namespacedItems[partialParentNamespace] = missingNamespace;
+                    allReferences.TryAdd(partialParentNamespace, new());
 
-                        if (!partialParentNamespace.Contains('.'))
-                        {
-                            root.Items.Add(missingNamespace);
-                            missingNamespace.Parent = root;
-                        }
-                        else
-                        {
-                            var parentNamespace = namespacedItems[partialParentNamespace.Substring(0, partialParentNamespace.LastIndexOf('.'))];
-                            missingNamespace.Parent = parentNamespace;
-                            parentNamespace.Items.Add(missingNamespace);
-                        }
-                    }
-                }
-
-                var directParentNamespace = parents.Last();
-                if (namespacedItems.TryGetValue(directParentNamespace, out var parent))
-                {
-                    parent.Items.Add(member);
-                    member.Parent = parent;
-                }
-                else
-                {
-                    root.Items.Add(member);
-                    member.Parent = root;
+                    Attach(missingNamespace);
                 }
             }
-            else
-                root.Items.Add(member);
+
+            Attach(member);
 
             namespacedItems[member.Name] = member;
         }
@@ -151,18 +129,78 @@ internal static class YamlMetadataResolver
             }
         }
 
+        // Assembly roots have no UID to be ordered by, so they are ordered by the label they show. The
+        // namespaces among them are ordered by UID again in `ToTocViewModel`, so this only decides where
+        // the roots land, and it is skipped entirely when there are none.
+        if (assemblyRoots.Count > 0)
+        {
+            root.Items = root.Items
+                .OrderBy(x => x.DisplayNames?.GetLanguageProperty(SyntaxLanguage.Default) ?? x.Name, StringComparer.Ordinal)
+                .ToList();
+        }
+
         return root;
+
+        // Attaches an item to its direct parent namespace, or to the root of the assembly it belongs to
+        // when it is a top level namespace.
+        void Attach(MetadataItem item)
+        {
+            var directParentNamespace = GetParentNamespaces(item.Name).LastOrDefault();
+
+            var parent = directParentNamespace is not null && namespacedItems.TryGetValue(directParentNamespace, out var parentNamespace)
+                ? parentNamespace
+                : GetAssemblyRoot(item.AssemblyUid);
+
+            parent.Items.Add(item);
+            item.Parent = parent;
+        }
+
+        MetadataItem GetAssemblyRoot(string assemblyUid)
+        {
+            if (assemblyUid is null)
+            {
+                return root;
+            }
+
+            if (!assemblyRoots.TryGetValue(assemblyUid, out var assemblyRoot))
+            {
+                // This node exists to group the namespaces of one assembly and has no page of its own, so
+                // it must not carry a UID: `MemberType.Toc` is what keeps `BuildMembers` from making a page
+                // for it and `ToTocItemViewModel` from emitting a UID that resolves to nothing.
+                assemblyRoots[assemblyUid] = assemblyRoot = new MetadataItem()
+                {
+                    Type = MemberType.Toc,
+                    Items = [],
+                    DisplayNames = new() { [SyntaxLanguage.Default] = assemblyUid },
+                    DisplayNamesWithType = [],
+                    DisplayQualifiedNames = [],
+                    Parent = root,
+                };
+
+                root.Items.Add(assemblyRoot);
+            }
+
+            return assemblyRoot;
+        }
     }
 
+    /// <summary>
+    /// Enumerates the UIDs of the namespaces containing <paramref name="originalNamespace"/>, outermost
+    /// first. The assembly component is not a namespace level, so it is kept on every UID yielded instead
+    /// of being split on.
+    /// </summary>
     private static IEnumerable<string> GetParentNamespaces(string originalNamespace)
     {
-        var namespaces = originalNamespace.Split('.');
+        var namespaceName = VisitorHelper.TrimAssemblyUid(originalNamespace);
+        var assemblyUid = originalNamespace[..^namespaceName.Length];
+
+        var namespaces = namespaceName.Split('.');
         var fullNamespace = "";
         foreach (var @namespace in namespaces)
         {
             fullNamespace += $".{@namespace}";
-            if (fullNamespace.TrimStart('.') != originalNamespace)
-                yield return fullNamespace.TrimStart('.');
+            if (fullNamespace.TrimStart('.') != namespaceName)
+                yield return assemblyUid + fullNamespace.TrimStart('.');
         }
     }
 
@@ -177,7 +215,11 @@ internal static class YamlMetadataResolver
         {
             if (metadataItem.Type == MemberType.Namespace)
             {
-                if (metadataItem.Parent?.Items.Count == 1 && metadataItem.Parent.Parent != null)
+                // A namespace is never promoted out of an assembly root, even when it is the only one:
+                // that root is the only thing naming the assembly. The outer root is excluded by having no
+                // parent of its own, as before.
+                if (metadataItem.Parent?.Type is not MemberType.Toc
+                 && metadataItem.Parent?.Items.Count == 1 && metadataItem.Parent.Parent != null)
                 {
                     metadataItem.Parent.Parent.Items.Add(metadataItem);
                     metadataItem.Parent.Parent.Items.Remove(metadataItem.Parent);

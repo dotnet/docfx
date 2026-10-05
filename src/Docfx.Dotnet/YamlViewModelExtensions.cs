@@ -144,14 +144,20 @@ internal static class YamlViewModelExtensions
         {
             Uid = item.Name,
             Name = item.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default),
-            Type = item.Type.ToString(),
+
+            // An assembly grouping node is not an API of its own: it has no UID, no page, and no member
+            // kind to report. Everything else is one of the API kinds.
+            Type = item.Type is MemberType.Toc ? null : item.Type.ToString(),
         };
 
         if (item.Type is MemberType.Namespace)
         {
             if (result.Name.StartsWith(parentNamespace))
                 result.Name = result.Name.Substring(parentNamespace.Length);
-            parentNamespace = $"{item.Name}.";
+
+            // Trimming compares against what is displayed, so the assembly component of the UID has no
+            // place in it. For an unqualified namespace this is the UID itself.
+            parentNamespace = $"{VisitorHelper.TrimAssemblyUid(item.Name)}.";
         }
 
         if (item.Items != null)
@@ -264,6 +270,7 @@ internal static class YamlViewModelExtensions
             Documentation = model.Documentation,
             AssemblyNameList = model.AssemblyNameList,
             NamespaceName = model.NamespaceName,
+            NamespaceAssembly = model.NamespaceAssembly,
             Summary = model.Summary,
             Remarks = model.Remarks,
             Examples = model.Examples,

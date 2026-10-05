@@ -50,4 +50,43 @@ public class XrefTest
 ";
         TestUtility.VerifyMarkup(content, expected);
     }
+
+    /// <summary>
+    /// A .NET UID can carry the assembly it belongs to, separated by `::`. Both colons are characters the
+    /// shortcut form otherwise stops at, so the UID would end at the assembly without them being handled.
+    /// </summary>
+    [Fact]
+    public void XrefTestAssemblyQualifiedUid()
+    {
+        //arrange
+        var content = @"@MyLib.Tools::MyLib.Tools.Widget
+<xref:MyLib.Tools::MyLib.Tools.Widget>
+[link_text](xref:MyLib.Tools::MyLib.Tools.Widget)
+@""MyLib.Tools::MyLib.Tools.Widget""
+@MyLib.Tools::MyLib.Tools.Widget, and a sentence ending in the UID: @MyLib.Tools::MyLib.Tools.Widget.
+";
+        // assert
+        var expected = @"<p><xref href=""MyLib.Tools::MyLib.Tools.Widget"" data-throw-if-not-resolved=""False"" data-raw-source=""@MyLib.Tools::MyLib.Tools.Widget""></xref>
+<xref href=""MyLib.Tools::MyLib.Tools.Widget"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:MyLib.Tools::MyLib.Tools.Widget&gt;""></xref>
+<a href=""xref:MyLib.Tools::MyLib.Tools.Widget"">link_text</a>
+<xref href=""MyLib.Tools::MyLib.Tools.Widget"" data-throw-if-not-resolved=""False"" data-raw-source=""@&quot;MyLib.Tools::MyLib.Tools.Widget&quot;""></xref>
+<xref href=""MyLib.Tools::MyLib.Tools.Widget"" data-throw-if-not-resolved=""False"" data-raw-source=""@MyLib.Tools::MyLib.Tools.Widget""></xref>, and a sentence ending in the UID: <xref href=""MyLib.Tools::MyLib.Tools.Widget"" data-throw-if-not-resolved=""False"" data-raw-source=""@MyLib.Tools::MyLib.Tools.Widget""></xref>.</p>
+";
+        TestUtility.VerifyMarkup(content, expected);
+    }
+
+    /// <summary>
+    /// A trailing `::` is punctuation, not part of the UID.
+    /// </summary>
+    [Fact]
+    public void XrefTestTrailingColonsEndTheUid()
+    {
+        //arrange
+        var content = @"@MyLib.Tools:: and @MyLib.Tools::
+";
+        // assert
+        var expected = @"<p><xref href=""MyLib.Tools"" data-throw-if-not-resolved=""False"" data-raw-source=""@MyLib.Tools""></xref>:: and <xref href=""MyLib.Tools"" data-throw-if-not-resolved=""False"" data-raw-source=""@MyLib.Tools""></xref>::</p>
+";
+        TestUtility.VerifyMarkup(content, expected);
+    }
 }

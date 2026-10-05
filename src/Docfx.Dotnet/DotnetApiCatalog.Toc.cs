@@ -31,7 +31,7 @@ partial class DotnetApiCatalog
 
     class TocNode
     {
-        public string name { get; init; } = "";
+        public string name { get; set; } = "";
         public string? href { get; init; }
         public List<TocNode>? items { get; set; }
 
@@ -39,6 +39,11 @@ partial class DotnetApiCatalog
         internal string? id;
         internal bool containsLeafNodes;
         internal List<(ISymbol symbol, Compilation compilation)> symbols = [];
+
+        // Set on the nodes of declared namespaces only, so that `assemblyLabel` can group them by the
+        // namespace they declare. The assembly grouping nodes are namespace typed too, but carry neither.
+        internal string? namespaceName;
+        internal string? assemblyUid;
     }
 
     private static List<TocNode> CreateToc(List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
@@ -47,13 +52,79 @@ partial class DotnetApiCatalog
 
         var filter = new SymbolFilter(config, options);
         var tocNodes = new Dictionary<string, TocNode>();
+        var assemblyRoots = new Dictionary<string, TocNode>();
         var ext = config.OutputFormat is MetadataOutputFormat.Markdown ? ".md" : ".yml";
-        var toc = assemblies.SelectMany(a => CreateToc(a.symbol.GlobalNamespace, a.compilation)).ToList();
+        var toc = assemblies.SelectMany(a => CreateAssemblyToc(a.symbol, a.compilation)).ToList();
+
+        // Before the sort, which orders by name, since the label is part of the name that is ordered.
+        ApplyAssemblyLabel();
 
         SortToc(toc, null);
 
         YamlUtility.Serialize(Path.Combine(config.OutputFolder, "toc.yml"), toc, YamlMime.TableOfContent);
         return toc;
+
+        // Appends the assembly a namespace was declared in to its label, as `assemblyLabel` asks. A node
+        // that contains no leaf node is never emitted, so it neither gets a label nor counts as another
+        // declaration of its namespace.
+        void ApplyAssemblyLabel()
+        {
+            if (config.AssemblyLabel is not (AssemblyLabel.Shared or AssemblyLabel.Suffix))
+                return;
+
+            // Grouped before the qualified ones are picked out, not after: an unqualified assembly
+            // declaring the same namespace is another declaration of it, and dropping it first would
+            // leave the qualified one looking unique.
+            var namespaces = tocNodes.Values
+                .Where(x => x.namespaceName is not null && x.containsLeafNodes)
+                .GroupBy(x => x.namespaceName, StringComparer.Ordinal);
+
+            foreach (var group in namespaces)
+            {
+                if (config.AssemblyLabel is AssemblyLabel.Shared && group.Count() is 1)
+                    continue;
+
+                foreach (var node in group)
+                {
+                    if (node.assemblyUid is { } assemblyUid)
+                        node.name = $"{node.name} ({assemblyUid})";
+                }
+            }
+        }
+
+        // With a nested layout, the namespaces of an assembly that carries an assembly component in its
+        // UIDs are grouped under a node naming that assembly, which is the only place the assembly is
+        // named. The node has no page of its own, like the category nodes.
+        IEnumerable<TocNode> CreateAssemblyToc(IAssemblySymbol assembly, Compilation compilation)
+        {
+            var nodes = CreateToc(assembly.GlobalNamespace, compilation).ToList();
+
+            if (config.NamespaceLayout is not NamespaceLayout.Nested
+             || VisitorHelper.GetAssemblyUid(assembly) is not { } assemblyUid
+             || nodes.Count is 0)
+            {
+                return nodes;
+            }
+
+            // Two assemblies can resolve to the same component, e.g. under an `assemblyUidOverride` that
+            // covers several of them, and then they share the one node rather than repeating its name.
+            if (assemblyRoots.TryGetValue(assemblyUid, out var existing))
+            {
+                existing.items!.AddRange(nodes);
+                existing.containsLeafNodes |= nodes.Any(x => x.containsLeafNodes);
+                return [];
+            }
+
+            assemblyRoots[assemblyUid] = new TocNode
+            {
+                name = assemblyUid,
+                items = nodes,
+                type = TocNodeType.Namespace,
+                containsLeafNodes = nodes.Any(x => x.containsLeafNodes),
+            };
+
+            return [assemblyRoots[assemblyUid]];
+        }
 
         IEnumerable<TocNode> CreateToc(ISymbol symbol, Compilation compilation)
         {
@@ -94,12 +165,17 @@ partial class DotnetApiCatalog
                 if (!tocNodes.TryGetValue(id, out var node))
                 {
                     idExists = false;
+
+                    // The declared namespace is recorded whole, whatever the layout shows, because
+                    // `ApplyAssemblyLabel` groups on it and a nested label is only the last segment.
                     tocNodes.Add(id, node = new()
                     {
                         id = id,
                         name = config.NamespaceLayout is NamespaceLayout.Nested ? symbol.Name : symbol.ToString() ?? "",
                         href = $"{id}{ext}",
                         type = TocNodeType.Namespace,
+                        namespaceName = symbol.ToString(),
+                        assemblyUid = VisitorHelper.GetAssemblyUid(symbol),
                     });
                 }
 
