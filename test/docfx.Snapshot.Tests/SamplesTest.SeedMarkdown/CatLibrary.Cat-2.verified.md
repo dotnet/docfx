@@ -53,12 +53,14 @@ This type is a struct type, class type can't be used for this parameter.
 ## Examples
 
 <p>Here's example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
+
 <pre><code class="lang-c#">var a = new Cat(object, int)();
 int catNumber = new int();
 unsafe
 {
     a.GetFeetLength(catNumber);
 }</code></pre>
+
 <p>As you see, here we bring in <b>pointer</b> so we need to add <code class="languageKeyword">unsafe</code> keyword.</p>
 
 ## Remarks

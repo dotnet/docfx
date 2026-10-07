@@ -26,7 +26,6 @@
         {
           "uid": "BuildFromProject.Issue8540.A",
           "isExtensionMethod": false,
-          "href": "BuildFromProject.html",
           "name": [
             {
               "lang": "csharp",
@@ -60,11 +59,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<a class=\"xref\" href=\"BuildFromProject.html\">BuildFromProject</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.html\">Issue8540</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.A.html\">A</a>"
+              "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>.<xref uid=\"BuildFromProject.Issue8540\" text=\"Issue8540\"/>.<xref uid=\"BuildFromProject.Issue8540.A\" text=\"A\"/>"
             },
             {
               "lang": "vb",
-              "value": "<a class=\"xref\" href=\"BuildFromProject.html\">BuildFromProject</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.html\">Issue8540</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.A.html\">A</a>"
+              "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>.<xref uid=\"BuildFromProject.Issue8540\" text=\"Issue8540\"/>.<xref uid=\"BuildFromProject.Issue8540.A\" text=\"A\"/>"
             }
           ],
           "level": 0,
@@ -88,7 +87,6 @@
         {
           "uid": "BuildFromProject.Issue8540.B",
           "isExtensionMethod": false,
-          "href": "BuildFromProject.html",
           "name": [
             {
               "lang": "csharp",
@@ -122,11 +120,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<a class=\"xref\" href=\"BuildFromProject.html\">BuildFromProject</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.html\">Issue8540</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.B.html\">B</a>"
+              "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>.<xref uid=\"BuildFromProject.Issue8540\" text=\"Issue8540\"/>.<xref uid=\"BuildFromProject.Issue8540.B\" text=\"B\"/>"
             },
             {
               "lang": "vb",
-              "value": "<a class=\"xref\" href=\"BuildFromProject.html\">BuildFromProject</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.html\">Issue8540</a>.<a class=\"xref\" href=\"BuildFromProject.Issue8540.B.html\">B</a>"
+              "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>.<xref uid=\"BuildFromProject.Issue8540\" text=\"Issue8540\"/>.<xref uid=\"BuildFromProject.Issue8540.B\" text=\"B\"/>"
             }
           ],
           "level": 0,

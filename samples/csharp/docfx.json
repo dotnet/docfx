@@ -3,37 +3,20 @@
     {
       "src": [
         "src/*.csproj"
-      ],      
-      "outputFormat": "mref",
-      "memberLayout": "separatePages",
-      "output": "obj/api"
-    },
-    {
-      "src": [
-        "src/*.csproj"
-      ],      
-      "outputFormat": "apiPage",
-      "memberLayout": "separatePages",
-      "output": "obj/apipage"
-    },
-    {
-      "src": [
-        "src/*.csproj"
       ],
-      "outputFormat": "markdown",
-      "memberLayout": "separatePages",
-      "output": "obj/md"
-    },
+      "dest": "api"
+    }
   ],
   "build": {
     "content": [
-      { "files": [ "*.{md,yml}" ]},
-      { "files": [ "**/*.yml" ], "src": "obj/api", "dest": "api" },
-      { "files": [ "**/*.yml" ], "src": "obj/apipage", "dest": "apipage" },
-      { "files": [ "**/*.{md,yml}" ], "src": "obj/md", "dest": "md" },
+      {
+        "files": [
+          "api/**/*.yml",
+          "toc.yml"
+        ]
+      }
     ],
     "output": "_site",
-    "template": ["default", "modern"],
     "exportViewModel": true
   }
 }
