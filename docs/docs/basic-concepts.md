@@ -15,10 +15,28 @@ Docfx can be used as a static site generator, but the real value of the tool is 
     /// <param name="dateOfBirth">Individual's date of birth.</param>
     /// <param name="date">Date at which to evaluate age at.</param>
     /// <returns>Age of the individual in years (as an integer).</returns>
-    /// <remarks>This code is not guaranteed to be correct for non-UK locales, as some countries have skipped certain dates
-    /// within living memory.</remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="date"/> is earlier than <paramref name="dateOfBirth"/>.</exception>
+    /// <example>
+    /// This example shows how to use the <see cref="AgeAt"/> extension method:
+    /// <code>
+    /// DateOnly birthDate = new DateOnly(1990, 5, 25);
+    /// DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+    /// int age = birthDate.AgeAt(today);
+    /// Console.WriteLine($"The person is {age} years old.");
+    /// </code>
+    /// </example>
+    /// <remarks>
+    /// <para>This code is not guaranteed to be correct for non-UK locales, as some countries have skipped certain dates
+    /// within living memory.</para>
+    /// <para>See <see href="https://en.wikipedia.org/wiki/Leap_year">Leap Year</see> for more information on leap year calculations.</para>
+    /// </remarks>
+    /// <seealso cref="DateTime"/>
+    /// <seealso href="https://learn.microsoft.com/en-us/dotnet/api/system.dateonly">DateOnly Class</seealso>
     public static int AgeAt(this DateOnly dateOfBirth, DateOnly date)
     {
+        if (date < dateOfBirth)
+            throw new ArgumentOutOfRangeException(nameof(date), "Date cannot be earlier than date of birth");
+            
         int age = date.Year - dateOfBirth.Year;
 
         return dateOfBirth > date.AddYears(-age) ? --age : age;
@@ -32,6 +50,8 @@ can be used to generate output like this:
 Static documentation pages are prepared using [Markdown](markdown.md) (slightly enhanced to support specific features).  Markdown content can also be injected into the generated API documentation using a feature called 'Overwrites'.
 
 Once the API documentation has been parsed from the source code, it is compiled along with the Markdown content into a set of HTML pages which can be published on a website.  It is also possible to compile the final output into one or more PDFs for offline use.
+
+DocFX supports a wide range of XML comment tags. The example above demonstrates some of the commonly used tags, but for a comprehensive guide to all supported XML comment tags and how they appear in the generated documentation, see the [XML Comment Examples](xml-comment-examples.md) page.
 
 Docfx is a command-line tool that can be invoked directly, or as a .NET Core CLI tool using the `dotnet` command, but it can also be invoked from source code using the `Docset.Build` method in the `Docfx` namespace.  It is configured using a JSON configuration file, [`docfx.json`](../reference/docfx-json-reference.md) which has sections for different parts of the build process.
 
