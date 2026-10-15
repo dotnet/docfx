@@ -68,14 +68,14 @@ public int Value(string name)
 `name` [string](https://learn.microsoft.com/dotnet/api/system.string)
 
 Name as the **String**
- value
+value
 
 #### Returns
 
  [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 **Returns**
- Ahooo
+Ahooo
 
 ### <a id="BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_"></a> WithDeclarationKeyword\(Class1\)
 

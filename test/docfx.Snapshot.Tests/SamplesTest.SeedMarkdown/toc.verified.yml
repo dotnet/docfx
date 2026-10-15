@@ -35,6 +35,8 @@
   - name: Classes
   - name: Class1
     href: BuildFromProject.Class1.md
+  - name: Class1.Issue10332
+    href: BuildFromProject.Class1.Issue10332.md
   - name: Class1.Issue8665
     href: BuildFromProject.Class1.Issue8665.md
   - name: Class1.Issue8696Attribute
@@ -78,6 +80,8 @@
   - name: Inheritdoc.Issue9736.IJsonApiOptions
     href: BuildFromProject.Inheritdoc.Issue9736.IJsonApiOptions.md
   - name: Enums
+  - name: Class1.Issue10332.SampleEnum
+    href: BuildFromProject.Class1.Issue10332.SampleEnum.md
   - name: Class1.Issue9260
     href: BuildFromProject.Class1.Issue9260.md
 - name: BuildFromVBSourceCode
