@@ -1,0 +1,42 @@
+{
+  "conceptual": "\n<p sourcefile=\"pdf-headings/chapter-1.md\" sourcestartlinenumber=\"3\">This folder tests <code sourcefile=\"pdf-headings/chapter-1.md\" sourcestartlinenumber=\"3\">pdfTocSource: headings</code>.</p>\n<h2 id=\"section-11\" sourcefile=\"pdf-headings/chapter-1.md\" sourcestartlinenumber=\"5\">Section 1.1</h2>\n<p sourcefile=\"pdf-headings/chapter-1.md\" sourcestartlinenumber=\"7\">This section is on the first page of the chapter.</p>\n<h3 id=\"section-111\" sourcefile=\"pdf-headings/chapter-1.md\" sourcestartlinenumber=\"9\">Section 1.1.1</h3>\n<p sourcefile=\"pdf-headings/chapter-1.md\" sourcestartlinenumber=\"11\">This heading is below the configured depth.</p>\n<div style=\"break-before: page\"></div>\n<h2 id=\"section-12\" sourcefile=\"pdf-headings/chapter-1.md\" sourcestartlinenumber=\"15\">Section 1.2</h2>\n<p sourcefile=\"pdf-headings/chapter-1.md\" sourcestartlinenumber=\"17\">This section starts on a new page.</p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/pdf-headings/chapter-1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "path": "pdf-headings/chapter-1.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/pdf-headings/chapter-1.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0,
+    "endLine": 0
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "rawTitle": "<h1 id=\"chapter-one\" sourcefile=\"pdf-headings/chapter-1.md\" sourcestartlinenumber=\"1\">Chapter One</h1>",
+  "title": "Chapter One",
+  "wordCount": 35,
+  "_key": "pdf-headings/chapter-1.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "pdf-headings/chapter-1.html",
+  "_rel": "../",
+  "_tocKey": "~/pdf-headings/toc.yml",
+  "_tocPath": "pdf-headings/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/pdf-headings/chapter-1.md/#L1"
+}

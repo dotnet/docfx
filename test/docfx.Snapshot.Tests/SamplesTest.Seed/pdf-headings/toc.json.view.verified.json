@@ -1,0 +1,3 @@
+﻿{
+  "content": "{\"items\":[{\"name\":\"Chapter One\",\"href\":\"chapter-1.html\",\"topicHref\":\"chapter-1.html\"},{\"name\":\"Chapter Two\",\"href\":\"chapter-2.html\",\"topicHref\":\"chapter-2.html\"}],\"pdfFileName\":\"headings.pdf\",\"pdfTocSource\":\"headings\",\"pdfTocHeadingDepth\":2,\"pdf\":true,\"pdfTocPage\":true}"
+}

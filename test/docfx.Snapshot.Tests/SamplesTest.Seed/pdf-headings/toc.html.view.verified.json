@@ -1,0 +1,46 @@
+﻿{
+  "items": [
+    {
+      "name": "Chapter One",
+      "href": "chapter-1.html",
+      "topicHref": "chapter-1.html",
+      "tocHref": null,
+      "level": 2,
+      "items": [],
+      "leaf": true
+    },
+    {
+      "name": "Chapter Two",
+      "href": "chapter-2.html",
+      "topicHref": "chapter-2.html",
+      "tocHref": null,
+      "level": 2,
+      "items": [],
+      "leaf": true
+    }
+  ],
+  "pdfFileName": "headings.pdf",
+  "pdfTocSource": "headings",
+  "pdfTocHeadingDepth": 2,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "pdf": true,
+  "pdfTocPage": true,
+  "_key": "pdf-headings/toc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "pdf-headings/toc.html",
+  "_rel": "../",
+  "_tocKey": "~/pdf-headings/toc.yml",
+  "_tocPath": "pdf-headings/toc.html",
+  "_tocRel": "toc.html",
+  "topicHref": null,
+  "tocHref": null,
+  "name": null,
+  "level": 1,
+  "leaf": false,
+  "title": "Table of Content",
+  "_disableToc": true
+}

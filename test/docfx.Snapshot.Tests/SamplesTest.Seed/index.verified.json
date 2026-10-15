@@ -914,6 +914,16 @@
     "title": "Namespace MRef | docfx seed website",
     "summary": "Namespace MRef Namespaces MRef.Demo"
   },
+  "pdf-headings/chapter-1.html": {
+    "href": "pdf-headings/chapter-1.html",
+    "title": "Chapter One | docfx seed website",
+    "summary": "Chapter One This folder tests pdfTocSource: headings. Section 1.1 This section is on the first page of the chapter. Section 1.1.1 This heading is below the configured depth. Section 1.2 This section starts on a new page."
+  },
+  "pdf-headings/chapter-2.html": {
+    "href": "pdf-headings/chapter-2.html",
+    "title": "Chapter Two | docfx seed website",
+    "summary": "Chapter Two Section 2.1 This section is on the first page of the chapter. Section 2.2 This section starts on a new page. Café This heading has a non-ASCII id. 中文 This heading has a non-ASCII id. R&D <T> This heading has characters that must be HTML-escaped. First line Second line This heading contains a line break."
+  },
   "pdf/cover.html": {
     "href": "pdf/cover.html",
     "title": "DOCFX PDF SAMPLE | docfx seed website",
