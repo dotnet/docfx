@@ -83,20 +83,24 @@ static file class GetInnerXmlExtensions
         ReadOnlySpan<char> span = text.AsSpan();
 
         // 1st pass: Compute minimum indent (excluding <pre> blocks)
+        // Note: The first line is excluded because it starts right after the opening tag.
+        // Its indent reflects tag placement, not content indentation.
         bool inPre = false;
         int minIndent = int.MaxValue;
 
         int pos = 0;
+        bool isFirstLine = true;
         while (pos < span.Length)
         {
             var line = ReadLine(span, ref pos);
 
-            if (!inPre && !IsWhitespaceLine(line))
+            if (!inPre && !isFirstLine && !IsWhitespaceLine(line))
             {
                 int indent = CountIndent(line);
                 if (indent < minIndent)
                     minIndent = indent;
             }
+            isFirstLine = false;
 
             inPre = UpdatePreFlag(inPre, line);
         }
