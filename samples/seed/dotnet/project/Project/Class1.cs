@@ -10,7 +10,7 @@ public class Class1 : IClass1
     /// </summary>
     /// <include file='../../docs.xml' path='docs/members[@name="MyTests"]/Test/*'/>
     public void XmlCommentIncludeTag() { }
-    
+
     /// <summary>
     /// Test
     /// </summary>
@@ -101,7 +101,7 @@ public class Class1 : IClass1
     /// </remarks>
     public void Issue4392() { }
 
-    public void Issue8764<T>() where T: unmanaged { }
+    public void Issue8764<T>() where T : unmanaged { }
 
     public class Issue8665
     {
@@ -191,6 +191,39 @@ public class Class1 : IClass1
         [Obsolete("Use Value")]
         OldAndUnusedValue2,
     }
+
+    public class Issue10332
+    {
+        public void IRoutedView() { }
+        public void IRoutedViewModel() { }
+        public void IRoutedView<TViewModel>() { }
+
+        public void Null(object? obj) { }
+        public void Null<T>(T obj) { }
+        public void NullOrEmpty(string text) { }
+
+        public void Method() { }
+        public void Method(int a) { }
+        public void Method(int a, int b) { }
+
+        public enum SampleEnum
+        {
+            /// <summary>
+            /// 3rd element when sorted by alphabetic order
+            /// </summary>
+            AAA,
+
+            /// <summary>
+            /// 2nd element when sorted by alphabetic order
+            /// </summary>
+            aaa,
+
+            /// <summary>
+            /// 1st element when sorted by alphabetic order
+            /// </summary>
+            _aaa,
+        }
+    }
 }
 
 class ExperimentalAttribute : Attribute
@@ -209,10 +242,10 @@ class ExperimentalAttribute : Attribute
 public class Issue8725
 {
     /// <summary>A nice operation</summary>
-    public void MyOperation() {}
+    public void MyOperation() { }
 
     /// <summary>Another nice operation</summary>
-    public void MoreOperations() {}
+    public void MoreOperations() { }
 }
 
 /// <summary>

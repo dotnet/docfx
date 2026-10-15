@@ -3,6 +3,11 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Use following setting when running tests without Globalization Invariant Mode. -->
+    <!--<InvariantGlobalization>false</InvariantGlobalization>-->
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="TestDataReferences\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
