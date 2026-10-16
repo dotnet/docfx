@@ -50,7 +50,7 @@ internal static class RunClean
         }
 
         var elapsedSec = Stopwatch.GetElapsedTime(startingTimestamp).TotalSeconds;
-        Logger.LogInfo($"Clean: {context.DeletedFilesCount} files are deleted, {context.SkippedFilesCount} files are skipped in {elapsedSec:F2}s.");
+        Logger.LogInfo($"Clean: {context.DeletedFilesCount} files are deleted, {context.SkippedFilesCount} files are skipped, {context.SkippedDirectoriesCount} directories are skipped in {elapsedSec:F2}s.");
     }
 
     /// <summary>
@@ -96,6 +96,7 @@ internal static class RunClean
         if (dirInfo.LinkTarget != null)
         {
             Logger.LogWarning("Enumeration of directory contents is skipped. Because it has LinkTarget. Path: " + dirInfo.FullName);
+            context.IncrementSkippedDirectoriesCount();
             return;
         }
 
@@ -126,6 +127,7 @@ internal static class RunClean
             catch
             {
                 Logger.LogWarning("Skipped (Failed to delete): " + dirInfo.FullName);
+                context.IncrementSkippedDirectoriesCount();
                 // Ignore exception. (File is being used by another process, has no permissions, or has readonly attribute)
             }
         }

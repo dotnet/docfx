@@ -12,6 +12,7 @@ internal class RunCleanContext
 {
     private int _deletedFilesCount = 0;
     private int _skippedFilesCount = 0;
+    private int _skippedDirectoriesCount = 0;
 
     /// <summary>
     /// config file directory.
@@ -45,6 +46,12 @@ internal class RunCleanContext
     public int SkippedFilesCount => _skippedFilesCount;
 
     /// <summary>
+    /// <summary>
+    /// Gets skipped directories count.
+    /// Symlinked directories and directories that failed to delete are counted here.
+    /// </summary>
+    public int SkippedDirectoriesCount => _skippedDirectoriesCount;
+
     /// Increment <see cref="DeletedFilesCount"/>.
     /// </summary>
     public void IncrementDeletedFilesCount() => Interlocked.Increment(ref _deletedFilesCount);
@@ -53,4 +60,9 @@ internal class RunCleanContext
     /// Increment <see cref="SkippedFilesCount"/>.
     /// </summary>
     public void IncrementSkippedFilesCount() => Interlocked.Increment(ref _skippedFilesCount);
+
+    /// <summary>
+    /// Increment <see cref="SkippedDirectoriesCount"/>.
+    /// </summary>
+    public void IncrementSkippedDirectoriesCount() => Interlocked.Increment(ref _skippedDirectoriesCount);
 }
