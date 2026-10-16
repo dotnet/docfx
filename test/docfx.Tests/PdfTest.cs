@@ -3,8 +3,10 @@
 
 using Docfx.Tests.Common;
 using UglyToad.PdfPig;
+using UglyToad.PdfPig.Actions;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Outline;
+using UglyToad.PdfPig.Outline.Destinations;
 
 namespace Docfx.Tests;
 
@@ -123,8 +125,54 @@ public class PdfTest : TestBase
         }
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BookmarksNavigateToTopOfPage(bool groupChapters)
+    {
+        using var pdf = await BuildPdf(false, false, customTemplates: false,
+            firstPageSize: "Letter", secondPageSize: "A4 landscape", groupChapters: groupChapters);
+
+        Assert.True(pdf.TryGetBookmarks(out var bookmarks));
+        var chapters = bookmarks.Roots;
+        if (groupChapters)
+        {
+            var group = Assert.IsType<DocumentBookmarkNode>(Assert.Single(chapters));
+            AssertPageDestination(pdf, group.Destination, 4);
+            chapters = group.Children;
+        }
+
+        Assert.Collection(chapters,
+            bookmark => AssertPageDestination(pdf, Assert.IsType<DocumentBookmarkNode>(bookmark).Destination, 4),
+            bookmark => AssertPageDestination(pdf, Assert.IsType<DocumentBookmarkNode>(bookmark).Destination, 5));
+    }
+
+    [Fact]
+    public async Task TocLinksNavigateToTopOfPage()
+    {
+        using var pdf = await BuildPdf(false, false, customTemplates: false,
+            firstPageSize: "Letter", secondPageSize: "A4 landscape");
+
+        for (var pageNumber = 2; pageNumber <= 3; pageNumber++)
+        {
+            var links = pdf.GetPage(pageNumber).GetAnnotations()
+                .Select(annotation => annotation.Action).OfType<GoToAction>().ToArray();
+
+            Assert.NotEmpty(links);
+            Assert.All(links, link => AssertPageDestination(pdf, link.Destination, pageNumber + 2));
+        }
+    }
+
+    private static void AssertPageDestination(PdfDocument pdf, ExplicitDestination destination, int pageNumber)
+    {
+        Assert.Equal(pageNumber, destination.PageNumber);
+        Assert.Equal(ExplicitDestinationType.FitHorizontally, destination.Type);
+        Assert.Equal(pdf.GetPage(pageNumber).MediaBox.Bounds.Top, destination.Coordinates.Top);
+    }
+
     private async Task<PdfDocument> BuildPdf(
-        bool? onCover, bool? onToc, bool customTemplates, string coverPageSize = null, bool staticTemplates = false)
+        bool? onCover, bool? onToc, bool customTemplates, string coverPageSize = null, bool staticTemplates = false,
+        string firstPageSize = null, string secondPageSize = null, bool groupChapters = false)
     {
         var directory = GetRandomFolder();
         var configPath = CreateFile("docfx.json",
@@ -139,17 +187,23 @@ public class PdfTest : TestBase
             }
             """, directory);
 
+        var chapters =
+            """
+            - name: ChapterOne
+              href: first.html
+            - name: ChapterTwo
+              href: second.html
+            """;
+        if (groupChapters)
+            chapters = "- name: Chapters\n  items:\n  " + chapters.Replace("\n", "\n  ");
+
         var toc =
             """
             pdf: true
             pdfCoverPage: cover.html
             pdfTocPage: true
             items:
-            - name: ChapterOne
-              href: first.html
-            - name: ChapterTwo
-              href: second.html
-            """;
+            """ + "\n" + chapters;
         if (onCover.HasValue)
             toc += $"\npdfHeaderFooterOnCover: {onCover.Value.ToString().ToLowerInvariant()}";
         if (onToc.HasValue)
@@ -179,8 +233,8 @@ public class PdfTest : TestBase
             """, directory);
         CreateFile("public/docfx.min.css", "", directory);
         CreateFile("cover.html", Html("Cover body", coverPageSize), directory);
-        CreateFile("first.html", Html("First article body"), directory);
-        CreateFile("second.html", Html("Second article body"), directory);
+        CreateFile("first.html", Html("First article body", firstPageSize), directory);
+        CreateFile("second.html", Html("Second article body", secondPageSize), directory);
 
         await Docset.Build(configPath);
         await Docset.Pdf(configPath);
