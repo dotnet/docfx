@@ -19,12 +19,12 @@
     {{#children}}
       {{^_disableContribution}}
       {{#docurl}}
-      <span class="small pull-right mobile-hide">
+      <span class="small float-end mobile-hide">
         <span class="divider">|</span>
         <a href="{{docurl}}">{{__global.improveThisDoc}}</a>
       </span>{{/docurl}}
       {{#sourceurl}}
-      <span class="small pull-right mobile-hide">
+      <span class="small float-end mobile-hide">
         <a href="{{sourceurl}}">{{__global.viewSource}}</a>
       </span>{{/sourceurl}}
       {{/_disableContribution}}
