@@ -18,7 +18,7 @@
             "PageNumber": 3,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         },
@@ -27,7 +27,7 @@
             "PageNumber": 5,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         },
@@ -36,7 +36,7 @@
             "PageNumber": 8,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         },
@@ -45,7 +45,7 @@
             "PageNumber": 15,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         }
@@ -88,7 +88,7 @@
             "PageNumber": 8,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         }
@@ -284,7 +284,7 @@
         "PageNumber": 3,
         "Type": 2,
         "Coordinates": {
-          "Top": 0
+          "Top": 792
         }
       }
     },
@@ -298,7 +298,7 @@
             "PageNumber": 5,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         },
@@ -309,7 +309,7 @@
             "PageNumber": 5,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         },
@@ -320,7 +320,7 @@
             "PageNumber": 8,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         }
@@ -329,7 +329,7 @@
         "PageNumber": 5,
         "Type": 2,
         "Coordinates": {
-          "Top": 0
+          "Top": 792
         }
       }
     },
@@ -340,7 +340,7 @@
         "PageNumber": 15,
         "Type": 2,
         "Coordinates": {
-          "Top": 0
+          "Top": 792
         }
       }
     },

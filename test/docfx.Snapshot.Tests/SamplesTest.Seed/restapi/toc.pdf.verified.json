@@ -10,7 +10,7 @@
             "PageNumber": 2,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         },
@@ -19,7 +19,7 @@
             "PageNumber": 17,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         }
@@ -657,7 +657,7 @@
             "PageNumber": 17,
             "Type": 2,
             "Coordinates": {
-              "Top": 0
+              "Top": 792
             }
           }
         }
@@ -925,7 +925,7 @@
         "PageNumber": 2,
         "Type": 2,
         "Coordinates": {
-          "Top": 0
+          "Top": 792
         }
       }
     },
@@ -936,7 +936,7 @@
         "PageNumber": 17,
         "Type": 2,
         "Coordinates": {
-          "Top": 0
+          "Top": 792
         }
       }
     }

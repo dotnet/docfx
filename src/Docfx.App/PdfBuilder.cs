@@ -24,6 +24,7 @@ using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Graphics.Operations.SpecialGraphicsState;
 using UglyToad.PdfPig.Outline;
 using UglyToad.PdfPig.Outline.Destinations;
+using UglyToad.PdfPig.Tokens;
 using UglyToad.PdfPig.Writer;
 
 using static Docfx.Build.HtmlTemplate;
@@ -44,6 +45,13 @@ static class PdfBuilder
         public int Level { get; init; }
         public Uri PageUrl { get; init; } = null!;
         public int PageNumber { get; set; }
+    }
+
+    // Read inherited page geometry without parsing content streams or loading fonts.
+    class MediaBoxFactory : IPageFactory<MediaBox>
+    {
+        public MediaBox Create(int number, DictionaryToken dictionary, PageTreeMembers pageTreeMembers, NamedDestinations namedDestinations)
+            => pageTreeMembers.MediaBox ?? MediaBox.Letter;
     }
 
     class Outline
@@ -464,6 +472,7 @@ static class PdfBuilder
         var pagesByUrl = new Dictionary<Uri, List<(Outline node, NamedDestinations namedDests)>>();
         var pageNumbers = new Dictionary<Outline, int>();
         var urlPageNumbers = new Dictionary<Uri, int>();
+        var pageTops = new Dictionary<int, double>();
         var numberOfPages = 0;
 
         foreach (var (url, node) in pages)
@@ -485,6 +494,8 @@ static class PdfBuilder
             pageBytes[node] = bytes;
             pageNumbers[node] = numberOfPages + 1;
             urlPageNumbers[CleanUrl(url)] = numberOfPages + 1;
+            document.AddPageFactory(new MediaBoxFactory());
+            pageTops[numberOfPages + 1] = document.GetPage<MediaBox>(1).Bounds.Top;
             numberOfPages += document.NumberOfPages;
         }
 
@@ -655,9 +666,12 @@ static class PdfBuilder
                     }
                 }
 
-                return new GoToAction(new(pageNumbers[pages[0].node], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty));
+                return new GoToAction(CreatePageDestination(pageNumbers[pages[0].node]));
             }
         }
+
+        ExplicitDestination CreatePageDestination(int pageNumber) =>
+            new(pageNumber, ExplicitDestinationType.FitHorizontally, new(null, pageTops[pageNumber]));
 
         static Uri CleanUrl(Uri url) => new UriBuilder(url) { Query = null, Fragment = null }.Uri;
 
@@ -705,7 +719,7 @@ static class PdfBuilder
                     {
                         yield return new DocumentBookmarkNode(
                             item.name, level,
-                            new(numbers[item], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
+                            CreatePageDestination(numbers[item]),
                             CreateBookmarksCore(item.items, level + 1).ToArray());
                         continue;
                     }
@@ -721,7 +735,7 @@ static class PdfBuilder
 
                     yield return new DocumentBookmarkNode(
                         item.name, level,
-                        new(numbers[item], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
+                        CreatePageDestination(numbers[item]),
                         CreateBookmarksCore(item.items, level + 1).ToArray());
                 }
             }
