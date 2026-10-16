@@ -13,7 +13,7 @@ internal class CleanCommandOptions : LogOptions
 {
     [Description("Path to docfx.json")]
     [CommandArgument(0, "[config]")]
-    public required string ConfigFile { get; set; }
+    public string? ConfigFile { get; set; }
 
     [Description("If set to true, skip file/directory delete operations")]
     [CommandOption("--dryRun")]
