@@ -64,12 +64,22 @@ internal static class RunClean
         if (!IsUnderConfigDirectoryPath(directoryPath, context.ConfigDirectory))
         {
             Logger.LogWarning($"Clean operation is not supported if the output directory is not located within a base directory that contains a `docfx.json`. path: {Path.GetFullPath(directoryPath)}");
+            context.IncrementSkippedDirectoriesCount();
             return;
         }
 
         var dirInfo = new DirectoryInfo(directoryPath);
         if (!dirInfo.Exists)
             return; // Skip if specified path is not exists.
+
+        // Skip if the output directory itself or any ancestor up to the config directory is a symlink/junction.
+        // String-based IsUnderConfigDirectoryPath cannot detect `config/link/out` where `link` points outside.
+        if (IsSymlinkOrHasSymlinkAncestor(dirInfo, context.ConfigDirectory))
+        {
+            Logger.LogWarning("Clean operation is skipped. Because the output directory or its parent has LinkTarget. Path: " + dirInfo.FullName);
+            context.IncrementSkippedDirectoriesCount();
+            return;
+        }
 
         // Delete sub directories
         foreach (var subDirInfo in dirInfo.EnumerateDirectories(SearchPattern, DefaultEnumerationOptions))
@@ -160,6 +170,39 @@ internal static class RunClean
             context.IncrementSkippedFilesCount();
             Logger.LogWarning("Skipped (Failed to delete): " + fileInfo.FullName);
         }
+    }
+
+    /// <summary>
+    /// Returns true if the directory itself or any ancestor up to (excluding) the config directory is a symlink/junction.
+    /// String-based path checks cannot detect `config/link/out` where `link` points outside, so fail closed here.
+    /// The config directory itself is excluded so symlinked workspaces keep working.
+    /// </summary>
+    private static bool IsSymlinkOrHasSymlinkAncestor(DirectoryInfo dirInfo, string configDirectory)
+    {
+        var configFullPath = Path.GetFullPath(configDirectory).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+        DirectoryInfo? current = dirInfo;
+        while (current != null)
+        {
+            var currentPath = current.FullName.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (currentPath.Equals(configFullPath, PathStringComparer))
+                break;
+
+            try
+            {
+                if (current.LinkTarget != null)
+                    return true;
+            }
+            catch
+            {
+                // Fail closed when link status cannot be determined.
+                return true;
+            }
+
+            current = current.Parent;
+        }
+
+        return false;
     }
 
     private static bool IsUnderConfigDirectoryPath(string targetPath, string basePath)

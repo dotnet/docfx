@@ -184,4 +184,74 @@ public class CleanCommandTest : TestBase
         File.Exists(markerFile).Should().BeTrue();
         File.Exists(Path.Combine(projectFolder, "docfx.json")).Should().BeTrue();
     }
+
+    [Fact]
+    public void TestCleanCommand_WithSymlinkedOutputDirectory()
+    {
+        // Arrange
+        var outsideDir = Path.GetFullPath(GetRandomFolder());
+        var outsideFile = Path.Combine(outsideDir, "important.txt");
+        File.WriteAllText(outsideFile, "do not delete");
+
+        var linkPath = Path.Combine(projectFolder, "_site");
+        try
+        {
+            Directory.CreateSymbolicLink(linkPath, outsideDir);
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or PlatformNotSupportedException)
+        {
+            Assert.Skip($"Symlink creation is not supported in this environment: {ex.Message}");
+        }
+
+        var context = new RunCleanContext
+        {
+            ConfigDirectory = projectFolder,
+            BuildOutputDirectory = linkPath,
+            MetadataOutputDirectories = [],
+        };
+
+        // Act
+        RunClean.Exec(context, TestContext.Current.CancellationToken);
+
+        // Assert
+        context.DeletedFilesCount.Should().Be(0);
+        context.SkippedDirectoriesCount.Should().Be(1);
+        File.Exists(outsideFile).Should().BeTrue();
+    }
+
+    [Fact]
+    public void TestCleanCommand_WithSymlinkAncestor()
+    {
+        // Arrange
+        var outsideDir = Path.GetFullPath(GetRandomFolder());
+        var realOut = Path.Combine(outsideDir, "out");
+        Directory.CreateDirectory(realOut);
+        var outsideFile = Path.Combine(realOut, "important.txt");
+        File.WriteAllText(outsideFile, "do not delete");
+
+        var linkPath = Path.Combine(projectFolder, "link");
+        try
+        {
+            Directory.CreateSymbolicLink(linkPath, outsideDir);
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or IOException or PlatformNotSupportedException)
+        {
+            Assert.Skip($"Symlink creation is not supported in this environment: {ex.Message}");
+        }
+
+        var context = new RunCleanContext
+        {
+            ConfigDirectory = projectFolder,
+            BuildOutputDirectory = Path.Combine(linkPath, "out"),
+            MetadataOutputDirectories = [],
+        };
+
+        // Act
+        RunClean.Exec(context, TestContext.Current.CancellationToken);
+
+        // Assert
+        context.DeletedFilesCount.Should().Be(0);
+        context.SkippedDirectoriesCount.Should().Be(1);
+        File.Exists(outsideFile).Should().BeTrue();
+    }
 }
