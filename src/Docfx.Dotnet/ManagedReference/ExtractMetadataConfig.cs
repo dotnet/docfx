@@ -23,6 +23,10 @@ internal class ExtractMetadataConfig
 
     public string GlobalNamespaceId { get; init; }
 
+    public string AssemblyUidOverride { get; init; }
+
+    public AssemblyLabel AssemblyLabel { get; init; }
+
     public string CodeSourceBasePath { get; init; }
 
     public bool DisableDefaultFilter { get; init; }

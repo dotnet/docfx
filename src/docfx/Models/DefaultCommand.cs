@@ -42,7 +42,7 @@ class DefaultCommand : Command<DefaultCommand.Options>
 
             if (config.metadata is not null)
             {
-                DotnetApiCatalog.Exec(config.metadata, new(), configDirectory).GetAwaiter().GetResult();
+                DotnetApiCatalog.Exec(config.metadata, new(), configDirectory, assemblyUids: config.assemblyUids).GetAwaiter().GetResult();
             }
 
             if (config.build is not null)
