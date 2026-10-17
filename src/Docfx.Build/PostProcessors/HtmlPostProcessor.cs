@@ -26,7 +26,12 @@ sealed class HtmlPostProcessor : IPostProcessor
             Handlers.Add(new ValidateBookmark());
 
             bool keepDebugInfo = false;
-            var docfxKeepDebugInfo = EnvironmentVariables.KeepDebugInfo;
+            var docfxKeepDebugInfo = EnvironmentVariables.KeepDebugInfo switch
+            {
+                "1" => bool.TrueString,
+                "0" => bool.FalseString,
+                var value => value
+            };
             if (!string.IsNullOrEmpty(docfxKeepDebugInfo) && bool.TryParse(docfxKeepDebugInfo, out keepDebugInfo))
             {
                 Logger.LogVerbose($"DOCFX_KEEP_DEBUG_INFO is set to {keepDebugInfo}");

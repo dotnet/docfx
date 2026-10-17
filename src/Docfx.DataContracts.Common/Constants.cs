@@ -147,7 +147,7 @@ public static class Constants
         private static bool GetBooleanValue(string name)
         {
             var value = Environment.GetEnvironmentVariable(name);
-            return bool.TryParse(value, out bool result) && result;
+            return value == "1" || bool.TryParse(value, out bool result) && result;
         }
     }
 
