@@ -1,0 +1,4 @@
+apiRules:
+- exclude:
+    uidRegex: ^Shared\.HiddenWidget$
+    type: Type

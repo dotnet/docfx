@@ -259,6 +259,16 @@ public class ItemViewModel : IOverwriteDocumentViewModel, IItemWithMetadata
     [UniqueIdentityReference]
     public string NamespaceName { get; set; }
 
+    /// <summary>
+    /// The assembly to name on the page of this namespace, set only when <c>assemblyLabel</c> asks for it.
+    /// It is what lets a namespace page say which assembly it belongs to, the way a type page does,
+    /// without having to say it in the title.
+    /// </summary>
+    [YamlMember(Alias = "namespaceAssembly")]
+    [JsonProperty("namespaceAssembly")]
+    [JsonPropertyName("namespaceAssembly")]
+    public string NamespaceAssembly { get; set; }
+
     [YamlMember(Alias = "summary")]
     [JsonProperty("summary")]
     [JsonPropertyName("summary")]
