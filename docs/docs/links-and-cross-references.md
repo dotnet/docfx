@@ -75,6 +75,43 @@ This will render as:
 <a href="subfolder/file2.html">
 ```
 
+### Links to mapped resources
+
+Local links refer to source files, even when a [file mapping](../reference/docfx-json-reference.md#file-mappings) copies them to a different output directory. The `~/` prefix is relative to the directory containing `docfx.json`, not the generated site's root. Docfx rewrites a valid source link to the resource's output location.
+
+For example, given this layout:
+
+```text
+|- App.Specs
+|  |- screenshots
+|     |- About.png
+|- docs
+   |- docfx.json
+   |- articles
+      |- about.md
+```
+
+The following configuration copies `About.png` to `_site/assets/images/About.png`:
+
+```json
+{
+  "build": {
+    "content": [{ "files": ["articles/**/*.md"] }],
+    "resource": [{ "files": ["**/*.png"], "src": "../App.Specs/screenshots", "dest": "assets/images" }],
+    "template": ["default", "modern"],
+    "dest": "_site"
+  }
+}
+```
+
+In `about.md`, link to the image's source path:
+
+```md
+![About](~/../App.Specs/screenshots/About.png)
+```
+
+Docfx rewrites this to `../assets/images/About.png` in `articles/about.html`. Using `~/assets/images/About.png` instead produces an `InvalidFileLink` warning because that path names the output location rather than a source file included in the build.
+
 ## Cross references
 
 Besides creating links using file path, docfx supports links to another resource identified by ID. This is useful for cases where you want to create path-independent references or share resources between projects using IDs.
