@@ -1,0 +1,227 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System.Diagnostics;
+using Docfx.Common;
+
+#nullable enable
+
+namespace Docfx;
+
+/// <summary>
+/// Helper class to cleanup docfx temporary files.
+/// </summary>
+internal static class RunClean
+{
+    private const string SearchPattern = "*";
+    private static readonly EnumerationOptions DefaultEnumerationOptions = new()
+    {
+        MatchType = MatchType.Simple,
+        RecurseSubdirectories = false,
+        IgnoreInaccessible = true,
+    };
+
+    private static readonly StringComparison PathStringComparer = PathUtility.IsPathCaseInsensitive()
+                                                                      ? StringComparison.OrdinalIgnoreCase
+                                                                      : StringComparison.Ordinal;
+
+    /// <summary>
+    /// Cleanup docfx temporary files/directories.
+    /// </summary>
+    public static void Exec(RunCleanContext context, CancellationToken cancellationToken = default)
+    {
+        Logger.LogInfo("Clean operation started...");
+
+        var startingTimestamp = Stopwatch.GetTimestamp();
+
+        // Cleanup build output directory.
+        var buildOutputDir = context.BuildOutputDirectory;
+        if (!string.IsNullOrEmpty(buildOutputDir))
+        {
+            Logger.LogInfo($"Running clean operation on build output directory: {buildOutputDir}");
+            CleanDirectoryContents(buildOutputDir, context, cancellationToken);
+        }
+
+        // Cleanup metadata output directories.
+        foreach (var metadataOutputDir in context.MetadataOutputDirectories)
+        {
+            Logger.LogInfo($"Running clean operation on metadata output directory: {metadataOutputDir}");
+            CleanDirectoryContents(metadataOutputDir, context, cancellationToken);
+        }
+
+        var elapsedSec = Stopwatch.GetElapsedTime(startingTimestamp).TotalSeconds;
+        Logger.LogInfo($"Clean: {context.DeletedFilesCount} files are deleted, {context.SkippedFilesCount} files are skipped, {context.SkippedDirectoriesCount} directories are skipped in {elapsedSec:F2}s.");
+    }
+
+    /// <summary>
+    /// Delete specified directory contents.
+    /// </summary>
+    private static void CleanDirectoryContents(string directoryPath, RunCleanContext context, CancellationToken cancellationToken = default)
+    {
+        directoryPath = Path.GetFullPath(directoryPath);
+        Debug.Assert(Path.IsPathFullyQualified(directoryPath));
+
+        if (!IsUnderConfigDirectoryPath(directoryPath, context.ConfigDirectory))
+        {
+            Logger.LogWarning($"Clean operation is not supported if the output directory is not located within a base directory that contains a `docfx.json`. path: {Path.GetFullPath(directoryPath)}");
+            context.IncrementSkippedDirectoriesCount();
+            return;
+        }
+
+        var dirInfo = new DirectoryInfo(directoryPath);
+        if (!dirInfo.Exists)
+            return; // Skip if specified path is not exists.
+
+        // Skip if the output directory itself or any ancestor up to the config directory is a symlink/junction.
+        // String-based IsUnderConfigDirectoryPath cannot detect `config/link/out` where `link` points outside.
+        if (IsSymlinkOrHasSymlinkAncestor(dirInfo, context.ConfigDirectory))
+        {
+            Logger.LogWarning("Clean operation is skipped. Because the output directory or its parent has LinkTarget. Path: " + dirInfo.FullName);
+            context.IncrementSkippedDirectoriesCount();
+            return;
+        }
+
+        // Delete sub directories
+        foreach (var subDirInfo in dirInfo.EnumerateDirectories(SearchPattern, DefaultEnumerationOptions))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            DeleteDirectoryCore(subDirInfo, context, cancellationToken);
+        }
+
+        // Delete directory files
+        foreach (var fileInfo in dirInfo.EnumerateFiles(SearchPattern, DefaultEnumerationOptions))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            DeleteFileCore(fileInfo, context);
+        }
+    }
+
+    /// <summary>
+    /// Delete specified directory recursively.
+    /// </summary>
+    private static void DeleteDirectoryCore(DirectoryInfo dirInfo, RunCleanContext context, CancellationToken cancellationToken)
+    {
+        // Skip directory deletion, if specified directory have LinkTarget (SymbolicLink/DirectoryJunction).
+        // Because it might cause unexpected deletion of file/directory or it might cause infinite loop.
+        if (dirInfo.LinkTarget != null)
+        {
+            Logger.LogWarning("Enumeration of directory contents is skipped. Because it has LinkTarget. Path: " + dirInfo.FullName);
+            context.IncrementSkippedDirectoriesCount();
+            return;
+        }
+
+        // Delete sub directories
+        foreach (var subDirInfo in dirInfo.EnumerateDirectories(SearchPattern, DefaultEnumerationOptions))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            DeleteDirectoryCore(subDirInfo, context, cancellationToken);
+        }
+
+        // Delete files
+        foreach (var fileInfo in dirInfo.EnumerateFiles(SearchPattern, DefaultEnumerationOptions))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            DeleteFileCore(fileInfo, context);
+        }
+
+        if (context.DryRun)
+            return;
+
+        // Try to delete root directory if there are no remaining files.
+        if (dirInfo.GetFileSystemInfos("*", DefaultEnumerationOptions).Length == 0)
+        {
+            try
+            {
+                dirInfo.Delete(recursive: false);
+            }
+            catch
+            {
+                Logger.LogWarning("Skipped (Failed to delete): " + dirInfo.FullName);
+                context.IncrementSkippedDirectoriesCount();
+                // Ignore exception. (File is being used by another process, has no permissions, or has readonly attribute)
+            }
+        }
+    }
+
+    private static void DeleteFileCore(FileInfo fileInfo, RunCleanContext context)
+    {
+        if (context.DryRun)
+        {
+            Logger.LogVerbose("Skipped: " + fileInfo.FullName);
+            context.IncrementSkippedFilesCount();
+            return;
+        }
+
+        if (fileInfo.LinkTarget != null)
+        {
+            Logger.LogWarning("File delete operation is skipped. Because it has LinkTarget. Path: " + fileInfo.FullName);
+            context.IncrementSkippedFilesCount();
+            return;
+        }
+
+        try
+        {
+            fileInfo.Delete();
+            context.IncrementDeletedFilesCount();
+        }
+        catch
+        {
+            // File is being used by another process, has no permissions, or has readonly attribute.
+            context.IncrementSkippedFilesCount();
+            Logger.LogWarning("Skipped (Failed to delete): " + fileInfo.FullName);
+        }
+    }
+
+    /// <summary>
+    /// Returns true if the directory itself or any ancestor up to (excluding) the config directory is a symlink/junction.
+    /// String-based path checks cannot detect `config/link/out` where `link` points outside, so fail closed here.
+    /// The config directory itself is excluded so symlinked workspaces keep working.
+    /// </summary>
+    private static bool IsSymlinkOrHasSymlinkAncestor(DirectoryInfo dirInfo, string configDirectory)
+    {
+        var configFullPath = Path.GetFullPath(configDirectory).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+        DirectoryInfo? current = dirInfo;
+        while (current != null)
+        {
+            var currentPath = current.FullName.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (currentPath.Equals(configFullPath, PathStringComparer))
+                break;
+
+            try
+            {
+                if (current.LinkTarget != null)
+                    return true;
+            }
+            catch
+            {
+                // Fail closed when link status cannot be determined.
+                return true;
+            }
+
+            current = current.Parent;
+        }
+
+        return false;
+    }
+
+    private static bool IsUnderConfigDirectoryPath(string targetPath, string basePath)
+    {
+        // Normalize paths
+        basePath = Path.GetFullPath(basePath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        targetPath = Path.GetFullPath(targetPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+        // Never allow cleaning the config directory itself.
+        if (targetPath.Equals(basePath, PathStringComparer))
+            return false;
+
+        var baseWithSeparator = basePath + Path.DirectorySeparatorChar;
+
+        // Try to append directory separator for string comparison.
+        // This ensures `/repo/doc` does not match sibling `/repo/docs-evil`.
+        if (!targetPath.EndsWith(Path.DirectorySeparatorChar))
+            targetPath += Path.DirectorySeparatorChar;
+
+        return targetPath.StartsWith(baseWithSeparator, PathStringComparer);
+    }
+}
