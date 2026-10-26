@@ -508,18 +508,60 @@
       "description": "Markdig extension setting.",
       "anyOf": [
         {
-          "type": "string",
-          "description": "String"
+          "$ref": "#/$defs/markdigExtensionName"
         },
         {
           "type": "object",
           "properties": {
             "name": {
-              "type": "string",
-              "description": "markdig extension name",
-              "additionalProperties": {}
+              "$ref": "#/$defs/markdigExtensionName"
             }
           }
+        }
+      ]
+    },
+    "markdigExtensionName": {
+      "description": "Markdig extension name. Known extensions are suggested, but other names are also allowed.",
+      "anyOf": [
+        {
+          "enum": [
+            "abbreviations",
+            "advanced",
+            "alerts",
+            "attributes",
+            "autoidentifiers",
+            "autolinks",
+            "bootstrap",
+            "citations",
+            "common",
+            "customcontainers",
+            "definitionlists",
+            "diagrams",
+            "emojis",
+            "emphasisextras",
+            "figures",
+            "footers",
+            "footnotes",
+            "gfm-pipetables",
+            "globalization",
+            "gridtables",
+            "hardlinebreak",
+            "listextras",
+            "mathematics",
+            "medialinks",
+            "nohtml",
+            "nofollowlinks",
+            "nonascii-noescape",
+            "noopenerlinks",
+            "noreferrerlinks",
+            "pipetables",
+            "smartypants",
+            "tasklists",
+            "yaml"
+          ]
+        },
+        {
+          "type": "string"
         }
       ]
     },
