@@ -132,6 +132,17 @@ internal partial class XmlComment
         }
     }
 
+    /// <summary>
+    /// Prepends the assembly component of the API <paramref name="commentId"/> points to, so that crefs
+    /// keep resolving when the target assembly is configured to carry one.
+    /// </summary>
+    private string ApplyAssemblyUid(string id, string commentId)
+    {
+        return _context?.ResolveAssemblyUid?.Invoke(commentId) is { } assemblyUid
+            ? $"{assemblyUid}{VisitorHelper.AssemblyUidSeparator}{id}"
+            : id;
+    }
+
     public string GetParameter(string name)
     {
         return Parameters.GetValueOrDefault(name);
@@ -335,6 +346,8 @@ internal partial class XmlComment
                     id += '*';
                 }
 
+                id = ApplyAssemblyUid(id, cref);
+
                 // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
                 if (item.Parent?.Parent != null)
                 {
@@ -439,7 +452,7 @@ internal partial class XmlComment
                     yield return new ExceptionInfo
                     {
                         Description = description,
-                        Type = id,
+                        Type = ApplyAssemblyUid(id, commentId),
                         CommentId = commentId,
                     };
                 }
@@ -447,7 +460,7 @@ internal partial class XmlComment
         }
     }
 
-    private static IEnumerable<LinkInfo> GetMultipleLinkInfo(XDocument doc, string selector)
+    private IEnumerable<LinkInfo> GetMultipleLinkInfo(XDocument doc, string selector)
     {
         var nodes = doc.XPathSelectElements(selector).ToArray();
 
@@ -490,7 +503,7 @@ internal partial class XmlComment
                     yield return new LinkInfo
                     {
                         AltText = altText,
-                        LinkId = id,
+                        LinkId = ApplyAssemblyUid(id, commentId),
                         CommentId = commentId,
                         LinkType = LinkType.CRef
                     };
