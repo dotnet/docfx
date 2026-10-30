@@ -2,12 +2,12 @@
 
 {{^_disableContribution}}
 {{#docurl}}
-<span class="small pull-right mobile-hide">
+<span class="small float-end mobile-hide">
   <span class="divider">|</span>
   <a href="{{docurl}}">Improve this Doc</a>
 </span>{{/docurl}}
 {{#sourceurl}}
-<span class="small pull-right mobile-hide">
+<span class="small float-end mobile-hide">
   <a href="{{sourceurl}}">View Source</a>
 </span>{{/sourceurl}}
 {{/_disableContribution}}
