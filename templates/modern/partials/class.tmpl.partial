@@ -11,7 +11,7 @@
 {{#children}}
 
 {{#overload}}
-<a id="{{id}}" data-uid="{{uid}}"></a>
+<a id="{{id}}" data-uid="{{uid}}" data-overload></a>
 {{/overload}}
 
 <h3 id="{{id}}" data-uid="{{uid}}">
