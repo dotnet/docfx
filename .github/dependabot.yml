@@ -1,6 +1,8 @@
 version: 2
+# Zero PR limits disable version updates; security updates remain enabled.
 updates:
 - package-ecosystem: nuget
+  open-pull-requests-limit: 0
   target-branch: main
   directory: "/"
   schedule:
@@ -8,7 +10,7 @@ updates:
   ignore:
     # Verify updates are manual; overlapping NuGet update blocks are not supported.
     - dependency-name: "Verify.*"
-    # Keep patch updates automatic; Roslyn minor/major upgrades need per-TFM review.
+    # Roslyn minor/major upgrades need per-TFM review.
     - dependency-name: "Microsoft.CodeAnalysis"
       update-types:
         - "version-update:semver-minor"
@@ -24,6 +26,7 @@ updates:
       - "*"
 
 - package-ecosystem: npm
+  open-pull-requests-limit: 0
   target-branch: main
   directory: "/templates"
   schedule:
@@ -41,6 +44,7 @@ updates:
   - dependency-name: 'jquery'
 
 - package-ecosystem: "github-actions"
+  open-pull-requests-limit: 0
   directory: "/"
   schedule: 
     interval: monthly
