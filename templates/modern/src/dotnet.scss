@@ -127,4 +127,9 @@ body[data-yaml-mime="ManagedReference"] article, body[data-yaml-mime="ApiPage"] 
       margin: 0 .5em;
     }
   }
+
+  a[data-overload] {
+      display: block;
+      height: 0px;
+  }
 }
