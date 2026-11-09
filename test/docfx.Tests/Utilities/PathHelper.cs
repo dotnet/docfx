@@ -27,10 +27,12 @@ internal class PathHelper
     /// </summary>
     private static string FindSolutionFolder(string callerFilePath, string solutionName)
     {
+        // The solution file is checked for first, so that a checkout that is not itself named after the
+        // solution (a git worktree, for one) is not mistaken for a parent directory that happens to be.
         var dir = new FileInfo(callerFilePath).Directory;
         while (dir != null
-            && dir.Name != solutionName
-            && !dir.EnumerateFiles($"{solutionName}.sln").Any())
+            && !dir.EnumerateFiles($"{solutionName}.slnx").Any()
+            && dir.Name != solutionName)
         {
             dir = dir.Parent;
         }
@@ -107,7 +109,8 @@ internal class PathHelper
         }
 
         // Rewrite path when test runnign on WSL environment that are executed by Visual Studio Remote Testing.
-        if (Environment.GetEnvironmentVariable("WSLENV") != null && callerFilePath.Contains('\\'))
+        // `WSLENV` is also defined on Windows hosts that have WSL installed, so it only means WSL on Linux.
+        if (OperatingSystem.IsLinux() && Environment.GetEnvironmentVariable("WSLENV") != null && callerFilePath.Contains('\\'))
         {
             var match = Regex.Match(callerFilePath, @"^([a-zA-Z]):\\(.+)$");
             if (match.Success)
