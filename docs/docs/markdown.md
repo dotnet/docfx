@@ -540,6 +540,32 @@ REST API content, independent of platform...
 ---
 ```
 
+## Moniker sections
+
+Moniker sections show content that applies to a specific version or versions of a product, such as
+a specific release of an API.
+
+A moniker section starts with `::: moniker range="<moniker range>"` and ends with `::: moniker-end`:
+
+```markdown
+::: moniker range="v2.0"
+This content applies to v2.0.
+::: moniker-end
+
+::: moniker range="v1.0 || v2.0"
+This content applies to v1.0 or v2.0.
+::: moniker-end
+```
+
+- Separate multiple monikers in a range with `||` (or), for example `"v1.0 || v2.0"`.
+- Nested moniker sections are not supported.
+
+Each moniker section is rendered as a `<div class="monikerRange" data-moniker="...">` element,
+where `data-moniker` contains a space-separated list of moniker names, e.g. a range of
+`v1.0 || v2.0` is rendered as `data-moniker="v1.0 v2.0"`. When the current version of the
+[version selector](versioning.md#configure-the-version-selector) declares the monikers it
+covers, the modern template hides moniker sections that don't apply to it.
+
 ## Differences introduced by DFM syntax
 
 > [!Warning]

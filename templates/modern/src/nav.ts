@@ -3,7 +3,9 @@
 
 import AnchorJs from 'anchor-js'
 import { render, html, TemplateResult } from 'lit-html'
+import { until } from 'lit-html/directives/until.js'
 import { breakWordLit, meta, isExternalHref, loc, options } from './helper'
+import { localeSelector, versionSelector } from './selector'
 import { themePicker } from './theme'
 import { TocNode } from './toc'
 
@@ -53,10 +55,17 @@ export async function renderNavbar(): Promise<NavItem[]> {
   })
     }</ul>`
 
+  // The selectors fetch their entries over the network, render the navbar
+  // without blocking and fill the selectors in when they are ready
+  const version = versionSelector().catch(() => '')
+  const locale = localeSelector().catch(() => '')
+
   async function renderCore() {
     const icons = html`
       <form class="icons">
         ${iconLinks?.map(i => html`<a href="${i.href}" title="${i.title}" class="btn border-0"><i class="bi bi-${i.icon}"></i></a>`)}
+        ${until(version, '')}
+        ${until(locale, '')}
         ${await themePicker(renderCore)}
       </form>`
 

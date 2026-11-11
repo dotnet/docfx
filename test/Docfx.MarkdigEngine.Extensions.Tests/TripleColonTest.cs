@@ -70,7 +70,7 @@ public class TripleColonTest
             .AppendLine("::: moniker-end")
             .ToString();
 
-        var expected = @"<div range=""chromeless"">
+        var expected = @"<div class=""monikerRange"" range=""chromeless"" data-moniker=""chromeless"">
 <div class=""zone has-target"" data-target=""docs"">
 <h2 id=""alt-text"">Alt text</h2>
 </div>
@@ -89,7 +89,7 @@ public class TripleColonTest
             .AppendLine("::: moniker-end")
             .ToString();
 
-        var expected = @"<div range=""chromeless"">
+        var expected = @"<div class=""monikerRange"" range=""chromeless"" data-moniker=""chromeless"">
 <div class=""zone has-target"" data-target=""docs"">
 <h2 id=""alt-text"">Alt text</h2>
 </div>
