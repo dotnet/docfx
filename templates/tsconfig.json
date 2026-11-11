@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
-    "removeComments": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
     "resolveJsonModule": true,
     "esModuleInterop": true
-  }
+  },
+  "include": ["modern/src/**/*.ts", "modern/src/**/*.d.ts"]
 }

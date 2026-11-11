@@ -39,7 +39,7 @@ Shared content.
 <p sourceFile=""fake.md"" sourceStartLineNumber=""3"">Shared content.</p>
 <h2 id=""section-1"" sourceFile=""fake.md"" sourceStartLineNumber=""5"">Section 1</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""7"">Shared content.</p>
-<div range=""&gt;= myproduct-4.1"" sourceFile=""fake.md"" sourceStartLineNumber=""9"">
+<div class=""monikerRange"" range=""&gt;= myproduct-4.1"" data-moniker=""&gt;= myproduct-4.1"" sourceFile=""fake.md"" sourceStartLineNumber=""9"">
 <h2 id=""section-for-myproduct-41-and-later"" sourceFile=""fake.md"" sourceStartLineNumber=""10"">Section for myproduct-4.1 and Later</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""12"">Some version-specific content here...</p>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""14"">::: nested moniker zone is not allowed. So this line is in plain text.
@@ -49,6 +49,30 @@ Inline ::: should not end moniker zone.</p>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""21"">Shared content.</p>
 ";
         TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "fake.md");
+    }
+
+    [Fact]
+    public void MonikerRangeWithMultipleMonikers()
+    {
+        //arrange
+        var source = @"::: moniker range=""moniker-1.0 || moniker-2.0  ||   moniker-3.0""
+Content applies to moniker 1.0, 2.0 and 3.0.
+::: moniker-end
+
+::: moniker range=""moniker-4.0""
+Content applies to moniker 4.0 only.
+::: moniker-end
+";
+
+        // assert
+        var expected = @"<div class=""monikerRange"" range=""moniker-1.0 || moniker-2.0  ||   moniker-3.0"" data-moniker=""moniker-1.0 moniker-2.0 moniker-3.0"">
+<p>Content applies to moniker 1.0, 2.0 and 3.0.</p>
+</div>
+<div class=""monikerRange"" range=""moniker-4.0"" data-moniker=""moniker-4.0"">
+<p>Content applies to moniker 4.0 only.</p>
+</div>
+";
+        TestUtility.VerifyMarkup(source, expected);
     }
 
     [Fact]
@@ -72,7 +96,7 @@ Inline ::: should not end moniker zone.</p>
 ::: moniker-end";
 
         // assert
-        var expected = @"<div range=""start"">
+        var expected = @"<div class=""monikerRange"" range=""start"" data-moniker=""start"">
 </div>
 ";
         TestUtility.VerifyMarkup(source2, expected);
@@ -85,7 +109,7 @@ Inline ::: should not end moniker zone.</p>
         var source = @"::: moniker range=""start""
     console.log(""hehe"")
 ::: moniker-end";
-        var expected = @"<div range=""start"">
+        var expected = @"<div class=""monikerRange"" range=""start"" data-moniker=""start"">
 <pre><code>console.log(&quot;hehe&quot;)
 </code></pre>
 </div>

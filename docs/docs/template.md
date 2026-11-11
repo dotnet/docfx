@@ -147,6 +147,16 @@ export default {
 }
 ```
 
+To support [multiple versions or locales](versioning.md) of the docs, enable the version and
+locale selectors in the navbar with the `versions` and `locales` options:
+
+```js
+export default {
+  versions: '/repo/versions.json',
+  locales: '/repo/locales.json',
+}
+```
+
 You can also configure syntax highlighting options using the `configureHljs` option:
 
 ```js
