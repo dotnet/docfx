@@ -52,7 +52,9 @@ async function loadIndex({ lunrLanguages }: { lunrLanguages?: string[] }) {
       this.field('summary', { boost: 20 })
 
       if (lunrLanguages && lunrLanguages.length > 0) {
-        this.use(lunr.multiLanguage(...lunrLanguages))
+        // `multiLanguage` is added to lunr by the lunr-languages plugin
+        const multiLanguage = (lunr as unknown as { multiLanguage: (...languages: string[]) => lunr.Builder.Plugin }).multiLanguage(...lunrLanguages)
+        this.use(multiLanguage)
       }
 
       for (const key in data) {

@@ -5,10 +5,11 @@ import 'bootstrap'
 import { options } from './helper'
 import { highlight } from './highlight'
 import { renderMarkdown } from './markdown'
+import { applyMonikerFilter } from './selector'
 import { enableSearch } from './search'
 import { renderToc } from './toc'
 import { initTheme } from './theme'
-import { renderBreadcrumb, renderInThisArticle, renderNavbar } from './nav'
+import { renderBreadcrumb, renderInThisArticle, renderNavbar, renderOutline } from './nav'
 
 import 'bootstrap-icons/font/bootstrap-icons.scss'
 import './docfx.scss'
@@ -26,6 +27,9 @@ declare global {
 async function init() {
   window.docfx = window.docfx || {}
 
+  // The outline should reflect the content that is visible after moniker filtering
+  document.addEventListener('docfx:monikerchanged', renderOutline)
+
   const { start } = await options()
   start?.()
 
@@ -36,14 +40,23 @@ async function init() {
       highlight()
     ])
   } else {
+    let monikerSectionsHidden = false
     await Promise.all([
       initTheme(),
       enableSearch(),
       renderInThisArticle(),
       renderMarkdown(),
       renderNav(),
+      applyMonikerFilter().then(hidden => {
+        monikerSectionsHidden = hidden
+      }),
       highlight()
     ])
+
+    // The outline should reflect the content that is visible after moniker filtering
+    if (monikerSectionsHidden) {
+      renderOutline()
+    }
   }
 
   window.docfx.ready = true
