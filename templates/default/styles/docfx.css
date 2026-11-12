@@ -2,6 +2,9 @@
  * Licensed to the .NET Foundation under one or more agreements.
  * The .NET Foundation licenses this file to you under the MIT license.
  */
+:root {
+  --docfx-header-height: 120px;
+}
 html,
 body {
   font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif;
@@ -120,7 +123,7 @@ span.languagekeyword{
 .btn + .btn {
   margin-left: 10px;
 }
-.btn.pull-right {
+.btn.float-end {
   margin-left: 10px;
   margin-top: 5px;
 }
@@ -164,6 +167,7 @@ h6,
 #wrapper {
   min-height: 100%;
   position: relative;
+  padding-bottom: 70px;
 }
 /* blends header footer and content together with gradient effect */
 .grad-top {
@@ -226,7 +230,7 @@ article h4{
   margin-top: 2em;
 }
 
-article span.small.pull-right{
+article span.small.float-end{
   margin-top: 20px;
 }
 
@@ -246,69 +250,65 @@ article section {
 .breadcrumb > li + li:before {
   content: "\00a0/";
 }
-#autocollapse.collapsed .navbar-header {
-  float: none;
-}
-#autocollapse.collapsed .navbar-toggle {
+#autocollapse.collapsed .navbar-toggler {
   display: block;
 }
+#autocollapse.collapsed,
+#autocollapse.collapsed > .container {
+  flex-wrap: wrap;
+}
 #autocollapse.collapsed .navbar-collapse {
+  flex-basis: 100%;
   border-top: 1px solid transparent;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
-#autocollapse.collapsed .navbar-collapse.collapse {
+#autocollapse.collapsed .navbar-collapse.collapse:not(.show) {
   display: none !important;
 }
 #autocollapse.collapsed .navbar-nav {
-  float: none !important;
+  flex-direction: column;
+  width: 100%;
   margin: 7.5px -15px;
 }
 #autocollapse.collapsed .navbar-nav > li {
-  float: none;
+  width: 100%;
 }
 #autocollapse.collapsed .navbar-nav > li > a {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-#autocollapse.collapsed .collapse.in,
+#autocollapse.collapsed .collapse.show,
 #autocollapse.collapsed .collapsing {
   display: block !important;
 }
-#autocollapse.collapsed .collapse.in .navbar-right,
-#autocollapse.collapsed .collapsing .navbar-right {
-  float: none !important;
-}
-#autocollapse .form-group {
-  width: 100%;
+#autocollapse.collapsed .collapse.show #search,
+#autocollapse.collapsed .collapsing #search {
+  margin: 0 auto !important;
 }
 #autocollapse .form-control {
   width: 100%;
 }
-#autocollapse .navbar-header {
-  margin-left: 0;
-  margin-right: 0;
-}
 #autocollapse .navbar-brand {
   margin-left: 0;
 }
-.collapse.in,
+.collapse.show,
 .collapsing {
   text-align: center;
 }
-.collapsing .navbar-form {
+.collapsing #search {
   margin: 0 auto;
   max-width: 400px;
   padding: 10px 15px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
 }
-.collapsed .collapse.in .navbar-form {
+.collapsed .collapse.show #search {
   margin: 0 auto;
   max-width: 400px;
   padding: 10px 15px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .navbar .navbar-nav {
-  display: inline-block;
+  display: flex;
 }
 .docs-search {
   background: white;
@@ -365,7 +365,7 @@ article section {
 /* Search results display*/
 #search-results {
   max-width: 960px !important;
-  margin-top: 120px;
+  margin-top: calc(var(--docfx-header-height) + 30px);
   margin-bottom: 115px;
   margin-left: auto;
   margin-right: auto;
@@ -454,7 +454,7 @@ article section {
 .sidetoc {
   position: fixed;
   width: 260px;
-  top: 150px;
+  top: calc(var(--docfx-header-height) + 60px);
   bottom: 0;
   overflow-x: hidden;
   overflow-y: auto;
@@ -575,7 +575,7 @@ body .toc{
 }
 .sidefilter {
   position: fixed;
-  top: 90px;
+  top: var(--docfx-header-height);
   width: 260px;
   background-color: #f1f1f1;
   padding: 15px;
@@ -612,7 +612,7 @@ body .toc{
   right: 5px;
 }
 .article {
-  margin-top: 120px;
+  margin-top: calc(var(--docfx-header-height) + 30px);
   margin-bottom: 115px;
 }
 
@@ -636,9 +636,27 @@ body .toc{
   font-size: 12px;
   max-height: 100%;
   overflow: hidden;
-  top: 100px;
+  top: calc(var(--docfx-header-height) + 10px);
   bottom: 10px;
   position: fixed;
+}
+.sideaffix ul.nav,
+.toc ul.nav {
+  display: block;
+}
+.sideaffix ul.nav > li {
+  position: relative;
+  display: block;
+}
+.sideaffix ul.nav > li > a {
+  position: relative;
+  display: block;
+}
+.toc ul.nav > li {
+  position: relative;
+}
+.toc li.hide {
+  display: none !important;
 }
 .sideaffix.shiftup {
   bottom: 70px;
@@ -919,24 +937,22 @@ pre > code .line-highlight {
     position:relative;
     top:1px;
     display:inline-block;
-    font-family:'Glyphicons Halflings';
+    font-family:sans-serif;
     line-height:1;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
     margin-right: 5px;
     font-weight: normal;
 }
 
 .alert-info h5:before {
-    content:"\e086"
+    content:"\2139";
 }
 
 .alert-warning h5:before {
-    content:"\e127"
+    content:"\26a0";
 }
 
 .alert-danger h5:before {
-    content:"\e107"
+    content:"\2716";
 }
 
 /* For Embedded Video */
@@ -958,6 +974,9 @@ div.embeddedvideo iframe {
 
 /* For printer */
 @media print{
+  #wrapper {
+    padding-bottom: 0;
+  }
   .article.grid-right {
     margin-top: 0px;
     margin-left: 0px;
