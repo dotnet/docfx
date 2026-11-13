@@ -93,7 +93,9 @@ public class MonikerRangeParser : BlockParser
             Span = new SourceSpan(sourcePosition, slice.End),
         };
 
+        monikerRange.GetAttributes().AddClass("monikerRange");
         monikerRange.GetAttributes().AddPropertyIfNotExist("range", monikerRange.MonikerRange);
+        monikerRange.GetAttributes().AddPropertyIfNotExist("data-moniker", GetMonikerNames(monikerRange.MonikerRange));
 
         processor.NewBlocks.Push(monikerRange);
 
@@ -147,5 +149,15 @@ public class MonikerRangeParser : BlockParser
             _context.LogWarning("invalid-moniker-range", $"No \"::: {EndString}\" found for \"{monikerRange.MonikerRange}\", MonikerRange does not end explicitly.", block);
         }
         return true;
+    }
+
+    /// <summary>
+    /// Extracts a space-separated list of moniker names from a moniker range, for example
+    /// <c>net-5.0 || net-7.0</c> becomes <c>net-5.0 net-7.0</c>. The result is used by
+    /// client-side version selectors to filter moniker sections (the <c>data-moniker</c> attribute).
+    /// </summary>
+    private static string GetMonikerNames(string monikerRange)
+    {
+        return string.Join(' ', monikerRange.Split("||").Select(name => name.Trim()).Where(name => name.Length > 0));
     }
 }

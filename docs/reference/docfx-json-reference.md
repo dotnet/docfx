@@ -249,15 +249,22 @@ Set the name of the `ICustomHrefGenerator` derived class.
 
 ### `groups`
 
-Specifies the output folder of specified group name.
+Specifies the output folder and metadata of specified group name.
 
 ```json
 "groups": {
   "v1": {
-    "dest": "output_dir_v1"
+    "dest": "output_dir_v1",
+    "moniker_range": "v1"
   }
 }
 ```
+
+All files of the same content [group](#group) are built together, into the output folder defined
+by `dest`. Any other key of a group, such as `moniker_range`, is applied as metadata to every file
+built in that group, overriding global metadata and being overridden by file metadata.
+
+See [multiple versions and languages](../docs/versioning.md) for more information.
 
 ### `sitemap`
 
@@ -559,6 +566,16 @@ Specifies the source directory relative to the `docfx.json` directory, supports 
 ### `dest`
 
 The folder name for the generated files.
+
+### `group`
+
+Assigns the files to a group, files of the same group are built together. The output folder and
+metadata of each group is defined in [`groups`](#groups). See
+[multiple versions and languages](../docs/versioning.md) for more information.
+
+### `rootTocPath`
+
+The root TOC path of the group, used as the navbar of the group.
 
 ### Glob Patterns
 
