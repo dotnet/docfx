@@ -71,7 +71,7 @@ export async function latestReport(api, readArchive, expectedMatrix) {
         if (JSON.stringify(report.matrix.map(key).sort()) !== JSON.stringify(expectedMatrix.map(key).sort()) || report.matrix.some(t => !t.sdk.startsWith(`${t.channel}.`))) throw new Error('Report differs from the reviewed SDK channel matrix.')
       }
       if (expectedMatrix && report.schemaVersion === 2) {
-        const expectedTools = ['stable/net10.0', ...['net8.0', 'net9.0', 'net10.0', 'net11.0'].map(tfm => `nightly/${tfm}`)]
+        const expectedTools = ['stable/net10.0', ...['net10.0', 'net11.0'].map(tfm => `nightly/${tfm}`)]
         const actualTools = report.toolTargets.map(t => `${t.channel}/${t.framework}`)
         if (JSON.stringify(actualTools.sort()) !== JSON.stringify(expectedTools.sort())) throw new Error('Report differs from the reviewed tool framework matrix.')
       }

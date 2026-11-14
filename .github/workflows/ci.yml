@@ -21,10 +21,7 @@ jobs:
         include:
         - os: ubuntu-latest
           framework: net11.0
-        - os: ubuntu-latest
-          framework: net9.0
-        - os: ubuntu-latest
-          framework: net8.0
+
     steps:
     - uses: actions/checkout@v7
       with:

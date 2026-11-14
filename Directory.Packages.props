@@ -23,20 +23,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Build" Version="[17.11.48]" Condition="'$(TargetFramework)' == 'net8.0'" />
-    <PackageVersion Include="Microsoft.Build" Version="[17.14.28]" Condition="'$(TargetFramework)' == 'net9.0'" />
-    <PackageVersion Include="Microsoft.Build" Version="18.9.6"     Condition="'$(TargetFramework)' != 'net8.0' AND '$(TargetFramework)' != 'net9.0'" />
+    <PackageVersion Include="Microsoft.Build" Version="[18.9.6]" Condition="'$(TargetFramework)' == 'net10.0'" />
+    <PackageVersion Include="Microsoft.Build" Version="18.12.2"  Condition="'$(TargetFramework)' == 'net11.0'" />
+    <!--<PackageVersion Include="Microsoft.Build" Version="18.14.0-1.26563.116" Condition="'$(TargetFramework)' == 'net12.0'" />-->
   </ItemGroup>
 
   <PropertyGroup>
-    <RoslynVersion Condition="'$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0'">[5.6.0]</RoslynVersion>
     <RoslynVersion Condition="'$(TargetFramework)' == 'net10.0'">5.9.0</RoslynVersion>
-    <!-- Match the compiler required by the .NET 11 RC1 Razor source generator. -->
-    <RoslynVersion Condition="'$(TargetFramework)' == 'net11.0'">5.11.0-1.26425.128</RoslynVersion>
+    <RoslynVersion Condition="'$(TargetFramework)' == 'net11.0'">5.12.0</RoslynVersion>
+    <!--<RoslynVersion Condition="'$(TargetFramework)' == 'net12.0'">5.14.0-1.26563.116</RoslynVersion>-->
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net11.0'">
-    <!-- Only the .NET 11 preview needs the compiler packages from this feed. -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net12.0'">
+    <!-- Only the .NET 12 preview needs the compiler packages from this feed. -->
+    <!-- Available package versions: https://dev.azure.com/dnceng/public/_artifacts/feed/dotnet-tools/NuGet/Microsoft.CodeAnalysis/versions -->
     <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
   </PropertyGroup>
 
