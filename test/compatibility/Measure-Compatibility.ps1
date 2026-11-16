@@ -6,7 +6,7 @@ param(
     [Parameter(Mandatory)][string] $MatrixPath,
     [Parameter(Mandatory)][string] $OutputDirectory,
     [string] $NightlyPackage,
-    [ValidateSet('net8.0', 'net9.0', 'net10.0', 'net11.0')][string[]] $NightlyFrameworks = @('net10.0'),
+    [ValidateSet('net10.0', 'net11.0')][string[]] $NightlyFrameworks = @('net10.0'),
     [string] $NuGetConfig,
     [string] $StableVersion,
     [string] $StableVersionReason,

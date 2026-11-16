@@ -16,7 +16,7 @@ import { validateReport, renderReport, loadReport, createCaseSelection, caseLogU
 const now = Date.parse('2026-09-22T00:00:00Z')
 const sha = 'a'.repeat(40)
 const matrixConfig = JSON.parse(await readFile(new URL('./sdk-matrix.json', import.meta.url), 'utf8'))
-const sdkIndex = { 'releases-index': ['8.0', '9.0', '10.0', '11.0'].map(channel => ({
+const sdkIndex = { 'releases-index': ['10.0', '11.0'].map(channel => ({
   'channel-version': channel, 'latest-sdk': `${channel}.100${channel === '11.0' ? '-rc.1.123' : ''}`,
   'support-phase': channel === '11.0' ? 'go-live' : 'active',
 })) }
@@ -41,7 +41,7 @@ function multiToolReport(matrix = resolveMatrix(matrixConfig, sdkIndex)) {
   data.schemaVersion = 2
   data.toolTargets = [
     { channel: 'stable', framework: 'net10.0' },
-    ...['net8.0', 'net9.0', 'net10.0', 'net11.0'].map(framework => ({ channel: 'nightly', framework })),
+    ...['net10.0', 'net11.0'].map(framework => ({ channel: 'nightly', framework })),
   ]
   data.results = data.results.flatMap(row => data.toolTargets.filter(t => t.channel === row.channel).map(({ framework }) => ({
     ...row, toolFramework: framework, toolRuntimeTfm: framework,
@@ -356,15 +356,15 @@ test('resolves reviewed channels to exact SDKs, including previews and older pro
   assert.throws(() => resolveMatrix(config, { 'releases-index': [] }), /No exact SDK/)
 })
 
-test('validates and renders 20 distinct cases in matrix order with net10.0 tool runtimes', () => {
+test('validates and renders 12 distinct cases in matrix order with net10.0 tool runtimes', () => {
   const data = report(resolveMatrix(matrixConfig, sdkIndex))
-  assert.equal(data.results.length, 20)
+  assert.equal(data.results.length, 12)
   assert.equal(validateReport(data, data.source, now), data)
   const html = renderReport(data, now)
   const tables = [...html.matchAll(/<tbody>(.*?)<\/tbody>/gs)]
   assert.equal(tables.length, 1)
   const rows = [...tables[0][1].matchAll(/<tr>(.*?)<\/tr>/gs)].map(match => match[1])
-  assert.equal(rows.length, 5)
+  assert.equal(rows.length, 3)
   data.matrix.forEach((target, i) => {
     assert.ok(rows[i].includes(`<code>${target.sdk}</code><span>${target.projectTfm}</span>`))
     const indices = [...rows[i].matchAll(/data-case-index="(\d+)"/g)].map(match => Number(match[1]))
@@ -375,37 +375,37 @@ test('validates and renders 20 distinct cases in matrix order with net10.0 tool 
   for (const name of ['Stable &amp; Basic', 'Stable &amp; Razor', 'Nightly &amp; Basic', 'Nightly &amp; Razor']) assert.match(html, new RegExp(`<strong>${name}</strong><span class="compatibility-tool">`))
   assert.equal((html.match(/2.80.1 &amp; net10.0<\/span>/g) ?? []).length, 2)
   assert.equal((html.match(/2.80.2-preview.1 &amp; net10.0<\/span>/g) ?? []).length, 2)
-  assert.match(html, /<strong>20 passed<\/strong> · 0 incompatible<\/p>/)
+  assert.match(html, /<strong>12 passed<\/strong> · 0 incompatible<\/p>/)
 })
 
-test('validates and renders all 50 cases across four nightly tool targets', async () => {
+test('validates and renders all 18 cases across two nightly tool targets', async () => {
   const data = multiToolReport()
-  assert.equal(data.results.length, 50)
+  assert.equal(data.results.length, 18)
   assert.equal(validateReport(data, data.source, now), data)
   assert.equal(await latestReport(adapter(), async () => data, matrixConfig.channels), data)
   const html = renderReport(data, now)
   const rows = [...html.matchAll(/<tbody>(.*?)<\/tbody>/gs)][0][1].matchAll(/<tr>(.*?)<\/tr>/gs)
   for (const [i, row] of [...rows].entries()) {
     const indices = [...row[1].matchAll(/data-case-index="(\d+)"/g)].map(match => Number(match[1]))
-    assert.equal(indices.length, 10)
+    assert.equal(indices.length, 6)
     assert.ok(indices.every(index => data.results[index].sdk === data.matrix[i].sdk && data.results[index].projectTfm === data.matrix[i].projectTfm))
-    assert.equal(new Set(indices.map(index => `${data.results[index].channel}/${data.results[index].toolFramework}/${data.results[index].scenario}`)).size, 10)
+    assert.equal(new Set(indices.map(index => `${data.results[index].channel}/${data.results[index].toolFramework}/${data.results[index].scenario}`)).size, 6)
   }
   for (const { channel, framework } of data.toolTargets) {
     const version = channel === 'stable' ? '2.80.1' : '2.80.2-preview.1'
     assert.equal(html.split(`${version} &amp; ${framework}</span>`).length - 1, 2)
   }
-  assert.equal((html.match(/data-case-index=/g) ?? []).length, 50)
+  assert.equal((html.match(/data-case-index=/g) ?? []).length, 18)
 })
 
 test('requires each requested tool target and rejects fallback runtimes and mixed package bytes', () => {
-  for (const framework of ['net8.0', 'net9.0', 'net10.0', 'net11.0']) {
+  for (const framework of ['net10.0', 'net11.0']) {
     const complete = multiToolReport()
     const index = complete.results.findIndex(r => r.channel === 'nightly' && r.toolFramework === framework)
     for (const mutate of [
       r => r.results.splice(index, 1),
       r => { r.results[index] = r.results.find(row => row.channel === 'nightly' && row.toolFramework !== framework) },
-      r => { r.results[index].toolRuntimeTfm = framework === 'net8.0' ? 'net10.0' : 'net8.0' },
+      r => { r.results[index].toolRuntimeTfm = framework === 'net10.0' ? 'net11.0' : 'net10.0' },
       r => { r.results[index].packageSha256 = 'c'.repeat(64) },
       r => { r.results[index].toolVersion = '2.80.3-preview.1' },
     ]) {
@@ -424,22 +424,22 @@ test('requires each requested tool target and rejects fallback runtimes and mixe
 
 test('trusted retrieval rejects an omitted nightly target while bounded local reports remain valid', async () => {
   const data = multiToolReport()
-  data.toolTargets = data.toolTargets.filter(t => t.framework !== 'net9.0')
-  data.results = data.results.filter(r => r.toolFramework !== 'net9.0')
+  data.toolTargets = data.toolTargets.filter(t => t.framework !== 'net11.0')
+  data.results = data.results.filter(r => r.toolFramework !== 'net11.0')
   assert.equal(validateReport(data, undefined, now), data)
   await assert.rejects(latestReport(adapter(), async () => data, matrixConfig.channels), /reviewed tool framework matrix/)
 })
 
 test('failed tool installations retain their requested framework in the report and headers', () => {
   const data = multiToolReport()
-  for (const row of data.results.filter(r => r.channel === 'nightly' && ['net8.0', 'net9.0'].includes(r.toolFramework))) {
+  for (const row of data.results.filter(r => r.channel === 'nightly' && ['net10.0', 'net11.0'].includes(r.toolFramework))) {
     row.toolRuntimeTfm = null; row.toolVersion = null; row.packageSha256 = null; row.outcome = 'infrastructure-error'
   }
   assert.equal(validateReport(data, data.source, now), data)
   const html = renderReport(data, now)
-  for (const framework of ['net8.0', 'net9.0']) assert.equal(html.split(`Not measured &amp; ${framework}</span>`).length - 1, 2)
-  assert.equal((html.match(/data-case-index=/g) ?? []).length, 50)
-  assert.equal((html.match(/data-outcome="infrastructure-error"/g) ?? []).length, 20)
+  for (const framework of ['net10.0', 'net11.0']) assert.equal(html.split(`Not measured &amp; ${framework}</span>`).length - 1, 2)
+  assert.equal((html.match(/data-case-index=/g) ?? []).length, 18)
+  assert.equal((html.match(/data-outcome="infrastructure-error"/g) ?? []).length, 12)
 })
 
 test('each net11.0 observation is required and cannot be replaced with the SDK 11 net10.0 row', async () => {
@@ -454,20 +454,20 @@ test('each net11.0 observation is required and cannot be replaced with the SDK 1
     const replaced = structuredClone(complete)
     const row = replaced.results[index]
     replaced.results[index] = replaced.results.find(r => r.sdk === row.sdk && r.projectTfm === 'net10.0' && r.channel === row.channel && r.scenario === row.scenario)
-    assert.equal(replaced.results.length, 20)
+    assert.equal(replaced.results.length, 12)
     assert.throws(() => validateReport(replaced, replaced.source, now), /Unexpected or duplicate result/)
     await assert.rejects(latestReport(adapter(), async () => replaced, matrixConfig.channels), /Unexpected or duplicate result/)
   }
 })
 
-test('trusted retrieval requires all five reviewed pairs while older 16-row evidence remains renderable', async () => {
+test('trusted retrieval requires all three reviewed pairs while older 8-row evidence remains renderable', async () => {
   const data = report(resolveMatrix(matrixConfig, sdkIndex))
   assert.equal(await latestReport(adapter(), async () => data, matrixConfig.channels), data)
   data.matrix = data.matrix.filter(t => t.projectTfm !== 'net11.0')
   data.results = data.results.filter(r => r.projectTfm !== 'net11.0')
-  assert.equal(data.results.length, 16)
+  assert.equal(data.results.length, 8)
   assert.equal(validateReport(data, undefined, now), data)
-  assert.equal([...renderReport(data, now).matchAll(/data-outcome="passed"/g)].length, 16)
+  assert.equal([...renderReport(data, now).matchAll(/data-outcome="passed"/g)].length, 8)
   await assert.rejects(latestReport(adapter(), async () => data, matrixConfig.channels), /reviewed SDK channel matrix/)
 })
 
@@ -624,7 +624,7 @@ test('archive, prepare and HTTP selection cannot mix logs across website replace
     assert.match(oldStates.at(-1).error, /404/)
     assert.equal(oldStates.at(-1).row.outcome, 'passed')
     assert.equal(newStates.at(-1).phase, 'ready')
-    assert.equal((await readdir(join(site, 'logs'))).length, 20)
+    assert.equal((await readdir(join(site, 'logs'))).length, 12)
   } finally {
     for (const selection of selections) selection.dispose()
     await new Promise(resolve => server.close(resolve))
@@ -691,7 +691,7 @@ test('trusted fetch exports the selected archive while temporary-branch evidence
     for (attempt of [1, 2]) {
       await main(['fetch', output])
       assert.deepEqual(await readFile(output), original)
-      assert.equal((await readdir(join(temp, 'site', 'logs'))).length, 20)
+      assert.equal((await readdir(join(temp, 'site', 'logs'))).length, 12)
     }
     branch = 'temporary-validation'
     await main(['fetch', output])

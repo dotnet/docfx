@@ -24,8 +24,6 @@ runs:
       dotnet-version: |
         11.x
         10.x
-        9.x
-        8.x
 
   - uses: actions/cache@v6
     if: inputs.cache == 'true'

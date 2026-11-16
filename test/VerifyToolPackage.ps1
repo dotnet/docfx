@@ -6,7 +6,7 @@ param(
     [Parameter(Mandatory)]
     [string] $PackagePath,
     [string] $PublishDirectory,
-    [string[]] $Frameworks = @('net8.0', 'net9.0', 'net10.0')
+    [string[]] $Frameworks = @('net10.0', 'net11.0')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -90,7 +90,7 @@ try {
     if ($duplicateTemplates.Count -ne 0) {
         $errors.Add("Found $($duplicateTemplates.Count) framework-specific template entries.")
     }
-    foreach ($framework in @('net8.0', 'net9.0', 'net10.0')) {
+    foreach ($framework in @('net10.0', 'net11.0')) {
         $entry = $archive.GetEntry("tools/$framework/any/docfx.runtimeconfig.json")
         if ($null -eq $entry) {
             $errors.Add("Missing runtime configuration for $framework.")

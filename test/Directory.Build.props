@@ -15,15 +15,10 @@
   </PropertyGroup>
 
   <!-- Configure `Microsoft.Testing.Platform` mode behaviors (https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-platform-integration-dotnet-test)-->
-
-  <!-- Following settings are required for .NET 9 SDK and earlier -->
-  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0' OR '$(TargetFramework)'=='net8.0'">
+  <PropertyGroup>
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
     <TestingPlatformCaptureOutput>false</TestingPlatformCaptureOutput>
     <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <!-- Use `Microsoft.Testing.Platform` entrypoint -->
     <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
   </PropertyGroup>
