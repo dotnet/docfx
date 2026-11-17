@@ -93,18 +93,7 @@ public static class MarkupUtility
                 var file = path.GetPathFromWorkingFolder();
                 if (sourceFiles.ContainsKey(file))
                 {
-                    string anchorInHref;
-                    if (!string.IsNullOrEmpty(anchor) &&
-                        string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
-                    {
-                        anchorInHref = anchor;
-                    }
-                    else
-                    {
-                        anchorInHref = null;
-                    }
-
-                    link.Value = file.UrlEncode() + anchorInHref;
+                    link.Value = file.UrlEncode() + anchor;
                 }
 
                 if (!fileLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))

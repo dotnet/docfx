@@ -675,6 +675,44 @@ exports.getOptions = function (){
     }
 
     [Fact]
+    public void TestBuildKeepsQueryAndFragmentOfSrc()
+    {
+        #region Prepare test data
+        var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
+
+        CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
+
+        var conceptualFile = CreateFile("test.md",
+            [
+                "# Hello World",
+                "Test image: ![image 1](../" + resourceFile + "#gh-dark-mode-only)",
+                "Test image: ![image 2](../" + resourceFile + "?v=2#gh-dark-mode-only)",
+                "Test video: <video src=\"../" + resourceFile + "#t=10\"></video>",
+                "Test link: [link](../" + resourceFile + "#page=5)",
+            ],
+            _inputFolder);
+
+        FileCollection files = new(Directory.GetCurrentDirectory());
+        files.Add(DocumentType.Article, new[] { conceptualFile });
+        files.Add(DocumentType.Resource, new[] { resourceFile });
+        #endregion
+
+        BuildDocument(files, new Dictionary<string, object>(), templateFolder: _templateFolder);
+
+        var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
+        Assert.Equal(
+            string.Join(
+                "\n",
+                "",
+                $"<p>Test image: <img src=\"../{resourceFile}#gh-dark-mode-only\" alt=\"image 1\">",
+                $"Test image: <img src=\"../{resourceFile}?v=2#gh-dark-mode-only\" alt=\"image 2\">",
+                $"Test video: <video src=\"../{resourceFile}#t=10\"></video>",
+                $"Test link: <a href=\"../{resourceFile}#page=5\">link</a></p>",
+                ""),
+            File.ReadAllText(conceptualOutputPath));
+    }
+
+    [Fact]
     public void TestBuildWithInvalidPathWithTokenAndMapping()
     {
         #region Prepare test data
