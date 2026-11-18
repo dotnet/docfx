@@ -95,5 +95,6 @@
   },
   "rules": {
     "InvalidCref": "info"
-  }
+  },
+  "assemblyUids": [ "MyLib", "MyLib.Tools" ]
 }

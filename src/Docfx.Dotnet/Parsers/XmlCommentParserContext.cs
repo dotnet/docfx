@@ -13,5 +13,11 @@ internal class XmlCommentParserContext
 
     public Func<string, string> ResolveCode { get; init; }
 
+    /// <summary>
+    /// Resolves the assembly component of the UID of the API a cref points to, or <see langword="null"/>
+    /// when that API isn't qualified by an assembly.
+    /// </summary>
+    public Func<string, string> ResolveAssemblyUid { get; init; }
+
     public SourceDetail Source { get; init; }
 }

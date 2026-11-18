@@ -57,7 +57,20 @@ class XrefInlineShortParser : InlineParser
             }
 
             var nextChar = slice.PeekCharExtra(1);
-            if (ContinuableCharacters.Contains(c) && (nextChar.IsWhiteSpaceOrZero() || StopCharacters.Contains(nextChar) || ContinuableCharacters.Contains(nextChar)))
+
+            // `::` separates the assembly component of a .NET UID from the namespace qualified name, as in
+            // `@MyLib.Tools::MyLib.Tools.Widget`. Both colons are continuable characters, so without this
+            // the UID would end at the first one. It only continues while something follows the pair.
+            if (c == ':' && nextChar == ':' && ContinuesUid(slice.PeekCharExtra(2)))
+            {
+                href.Append(c);
+                href.Append(nextChar);
+                slice.NextChar();
+                c = slice.NextChar();
+                continue;
+            }
+
+            if (ContinuableCharacters.Contains(c) && !ContinuesUid(nextChar))
             {
                 break;
             }
@@ -82,6 +95,11 @@ class XrefInlineShortParser : InlineParser
         processor.Inline = xrefInline;
 
         return true;
+
+        static bool ContinuesUid(char c)
+        {
+            return !c.IsWhiteSpaceOrZero() && !StopCharacters.Contains(c) && !ContinuableCharacters.Contains(c);
+        }
     }
 
     private static bool MatchXrefShortcutWithQuote(InlineProcessor processor, ref StringSlice slice)

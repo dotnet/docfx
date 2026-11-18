@@ -11,7 +11,9 @@ internal class RoslynFilterData
     {
         return new SymbolFilterData
         {
-            Id = VisitorHelper.GetId(symbol),
+            // Filter rules are written against the actual API surface, so they see the id
+            // without the prefix configured by `assemblyUidPrefixes`/`uidPrefix`.
+            Id = VisitorHelper.GetRawId(symbol),
             Kind = GetExtendedSymbolKindFromSymbol(symbol),
             Attributes = symbol.GetAttributes().Select(GetAttributeFilterData)
         };
@@ -21,7 +23,7 @@ internal class RoslynFilterData
     {
         return new AttributeFilterData
         {
-            Id = VisitorHelper.GetId(attribute.AttributeClass),
+            Id = VisitorHelper.GetRawId(attribute.AttributeClass),
             ConstructorArguments = attribute.ConstructorArguments.Select(GetLiteralString).ToList(),
             ConstructorNamedArguments = attribute.NamedArguments.ToDictionary(pair => pair.Key, pair => GetLiteralString(pair.Value))
         };
@@ -91,7 +93,7 @@ internal class RoslynFilterData
 
             if (name != null)
             {
-                return $"{VisitorHelper.GetId(namedType)}.{name}";
+                return $"{VisitorHelper.GetRawId(namedType)}.{name}";
             }
 
             // todo : define filter data format (language neutral), just use number for combine case by now.
@@ -115,7 +117,7 @@ internal class RoslynFilterData
         var value = constant.Value;
         if (value is ISymbol)
         {
-            return VisitorHelper.GetId(constant.Value as ISymbol);
+            return VisitorHelper.GetRawId(constant.Value as ISymbol);
         }
 
         return value?.ToString() ?? "null";

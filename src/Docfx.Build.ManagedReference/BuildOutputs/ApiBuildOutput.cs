@@ -89,6 +89,15 @@ public class ApiBuildOutput
     [JsonPropertyName("namespace")]
     public ApiReferenceBuildOutput NamespaceName { get; set; }
 
+    /// <summary>
+    /// The assembly to name on the page of this namespace, set only when <c>assemblyLabel</c> asks for it.
+    /// The namespace partials render it, so it has to be carried over from the view model.
+    /// </summary>
+    [YamlMember(Alias = "namespaceAssembly")]
+    [JsonProperty("namespaceAssembly")]
+    [JsonPropertyName("namespaceAssembly")]
+    public string NamespaceAssembly { get; set; }
+
     [YamlMember(Alias = "summary")]
     [JsonProperty("summary")]
     [JsonPropertyName("summary")]
@@ -250,6 +259,7 @@ public class ApiBuildOutput
             Documentation = model.Documentation,
             AssemblyNameList = model.AssemblyNameList,
             NamespaceName = ApiBuildOutputUtility.GetReferenceViewModel(model.NamespaceName, references, model.SupportedLanguages),
+            NamespaceAssembly = model.NamespaceAssembly,
             Summary = model.Summary,
             AdditionalNotes = model.AdditionalNotes,
             Remarks = model.Remarks,
