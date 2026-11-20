@@ -214,6 +214,13 @@ internal static class DocumentBuilderWrapper
                     {
                         p.VersionDir = gi.Destination;
                     }
+
+                    // Apply group metadata to every file built in this group.
+                    // It overrides global metadata and can be overridden by file-level metadata.
+                    foreach (var (key, value) in gi.Metadata)
+                    {
+                        p.Metadata = p.Metadata.SetItem(key, value);
+                    }
                 }
             }
             p.Files = GetFileCollectionFromFileMapping(
