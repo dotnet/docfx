@@ -91,7 +91,7 @@ Controls the source for the PDF Table of Contents. Possible values:
 - `toc` (default): Generates TOC from the `toc.yml` structure.
 - `headings`: Generates TOC from headings (h1, h2, h3, etc.) extracted from document content.
 
-When set to `headings`, the TOC reflects the actual heading structure within each document rather than the navigation defined in `toc.yml`. This is useful for single-document or small documentation sets where you want the PDF TOC to show the internal sections of each document.
+When set to `headings`, the TOC reflects the actual heading structure within each document rather than the navigation defined in `toc.yml`. This is useful for single-document or small documentation sets where you want the PDF TOC to show the internal sections of each document. Only headings the page shows are listed: not those of a tab that is not selected, which the PDF does not print either.
 
 ```yaml
 pdf: true
