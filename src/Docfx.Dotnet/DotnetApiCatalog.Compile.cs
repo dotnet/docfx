@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Reflection.PortableExecutable;
+using System.Text.Json;
 using Docfx.Common;
 using Docfx.Exceptions;
 using Microsoft.Build.Construction;
@@ -63,9 +64,11 @@ partial class DotnetApiCatalog
             foreach (var solution in solutionFiles.Select(s => s.NormalizedPath))
             {
                 Logger.LogInfo($"Loading solution {solution}");
+                var filtered = GetSolutionFilterProjects(solution);
                 foreach (var project in SolutionFile.Parse(solution).ProjectsInOrder)
                 {
                     if (project.ProjectType is SolutionProjectType.KnownToBeMSBuildFormat &&
+                        (filtered is null || filtered.Contains(Path.GetFullPath(project.AbsolutePath))) &&
                         await LoadCompilationFromProject(project.AbsolutePath) is { } compilation)
                     {
                         projectCompilations.Add(compilation);
@@ -193,5 +196,30 @@ partial class DotnetApiCatalog
 
             return await project.GetCompilationAsync();
         }
+    }
+
+    /// <summary>
+    /// The projects a solution filter (<c>.slnf</c>) builds, or null for a solution. <c>SolutionFile.Parse</c> reads a
+    /// filter, but lists every project of its solution, and the filter's own check is not public. As MSBuild does, the
+    /// filter's paths are relative to the solution.
+    /// </summary>
+    private static HashSet<string>? GetSolutionFilterProjects(string path)
+    {
+        if (!path.EndsWith(".slnf", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        using var filter = JsonDocument.Parse(
+            File.ReadAllText(path),
+            new() { AllowTrailingCommas = true, CommentHandling = JsonCommentHandling.Skip });
+        var solution = filter.RootElement.GetProperty("solution");
+        var solutionPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, FixSeparators(solution.GetProperty("path").GetString()!));
+        var solutionFolder = Path.GetDirectoryName(Path.GetFullPath(solutionPath))!;
+        return solution.GetProperty("projects").EnumerateArray()
+            .Select(project => Path.GetFullPath(Path.Combine(solutionFolder, FixSeparators(project.GetString()!))))
+            .ToHashSet(FilePathComparer.OSPlatformSensitiveComparer);
+
+        static string FixSeparators(string path) => path.Replace('\\', Path.DirectorySeparatorChar);
     }
 }
