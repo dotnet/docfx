@@ -447,14 +447,14 @@ Specifies an optional set of MSBuild properties used when interpreting project f
   "metadata": [
     {
       "properties": {
-          "TargetFramework": "netstandard2.0"
+          "Configuration": "Debug"
       }
     }
   ]
 }
 ```
 > [!Note]
-> Make sure to specify `"TargetFramework": <one of the frameworks>` in your docfx.json when the project is targeting for multiple platforms.
+> MSBuild applies these properties to every project it loads, including the projects referenced by the ones being documented. A `TargetFramework` property chooses which framework of a multi-targeted project is documented, but also loads the projects it references for that framework; see [Projects that target multiple frameworks](../docs/dotnet-api-docs.md#projects-that-target-multiple-frameworks).
 
 > [!Note]
 > When generating metadata from source code files.
