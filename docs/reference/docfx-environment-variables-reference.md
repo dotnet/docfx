@@ -26,7 +26,7 @@ This setting is intended to be used on offline environment.
 
 ## `DOCFX_PDF_TIMEOUT`
 
-Maximum time in milliseconds to override the default [Playwright timeout](https://playwright.dev/docs/api/class-browsercontext#browser-context-set-default-timeout) for PDF generation.
+Maximum time in milliseconds to override the default [Playwright timeout](https://playwright.dev/docs/api/class-browsercontext#browser-context-set-default-timeout) for PDF generation. After a page timed out loading, it is also how long the PDF waits for each of the page's answers, 30 seconds by default, before it leaves the page out; `0` waits without a timeout.
 
 ## `PLAYWRIGHT_NODEJS_PATH`
 
