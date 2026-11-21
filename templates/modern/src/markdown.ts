@@ -451,10 +451,28 @@ function renderTabs() {
   }
 
   function updateTabStyle() {
-    document.querySelectorAll('div.tabGroup>ul').forEach(e => e.classList.add('nav', 'nav-tabs'))
+    document.querySelectorAll('div.tabGroup>ul').forEach(e => e.classList.add('nav', 'nav-tabs', 'd-print-none'))
     document.querySelectorAll('div.tabGroup>ul>li').forEach(e => e.classList.add('nav-item'))
     document.querySelectorAll('div.tabGroup>ul>li>a').forEach(e => e.classList.add('nav-link'))
     document.querySelectorAll('div.tabGroup>section').forEach(e => e.classList.add('card'))
+    // Create hidden tab nav that show up when printing
+    const parser = new DOMParser()
+    document.querySelectorAll('div.tabGroup').forEach(e => {
+      const navigation = e.querySelector('ul')
+      const sections = e.getElementsByTagName('section')
+      for (let i = 0; i < sections.length; i++) {
+        const newNav = e.insertBefore(parser.parseFromString(navigation.outerHTML, 'text/html').body.firstElementChild, sections[i])
+        console.log(newNav)
+        newNav.classList.remove('d-print-none')
+        newNav.classList.add('d-none', 'd-print-flex')
+        for (let j = 0; j < newNav.children.length; j++) {
+          newNav.children[j].firstElementChild.classList.remove('active')
+          if (j === i) {
+            newNav.children[j].firstElementChild.classList.add('active')
+          }
+        }
+      }
+    })
   }
 
   function notifyContentUpdated() {
