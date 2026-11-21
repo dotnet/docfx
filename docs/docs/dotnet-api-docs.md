@@ -150,22 +150,32 @@ To troubleshoot MSBuild load problems, run `docfx metadata --logLevel verbose` t
 
 Docfx build the project using `Release` config by default, additional MSBuild properties can be specified with `properties`.
 
-If your project targets multiple target frameworks, docfx internally builds each target framework of the project. Try specify the `TargetFramework` MSBuild property to speed up project build:
+### Projects that target multiple frameworks
+
+When a project targets multiple frameworks, docfx loads every one of them but documents only one: the first framework in `TargetFrameworks`.
+
+The `TargetFramework` MSBuild property in [`properties`](../reference/docfx-json-reference.md#properties) documents another framework, and loads only that one, which is faster:
 
 ```json
 {
-  "metadata": {
-    "src": [{
-      "files": ["**/bin/Release/**.dll"],
-      "src": "../"
-    }],
-    "dest": "api",
-    "properties": {
-      "TargetFramework": "net8.0"
+  "metadata": [
+    {
+      "src": [{
+        "files": ["src/MyLib/MyLib.csproj"],
+        "src": "../"
+      }],
+      "dest": "api",
+      "properties": {
+        "TargetFramework": "net8.0"
+      }
     }
-  },
+  ]
 }
 ```
+
+MSBuild applies a global property to every project it loads, though, including the projects the documented ones reference. A project that references a `netstandard2.0` library then loads that library for `net8.0` as well, which no longer matches the reference MSBuild resolved for it: docfx logs `Found project reference without a matching metadata reference` and `Unresolved metadata reference removed from project`, and drops the reference, so links to the library's types are lost. A library that cannot build for that framework fails to load. To keep a referenced project at its own framework, add `TreatAsLocalProperty="TargetFramework"` to its `<Project>` element.
+
+`properties` have no effect on assemblies: when the input is `.dll` files, list the ones built for the framework to document.
 
 ## Generate from source code
 
