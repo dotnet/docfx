@@ -163,6 +163,65 @@ public class PdfTest : TestBase
         }
     }
 
+    [Fact]
+    public async Task HeadingsTocLeavesOutTheHeadingsOfATabThatIsNotSelected()
+    {
+        var directory = GetRandomFolder();
+        var configPath = CreateFile("docfx.json",
+            """
+            {
+                "build": {
+                    "content": [{ "files": [ "*.md", "toc.yml" ] }],
+                    "template": ["default"],
+                    "dest": "_site"
+                }
+            }
+            """, directory);
+        CreateFile("toc.yml",
+            """
+            pdf: true
+            pdfTocPage: true
+            pdfTocSource: headings
+            items:
+            - name: Setup
+              href: setup.md
+            """, directory);
+        CreateFile("setup.md",
+            """
+            # Setup
+
+            ## Before the tabs
+
+            # [Windows](#tab/windows)
+
+            ## On Windows
+
+            Windows text.
+
+            # [Linux](#tab/linux)
+
+            ## On Linux
+
+            Linux text.
+
+            ---
+
+            ## After the tabs
+            """, directory);
+
+        await Docset.Build(configPath);
+        await Docset.Pdf(configPath);
+
+        using var pdf = PdfDocument.Open(Path.Combine(directory, "_site", "toc.pdf"));
+        var toc = pdf.GetPage(1).Text;
+        Assert.Contains("Before the tabs", toc);
+        Assert.Contains("On Windows", toc);
+        Assert.Contains("After the tabs", toc);
+        // the tab that is not selected is hidden, and not printed either
+        Assert.DoesNotContain("On Linux", toc);
+        Assert.All(pdf.GetPages(), page => Assert.DoesNotContain("On Linux", page.Text));
+    }
+
     private static void AssertPageDestination(PdfDocument pdf, ExplicitDestination destination, int pageNumber)
     {
         Assert.Equal(pageNumber, destination.PageNumber);
