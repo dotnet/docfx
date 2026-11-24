@@ -111,3 +111,10 @@ pre {
     border-top-right-radius: 0;
   }
 }
+
+@media print {
+  div.tabGroup > section {
+    display: flex !important;
+    margin-bottom: 1rem;
+  }
+}
