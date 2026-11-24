@@ -19,6 +19,21 @@ namespace Docfx.Tests;
 [Collection("docfx STA")]
 public class PdfTest : TestBase
 {
+    [Fact]
+    public async Task APageThatDoesNotAnswerIsGivenUpOn()
+    {
+        // as a page whose own script keeps it busy answers nothing, which Playwright waits for without a timeout
+        var never = new TaskCompletionSource<string>();
+        var (answered, answer) = await PdfBuilder.WaitOrGiveUp(never.Task, TimeSpan.FromMilliseconds(10), CancellationToken.None);
+        Assert.False(answered);
+        Assert.Null(answer);
+        // failing once given up on, as when the page is closed, says nothing
+        never.SetException(new InvalidOperationException("closed"));
+
+        Assert.Equal((true, "state"), await PdfBuilder.WaitOrGiveUp(Task.FromResult("state"), TimeSpan.FromMilliseconds(10), CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => PdfBuilder.WaitOrGiveUp(Task.FromException<string>(new InvalidOperationException()), TimeSpan.FromSeconds(1), CancellationToken.None));
+    }
+
     [Theory]
     [InlineData(null, null)]
     [InlineData(false, false)]
