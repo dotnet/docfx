@@ -125,7 +125,7 @@ static class PdfBuilder
         baseUrl = new Uri(app.Urls.First());
 
         using var playwright = await Playwright.CreateAsync();
-        await using var browser = await playwright.Chromium.LaunchAsync();
+        await using var browser = await playwright.Chromium.LaunchAsync(new() { Args = GetBrowserArgs(baseUrl) });
         await using var context = await browser.NewContextAsync(new() { UserAgent = "docfx/pdf" });
 
         if (Environment.GetEnvironmentVariable("DOCFX_PDF_TIMEOUT") is { } timeout)
@@ -401,6 +401,17 @@ static class PdfBuilder
             }
 
         }
+    }
+
+    /// <summary>
+    /// The arguments Chromium is launched with to print the pages <paramref name="baseUrl"/> serves.
+    /// </summary>
+    internal static string[] GetBrowserArgs(Uri baseUrl)
+    {
+        // The server listens on a port the system picks, from a range that starts as low as 1025 on some machines
+        // (`netsh int ipv4 show dynamicport tcp` on Windows). Chromium refuses to load from the ports it restricts
+        // in that range, such as 1723 or 6000 (`kRestrictedPorts` in net/base/port_util.cc), unless they are allowed.
+        return [$"--explicitly-allowed-ports={baseUrl.Port}"];
     }
 
     static async Task CreatePdf(
