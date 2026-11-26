@@ -85,11 +85,11 @@ jobs:
         disable_search: true
 
     - run: npm i -g @percy/cli
-      if: matrix.os == 'ubuntu-latest' && matrix.framework == 'net10.0'
+      if: matrix.os == 'ubuntu-latest' && matrix.framework == 'net11.0'
 
     - name: Percy snapshots
-      if: matrix.os == 'ubuntu-latest' && matrix.framework == 'net10.0'
-      run: percy exec -- dotnet run --project test/docfx.Snapshot.Tests/docfx.Snapshot.Tests.csproj -c Release -f net10.0 --no-build -- --filter-trait Stage=Percy
+      if: matrix.os == 'ubuntu-latest' && matrix.framework == 'net11.0'
+      run: percy exec -- dotnet run --project test/docfx.Snapshot.Tests/docfx.Snapshot.Tests.csproj -c Release -f net11.0 --no-build -- --filter-trait Stage=Percy
       env:
         PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
         PERCY_TESTS: 'true'

@@ -4,21 +4,21 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="HtmlAgilityPack" Version="1.13.0" />
-    <PackageVersion Include="ICSharpCode.Decompiler" Version="11.1.0.9782" />
-    <PackageVersion Include="Jint" Version="4.16.3" />
+    <PackageVersion Include="HtmlAgilityPack" Version="1.13.1" />
+    <PackageVersion Include="ICSharpCode.Decompiler" Version="11.2.0.10050" />
+    <PackageVersion Include="Jint" Version="4.18.1" />
     <PackageVersion Include="JsonSchema.Net" Version="[8.0.5]" />
-    <PackageVersion Include="Markdig" Version="1.4.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.63.0" />
+    <PackageVersion Include="Markdig" Version="1.6.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.65.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="OneOf" Version="3.0.271" />
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.271" />
     <PackageVersion Include="PdfPig" Version="0.1.16" />
     <PackageVersion Include="PlantUml.Net" Version="1.4.80" />
     <PackageVersion Include="Spectre.Console" Version="0.57.2" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.57.2" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
-    <PackageVersion Include="System.Composition" Version="10.0.12" />
+    <PackageVersion Include="System.Composition" Version="11.0.0" />
     <PackageVersion Include="YamlDotNet" Version="18.1.0" />
   </ItemGroup>
 
@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <RoslynVersion Condition="'$(TargetFramework)' == 'net10.0'">5.9.0</RoslynVersion>
+    <RoslynVersion Condition="'$(TargetFramework)' == 'net10.0'">[5.9.0]</RoslynVersion>
     <RoslynVersion Condition="'$(TargetFramework)' == 'net11.0'">5.12.0</RoslynVersion>
     <!--<RoslynVersion Condition="'$(TargetFramework)' == 'net12.0'">5.14.0-1.26563.116</RoslynVersion>-->
   </PropertyGroup>

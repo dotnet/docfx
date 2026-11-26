@@ -3,15 +3,13 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
-  <!-- Settings to enable `dotnet test` with .NET 10 tfm only -->
-  <PropertyGroup Condition="'$(TargetFramework)' != 'net10.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
     <IsTestProject>false</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Playwright" />
-    <PackageReference Include="Verify.DiffPlex" />
     <PackageReference Include="Verify.XunitV3" />
   </ItemGroup>
 

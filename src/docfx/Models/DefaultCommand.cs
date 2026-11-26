@@ -20,7 +20,7 @@ class DefaultCommand : Command<DefaultCommand.Options>
         public bool Version { get; set; }
     }
 
-    protected override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
+    public override int Execute(CommandContext context, Options options, CancellationToken cancellationToken)
     {
         if (options.Version)
         {
