@@ -1,0 +1,690 @@
+﻿{
+  "uid": "CSharp15",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inClass": true,
+      "typePropertyName": "inClass",
+      "id": "classes",
+      "children": [
+        {
+          "uid": "CSharp15.Bird",
+          "isExtensionMethod": false,
+          "href": "CSharp15.Bird.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Bird"
+            },
+            {
+              "lang": "vb",
+              "value": "Bird"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Bird"
+            },
+            {
+              "lang": "vb",
+              "value": "Bird"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp15.Bird"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp15.Bird"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp15.Bird\" text=\"Bird\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp15.Bird\" text=\"Bird\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp15_Bird",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp15.Cat",
+          "isExtensionMethod": false,
+          "href": "CSharp15.Cat.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Cat"
+            },
+            {
+              "lang": "vb",
+              "value": "Cat"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Cat"
+            },
+            {
+              "lang": "vb",
+              "value": "Cat"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp15.Cat"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp15.Cat"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp15.Cat\" text=\"Cat\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp15.Cat\" text=\"Cat\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp15_Cat",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp15.Closed",
+          "isExtensionMethod": false,
+          "href": "CSharp15.Closed.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Closed"
+            },
+            {
+              "lang": "vb",
+              "value": "Closed"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Closed"
+            },
+            {
+              "lang": "vb",
+              "value": "Closed"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp15.Closed"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp15.Closed"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp15.Closed\" text=\"Closed\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp15.Closed\" text=\"Closed\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp15_Closed",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp15.Dog",
+          "isExtensionMethod": false,
+          "href": "CSharp15.Dog.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Dog"
+            },
+            {
+              "lang": "vb",
+              "value": "Dog"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Dog"
+            },
+            {
+              "lang": "vb",
+              "value": "Dog"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp15.Dog"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp15.Dog"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp15.Dog\" text=\"Dog\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp15.Dog\" text=\"Dog\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp15_Dog",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp15.GateState",
+          "isExtensionMethod": false,
+          "parent": "CSharp15",
+          "href": "CSharp15.GateState.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "GateState"
+            },
+            {
+              "lang": "vb",
+              "value": "GateState"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "GateState"
+            },
+            {
+              "lang": "vb",
+              "value": "GateState"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp15.GateState"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp15.GateState"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp15.GateState\" text=\"GateState\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp15.GateState\" text=\"GateState\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp15_GateState",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp15.Open",
+          "isExtensionMethod": false,
+          "href": "CSharp15.Open.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Open"
+            },
+            {
+              "lang": "vb",
+              "value": "Open"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Open"
+            },
+            {
+              "lang": "vb",
+              "value": "Open"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp15.Open"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp15.Open"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp15.Open\" text=\"Open\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp15.Open\" text=\"Open\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp15_Open",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp15.SequenceIndexer",
+          "isExtensionMethod": false,
+          "href": "CSharp15.SequenceIndexer.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "SequenceIndexer"
+            },
+            {
+              "lang": "vb",
+              "value": "SequenceIndexer"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "SequenceIndexer"
+            },
+            {
+              "lang": "vb",
+              "value": "SequenceIndexer"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp15.SequenceIndexer"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp15.SequenceIndexer"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp15.SequenceIndexer\" text=\"SequenceIndexer\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp15.SequenceIndexer\" text=\"SequenceIndexer\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp15_SequenceIndexer",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inStruct": true,
+      "typePropertyName": "inStruct",
+      "id": "structs",
+      "children": [
+        {
+          "uid": "CSharp15.Pet",
+          "isExtensionMethod": false,
+          "href": "CSharp15.Pet.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Pet"
+            },
+            {
+              "lang": "vb",
+              "value": "Pet"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Pet"
+            },
+            {
+              "lang": "vb",
+              "value": "Pet"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp15.Pet"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp15.Pet"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp15.Pet\" text=\"Pet\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp15.Pet\" text=\"Pet\"/>"
+            }
+          ],
+          "level": 0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "description": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": [],
+          "id": "CSharp15_Pet",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CSharp15"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp15"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CSharp15"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp15"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp15"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp15"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "CSharp"
+  ],
+  "level": 0,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp15.yml",
+  "_path": "api/CSharp15.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Edit this page",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "derived": "Derived",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Filter by title",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "searchResultsCount": "{count} results for \"{query}\"",
+    "searchNoResults": "No results for \"{query}\"",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In this article",
+    "nextArticle": "Next",
+    "prevArticle": "Previous",
+    "backToTop": "Back to top",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto",
+    "changeTheme": "Change theme",
+    "copy": "Copy",
+    "downloadPdf": "Download PDF",
+    "_shared": {}
+  },
+  "yamlmime": "ManagedReference",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "description": "",
+  "remarks": "",
+  "conceptual": "",
+  "syntax": "",
+  "implements": "",
+  "example": "",
+  "seealso": [],
+  "id": "CSharp15",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "_disableToc": false,
+  "_disableNextArticle": true
+}
