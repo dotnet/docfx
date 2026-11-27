@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-import { loc, meta, options } from './helper'
+import { loc, meta, options, isRtl } from './helper'
 import { html, render, TemplateResult } from 'lit-html'
 import { classMap } from 'lit-html/directives/class-map.js'
 
@@ -139,13 +139,17 @@ export async function enableSearch() {
         return null
       }
 
+      // The arrows point to where the pages are: right-to-left pages read from right to left
+      const prevArrow = isRtl() ? '»' : '«'
+      const nextArrow = isRtl() ? '«' : '»'
+
       return html`
         <nav>
           <ul class="pagination">
             <li class="page-item">
-              <a class="page-link ${classMap({ disabled: page <= 0 })}" href="#" aria-label="Previous"
+              <a class="page-link ${classMap({ disabled: page <= 0 })}" href="#" aria-label="${loc('pagePrev')}"
                 @click="${() => gotoPage(page - 1)}">
-                <span aria-hidden="true">&laquo;</span>
+                <span aria-hidden="true">${prevArrow}</span>
               </a>
             </li>
             ${pages.map(i => html`
@@ -153,9 +157,9 @@ export async function enableSearch() {
                 <a class="page-link ${classMap({ active: page === i })}" href="#"
                   @click="${() => gotoPage(i)}">${i + 1}</a></li>`)}
             <li class="page-item">
-              <a class="page-link ${classMap({ disabled: page >= totalPages - 1 })}" href="#" aria-label="Next"
+              <a class="page-link ${classMap({ disabled: page >= totalPages - 1 })}" href="#" aria-label="${loc('pageNext')}"
                 @click="${() => gotoPage(page + 1)}">
-                <span aria-hidden="true">&raquo;</span>
+                <span aria-hidden="true">${nextArrow}</span>
               </a>
             </li>
           </ul>

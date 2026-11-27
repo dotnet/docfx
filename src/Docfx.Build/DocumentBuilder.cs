@@ -110,6 +110,7 @@ public sealed class DocumentBuilder : IDisposable
                 }
 
                 parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
+                parameter.Metadata = TextDirection.AppendTo(parameter.Metadata);
                 if (!string.IsNullOrEmpty(parameter.VersionName))
                 {
                     Logger.LogInfo($"Start building for version: {parameter.VersionName}");

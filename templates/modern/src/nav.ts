@@ -4,7 +4,7 @@
 import AnchorJs from 'anchor-js'
 import { render, html, TemplateResult } from 'lit-html'
 import { until } from 'lit-html/directives/until.js'
-import { breakWordLit, meta, isExternalHref, loc, options } from './helper'
+import { breakWordLit, meta, isExternalHref, loc, options, isCursiveScript } from './helper'
 import { localeSelector, monikerSelector, versionSelector } from './selector'
 import { themePicker } from './theme'
 import { TocNode } from './toc'
@@ -128,7 +128,8 @@ async function renderAnchors() {
   const { anchors: anchorsOptions } = await options()
   anchors.options = Object.assign({
     visible: 'hover',
-    icon: '#'
+    icon: '#',
+    ariaLabel: loc('anchor')
   }, anchorsOptions)
 
   anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
@@ -145,8 +146,9 @@ function inThisArticle(): TemplateResult {
     .filter(h => h.closest<HTMLElement>('div[data-moniker]')?.style.display !== 'none')
 
   if (headings.length > 0) {
+    const title = loc('inThisArticle')
     return html`
-      <h5 class="border-bottom">${loc('inThisArticle')}</h5>
+      <h5 class="border-bottom${isCursiveScript(title) ? '' : ' letter-spacing'}">${title}</h5>
       <ul>${headings.map(h => h.tagName === 'H2'
         ? html`<li><a class="link-body-emphasis" href="#${h.id}">${breakWordLit(h.textContent)}</a></li>`
         : html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.textContent)}</a></li>`

@@ -5,10 +5,13 @@ import esbuild from 'esbuild'
 import { sassPlugin } from 'esbuild-sass-plugin'
 import bs from 'browser-sync'
 import { cpSync, rmSync } from 'fs'
+import { readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
 import { spawnSync } from 'child_process'
+import rtlcss from 'rtlcss'
 import yargs from 'yargs/yargs'
 import { hideBin } from 'yargs/helpers'
+import { patchLunrLanguage } from './lunr-languages.js'
 
 const argv = yargs(hideBin(process.argv)).argv
 
@@ -72,6 +75,28 @@ async function buildModernTemplate() {
             };
           });
         }
+      },
+      {
+        // The Arabic and Hebrew stemmers of lunr-languages rely on `this` being the
+        // global object, which is not the case in the strict ES module bundle
+        name: 'Fix lunr-languages stemmers for ES modules',
+        setup(build) {
+          build.onLoad({ filter: /[\\/]lunr-languages[\\/]lunr\.(ar|he)\.js$/ }, async ({ path }) => {
+            const source = await readFile(path, 'utf8')
+            const patched = patchLunrLanguage(source)
+            if (patched === null) {
+              console.warn(`${path}: nothing to patch. If lunr-languages fixed its stemmers, remove this plugin and templates/lunr-languages.js.`)
+              return
+            }
+            return { contents: patched, loader: 'js' }
+          })
+        }
+      },
+      {
+        name: 'Right-to-left stylesheet',
+        setup(build) {
+          build.onEnd(result => result.errors.length === 0 && buildRtlStylesheet())
+        }
       }
     ],
     loader,
@@ -83,6 +108,20 @@ async function buildModernTemplate() {
   } else {
     await esbuild.build(config)
   }
+}
+
+/**
+ * The stylesheet for right-to-left pages: the left-to-right styles with their left and
+ * right mirrored, as done for Bootstrap's own RTL stylesheet, followed by the rules that
+ * must not be mirrored, such as code being left-to-right.
+ */
+async function buildRtlStylesheet() {
+  const ltr = await readFile('modern/public/docfx.min.css', 'utf8')
+  const direction = (await esbuild.transform(await readFile('modern/src/direction.css', 'utf8'), { loader: 'css', minify: true })).code
+
+  // The source map belongs to the left-to-right stylesheet only
+  const rtl = rtlcss.process(ltr).replace(/\/\*# sourceMappingURL=\S+ \*\/\s*$/, '')
+  await writeFile('modern/public/docfx.rtl.min.css', /^@charset/.test(rtl) ? rtl + direction : `@charset "UTF-8";${rtl}${direction}`)
 }
 
 async function buildDefaultTemplate() {

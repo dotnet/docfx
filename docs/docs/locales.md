@@ -118,8 +118,25 @@ Add a root `index.html` that redirects to the default locale:
 </html>
 ```
 
+## Right-to-left locales
+
+Each locale is built from its own folder, so its `_lang` can be set with [file metadata](./config.md#metadata):
+
+```json
+{
+  "build": {
+    "fileMetadata": {
+      "_lang": { "fa/**": "fa", "en/**": "en" }
+    }
+  }
+}
+```
+
+Docfx renders the pages of a right-to-left language accordingly. See [right-to-left languages](template.md#right-to-left-languages).
+
 ## See also
 
 - [Multiple versions](versioning.md)
 - [Markdown - moniker sections](markdown.md#moniker-sections)
+- [Right-to-left languages](template.md#right-to-left-languages)
 - [Customize the modern template](template.md#custom-template)

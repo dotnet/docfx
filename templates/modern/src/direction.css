@@ -1,0 +1,35 @@
+/**
+ * Licensed to the .NET Foundation under one or more agreements.
+ * The .NET Foundation licenses this file to you under the MIT license.
+ *
+ * Rules for right-to-left pages that must not be mirrored, appended by build.js to the
+ * mirrored stylesheet public/docfx.rtl.min.css.
+ */
+
+/* Code is left-to-right, whatever the direction of the page */
+pre,
+pre code {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
+}
+
+/* Inline code is laid out by its first strong character, so that e.g. a Persian file name
+   keeps its punctuation on the left while `Console.WriteLine()` stays as it is written */
+:not(pre) > code {
+  direction: ltr;
+  unicode-bidi: plaintext;
+}
+
+/* URLs are left-to-right */
+.search-results .item-href {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+}
+
+/* Member names and other identifiers are laid out by their first strong character, so that
+   the parentheses of `Calculator()` and `object.GetType()` stay around the name */
+:is(a.xref, span.xref, .toc a, #affix a, #breadcrumb a) {
+  unicode-bidi: plaintext;
+}

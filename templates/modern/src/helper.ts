@@ -31,6 +31,21 @@ export function loc(id: string, args?: { [key: string]: string }): string {
 }
 
 /**
+ * Whether the page is right-to-left, e.g. for Arabic, Hebrew and Persian.
+ */
+export function isRtl(): boolean {
+  return document.documentElement.dir === 'rtl'
+}
+
+/**
+ * Whether the text is written in a cursive script such as Arabic. Its letters are only
+ * joined when they are set without letter spacing.
+ */
+export function isCursiveScript(text?: string): boolean {
+  return /[\p{Script=Arabic}\p{Script=Thaana}\p{Script=Syriac}]/u.test(text ?? '')
+}
+
+/**
  * Add <wbr> into long word.
  */
 export function breakWord(text?: string): string[] {
