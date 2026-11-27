@@ -183,6 +183,44 @@ public class DocsetBuildTest : TestBase
     }
 
     [Fact]
+    public static async Task Build_With_Groups_Metadata()
+    {
+        var outputs = await Build(new()
+        {
+            ["docfx.json"] =
+                """
+                {
+                    "build": {
+                        "content": [
+                            { "files": [ "**/*.md" ], "src": "v1", "dest": ".", "group": "v1" },
+                            { "files": [ "**/*.md" ], "src": "v2", "dest": ".", "group": "v2" }
+                        ],
+                        "dest": "_site",
+                        "exportRawModel": true,
+                        "globalMetadata": { "custom": "global" },
+                        "groups": {
+                            "v1": { "dest": "v1", "moniker_range": "net-1.0" },
+                            "v2": { "dest": "v2", "moniker_range": "net-2.0", "custom": "group" }
+                        }
+                    }
+                }
+                """,
+            ["v1/index.md"] = "",
+            ["v2/index.md"] = ""
+        });
+
+        // Group metadata is applied to every file built in the group
+        var v1 = JsonDocument.Parse(outputs[Path.Combine("v1", "index.raw.json")]()).RootElement;
+        var v2 = JsonDocument.Parse(outputs[Path.Combine("v2", "index.raw.json")]()).RootElement;
+        Assert.Equal("net-1.0", v1.GetProperty("moniker_range").GetString());
+        Assert.Equal("net-2.0", v2.GetProperty("moniker_range").GetString());
+        Assert.Equal("global", v1.GetProperty("custom").GetString());
+
+        // Group metadata overrides global metadata
+        Assert.Equal("group", v2.GetProperty("custom").GetString());
+    }
+
+    [Fact]
     public static async Task Build_With_RedirectUri_Files()
     {
         // Act

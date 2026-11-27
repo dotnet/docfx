@@ -396,6 +396,10 @@
           "dest": {
             "type": "string",
             "description": "Defines the output folder of the generated build files."
+          },
+          "moniker_range": {
+            "type": "string",
+            "description": "Defines the moniker range of this group, applied as metadata to every file built in this group. Used by the template's version selector, see versioning documentation for more information."
           }
         }
       }
