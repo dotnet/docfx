@@ -3,7 +3,7 @@
 
 import test from 'node:test'
 import assert from 'node:assert'
-import { breakWord, isExternalHref, isSameURL } from './helper'
+import { breakWord, isCursiveScript, isExternalHref, isRtl, isSameURL } from './helper'
 
 test('break text', () => {
   assert.deepStrictEqual(breakWord('Other APIs'), ['Other APIs'])
@@ -45,4 +45,47 @@ test('is external URL', () => {
       Reflect.deleteProperty(globalThis, 'window')
     }
   }
+})
+
+test('is right-to-left', () => {
+  const original = Object.getOwnPropertyDescriptor(globalThis, 'document')
+  const setDirection = (dir: string) => Object.defineProperty(globalThis, 'document', {
+    configurable: true,
+    value: { documentElement: { dir } }
+  })
+
+  try {
+    setDirection('rtl')
+    assert.ok(isRtl())
+
+    setDirection('ltr')
+    assert.ok(!isRtl())
+
+    // Pages without a direction are left-to-right
+    setDirection('')
+    assert.ok(!isRtl())
+  } finally {
+    if (original) {
+      Object.defineProperty(globalThis, 'document', original)
+    } else {
+      Reflect.deleteProperty(globalThis, 'document')
+    }
+  }
+})
+
+test('is cursive script', () => {
+  // Arabic script joins its letters: Arabic, Persian, Urdu, Divehi
+  assert.ok(isCursiveScript('محتوى المقال'))
+  assert.ok(isCursiveScript('در این مقاله'))
+  assert.ok(isCursiveScript('اس مضمون میں'))
+  assert.ok(isCursiveScript('މި ލިނުގެ'))
+  assert.ok(isCursiveScript('In this article, مقاله'))
+
+  // Other scripts are set apart letter by letter
+  assert.ok(!isCursiveScript('In this article'))
+  assert.ok(!isCursiveScript('本文内容'))
+  // Hebrew is right-to-left, but its letters are not joined
+  assert.ok(!isCursiveScript('על המאמר הזה'))
+  assert.ok(!isCursiveScript(''))
+  assert.ok(!isCursiveScript(undefined))
 })

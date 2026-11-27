@@ -64,7 +64,11 @@ export type DocfxOptions = {
   /** Configures mermaid diagram options */
   mermaid?: MermaidConfig,
 
-  /** A list of [lunr languages](https://github.com/MihaiValentin/lunr-languages#readme) such as fr, es for full text search */
+  /**
+   * A list of [lunr languages](https://github.com/MihaiValentin/lunr-languages#readme) such as fr, es for full text search:
+   * their words are stemmed and their stop words removed. Include `en` for English.
+   * Words in other languages are indexed as they are written.
+   */
   lunrLanguages?: string[],
 
   /**

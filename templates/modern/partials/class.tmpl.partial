@@ -15,8 +15,9 @@
 {{/overload}}
 
 <h3 id="{{id}}" data-uid="{{uid}}">
-  {{name.0.value}}
-  {{#sourceurl}}<a class="header-action link-secondary" title="View source" href="{{sourceurl}}"><i class="bi bi-code-slash"></i></a>{{/sourceurl}}
+  {{! dir="auto" lays the name out by its first character, e.g. `Calculator()` stays left-to-right in a right-to-left page }}
+  <span dir="auto">{{name.0.value}}</span>
+  {{#sourceurl}}<a class="header-action link-secondary" title="{{__global.viewSource}}" href="{{sourceurl}}"><i class="bi bi-code-slash"></i></a>{{/sourceurl}}
 </h3>
 
 <div class="markdown level1 summary">{{{summary}}}</div>

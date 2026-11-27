@@ -3,7 +3,7 @@
 {{!include(favicon.ico)}}
 {{!include(logo.svg)}}
 <!DOCTYPE html>
-<html {{#_lang}}lang="{{_lang}}"{{/_lang}}>
+<html {{#_lang}}lang="{{_lang}}"{{/_lang}}{{#_dir}} dir="{{_dir}}"{{/_dir}}>
   <head>
     <meta charset="utf-8">
     {{#redirect_url}}
@@ -16,7 +16,7 @@
       {{#_description}}<meta name="description" content="{{_description}}">{{/_description}}
       {{#description}}<meta name="description" content="{{description}}">{{/description}}
       <link rel="icon" href="{{_rel}}{{{_appFaviconPath}}}{{^_appFaviconPath}}favicon.ico{{/_appFaviconPath}}">
-      <link rel="stylesheet" href="{{_rel}}public/docfx.min.css">
+      {{#_isRtl}}<link rel="stylesheet" href="{{_rel}}public/docfx.rtl.min.css">{{/_isRtl}}{{^_isRtl}}<link rel="stylesheet" href="{{_rel}}public/docfx.min.css">{{/_isRtl}}
       <link rel="stylesheet" href="{{_rel}}public/main.css">
       <meta name="docfx:navrel" content="{{_navRel}}">
       <meta name="docfx:tocrel" content="{{_tocRel}}">
@@ -31,6 +31,9 @@
       <meta name="loc:tocFilter" content="{{__global.tocFilter}}">
       <meta name="loc:nextArticle" content="{{__global.nextArticle}}">
       <meta name="loc:prevArticle" content="{{__global.prevArticle}}">
+      <meta name="loc:pagePrev" content="{{__global.pagePrev}}">
+      <meta name="loc:pageNext" content="{{__global.pageNext}}">
+      <meta name="loc:anchor" content="{{__global.anchor}}">
       <meta name="loc:themeLight" content="{{__global.themeLight}}">
       <meta name="loc:themeDark" content="{{__global.themeDark}}">
       <meta name="loc:themeAuto" content="{{__global.themeAuto}}">
@@ -70,7 +73,7 @@
             <img id="logo" class="svg" src="{{_rel}}{{{_appLogoPath}}}{{^_appLogoPath}}logo.svg{{/_appLogoPath}}" alt="{{_appName}}" >
             {{_appName}}
           </a>
-          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="{{__global.toggleNavigation}}">
             <i class="bi bi-three-dots"></i>
           </button>
           <div class="collapse navbar-collapse" id="navpanel">
@@ -78,7 +81,7 @@
               {{#_enableSearch}}
               <form class="search" role="search" id="search">
                 <i class="bi bi-search"></i>
-                <input class="form-control" id="search-query" type="search" disabled placeholder="{{__global.search}}" autocomplete="off" aria-label="Search">
+                <input class="form-control" id="search-query" type="search" disabled placeholder="{{__global.search}}" autocomplete="off" aria-label="{{__global.search}}">
               </form>
               {{/_enableSearch}}
             </div>
@@ -93,8 +96,8 @@
       <div class="toc-offcanvas">
         <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
           <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">{{__global.tocTitle}}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="{{__global.close}}"></button>
           </div>
           <div class="offcanvas-body">
             <nav class="toc" id="toc"></nav>
@@ -108,7 +111,7 @@
           {{^_disableToc}}
           <button class="btn btn-lg border-0 d-md-none"
               type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas"
-              aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+              aria-controls="tocOffcanvas" aria-expanded="false" aria-label="{{__global.showToc}}">
             <i class="bi bi-list"></i>
           </button>
           {{/_disableToc}}

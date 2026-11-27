@@ -44,6 +44,7 @@ public class TemplateModelTransformer
 
         var model = ConvertObjectToDictionary(item.Content);
         AppendGlobalMetadata(model);
+        TextDirection.AppendTo(model);
 
         if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
         {

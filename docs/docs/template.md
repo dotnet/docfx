@@ -48,6 +48,7 @@ Name         | Type    | Description
 `_disableTocFilter`     | bool    | Whether to show the table of content filter box.
 `_googleAnalyticsTagId` | string  | Enables Google Analytics web traffic analysis.
 `_lang`                  | string  | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
+`_dir`                   | string  | The text direction of the page, `rtl` or `ltr`. Defaults to `rtl` for a right-to-left `_lang` such as Arabic, Hebrew and Persian. See [right-to-left languages](#right-to-left-languages).
 `_layout`                | string  | Determines the layout of the page. Supported values are `landing` and `chromeless`.
 
 # [Default Template](#tab/default)
@@ -72,11 +73,50 @@ Name         | Type    | Description
 `_disableAffix`         | bool    | Whether to show the right rail.
 `_googleAnalyticsTagId` | string  | Enables Google Analytics web traffic analysis.
 `_lang`                 | string | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
+`_dir`                  | string | The text direction of the page, `rtl` or `ltr`. Defaults to `rtl` for a right-to-left `_lang` such as Arabic, Hebrew and Persian. See [right-to-left languages](#right-to-left-languages).
 
 ---
 
 > [!TIP]
 > Docfx produces the right git links for major CI pipelines including [GitHub](https://github.com/features/actions), [GitLab](https://about.gitlab.com/gitlab-ci/), [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/), [AppVeyor](https://www.appveyor.com/), [TeamCity](https://www.jetbrains.com/teamcity/), [Jenkins](https://jenkins.io/). `_gitContribute` and `_gitUrlPattern` are optional on these platforms.
+
+## Right-to-Left Languages
+
+Docfx lays pages out in the direction of their language. Set `_lang` to a right-to-left language such as Arabic, Hebrew or Persian:
+
+```json
+{
+  "build": {
+    "globalMetadata": {
+      "_lang": "fa"
+    }
+  }
+}
+```
+
+Docfx writes `dir="rtl"` to the `<html>` tag, and the modern template mirrors its layout: the navigation and the table of contents are on the right and text is right-aligned, while code and API member names stay left-to-right. Pages in other languages keep the default left-to-right layout.
+
+Set `_dir` to choose the direction yourself, e.g. `ltr` for a right-to-left language whose pages should be laid out left-to-right, or `rtl` for a language docfx doesn't know. `_lang` and `_dir` can also be set for individual files with [file metadata](./config.md#metadata), e.g. for pages in more than one language.
+
+The strings of the template are translated with a `token.json` file in a [custom template](#custom-template):
+
+```json
+{
+  "inThisArticle": "در این مقاله",
+  "tocTitle": "فهرست مطالب",
+  "search": "جستجو"
+}
+```
+
+Search finds the words of every language, e.g. `شروع`. For the [stemming and stop words](https://github.com/MihaiValentin/lunr-languages#readme) of a language other than English, add it to `lunrLanguages` in `main.js`:
+
+```js
+export default {
+  lunrLanguages: ['en', 'ar'],
+}
+```
+
+Languages that have no [lunr language](https://github.com/MihaiValentin/lunr-languages#supported-languages), such as Persian, are indexed as they are written.
 
 
 ## Custom Template
